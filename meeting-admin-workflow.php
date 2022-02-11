@@ -43,7 +43,7 @@ function the_form_response()
 
 
         // redirect the user to the appropriate page
-        echo "<h1>LOL</h1>";
+        wp_redirect( 'https://www.google.com' );
         exit;
     } else {
         wp_die('invalid nonce');
