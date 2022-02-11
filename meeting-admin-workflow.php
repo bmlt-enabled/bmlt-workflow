@@ -14,7 +14,7 @@ function meeting_update_form() {
     // $ret .= file_get_contents(plugins_url('/templates/meeting_update.html',__FILE__ ));
     // $ret .= '</form>';
     // return $ret;
-    include_once(plugins_url('/templates/meeting_update.php'));
+    include_once('templates/meeting_update.php');
 }
 
 add_shortcode('bmaw-meeting-update-form', 'meeting_update_form');
