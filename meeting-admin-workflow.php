@@ -17,6 +17,7 @@ function dbg($logmsg)
 }
 function meeting_update_form()
 {
+    dbg("outputting the meeting update form");
     include_once('templates/meeting_update.php');
 }
 
