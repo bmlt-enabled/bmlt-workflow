@@ -48,15 +48,13 @@ function the_form_response()
         // $nds_user =  get_user_by( 'login',  $_POST['nds']['user_select'] );
         // $nds_user_id = absint( $nds_user->ID ) ;
 
-        dbg('whatsup');
-
         $to = 'emailsendto@example.com';
         $subject = 'The subject';
         $body = 'The email body content';
         $headers = array('Content-Type: text/html; charset=UTF-8','From: My Site Name <support@example.com>');
-         
+        dbg('sending mail');
         wp_mail( $to, $subject, $body, $headers );
-
+        dbg('mail sent');
         // redirect the user to the appropriate page
         // wp_redirect( 'https://www.google.com' );
         exit;
