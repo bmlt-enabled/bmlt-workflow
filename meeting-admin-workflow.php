@@ -23,6 +23,7 @@ function meeting_update_form()
 
 add_shortcode('bmaw-meeting-update-form', 'meeting_update_form');
 add_action('admin_post_nopriv_meeting_update_form_response', 'the_form_response');
+add_action('admin_post_meeting_update_form_response', 'the_form_response');
 
 function enqueue_form_deps()
 {
