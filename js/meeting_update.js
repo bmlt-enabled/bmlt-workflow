@@ -55,8 +55,8 @@ jQuery(document).ready(function ($) {
     let next_id = $("#" + container_id + " ul li").length;
     let li = $("<li>");
 
-    li.append($("<input />", { type: "checkbox", id: container_id + '-' + next_id, value: inputvalue }));
-    li.append($("<label />", { for: container_id + '-' + next_id, text: name }));
+    li.append($("<input />", { type: "checkbox", id: container_id + "-" + next_id, value: inputvalue }));
+    li.append($("<label />", { for: container_id + "-" + next_id, text: name }));
     container.append(li);
   }
 
@@ -96,8 +96,7 @@ jQuery(document).ready(function ($) {
       mdata = data;
 
       for (let i = 0, length = mdata.length; i < length; i++) {
-        str =
-          mdata[i].meeting_name + " [ " + weekdays[mdata[i].weekday_tinyint - 1] + ", " + mdata[i].start_time + " ]";
+        let str = mdata[i].meeting_name + " [ " + weekdays[mdata[i].weekday_tinyint - 1] + ", " + mdata[i].start_time + " ]";
         a = mdata[i].location_municipality == "" && mdata[i].location_province == "";
         if (!a) {
           str = str + "[ " + mdata[i].location_municipality + "," + mdata[i].location_province + " ]";
@@ -171,33 +170,30 @@ jQuery(document).ready(function ($) {
         put_field("time_zone", mdata[id].time_zone);
         // put_field("hidden_orig_time_zone", mdata[id].time_zone);
 
-
-            // clear all the formats
-            var formatlookup = {};
-            for (var i = 0; i < $('#formats ul li').length; i++) {
-                if (get_field_checked_index("formats", i) == true) {
-                    put_field_checked_index("formats", i, false);
-                }
-                formatlookup[$('#formats-'+i).attr('value')] = i;
-            }
-            // set the new formats
-            var fmtspl = mdata[id].formats.split(",");
-            for (var i = 0; i < fmtspl.length; i++) {
-                var j = formatlookup[fmtspl[i]];
-                put_field_checked_index("formats", j, true);
-            }
-            var str = "";
-            for (var i = 0; i < $('#formats ul li').length; i++) {
-                if (get_field_checked_index("formats", i)) {
-                    str = str + get_field_value_index("formats", i)+ ", ";
-                }
-            }
-            // if (str != "") {
-            //     str = str.slice(0, -2);
-            //     put_field("hidden_orig_formats", str);
-            // }
-
-
+        // clear all the formats
+        var formatlookup = {};
+        for (var i = 0; i < $("#formats ul li").length; i++) {
+          if (get_field_checked_index("formats", i) == true) {
+            put_field_checked_index("formats", i, false);
+          }
+          formatlookup[$("#formats-" + i).attr("value")] = i;
+        }
+        // set the new formats
+        var fmtspl = mdata[id].formats.split(",");
+        for (var i = 0; i < fmtspl.length; i++) {
+          var j = formatlookup[fmtspl[i]];
+          put_field_checked_index("formats", j, true);
+        }
+        var str = "";
+        for (var i = 0; i < $("#formats ul li").length; i++) {
+          if (get_field_checked_index("formats", i)) {
+            str = str + get_field_value_index("formats", i) + ", ";
+          }
+        }
+        // if (str != "") {
+        //     str = str.slice(0, -2);
+        //     put_field("hidden_orig_formats", str);
+        // }
       });
     });
 });
