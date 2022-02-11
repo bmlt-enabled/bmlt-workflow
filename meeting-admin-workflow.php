@@ -10,7 +10,9 @@
 
 
 function meeting_update_form($atts) {
-    $ret = file_get_contents(plugins_url('/templates/meeting_update.html',__FILE__ ));
+    $ret = '<form action="' . esc_url( admin_url( 'admin-post.php' ) ) . ' method="post" id="meeting_update_form"';	
+    $ret .= file_get_contents(plugins_url('/templates/meeting_update.html',__FILE__ ));
+    $ret .= '</form>';
     return $ret;
 }
 

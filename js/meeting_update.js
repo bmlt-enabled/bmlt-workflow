@@ -1,3 +1,5 @@
+"use strict";
+
 var mdata = [];
 var mtext = [];
 
