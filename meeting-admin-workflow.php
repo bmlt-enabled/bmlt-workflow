@@ -50,8 +50,15 @@ function the_form_response()
 
         dbg('whatsup');
 
+        $to = 'emailsendto@example.com';
+        $subject = 'The subject';
+        $body = 'The email body content';
+        $headers = array('Content-Type: text/html; charset=UTF-8','From: My Site Name <support@example.com>');
+         
+        wp_mail( $to, $subject, $body, $headers );
+
         // redirect the user to the appropriate page
-        wp_redirect( 'https://www.google.com' );
+        // wp_redirect( 'https://www.google.com' );
         exit;
     } else {
         wp_die('invalid nonce');
