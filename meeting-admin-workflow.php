@@ -10,6 +10,11 @@
  **/
 
 
+function dbg($logmsg)
+{
+    $log = plugin_dir_path(__FILE__).'debug.log';
+    error_log($logmsg.PHP_EOL, 3, $log);
+}
 function meeting_update_form()
 {
     include_once('templates/meeting_update.php');
@@ -41,6 +46,7 @@ function the_form_response()
         // $nds_user =  get_user_by( 'login',  $_POST['nds']['user_select'] );
         // $nds_user_id = absint( $nds_user->ID ) ;
 
+        dbg('whatsup');
 
         // redirect the user to the appropriate page
         wp_redirect( 'https://www.google.com' );
