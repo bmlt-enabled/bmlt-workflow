@@ -97,8 +97,8 @@ jQuery(document).ready(function ($) {
 
       for (let i = 0, length = mdata.length; i < length; i++) {
         let str = mdata[i].meeting_name + " [ " + weekdays[mdata[i].weekday_tinyint - 1] + ", " + mdata[i].start_time + " ]";
-        a = mdata[i].location_municipality == "" && mdata[i].location_province == "";
-        if (!a) {
+        // let a = ;
+        if ((mdata[i].location_municipality == "") && (mdata[i].location_province == "")) {
           str = str + "[ " + mdata[i].location_municipality + "," + mdata[i].location_province + " ]";
         }
         mtext[i] = { text: str, id: i };
