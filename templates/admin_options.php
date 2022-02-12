@@ -2,23 +2,23 @@
 echo <<<END
 <div class="wrap">
 <script>
-jQuery(document).ready(function($) {
+// jQuery(document).ready(function($) {
 
-    $(".committeetable").on("click", "tr", function(){
-        var cb = $(this).find("input:checkbox")
-        if(cb) {
-            if(cb.prop("checked"))
-            {
-                cb.prop( "checked", false )
-            }
-            else
-            {
-                cb.prop( "checked", true )
-            }
-        }
-    });
+//     $(".committeetable").on("click", "tr", function(){
+//         var cb = $(this).find("input:checkbox")
+//         if(cb) {
+//             if(cb.prop("checked"))
+//             {
+//                 cb.prop( "checked", false )
+//             }
+//             else
+//             {
+//                 cb.prop( "checked", true )
+//             }
+//         }
+//     });
 
-});
+// });
 </script>
 <h1>BMLT Meeting Admin Workflow Settings</h1>
 <form method="post" action="options.php">';
