@@ -53,12 +53,18 @@ function misha_options_page() {
 
 add_action( 'admin_init',  'bmaw_register_setting' );
 
+function array_sanitize_callback($args){
+    return $args;
+}
 function bmaw_register_setting(){
 
 	register_setting(
 		'bmaw-settings-group', // settings group name
-		'bmaw_service_committee_option_array'
-	);
+		'bmaw_service_committee_option_array',
+        array('array','bmlt service committee array','array_sanitize_callback', false, array(
+            "Committee1" => array("e1"=>"email 1", "e2"=>"email 1.1"),
+            "Committee2" => array("e1"=>"email 2", "e2"=>"email 2.1"),
+        )));
 
 	add_settings_section(
 		'some_settings_section_id', // section ID
@@ -84,13 +90,13 @@ function bmaw_register_setting(){
 function misha_text_field_html(){
 
     dbg("printing the text field");
-    $arr = array(
-        "Committee1" => array("e1"=>"email 1", "e2"=>"email 1.1"),
-        "Committee2" => array("e1"=>"email 2", "e2"=>"email 2.1"),
-    );
-    $lol = delete_option("homepage_text");
-    $lol = delete_option("bmaw_service_committee_option_array");
-    $lol = add_option("bmaw_service_committee_option_array", $arr);
+    // $arr = array(
+    //     "Committee1" => array("e1"=>"email 1", "e2"=>"email 1.1"),
+    //     "Committee2" => array("e1"=>"email 2", "e2"=>"email 2.1"),
+    // );
+    // $lol = delete_option("homepage_text");
+    // $lol = delete_option("bmaw_service_committee_option_array");
+    // $lol = add_option("bmaw_service_committee_option_array", $arr);
         
 	$arr = get_option( 'bmaw_service_committee_option_array' );
     if ($arr == false)
