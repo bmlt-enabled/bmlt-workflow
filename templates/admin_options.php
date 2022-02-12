@@ -2,7 +2,7 @@
 echo <<<END
 <div class="wrap">
 <script>
-$(document).ready(function() {
+jQuery(document).ready(function($) {
 
     $('#committeetable tr').click(function() {
         var cb = $(this).find("input:checkbox")
