@@ -57,8 +57,7 @@ function bmaw_register_setting(){
 
 	register_setting(
 		'bmaw-settings-group', // settings group name
-		'homepage_text', // option name
-		'sanitize_text_field' // sanitization function
+		'homepage_text'
 	);
 
 	add_settings_section(
