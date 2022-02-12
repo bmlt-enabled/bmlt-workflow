@@ -14,7 +14,7 @@
 // do_settings_sections('list_service_areas_section');
 
 echo '<div class="wrap">
-<h1>My Page Settings</h1>
+<h1>BMAW Settings</h1>
 <form method="post" action="options.php">';
         
     settings_fields( 'misha_settings' ); // settings group name

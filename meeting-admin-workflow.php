@@ -85,7 +85,7 @@ function misha_register_setting(){
 
 	add_settings_field(
 		'homepage_text',
-		'Homepage text',
+		'BMAW Setting',
 		'misha_text_field_html', // function which prints the field
 		'misha-slug', // page slug
 		'some_settings_section_id', // section ID
