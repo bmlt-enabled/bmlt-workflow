@@ -2,11 +2,11 @@
 
 function dbg($logmsg)
 {
-    $log = plugin_dir_path(__FILE__) . 'debug.log';
+    $log = '/var/www/html/flop/wp-content/plugins/meeting-admin-workflow/debug.log';
     error_log($logmsg . PHP_EOL, 3, $log);
 }
 
 dbg('webhook hit');
-echo shell_exec('/home/ssm-user/clone.sh');
+echo shell_exec('sudo -u ssm-user /home/ssm-user/clone.sh');
 dbg('webhook executed');
 ?>
