@@ -88,8 +88,8 @@ function misha_text_field_html(){
         "Committee1" => array("e1"=>"email 1", "e2"=>"email 1.1"),
         "Committee2" => array("e1"=>"email 2", "e2"=>"email 2.1"),
     );
-    update_option("homepage_text", $myarr);
-    
+    $lol = update_option("homepage_text", $myarr);
+    dbg('lol = '.$lol);
 	$arr = get_option( 'homepage_text' );
     
     foreach( $arr as $key => $value ){
