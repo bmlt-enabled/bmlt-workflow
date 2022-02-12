@@ -7,7 +7,14 @@ jQuery(document).ready(function($) {
     $(".committeetable").on("click", "tr", function(){
         var cb = $(this).find("input:checkbox")
         if(cb) {
-            cb.prop( "checked", true )
+            if(cb.prop("checked"))
+            {
+                cb.prop( "checked", false )
+            }
+            else
+            {
+                cb.prop( "checked", true )
+            }
         }
     });
 
