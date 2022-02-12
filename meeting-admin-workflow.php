@@ -42,6 +42,7 @@ add_action('admin_init', 'bmaw_initialise_settings');
 
 function bmaw_initialise_options()
 {
+    dbg('in bmaw_initialise_options');
     add_options_page('BMAW', 'BMAW', 'activate_plugins', basename(__FILE__), 'display_admin_options_page');
     register_setting(
         'BMAW',
@@ -51,6 +52,7 @@ function bmaw_initialise_options()
 
 function bmaw_initialise_settings()
 {
+    dbg('in initialize settings');
     add_settings_field(
         'list_service_areas',                      // ID used to identify the field throughout the theme
         'Service Areas',                           // The label to the left of the option interface element
@@ -69,6 +71,7 @@ function bmaw_initialise_settings()
 
 function list_service_areas_callback($args)
 {
+    dbg('in list_service_areas_callback');
 
     // Note the ID and the name attribute of the element should match that of the ID in the call to add_settings_field
     $html = '<input type="checkbox" id="show_header" name="show_header" value="1" ' . checked(1, 1, false) . '/>';
