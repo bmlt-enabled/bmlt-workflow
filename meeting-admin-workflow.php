@@ -119,6 +119,7 @@ function misha_text_field_html(){
 function log_sql_queries($text_query){
     //Uncomment me if you want a lot of info about where the sql query comes from and what action started it off
     $traces = debug_backtrace();
+    dbg("inside log_sql_queries");
     $i = 0;
     foreach ($traces as $tobj => $trace) {
         if($trace['function'] == 'do_action'){
