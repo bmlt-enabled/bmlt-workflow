@@ -141,7 +141,12 @@ function log_sql_queries($text_query){
     dbg("INFO:SQL: " . $text_query);
     return $text_query;
 }
+function log_option($option, $value){
+    dbg("add_option: ".$option." ".$value)
+}
+
 add_filter( 'posts_request', 'log_sql_queries', 500 );
+add_action( 'add_option', 'log_option' );
 
 function display_admin_options_page()
 {
