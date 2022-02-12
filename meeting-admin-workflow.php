@@ -116,7 +116,7 @@ function service_committee_table_html()
                 <th>Service Area</th>
                 <th>Email Address</th>
                 <th>CC</th>
-                <th></th>
+                <th style="width:auto;"></th>
             </tr>
         </thead>
     <tbody>
