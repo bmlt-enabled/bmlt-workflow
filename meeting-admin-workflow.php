@@ -100,15 +100,15 @@ function misha_text_field_html(){
         dbg('add_option = false');
     }
 
-    $lol = update_option("homepage_text", $myarr);
-    if($lol)
-    {
-        dbg('update_option = true');
-    }
-    else
-    {    
-        dbg('update_option = false');
-    }
+    // $lol = update_option("homepage_text", $myarr);
+    // if($lol)
+    // {
+    //     dbg('update_option = true');
+    // }
+    // else
+    // {    
+    //     dbg('update_option = false');
+    // }
     
 	$arr = get_option( 'homepage_text' );
     
