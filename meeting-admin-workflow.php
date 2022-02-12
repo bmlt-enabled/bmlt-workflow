@@ -110,10 +110,10 @@ function service_committee_table_html()
     dbg("printing the text field");
     $arr = get_option('bmaw_service_committee_option_array');
 
-    echo '<table class="committeetable"><thead><tr><th style="width:auto;"></th><th>Service Area</th><th>Email Address</th><th>CC</th></tr></thead><tbody>';
+    echo '<table class="committeetable"><thead><tr><th style="width:auto;"><input type="checkbox" id="bmaw-service-committee-select-all"</th><th>Service Area</th><th>Email Address</th><th>CC</th></tr></thead><tbody>';
     $i = 0;
     foreach ($arr as $key => $value) {
-        echo '<tr><td><input type="checkbox" id="'.$key.'-checkbox"></td>';
+        echo '<tr><td><input type="checkbox" id="bmaw-service-committee-'.$key.'-checkbox"></td>';
         foreach ($value as $k2 => $v2) {
             echo '<td><input type="text" name="bmaw_service_committee_option_array[' . $i . '][' . $k2 . ']" value="' . $v2 . '"/></td>';
         }
