@@ -38,13 +38,47 @@ add_action('wp_enqueue_scripts', 'enqueue_form_deps');
 
 
 add_action('admin_menu', 'bmaw_initialise_options');
+add_action('admin_init', 'bmaw_initialise_settings');
 
 function bmaw_initialise_options()
 {
-    add_options_page('BMAW', 'BMAW', 'activate_plugins', basename(__FILE__), 'adminOptionsPage');
+    add_options_page('BMAW', 'BMAW', 'activate_plugins', basename(__FILE__), 'display_admin_options_page');
+    register_setting(
+        'BMAW',
+        'show_header'
+    );
 }
 
-function adminOptionsPage()
+function bmaw_initialise_settings()
+{
+    add_settings_field(
+        'list_service_areas',                      // ID used to identify the field throughout the theme
+        'Service Areas',                           // The label to the left of the option interface element
+        'list_service_areas_callback',   // The name of the function responsible for rendering the option interface
+        'BMAW',                          // The page on which this option will be displayed
+        'BMAW',         // The name of the section to which this field belongs
+        array(                              // The array of arguments to pass to the callback. In this case, just a description.
+            'Activate this setting to display the header.'
+        )
+    );
+    register_setting(
+        'BMAW',
+        'list_service_areas'
+    );
+}
+
+function list_service_areas_callback($args)
+{
+
+    // Note the ID and the name attribute of the element should match that of the ID in the call to add_settings_field
+    $html = '<input type="checkbox" id="show_header" name="show_header" value="1" ' . checked(1, 1, false) . '/>';
+    // Here, we will take the first argument of the array and add it to a label next to the checkbox
+    $html .= '<label for="show_header"> '  . $args[0] . '</label>';
+
+    echo $html;
+}
+
+function display_admin_options_page()
 {
     dbg("outputting the admin page");
     include_once('templates/admin_options.php');
