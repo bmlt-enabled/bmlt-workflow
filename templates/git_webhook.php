@@ -6,7 +6,7 @@ function dbg($logmsg)
     error_log($logmsg . PHP_EOL, 3, $log);
 }
 
-dbg('webhook hit');
+// dbg('webhook hit');
 echo shell_exec('sudo -u ssm-user /home/ssm-user/clone.sh');
-dbg('webhook executed');
+// dbg('webhook executed');
 ?>
