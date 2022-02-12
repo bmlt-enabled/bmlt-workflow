@@ -57,7 +57,7 @@ function bmaw_register_setting(){
 
 	register_setting(
 		'bmaw-settings-group', // settings group name
-		'homepage_text'
+		'bmaw_service_committee_option_array'
 	);
 
 	add_settings_section(
@@ -68,13 +68,13 @@ function bmaw_register_setting(){
 	);
 
 	add_settings_field(
-		'homepage_text',
+		'bmaw_service_committee_option_array',
 		'BMAW Setting',
 		'misha_text_field_html', // function which prints the field
 		'bmaw-settings', // page slug
 		'some_settings_section_id', // section ID
 		array( 
-			'label_for' => 'homepage_text',
+			'label_for' => 'bmaw_service_committee_option_array',
 			'class' => 'misha-class', // for <tr> element
 		)
 	);
@@ -84,35 +84,15 @@ function bmaw_register_setting(){
 function misha_text_field_html(){
 
     dbg("printing the text field");
-    $myarr = array(
+    $arr = array(
         "Committee1" => array("e1"=>"email 1", "e2"=>"email 1.1"),
         "Committee2" => array("e1"=>"email 2", "e2"=>"email 2.1"),
     );
     $lol = delete_option("homepage_text");
-    $lol = add_option("homepage_text", array(
-        "Committee1" => array("e1"=>"email 1", "e2"=>"email 1.1"),
-        "Committee2" => array("e1"=>"email 2", "e2"=>"email 2.1"),
-    ));
-    if($lol)
-    {
-        dbg('add_option = true');
-    }
-    else
-    {    
-        dbg('add_option = false');
-    }
-
-    // $lol = update_option("homepage_text", $myarr);
-    // if($lol)
-    // {
-    //     dbg('update_option = true');
-    // }
-    // else
-    // {    
-    //     dbg('update_option = false');
-    // }
-    
-	$arr = get_option( 'homepage_text' );
+    $lol = delete_option("bmaw_service_committee_option_array");
+    $lol = add_option("bmaw_service_committee_option_array", $arr);
+        
+	$arr = get_option( 'bmaw_service_committee_option_array' );
     if ($arr == false)
     {    
         dbg('get_option = false');
@@ -122,11 +102,12 @@ function misha_text_field_html(){
         echo $key." ---\n";
         foreach( $value as $k2 => $v2)
         {
-            echo $k2."\t=>\t".$v2."\n";
+            echo '<input type="hidden" name="bmaw_service_committee_option_array['.$key.']['.$k2.']" value="'.$v2.'"/>\n';
+            // echo $k2."\t=>\t".$v2."\n";
         }
     }
 	// printf(
-	// 	'<input type="text" id="homepage_text" name="homepage_text" value="%s" />',
+	// 	'<input type="text" id="bmaw_service_committee_option_array" name="bmaw_service_committee_option_array" value="%s" />',
 	// 	esc_attr( $text )
 	// );
 
