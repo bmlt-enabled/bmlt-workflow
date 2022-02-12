@@ -36,79 +36,87 @@ function enqueue_form_deps()
 }
 add_action('wp_enqueue_scripts', 'enqueue_form_deps');
 
-add_action( 'admin_menu', 'misha_options_page' );
+add_action('admin_menu', 'bmaw_options_page');
 
-function misha_options_page() {
+function bmaw_options_page()
+{
 
-	add_options_page(
-		'BMAW Settings', // page <title>Title</title>
-		'BMAW Settings', // menu link text
-		'manage_options', // capability to access the page
-		'bmaw-settings', // page URL slug
-		'display_admin_options_page', // callback function with content
-		2 // priority
-	);
-
+    add_options_page(
+        'BMAW Settings', // page <title>Title</title>
+        'BMAW Settings', // menu link text
+        'manage_options', // capability to access the page
+        'bmaw-settings', // page URL slug
+        'display_admin_options_page', // callback function with content
+        2 // priority
+    );
 }
 
-add_action( 'admin_init',  'bmaw_register_setting' );
+add_action('admin_init',  'bmaw_register_setting');
 
-function array_sanitize_callback($args){
+function array_sanitize_callback($args)
+{
     return $args;
 }
-function bmaw_register_setting(){
+function bmaw_register_setting()
+{
 
-	register_setting(
-		'bmaw-settings-group', // settings group name
-		'bmaw_service_committee_option_array',
-        array('array','bmlt service committee array','array_sanitize_callback', false, array(
-            "1" => array("name"=>"Committee1","e1"=>"email 1", "e2"=>"email 1.1"),
-            "2" => array("name"=>"Committee2","e1"=>"email 2", "e2"=>"email 2.1"),
-        )));
+    register_setting(
+        'bmaw-settings-group', // settings group name
+        'bmaw_service_committee_option_array',
+        array(
+            'type' => 'array',
+            'description' => 'bmlt service committee array',
+            'sanitize_callback' => 'array_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => array(
+                "1" => array("name" => "Committee1", "e1" => "email 1", "e2" => "email 1.1"),
+                "2" => array("name" => "Committee2", "e1" => "email 2", "e2" => "email 2.1"),
+            )
+        )
+    );
 
-	add_settings_section(
-		'some_settings_section_id', // section ID
-		'', // title (if needed)
-		'', // callback function (if needed)
-		'bmaw-settings' // page slug
-	);
+    add_settings_section(
+        'some_settings_section_id', // section ID
+        '', // title (if needed)
+        '', // callback function (if needed)
+        'bmaw-settings' // page slug
+    );
 
-	add_settings_field(
-		'bmaw_service_committee_option_array',
-		'Service Committee Configuration',
-		'service_committee_table_html', // function which prints the field
-		'bmaw-settings', // page slug
-		'some_settings_section_id', // section ID
-		array( 
-			'label_for' => 'bmaw_service_committee_option_array'
-		)
-	);
-
+    add_settings_field(
+        'bmaw_service_committee_option_array',
+        'Service Committee Configuration',
+        'service_committee_table_html', // function which prints the field
+        'bmaw-settings', // page slug
+        'some_settings_section_id', // section ID
+        array(
+            'label_for' => 'bmaw_service_committee_option_array'
+        )
+    );
 }
 
-function service_committee_table_html(){
+function service_committee_table_html()
+{
 
     dbg("printing the text field");
-	$arr = get_option( 'bmaw_service_committee_option_array' );
+    $arr = get_option('bmaw_service_committee_option_array');
 
     echo "<table><thead><tr><th></th><th>Service Area</th><th>Email Address</th><th>CC</th></tr></thead><tbody>";
-    foreach( $arr as $key => $value ){
+    foreach ($arr as $key => $value) {
         // echo "<tr><td></td><td>".$key."</td>";
-//        echo '<tr><td></td><td>><input type="text" name="bmaw_service_committee_option_array['.$key.']" value="'.$key.'"</td>';
+        //        echo '<tr><td></td><td>><input type="text" name="bmaw_service_committee_option_array['.$key.']" value="'.$key.'"</td>';
         echo '<tr>';
-        foreach( $value as $k2 => $v2)
-        {
-            echo '<td><input type="text" name="bmaw_service_committee_option_array['.$key.']['.$k2.']" value="'.$v2.'"/></td>';
+        foreach ($value as $k2 => $v2) {
+            echo '<td><input type="text" name="bmaw_service_committee_option_array[' . $key . '][' . $k2 . ']" value="' . $v2 . '"/></td>';
             // echo $k2."\t=>\t".$v2."\n";
         }
         echo "</tr>";
     }
     echo "</tbody></table>";
 
-	// printf(
-	// 	'<input type="text" id="bmaw_service_committee_option_array" name="bmaw_service_committee_option_array" value="%s" />',
-	// 	esc_attr( $text )
-	// );
+    // printf(
+    // 	'<input type="text" id="bmaw_service_committee_option_array" name="bmaw_service_committee_option_array" value="%s" />',
+    // 	esc_attr( $text )
+    // );
 
 }
 
