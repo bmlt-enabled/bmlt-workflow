@@ -53,8 +53,16 @@ function bmaw_initialise_options()
 function bmaw_initialise_settings()
 {
     dbg('in initialize settings');
+
+    add_settings_section(
+        'list_service_areas_section',         // ID used to identify this section and with which to register options
+        'Service Areas',                  // Title to be displayed on the administration page
+        'service_areas_section_callback', // Callback used to render the description of the section
+        'BMAW'                           // Page on which to add this section of options
+    );
+
     add_settings_field(
-        'list_service_areas',                      // ID used to identify the field throughout the theme
+        'list_service_areas_field',                      // ID used to identify the field throughout the theme
         'Service Areas',                           // The label to the left of the option interface element
         'list_service_areas_callback',   // The name of the function responsible for rendering the option interface
         'BMAW',                          // The page on which this option will be displayed
@@ -65,7 +73,7 @@ function bmaw_initialise_settings()
     );
     register_setting(
         'BMAW',
-        'list_service_areas'
+        'list_service_areas_field'
     );
 }
 
@@ -79,6 +87,18 @@ function list_service_areas_callback($args)
     $html .= '<label for="show_header"> '  . $args[0] . '</label>';
 
     echo $html;
+}
+
+function service_areas_section_callback($args)
+{
+    dbg('in service_areas_section_callback');
+
+    // // Note the ID and the name attribute of the element should match that of the ID in the call to add_settings_field
+    // $html = '<input type="checkbox" id="show_header" name="show_header" value="1" ' . checked(1, 1, false) . '/>';
+    // // Here, we will take the first argument of the array and add it to a label next to the checkbox
+    // $html .= '<label for="show_header"> '  . $args[0] . '</label>';
+
+    // echo $html;
 }
 
 function display_admin_options_page()
