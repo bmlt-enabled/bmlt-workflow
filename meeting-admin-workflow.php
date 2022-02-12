@@ -41,10 +41,10 @@ add_action( 'admin_menu', 'misha_options_page' );
 function misha_options_page() {
 
 	add_options_page(
-		'My Page Title', // page <title>Title</title>
-		'My Page', // menu link text
+		'BMAW Settings', // page <title>Title</title>
+		'BMAW Settings', // menu link text
 		'manage_options', // capability to access the page
-		'misha-slug', // page URL slug
+		'bmaw-settings', // page URL slug
 		'display_admin_options_page', // callback function with content
 		2 // priority
 	);
@@ -56,7 +56,7 @@ add_action( 'admin_init',  'bmaw_register_setting' );
 function bmaw_register_setting(){
 
 	register_setting(
-		'misha_settings', // settings group name
+		'bmaw_settings_group', // settings group name
 		'homepage_text', // option name
 		'sanitize_text_field' // sanitization function
 	);
@@ -65,14 +65,14 @@ function bmaw_register_setting(){
 		'some_settings_section_id', // section ID
 		'', // title (if needed)
 		'', // callback function (if needed)
-		'misha-slug' // page slug
+		'bmaw-settings' // page slug
 	);
 
 	add_settings_field(
 		'homepage_text',
 		'BMAW Setting',
 		'misha_text_field_html', // function which prints the field
-		'misha-slug', // page slug
+		'bmaw-settings', // page slug
 		'some_settings_section_id', // section ID
 		array( 
 			'label_for' => 'homepage_text',
