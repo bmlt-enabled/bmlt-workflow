@@ -89,6 +89,7 @@ function misha_text_field_html(){
         "Committee1" => array("e1"=>"email 1", "e2"=>"email 1.1"),
         "Committee2" => array("e1"=>"email 2", "e2"=>"email 2.1"),
     );
+    $lol = delete_option("homepage_text");
     $lol = add_option("homepage_text", $myarr);
     if($lol)
     {
