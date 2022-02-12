@@ -4,7 +4,7 @@ echo <<<END
 <script>
 jQuery(document).ready(function($) {
 
-    $('#committeetable tr').click(function() {
+    $(".committeetable").on("click", "tr", function(){
         var cb = $(this).find("input:checkbox")
         if(cb) {
             cb.prop( "checked", true )
