@@ -123,11 +123,11 @@ function service_committee_table_html()
     END;
     $i = 0;
     foreach ($arr as $key => $value) {
-        echo '<tr><td><span class="dashicons dashicons-remove" id="bmaw-service-committee-' . $key . '-remove"></span>></td>';
+        echo '<tr>';
         foreach ($value as $k2 => $v2) {
             echo '<td><input type="text" name="bmaw_service_committee_option_array[' . $i . '][' . $k2 . ']" value="' . $v2 . '"/></td>';
         }
-        echo "</tr>";
+        echo '<td><span class="dashicons dashicons-remove" id="bmaw-service-committee-' . $key . '-remove"></span></td></tr>';
         $i++;
     }
     echo "</tbody></table>";
