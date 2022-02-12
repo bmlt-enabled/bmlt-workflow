@@ -80,32 +80,13 @@
         <div>
             <label for="select-1644380979730" class="formbuilder-select-label">Committee</label>
             <select name="select-1644380979730" id="service_area">
-                <option value="Sydney Metro North" selected="selected">Sydney Metro North</option>
-                <option value="Sydney Metro South">Sydney Metro South</option>
-                <option value="Sydney Metro East">Sydney Metro East</option>
-                <option value="Sydney Metro West">Sydney Metro West</option>
-                <option value="Blue Mountains">Blue Mountains</option>
-                <option value="NSW Armidale">NSW Armidale</option>
-                <option value="NSW Coffs Coast">NSW Coffs Coast</option>
-                <option value="NSW New England ">NSW New England </option>
-                <option value="NSW Port Macquarie">NSW Port Macquarie</option>
-                <option value="NSW Far North Coast">NSW Far North Coast</option>
-                <option value="NSW North Coast">NSW North Coast</option>
-                <option value="NSW Central Coast">NSW Central Coast</option>
-                <option value="NSW South Coast">NSW South Coast</option>
-                <option value="NSW Newcastle - Hunter Valley">NSW Newcastle - Hunter Valley</option>
-                <option value="Northern Territory">Northern Territory</option>
-                <option value="northern-australia-qld-and-nt-excluding-gold-coast-and-sunshine-coast">Northern Australia
-                    (Qld and NT Excluding Gold Coast) and Sunshine Coast</option>
-                <option value="Sunshine Coast">Sunshine Coast</option>
-                <option value="Gold Coast">Gold Coast</option>
-                <option value="Canberra and ACT">Canberra and ACT</option>
-                <option value="South Australia">South Australia</option>
-                <option value="Tasmania">Tasmania</option>
-                <option value="Victoria">Victoria</option>
-                <option value="Western Australia">Western Australia</option>
-                <option value="Western Australia Country">Western Australia Country</option>
-                <option value="Other">Other</option>
+                <?php
+                $arr = get_option('bmaw_service_committee_option_array');
+                foreach ($arr as $key => $value) {
+                    $committee = $value['Committee'];
+                    echo '<option value="'.$committee.'">'.$committee.'</option>';
+                }
+                ?>
             </select>
         </div>
         <div>
