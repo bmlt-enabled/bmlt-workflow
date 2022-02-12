@@ -37,24 +37,23 @@ function enqueue_form_deps()
 add_action('wp_enqueue_scripts', 'enqueue_form_deps');
 
 
-// add_action('admin_menu', 'bmaw_initialise_options');
+add_action('admin_menu', 'bmaw_initialise_options');
 add_action('admin_init', 'bmaw_initialise_settings');
 
 function bmaw_initialise_options()
 {
     dbg('in bmaw_initialise_options');
-    add_options_page('BMAW', 'BMAW', 'activate_plugins', basename(__FILE__), 'display_admin_options_page');
-    register_setting(
-        'BMAW',
-        'show_header'
-    );
+    // add_options_page('BMAW', 'BMAW', 'activate_plugins', basename(__FILE__), 'display_admin_options_page');
+    // register_setting(
+    //     'BMAW',
+    //     'show_header'
+    // );
+    add_submenu_page('options-general.php','BMAW','BMAW','manage_options','bmaw_settings_page','display_admin_options_page');
 }
 
 function bmaw_initialise_settings()
 {
     dbg('in initialize settings');
-
-    add_submenu_page('options-general.php','BMAW','BMAW','manage_options','bmaw_settings_page','display_admin_options_page');
 
     add_settings_section(
         'list_service_areas_section',         // ID used to identify this section and with which to register options
