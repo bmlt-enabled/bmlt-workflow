@@ -38,6 +38,9 @@ add_action('wp_enqueue_scripts', 'enqueue_form_deps');
 
 add_action('admin_menu', 'bmaw_options_page');
 
+function myhook($hook){ dbg("hook = ".$hook);return;}
+add_action( 'admin_enqueue_scripts', 'myhook' );
+
 function bmaw_options_page()
 {
 
