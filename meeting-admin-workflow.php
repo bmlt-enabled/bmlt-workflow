@@ -84,13 +84,14 @@ function bmaw_register_setting(){
 
 function misha_text_field_html(){
 
-    update_option("homepage_text", array(
+    $myarr = array(
         "Committee1" => array("e1"=>"email 1", "e2"=>"email 1.1"),
         "Committee2" => array("e1"=>"email 2", "e2"=>"email 2.1"),
-        ));
+    );
+    update_option("homepage_text", $myarr);
     
 	$arr = get_option( 'homepage_text' );
-
+    
     foreach( $arr as $key => $value ){
         echo $key." ---\n";
         foreach( $value as $k2 => $v2)
