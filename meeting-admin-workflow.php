@@ -80,8 +80,7 @@ function bmaw_register_setting(){
 		'bmaw-settings', // page slug
 		'some_settings_section_id', // section ID
 		array( 
-			'label_for' => 'bmaw_service_committee_option_array',
-			'class' => 'misha-class', // for <tr> element
+			'label_for' => 'bmaw_service_committee_option_array'
 		)
 	);
 
@@ -90,42 +89,18 @@ function bmaw_register_setting(){
 function misha_text_field_html(){
 
     dbg("printing the text field");
-    // $arr = array(
-    //     "Committee1" => array("e1"=>"email 1", "e2"=>"email 1.1"),
-    //     "Committee2" => array("e1"=>"email 2", "e2"=>"email 2.1"),
-    // );
-    // $lol = delete_option("homepage_text");
-    // $lol = delete_option("bmaw_service_committee_option_array");
-    // $lol = add_option("bmaw_service_committee_option_array", $arr);
-        
 	$arr = get_option( 'bmaw_service_committee_option_array' );
-    if ($arr == false)
-    {    
-        dbg('get_option = false');
-    }
+    // if ($arr == false)
+    // {    
+    //     dbg('get_option = false');
+    // }
 
     echo "<table><thead><tr><th></th><th>Service Area</th><th>Email Address</th><th>CC</th></tr></thead><tbody>";
-    //   <tr>
-    //     <td>a2</td>
-    //     <td>b2</td>
-    //     <td>c2</td>
-    //     <td>d2</td>
-    //   </tr>
-    //   <tr>
-    //     <td>a3</td>
-    //     <td>b3</td>
-    //     <td>c3</td>
-    //     <td>d3</td>
-    //   </tr>
-    // </tbody>
-    // </table>
-    // "
     foreach( $arr as $key => $value ){
-        // echo $key." ---\n";
         echo "<tr><td></td><td>".$key."</td>";
         foreach( $value as $k2 => $v2)
         {
-            echo '<td><input type="text" name="bmaw_service_committee_option_array['.$key.']['.$k2.']" value="'.$v2.'"/></td>\n';
+            echo '<td><input type="text" name="bmaw_service_committee_option_array['.$key.']['.$k2.']" value="'.$v2.'"/></td>';
             // echo $k2."\t=>\t".$v2."\n";
         }
         echo "</tr>";
