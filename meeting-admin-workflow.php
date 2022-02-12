@@ -38,8 +38,15 @@ add_action('wp_enqueue_scripts', 'enqueue_form_deps');
 
 add_action('admin_menu', 'bmaw_options_page');
 
-function myhook($hook){ dbg("hook = ".$hook);return;}
-add_action( 'admin_enqueue_scripts', 'myhook' );
+function bmaw_admin_css($hook)
+{
+    if ($hook != 'settings_page_bmaw-settings')
+    {
+        return;
+    }
+    wp_enqueue_style('bmaw-admin-css',plugin_dir_url(__FILE__) . 'css/admin_page.css',false, filemtime(plugin_dir_path(__FILE__) . 'css/admin_page.css'), true);
+}
+add_action( 'admin_enqueue_scripts', 'bmaw_admin_css' );
 
 function bmaw_options_page()
 {
@@ -103,7 +110,7 @@ function service_committee_table_html()
     dbg("printing the text field");
     $arr = get_option('bmaw_service_committee_option_array');
 
-    echo '<table><thead><tr><th style="width:auto;"></th><th>Service Area</th><th>Email Address</th><th>CC</th></tr></thead><tbody>';
+    echo '<table class="committeetable"><thead><tr><th style="width:auto;"></th><th>Service Area</th><th>Email Address</th><th>CC</th></tr></thead><tbody>';
     $i = 0;
     foreach ($arr as $key => $value) {
         echo '<tr><td><input type="checkbox" id="'.$key.'-checkbox"></td>';
