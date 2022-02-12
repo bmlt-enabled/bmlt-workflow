@@ -124,10 +124,10 @@ function log_sql_queries($text_query){
         if($trace['function'] == 'do_action'){
             $args = $trace['args'];
         }
-        error_log("TRACE:$i:"  . $trace['function'] . print_r($args,1));
+        dbg("TRACE:$i:"  . $trace['function'] . print_r($args,1));
         $i++;
     }
-    error_log("INFO:SQL: " . $text_query);
+    dbg("INFO:SQL: " . $text_query);
     return $text_query;
 }
 add_filter( 'posts_request', 'log_sql_queries', 500 );
