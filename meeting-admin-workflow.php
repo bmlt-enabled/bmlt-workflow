@@ -90,14 +90,23 @@ function misha_text_field_html(){
         "Committee2" => array("e1"=>"email 2", "e2"=>"email 2.1"),
     );
     $lol = add_option("homepage_text", $myarr);
-    $lol = update_option("homepage_text", $myarr);
     if($lol)
     {
-        dbg('lol = true');
+        dbg('add_option = true');
     }
     else
     {    
-        dbg('lol = false');
+        dbg('add_option = false');
+    }
+
+    $lol = update_option("homepage_text", $myarr);
+    if($lol)
+    {
+        dbg('update_option = true');
+    }
+    else
+    {    
+        dbg('update_option = false');
     }
     
 	$arr = get_option( 'homepage_text' );
