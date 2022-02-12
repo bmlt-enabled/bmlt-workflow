@@ -36,7 +36,13 @@ function enqueue_form_deps()
 }
 add_action('wp_enqueue_scripts', 'enqueue_form_deps');
 
-add_options_page('BMAW', 'BMAW', 'activate_plugins', basename(__FILE__), 'adminOptionsPage');
+
+add_action('admin_init', 'bmaw_initialise_options');
+
+function bmaw_initialise_options()
+{
+    add_options_page('BMAW', 'BMAW', 'activate_plugins', basename(__FILE__), 'adminOptionsPage');
+}
 
 function adminOptionsPage()
 {
