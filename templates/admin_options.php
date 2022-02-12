@@ -21,11 +21,16 @@ echo <<<END
 // });
 </script>
 <h1>BMLT Meeting Admin Workflow Settings</h1>
-<form method="post" action="options.php">';
+<form method="post" action="options.php">
 END;
         
     settings_fields( 'bmaw-settings-group' ); // settings group name
     do_settings_sections( 'bmaw-settings' ); // just a page slug
+
+    echo <<<END
+    
+    END
+
     submit_button();
 
 echo '</form></div>';

@@ -40,13 +40,12 @@ add_action('admin_menu', 'bmaw_options_page');
 
 function bmaw_admin_css($hook)
 {
-    if ($hook != 'settings_page_bmaw-settings')
-    {
+    if ($hook != 'settings_page_bmaw-settings') {
         return;
     }
-    wp_enqueue_style('bmaw-admin-css',plugin_dir_url(__FILE__) . 'css/admin_page.css',false, filemtime(plugin_dir_path(__FILE__) . 'css/admin_page.css'), 'all');
+    wp_enqueue_style('bmaw-admin-css', plugin_dir_url(__FILE__) . 'css/admin_page.css', false, filemtime(plugin_dir_path(__FILE__) . 'css/admin_page.css'), 'all');
 }
-add_action( 'admin_enqueue_scripts', 'bmaw_admin_css' );
+add_action('admin_enqueue_scripts', 'bmaw_admin_css');
 
 function bmaw_options_page()
 {
@@ -110,10 +109,21 @@ function service_committee_table_html()
     dbg("printing the text field");
     $arr = get_option('bmaw_service_committee_option_array');
 
-    echo '<table class="committeetable"><thead><tr><th style="width:auto;"><input type="checkbox" id="bmaw-service-committee-select-all"</th><th>Service Area</th><th>Email Address</th><th>CC</th></tr></thead><tbody>';
+    echo <<<END
+    <table class="committeetable">
+        <thead>
+            <tr>
+                <th style="width:auto;"><input class="dashicons dashicons-smiley" type="checkbox" id="bmaw-service-committee-select-all"></th>
+                <th>Service Area</th>
+                <th>Email Address</th>
+                <th>CC</th>
+            </tr>
+        </thead>
+    <tbody>
+    END;
     $i = 0;
     foreach ($arr as $key => $value) {
-        echo '<tr><td><input type="checkbox" id="bmaw-service-committee-'.$key.'-checkbox"></td>';
+        echo '<tr><td><input type="checkbox" id="bmaw-service-committee-' . $key . '-checkbox"></td>';
         foreach ($value as $k2 => $v2) {
             echo '<td><input type="text" name="bmaw_service_committee_option_array[' . $i . '][' . $k2 . ']" value="' . $v2 . '"/></td>';
         }
@@ -121,7 +131,6 @@ function service_committee_table_html()
         $i++;
     }
     echo "</tbody></table>";
-
 }
 
 
