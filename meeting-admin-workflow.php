@@ -37,7 +37,7 @@ function enqueue_form_deps()
 add_action('wp_enqueue_scripts', 'enqueue_form_deps');
 
 
-add_action('admin_init', 'bmaw_initialise_options');
+add_action('admin_menu', 'bmaw_initialise_options');
 
 function bmaw_initialise_options()
 {
