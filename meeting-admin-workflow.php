@@ -102,7 +102,7 @@ function misha_text_field_html(){
         echo $key." ---\n";
         foreach( $value as $k2 => $v2)
         {
-            echo '<input type="hidden" name="bmaw_service_committee_option_array['.$key.']['.$k2.']" value="'.$v2.'"/>\n';
+            echo '<input type="text" name="bmaw_service_committee_option_array['.$key.']['.$k2.']" value="'.$v2.'"/>\n';
             // echo $k2."\t=>\t".$v2."\n";
         }
     }
