@@ -113,10 +113,10 @@ function service_committee_table_html()
     <table class="committeetable">
         <thead>
             <tr>
-                <th style="width:auto;"><input type="checkbox" id="bmaw-service-committee-select-all"></th>
                 <th>Service Area</th>
                 <th>Email Address</th>
                 <th>CC</th>
+                <th></th>
             </tr>
         </thead>
     <tbody>
