@@ -54,7 +54,7 @@ function bmaw_initialise_settings()
 {
     dbg('in initialize settings');
 
-    add_submenu_page('options-general.php','BMAW','BMAW','activate_plugins','bmaw_settings_page','display_damin_options_page');
+    add_submenu_page('options-general.php','BMAW','BMAW','administrator','bmaw_settings_page','display_damin_options_page');
 
     add_settings_section(
         'list_service_areas_section',         // ID used to identify this section and with which to register options
