@@ -143,13 +143,13 @@ function misha_text_field_html(){
 //     return $text_query;
 // }
 
-function log_option($option, $value)
-{
-     dbg("add_option: ".$option." ".$value);
-}
+// function log_option($option, $value)
+// {
+//      dbg("add_option: ".$option." ".$value);
+// }
 
 // add_filter( 'posts_request', 'log_sql_queries', 500 );
-add_action( 'add_option', 'log_option' );
+// add_action( 'add_option', 'log_option' );
 
 function display_admin_options_page()
 {
