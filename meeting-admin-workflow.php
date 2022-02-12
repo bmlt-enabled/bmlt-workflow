@@ -65,7 +65,7 @@ function bmaw_register_setting(){
 		'some_settings_section_id', // section ID
 		'', // title (if needed)
 		'', // callback function (if needed)
-		'bmaw-settings' // page slug
+		'bmaw_settings' // page slug
 	);
 
 	add_settings_field(
