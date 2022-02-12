@@ -111,7 +111,11 @@ function misha_text_field_html(){
     // }
     
 	$arr = get_option( 'homepage_text' );
-    
+    if ($arr == false)
+    {    
+        dbg('get_option = false');
+    }
+
     foreach( $arr as $key => $value ){
         echo $key." ---\n";
         foreach( $value as $k2 => $v2)
