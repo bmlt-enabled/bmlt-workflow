@@ -102,21 +102,13 @@ function service_committee_table_html()
 
     echo "<table><thead><tr><th></th><th>Service Area</th><th>Email Address</th><th>CC</th></tr></thead><tbody>";
     foreach ($arr as $key => $value) {
-        // echo "<tr><td></td><td>".$key."</td>";
-        //        echo '<tr><td></td><td>><input type="text" name="bmaw_service_committee_option_array['.$key.']" value="'.$key.'"</td>';
         echo '<tr>';
         foreach ($value as $k2 => $v2) {
-            echo '<td><input type="text" name="bmaw_service_committee_option_array[' . $key . '][' . $k2 . ']" value="' . $v2 . '"/></td>';
-            // echo $k2."\t=>\t".$v2."\n";
+            echo '<td><input type="checkbox" id="'.$key.'-checkbox"><td><td><input type="text" name="bmaw_service_committee_option_array[' . $key . '][' . $k2 . ']" value="' . $v2 . '"/></td>';
         }
         echo "</tr>";
     }
     echo "</tbody></table>";
-
-    // printf(
-    // 	'<input type="text" id="bmaw_service_committee_option_array" name="bmaw_service_committee_option_array" value="%s" />',
-    // 	esc_attr( $text )
-    // );
 
 }
 
