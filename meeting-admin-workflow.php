@@ -93,6 +93,7 @@ function service_areas_section_callback($args)
 {
     dbg('in service_areas_section_callback');
 
+    echo '<p> hows it going </p>';
     // // Note the ID and the name attribute of the element should match that of the ID in the call to add_settings_field
     // $html = '<input type="checkbox" id="show_header" name="show_header" value="1" ' . checked(1, 1, false) . '/>';
     // // Here, we will take the first argument of the array and add it to a label next to the checkbox
