@@ -84,12 +84,19 @@ function bmaw_register_setting(){
 
 function misha_text_field_html(){
 
-	$text = get_option( 'homepage_text' );
+	$arr = get_option( 'homepage_text' );
 
-	printf(
-		'<input type="text" id="homepage_text" name="homepage_text" value="%s" />',
-		esc_attr( $text )
-	);
+    foreach( $arr as $key => $value ){
+        echo $key." ---\n";
+        foreach( $value as $k2 => $v2)
+        {
+            echo $k2."\t=>\t".$v2."\n";
+        }
+    }
+	// printf(
+	// 	'<input type="text" id="homepage_text" name="homepage_text" value="%s" />',
+	// 	esc_attr( $text )
+	// );
 
 }
 
