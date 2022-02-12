@@ -12,8 +12,8 @@
 
 function dbg($logmsg)
 {
-    $log = plugin_dir_path(__FILE__).'debug.log';
-    error_log($logmsg.PHP_EOL, 3, $log);
+    $log = plugin_dir_path(__FILE__) . 'debug.log';
+    error_log($logmsg . PHP_EOL, 3, $log);
 }
 function meeting_update_form()
 {
@@ -34,8 +34,15 @@ function enqueue_form_deps()
     wp_enqueue_script('bmawjs', plugin_dir_url(__FILE__) . 'js/script_includes.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/script_includes.js'), true);
     wp_enqueue_script('bmaw-meetingupdatejs', plugin_dir_url(__FILE__) . 'js/meeting_update.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/meeting_update.js'), true);
 }
-
 add_action('wp_enqueue_scripts', 'enqueue_form_deps');
+
+add_options_page('BMAW', 'BMAW', 'activate_plugins', basename(__FILE__), 'adminOptionsPage');
+
+function adminOptionsPage()
+{
+    dbg("outputting the admin page");
+    include_once('templates/admin_options.php');
+}
 
 function the_form_response()
 {
@@ -51,9 +58,9 @@ function the_form_response()
         $to = 'emailsendto@example.com';
         $subject = 'The subject';
         $body = 'The email body content';
-        $headers = array('Content-Type: text/html; charset=UTF-8','From: My Site Name <support@example.com>');
+        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: My Site Name <support@example.com>');
         dbg('sending mail');
-        wp_mail( $to, $subject, $body, $headers );
+        wp_mail($to, $subject, $body, $headers);
         dbg('mail sent');
         // redirect the user to the appropriate page
         // wp_redirect( 'https://www.google.com' );
