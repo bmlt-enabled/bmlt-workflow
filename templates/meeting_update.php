@@ -83,7 +83,7 @@
                 <?php
                 $arr = get_option('bmaw_service_committee_option_array');
                 foreach ($arr as $key => $value) {
-                    $committee = $value['Committee'];
+                    $committee = $value['name'];
                     echo '<option value="'.$committee.'">'.$committee.'</option>';
                 }
                 ?>
