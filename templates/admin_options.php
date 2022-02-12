@@ -17,8 +17,8 @@ echo '<div class="wrap">
 <h1>BMAW Settings</h1>
 <form method="post" action="options.php">';
         
-    settings_fields( 'bmaw_settings_group' ); // settings group name
-    do_settings_sections( 'bmaw_settings' ); // just a page slug
+    settings_fields( 'bmaw-settings-group' ); // settings group name
+    do_settings_sections( 'bmaw-settings' ); // just a page slug
     submit_button();
 
 echo '</form></div>';

@@ -56,7 +56,7 @@ add_action( 'admin_init',  'bmaw_register_setting' );
 function bmaw_register_setting(){
 
 	register_setting(
-		'bmaw_settings_group', // settings group name
+		'bmaw-settings-group', // settings group name
 		'homepage_text', // option name
 		'sanitize_text_field' // sanitization function
 	);
@@ -65,7 +65,7 @@ function bmaw_register_setting(){
 		'some_settings_section_id', // section ID
 		'', // title (if needed)
 		'', // callback function (if needed)
-		'bmaw_settings' // page slug
+		'bmaw-settings' // page slug
 	);
 
 	add_settings_field(
