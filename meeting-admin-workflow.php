@@ -104,14 +104,34 @@ function misha_text_field_html(){
         dbg('get_option = false');
     }
 
+    echo "<table><thead><tr><th></th><th>Service Area</th><th>Email Address</th><th>CC</th></tr></thead><tbody>";
+    //   <tr>
+    //     <td>a2</td>
+    //     <td>b2</td>
+    //     <td>c2</td>
+    //     <td>d2</td>
+    //   </tr>
+    //   <tr>
+    //     <td>a3</td>
+    //     <td>b3</td>
+    //     <td>c3</td>
+    //     <td>d3</td>
+    //   </tr>
+    // </tbody>
+    // </table>
+    // "
     foreach( $arr as $key => $value ){
-        echo $key." ---\n";
+        // echo $key." ---\n";
+        echo "<tr><td>".$key."</td>";
         foreach( $value as $k2 => $v2)
         {
-            echo '<input type="text" name="bmaw_service_committee_option_array['.$key.']['.$k2.']" value="'.$v2.'"/>\n';
+            echo '<td><input type="text" name="bmaw_service_committee_option_array['.$key.']['.$k2.']" value="'.$v2.'"/></td>\n';
             // echo $k2."\t=>\t".$v2."\n";
         }
+        echo "</tr>";
     }
+    echo "</tbody></table>";
+
 	// printf(
 	// 	'<input type="text" id="bmaw_service_committee_option_array" name="bmaw_service_committee_option_array" value="%s" />',
 	// 	esc_attr( $text )
