@@ -36,81 +36,151 @@ function enqueue_form_deps()
 }
 add_action('wp_enqueue_scripts', 'enqueue_form_deps');
 
+add_action( 'admin_menu', 'misha_options_page' );
 
-add_action('admin_menu', 'bmaw_initialise_options');
-// add_action('admin_init', 'bmaw_initialise_settings');
+function misha_options_page() {
 
-function bmaw_initialise_options()
-{
-    dbg('in bmaw_initialise_options');
-
-    add_options_page('BMAW', 'BMAW', 'manage_options', basename(__FILE__), 'display_admin_options_page');
+	add_options_page(
+		'My Page Title', // page <title>Title</title>
+		'My Page', // menu link text
+		'manage_options', // capability to access the page
+		'misha-slug', // page URL slug
+		'misha_page_content', // callback function with content
+		2 // priority
+	);
 
 }
 
-function bmaw_initialise_settings()
-{
-    dbg('in initialize settings');
 
-    add_settings_section(
-        'list_service_areas_section',         // ID used to identify this section and with which to register options
-        'Service Areas',                  // Title to be displayed on the administration page
-        'service_areas_section_callback', // Callback used to render the description of the section
-        'bmaw_settings_page'                           // Page on which to add this section of options
-    );
+function misha_page_content(){
 
-    add_settings_field(
-        'list_service_areas_field',                      // ID used to identify the field throughout the theme
-        'Service Areas',                           // The label to the left of the option interface element
-        'list_service_areas_callback',   // The name of the function responsible for rendering the option interface
-        'bmaw_settings_page',                          // The page on which this option will be displayed
-        'list_service_areas_section',         // The name of the section to which this field belongs
-        array(                              // The array of arguments to pass to the callback. In this case, just a description.
-            'Activate this setting to display the header.'
-        )
-    );
-    register_setting(
-        'BMAW',
-        'homepage_text'
-    );
+	echo '<div class="wrap">
+	<h1>My Page Settings</h1>
+	<form method="post" action="options.php">';
+			
+		settings_fields( 'misha_settings' ); // settings group name
+		do_settings_sections( 'misha-slug' ); // just a page slug
+		submit_button();
+
+	echo '</form></div>';
+
 }
 
-function list_service_areas_callback($args)
-{
-    dbg('in list_service_areas_callback');
+add_action( 'admin_init',  'misha_register_setting' );
 
-    // // Note the ID and the name attribute of the element should match that of the ID in the call to add_settings_field
-    // $html = '<input type="checkbox" id="show_header" name="show_header" value="1" ' . checked(1, 1, false) . '/>';
-    // // Here, we will take the first argument of the array and add it to a label next to the checkbox
-    // $html .= '<label for="show_header"> '  . $args[0] . '</label>';
+function misha_register_setting(){
 
-    // echo $html;
-    $text = get_option( 'homepage_text' );
+	register_setting(
+		'misha_settings', // settings group name
+		'homepage_text', // option name
+		'sanitize_text_field' // sanitization function
+	);
+
+	add_settings_section(
+		'some_settings_section_id', // section ID
+		'', // title (if needed)
+		'', // callback function (if needed)
+		'misha-slug' // page slug
+	);
+
+	add_settings_field(
+		'homepage_text',
+		'Homepage text',
+		'misha_text_field_html', // function which prints the field
+		'misha-slug', // page slug
+		'some_settings_section_id', // section ID
+		array( 
+			'label_for' => 'homepage_text',
+			'class' => 'misha-class', // for <tr> element
+		)
+	);
+
+}
+
+function misha_text_field_html(){
+
+	$text = get_option( 'homepage_text' );
 
 	printf(
 		'<input type="text" id="homepage_text" name="homepage_text" value="%s" />',
 		esc_attr( $text )
 	);
+
 }
+// add_action('admin_menu', 'bmaw_initialise_options');
+// // add_action('admin_init', 'bmaw_initialise_settings');
 
-function service_areas_section_callback($args)
-{
-    dbg('in service_areas_section_callback');
+// function bmaw_initialise_options()
+// {
+//     dbg('in bmaw_initialise_options');
 
-    echo '<p> hows it going </p>';
-    // // Note the ID and the name attribute of the element should match that of the ID in the call to add_settings_field
-    // $html = '<input type="checkbox" id="show_header" name="show_header" value="1" ' . checked(1, 1, false) . '/>';
-    // // Here, we will take the first argument of the array and add it to a label next to the checkbox
-    // $html .= '<label for="show_header"> '  . $args[0] . '</label>';
+//     add_options_page('BMAW', 'BMAW', 'manage_options', basename(__FILE__), 'display_admin_options_page');
 
-    // echo $html;
-}
+// }
 
-function display_admin_options_page()
-{
-    dbg("outputting the admin page");
-    include_once('templates/admin_options.php');
-}
+// function bmaw_initialise_settings()
+// {
+//     dbg('in initialize settings');
+
+//     add_settings_section(
+//         'list_service_areas_section',         // ID used to identify this section and with which to register options
+//         'Service Areas',                  // Title to be displayed on the administration page
+//         'service_areas_section_callback', // Callback used to render the description of the section
+//         'bmaw_settings_page'                           // Page on which to add this section of options
+//     );
+
+//     add_settings_field(
+//         'list_service_areas_field',                      // ID used to identify the field throughout the theme
+//         'Service Areas',                           // The label to the left of the option interface element
+//         'list_service_areas_callback',   // The name of the function responsible for rendering the option interface
+//         'bmaw_settings_page',                          // The page on which this option will be displayed
+//         'list_service_areas_section',         // The name of the section to which this field belongs
+//         array(                              // The array of arguments to pass to the callback. In this case, just a description.
+//             'Activate this setting to display the header.'
+//         )
+//     );
+//     register_setting(
+//         'BMAW',
+//         'homepage_text'
+//     );
+// }
+
+// function list_service_areas_callback($args)
+// {
+//     dbg('in list_service_areas_callback');
+
+//     // // Note the ID and the name attribute of the element should match that of the ID in the call to add_settings_field
+//     // $html = '<input type="checkbox" id="show_header" name="show_header" value="1" ' . checked(1, 1, false) . '/>';
+//     // // Here, we will take the first argument of the array and add it to a label next to the checkbox
+//     // $html .= '<label for="show_header"> '  . $args[0] . '</label>';
+
+//     // echo $html;
+//     $text = get_option( 'homepage_text' );
+
+// 	printf(
+// 		'<input type="text" id="homepage_text" name="homepage_text" value="%s" />',
+// 		esc_attr( $text )
+// 	);
+// }
+
+// function service_areas_section_callback($args)
+// {
+//     dbg('in service_areas_section_callback');
+
+//     echo '<p> hows it going </p>';
+//     // // Note the ID and the name attribute of the element should match that of the ID in the call to add_settings_field
+//     // $html = '<input type="checkbox" id="show_header" name="show_header" value="1" ' . checked(1, 1, false) . '/>';
+//     // // Here, we will take the first argument of the array and add it to a label next to the checkbox
+//     // $html .= '<label for="show_header"> '  . $args[0] . '</label>';
+
+//     // echo $html;
+// }
+
+// function display_admin_options_page()
+// {
+//     dbg("outputting the admin page");
+//     include_once('templates/admin_options.php');
+// }
 
 function the_form_response()
 {
