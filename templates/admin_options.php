@@ -7,7 +7,7 @@ $(document).ready(function() {
     $('#committeetable tr').click(function() {
         var cb = $(this).find("input:checkbox")
         if(cb) {
-            cb..prop( "checked", true )
+            cb.prop( "checked", true )
         }
     });
 
