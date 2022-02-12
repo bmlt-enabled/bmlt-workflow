@@ -44,7 +44,7 @@ function bmaw_admin_css($hook)
     {
         return;
     }
-    wp_enqueue_style('bmaw-admin-css',plugin_dir_url(__FILE__) . 'css/admin_page.css',false, filemtime(plugin_dir_path(__FILE__) . 'css/admin_page.css'), true);
+    wp_enqueue_style('bmaw-admin-css',plugin_dir_url(__FILE__) . 'css/admin_page.css',false, filemtime(plugin_dir_path(__FILE__) . 'css/admin_page.css'), 'all');
 }
 add_action( 'admin_enqueue_scripts', 'bmaw_admin_css' );
 
