@@ -51,24 +51,9 @@ function misha_options_page() {
 
 }
 
+add_action( 'admin_init',  'bmaw_register_setting' );
 
-// function misha_page_content(){
-
-// 	echo '<div class="wrap">
-// 	<h1>My Page Settings</h1>
-// 	<form method="post" action="options.php">';
-			
-// 		settings_fields( 'misha_settings' ); // settings group name
-// 		do_settings_sections( 'misha-slug' ); // just a page slug
-// 		submit_button();
-
-// 	echo '</form></div>';
-
-// }
-
-add_action( 'admin_init',  'misha_register_setting' );
-
-function misha_register_setting(){
+function bmaw_register_setting(){
 
 	register_setting(
 		'misha_settings', // settings group name
@@ -107,74 +92,6 @@ function misha_text_field_html(){
 	);
 
 }
-// add_action('admin_menu', 'bmaw_initialise_options');
-// // add_action('admin_init', 'bmaw_initialise_settings');
-
-// function bmaw_initialise_options()
-// {
-//     dbg('in bmaw_initialise_options');
-
-//     add_options_page('BMAW', 'BMAW', 'manage_options', basename(__FILE__), 'display_admin_options_page');
-
-// }
-
-// function bmaw_initialise_settings()
-// {
-//     dbg('in initialize settings');
-
-//     add_settings_section(
-//         'list_service_areas_section',         // ID used to identify this section and with which to register options
-//         'Service Areas',                  // Title to be displayed on the administration page
-//         'service_areas_section_callback', // Callback used to render the description of the section
-//         'bmaw_settings_page'                           // Page on which to add this section of options
-//     );
-
-//     add_settings_field(
-//         'list_service_areas_field',                      // ID used to identify the field throughout the theme
-//         'Service Areas',                           // The label to the left of the option interface element
-//         'list_service_areas_callback',   // The name of the function responsible for rendering the option interface
-//         'bmaw_settings_page',                          // The page on which this option will be displayed
-//         'list_service_areas_section',         // The name of the section to which this field belongs
-//         array(                              // The array of arguments to pass to the callback. In this case, just a description.
-//             'Activate this setting to display the header.'
-//         )
-//     );
-//     register_setting(
-//         'BMAW',
-//         'homepage_text'
-//     );
-// }
-
-// function list_service_areas_callback($args)
-// {
-//     dbg('in list_service_areas_callback');
-
-//     // // Note the ID and the name attribute of the element should match that of the ID in the call to add_settings_field
-//     // $html = '<input type="checkbox" id="show_header" name="show_header" value="1" ' . checked(1, 1, false) . '/>';
-//     // // Here, we will take the first argument of the array and add it to a label next to the checkbox
-//     // $html .= '<label for="show_header"> '  . $args[0] . '</label>';
-
-//     // echo $html;
-//     $text = get_option( 'homepage_text' );
-
-// 	printf(
-// 		'<input type="text" id="homepage_text" name="homepage_text" value="%s" />',
-// 		esc_attr( $text )
-// 	);
-// }
-
-// function service_areas_section_callback($args)
-// {
-//     dbg('in service_areas_section_callback');
-
-//     echo '<p> hows it going </p>';
-//     // // Note the ID and the name attribute of the element should match that of the ID in the call to add_settings_field
-//     // $html = '<input type="checkbox" id="show_header" name="show_header" value="1" ' . checked(1, 1, false) . '/>';
-//     // // Here, we will take the first argument of the array and add it to a label next to the checkbox
-//     // $html .= '<label for="show_header"> '  . $args[0] . '</label>';
-
-//     // echo $html;
-// }
 
 function display_admin_options_page()
 {
@@ -207,35 +124,3 @@ function the_form_response()
         wp_die('invalid nonce');
     }
 }
-
-/**
- * Adds a new top-level menu to the bottom of the WordPress administration menu.
- */
-function sandbox_create_menu_page()
-{
-
-    add_menu_page(
-        'Sandbox Options',          // The title to be displayed on the corresponding page for this menu
-        'Sandbox',                  // The text to be displayed for this actual menu item
-        'administrator',            // Which type of users can see this menu
-        'sandbox',                  // The unique ID - that is, the slug - for this menu item
-        'sandbox_menu_page_display', // The name of the function to call when rendering the menu for this page
-        ''
-    );
-} // end sandbox_create_menu_page
-add_action('admin_menu', 'sandbox_create_menu_page');
-
-/**
- * Renders the basic display of the menu page for the theme.
- */
-function sandbox_menu_page_display()
-{
-
-    // Create a header in the default WordPress 'wrap' container
-    $html = '<div class="wrap">';
-    $html .= '<h2>Sandbox</h2>';
-    $html .= '</div>';
-
-    // Send the markup to the browser
-    echo $html;
-} // end sandbox_menu_page_display
