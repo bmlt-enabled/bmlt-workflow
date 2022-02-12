@@ -71,7 +71,7 @@ function bmaw_initialise_settings()
     );
     register_setting(
         'BMAW',
-        'list_service_areas_field'
+        'homepage_text'
     );
 }
 
@@ -79,12 +79,18 @@ function list_service_areas_callback($args)
 {
     dbg('in list_service_areas_callback');
 
-    // Note the ID and the name attribute of the element should match that of the ID in the call to add_settings_field
-    $html = '<input type="checkbox" id="show_header" name="show_header" value="1" ' . checked(1, 1, false) . '/>';
-    // Here, we will take the first argument of the array and add it to a label next to the checkbox
-    $html .= '<label for="show_header"> '  . $args[0] . '</label>';
+    // // Note the ID and the name attribute of the element should match that of the ID in the call to add_settings_field
+    // $html = '<input type="checkbox" id="show_header" name="show_header" value="1" ' . checked(1, 1, false) . '/>';
+    // // Here, we will take the first argument of the array and add it to a label next to the checkbox
+    // $html .= '<label for="show_header"> '  . $args[0] . '</label>';
 
-    echo $html;
+    // echo $html;
+    $text = get_option( 'homepage_text' );
+
+	printf(
+		'<input type="text" id="homepage_text" name="homepage_text" value="%s" />',
+		esc_attr( $text )
+	);
 }
 
 function service_areas_section_callback($args)
