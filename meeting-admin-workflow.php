@@ -115,6 +115,23 @@ function misha_text_field_html(){
 
 }
 
+
+function log_sql_queries($text_query){
+    //Uncomment me if you want a lot of info about where the sql query comes from and what action started it off
+    $traces = debug_backtrace();
+    $i = 0;
+    foreach ($traces as $tobj => $trace) {
+        if($trace['function'] == 'do_action'){
+            $args = $trace['args'];
+        }
+        error_log("TRACE:$i:"  . $trace['function'] . print_r($args,1));
+        $i++;
+    }
+    error_log("INFO:SQL: " . $text_query);
+    return $text_query;
+}
+add_filter( 'posts_request', 'log_sql_queries', 500 );
+
 function display_admin_options_page()
 {
     dbg("outputting the admin page");
