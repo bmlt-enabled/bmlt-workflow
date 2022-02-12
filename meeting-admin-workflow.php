@@ -45,26 +45,26 @@ function misha_options_page() {
 		'My Page', // menu link text
 		'manage_options', // capability to access the page
 		'misha-slug', // page URL slug
-		'misha_page_content', // callback function with content
+		'display_admin_options_page', // callback function with content
 		2 // priority
 	);
 
 }
 
 
-function misha_page_content(){
+// function misha_page_content(){
 
-	echo '<div class="wrap">
-	<h1>My Page Settings</h1>
-	<form method="post" action="options.php">';
+// 	echo '<div class="wrap">
+// 	<h1>My Page Settings</h1>
+// 	<form method="post" action="options.php">';
 			
-		settings_fields( 'misha_settings' ); // settings group name
-		do_settings_sections( 'misha-slug' ); // just a page slug
-		submit_button();
+// 		settings_fields( 'misha_settings' ); // settings group name
+// 		do_settings_sections( 'misha-slug' ); // just a page slug
+// 		submit_button();
 
-	echo '</form></div>';
+// 	echo '</form></div>';
 
-}
+// }
 
 add_action( 'admin_init',  'misha_register_setting' );
 
@@ -176,11 +176,11 @@ function misha_text_field_html(){
 //     // echo $html;
 // }
 
-// function display_admin_options_page()
-// {
-//     dbg("outputting the admin page");
-//     include_once('templates/admin_options.php');
-// }
+function display_admin_options_page()
+{
+    dbg("outputting the admin page");
+    include_once('templates/admin_options.php');
+}
 
 function the_form_response()
 {
