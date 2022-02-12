@@ -113,7 +113,7 @@ function service_committee_table_html()
     <table class="committeetable">
         <thead>
             <tr>
-                <th style="width:auto;"><span class="dashicons dashicons-remove"></span></span><input type="checkbox" id="bmaw-service-committee-select-all"></th>
+                <th style="width:auto;"><input type="checkbox" id="bmaw-service-committee-select-all"></th>
                 <th>Service Area</th>
                 <th>Email Address</th>
                 <th>CC</th>
@@ -123,7 +123,7 @@ function service_committee_table_html()
     END;
     $i = 0;
     foreach ($arr as $key => $value) {
-        echo '<tr><td><input type="checkbox" id="bmaw-service-committee-' . $key . '-checkbox"></td>';
+        echo '<tr><td><span class="dashicons dashicons-remove" id="bmaw-service-committee-' . $key . '-remove"></span>></td>';
         foreach ($value as $k2 => $v2) {
             echo '<td><input type="text" name="bmaw_service_committee_option_array[' . $i . '][' . $k2 . ']" value="' . $v2 . '"/></td>';
         }
