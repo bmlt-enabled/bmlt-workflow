@@ -10,7 +10,11 @@ jQuery(document).ready(function($) {
         console.log("table length "+rowCount+" row clicked "+clicked);
         if (clicked == rowCount)
         {
-            console.log("clicked the last row")
+            console.log("add row")
+        }
+        else
+        {
+            console.log("delete row")
         }
     });
 
