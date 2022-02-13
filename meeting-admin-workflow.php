@@ -190,6 +190,7 @@ function bmaw_new_meeting_template_html()
 
 function bmaw_existing_meeting_template_html()
 {
+    dbg("im loading the existing template");
     echo "<h2>existing meeting</h2>";
     $content = get_option('bmaw_existing_meeting_template');
     $editor_id = 'bmaw_existing_meeting_template';
