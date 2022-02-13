@@ -90,10 +90,6 @@ function bmaw_register_setting()
             )
         )
     );
-
-    delete_option("bmaw_new_meeting_template");
-    delete_option("bmaw_existing_meeting_template");
-    delete_option("bmaw_other_meeting_template");
     
     register_setting(
         'bmaw-settings-group', // settings group name
