@@ -85,23 +85,72 @@ function bmaw_register_setting()
     );
 
     add_settings_section(
-        'some_settings_section_id', // section ID
-        '', // title (if needed)
-        '', // callback function (if needed)
-        'bmaw-settings' // page slug
+        'bmaw-settings-section-id',
+        '', 
+        '', 
+        'bmaw-settings' 
     );
 
     add_settings_field(
         'bmaw_service_committee_option_array',
         'Service Committee Configuration',
-        'service_committee_table_html', // function which prints the field
-        'bmaw-settings', // page slug
-        'some_settings_section_id', // section ID
+        'service_committee_table_html', 
+        'bmaw-settings', 
+        'bmaw-settings-section-id',
         array(
             'label_for' => 'bmaw_service_committee_option_array'
         )
     );
+
+    add_settings_field(
+        'bmaw_new_meeting_template',
+        'Email Template for New Meeting',
+        'bmaw_new_meeting_template_html', 
+        'bmaw-settings', 
+        'bmaw-settings-section-id',
+        array(
+            'label_for' => 'bmaw_service_committee_option_array'
+        )
+    );
+
+    add_settings_field(
+        'bmaw_existing_meeting_template',
+        'Email Template for Existing Meeting',
+        'bmaw_existing_meeting_template_html', 
+        'bmaw-settings', 
+        'bmaw-settings-section-id',
+        array(
+            'label_for' => 'bmaw_service_committee_option_array'
+        )
+    );
+
+    add_settings_field(
+        'bmaw_other_meeting_template',
+        'Email Template for Other Meeting Update',
+        'bmaw_other_meeting_template_html', 
+        'bmaw-settings', 
+        'bmaw-settings-section-id',
+        array(
+            'label_for' => 'bmaw_service_committee_option_array'
+        )
+    );
+
 }
+function bmaw_new_meeting_template_html()
+{
+    echo "<h2>new meeting</h2>"
+}
+
+function bmaw_existing_meeting_template_html()
+{
+    echo "<h2>existing meeting</h2>"
+}
+
+function bmaw_other_meeting_template_html()
+{
+    echo "<h2>other meeting</h2>"
+}
+
 
 function service_committee_table_html()
 {
@@ -133,31 +182,6 @@ function service_committee_table_html()
     echo '<tr><td></td><td></td><td></td><td><span id="bmaw-service-committee-new-row" class="dashicons dashicons-insert"></span></td></tr>';
     echo '</tbody></table>';
 }
-
-
-// function log_sql_queries($text_query){
-//     //Uncomment me if you want a lot of info about where the sql query comes from and what action started it off
-//     $traces = debug_backtrace();
-//     dbg("inside log_sql_queries");
-//     $i = 0;
-//     foreach ($traces as $tobj => $trace) {
-//         if($trace['function'] == 'do_action'){
-//             $args = $trace['args'];
-//         }
-//         dbg("TRACE:$i:"  . $trace['function'] . print_r($args,1));
-//         $i++;
-//     }
-//     dbg("INFO:SQL: " . $text_query);
-//     return $text_query;
-// }
-
-// function log_option($option, $value)
-// {
-//      dbg("add_option: ".$option." ".$value);
-// }
-
-// add_filter( 'posts_request', 'log_sql_queries', 500 );
-// add_action( 'add_option', 'log_option' );
 
 function display_admin_options_page()
 {
