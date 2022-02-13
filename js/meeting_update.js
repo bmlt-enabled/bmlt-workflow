@@ -7,33 +7,33 @@ jQuery(document).ready(function ($) {
   var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   function get_field(fieldname) {
-    field = "#" + fieldname;
+    var field = "#" + fieldname;
     return $(field)[0].value;
   }
 
   function get_field_checked_index(fieldname, index) {
-    field = "#" + fieldname + "-" + index;
+    var field = "#" + fieldname + "-" + index;
     return $(field)[0].checked;
   }
 
   function get_field_value_index(fieldname, index) {
-    field = "#" + fieldname + "-" + index;
+    var field = "#" + fieldname + "-" + index;
     return $(field)[0].value;
   }
 
   function get_field_optionval(fieldname) {
-    field = "#" + fieldname;
+    var field = "#" + fieldname;
     return $(field).val();
   }
 
   function put_field(fieldname, value) {
-    field = "#" + fieldname;
+    var field = "#" + fieldname;
     $(field)[0].value = value;
     $(field).trigger("change");
   }
 
   function put_field_checked_index(fieldname, index, value) {
-    field = "#" + fieldname + "-" + index;
+    var field = "#" + fieldname + "-" + index;
     $(field)[0].checked = value;
     $(field).trigger("change");
   }
