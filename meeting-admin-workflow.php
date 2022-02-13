@@ -69,6 +69,7 @@ function array_sanitize_callback($args)
 
 function editor_sanitize_callback($args)
 {
+    dbg("called editor sanitize");
     return $args;
 }
 
