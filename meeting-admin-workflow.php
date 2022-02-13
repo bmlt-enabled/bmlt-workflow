@@ -149,11 +149,20 @@ function bmaw_new_meeting_template_html()
 function bmaw_existing_meeting_template_html()
 {
     echo "<h2>existing meeting</h2>";
+    $content   = '';
+    $editor_id = 'mycustomeditor2';
+    
+    wp_editor( $content, $editor_id );
 }
 
 function bmaw_other_meeting_template_html()
 {
     echo "<h2>other meeting</h2>";
+
+    $content   = '';
+    $editor_id = 'mycustomeditor3';
+    
+    wp_editor( $content, $editor_id );
 }
 
 function service_committee_table_html()
