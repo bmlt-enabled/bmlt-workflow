@@ -4,9 +4,9 @@ echo <<<END
 <script>
 jQuery(document).ready(function($) {
 
-    $("#bmaw-service-committee-table tr td:eq(4)').click(function() {
+    $('#bmaw-service-committee-table tr td:eq(4)').click(function() {
         console.log("got a click")
-    };
+    });
 
 });
 </script>
