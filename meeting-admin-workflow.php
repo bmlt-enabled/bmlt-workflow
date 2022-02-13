@@ -22,8 +22,8 @@ function meeting_update_form()
 }
 
 add_shortcode('bmaw-meeting-update-form', 'meeting_update_form');
-add_action('admin_post_nopriv_meeting_update_form_response', 'the_form_response');
-add_action('admin_post_meeting_update_form_response', 'the_form_response');
+add_action('admin_post_nopriv_meeting_update_form_response', 'meeting_update_form_response');
+add_action('admin_post_meeting_update_form_response', 'meeting_update_form_response');
 
 function enqueue_form_deps()
 {
@@ -181,7 +181,7 @@ function bmaw_register_setting()
 
 function bmaw_new_meeting_template_html()
 {
-    echo "<h2>new meeting</h2>";
+    echo "<p>This template will be used when emailing meeting admins about request to create a new meeting</p>";
     $content = get_option('bmaw_new_meeting_template');
     $editor_id = 'bmaw_new_meeting_template';
 
@@ -190,8 +190,7 @@ function bmaw_new_meeting_template_html()
 
 function bmaw_existing_meeting_template_html()
 {
-    dbg("im loading the existing template");
-    echo "<h2>existing meeting</h2>";
+    echo "<p>This template will be used when emailing meeting admins about a change to an existing meeting</p>";
     $content = get_option('bmaw_existing_meeting_template');
     $editor_id = 'bmaw_existing_meeting_template';
 
@@ -200,7 +199,7 @@ function bmaw_existing_meeting_template_html()
 
 function bmaw_other_meeting_template_html()
 {
-    echo "<h2>other meeting</h2>";
+    echo "<p>This template will be used when emailing meeting admins about an 'other' change type</p>";
 
     $content = get_option('bmaw_other_meeting_template');
     $editor_id = 'bmaw_other_meeting_template';
@@ -245,7 +244,7 @@ function display_admin_options_page()
     include_once('templates/admin_options.php');
 }
 
-function the_form_response()
+function meeting_update_form_response()
 {
 
     if (isset($_POST['meeting_update_form_nonce']) && wp_verify_nonce($_POST['meeting_update_form_nonce'], 'meeting_update_form_nonce')) {
@@ -255,6 +254,10 @@ function the_form_response()
         // $nds_user_meta_value = sanitize_text_field( $_POST['nds']['user_meta_value'] );
         // $nds_user =  get_user_by( 'login',  $_POST['nds']['user_select'] );
         // $nds_user_id = absint( $nds_user->ID ) ;
+
+        if(isset($_POST['update_reason'])) {
+            dbg("update reason = ".$_POST['update_reason']);
+        }
 
         $to = 'emailsendto@example.com';
         $subject = 'The subject';

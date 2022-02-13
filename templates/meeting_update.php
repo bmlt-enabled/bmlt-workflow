@@ -3,8 +3,8 @@
 <input type="hidden" name="meeting_update_form_nonce" value="<?php echo wp_create_nonce( 'meeting_update_form_nonce' ); ?>" />			
     <div class="rendered-form">
         <div>
-            <label for="select-1644380777485" class="formbuilder-select-label">Reason For Update</label>
-            <select name="select-1644380777485" id="update-reason">
+            <label for="update_reason"">Reason For Update</label>
+            <select name="update_reason" id="update_reason">
                 <option disabled="null" selected="null">select</option>
                 <option value="reason-new" id="select-1644380777485-0">New Meeting</option>
                 <option value="reason-change" id="select-1644380777485-1">Change Existing Meeting</option>
@@ -18,15 +18,15 @@
             </select>
         </div>
         <div id="other-reason">
-            <label for="text-1644380729877">Other Reason</label>
-            <input type="text" name="text-1644380729877" id="text-1644380729877">
+            <label for="other_reason">Other Reason</label>
+            <input type="text" name="other_reason" id="other_reason">
         </div>
         <div>
-            <label for="text-1644380826512">Group Name</label>
-            <input type="text" name="text-1644380826512" id="meeting_name">
+            <label for="meeting_name">Group Name</label>
+            <input type="text" name="meeting_name" id="meeting_name">
         </div>
         <div>
-            <label for="day_of_the_week" class="formbuilder-checkbox-group-label">Group Meets On Which Days<span class="formbuilder-required">*</span></label>
+            <label for="day_of_the_week">Group Meets On Which Days<span class="formbuilder-required">*</span></label>
             <ul style="list-style-type:none;" id="day_of_the_week">
                 <li>
                     <input name="Sunday" id="weekday-0" value="Sunday" type="checkbox">
@@ -59,7 +59,7 @@
             </ul>
         </div>
         <div>
-            <label for="start_time" class="formbuilder-number-label">Start Time<span class="formbuilder-required">*</span></label>
+            <label for="start_time">Start Time<span class="formbuilder-required">*</span></label>
             <input type="text" name="start_time" id="start_time" required="required" aria-required="true">
         </div>
         <div>
@@ -67,8 +67,8 @@
             <input type="text" name="duration_time" id="duration_time" required="required" aria-required="true">
         </div>
         <div>
-            <label for="select-1644380962171" class="formbuilder-select-label">Time Zone</label>
-            <select name="select-1644380962171" id="time_zone">
+            <label for="time_zone">Time Zone</label>
+            <select name="time_zone" id="time_zone">
                 <option value="Australia/Adelaide">Australian Central Time (Adelaide)</option>
                 <option value="Australia/Darwin">Australian Central Time (Darwin)</option>
                 <option value="Australia/Eucla">Australian Central Western Time (Eucla)</option>
@@ -78,8 +78,8 @@
             </select>
         </div>
         <div>
-            <label for="select-1644380979730" class="formbuilder-select-label">Committee</label>
-            <select name="select-1644380979730" id="service_area">
+            <label for="service_area">Committee</label>
+            <select name="service_area" id="service_area">
                 <?php
                 $arr = get_option('bmaw_service_committee_option_array');
                 foreach ($arr as $key => $value) {
@@ -90,28 +90,28 @@
             </select>
         </div>
         <div>
-            <label for="text-1644381018555">Location (eg: a building name)</label>
-            <input type="text" id="location_text">
+            <label for="location_text">Location (eg: a building name)</label>
+            <input type="text" name="location_text" id="location_text">
         </div>
         <div>
-            <label for="text-1644381025138">Street Address</label>
-            <input type="text" id="location_street">
+            <label for="location_street"">Street Address</label>
+            <input type="text" name="location_street" id="location_street">
         </div>
         <div>
-            <label for="text-1644381046194">Extra Location Info (eg: Near the park)</label>
-            <input type="text" id="location_info">
+            <label for="location_info">Extra Location Info (eg: Near the park)</label>
+            <input type="text" name="location_info" id="location_info">
         </div>
         <div>
-            <label for="text-1644381061329">City/Town/Suburb</label>
-            <input type="text" id="location_municipality">
+            <label for="location_municipality">City/Town/Suburb</label>
+            <input type="text" name="location_municipality" id="location_municipality">
         </div>
         <div>
-            <label for="text-1644381070296">State</label>
-            <input type="text" id="location_province">
+            <label for="location_province">State</label>
+            <input type="text" name="location_province" id="location_province">
         </div>
         <div>
-            <label for="number-1644381080899" class="formbuilder-number-label">Postcode</label>
-            <input type="number" id="location_postal_code_1">
+            <label for="location_postal_code_1">Postcode</label>
+            <input type="number" name="location_postal_code_1" id="location_postal_code_1">
         </div>
         <div id="formats">
             <label for="format-group">Meeting Format</label>
