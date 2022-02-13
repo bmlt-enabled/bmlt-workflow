@@ -110,7 +110,7 @@ function service_committee_table_html()
     $arr = get_option('bmaw_service_committee_option_array');
 
     echo <<<END
-    <table class="committeetable">
+    <table class="committeetable" id="bmaw-service-committee-table">
         <thead>
             <tr>
                 <th>Service Area</th>
