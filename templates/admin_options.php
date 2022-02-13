@@ -4,8 +4,9 @@ echo <<<END
 <script>
 jQuery(document).ready(function($) {
 
-    $('#bmaw-service-committee-table tr td:eq(4)').click(function() {
-        console.log("got a click")
+    jQuery('#bmaw-service-committee-table tr td:nth-child(4)').click(function() { 
+        var rowCount = $('#myTable tr').length;
+        
     });
 
 });
