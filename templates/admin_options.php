@@ -2,23 +2,13 @@
 echo <<<END
 <div class="wrap">
 <script>
-// jQuery(document).ready(function($) {
+jQuery(document).ready(function($) {
 
-//     $(".committeetable").on("click", "tr", function(){
-//         var cb = $(this).find("input:checkbox")
-//         if(cb) {
-//             if(cb.prop("checked"))
-//             {
-//                 cb.prop( "checked", false )
-//             }
-//             else
-//             {
-//                 cb.prop( "checked", true )
-//             }
-//         }
-//     });
+    $("#bmaw-service-committee-table tr td:eq(4)').click(function() {
+        console.log("got a click")
+    };
 
-// });
+});
 </script>
 <h1>BMLT Meeting Admin Workflow Settings</h1>
 <form method="post" action="options.php">
