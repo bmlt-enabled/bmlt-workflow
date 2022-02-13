@@ -140,6 +140,10 @@ function bmaw_register_setting()
 function bmaw_new_meeting_template_html()
 {
     echo "<h2>new meeting</h2>";
+    $content   = '';
+    $editor_id = 'mycustomeditor';
+    
+    wp_editor( $content, $editor_id );
 }
 
 function bmaw_existing_meeting_template_html()
