@@ -109,7 +109,7 @@ function bmaw_register_setting()
         array(
             'type' => 'array',
             'description' => 'bmaw_existing_meeting_template',
-            'sanitize_callback' => 'bmaw_existing_meeting_template',
+            'sanitize_callback' => 'editor_sanitize_callback',
             'show_in_rest' => false,
             'default' => file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_existing_meeting_email_template.html')
 
