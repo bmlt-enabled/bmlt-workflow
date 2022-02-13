@@ -5,8 +5,9 @@ echo <<<END
 jQuery(document).ready(function($) {
 
     jQuery('#bmaw-service-committee-table tr td:nth-child(4)').click(function() { 
-        var rowCount = $('#myTable tr').length;
-        
+        var rowCount = $('#bmaw-service-committee-table tr').length-1;
+        var clicked = $(this).closest('tr').index();
+        console.log("table length "+rowCount+" row clicked "+clicked);
     });
 
 });
