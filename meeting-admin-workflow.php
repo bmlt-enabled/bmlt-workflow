@@ -91,6 +91,10 @@ function bmaw_register_setting()
         )
     );
 
+    delete_option("bmaw_new_meeting_template");
+    delete_option("bmaw_existing_meeting_template");
+    delete_option("bmaw_other_meeting_template");
+    
     register_setting(
         'bmaw-settings-group', // settings group name
         'bmaw_new_meeting_template',
@@ -99,10 +103,7 @@ function bmaw_register_setting()
             'description' => 'bmaw_new_meeting_template',
             'sanitize_callback' => 'editor_sanitize_callback',
             'show_in_rest' => false,
-            'default' => array(
-                "0" => array("name" => "Committee1", "e1" => "email 1", "e2" => "email 1.1"),
-                "1" => array("name" => "Committee2", "e1" => "email 2", "e2" => "email 2.1"),
-            )
+            'default' => file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_new_meeting_email_template.html')
         )
     );
 
@@ -114,10 +115,8 @@ function bmaw_register_setting()
             'description' => 'bmaw_new_meeting_template',
             'sanitize_callback' => 'bmaw_existing_meeting_template',
             'show_in_rest' => false,
-            'default' => array(
-                "0" => array("name" => "Committee1", "e1" => "email 1", "e2" => "email 1.1"),
-                "1" => array("name" => "Committee2", "e1" => "email 2", "e2" => "email 2.1"),
-            )
+            'default' => file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_existing_meeting_email_template.html')
+
         )
     );
 
@@ -129,10 +128,7 @@ function bmaw_register_setting()
             'description' => 'bmaw_other_meeting_template',
             'sanitize_callback' => 'editor_sanitize_callback',
             'show_in_rest' => false,
-            'default' => array(
-                "0" => array("name" => "Committee1", "e1" => "email 1", "e2" => "email 1.1"),
-                "1" => array("name" => "Committee2", "e1" => "email 2", "e2" => "email 2.1"),
-            )
+            'default' => file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_other_meeting_email_template.html')
         )
     );
     add_settings_section(
