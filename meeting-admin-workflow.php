@@ -90,7 +90,7 @@ function bmaw_register_setting()
             )
         )
     );
-    
+
     register_setting(
         'bmaw-settings-group', // settings group name
         'bmaw_new_meeting_template',
@@ -129,16 +129,16 @@ function bmaw_register_setting()
     );
     add_settings_section(
         'bmaw-settings-section-id',
-        '', 
-        '', 
-        'bmaw-settings' 
+        '',
+        '',
+        'bmaw-settings'
     );
 
     add_settings_field(
         'bmaw_service_committee_option_array',
         'Service Committee Configuration',
-        'service_committee_table_html', 
-        'bmaw-settings', 
+        'service_committee_table_html',
+        'bmaw-settings',
         'bmaw-settings-section-id',
         array(
             'label_for' => 'bmaw_service_committee_option_array'
@@ -148,8 +148,8 @@ function bmaw_register_setting()
     add_settings_field(
         'bmaw_new_meeting_template',
         'Email Template for New Meeting',
-        'bmaw_new_meeting_template_html', 
-        'bmaw-settings', 
+        'bmaw_new_meeting_template_html',
+        'bmaw-settings',
         'bmaw-settings-section-id',
         array(
             'label_for' => 'bmaw_service_committee_option_array'
@@ -159,8 +159,8 @@ function bmaw_register_setting()
     add_settings_field(
         'bmaw_existing_meeting_template',
         'Email Template for Existing Meeting',
-        'bmaw_existing_meeting_template_html', 
-        'bmaw-settings', 
+        'bmaw_existing_meeting_template_html',
+        'bmaw-settings',
         'bmaw-settings-section-id',
         array(
             'label_for' => 'bmaw_service_committee_option_array'
@@ -170,42 +170,41 @@ function bmaw_register_setting()
     add_settings_field(
         'bmaw_other_meeting_template',
         'Email Template for Other Meeting Update',
-        'bmaw_other_meeting_template_html', 
-        'bmaw-settings', 
+        'bmaw_other_meeting_template_html',
+        'bmaw-settings',
         'bmaw-settings-section-id',
         array(
             'label_for' => 'bmaw_service_committee_option_array'
         )
     );
-
 }
 
 function bmaw_new_meeting_template_html()
 {
     echo "<h2>new meeting</h2>";
-    $content   = '';
+    $content = get_option('bmaw_new_meeting_template');
     $editor_id = 'bmaw_new_meeting_template';
-    
-    wp_editor( $content, $editor_id );
+
+    wp_editor($content, $editor_id);
 }
 
 function bmaw_existing_meeting_template_html()
 {
     echo "<h2>existing meeting</h2>";
-    $content   = '';
+    $content = get_option('bmaw_existing_meeting_template');
     $editor_id = 'bmaw_existing_meeting_template';
-    
-    wp_editor( $content, $editor_id );
+
+    wp_editor($content, $editor_id);
 }
 
 function bmaw_other_meeting_template_html()
 {
     echo "<h2>other meeting</h2>";
 
-    $content   = '';
+    $content = get_option('bmaw_other_meeting_template');
     $editor_id = 'bmaw_other_meeting_template';
-    
-    wp_editor( $content, $editor_id );
+
+    wp_editor($content, $editor_id);
 }
 
 function service_committee_table_html()
@@ -234,7 +233,7 @@ function service_committee_table_html()
         }
         echo '<td><span class="dashicons dashicons-remove" id="bmaw-service-committee-' . $key . '-remove"></span></td></tr>';
         $i++;
-    }   
+    }
     echo '<tr><td></td><td></td><td></td><td><span id="bmaw-service-committee-new-row" class="dashicons dashicons-insert"></span></td></tr>';
     echo '</tbody></table>';
 }
