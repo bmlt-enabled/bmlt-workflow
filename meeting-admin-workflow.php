@@ -185,7 +185,7 @@ function bmaw_new_meeting_template_html()
     $content = get_option('bmaw_new_meeting_template');
     $editor_id = 'bmaw_new_meeting_template';
 
-    wp_editor($content, $editor_id);
+    wp_editor($content, $editor_id, array('media_buttons'=>false));
 }
 
 function bmaw_existing_meeting_template_html()
@@ -195,7 +195,7 @@ function bmaw_existing_meeting_template_html()
     $content = get_option('bmaw_existing_meeting_template');
     $editor_id = 'bmaw_existing_meeting_template';
 
-    wp_editor($content, $editor_id);
+    wp_editor($content, $editor_id, array('media_buttons'=>false));
 }
 
 function bmaw_other_meeting_template_html()
@@ -205,7 +205,7 @@ function bmaw_other_meeting_template_html()
     $content = get_option('bmaw_other_meeting_template');
     $editor_id = 'bmaw_other_meeting_template';
 
-    wp_editor($content, $editor_id);
+    wp_editor($content, $editor_id, array('media_buttons'=>false));
 }
 
 function service_committee_table_html()
