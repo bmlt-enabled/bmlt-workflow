@@ -66,6 +66,12 @@ function array_sanitize_callback($args)
 {
     return $args;
 }
+
+function editor_sanitize_callback($args)
+{
+    return $args;
+}
+
 function bmaw_register_setting()
 {
 
