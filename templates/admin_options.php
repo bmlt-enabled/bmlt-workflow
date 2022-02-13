@@ -11,6 +11,13 @@ jQuery(document).ready(function($) {
         if (clicked == rowCount)
         {
             console.log("add row")
+            $('#bmaw-service-committee-table > tbody:last-child').before('<tr>
+            <td><input type="text" name="bmaw_service_committee_option_array[' . $rowCount . '][name]" value=""/></td>
+            <td><input type="text" name="bmaw_service_committee_option_array[' . $rowCount . '][e1]" value=""/></td>
+            <td><input type="text" name="bmaw_service_committee_option_array[' . $rowCount . '][e2]" value=""/></td>
+            <td><input type="text" name="bmaw_service_committee_option_array[' . $rowCount . '][name]" value=""/></td>
+            <td><span id="bmaw-service-committee-new-row" class="dashicons dashicons-insert"></span></td>
+            </tr>');
         }
         else
         {
