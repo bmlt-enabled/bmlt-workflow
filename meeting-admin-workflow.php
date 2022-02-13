@@ -84,6 +84,50 @@ function bmaw_register_setting()
         )
     );
 
+    register_setting(
+        'bmaw-settings-group', // settings group name
+        'bmaw_new_meeting_template',
+        array(
+            'type' => 'array',
+            'description' => 'bmaw_new_meeting_template',
+            'sanitize_callback' => 'editor_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => array(
+                "0" => array("name" => "Committee1", "e1" => "email 1", "e2" => "email 1.1"),
+                "1" => array("name" => "Committee2", "e1" => "email 2", "e2" => "email 2.1"),
+            )
+        )
+    );
+
+    register_setting(
+        'bmaw-settings-group', // settings group name
+        'bmaw_existing_meeting_template',
+        array(
+            'type' => 'array',
+            'description' => 'bmaw_new_meeting_template',
+            'sanitize_callback' => 'bmaw_existing_meeting_template',
+            'show_in_rest' => false,
+            'default' => array(
+                "0" => array("name" => "Committee1", "e1" => "email 1", "e2" => "email 1.1"),
+                "1" => array("name" => "Committee2", "e1" => "email 2", "e2" => "email 2.1"),
+            )
+        )
+    );
+
+    register_setting(
+        'bmaw-settings-group', // settings group name
+        'bmaw_other_meeting_template',
+        array(
+            'type' => 'array',
+            'description' => 'bmaw_other_meeting_template',
+            'sanitize_callback' => 'editor_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => array(
+                "0" => array("name" => "Committee1", "e1" => "email 1", "e2" => "email 1.1"),
+                "1" => array("name" => "Committee2", "e1" => "email 2", "e2" => "email 2.1"),
+            )
+        )
+    );
     add_settings_section(
         'bmaw-settings-section-id',
         '', 
@@ -141,7 +185,7 @@ function bmaw_new_meeting_template_html()
 {
     echo "<h2>new meeting</h2>";
     $content   = '';
-    $editor_id = 'mycustomeditor';
+    $editor_id = 'bmaw_new_meeting_template';
     
     wp_editor( $content, $editor_id );
 }
@@ -150,7 +194,7 @@ function bmaw_existing_meeting_template_html()
 {
     echo "<h2>existing meeting</h2>";
     $content   = '';
-    $editor_id = 'mycustomeditor2';
+    $editor_id = 'bmaw_existing_meeting_template';
     
     wp_editor( $content, $editor_id );
 }
@@ -160,7 +204,7 @@ function bmaw_other_meeting_template_html()
     echo "<h2>other meeting</h2>";
 
     $content   = '';
-    $editor_id = 'mycustomeditor3';
+    $editor_id = 'bmaw_other_meeting_template';
     
     wp_editor( $content, $editor_id );
 }
