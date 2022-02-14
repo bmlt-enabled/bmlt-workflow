@@ -1,3 +1,8 @@
 table.committeetable tr:hover > td {
     background: #fff;
 }
+table.committeetable th {
+    padding-left: 15px;
+    padding-right: 0px;
+    width: auto;
+}
