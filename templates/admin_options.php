@@ -1,8 +1,14 @@
 <?php
+
+
+$arr = get_option('bmaw_service_committee_option_array');
+$js_array = json_encode($php_array);
+
+echo '<div class="wrap"><script>'
+echo 'jQuery(document).ready(function($) {';
+echo "var bmaw_service_form_array = ". $js_array . ";\n";
 echo <<<END
-<div class="wrap">
-<script>
-jQuery(document).ready(function($) {
+
     $("#bmaw-service-committee-table tbody").on("click", "tr td:nth-child(4)", function(event){
         var rowCount = $('#bmaw-service-committee-table tr').length-2;
         var clicked = $(this).closest('tr').index();

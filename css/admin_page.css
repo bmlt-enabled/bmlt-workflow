@@ -2,9 +2,7 @@ table.committeetable tr:hover > td {
     background: #fff;
 }
 table.committeetable th {
-    background: #fff;
     padding-left: 15px;
     padding-right: 0px;
     width: auto;
-    border-color: #fff;
 }
