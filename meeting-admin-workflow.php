@@ -277,7 +277,7 @@ function meeting_update_form_response()
             dbg("** template before");
             dbg($template);
             // field substitution
-            $subfields = array("orig_meeting_name");
+            $subfields = array("hidden_orig_meeting_name");
             // {field:hidden_orig_meeting_name}
             foreach ($subfields as $field)
             {
