@@ -4,7 +4,7 @@
 $arr = get_option('bmaw_service_committee_option_array');
 $js_array = json_encode($php_array);
 
-echo '<div class="wrap"><script>'
+echo '<div class="wrap"><script>';
 echo 'jQuery(document).ready(function($) {';
 echo "var bmaw_service_form_array = ". $js_array . ";\n";
 echo <<<END
