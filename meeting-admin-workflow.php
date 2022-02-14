@@ -281,8 +281,8 @@ function meeting_update_form_response()
             // {field:hidden_orig_meeting_name}
             foreach ($subfields as $field)
             {
-                // $subfield = '{field:'.$field.'}'
-                $subfield = 'style';
+                $subfield = '{field:'.$field.'}';
+                // $subfield = 'style';
                 $subwith = 'lol';
                 $template = str_replace($subfield, $subwith, $template);
             }
