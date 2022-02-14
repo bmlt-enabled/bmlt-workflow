@@ -95,8 +95,8 @@
                 <input type="text" name="location_text" id="location_text">
             </div>
             <div>
-                <label for="location_street"">Street Address</label>
-            <input type=" text" name="location_street" id="location_street">
+                <label for="location_street">Street Address</label>
+                <input type="text" name="location_street" id="location_street">
             </div>
             <div>
                 <label for="location_info">Extra Location Info (eg: Near the park)</label>
