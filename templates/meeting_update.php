@@ -6,19 +6,19 @@
             <label for="update_reason"">Reason For Update</label>
             <select name=" update_reason" id="update_reason">
                 <option disabled="null" selected="null">select</option>
-                <option value="reason-new" id="select-1644380777485-0">New Meeting</option>
-                <option value="reason-change" id="select-1644380777485-1">Change Existing Meeting</option>
-                <option value="reason-close" id="select-1644380777485-2">Close Meeting</option>
-                <option value="reason-other" id="select-1644380777485-3">Other</option>
+                <option value="reason_new" id="select-1644380777485-0">New Meeting</option>
+                <option value="reason_change" id="select-1644380777485-1">Change Existing Meeting</option>
+                <option value="reason_close" id="select-1644380777485-2">Close Meeting</option>
+                <option value="reason_other" id="select-1644380777485-3">Other</option>
                 </select>
         </div>
-        <div id="meeting-content">
-            <div id="meeting-selector">
+        <div id="meeting_content">
+            <div id="meeting_selector">
                 <select class="select2-ajax" id="meeting-searcher">
                     <option></option>
                 </select>
             </div>
-            <div id="other-reason">
+            <div id="other_reason">
                 <label for="other_reason">Other Reason</label>
                 <input type="text" name="other_reason" id="other_reason">
             </div>
@@ -173,7 +173,7 @@
                 <label for="text-1644381354649">Additional Info</label>
                 <input type="text" name="text-1644381354649" id="text-1644381354649">
             </div>
-            <div id="starter-pack">
+            <div id="starter_pack">
                 <div>
                     <label for="select-1644381474827" class="formbuilder-select-label">Starter Kit Required</label>
                     <select name="select-1644381474827" id="select-1644381474827">

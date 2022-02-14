@@ -259,16 +259,16 @@ function meeting_update_form_response()
             $reason = $_POST['update_reason'];
             dbg("update reason = " . $_POST['update_reason']);
             switch ($reason) {
-                case ('reason-new'):
+                case ('reason_new'):
                     $template = file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_new_meeting_email_template.html');
                     break;
-                case ('reason-change'):
+                case ('reason_change'):
                     $template = file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_existing_meeting_email_template.html');
                     break;
-                case ('reason-close'):
+                case ('reason_close'):
                     $template = file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_close_meeting_email_template.html');
                     break;
-                case ('reason-other'):
+                case ('reason_other'):
                     $template = file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_other_meeting_email_template.html');
                     break;
                 default:
