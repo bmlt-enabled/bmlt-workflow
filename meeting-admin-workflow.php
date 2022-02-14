@@ -185,7 +185,7 @@ function bmaw_new_meeting_template_html()
     $content = get_option('bmaw_new_meeting_template');
     $editor_id = 'bmaw_new_meeting_template';
 
-    wp_editor($content, $editor_id, array('media_buttons'=>false));
+    wp_editor($content, $editor_id, array('media_buttons' => false));
 }
 
 function bmaw_existing_meeting_template_html()
@@ -194,7 +194,7 @@ function bmaw_existing_meeting_template_html()
     $content = get_option('bmaw_existing_meeting_template');
     $editor_id = 'bmaw_existing_meeting_template';
 
-    wp_editor($content, $editor_id, array('media_buttons'=>false));
+    wp_editor($content, $editor_id, array('media_buttons' => false));
 }
 
 function bmaw_other_meeting_template_html()
@@ -204,7 +204,7 @@ function bmaw_other_meeting_template_html()
     $content = get_option('bmaw_other_meeting_template');
     $editor_id = 'bmaw_other_meeting_template';
 
-    wp_editor($content, $editor_id, array('media_buttons'=>false));
+    wp_editor($content, $editor_id, array('media_buttons' => false));
 }
 
 function service_committee_table_html()
@@ -255,8 +255,40 @@ function meeting_update_form_response()
         // $nds_user =  get_user_by( 'login',  $_POST['nds']['user_select'] );
         // $nds_user_id = absint( $nds_user->ID ) ;
 
-        if(isset($_POST['update_reason'])) {
-            dbg("update reason = ".$_POST['update_reason']);
+        if (isset($_POST['update_reason'])) {
+            $reason = $_POST['update_reason'];
+            dbg("update reason = " . $_POST['update_reason']);
+            switch ($reason) {
+                case ('reason-new'):
+                    $template = file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_new_meeting_email_template.html');
+                    break;
+                case ('reason-change'):
+                    $template = file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_existing_meeting_email_template.html');
+                    break;
+                case ('reason-close'):
+                    $template = file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_close_meeting_email_template.html');
+                    break;
+                case ('reason-other'):
+                    $template = file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_other_meeting_email_template.html');
+                    break;
+                default:
+                    wp_die('invalid meeting reason');
+            }
+            dbg("** template before");
+            dbg($template);
+            // field substitution
+            $subfields = array("orig_meeting_name");
+            // {field:hidden_orig_meeting_name}
+            foreach ($subfields as $field)
+            {
+                // $subfield = '{field:'.$field.'}'
+                $subfield = 'style';
+                $subwith = 'lol';
+                $template = str_replace($subfield, $subwith, $template);
+            }
+            dbg("** template after");
+            dbg($template);
+
         }
 
         $to = 'emailsendto@example.com';
