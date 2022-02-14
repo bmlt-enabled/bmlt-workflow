@@ -93,6 +93,18 @@ function bmaw_register_setting()
 
     register_setting(
         'bmaw-settings-group', // settings group name
+        'bmaw_email_from_address',
+        array(
+            'type' => 'string',
+            'description' => 'Email from address',
+            'sanitize_callback' => 'array_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => 'example@example'
+        )
+    );
+
+    register_setting(
+        'bmaw-settings-group', // settings group name
         'bmaw_new_meeting_template',
         array(
             'type' => 'array',
@@ -146,6 +158,16 @@ function bmaw_register_setting()
     );
 
     add_settings_field(
+        'bmaw_email_from_address',
+        'Email From Address',
+        'bmaw_email_from_address_html',
+        'bmaw-settings',
+        'bmaw-settings-section-id',
+        array(
+            'label_for' => 'bmaw_service_committee_option_array'
+        )
+    );
+    add_settings_field(
         'bmaw_new_meeting_template',
         'Email Template for New Meeting',
         'bmaw_new_meeting_template_html',
@@ -177,6 +199,19 @@ function bmaw_register_setting()
             'label_for' => 'bmaw_service_committee_option_array'
         )
     );
+}
+
+function bmaw_email_from_address_html()
+{
+    $from_address = get_option('bmaw_email_from_address');
+
+    echo "<p>The sending address of meeting update notification emails</p>";
+
+    echo '<input type="text" name="bmaw_email_from_address" value="'.$from_address.'"/>';
+    // $content = get_option('bmaw_new_meeting_template');
+    // $editor_id = 'bmaw_new_meeting_template';
+
+    // wp_editor($content, $editor_id, array('media_buttons' => false));
 }
 
 function bmaw_new_meeting_template_html()
