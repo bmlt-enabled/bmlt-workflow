@@ -6,4 +6,5 @@ table.committeetable th {
     padding-left: 15px;
     padding-right: 0px;
     width: auto;
+    border-color: transparent;
 }
