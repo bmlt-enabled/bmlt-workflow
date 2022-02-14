@@ -63,18 +63,29 @@ jQuery(document).ready(function ($) {
   // meeting logic
   $("#meeting-selector").hide();
   $("#other-reason").hide();
+  $("#meeting-content").hide();
 
   $("#update-reason").change(function () {
     if ($(this).val() === "reason-new") {
       console.log("new");
       $("#meeting-selector").hide();
       $("#other-reason").hide();
+      $("#meeting-content").show();
+      $("#starter-pack").show();
+
     } else if ($(this).val() === "reason-change" || $(this).val() === "reason-close") {
       $("#meeting-selector").show();
       $("#other-reason").hide();
+      $("#meeting-content").show();
+      $("#starter-pack").hide();
+
+
     } else if ($(this).val() === "reason-other") {
       $("#meeting-selector").hide();
       $("#other-reason").show();
+      $("#meeting-content").show();
+      $("#starter-pack").hide();
+
     }
   });
   // populate format list
