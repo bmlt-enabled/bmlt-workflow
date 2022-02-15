@@ -244,9 +244,11 @@ function service_committee_table_html()
     $arr = get_option('bmaw_service_committee_option_array');
 
     echo <<<END
+    <div class="bmaw_info_text">
     <p>Configure your service committee contact details here.
     <p>Service Area: The name as appears in the service area listing on the meeting form.
     <p>To/CC Addresses: A comma seperated list of addresses to send the meeting update notification. {field:email_address} can be used to contact the form submitter.
+    </div>
     <table class="committeetable" id="bmaw-service-committee-table">
         <thead>
             <tr>
