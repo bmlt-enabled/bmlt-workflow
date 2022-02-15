@@ -206,7 +206,7 @@ function bmaw_email_from_address_html()
 
     echo "<p>The sending address of meeting update notification emails</p>";
 
-    echo '<input type="text" name="bmaw_email_from_address" value="'.$from_address.'"/>';
+    echo '<input type="text" name="bmaw_email_from_address" value="' . $from_address . '"/>';
 }
 
 function bmaw_new_meeting_template_html()
@@ -240,16 +240,19 @@ function bmaw_other_meeting_template_html()
 function service_committee_table_html()
 {
 
-    dbg("printing the text field");
+    // dbg("printing the text field");
     $arr = get_option('bmaw_service_committee_option_array');
 
     echo <<<END
+    <p>Configure your service committee contact details here.
+    <p>Service Area: The name as appears in the service area listing on the meeting form.
+    <p>To/CC Addresses: A comma seperated list of addresses to send the meeting update notification. {field:email_address} can be used to contact the form submitter.
     <table class="committeetable" id="bmaw-service-committee-table">
         <thead>
             <tr>
                 <th>Service Area</th>
-                <th>Email Address</th>
-                <th>CC</th>
+                <th>To Address(es)</th>
+                <th>CC Address(es)</th>
                 <th></th>
             </tr>
         </thead>
@@ -320,21 +323,22 @@ function meeting_update_form_response()
                 "hidden_orig_virtual_meeting_link",
                 "hidden_new_virtual_meeting_link",
                 "hidden_orig_virtual_meeting_additional_info",
-                "hidden_new_virtual_meeting_additional_info" ,
+                "hidden_new_virtual_meeting_additional_info",
                 "hidden_orig_weekday",
                 "hidden_new_weekday",
-                "hidden_orig_meeting_name" ,
+                "hidden_orig_meeting_name",
                 "hidden_new_meeting_name",
-                "hidden_orig_comments" ,
+                "hidden_orig_comments",
                 "hidden_new_comments",
-                "hidden_orig_time_zone" ,
-                "hidden_new_time_zone",            
+                "hidden_orig_time_zone",
+                "hidden_new_time_zone",
                 "first_name",
-                "last_name");
-            // {field:hidden_orig_meeting_name}
-            foreach ($subfields as $field)
-            {
-                $subfield = '{field:'.$field.'}';
+                "last_name"
+            );
+
+            // Do field replacements in template
+            foreach ($subfields as $field) {
+                $subfield = '{field:' . $field . '}';
                 // $subfield = 'style';
                 $subwith = $_POST[$field];
                 $template = str_replace($subfield, $subwith, $template);
@@ -342,28 +346,33 @@ function meeting_update_form_response()
             dbg("** template after");
             dbg($template);
 
-        }
-        $service_committees = get_option('bmaw_service_committee_option_array');
-        foreach ($service_committees as $key => $value)
-        {
-            if($value['name'] == $_POST['service_area'])
-            {
-                dbg("* Found our service area! To = ".$value['e1']." CC: ".$value['e2']);
+            $service_committees = get_option('bmaw_service_committee_option_array');
+            foreach ($service_committees as $key => $value) {
+                if ($value['name'] == $_POST['service_area']) {
+                    dbg("* Found our service area! To = " . $value['e1'] . " CC: " . $value['e2']);
+                }
             }
+
+            $from_address = get_option('bmaw_email_from_address');
+            $cc_address = $value['e2'];
+            $to_address = $value['e1'];
+
+            // Do field replacement in to: address
+            $subfield = '{field:email_address}';
+            $subwith = $_POST['email_address'];
+            $to = str_replace($subfield, $subwith, $to_address);
+
+            // $to = 'emailsendto@example.com';
+            $body = $template;
+            $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address, 'Cc: ' . $cc_address);
+            dbg('sending mail');
+            wp_mail($to, $subject, $body, $headers);
+            dbg('mail sent');
+            // redirect the user to the appropriate page
+            // wp_redirect( 'https://www.google.com' );
+            exit;
+        } else {
+            wp_die('invalid nonce');
         }
-
-        $from_address = get_option('bmaw_email_from_address');
-
-        $to = 'emailsendto@example.com';
-        $body = $template;
-        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: '.$from_address);
-        dbg('sending mail');
-        wp_mail($to, $subject, $body, $headers);
-        dbg('mail sent');
-        // redirect the user to the appropriate page
-        // wp_redirect( 'https://www.google.com' );
-        exit;
-    } else {
-        wp_die('invalid nonce');
     }
 }
