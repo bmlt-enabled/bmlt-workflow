@@ -310,13 +310,13 @@ function meeting_update_form_response()
             dbg("** template before");
             dbg($template);
             // field substitution
-            $subfields = array("hidden_orig_meeting_name");
+            $subfields = array("hidden_orig_meeting_name","hidden_new_meeting_name","first_name","last_name");
             // {field:hidden_orig_meeting_name}
             foreach ($subfields as $field)
             {
                 $subfield = '{field:'.$field.'}';
                 // $subfield = 'style';
-                $subwith = 'lol';
+                $subwith = $_POST[$field];
                 $template = str_replace($subfield, $subwith, $template);
             }
             dbg("** template after");
