@@ -205,7 +205,7 @@ function bmaw_email_from_address_html()
     $from_address = get_option('bmaw_email_from_address');
     echo<<<END
     <div class="bmaw_info_text">
-    <br><br>The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form <code>Display Name &lt;example@example.com&gt;</code> or just a standard email address.
+    <br>The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form <code>Display Name &lt;example@example.com&gt;</code> or just a standard email address.
     <br><br>
     </div>
     END;
@@ -219,7 +219,7 @@ function bmaw_new_meeting_template_html()
 {
     echo<<<END
     <div class="bmaw_info_text">
-    <br><br>This template will be used when emailing meeting admins about request to create a new meeting.
+    <br>This template will be used when emailing meeting admins about request to create a new meeting.
     <br><br>
     </div>
     END;
@@ -234,7 +234,7 @@ function bmaw_existing_meeting_template_html()
 {
     echo<<<END
     <div class="bmaw_info_text">
-    <br><br>This template will be used when emailing meeting admins about an 'other' change type.
+    <br>This template will be used when emailing meeting admins about an 'other' change type.
     <br><br>
     </div>
     END;
@@ -250,7 +250,7 @@ function bmaw_other_meeting_template_html()
 {
     echo<<<END
     <div class="bmaw_info_text">
-    <br><br>This template will be used when emailing meeting admins about an 'other' change type.
+    <br>This template will be used when emailing meeting admins about an 'other' change type.
     <br><br>
     </div>
     END;
