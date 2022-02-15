@@ -119,8 +119,12 @@
                 <ul style="list-style-type:none;""></ul>
             </div>
             <div>
-                <label for=" text-1644381196060">Online Meeting Link</label>
-                    <input type="text" name="text-1644381196060" id="text-1644381196060">
+                <label for="virtual_meeting_link">Online Meeting Link</label>
+                    <input type="text" name="virtual_meeting_link" id="virtual_meeting_link">
+            </div>
+            <div>
+                <label for="comments">Comments</label>
+                    <input type="text" name="comments" id="comments">
             </div>
             <div>
                 <label for="date-1644381216519" class="formbuilder-date-label">Date Change Required<span class="formbuilder-required">*</span></label>
