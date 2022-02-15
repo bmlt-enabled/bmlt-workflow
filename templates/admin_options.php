@@ -25,7 +25,7 @@ $("#bmaw-service-committee-table tbody").on("click", "tr td:nth-child(4)", funct
             rowCount +
             '][e2]" value=""/></td><td><span id="bmaw-service-committee-new-row" class="dashicons dashicons-remove"></span></td></tr>'
         );
-    } else {
+    } else if (rowCount != 2) {
       $("#bmaw-service-committee-table > tbody > tr").eq(clicked).remove();
       for (var i = clicked; i < rowCount; i++) {
         console.log("i = " + i + " rowCount = " + rowCount);
