@@ -20,9 +20,6 @@ function meeting_update_form()
     include_once('public/meeting_update.php');
 }
 
-add_shortcode('bmaw-meeting-update-form', 'meeting_update_form');
-add_action('admin_post_nopriv_meeting_update_form_response', 'meeting_update_form_response');
-add_action('admin_post_meeting_update_form_response', 'meeting_update_form_response');
 
 function enqueue_form_deps()
 {
@@ -33,9 +30,6 @@ function enqueue_form_deps()
     wp_enqueue_script('bmawjs', plugin_dir_url(__FILE__) . 'js/script_includes.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/script_includes.js'), true);
     wp_enqueue_script('bmaw-meetingupdatejs', plugin_dir_url(__FILE__) . 'js/meeting_update.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/meeting_update.js'), true);
 }
-add_action('wp_enqueue_scripts', 'enqueue_form_deps');
-
-add_action('admin_menu', 'bmaw_options_page');
 
 function bmaw_admin_css($hook)
 {
@@ -44,7 +38,6 @@ function bmaw_admin_css($hook)
     }
     wp_enqueue_style('bmaw-admin-css', plugin_dir_url(__FILE__) . 'css/admin_page.css', false, filemtime(plugin_dir_path(__FILE__) . 'css/admin_page.css'), 'all');
 }
-add_action('admin_enqueue_scripts', 'bmaw_admin_css');
 
 function bmaw_options_page()
 {
@@ -59,7 +52,26 @@ function bmaw_options_page()
     );
 }
 
+function add_plugin_link( $plugin_actions, $plugin_file ) {
+ 
+    $new_actions = array();
+ 
+    if ( basename( plugin_dir_path( __FILE__ ) ) . 'meeting-admin-workflow.php' === $plugin_file ) {
+        $new_actions['cl_settings'] = sprintf( __( '<a href="%s">Settings</a>', 'comment-limiter' ), esc_url( admin_url( 'options-general.php?page=meeting-admin-workflow' ) ) );
+    }
+ 
+    return array_merge( $new_actions, $plugin_actions );
+}
+
+// actions, shortcodes and filters
+add_action('admin_post_nopriv_meeting_update_form_response', 'meeting_update_form_response');
+add_action('admin_post_meeting_update_form_response', 'meeting_update_form_response');
+add_action('wp_enqueue_scripts', 'enqueue_form_deps');
+add_action('admin_menu', 'bmaw_options_page');
+add_action('admin_enqueue_scripts', 'bmaw_admin_css');
 add_action('admin_init',  'bmaw_register_setting');
+add_shortcode('bmaw-meeting-update-form', 'meeting_update_form');
+add_filter( 'plugin_action_links', 'add_plugin_link', 10, 2 );
 
 function array_sanitize_callback($args)
 {
