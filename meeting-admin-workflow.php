@@ -357,16 +357,16 @@ function meeting_update_form_response()
             $cc_address = $value['e2'];
             $to_address = $value['e1'];
 
-            // Do field replacement in to: address
+            // Do field replacement in to: and cc: address
             $subfield = '{field:email_address}';
             $subwith = $_POST['email_address'];
-            $to = str_replace($subfield, $subwith, $to_address);
+            $to_address = str_replace($subfield, $subwith, $to_address);
+            $cc_address = str_replace($subfield, $subwith, $cc_address);
 
-            // $to = 'emailsendto@example.com';
             $body = $template;
             $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address, 'Cc: ' . $cc_address);
             dbg('sending mail');
-            wp_mail($to, $subject, $body, $headers);
+            wp_mail($to_address, $subject, $body, $headers);
             dbg('mail sent');
             // redirect the user to the appropriate page
             // wp_redirect( 'https://www.google.com' );
