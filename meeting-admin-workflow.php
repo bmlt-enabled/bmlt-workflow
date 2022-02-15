@@ -205,21 +205,22 @@ function bmaw_email_from_address_html()
     $from_address = get_option('bmaw_email_from_address');
     echo<<<END
     <div class="bmaw_info_text">
-    <br><br>The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form <code>Display Name &lt;example@example.com&gt;</code>
-    <br>
+    <br><br>The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form <code>Display Name &lt;example@example.com&gt;</code> or just a standard email address.
+    <br><br>
     </div>
     END;
 
     // echo "<p>The sending address of meeting update notification emails</p>";
 
-    echo '<input type="text" name="bmaw_email_from_address" value="' . $from_address . '"/>';
+    echo '<label for="bmaw_email_from_address">From Address:</label><input type="text" name="bmaw_email_from_address" value="' . $from_address . '"/>';
 }
 
 function bmaw_new_meeting_template_html()
 {
     echo<<<END
     <div class="bmaw_info_text">
-    <br><br>This template will be used when emailing meeting admins about request to create a new meeting<br>
+    <br><br>This template will be used when emailing meeting admins about request to create a new meeting.
+    <br><br>
     </div>
     END;
     // echo "<p>This template will be used when emailing meeting admins about request to create a new meeting</p>";
@@ -233,7 +234,8 @@ function bmaw_existing_meeting_template_html()
 {
     echo<<<END
     <div class="bmaw_info_text">
-    <br><br>This template will be used when emailing meeting admins about an 'other' change type<br>
+    <br><br>This template will be used when emailing meeting admins about an 'other' change type.
+    <br><br>
     </div>
     END;
 
@@ -248,7 +250,8 @@ function bmaw_other_meeting_template_html()
 {
     echo<<<END
     <div class="bmaw_info_text">
-    <br><br>This template will be used when emailing meeting admins about an 'other' change type<br>
+    <br><br>This template will be used when emailing meeting admins about an 'other' change type.
+    <br><br>
     </div>
     END;
     $content = get_option('bmaw_other_meeting_template');
