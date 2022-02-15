@@ -146,40 +146,40 @@ jQuery(document).ready(function ($) {
         if (str != "") {
           str = str.slice(0, -2);
         }
-        // put_field("hidden_orig_weekday", str);
+        put_field("hidden_orig_weekday", str);
 
         put_field("meeting_name", mdata[id].meeting_name);
-        // put_field("hidden_orig_meeting_name", mdata[id].meeting_name);
+        put_field("hidden_orig_meeting_name", mdata[id].meeting_name);
 
         put_field("start_time", mdata[id].start_time);
-        // put_field("hidden_orig_start_time", mdata[id].start_time);
+        put_field("hidden_orig_start_time", mdata[id].start_time);
 
         put_field("duration_time", mdata[id].duration_time);
-        // put_field("hidden_orig_duration_time", mdata[id].duration_time);
+        put_field("hidden_orig_duration_time", mdata[id].duration_time);
 
         put_field("location_street", mdata[id].location_street);
-        // put_field("hidden_orig_duration_time", mdata[id].duration_time);
+        put_field("hidden_orig_duration_time", mdata[id].duration_time);
 
         put_field("location_text", mdata[id].location_text);
-        // put_field("hidden_orig_duration_time", mdata[id].duration_time);
+        put_field("hidden_orig_duration_time", mdata[id].duration_time);
 
         put_field("location_info", mdata[id].location_info);
-        // put_field("hidden_orig_duration_time", mdata[id].duration_time);
+        put_field("hidden_orig_duration_time", mdata[id].duration_time);
 
         put_field("location_municipality", mdata[id].location_municipality);
-        // put_field("hidden_orig_duration_time", mdata[id].duration_time);
+        put_field("hidden_orig_duration_time", mdata[id].duration_time);
 
         put_field("location_province", mdata[id].location_province);
-        // put_field("hidden_orig_duration_time", mdata[id].duration_time);
+        put_field("hidden_orig_duration_time", mdata[id].duration_time);
 
         put_field("location_postal_code_1", mdata[id].location_postal_code_1);
-        // put_field("hidden_orig_duration_time", mdata[id].duration_time);
+        put_field("hidden_orig_duration_time", mdata[id].duration_time);
 
-        // put_field("comments", mdata[id].comments);
-        // put_field("hidden_orig_comments", mdata[id].comments);
+        put_field("comments", mdata[id].comments);
+        put_field("hidden_orig_comments", mdata[id].comments);
 
         put_field("time_zone", mdata[id].time_zone);
-        // put_field("hidden_orig_time_zone", mdata[id].time_zone);
+        put_field("hidden_orig_time_zone", mdata[id].time_zone);
 
         // clear all the formats
         var formatlookup = {};
@@ -201,10 +201,10 @@ jQuery(document).ready(function ($) {
             str = str + get_field_value_index("formats", i) + ", ";
           }
         }
-        // if (str != "") {
-        //     str = str.slice(0, -2);
-        //     put_field("hidden_orig_formats", str);
-        // }
+        if (str != "") {
+            str = str.slice(0, -2);
+            put_field("hidden_orig_formats", str);
+        }
       });
     });
 });
