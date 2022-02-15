@@ -127,16 +127,16 @@
                 <input type="date" name="date-1644381216519" id="date-1644381216519" required="required" aria-required="true">
             </div>
             <div>
-                <label for="text-1644381268053">First Name<span class="formbuilder-required">*</span></label>
-                <input type="text" name="text-1644381268053" id="text-1644381268053" required="required" aria-required="true">
+                <label for="first_name">First Name<span class="formbuilder-required">*</span></label>
+                <input type="text" name="first_name" id="first_name" required="required" aria-required="true">
             </div>
             <div>
-                <label for="text-1644381277924">Last Name<span class="formbuilder-required">*</span></label>
-                <input type="text" name="text-1644381277924" id="text-1644381277924" required="required" aria-required="true">
+                <label for="last_name">Last Name<span class="formbuilder-required">*</span></label>
+                <input type="text" name="last_name" id="last_name" required="required" aria-required="true">
             </div>
             <div>
-                <label for="text-1644381293991">Email Address<span class="formbuilder-required">*</span></label>
-                <input type="text" name="text-1644381293991" id="text-1644381293991" required="required" aria-required="true">
+                <label for="email_address">Email Address<span class="formbuilder-required">*</span></label>
+                <input type="text" name="email_address" id="email_address" required="required" aria-required="true">
             </div>
             <div>
                 <label for="checkbox-group-1644381304426" class="formbuilder-checkbox-group-label">Add this email as contact
@@ -149,8 +149,8 @@
                 </div>
             </div>
             <div>
-                <label for="number-1644381352355" class="formbuilder-number-label">Contact Number (Confidential)</label>
-                <input type="number" name="number-1644381352355" id="number-1644381352355">
+                <label for="contact_number_confidential" class="formbuilder-number-label">Contact Number (Confidential)</label>
+                <input type="number" name="contact_number_confidential" id="contact_number_confidential">
             </div>
             <div>
                 <label for="radio-group-1644381392768" class="formbuilder-radio-group-label">Are you a?</label>
@@ -170,8 +170,8 @@
                 </div>
             </div>
             <div>
-                <label for="text-1644381354649">Additional Info</label>
-                <input type="text" name="text-1644381354649" id="text-1644381354649">
+                <label for="additional_info">Additional Info</label>
+                <input type="text" name="additional_info" id="additional_info">
             </div>
             <div id="starter_pack">
                 <div>
@@ -189,4 +189,22 @@
             <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
         </div>
     </div>
+    <input type="hidden" name="hidden_orig_start_time" id="hidden_orig_start_time" value="">
+    <input type="hidden" name="hidden_new_start_time" id="hidden_new_start_time" value="">
+    <input type="hidden" name="hidden_orig_duration_time" id="hidden_orig_duration_time" value="">
+    <input type="hidden" name="hidden_new_duration_time" id="hidden_new_duration_time" value="">
+    <input type="hidden" name="hidden_orig_formats" id="hidden_orig_formats" value="">
+    <input type="hidden" name="hidden_new_formats" id="hidden_new_formats" value="">
+    <input type="hidden" name="hidden_orig_virtual_meeting_link" id="hidden_orig_virtual_meeting_link" value="">
+    <input type="hidden" name="hidden_new_virtual_meeting_link" id="hidden_new_virtual_meeting_link" value="">
+    <input type="hidden" name="hidden_orig_virtual_meeting_additional_info" id="hidden_orig_virtual_meeting_additional_info" value="">
+    <input type="hidden" name="hidden_new_virtual_meeting_additional_info" id="hidden_new_virtual_meeting_additional_info" value="">
+    <input type="hidden" name="hidden_orig_weekday" id="hidden_orig_weekday" value="">
+    <input type="hidden" name="hidden_new_weekday" id="hidden_new_weekday" value="">
+    <input type="hidden" name="hidden_orig_meeting_name" id="hidden_orig_meeting_name" value="">
+    <input type="hidden" name="hidden_new_meeting_name" id="hidden_new_meeting_name" value="">
+    <input type="hidden" name="hidden_orig_comments" id="hidden_orig_comments" value="">
+    <input type="hidden" name="hidden_new_comments" id="hidden_new_comments" value="">
+    <input type="hidden" name="hidden_orig_timezone" id="hidden_orig_timezone" value="">
+    <input type="hidden" name="hidden_new_timezone" id="hidden_new_timezone" value="">
 </form>
