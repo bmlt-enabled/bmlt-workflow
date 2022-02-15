@@ -212,7 +212,7 @@ function bmaw_email_from_address_html()
 
     // echo "<p>The sending address of meeting update notification emails</p>";
 
-    echo '<label for="bmaw_email_from_address">From Address:</label><input type="text" name="bmaw_email_from_address" value="' . $from_address . '"/>';
+    echo '<br><label for="bmaw_email_from_address"><b>From Address:</b></label><input type="text" name="bmaw_email_from_address" value="' . $from_address . '"/>';
 }
 
 function bmaw_new_meeting_template_html()
