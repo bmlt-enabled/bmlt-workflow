@@ -4,7 +4,12 @@ table.committeetable tr:hover > td {
 table.committeetable th {
     padding-left: 15px;
     padding-right: 0px;
+    padding-bottom: 0px;
     width: auto;
+}
+
+table.committeetable th {
+    padding-bottom: 0px;
 }
 
 .bmaw_info_text {
