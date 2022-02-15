@@ -4,12 +4,12 @@
     <div class="rendered-form">
         <div>
             <label for="update_reason"">Reason For Update</label>
-            <select name=" update_reason" id="update_reason">
+            <select name="update_reason" id="update_reason">
                 <option disabled="null" selected="null">select</option>
-                <option value="reason_new" id="select-1644380777485-0">New Meeting</option>
-                <option value="reason_change" id="select-1644380777485-1">Change Existing Meeting</option>
-                <option value="reason_close" id="select-1644380777485-2">Close Meeting</option>
-                <option value="reason_other" id="select-1644380777485-3">Other</option>
+                <option value="reason_new">New Meeting</option>
+                <option value="reason_change">Change Existing Meeting</option>
+                <option value="reason_close">Close Meeting</option>
+                <option value="reason_other">Other</option>
                 </select>
         </div>
         <div id="meeting_content">

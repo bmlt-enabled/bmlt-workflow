@@ -17,8 +17,7 @@ function dbg($logmsg)
 }
 function meeting_update_form()
 {
-    dbg("outputting the meeting update form");
-    include_once('templates/meeting_update.php');
+    include_once('public/meeting_update.php');
 }
 
 add_shortcode('bmaw-meeting-update-form', 'meeting_update_form');
@@ -275,8 +274,7 @@ function service_committee_table_html()
 
 function display_admin_options_page()
 {
-    dbg("outputting the admin page");
-    include_once('templates/admin_options.php');
+    include_once('admin/admin_options.php');
 }
 
 function meeting_update_form_response()
