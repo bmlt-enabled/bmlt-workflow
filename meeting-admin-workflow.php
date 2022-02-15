@@ -205,8 +205,7 @@ function bmaw_email_from_address_html()
     $from_address = get_option('bmaw_email_from_address');
     echo<<<END
     <div class="bmaw_info_text">
-    <br><br>The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form:<br>
-    Display Name <example@example.com>
+    <br><br>The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form <code>Display Name &lt;example@example.com&gt;</code>
     <br>
     </div>
     END;
