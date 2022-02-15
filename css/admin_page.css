@@ -8,6 +8,8 @@ table.committeetable th {
 }
 
 .bmaw_info_text {
-    padding-left: 5px;
+    padding-left: 15px;
     background: #fff;
+    border-left: 5px solid lightblue;
 }
+
