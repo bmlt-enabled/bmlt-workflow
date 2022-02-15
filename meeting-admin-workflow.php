@@ -203,15 +203,27 @@ function bmaw_register_setting()
 function bmaw_email_from_address_html()
 {
     $from_address = get_option('bmaw_email_from_address');
+    echo<<<END
+    <div class="bmaw_info_text">
+    <br><br>The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form:<br>
+    Display Name <example@example.com>
+    <br>
+    </div>
+    END;
 
-    echo "<p>The sending address of meeting update notification emails</p>";
+    // echo "<p>The sending address of meeting update notification emails</p>";
 
     echo '<input type="text" name="bmaw_email_from_address" value="' . $from_address . '"/>';
 }
 
 function bmaw_new_meeting_template_html()
 {
-    echo "<p>This template will be used when emailing meeting admins about request to create a new meeting</p>";
+    echo<<<END
+    <div class="bmaw_info_text">
+    <br><br>This template will be used when emailing meeting admins about request to create a new meeting<br>
+    </div>
+    END;
+    // echo "<p>This template will be used when emailing meeting admins about request to create a new meeting</p>";
     $content = get_option('bmaw_new_meeting_template');
     $editor_id = 'bmaw_new_meeting_template';
 
@@ -220,7 +232,13 @@ function bmaw_new_meeting_template_html()
 
 function bmaw_existing_meeting_template_html()
 {
-    echo "<p>This template will be used when emailing meeting admins about a change to an existing meeting</p>";
+    echo<<<END
+    <div class="bmaw_info_text">
+    <br><br>This template will be used when emailing meeting admins about an 'other' change type<br>
+    </div>
+    END;
+
+    // echo "<p>This template will be used when emailing meeting admins about a change to an existing meeting</p>";
     $content = get_option('bmaw_existing_meeting_template');
     $editor_id = 'bmaw_existing_meeting_template';
 
@@ -229,8 +247,11 @@ function bmaw_existing_meeting_template_html()
 
 function bmaw_other_meeting_template_html()
 {
-    echo "<p>This template will be used when emailing meeting admins about an 'other' change type</p>";
-
+    echo<<<END
+    <div class="bmaw_info_text">
+    <br><br>This template will be used when emailing meeting admins about an 'other' change type<br>
+    </div>
+    END;
     $content = get_option('bmaw_other_meeting_template');
     $editor_id = 'bmaw_other_meeting_template';
 
@@ -246,6 +267,7 @@ function service_committee_table_html()
     echo <<<END
     <div class="bmaw_info_text">
     <br>Configure your service committee contact details here.
+    <br>
     <br><b>Service Area</b>: The name as appears in the service area listing on the meeting form.
     <br><b>To/CC Addresses</b>: A comma seperated list of addresses to send the meeting update notification. {field:email_address} can be used to contact the form submitter.
     <br><br>
