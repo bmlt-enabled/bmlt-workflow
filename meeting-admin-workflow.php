@@ -326,7 +326,7 @@ function meeting_update_form_response()
         $service_committees = get_option('bmaw_service_committee_option_array');
         foreach ($service_committees as $key => $value)
         {
-            if($value['name'] = $_POST['service_area'])
+            if($value['name'] == $_POST['service_area'])
             {
                 dbg("* Found our service area! To = ".$value['e1']." CC: ".$value['e2']);
             }
