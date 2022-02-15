@@ -209,6 +209,6 @@
     <input type="hidden" name="hidden_new_meeting_name" id="hidden_new_meeting_name" value="">
     <input type="hidden" name="hidden_orig_comments" id="hidden_orig_comments" value="">
     <input type="hidden" name="hidden_new_comments" id="hidden_new_comments" value="">
-    <input type="hidden" name="hidden_orig_timezone" id="hidden_orig_timezone" value="">
-    <input type="hidden" name="hidden_new_timezone" id="hidden_new_timezone" value="">
+    <input type="hidden" name="hidden_orig_time_zone" id="hidden_orig_time_zone" value="">
+    <input type="hidden" name="hidden_new_time_zone" id="hidden_new_time_zone" value="">
 </form>
