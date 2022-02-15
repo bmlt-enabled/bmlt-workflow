@@ -55,11 +55,8 @@ function bmaw_options_page()
 function add_plugin_link( $plugin_actions, $plugin_file ) {
  
     $new_actions = array();
-    dbg($plugin_file);
-    dbg(basename( plugin_dir_path( __FILE__ ) ) . '/meeting-admin-workflow.php');
     if ( basename( plugin_dir_path( __FILE__ ) ) . '/meeting-admin-workflow.php' === $plugin_file ) {
-        dbg("im here");
-        $new_actions['cl_settings'] = sprintf( __( '<a href="%s">Settings</a>', 'comment-limiter' ), esc_url( admin_url( 'options-general.php?page=meeting-admin-workflow' ) ) );
+        $new_actions['cl_settings'] = sprintf( __( '<a href="%s">Settings</a>', 'comment-limiter' ), esc_url( admin_url( 'options-general.php?page=bmaw-settings' ) ) );
     }
  
     return array_merge( $new_actions, $plugin_actions );
