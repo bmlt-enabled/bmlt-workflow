@@ -255,7 +255,7 @@ function service_committee_table_html()
                 <th>Service Area</th>
                 <th>Email Address</th>
                 <th>CC</th>
-                <th style="width:auto;"></th>
+                <th></th>
             </tr>
         </thead>
     <tbody>
