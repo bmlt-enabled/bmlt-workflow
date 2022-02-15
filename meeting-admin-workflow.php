@@ -207,10 +207,6 @@ function bmaw_email_from_address_html()
     echo "<p>The sending address of meeting update notification emails</p>";
 
     echo '<input type="text" name="bmaw_email_from_address" value="'.$from_address.'"/>';
-    // $content = get_option('bmaw_new_meeting_template');
-    // $editor_id = 'bmaw_new_meeting_template';
-
-    // wp_editor($content, $editor_id, array('media_buttons' => false));
 }
 
 function bmaw_new_meeting_template_html()
@@ -294,15 +290,19 @@ function meeting_update_form_response()
             switch ($reason) {
                 case ('reason_new'):
                     $template = file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_new_meeting_email_template.html');
+                    $subject = 'New meeting notification';
                     break;
                 case ('reason_change'):
                     $template = file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_existing_meeting_email_template.html');
+                    $subject = 'Change meeting notification';
                     break;
                 case ('reason_close'):
                     $template = file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_close_meeting_email_template.html');
+                    $subject = 'Close meeting notification';
                     break;
                 case ('reason_other'):
                     $template = file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_other_meeting_email_template.html');
+                    $subject = 'Meeting notification - Other';
                     break;
                 default:
                     wp_die('invalid meeting reason');
@@ -323,11 +323,20 @@ function meeting_update_form_response()
             dbg($template);
 
         }
+        $service_committees = get_option('bmaw_service_committee_option_array');
+        foreach ($service_committees as $key => $value)
+        {
+            if($value['name'] = $_POST['service_area'])
+            {
+                dbg("* Found our service area! To = ".$value['e1']." CC: ".$value['e2']);
+            }
+        }
+
+        $from_address = get_option('bmaw_email_from_address');
 
         $to = 'emailsendto@example.com';
-        $subject = 'The subject';
-        $body = 'The email body content';
-        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: My Site Name <support@example.com>');
+        $body = $template;
+        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: '.$from_address);
         dbg('sending mail');
         wp_mail($to, $subject, $body, $headers);
         dbg('mail sent');
