@@ -310,7 +310,27 @@ function meeting_update_form_response()
             dbg("** template before");
             dbg($template);
             // field substitution
-            $subfields = array("hidden_orig_meeting_name","hidden_new_meeting_name","first_name","last_name");
+            $subfields = array(
+                "hidden_orig_start_time",
+                "hidden_new_start_time",
+                "hidden_orig_duration_time",
+                "hidden_new_duration_time",
+                "hidden_orig_formats",
+                "hidden_new_formats",
+                "hidden_orig_virtual_meeting_link",
+                "hidden_new_virtual_meeting_link",
+                "hidden_orig_virtual_meeting_additional_info",
+                "hidden_new_virtual_meeting_additional_info" ,
+                "hidden_orig_weekday",
+                "hidden_new_weekday",
+                "hidden_orig_meeting_name" ,
+                "hidden_new_meeting_name",
+                "hidden_orig_comments" ,
+                "hidden_new_comments",
+                "hidden_orig_time_zone" ,
+                "hidden_new_time_zone",            
+                "first_name",
+                "last_name");
             // {field:hidden_orig_meeting_name}
             foreach ($subfields as $field)
             {
