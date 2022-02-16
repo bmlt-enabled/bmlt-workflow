@@ -94,7 +94,7 @@ jQuery(document).ready(function ($) {
     .then((data) => {
       let fdata = data;
       for (let i = 0, length = fdata.length; i < length; i++) {
-        let name = " <b>(" + fdata[i].key_string + ") " + fdata[i].name_string + "</b> - " + fdata[i].description_string;
+        let name = " (" + fdata[i].key_string + ") " + fdata[i].name_string + " - " + fdata[i].description_string;
         add_checkbox_to_ul(name, fdata[i].key_string, "formats");
       }
     });
