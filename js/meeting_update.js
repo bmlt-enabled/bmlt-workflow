@@ -64,10 +64,13 @@ jQuery(document).ready(function ($) {
     let container = $("#" + container_id);
     let next_id = $("#" + container_id + " tr").length;
     let row = '<tr><td>'
-
-    row.append($("<input />", { type: "checkbox", id: container_id + "-" + next_id, value: formatcode }));
-    row.append('</td><td>('+formatcode+')</td><td>'+name+'</td><td>'+description+'</td></tr>')
-    container.append(row);
+    $('#'+container_id+' > tbody:last-child').append('<tr>'+
+    '<td><input type="checkbox" id="'+container_id+'"-'+next_id+' value="'+formatcode+'"></input></td>' +
+    '<td>('+formatcode+')</td>'+
+    '<td>'+name+'</td>'+
+    '<td>'+description+'</td>'+
+    '</tr>'
+    );
   }
 
   // meeting logic
