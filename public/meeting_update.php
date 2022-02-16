@@ -186,6 +186,7 @@
                     <option value="Regional Trusted Servant">Regional Trusted Servant</option>
                     <option value="NA Member">NA Member</option>
                     <option value="Not A Member">Not A Member</option>
+                </select>
             </div>
             <br>
             <div>
