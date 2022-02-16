@@ -50,22 +50,12 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  function add_checkbox_to_ul(name, inputvalue, container_id) {
-    let container = $("#" + container_id + " ul");
-    let next_id = $("#" + container_id + " ul li").length;
-    let li = $("<li>");
-
-    li.append($("<input />", { type: "checkbox", id: container_id + "-" + next_id, value: inputvalue }));
-    li.append($("<label />", { for: container_id + "-" + next_id, text: name }));
-    container.append(li);
-  }
-
   function add_checkbox_row_to_table(formatcode, name, description, container_id) {
     let container = $("#" + container_id);
     let next_id = $("#" + container_id + " tr").length;
     let row = '<tr><td>'
     $('#'+container_id+' > tbody:last-child').append('<tr>'+
-    '<td><input type="checkbox" id="'+container_id+'"-'+next_id+' value="'+formatcode+'"></input></td>' +
+    '<td><input type="checkbox" id="'+container_id+'-'+next_id+'" value="'+formatcode+'"></input></td>' +
     '<td>('+formatcode+')</td>'+
     '<td>'+name+'</td>'+
     '<td>'+description+'</td>'+
@@ -198,8 +188,8 @@ jQuery(document).ready(function ($) {
         // clear all the formats
         var formatlookup = {};
         for (var i = 0; i < $("#formats ul li").length; i++) {
-          if (get_field_checked_index("formats", i) == true) {
-            put_field_checked_index("formats", i, false);
+          if (get_field_checked_index("format-table", i) == true) {
+            put_field_checked_index("format-table", i, false);
           }
           formatlookup[$("#formats-" + i).attr("value")] = i;
         }
@@ -211,8 +201,8 @@ jQuery(document).ready(function ($) {
         }
         var str = "";
         for (var i = 0; i < $("#formats ul li").length; i++) {
-          if (get_field_checked_index("formats", i)) {
-            str = str + get_field_value_index("formats", i) + ", ";
+          if (get_field_checked_index("format-table", i)) {
+            str = str + get_field_value_index("format-table", i) + ", ";
           }
         }
         if (str != "") {
