@@ -187,20 +187,20 @@ jQuery(document).ready(function ($) {
 
         // clear all the formats
         var formatlookup = {};
-        for (var i = 0; i < $("#formats ul li").length; i++) {
+        for (var i = 0; i < $("#format-table tr").length; i++) {
           if (get_field_checked_index("format-table", i) == true) {
             put_field_checked_index("format-table", i, false);
           }
-          formatlookup[$("#formats-" + i).attr("value")] = i;
+          formatlookup[$("#format-table-" + i).attr("value")] = i;
         }
         // set the new formats
         var fmtspl = mdata[id].formats.split(",");
         for (var i = 0; i < fmtspl.length; i++) {
           var j = formatlookup[fmtspl[i]];
-          put_field_checked_index("formats", j, true);
+          put_field_checked_index("format-table", j, true);
         }
         var str = "";
-        for (var i = 0; i < $("#formats ul li").length; i++) {
+        for (var i = 0; i < $("#format-table tr").length; i++) {
           if (get_field_checked_index("format-table", i)) {
             str = str + get_field_value_index("format-table", i) + ", ";
           }
