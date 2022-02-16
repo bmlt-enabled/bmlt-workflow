@@ -9,7 +9,8 @@ table.committeetable th {
 }
 
 table.committeetable td {
-    padding-bottom: 0px;
+    padding-bottom: 5px;
+    padding-top: 5px;
 }
 
 .bmaw_info_text {
