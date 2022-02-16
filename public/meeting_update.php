@@ -131,6 +131,7 @@
             <div id="formats">
                 <label for="format-group">Meeting Format</label>
                 <table id="format-table">
+                    <tbody></tbody>
                 </table>
             </div>
             <br><div>
