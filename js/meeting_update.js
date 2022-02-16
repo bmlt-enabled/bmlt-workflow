@@ -60,6 +60,16 @@ jQuery(document).ready(function ($) {
     container.append(li);
   }
 
+  function add_checkbox_row_to_table(formatcode, name, description, container_id) {
+    let container = $("#" + container_id);
+    let next_id = $("#" + container_id + " tr").length;
+    let row = '<tr><td>'
+
+    row.append($("<input />", { type: "checkbox", id: container_id + "-" + next_id, value: formatcode }));
+    row.append('</td><td>('+formatcode+')</td><td>'+name+'</td><td>'+description+'</td></tr>')
+    container.append(row);
+  }
+
   // meeting logic
   $("#meeting_selector").hide();
   $("#other_reason").hide();
@@ -94,8 +104,9 @@ jQuery(document).ready(function ($) {
     .then((data) => {
       let fdata = data;
       for (let i = 0, length = fdata.length; i < length; i++) {
-        let name = " (" + fdata[i].key_string + ") " + fdata[i].name_string + " - " + fdata[i].description_string;
-        add_checkbox_to_ul(name, fdata[i].key_string, "formats");
+        // let name = " (" + fdata[i].key_string + ") " + fdata[i].name_string + " - " + fdata[i].description_string;
+        // add_checkbox_to_ul(name, fdata[i].key_string, "formats");
+        add_checkbox_row_to_table(fdata[i].key_string,fdata[i].name_string,fdata[i].description_string, "format-table")
       }
     });
 

@@ -134,7 +134,7 @@
             </div>
             <br><div>
                 <label for=" virtual_meeting_link">Online Meeting Link</label>
-                    <input type="text" name="virtual_meeting_link" id="virtual_meeting_link">
+                    <input type="text" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
             </div>
             <br>
             <div>
@@ -159,7 +159,7 @@
             <br>
             <div>
                 <label for="email_address">Email Address<span class="formbuilder-required">*</span></label>
-                <input type="text" name="email_address" id="email_address" required="required" aria-required="true">
+                <input type="text" name="email_address" id="email_address" size="50" required="required" aria-required="true">
             </div>
             <br>
             <div>
