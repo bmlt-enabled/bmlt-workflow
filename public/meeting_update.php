@@ -130,7 +130,8 @@
             <br>
             <div id="formats">
                 <label for="format-group">Meeting Format</label>
-                <ul style="list-style-type:none;""></ul>
+                <table id="format-table">
+                </table>
             </div>
             <br><div>
                 <label for=" virtual_meeting_link">Online Meeting Link</label>
