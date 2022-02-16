@@ -17,9 +17,11 @@ function dbg($logmsg)
 }
 function meeting_update_form()
 {
-    include_once('public/meeting_update.php');
+    ob_start();
+    include('public/meeting_update.php');
+    $content = ob_get_clean();
+    return $content;
 }
-
 
 function enqueue_form_deps()
 {
@@ -52,14 +54,15 @@ function bmaw_options_page()
     );
 }
 
-function add_plugin_link( $plugin_actions, $plugin_file ) {
- 
+function add_plugin_link($plugin_actions, $plugin_file)
+{
+
     $new_actions = array();
-    if ( basename( plugin_dir_path( __FILE__ ) ) . '/meeting-admin-workflow.php' === $plugin_file ) {
-        $new_actions['cl_settings'] = sprintf( __( '<a href="%s">Settings</a>', 'comment-limiter' ), esc_url( admin_url( 'options-general.php?page=bmaw-settings' ) ) );
+    if (basename(plugin_dir_path(__FILE__)) . '/meeting-admin-workflow.php' === $plugin_file) {
+        $new_actions['cl_settings'] = sprintf(__('<a href="%s">Settings</a>', 'comment-limiter'), esc_url(admin_url('options-general.php?page=bmaw-settings')));
     }
- 
-    return array_merge( $new_actions, $plugin_actions );
+
+    return array_merge($new_actions, $plugin_actions);
 }
 
 // actions, shortcodes and filters
@@ -70,7 +73,7 @@ add_action('admin_menu', 'bmaw_options_page');
 add_action('admin_enqueue_scripts', 'bmaw_admin_css');
 add_action('admin_init',  'bmaw_register_setting');
 add_shortcode('bmaw-meeting-update-form', 'meeting_update_form');
-add_filter( 'plugin_action_links', 'add_plugin_link', 10, 2 );
+add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
 
 function array_sanitize_callback($args)
 {
@@ -214,7 +217,7 @@ function bmaw_register_setting()
 function bmaw_email_from_address_html()
 {
     $from_address = get_option('bmaw_email_from_address');
-    echo<<<END
+    echo <<<END
     <div class="bmaw_info_text">
     <br>The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form <code>Display Name &lt;example@example.com&gt;</code> or just a standard email address.
     <br><br>
@@ -228,7 +231,7 @@ function bmaw_email_from_address_html()
 
 function bmaw_new_meeting_template_html()
 {
-    echo<<<END
+    echo <<<END
     <div class="bmaw_info_text">
     <br>This template will be used when emailing meeting admins about request to create a new meeting.
     <br><br>
@@ -243,7 +246,7 @@ function bmaw_new_meeting_template_html()
 
 function bmaw_existing_meeting_template_html()
 {
-    echo<<<END
+    echo <<<END
     <div class="bmaw_info_text">
     <br>This template will be used when emailing meeting admins about an 'other' change type.
     <br><br>
@@ -259,7 +262,7 @@ function bmaw_existing_meeting_template_html()
 
 function bmaw_other_meeting_template_html()
 {
-    echo<<<END
+    echo <<<END
     <div class="bmaw_info_text">
     <br>This template will be used when emailing meeting admins about an 'other' change type.
     <br><br>
@@ -311,7 +314,10 @@ function service_committee_table_html()
 
 function display_admin_options_page()
 {
-    include_once('admin/admin_options.php');
+    ob_start();
+    include('admin/admin_options.php');
+    $content = ob_get_clean();
+    return $content;
 }
 
 function meeting_update_form_response()
