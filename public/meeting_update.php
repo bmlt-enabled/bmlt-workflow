@@ -105,7 +105,7 @@
             <br>
             <div>
                 <label for="location_street">Street Address</label>
-                <input type="text" name="location_street" id="location_street">
+                <input type="text" name="location_street" size="50" id="location_street">
             </div>
             <br>
             <div>
@@ -193,7 +193,7 @@
             <br>
             <div>
                 <label for="additional_info">Additional Info</label>
-                <input type="text" name="additional_info" id="additional_info">
+                <textarea name="additional_info" id="additional_info" rows="5" cols="50"></textarea>
             </div>
             <br>
             <div id="starter_pack">
