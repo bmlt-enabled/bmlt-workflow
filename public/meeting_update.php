@@ -129,7 +129,7 @@
             </div>
             <br>
             <div id="formats">
-                <label for="format-group">Meeting Format</label>
+                <label for="format-table">Meeting Format</label>
                 <table id="format-table">
                     <tbody></tbody>
                 </table>
