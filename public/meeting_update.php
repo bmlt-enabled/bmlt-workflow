@@ -24,7 +24,7 @@
             </div>
             <br><div>
                 <label for="meeting_name">Group Name</label>
-                <input type="text" name="meeting_name" id="meeting_name">
+                <input type="text" name="meeting_name" size="50" id="meeting_name">
             </div>
             <br><div>
                 <label for="day_of_the_week">Group Meets On Which Days<span class="formbuilder-required">*</span></label>
@@ -59,7 +59,7 @@
                     </li>
                 </ul>
             </div>
-            <br><div>
+            <div>
                 <label for="start_time">Start Time<span class="formbuilder-required">*</span></label>
                 <input type="text" name="start_time" id="start_time" required="required" aria-required="true">
             </div>
