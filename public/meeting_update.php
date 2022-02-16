@@ -13,20 +13,20 @@
                 </select>
         </div>
         <div id="meeting_content">
-            <div id="meeting_selector">
+            <br><div id="meeting_selector">
                 <select class="select2-ajax" id="meeting-searcher">
                     <option></option>
                 </select>
             </div>
-            <div id="other_reason">
+            <br><div id="other_reason">
                 <label for="other_reason">Other Reason</label>
                 <input type="text" name="other_reason" id="other_reason">
             </div>
-            <div>
+            <br><div>
                 <label for="meeting_name">Group Name</label>
                 <input type="text" name="meeting_name" id="meeting_name">
             </div>
-            <div>
+            <br><div>
                 <label for="day_of_the_week">Group Meets On Which Days<span class="formbuilder-required">*</span></label>
                 <ul style="list-style-type:none;" id="day_of_the_week">
                     <li>
@@ -59,15 +59,15 @@
                     </li>
                 </ul>
             </div>
-            <div>
+            <br><div>
                 <label for="start_time">Start Time<span class="formbuilder-required">*</span></label>
                 <input type="text" name="start_time" id="start_time" required="required" aria-required="true">
             </div>
-            <div>
+            <br><div>
                 <label for="duration_time">Duration</label>
                 <input type="text" name="duration_time" id="duration_time" required="required" aria-required="true">
             </div>
-            <div>
+            <br><div>
                 <label for="time_zone">Time Zone</label>
                 <select name="time_zone" id="time_zone">
                     <option value="Australia/Adelaide">Australian Central Time (Adelaide)</option>
@@ -78,7 +78,7 @@
                     <option value="Australia/Perth">Australian Western Time (Perth)</option>
                 </select>
             </div>
-            <div>
+            <br><div>
                 <label for="service_area">Committee</label>
                 <select name="service_area" id="service_area">
                     <?php
@@ -90,59 +90,59 @@
                     ?>
                 </select>
             </div>
-            <div>
+            <br><div>
                 <label for="location_text">Location (eg: a building name)</label>
                 <input type="text" name="location_text" id="location_text">
             </div>
-            <div>
+            <br><div>
                 <label for="location_street">Street Address</label>
                 <input type="text" name="location_street" id="location_street">
             </div>
-            <div>
+            <br><div>
                 <label for="location_info">Extra Location Info (eg: Near the park)</label>
                 <input type="text" name="location_info" id="location_info">
             </div>
-            <div>
+            <br><div>
                 <label for="location_municipality">City/Town/Suburb</label>
                 <input type="text" name="location_municipality" id="location_municipality">
             </div>
-            <div>
+            <br><div>
                 <label for="location_province">State</label>
                 <input type="text" name="location_province" id="location_province">
             </div>
-            <div>
+            <br><div>
                 <label for="location_postal_code_1">Postcode</label>
                 <input type="number" name="location_postal_code_1" id="location_postal_code_1">
             </div>
-            <div id="formats">
+            <br><div id="formats">
                 <label for="format-group">Meeting Format</label>
                 <ul style="list-style-type:none;""></ul>
             </div>
-            <div>
+            <br><div>
                 <label for="virtual_meeting_link">Online Meeting Link</label>
                     <input type="text" name="virtual_meeting_link" id="virtual_meeting_link">
             </div>
-            <div>
+            <br><div>
                 <label for="comments">Comments</label>
                     <input type="text" name="comments" id="comments">
             </div>
-            <div>
+            <br><div>
                 <label for="date-1644381216519" class="formbuilder-date-label">Date Change Required<span class="formbuilder-required">*</span></label>
                 <input type="date" name="date-1644381216519" id="date-1644381216519" required="required" aria-required="true">
             </div>
-            <div>
+            <br><div>
                 <label for="first_name">First Name<span class="formbuilder-required">*</span></label>
                 <input type="text" name="first_name" id="first_name" required="required" aria-required="true">
             </div>
-            <div>
+            <br><div>
                 <label for="last_name">Last Name<span class="formbuilder-required">*</span></label>
                 <input type="text" name="last_name" id="last_name" required="required" aria-required="true">
             </div>
-            <div>
+            <br><div>
                 <label for="email_address">Email Address<span class="formbuilder-required">*</span></label>
                 <input type="text" name="email_address" id="email_address" required="required" aria-required="true">
             </div>
-            <div>
+            <br><div>
                 <label for="checkbox-group-1644381304426" class="formbuilder-checkbox-group-label">Add this email as contact
                     address for the group</label>
                 <div class="checkbox-group">
@@ -152,11 +152,11 @@
                     </div>
                 </div>
             </div>
-            <div>
+            <br><div>
                 <label for="contact_number_confidential" class="formbuilder-number-label">Contact Number (Confidential)</label>
                 <input type="number" name="contact_number_confidential" id="contact_number_confidential">
             </div>
-            <div>
+            <br><div>
                 <label for="radio-group-1644381392768" class="formbuilder-radio-group-label">Are you a?</label>
                 <div class="radio-group">
                     <div>
@@ -173,11 +173,11 @@
                     </div>
                 </div>
             </div>
-            <div>
+            <br><div>
                 <label for="additional_info">Additional Info</label>
                 <input type="text" name="additional_info" id="additional_info">
             </div>
-            <div id="starter_pack">
+            <br><div id="starter_pack">
                 <div>
                     <label for="select-1644381474827" class="formbuilder-select-label">Starter Kit Required</label>
                     <select name="select-1644381474827" id="select-1644381474827">
@@ -185,7 +185,7 @@
                         <option value="no" id="select-1644381474827-1">No</option>
                     </select>
                 </div>
-                <div>
+                <br><div>
                     <label for="text-1644381513895">Starter Kit Postal Address</label>
                     <input type="text" name="text-1644381513895" id="text-1644381513895">
                 </div>
