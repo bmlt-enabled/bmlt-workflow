@@ -1,3 +1,4 @@
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 <form action="<?php echo esc_url(admin_url('admin-post.php')); ?>" method="post" id="meeting_update_form">
     <input type="hidden" name="action" value="meeting_update_form_response">
     <input type="hidden" name="meeting_update_form_nonce" value="<?php echo wp_create_nonce('meeting_update_form_nonce'); ?>" />
@@ -31,7 +32,7 @@
             </div>
             <br>
             <div>
-                <label for="day_of_the_week">Group Meets On Which Days<span class="formbuilder-required">*</span></label>
+                <label for="day_of_the_week">Group Meets On Which Days<span class="meeting-update-required">*</span></label>
                 <ul style="list-style-type:none;" id="day_of_the_week">
                     <li>
                         <input name="Sunday" id="weekday-0" value="Sunday" type="checkbox">
@@ -64,7 +65,7 @@
                 </ul>
             </div>
             <div>
-                <label for="start_time">Start Time<span class="formbuilder-required">*</span></label>
+                <label for="start_time">Start Time<span class="meeting-update-required">*</span></label>
                 <input type="text" name="start_time" id="start_time" required="required" aria-required="true">
             </div>
             <br>
@@ -145,23 +146,23 @@
             </div>
             <br>
             <div>
-                <label for="date-1644381216519" class="formbuilder-date-label">Date Change Required<span class="formbuilder-required">*</span></label>
+                <label for="date-1644381216519" class="formbuilder-date-label">Date Change Required<span class="meeting-update-required">*</span></label>
                 <input type="date" name="date-1644381216519" id="date-1644381216519" required="required" aria-required="true">
             </div>
             <br>
             <div>
-                <label for="first_name">First Name<span class="formbuilder-required">*</span></label>
-                <input type="text" name="first_name" id="first_name" required="required" aria-required="true">
+                <label for="first_name">First Name<span class="meeting-update-required">*</span></label>
+                <input type="text" name="first_name" id="first_name" required>
             </div>
             <br>
             <div>
-                <label for="last_name">Last Name<span class="formbuilder-required">*</span></label>
-                <input type="text" name="last_name" id="last_name" required="required" aria-required="true">
+                <label for="last_name">Last Name<span class="meeting-update-required">*</span></label>
+                <input type="text" name="last_name" id="last_name" required>
             </div>
             <br>
             <div>
-                <label for="email_address">Email Address<span class="formbuilder-required">*</span></label>
-                <input type="text" name="email_address" id="email_address" size="50" required="required" aria-required="true">
+                <label for="email_address">Email Address<span class="meeting-update-required">*</span></label>
+                <input type="email" name="email_address" id="email_address" size="50" required>
             </div>
             <br>
             <div>

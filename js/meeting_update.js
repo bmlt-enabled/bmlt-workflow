@@ -4,6 +4,9 @@ var mdata = [];
 var mtext = [];
 
 jQuery(document).ready(function ($) {
+
+  $('#meeting_update_form').validate();
+
   var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   function get_field(fieldname) {
