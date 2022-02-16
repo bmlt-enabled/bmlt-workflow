@@ -317,7 +317,7 @@ function display_admin_options_page()
     ob_start();
     include('admin/admin_options.php');
     $content = ob_get_clean();
-    return $content;
+    echo $content;
 }
 
 function meeting_update_form_response()
