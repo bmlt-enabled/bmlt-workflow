@@ -94,13 +94,26 @@ function bmaw_register_setting()
         'bmaw_service_committee_option_array',
         array(
             'type' => 'array',
-            'description' => 'bmlt service committee array',
+            'description' => 'bmaw service committee array',
             'sanitize_callback' => 'array_sanitize_callback',
             'show_in_rest' => false,
             'default' => array(
                 "0" => array("name" => "Committee1", "e1" => "email 1", "e2" => "email 1.1"),
                 "1" => array("name" => "Committee2", "e1" => "email 2", "e2" => "email 2.1"),
             )
+        )
+    );
+    // https://na.org.au/main_server/
+
+    register_setting(
+        'bmaw-settings-group', // settings group name
+        'bmaw_bmlt_server_address',
+        array(
+            'type' => 'array',
+            'description' => 'bmlt server address',
+            'sanitize_callback' => 'array_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => 'https://na.org.au/main_server/'
         )
     );
 
@@ -159,6 +172,19 @@ function bmaw_register_setting()
         'bmaw-settings'
     );
 
+    // bmaw_bmlt_address
+
+    add_settings_field(
+        'bmaw_bmlt_address',
+        'BMLT Server Address',
+        'bmlt_server_address_html',
+        'bmaw-settings',
+        'bmaw-settings-section-id',
+        array(
+            'label_for' => 'bmaw_service_committee_option_array'
+        )
+    );
+
     add_settings_field(
         'bmaw_service_committee_option_array',
         'Service Committee Configuration',
@@ -214,6 +240,19 @@ function bmaw_register_setting()
     );
 }
 
+function bmaw_bmlt_server_address_html()
+{
+    $bmlt_address = get_option('bmaw_bmlt_server_address');
+    echo <<<END
+    <div class="bmaw_info_text">
+    <br>Your BMLT server address, used to populate the meeting list for meeting changes and closures. For example: <code>https://na.org.au/main_server/</code>
+    <br><br>
+    </div>
+    END;
+
+    echo '<br><label for="bmaw_bmlt_server_address"><b>Server Address:</b></label><input type="url" size="50" name="bmaw_bmlt_server_address" value="' . $bmlt_address . '"/>';
+}
+
 function bmaw_email_from_address_html()
 {
     $from_address = get_option('bmaw_email_from_address');
@@ -224,7 +263,6 @@ function bmaw_email_from_address_html()
     </div>
     END;
 
-    // echo "<p>The sending address of meeting update notification emails</p>";
 
     echo '<br><label for="bmaw_email_from_address"><b>From Address:</b></label><input type="text" size="50" name="bmaw_email_from_address" value="' . $from_address . '"/>';
 }
