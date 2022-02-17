@@ -1,4 +1,5 @@
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+
 <form action="<?php echo esc_url(admin_url('admin-post.php')); ?>" method="post" id="meeting_update_form">
     <input type="hidden" name="action" value="meeting_update_form_response">
     <input type="hidden" name="meeting_update_form_nonce" value="<?php echo wp_create_nonce('meeting_update_form_nonce'); ?>" />
@@ -6,7 +7,7 @@
         <div>
             <label for="update_reason"">Reason For Update</label>
             <select name=" update_reason" id="update_reason">
-                <option disabled="null" selected="null">select</option>
+                <option disabled="null" selected="null">Select Reason...</option>
                 <option value="reason_new">New Meeting</option>
                 <option value="reason_change">Change Existing Meeting</option>
                 <option value="reason_close">Close Meeting</option>
@@ -14,9 +15,8 @@
                 </select>
         </div>
         <div id="meeting_content">
-            <br>
             <div id="meeting_selector">
-                <select class="select2-ajax" id="meeting-searcher">
+                <br><select class="select2-ajax" id="meeting-searcher">
                     <option></option>
                 </select>
             </div>
@@ -32,7 +32,7 @@
             </div>
             <br>
             <div>
-                <label for="day_of_the_week">Group Meets On Which Days<span class="meeting-update-required">*</span></label>
+                <label for="day_of_the_week">Group Meets On Which Days<span class="bmaw-required-field">*</span></label>
                 <ul style="list-style-type:none;" id="day_of_the_week">
                     <li>
                         <input name="Sunday" id="weekday-0" value="Sunday" type="checkbox">
@@ -65,13 +65,13 @@
                 </ul>
             </div>
             <div>
-                <label for="start_time">Start Time<span class="meeting-update-required">*</span></label>
-                <input type="text" name="start_time" id="start_time" required="required" aria-required="true">
+                <label for="start_time">Start Time<span class="bmaw-required-field">*</span></label>
+                <input type="text" name="start_time" id="start_time" required>
             </div>
             <br>
             <div>
-                <label for="duration_time">Duration</label>
-                <input type="text" name="duration_time" id="duration_time" required="required" aria-required="true">
+                <label for="duration_time">Duration<span class="bmaw-required-field">*</span></label>
+                <input type="text" name="duration_time" id="duration_time" required>
             </div>
             <br>
             <div>
@@ -87,7 +87,7 @@
             </div>
             <br>
             <div>
-                <label for="service_area">Committee</label>
+                <label for="service_area">Service Committee (or Other if not known)</label>
                 <select name="service_area" id="service_area">
                     <?php
                     $arr = get_option('bmaw_service_committee_option_array');
@@ -126,7 +126,7 @@
             <br>
             <div>
                 <label for="location_postal_code_1">Postcode</label>
-                <input type="number" name="location_postal_code_1" id="location_postal_code_1">
+                <input type="number" name="location_postal_code_1" max="9999" id="location_postal_code_1">
             </div>
             <br>
             <div id="formats">
@@ -137,7 +137,7 @@
             </div>
             <br><div>
                 <label for=" virtual_meeting_link">Online Meeting Link</label>
-                    <input type="text" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
+                    <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
             </div>
             <br>
             <div>
@@ -146,22 +146,22 @@
             </div>
             <br>
             <div>
-                <label for="date-1644381216519" class="formbuilder-date-label">Date Change Required<span class="meeting-update-required">*</span></label>
-                <input type="date" name="date-1644381216519" id="date-1644381216519" required="required" aria-required="true">
+                <label for="date_required">Date Change Required<span class="bmaw-required-field">*</span></label>
+                <input type="date" name="date_required" id="date_required" required>
             </div>
             <br>
             <div>
-                <label for="first_name">First Name<span class="meeting-update-required">*</span></label>
+                <label for="first_name">First Name<span class="bmaw-required-field">*</span></label>
                 <input type="text" name="first_name" id="first_name" required>
             </div>
             <br>
             <div>
-                <label for="last_name">Last Name<span class="meeting-update-required">*</span></label>
+                <label for="last_name">Last Name<span class="bmaw-required-field">*</span></label>
                 <input type="text" name="last_name" id="last_name" required>
             </div>
             <br>
             <div>
-                <label for="email_address">Email Address<span class="meeting-update-required">*</span></label>
+                <label for="email_address">Email Address<span class="bmaw-required-field">*</span></label>
                 <input type="email" name="email_address" id="email_address" size="50" required>
             </div>
             <br>
@@ -211,7 +211,7 @@
                     <input type="text" name="text-1644381513895" id="text-1644381513895">
                 </div>
             </div>
-            <p class="submit"><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
+            <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
         </div>
     </div>
     <input type="hidden" name="hidden_orig_start_time" id="hidden_orig_start_time" value="">
