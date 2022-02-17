@@ -177,7 +177,7 @@ function bmaw_register_setting()
     add_settings_field(
         'bmaw_bmlt_address',
         'BMLT Server Address',
-        'bmlt_server_address_html',
+        'bmaw_bmlt_server_address_html',
         'bmaw-settings',
         'bmaw-settings-section-id',
         array(
@@ -188,7 +188,7 @@ function bmaw_register_setting()
     add_settings_field(
         'bmaw_service_committee_option_array',
         'Service Committee Configuration',
-        'service_committee_table_html',
+        'bmaw_service_committee_table_html',
         'bmaw-settings',
         'bmaw-settings-section-id',
         array(
@@ -312,7 +312,7 @@ function bmaw_other_meeting_template_html()
     wp_editor($content, $editor_id, array('media_buttons' => false));
 }
 
-function service_committee_table_html()
+function bmaw_service_committee_table_html()
 {
 
     // dbg("printing the text field");
