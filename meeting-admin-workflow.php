@@ -251,7 +251,7 @@ function bmaw_bmlt_server_address_html()
     END;
 
     echo '<br><label for="bmaw_bmlt_server_address"><b>Server Address:</b></label><input type="url" size="50" name="bmaw_bmlt_server_address" value="' . $bmlt_address . '"/>';
-    echo '<br><button type="button" id="bmaw_test_bmlt_server">Test Server Address</button>';
+    echo '<button type="button" id="bmaw_test_bmlt_server">Test Server Address</button>';
 }
 
 function bmaw_email_from_address_html()
@@ -349,6 +349,7 @@ function bmaw_service_committee_table_html()
     }
     echo '<tr><td></td><td></td><td></td><td><span id="bmaw-service-committee-new-row" class="dashicons dashicons-insert"></span></td></tr>';
     echo '</tbody></table>';
+    echo '<br><button type="button" id="bmaw_service_committee_option_array_reload">Reload saved</button>';
 }
 
 function display_admin_options_page()
