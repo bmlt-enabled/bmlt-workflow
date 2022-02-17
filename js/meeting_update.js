@@ -7,6 +7,17 @@ jQuery(document).ready(function ($) {
 
   $('#meeting_update_form').validate();
 
+  $('#starter_kit_required').on('change', function(){
+    if (this.value == 'Yes')
+    {
+      $('#starter_kit_postal_address').show();
+    }
+    else
+    {
+      $('#starter_kit_postal_address').hide();
+    }
+  });  
+
   var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   function get_field(fieldname) {

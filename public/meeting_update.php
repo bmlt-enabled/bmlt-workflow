@@ -200,15 +200,15 @@
             <div id="starter_pack">
                 <div>
                     <label for="select-1644381474827" class="formbuilder-select-label">Starter Kit Required</label>
-                    <select name="select-1644381474827" id="select-1644381474827">
+                    <select name="starter_kit_required" id="starter_kit_required">
                         <option value="yes" selected="true" id="select-1644381474827-0">Yes</option>
                         <option value="no" id="select-1644381474827-1">No</option>
                     </select>
                 </div>
                 <br>
                 <div>
-                    <label for="text-1644381513895">Starter Kit Postal Address</label>
-                    <input type="text" name="text-1644381513895" id="text-1644381513895">
+                    <label for="starter_kit_postal_address">Starter Kit Postal Address</label>
+                    <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" rows="5" cols="50"></textarea>
                 </div>
             </div>
             <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
