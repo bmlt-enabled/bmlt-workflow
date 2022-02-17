@@ -252,6 +252,8 @@ function bmaw_bmlt_server_address_html()
 
     echo '<br><label for="bmaw_bmlt_server_address"><b>Server Address:</b></label><input type="url" size="50" name="bmaw_bmlt_server_address" value="' . $bmlt_address . '"/>';
     echo '<button type="button" id="bmaw_test_bmlt_server">Test Server Address</button>';
+    echo '<br>';
+
 }
 
 function bmaw_email_from_address_html()
@@ -266,6 +268,8 @@ function bmaw_email_from_address_html()
 
 
     echo '<br><label for="bmaw_email_from_address"><b>From Address:</b></label><input type="text" size="50" name="bmaw_email_from_address" value="' . $from_address . '"/>';
+    echo '<br>';
+
 }
 
 function bmaw_new_meeting_template_html()
@@ -281,6 +285,8 @@ function bmaw_new_meeting_template_html()
     $editor_id = 'bmaw_new_meeting_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
+    echo '<br>';
+
 }
 
 function bmaw_existing_meeting_template_html()
@@ -297,6 +303,8 @@ function bmaw_existing_meeting_template_html()
     $editor_id = 'bmaw_existing_meeting_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
+    echo '<br>';
+
 }
 
 function bmaw_other_meeting_template_html()
@@ -311,6 +319,8 @@ function bmaw_other_meeting_template_html()
     $editor_id = 'bmaw_other_meeting_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
+    echo '<br>';
+
 }
 
 function bmaw_service_committee_table_html()
@@ -350,6 +360,7 @@ function bmaw_service_committee_table_html()
     echo '<tr><td></td><td></td><td></td><td><span id="bmaw-service-committee-new-row" class="dashicons dashicons-insert"></span></td></tr>';
     echo '</tbody></table>';
     echo '<br><button type="button" id="bmaw_service_committee_option_array_reload">Reload saved</button>';
+    echo '<br>';
 }
 
 function display_admin_options_page()
