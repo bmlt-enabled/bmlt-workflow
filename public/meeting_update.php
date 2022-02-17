@@ -199,10 +199,10 @@
             <br>
             <div id="starter_pack">
                 <div>
-                    <label for="select-1644381474827" class="formbuilder-select-label">Starter Kit Required</label>
+                    <label for="starter_kit_required">Starter Kit Required</label>
                     <select name="starter_kit_required" id="starter_kit_required">
-                        <option value="yes" selected="true" id="select-1644381474827-0">Yes</option>
-                        <option value="no" id="select-1644381474827-1">No</option>
+                        <option value="yes" selected="true" id="starter_kit_required_yes">Yes</option>
+                        <option value="no" id="starter_kit_required_no">No</option>
                     </select>
                 </div>
                 <br>

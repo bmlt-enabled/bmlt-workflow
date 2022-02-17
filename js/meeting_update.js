@@ -8,7 +8,7 @@ jQuery(document).ready(function ($) {
   $('#meeting_update_form').validate();
 
   $('#starter_kit_required').on('change', function(){
-    if (this.value == 'Yes')
+    if (this.value == 'yes')
     {
       $('#starter_kit_postal_address').show();
     }
