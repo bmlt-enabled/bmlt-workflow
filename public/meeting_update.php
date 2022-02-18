@@ -4,7 +4,7 @@
     echo '<script>var bmaw_service_areas="';
     $service_areas_parsed="";
     foreach( $bmaw_service_areas_string as $i ) {
-        $service_areas_parsed .= 'services[]='.$i.'&';
+        $service_areas_parsed .= 'services[]='.$i.'"&';
     }
 
     echo substr_replace($service_areas_parsed ,"", -1).";";
