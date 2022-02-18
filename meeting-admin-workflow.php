@@ -31,8 +31,8 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     }
 
     $content = substr_replace($content ,"", -1);
-    $content .= '";\n';
-    $content .= 'var bmaw_bmlt_server_address = "'. get_option('bmaw_bmlt_server_address').'"</script>\n';
+    $content .= '";\r\n';
+    $content .= 'var bmaw_bmlt_server_address = "'. get_option('bmaw_bmlt_server_address').'"</script>\r\n';
 
     ob_start();
     include('public/meeting_update.php');
