@@ -20,19 +20,10 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
 {
     $parsed_atts = shortcode_atts(
         array(
-            'sb' => '1',
+            'service_areas' => '1',
         ), $atts, $tag
     );
-    $sbstring = preg_replace("/[^0-9,]/", "", $parsed_atts['sb']);
-    $sbarray = explode(",",$sbstring);
-    $content = '<script>var bmaw_service_areas="';
-    foreach( $sbarray as $i ) {
-        $content .= 'services[]='.$i.'&';
-    }
-
-    $content = substr_replace($content ,"", -1);
-    $content .= '";\r\n';
-    $content .= 'var bmaw_bmlt_server_address = "'. get_option('bmaw_bmlt_server_address').'"</script>\r\n';
+    $bmaw_service_areas_string = preg_replace("/[^0-9,]/", "", $parsed_atts['service_areas']);
 
     ob_start();
     include('public/meeting_update.php');
