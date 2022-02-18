@@ -2,6 +2,7 @@
     // bmaw_service_areas_string from include
     $bmaw_service_areas_string = explode(",",$bmaw_service_areas_string);
     echo '<script>var bmaw_service_areas="';
+    $service_areas_parsed="";
     foreach( $bmaw_service_areas_string as $i ) {
         $service_areas_parsed .= 'services[]='.$i.'&';
     }
