@@ -206,6 +206,17 @@ function bmaw_register_setting()
     );
 
     add_settings_field(
+        'bmaw_shortcode_unused',
+        'Meeting Update Form Shortcode',
+        'bmaw_shortcode_html',
+        'bmaw-settings',
+        'bmaw-settings-section-id',
+        array(
+            'label_for' => 'bmaw_service_committee_option_array'
+        )
+    );
+
+    add_settings_field(
         'bmaw_email_from_address',
         'Email From Address',
         'bmaw_email_from_address_html',
@@ -215,6 +226,7 @@ function bmaw_register_setting()
             'label_for' => 'bmaw_service_committee_option_array'
         )
     );
+
     add_settings_field(
         'bmaw_new_meeting_template',
         'Email Template for New Meeting',
@@ -262,6 +274,22 @@ function bmaw_bmlt_server_address_html()
 
     echo '<br><label for="bmaw_bmlt_server_address"><b>Server Address:</b></label><input type="url" size="50" name="bmaw_bmlt_server_address" value="' . $bmaw_bmlt_server_address . '"/>';
     echo '<button type="button" id="bmaw_test_bmlt_server">Test Server Address</button>';
+    echo '<br><br>';
+
+}
+
+function bmaw_shortcode_html()
+{
+    $from_address = get_option('bmaw_email_from_address');
+    echo <<<END
+    <div class="bmaw_info_text">
+    <br>You can use the shortcode <code>[bmaw-meeting-update-form service_areas=1,2,3,..]</code> to list the appropriate meetings and service areas in your update form.
+    <br><br>
+    </div>
+    END;
+
+
+    echo '<br><label for="bmaw_email_from_address"><b>From Address:</b></label><input type="text" size="50" name="bmaw_email_from_address" value="' . $from_address . '"/>';
     echo '<br><br>';
 
 }
