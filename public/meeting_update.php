@@ -7,7 +7,7 @@
     }
 
     echo substr_replace($service_areas_parsed ,"", -1).";";
-    echo 'var bmaw_bmlt_server_address = "'. get_option('bmaw_bmlt_server_address').'"</script>\r\n';
+    echo 'var bmaw_bmlt_server_address = "'. get_option('bmaw_bmlt_server_address').'"</script>';
 
 ?>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
