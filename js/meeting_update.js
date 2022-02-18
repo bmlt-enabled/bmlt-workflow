@@ -52,18 +52,6 @@ jQuery(document).ready(function ($) {
     $(field).trigger("change");
   }
 
-  function check_if_changed(fieldname) {
-    if (get_field("hidden_orig_" + fieldname) != get_field(fieldname)) {
-      put_field("hidden_new_" + fieldname, get_field(fieldname));
-    }
-  }
-
-  function check_if_changed_option(fieldname) {
-    if (get_field("hidden_orig_" + fieldname) != get_field_optionval(fieldname)) {
-      put_field("hidden_new_" + fieldname, get_field_optionval(fieldname));
-    }
-  }
-
   function add_checkbox_row_to_table(formatcode, name, description, container_id) {
     let container = $("#" + container_id);
     let next_id = $("#" + container_id + " tr").length;
@@ -106,7 +94,12 @@ jQuery(document).ready(function ($) {
     }
   });
   // populate format list
-  fetchJsonp("https://na.org.au/main_server/client_interface/jsonp/?switcher=GetFormats")
+
+  $bmlt_address = get_option('bmaw_bmlt_server_address');
+  $format_results_address = $bmlt_address+
+  'client_interface/jsonp/?switcher=GetFormats';
+
+  fetchJsonp($format_results_address)
     .then((response) => response.json())
     .then((data) => {
       let fdata = data;
@@ -117,8 +110,16 @@ jQuery(document).ready(function ($) {
       }
     });
 
+  $search_results_address = $bmlt_address+
+  'client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&data_field_key=location_postal_code_1,duration_time,'+
+  'start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,'+
+  'location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,'+
+  'root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,'+
+  'contact_email_1,contact_name_2,contact_phone_2,contact_email_2&'+
+  $bmaw_service_areas+'&recursive=1&sort_keys=start_time';
+
   fetchJsonp(
-    "https://na.org.au/main_server/client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&services[]=1&services[]=13&recursive=1&sort_keys=start_time"
+    $search_results_address
   )
     .then((response) => response.json())
     .then((data) => {
@@ -164,40 +165,18 @@ jQuery(document).ready(function ($) {
         if (str != "") {
           str = str.slice(0, -2);
         }
-        put_field("hidden_orig_weekday", str);
 
         put_field("meeting_name", mdata[id].meeting_name);
-        put_field("hidden_orig_meeting_name", mdata[id].meeting_name);
-
         put_field("start_time", mdata[id].start_time);
-        put_field("hidden_orig_start_time", mdata[id].start_time);
-
         put_field("duration_time", mdata[id].duration_time);
-        put_field("hidden_orig_duration_time", mdata[id].duration_time);
-
         put_field("location_street", mdata[id].location_street);
-        put_field("hidden_orig_duration_time", mdata[id].duration_time);
-
         put_field("location_text", mdata[id].location_text);
-        put_field("hidden_orig_duration_time", mdata[id].duration_time);
-
         put_field("location_info", mdata[id].location_info);
-        put_field("hidden_orig_duration_time", mdata[id].duration_time);
-
         put_field("location_municipality", mdata[id].location_municipality);
-        put_field("hidden_orig_duration_time", mdata[id].duration_time);
-
         put_field("location_province", mdata[id].location_province);
-        put_field("hidden_orig_duration_time", mdata[id].duration_time);
-
         put_field("location_postal_code_1", mdata[id].location_postal_code_1);
-        put_field("hidden_orig_duration_time", mdata[id].duration_time);
-
         put_field("comments", mdata[id].comments);
-        put_field("hidden_orig_comments", mdata[id].comments);
-
         put_field("time_zone", mdata[id].time_zone);
-        put_field("hidden_orig_time_zone", mdata[id].time_zone);
 
         // clear all the formats
         var formatlookup = {};
@@ -218,10 +197,6 @@ jQuery(document).ready(function ($) {
           if (get_field_checked_index("format-table", i)) {
             str = str + get_field_value_index("format-table", i) + ", ";
           }
-        }
-        if (str != "") {
-            str = str.slice(0, -2);
-            put_field("hidden_orig_formats", str);
         }
       });
     });

@@ -15,11 +15,25 @@ function dbg($logmsg)
     $log = plugin_dir_path(__FILE__) . 'debug.log';
     error_log($logmsg . PHP_EOL, 3, $log);
 }
-function meeting_update_form()
+
+function meeting_update_form($atts = [], $content = null, $tag = '')
 {
+    $parsed_atts = shortcode_atts(
+        array(
+            'sb' => '1',
+        ), $atts, $tag
+    );
+    $sbstring = preg_replace("/[^0-9,]/", "", $parsed_atts['sb']);
+    $sbarray = explode(",",$sbstring);
+    $content = '<script>var bmaw_service_areas="';
+    foreach( $sbarray as $i ) {
+        $content .= 'services[]='.$i.'&';
+    }
+    $content = substr_replace($content ,"", -1);
+    $content .= '"</script>';
     ob_start();
     include('public/meeting_update.php');
-    $content = ob_get_clean();
+    $content .= ob_get_clean();
     return $content;
 }
 
@@ -409,24 +423,6 @@ function meeting_update_form_response()
             dbg($template);
             // field substitution
             $subfields = array(
-                "hidden_orig_start_time",
-                "hidden_new_start_time",
-                "hidden_orig_duration_time",
-                "hidden_new_duration_time",
-                "hidden_orig_formats",
-                "hidden_new_formats",
-                "hidden_orig_virtual_meeting_link",
-                "hidden_new_virtual_meeting_link",
-                "hidden_orig_virtual_meeting_additional_info",
-                "hidden_new_virtual_meeting_additional_info",
-                "hidden_orig_weekday",
-                "hidden_new_weekday",
-                "hidden_orig_meeting_name",
-                "hidden_new_meeting_name",
-                "hidden_orig_comments",
-                "hidden_new_comments",
-                "hidden_orig_time_zone",
-                "hidden_new_time_zone",
                 "first_name",
                 "last_name"
             );
