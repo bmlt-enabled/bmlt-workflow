@@ -251,7 +251,8 @@ function bmaw_register_setting()
 
 function bmaw_bmlt_server_address_html()
 {
-    $bmlt_address = get_option('bmaw_bmlt_server_address');
+    $bmaw_bmlt_server_address = get_option('bmaw_bmlt_server_address');
+    dbg("print html - ".$bmaw_bmlt_server_address);
     echo <<<END
     <div class="bmaw_info_text">
     <br>Your BMLT server address, used to populate the meeting list for meeting changes and closures. For example: <code>https://na.org.au/main_server/</code>
@@ -259,7 +260,7 @@ function bmaw_bmlt_server_address_html()
     </div>
     END;
 
-    echo '<br><label for="bmaw_bmlt_server_address"><b>Server Address:</b></label><input type="url" size="50" name="bmaw_bmlt_server_address" value="' . $bmlt_address . '"/>';
+    echo '<br><label for="bmaw_bmlt_server_address"><b>Server Address:</b></label><input type="url" size="50" name="bmaw_bmlt_server_address" value="' . $bmaw_bmlt_server_address . '"/>';
     echo '<button type="button" id="bmaw_test_bmlt_server">Test Server Address</button>';
     echo '<br><br>';
 
