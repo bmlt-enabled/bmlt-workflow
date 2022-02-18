@@ -1,3 +1,15 @@
+<?php 
+    // bmaw_service_areas_string from include
+    $bmaw_service_areas_string = explode(",",$bmaw_service_areas_string);
+    echo '<script>var bmaw_service_areas="';
+    foreach( $bmaw_service_areas_string as $i ) {
+        $service_areas_parsed .= 'services[]='.$i.'&';
+    }
+
+    echo substr_replace($service_areas_parsed ,"", -1).";";
+    echo 'var bmaw_bmlt_server_address = "'. get_option('bmaw_bmlt_server_address').'"</script>\r\n';
+
+?>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
 
 <form action="<?php echo esc_url(admin_url('admin-post.php')); ?>" method="post" id="meeting_update_form">
@@ -214,22 +226,4 @@
             <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
         </div>
     </div>
-    <input type="hidden" name="hidden_orig_start_time" id="hidden_orig_start_time" value="">
-    <input type="hidden" name="hidden_new_start_time" id="hidden_new_start_time" value="">
-    <input type="hidden" name="hidden_orig_duration_time" id="hidden_orig_duration_time" value="">
-    <input type="hidden" name="hidden_new_duration_time" id="hidden_new_duration_time" value="">
-    <input type="hidden" name="hidden_orig_formats" id="hidden_orig_formats" value="">
-    <input type="hidden" name="hidden_new_formats" id="hidden_new_formats" value="">
-    <input type="hidden" name="hidden_orig_virtual_meeting_link" id="hidden_orig_virtual_meeting_link" value="">
-    <input type="hidden" name="hidden_new_virtual_meeting_link" id="hidden_new_virtual_meeting_link" value="">
-    <input type="hidden" name="hidden_orig_virtual_meeting_additional_info" id="hidden_orig_virtual_meeting_additional_info" value="">
-    <input type="hidden" name="hidden_new_virtual_meeting_additional_info" id="hidden_new_virtual_meeting_additional_info" value="">
-    <input type="hidden" name="hidden_orig_weekday" id="hidden_orig_weekday" value="">
-    <input type="hidden" name="hidden_new_weekday" id="hidden_new_weekday" value="">
-    <input type="hidden" name="hidden_orig_meeting_name" id="hidden_orig_meeting_name" value="">
-    <input type="hidden" name="hidden_new_meeting_name" id="hidden_new_meeting_name" value="">
-    <input type="hidden" name="hidden_orig_comments" id="hidden_orig_comments" value="">
-    <input type="hidden" name="hidden_new_comments" id="hidden_new_comments" value="">
-    <input type="hidden" name="hidden_orig_time_zone" id="hidden_orig_time_zone" value="">
-    <input type="hidden" name="hidden_new_time_zone" id="hidden_new_time_zone" value="">
 </form>
