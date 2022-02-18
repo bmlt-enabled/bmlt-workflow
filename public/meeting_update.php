@@ -8,6 +8,8 @@
     }
 
     echo substr_replace($service_areas_parsed ,"", -1).";";
+    $are_option = get_option('bmaw_bmlt_server_address');
+    dbg($are_option);
     echo 'var bmaw_bmlt_server_address = "'. get_option('bmaw_bmlt_server_address').'"</script>';
 
 ?>
