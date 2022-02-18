@@ -85,6 +85,7 @@ add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
 
 function array_sanitize_callback($args)
 {
+    dbg('array sanitise called'.$args);
     return $args;
 }
 
