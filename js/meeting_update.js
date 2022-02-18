@@ -95,11 +95,11 @@ jQuery(document).ready(function ($) {
   });
   // populate format list
 
-  $bmlt_address = get_option('bmaw_bmlt_server_address');
-  $format_results_address = $bmlt_address+
+  // $bmlt_address = get_option('bmaw_bmlt_server_address');
+  var format_results_address = bmlt_address+
   'client_interface/jsonp/?switcher=GetFormats';
 
-  fetchJsonp($format_results_address)
+  fetchJsonp(format_results_address)
     .then((response) => response.json())
     .then((data) => {
       let fdata = data;
@@ -110,7 +110,7 @@ jQuery(document).ready(function ($) {
       }
     });
 
-  $search_results_address = $bmlt_address+
+  var search_results_address = bmlt_address+
   'client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&data_field_key=location_postal_code_1,duration_time,'+
   'start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,'+
   'location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,'+
@@ -119,7 +119,7 @@ jQuery(document).ready(function ($) {
   $bmaw_service_areas+'&recursive=1&sort_keys=start_time';
 
   fetchJsonp(
-    $search_results_address
+    search_results_address
   )
     .then((response) => response.json())
     .then((data) => {

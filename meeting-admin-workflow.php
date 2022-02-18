@@ -29,8 +29,10 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     foreach( $sbarray as $i ) {
         $content .= 'services[]='.$i.'&';
     }
+    
     $content = substr_replace($content ,"", -1);
-    $content .= '"</script>';
+    $content .= '"var bmlt_address = "'. get_option('bmaw_bmlt_server_address').'"</script>';
+
     ob_start();
     include('public/meeting_update.php');
     $content .= ob_get_clean();
