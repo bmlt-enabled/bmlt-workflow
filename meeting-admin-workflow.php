@@ -112,7 +112,7 @@ function bmaw_register_setting()
             )
         )
     );
-    // https://na.org.au/main_server/
+    // https://na.org.au/main_server
 
     register_setting(
         'bmaw-settings-group', // settings group name
@@ -122,7 +122,7 @@ function bmaw_register_setting()
             'description' => 'bmlt server address',
             'sanitize_callback' => 'array_sanitize_callback',
             'show_in_rest' => false,
-            'default' => 'https://na.org.au/main_server/'
+            'default' => 'https://na.org.au/main_server'
         )
     );
 
