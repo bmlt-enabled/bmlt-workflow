@@ -116,7 +116,7 @@ jQuery(document).ready(function ($) {
   'location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,'+
   'root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,'+
   'contact_email_1,contact_name_2,contact_phone_2,contact_email_2&'+
-  $bmaw_service_areas+'&recursive=1&sort_keys=start_time';
+  bmaw_service_areas+'&recursive=1&sort_keys=start_time';
 
   fetchJsonp(
     search_results_address
