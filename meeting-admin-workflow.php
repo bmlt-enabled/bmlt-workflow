@@ -275,7 +275,7 @@ function bmaw_bmlt_server_address_html()
     </div>
     END;
 
-    echo '<br><label for="bmaw_bmlt_server_address"><b>Server Address:</b></label><input type="url" size="50" name="bmaw_bmlt_server_address" value="' . $bmaw_bmlt_server_address . '"/>';
+    echo '<br><label for="bmaw_bmlt_server_address"><b>Server Address:</b></label><input type="url" size="50" id="bmaw_bmlt_server_address" name="bmaw_bmlt_server_address" value="' . $bmaw_bmlt_server_address . '"/>';
     echo '<button type="button" id="bmaw_test_bmlt_server">Test Server Address</button>';
     echo '<br><br>';
 
