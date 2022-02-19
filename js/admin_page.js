@@ -2,6 +2,15 @@ jQuery(document).ready(function($) {
 
 $("#bmaw_test_bmlt_server").on("click", function(event) {
 console.log("clicked");
+var format_results_address = bmaw_bmlt_server_address+
+'/client_interface/jsonp/?switcher=GetFormats';
+
+fetchJsonp(format_results_address)
+  .then((response) => response.json())
+  .then((data) => {
+console.log("validated ok");
+  });
+
 });
 
 $("#bmaw-service-committee-table tbody").on("click", "tr td:nth-child(4)", function (event) {
