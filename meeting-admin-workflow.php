@@ -42,12 +42,13 @@ function enqueue_form_deps()
     wp_enqueue_script('bmaw-meetingupdatejs', plugin_dir_url(__FILE__) . 'js/meeting_update.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/meeting_update.js'), true);
 }
 
-function bmaw_admin_css($hook)
+function bmaw_admin_scripts($hook)
 {
     if ($hook != 'settings_page_bmaw-settings') {
         return;
     }
     wp_enqueue_style('bmaw-admin-css', plugin_dir_url(__FILE__) . 'css/admin_page.css', false, filemtime(plugin_dir_path(__FILE__) . 'css/admin_page.css'), 'all');
+    wp_enqueue_script( 'script-includes', plugin_dir_url( __FILE__ ) . 'script_includes.js', filemtime(plugin_dir_path(__FILE__) . 'script_includes.js') , '1.0' );
 }
 
 function bmaw_options_page()
@@ -79,7 +80,7 @@ add_action('admin_post_nopriv_meeting_update_form_response', 'meeting_update_for
 add_action('admin_post_meeting_update_form_response', 'meeting_update_form_response');
 add_action('wp_enqueue_scripts', 'enqueue_form_deps');
 add_action('admin_menu', 'bmaw_options_page');
-add_action('admin_enqueue_scripts', 'bmaw_admin_css');
+add_action('admin_enqueue_scripts', 'bmaw_admin_scripts');
 add_action('admin_init',  'bmaw_register_setting');
 add_shortcode('bmaw-meeting-update-form', 'meeting_update_form');
 add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
