@@ -1,8 +1,8 @@
 jQuery(document).ready(function($) {
 
-// $("#bmaw-bmlt-test-server").on("click", function(event) {
-// console.log("clicked");
-// });
+$("#bmaw-bmlt-test-server").on("click", function(event) {
+console.log("clicked");
+});
 
 $("#bmaw-service-committee-table tbody").on("click", "tr td:nth-child(4)", function (event) {
     var rowCount = $("#bmaw-service-committee-table tr").length - 2;
