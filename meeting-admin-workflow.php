@@ -18,12 +18,13 @@ function dbg($logmsg)
 
 function meeting_update_form($atts = [], $content = null, $tag = '')
 {
+    // dbg("atts = ".$atts);
     $parsed_atts = shortcode_atts(
         array(
-            'service_areas' => '1',
+            'service-areas' => '1',
         ), $atts, $tag
     );
-    $bmaw_service_areas_string = preg_replace("/[^0-9,]/", "", $parsed_atts['service_areas']);
+    $bmaw_service_areas_string = preg_replace("/[^0-9,]/", "", $parsed_atts['service-areas']);
 
     ob_start();
     include('public/meeting_update.php');
