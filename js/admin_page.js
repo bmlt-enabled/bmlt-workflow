@@ -1,6 +1,6 @@
 jQuery(document).ready(function($) {
 
-$("#bmaw-bmlt-test-server").on("click", function(event) {
+$("#bmaw_test_bmlt_server").on("click", function(event) {
 console.log("clicked");
 });
 
