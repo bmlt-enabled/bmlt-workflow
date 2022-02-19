@@ -4,12 +4,13 @@
     echo '<script>var bmaw_service_areas="';
     $service_areas_parsed="";
     foreach( $bmaw_service_areas_string as $i ) {
-        $service_areas_parsed .= 'services[]='.$i.'"&';
+        $service_areas_parsed .= 'services[]='.$i.'&';
     }
 
-    echo substr_replace($service_areas_parsed ,"", -1).";";
-    $are_option = get_option('bmaw_bmlt_server_address');
-    dbg($are_option);
+    echo substr_replace($service_areas_parsed ,"", -1).'";';
+    // $service_areas_parsed .=
+    // $are_option = get_option('bmaw_bmlt_server_address');
+    // dbg($are_option);
     echo 'var bmaw_bmlt_server_address = "'. get_option('bmaw_bmlt_server_address').'"</script>';
 
 ?>
