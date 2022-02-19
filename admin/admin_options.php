@@ -8,6 +8,10 @@ echo 'jQuery(document).ready(function($) {';
 echo "var bmaw_service_form_array = ". $js_array . ";\n";
 echo <<<END
 
+$("#bmaw-bmlt-test-server").on("click", function(event) {
+console.log("clicked");
+}
+
 $("#bmaw-service-committee-table tbody").on("click", "tr td:nth-child(4)", function (event) {
     var rowCount = $("#bmaw-service-committee-table tr").length - 2;
     var clicked = $(this).closest("tr").index();
