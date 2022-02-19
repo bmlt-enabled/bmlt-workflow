@@ -2,7 +2,7 @@ jQuery(document).ready(function($) {
 
 $("#bmaw_test_bmlt_server").on("click", function(event) {
 console.log("clicked");
-var format_results_address = bmaw_bmlt_server_address+
+var format_results_address = $("#bmaw_bmlt_server_address').value()+'
 '/client_interface/jsonp/?switcher=GetFormats';
 
 fetchJsonp(format_results_address)
