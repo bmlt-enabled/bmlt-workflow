@@ -48,7 +48,7 @@ function bmaw_admin_scripts($hook)
         return;
     }
     wp_enqueue_style('bmaw-admin-css', plugin_dir_url(__FILE__) . 'css/admin_page.css', false, filemtime(plugin_dir_path(__FILE__) . 'css/admin_page.css'), 'all');
-    wp_enqueue_script( 'script-includes', plugin_dir_url( __FILE__ ) . 'script_includes.js', filemtime(plugin_dir_path(__FILE__) . 'script_includes.js') , '1.0' );
+    wp_enqueue_script( 'script-includes', plugin_dir_url( __FILE__ ) . 'js/script_includes.js', filemtime(plugin_dir_path(__FILE__) . 'js/script_includes.js') , '1.0' );
 }
 
 function bmaw_options_page()
