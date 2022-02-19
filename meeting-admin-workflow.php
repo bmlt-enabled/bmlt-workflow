@@ -9,6 +9,7 @@
  * Author URI: 
  **/
 
+define( 'THIS_PLUGIN_DIR', plugin_dir_path( dirname( __FILE__ ) ) );
 
 function dbg($logmsg)
 {
