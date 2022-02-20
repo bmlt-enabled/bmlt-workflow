@@ -493,7 +493,7 @@ function meeting_update_form_response()
                 if ($reason == "reason_change") {
                     dbg("** change template before");
                     dbg($template);
-                    // field substitution
+                    // field substitution from BMLT
                     $subfields = array(
                         "meeting_name" => "orig_meeting_name",
                         "start_time" => "orig_start_time",
@@ -528,7 +528,7 @@ function meeting_update_form_response()
 
             dbg("** template before");
             dbg($template);
-            // field substitution
+            // field substitution from form
             $subfields = array(
                 "first_name",
                 "last_name",
@@ -545,7 +545,9 @@ function meeting_update_form_response()
                 $subfield = '{field:' . $field . '}';
                 // $subfield = 'style';
                 $subwith = $_POST[$field];
-                $template = str_replace($subfield, $subwith, $template);
+                if (isset($_POST[$field])) {
+                    $template = str_replace($subfield, $subwith, $template);
+                }
             }
             dbg("** template after");
             dbg($template);
