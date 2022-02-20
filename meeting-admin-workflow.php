@@ -488,7 +488,7 @@ function meeting_update_form_response()
 
                 $resp = curl_exec($curl);
                 curl_close($curl);
-                dbg(var_dump($resp));
+                dbg(print_r($resp));
             }
 
             $from_address = get_option('bmaw_email_from_address');
