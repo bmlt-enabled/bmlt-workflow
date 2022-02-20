@@ -80,6 +80,7 @@
                         <label for="weekday-6">Saturday</label>
                     </li>
                 </ul>
+                <input type="hidden" name="weekday" id="weekday" value="">
             </div>
             <div>
                 <label for="start_time">Start Time<span class="bmaw-required-field">*</span></label>
