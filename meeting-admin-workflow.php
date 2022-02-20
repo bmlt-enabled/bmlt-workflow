@@ -9,7 +9,7 @@
  * Author URI: 
  **/
 
-define('THIS_PLUGIN_URL', plugin_dir_path(__FILE__));
+define('BMAW_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 function dbg($logmsg)
 {
