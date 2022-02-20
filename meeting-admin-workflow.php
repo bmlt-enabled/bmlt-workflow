@@ -493,7 +493,7 @@ function meeting_update_form_response()
                     if (!$resp) {
                         dbg("curl failed");
                     } else {
-                        dbg(print_r($resp));
+                        dbg($resp);
                     }
                     curl_close($curl);
                 }
