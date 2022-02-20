@@ -489,6 +489,7 @@ function meeting_update_form_response()
                     curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
                     $resp = curl_exec($curl);
+                    dbg("curl returned ".gettype($resp));
                     if (!$resp) {
                         dbg("curl failed");
                     } else {
