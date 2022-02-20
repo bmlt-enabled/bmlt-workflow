@@ -221,6 +221,7 @@ jQuery(document).ready(function ($) {
       put_field("formats", str);
     }
 
+    var str = "";
     // weekdays
     for (var i = 0; i < 7; i++) {
       if (get_field_checked_index("weekday", i) == true) {
