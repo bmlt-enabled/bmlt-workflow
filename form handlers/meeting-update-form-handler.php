@@ -154,7 +154,7 @@ function meeting_update_form_handler()
                 "weekday"
                 // "comments"
             );
-
+            dbg('post location_info = "'.$_POST['location_info'].'"');
             // Do field replacements in template
             foreach ($subfields as $field) {
                 $subfield = '{field:' . $field . '}';
