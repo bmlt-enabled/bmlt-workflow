@@ -476,7 +476,7 @@ function meeting_update_form_response()
                         "orig_start_time",
                         "orig_time_zone",
                         "orig_formats",
-                        "orig_weekday",
+                        // "orig_weekday",
                         "orig_virtual_meeting_link",
                         "orig_comments"
                     );
@@ -486,7 +486,7 @@ function meeting_update_form_response()
                         $subfield = '{field:' . $field . '}';
                         // strip the orig_
                         $bmlt_field = preg_replace("/^orig_.*/", "", $field);
-
+dbg("bmlt field = ".$bmlt_field);
                         $subwith = $meeting[0][$bmlt_field];
                         $template = str_replace($subfield, $subwith, $template);
                     }
