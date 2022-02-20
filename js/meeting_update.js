@@ -182,7 +182,7 @@ jQuery(document).ready(function ($) {
         // put_field("time_zone", mdata[id].time_zone);
 
         // store the selected meeting ID away
-        put_field("id_bigint", mdata[i].id_bigint);
+        put_field("id_bigint", mdata[id].id_bigint);
 
         // clear all the formats
         var formatlookup = {};
