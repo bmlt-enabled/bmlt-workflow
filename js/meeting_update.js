@@ -209,7 +209,7 @@ jQuery(document).ready(function ($) {
   // form submit handler
   $("#meeting_update_form").submit(function (event) {
     console.log("Handler for .submit() called.");
-    str = "";
+    var str = "";
     for (var i = 0; i < $("#format-table tr").length; i++) {
       if (get_field_checked_index("format-table", i)) {
         str = str + get_field_value_index("format-table", i) + ", ";
