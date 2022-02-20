@@ -116,6 +116,10 @@ function meeting_update_form_handler()
                             $subwith = $meeting[0][$bmlt_field];
                             $template = str_replace($subfield, $subwith, $template);
                         }
+                        else
+                        {
+                            $template = str_replace($subfield, '(blank)', $template);
+                        }
                     }
                     // special case for weekday
                     $weekdays = array(0=>"Sunday", 1=>"Monday", 2=>"Tuesday", 3=>"Wednesday", 4=>"Thursday", 5=>"Friday", 6=>"Saturday");
@@ -158,6 +162,10 @@ function meeting_update_form_handler()
                 if (isset($_POST[$field])) {
                     $subwith = $_POST[$field];
                     $template = str_replace($subfield, $subwith, $template);
+                }
+                else
+                {
+                    $template = str_replace($subfield, '(blank)', $template);
                 }
             }
             dbg("** template after");
