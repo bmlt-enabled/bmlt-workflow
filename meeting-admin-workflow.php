@@ -500,7 +500,13 @@ dbg("bmlt field = ".$bmlt_field);
             // field substitution
             $subfields = array(
                 "first_name",
-                "last_name"
+                "last_name",
+                "meeting_name",
+                "duration_time",
+                "time_zone",
+                "formats",
+                "weekday",
+                "comments"
             );
 
             // Do field replacements in template
