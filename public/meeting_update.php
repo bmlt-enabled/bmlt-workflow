@@ -159,10 +159,10 @@
                     <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
             </div>
             <br>
-            <div>
+            <!-- <div>
                 <label for="comments">Comments</label>
                 <input type="text" name="comments" id="comments">
-            </div>
+            </div> -->
             <br>
             <div>
                 <label for="date_required">Date Change Required<span class="bmaw-required-field">*</span></label>

@@ -102,7 +102,7 @@ function meeting_update_form_handler()
                         "location_province" => "orig_location_province",
                         "location_postal_code_1" => "orig_location_postal_code_1",
                         "virtual_meeting_link" => "orig_virtual_meeting_link",
-                        "comments" => "orig_comments",
+                        // "comments" => "orig_comments",
                         "email_address" => "orig_email_address",
                         "contact_number_confidential" => "contact_number_confidential",
                         "formats" => "orig_formats"
@@ -117,6 +117,11 @@ function meeting_update_form_handler()
                             $template = str_replace($subfield, $subwith, $template);
                         }
                     }
+                    // special case for weekday
+                    $weekdays = array(0=>"Sunday", 1=>"Monday", 2=>"Tuesday", 3=>"Wednesday", 4=>"Thursday", 5=>"Friday", 6=>"Saturday");
+                    $idx = $meeting[0]['weekday_tinyint'];
+                    $template = str_replace('{field:orig_weekday}',$weekdays[$idx], $template);
+                    dbg("weekday lookup = ".$weekdays[$idx]);
                     dbg("** change template after");
                     dbg($template);
                 }
@@ -142,8 +147,8 @@ function meeting_update_form_handler()
                 "contact_number_confidential",
                 // "time_zone",
                 "formats",
-                "weekday",
-                "comments"
+                "weekday"
+                // "comments"
             );
 
             // Do field replacements in template
