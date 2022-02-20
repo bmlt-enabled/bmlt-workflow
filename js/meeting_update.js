@@ -4,19 +4,15 @@ var mdata = [];
 var mtext = [];
 
 jQuery(document).ready(function ($) {
+  $("#meeting_update_form").validate();
 
-  $('#meeting_update_form').validate();
-
-  $('#starter_kit_required').on('change', function(){
-    if (this.value == 'yes')
-    {
-      $('#starter_kit_postal_address').show();
+  $("#starter_kit_required").on("change", function () {
+    if (this.value == "yes") {
+      $("#starter_kit_postal_address").show();
+    } else {
+      $("#starter_kit_postal_address").hide();
     }
-    else
-    {
-      $('#starter_kit_postal_address').hide();
-    }
-  });  
+  });
 
   var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -55,13 +51,26 @@ jQuery(document).ready(function ($) {
   function add_checkbox_row_to_table(formatcode, name, description, container_id) {
     let container = $("#" + container_id);
     let next_id = $("#" + container_id + " tr").length;
-    let row = '<tr><td>'
-    $('#'+container_id+' > tbody:last-child').append('<tr>'+
-    '<td><input type="checkbox" id="'+container_id+'-'+next_id+'" value="'+formatcode+'"></input></td>' +
-    '<td>('+formatcode+')</td>'+
-    '<td>'+name+'</td>'+
-    '<td>'+description+'</td>'+
-    '</tr>'
+    let row = "<tr><td>";
+    $("#" + container_id + " > tbody:last-child").append(
+      "<tr>" +
+        '<td><input type="checkbox" id="' +
+        container_id +
+        "-" +
+        next_id +
+        '" value="' +
+        formatcode +
+        '"></input></td>' +
+        "<td>(" +
+        formatcode +
+        ")</td>" +
+        "<td>" +
+        name +
+        "</td>" +
+        "<td>" +
+        description +
+        "</td>" +
+        "</tr>"
     );
   }
 
@@ -77,27 +86,22 @@ jQuery(document).ready(function ($) {
       $("#other_reason").hide();
       $("#meeting_content").show();
       $("#starter_pack").show();
-
     } else if ($(this).val() === "reason_change" || $(this).val() === "reason_close") {
       $("#meeting_selector").show();
       $("#other_reason").hide();
       $("#meeting_content").show();
       $("#starter_pack").hide();
-
-
     } else if ($(this).val() === "reason_other") {
       $("#meeting_selector").hide();
       $("#other_reason").show();
       $("#meeting_content").show();
       $("#starter_pack").hide();
-
     }
   });
   // populate format list
 
   // $bmlt_address = get_option('bmaw_bmlt_server_address');
-  var format_results_address = bmaw_bmlt_server_address+
-  '/client_interface/jsonp/?switcher=GetFormats';
+  var format_results_address = bmaw_bmlt_server_address + "/client_interface/jsonp/?switcher=GetFormats";
 
   fetchJsonp(format_results_address)
     .then((response) => response.json())
@@ -106,21 +110,21 @@ jQuery(document).ready(function ($) {
       for (let i = 0, length = fdata.length; i < length; i++) {
         // let name = " (" + fdata[i].key_string + ") " + fdata[i].name_string + " - " + fdata[i].description_string;
         // add_checkbox_to_ul(name, fdata[i].key_string, "formats");
-        add_checkbox_row_to_table(fdata[i].key_string,fdata[i].name_string,fdata[i].description_string, "format-table")
+        add_checkbox_row_to_table(fdata[i].key_string, fdata[i].name_string, fdata[i].description_string, "format-table");
       }
     });
 
-  var search_results_address = bmaw_bmlt_server_address+
-  '/client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&data_field_key=location_postal_code_1,duration_time,'+
-  'start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,'+
-  'location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,'+
-  'root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,'+
-  'contact_email_1,contact_name_2,contact_phone_2,contact_email_2&'+
-  bmaw_service_areas+'&recursive=1&sort_keys=start_time';
+  var search_results_address =
+    bmaw_bmlt_server_address +
+    "/client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&data_field_key=location_postal_code_1,duration_time," +
+    "start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality," +
+    "location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed," +
+    "root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1," +
+    "contact_email_1,contact_name_2,contact_phone_2,contact_email_2&" +
+    bmaw_service_areas +
+    "&recursive=1&sort_keys=start_time";
 
-  fetchJsonp(
-    search_results_address
-  )
+  fetchJsonp(search_results_address)
     .then((response) => response.json())
     .then((data) => {
       mdata = data;
@@ -128,11 +132,12 @@ jQuery(document).ready(function ($) {
       for (let i = 0, length = mdata.length; i < length; i++) {
         let str = mdata[i].meeting_name + " [ " + weekdays[mdata[i].weekday_tinyint - 1] + ", " + mdata[i].start_time + " ]";
         // let a = ;
-        if ((mdata[i].location_municipality == "") && (mdata[i].location_province == "")) {
+        if (mdata[i].location_municipality == "" && mdata[i].location_province == "") {
           str = str + "[ " + mdata[i].location_municipality + "," + mdata[i].location_province + " ]";
         }
         mtext[i] = { text: str, id: i };
       }
+
       $(".select2-ajax").select2({
         data: mtext,
         placeholder: "Select a meeting",
@@ -177,6 +182,9 @@ jQuery(document).ready(function ($) {
         put_field("location_postal_code_1", mdata[id].location_postal_code_1);
         put_field("comments", mdata[id].comments);
         put_field("time_zone", mdata[id].time_zone);
+
+        // store the selected meeting ID away
+        put_field("id_bigint", mdata[i].id_bigint);
 
         // clear all the formats
         var formatlookup = {};
