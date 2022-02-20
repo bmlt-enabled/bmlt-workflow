@@ -1,4 +1,4 @@
-<?php 
+<?php
 function meeting_update_form_handler()
 {
 
@@ -113,22 +113,19 @@ function meeting_update_form_handler()
                     // Do field replacements in template
                     foreach ($subfields as $bmlt_field => $sub_value) {
                         $subfield = '{field:' . $sub_value . '}';
-                        if (!empty($meeting[0][$bmlt_field])) 
-                        {
+                        if (!empty($meeting[0][$bmlt_field])) {
                             $subwith = $meeting[0][$bmlt_field];
-                        }
-                        else
-                        {
+                        } else {
                             $subwith = '(blank)';
                         }
                         $template = str_replace($subfield, $subwith, $template);
-                        $orig_values[$subfield]=$subwith;
+                        $orig_values[$subfield] = $subwith;
                     }
                     // special case for weekday
-                    $weekdays = array(0=>"Sunday", 1=>"Monday", 2=>"Tuesday", 3=>"Wednesday", 4=>"Thursday", 5=>"Friday", 6=>"Saturday");
+                    $weekdays = array(0 => "Sunday", 1 => "Monday", 2 => "Tuesday", 3 => "Wednesday", 4 => "Thursday", 5 => "Friday", 6 => "Saturday");
                     $idx = $meeting[0]['weekday_tinyint'] - 1;
-                    $template = str_replace('{field:orig_weekday}',$weekdays[$idx], $template);
-                    dbg("weekday lookup = ".$weekdays[$idx]);
+                    $template = str_replace('{field:orig_weekday}', $weekdays[$idx], $template);
+                    dbg("weekday lookup = " . $weekdays[$idx]);
                     dbg("** change template after");
                     dbg($template);
                 }
@@ -143,40 +140,39 @@ function meeting_update_form_handler()
                 "meeting_name",
                 "start_time",
                 "duration_time",
-                "location_text" ,
+                "location_text",
                 "location_street",
-                "location_info" ,
+                "location_info",
                 "location_municipality",
                 "location_province",
                 "location_postal_code_1",
                 "virtual_meeting_link",
-                "email_address" ,
+                "email_address",
                 "contact_number_confidential",
                 // "time_zone",
                 "formats",
                 "weekday"
                 // "comments"
             );
-            dbg('post location_info = "'.$_POST['location_info'].'"');
+            dbg('post location_info = "' . $_POST['location_info'] . '"');
             // Do field replacements in template
             foreach ($subfields as $field) {
                 $subfield = '{field:' . $field . '}';
                 // $subfield = 'style';
-                if ((isset($_POST[$field]))&&(!empty($_POST[$field]))) {
+                if ((isset($_POST[$field])) && (!empty($_POST[$field]))) {
                     $subwith = $_POST[$field];
-                }
-                else
-                {
+                } else {
                     $subwith = '(blank)';
                 }
                 // special case for meeting change to handle delta
-                if((array_key_exists('{field:orig_'.$field.'}',$orig_values))&&($subwith == $orig_values['{field:orig_'.$field.'}'])&&($reason=='reason_change'))
-                {
-                    $subwith = '(no change)';
+                if ($reason == 'reason_change') {
+                    if ((array_key_exists('{field:orig_' . $field . '}', $orig_values)) && ($subwith == $orig_values['{field:orig_' . $field . '}'])) {
+                        $subwith = '(no change)';
+                    } else {
+                        $subwith = '<b>' . $subwith . '</b>';
+                    }
                 }
-
                 $template = str_replace($subfield, $subwith, $template);
-
             }
             dbg("** template after");
             dbg($template);
@@ -218,4 +214,3 @@ function meeting_update_form_handler()
         }
     }
 }
-?>
