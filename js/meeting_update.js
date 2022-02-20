@@ -232,6 +232,5 @@ jQuery(document).ready(function ($) {
       str = str.slice(0, -2);
       put_field("weekday", str);
     }
-    event.preventDefault();
   });
 });
