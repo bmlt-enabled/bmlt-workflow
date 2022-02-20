@@ -485,7 +485,7 @@ function meeting_update_form_response()
                     foreach ($subfields as $field) {
                         $subfield = '{field:' . $field . '}';
                         // strip the orig_
-                        $bmlt_field = preg_replace("/^orig_.*/", "", $field);
+                        $bmlt_field = preg_replace("/^orig_/", "", $field);
 dbg("bmlt field = ".$bmlt_field);
                         $subwith = $meeting[0][$bmlt_field];
                         $template = str_replace($subfield, $subwith, $template);
