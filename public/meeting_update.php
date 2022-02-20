@@ -146,11 +146,12 @@
                 <input type="number" name="location_postal_code_1" max="9999" id="location_postal_code_1">
             </div>
             <br>
-            <div id="formats">
+            <div>
                 <label for="format-table">Meeting Format</label>
                 <table id="format-table">
                     <tbody></tbody>
                 </table>
+                <input type="hidden" name="formats" id="formats" value="">
             </div>
             <br><div>
                 <label for=" virtual_meeting_link">Online Meeting Link</label>

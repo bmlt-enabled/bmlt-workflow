@@ -108,8 +108,6 @@ jQuery(document).ready(function ($) {
     .then((data) => {
       let fdata = data;
       for (let i = 0, length = fdata.length; i < length; i++) {
-        // let name = " (" + fdata[i].key_string + ") " + fdata[i].name_string + " - " + fdata[i].description_string;
-        // add_checkbox_to_ul(name, fdata[i].key_string, "formats");
         add_checkbox_row_to_table(fdata[i].key_string, fdata[i].name_string, fdata[i].description_string, "format-table");
       }
     });
@@ -208,4 +206,20 @@ jQuery(document).ready(function ($) {
         }
       });
     });
+  // form submit handler
+  $("#meeting_update_form").submit(function (event) {
+    console.log("Handler for .submit() called.");
+    str = "";
+    for (var i = 0; i < $("#format-table tr").length; i++) {
+      if (get_field_checked_index("format-table", i)) {
+        str = str + get_field_value_index("format-table", i) + ", ";
+      }
+    }
+    if (str != "") {
+      str = str.slice(0, -2);
+      put_field("formats", str);
+    }
+    event.preventDefault();
+  });
+
 });
