@@ -119,7 +119,7 @@ function meeting_update_form_handler()
                     }
                     // special case for weekday
                     $weekdays = array(0=>"Sunday", 1=>"Monday", 2=>"Tuesday", 3=>"Wednesday", 4=>"Thursday", 5=>"Friday", 6=>"Saturday");
-                    $idx = $meeting[0]['weekday_tinyint'];
+                    $idx = $meeting[0]['weekday_tinyint'] - 1;
                     $template = str_replace('{field:orig_weekday}',$weekdays[$idx], $template);
                     dbg("weekday lookup = ".$weekdays[$idx]);
                     dbg("** change template after");
