@@ -151,7 +151,8 @@ function meeting_update_form_handler()
                 "contact_number_confidential",
                 // "time_zone",
                 "formats",
-                "weekday"
+                "weekday",
+                "additional_info"
                 // "comments"
             );
             dbg('post location_info = "' . $_POST['location_info'] . '"');
