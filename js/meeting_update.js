@@ -179,7 +179,7 @@ jQuery(document).ready(function ($) {
         put_field("location_province", mdata[id].location_province);
         put_field("location_postal_code_1", mdata[id].location_postal_code_1);
         put_field("comments", mdata[id].comments);
-        put_field("time_zone", mdata[id].time_zone);
+        // put_field("time_zone", mdata[id].time_zone);
 
         // store the selected meeting ID away
         put_field("id_bigint", mdata[i].id_bigint);

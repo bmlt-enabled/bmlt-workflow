@@ -92,7 +92,7 @@
                 <input type="text" name="duration_time" id="duration_time" required>
             </div>
             <br>
-            <div>
+            <!-- <div>
                 <label for="time_zone">Time Zone</label>
                 <select name="time_zone" id="time_zone">
                     <option value="Australia/Adelaide">Australian Central Time (Adelaide)</option>
@@ -102,7 +102,7 @@
                     <option value="Australia/Sydney">Australian Eastern Time (Sydney)</option>
                     <option value="Australia/Perth">Australian Western Time (Perth)</option>
                 </select>
-            </div>
+            </div> -->
             <br>
             <div>
                 <label for="service_area">Service Committee (or Other if not known)</label>
