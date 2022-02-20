@@ -198,12 +198,6 @@ jQuery(document).ready(function ($) {
           var j = formatlookup[fmtspl[i]];
           put_field_checked_index("format-table", j, true);
         }
-        var str = "";
-        for (var i = 0; i < $("#format-table tr").length; i++) {
-          if (get_field_checked_index("format-table", i)) {
-            str = str + get_field_value_index("format-table", i) + ", ";
-          }
-        }
       });
     });
   // form submit handler
@@ -213,7 +207,7 @@ jQuery(document).ready(function ($) {
     var str = "";
     for (var i = 0; i < $("#format-table tr").length; i++) {
       if (get_field_checked_index("format-table", i)) {
-        str = str + get_field_value_index("format-table", i) + ", ";
+        str = str + get_field_value_index("format-table", i) + ",";
       }
     }
     if (str != "") {
