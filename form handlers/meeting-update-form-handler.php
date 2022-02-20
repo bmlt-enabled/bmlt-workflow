@@ -129,7 +129,17 @@ function meeting_update_form_handler()
                 "first_name",
                 "last_name",
                 "meeting_name",
+                "start_time",
                 "duration_time",
+                "location_text" ,
+                "location_street",
+                "location_info" ,
+                "location_municipality",
+                "location_province",
+                "location_postal_code_1",
+                "virtual_meeting_link",
+                "email_address" ,
+                "contact_number_confidential",
                 // "time_zone",
                 "formats",
                 "weekday",
@@ -140,8 +150,8 @@ function meeting_update_form_handler()
             foreach ($subfields as $field) {
                 $subfield = '{field:' . $field . '}';
                 // $subfield = 'style';
-                $subwith = $_POST[$field];
                 if (isset($_POST[$field])) {
+                    $subwith = $_POST[$field];
                     $template = str_replace($subfield, $subwith, $template);
                 }
             }
@@ -163,7 +173,6 @@ function meeting_update_form_handler()
             if (empty($to_address) || empty($cc_address)) {
                 wp_die(("No valid service committee found."));
             }
-
 
             $from_address = get_option('bmaw_email_from_address');
 
