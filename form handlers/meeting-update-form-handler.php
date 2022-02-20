@@ -159,7 +159,7 @@ function meeting_update_form_handler()
             foreach ($subfields as $field) {
                 $subfield = '{field:' . $field . '}';
                 // $subfield = 'style';
-                if ((isset($_POST[$field]))||(!empty($_POST[$field]))) {
+                if ((isset($_POST[$field]))&&(!empty($_POST[$field]))) {
                     $subwith = $_POST[$field];
                     $template = str_replace($subfield, $subwith, $template);
                 }
