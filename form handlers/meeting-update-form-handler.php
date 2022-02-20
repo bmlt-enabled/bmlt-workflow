@@ -165,11 +165,18 @@ function meeting_update_form_handler()
                     $subwith = '(blank)';
                 }
                 // special case for meeting change to handle delta
-                if ($reason == 'reason_change') {
-                    if ((array_key_exists('{field:orig_' . $field . '}', $orig_values)) && ($subwith == $orig_values['{field:orig_' . $field . '}'])) {
-                        $subwith = '(no change)';
-                    } else {
-                        $subwith = '<b>' . $subwith . '</b>';
+                if ($reason == 'reason_change') 
+                {
+                    if (array_key_exists('{field:orig_' . $field . '}', $orig_values))
+                    {
+                        if ($subwith == $orig_values['{field:orig_' . $field . '}'])
+                        {
+                            $subwith = '(no change)';
+                        }
+                        else
+                        {
+                            $subwith = '<b>' . $subwith . '</b>';
+                        }
                     }
                 }
                 $template = str_replace($subfield, $subwith, $template);
