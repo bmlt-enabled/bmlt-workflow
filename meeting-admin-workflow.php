@@ -471,7 +471,7 @@ function meeting_update_form_response()
                 wp_die(("No valid service committee found."));
             }
 
-            if (isset($_POST['update_reason'])) {
+            if (isset($_POST['id_bigint'])) {
                 if (($reason == "reason_change") || ($reason == 'reason_close')) {
                     dbg("getting http from server");
                     $meeting_id = $_POST['id_bigint'];
