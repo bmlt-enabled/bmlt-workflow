@@ -170,11 +170,11 @@ function meeting_update_form_handler()
                     $subwith = '(blank)';
                 }
                 // special case for meeting change to handle delta
-                if(($subwith == $orig_values['orig_'.$subfield])&&($reason=='reason_change'))
+                if(($subwith == $orig_values['{field:orig_'.$field.'}'])&&($reason=='reason_change'))
                 {
                     $subwith = '(no change)';
                 }
-                
+
                 $template = str_replace($subfield, $subwith, $template);
 
             }
