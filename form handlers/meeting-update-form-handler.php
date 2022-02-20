@@ -104,7 +104,7 @@ function meeting_update_form_handler()
                         "location_postal_code_1" => "orig_location_postal_code_1",
                         "virtual_meeting_link" => "orig_virtual_meeting_link",
                         // "comments" => "orig_comments",
-                        "email_address" => "orig_email_address",
+                        // "email_address" => "orig_email_address",
                         "contact_number_confidential" => "contact_number_confidential",
                         "formats" => "orig_formats"
                         // "orig_weekday",
