@@ -461,34 +461,65 @@ function meeting_update_form_response()
                         wp_die("curl failed");
                     }
                     curl_close($curl);
-                    $meeting = json_decode($resp,true);
-
+                    $meeting = json_decode($resp, true);
                 } else {
                     wp_die("meeting id not set");
                 }
+
+                // <input type="hidden" name="id_bigint" id="id_bigint" value="">
+                // <input type="text" name="other_reason" id="other_reason">
+                // <input type="text" name="meeting_name" size="50" id="meeting_name">
+                // <input type="text" name="start_time" id="start_time" required>
+                // <input type="text" name="duration_time" id="duration_time" required>
+                // <select name="time_zone" id="time_zone">
+                // <select name="service_area" id="service_area">
+                // <input type="text" name="location_text" id="location_text">
+                // <input type="text" name="location_street" size="50" id="location_street">
+                // <input type="text" name="location_info" id="location_info">
+                // <input type="text" name="location_municipality" id="location_municipality">
+                // <input type="text" name="location_province" id="location_province">
+                // <input type="number" name="location_postal_code_1" max="9999" id="location_postal_code_1">
+                //     <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
+                // <input type="text" name="comments" id="comments">
+                // <input type="date" name="date_required" id="date_required" required>
+                // <input type="text" name="first_name" id="first_name" required>
+                // <input type="text" name="last_name" id="last_name" required>
+                // <input type="email" name="email_address" id="email_address" size="50" required>
+                //         <input name="checkbox-group-1644381304426[]" id="checkbox-group-1644381304426-0" value="yes" type="checkbox" checked="checked">
+                // <input type="number" name="contact_number_confidential" id="contact_number_confidential">
+                // <select name="group_relationship" id="group_relationship">
+                // <textarea name="additional_info" id="additional_info" rows="5" cols="50"></textarea>
+
                 if ($reason == "reason_change") {
                     dbg("** change template before");
                     dbg($template);
                     // field substitution
                     $subfields = array(
-                        "orig_meeting_name",
-                        "orig_duration_time",
-                        "orig_start_time",
-                        "orig_time_zone",
-                        "orig_formats",
+                        "meeting_name" => "orig_meeting_name",
+                        "start_time" => "orig_start_time",
+                        "duration_time" => "orig_duration_time",
+                        "time_zone" => "orig_time_zone",
+                        "location_text" => "orig_location_text",
+                        "location_street" => "orig_location_street",
+                        "location_info" => "orig_location_info",
+                        "location_municipality" => "orig_location_municipality",
+                        "location_province" => "orig_location_province",
+                        "location_postal_code_1" => "orig_location_postal_code_1",
+                        "virtual_meeting_link" => "orig_virtual_meeting_link",
+                        "comments" => "orig_comments",
+                        "email_address" => "orig_email_address",
+                        "contact_number_confidential" => "contact_number_confidential",
+                        "formats" => "orig_formats"
                         // "orig_weekday",
-                        "orig_virtual_meeting_link",
-                        "orig_comments"
                     );
 
                     // Do field replacements in template
-                    foreach ($subfields as $field) {
-                        $subfield = '{field:' . $field . '}';
-                        // strip the orig_
-                        $bmlt_field = preg_replace("/^orig_/", "", $field);
-dbg("bmlt field = ".$bmlt_field);
-                        $subwith = $meeting[0][$bmlt_field];
-                        $template = str_replace($subfield, $subwith, $template);
+                    foreach ($subfields as $bmlt_field => $sub_value) {
+                        $subfield = '{field:' . $sub_value . '}';
+                        if (!empty($meeting[0][$bmlt_field])) {
+                            $subwith = $meeting[0][$bmlt_field];
+                            $template = str_replace($subfield, $subwith, $template);
+                        }
                     }
                     dbg("** change template after");
                     dbg($template);
