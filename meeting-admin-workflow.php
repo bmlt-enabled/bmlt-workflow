@@ -461,8 +461,8 @@ function meeting_update_form_response()
                         wp_die("curl failed");
                     }
                     curl_close($curl);
-                    $meeting = json_decode($resp);
-                    
+                    $meeting = json_decode($resp,true);
+
                 } else {
                     wp_die("meeting id not set");
                 }
@@ -486,6 +486,7 @@ function meeting_update_form_response()
                         $subfield = '{field:' . $field . '}';
                         // strip the orig_
                         $bmlt_field = preg_replace("/^orig_.*/", "", $field);
+
                         $subwith = $meeting[0][$bmlt_field];
                         $template = str_replace($subfield, $subwith, $template);
                     }
