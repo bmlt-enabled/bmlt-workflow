@@ -487,8 +487,16 @@ function meeting_update_form_response()
                 curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
                 $resp = curl_exec($curl);
+                if(!$resp)
+                {
+                    dbg("curl failed");
+                }
+                else
+                {
+                    dbg(print_r($resp));    
+                }
                 curl_close($curl);
-                dbg(print_r($resp));
+
             }
 
             $from_address = get_option('bmaw_email_from_address');
