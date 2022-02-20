@@ -459,15 +459,14 @@ function meeting_update_form_response()
                     dbg("curl returned " . gettype($resp));
                     if (!$resp) {
                         wp_die("curl failed");
-                        curl_close($curl);
-
-                        $meeting = json_decode($resp);
                     }
+                    curl_close($curl);
+                    $meeting = json_decode($resp);
+                    
                 } else {
                     wp_die("meeting id not set");
                 }
-                if ($reason == "reason_change")
-                {
+                if ($reason == "reason_change") {
                     dbg("** change template before");
                     dbg($template);
                     // field substitution
@@ -481,18 +480,17 @@ function meeting_update_form_response()
                         "orig_virtual_meeting_link",
                         "orig_comments"
                     );
-        
+
                     // Do field replacements in template
                     foreach ($subfields as $field) {
                         $subfield = '{field:' . $field . '}';
                         // strip the orig_
-                        $bmlt_field = preg_replace("/^orig_.*/","",$field);
+                        $bmlt_field = preg_replace("/^orig_.*/", "", $field);
                         $subwith = $meeting[0][$bmlt_field];
                         $template = str_replace($subfield, $subwith, $template);
                     }
                     dbg("** change template after");
                     dbg($template);
-        
                 }
             }
 
