@@ -9,7 +9,7 @@
  * Author URI: 
  **/
 
-define( 'THIS_PLUGIN_URL', plugin_dir_path( __FILE__ ) );
+define('THIS_PLUGIN_URL', plugin_dir_path(__FILE__));
 
 function dbg($logmsg)
 {
@@ -23,7 +23,9 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $parsed_atts = shortcode_atts(
         array(
             'service-areas' => '1',
-        ), $atts, $tag
+        ),
+        $atts,
+        $tag
     );
     $bmaw_service_areas_string = preg_replace("/[^0-9,]/", "", $parsed_atts['service-areas']);
 
@@ -88,7 +90,7 @@ add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
 
 function array_sanitize_callback($args)
 {
-    dbg('array sanitise called'.$args);
+    dbg('array sanitise called' . $args);
     return $args;
 }
 
@@ -267,7 +269,7 @@ function bmaw_register_setting()
 function bmaw_bmlt_server_address_html()
 {
     $bmaw_bmlt_server_address = get_option('bmaw_bmlt_server_address');
-    dbg("print html - ".$bmaw_bmlt_server_address);
+    dbg("print html - " . $bmaw_bmlt_server_address);
     echo <<<END
     <div class="bmaw_info_text">
     <br>Your BMLT server address, used to populate the meeting list for meeting changes and closures. For example: <code>https://na.org.au/main_server/</code>
@@ -278,7 +280,6 @@ function bmaw_bmlt_server_address_html()
     echo '<br><label for="bmaw_bmlt_server_address"><b>Server Address:</b></label><input type="url" size="50" id="bmaw_bmlt_server_address" name="bmaw_bmlt_server_address" value="' . $bmaw_bmlt_server_address . '"/>';
     echo '<button type="button" id="bmaw_test_bmlt_server">Test Server Address</button>';
     echo '<br><br>';
-
 }
 
 function bmaw_shortcode_html()
@@ -304,7 +305,6 @@ function bmaw_email_from_address_html()
 
     echo '<br><label for="bmaw_email_from_address"><b>From Address:</b></label><input type="text" size="50" name="bmaw_email_from_address" value="' . $from_address . '"/>';
     echo '<br><br>';
-
 }
 
 function bmaw_new_meeting_template_html()
@@ -321,7 +321,6 @@ function bmaw_new_meeting_template_html()
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
     echo '<br><br>';
-
 }
 
 function bmaw_existing_meeting_template_html()
@@ -339,7 +338,6 @@ function bmaw_existing_meeting_template_html()
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
     echo '<br><br>';
-
 }
 
 function bmaw_other_meeting_template_html()
@@ -355,7 +353,6 @@ function bmaw_other_meeting_template_html()
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
     echo '<br><br>';
-
 }
 
 function bmaw_service_committee_table_html()
@@ -458,16 +455,43 @@ function meeting_update_form_response()
             dbg("** template after");
             dbg($template);
 
+            $cc_address = "";
+            $to_address = "";
             $service_committees = get_option('bmaw_service_committee_option_array');
             foreach ($service_committees as $key => $value) {
                 if ($value['name'] == $_POST['service_area']) {
                     dbg("* Found our service area! To = " . $value['e1'] . " CC: " . $value['e2']);
+                    $cc_address = $value['e2'];
+                    $to_address = $value['e1'];
+                    break;
                 }
             }
 
+            if (empty($to_address) || empty($cc_address)) {
+                wp_die(("No valid service committee found."));
+            }
+
+            if (($reason == "reason_change") || ($reason == 'reason_close')) {
+                dbg("getting http from server");
+                $meeting_id = $_POST['id_bigint'];
+                $bmaw_bmlt_server_address = get_option('bmaw_bmlt_server_address');
+                $url = $bmaw_bmlt_server_address . "/client_interface/jsonp/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=".$meeting_id."lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&&recursive=1&sort_keys=start_time";
+
+                $curl = curl_init($url);
+                curl_setopt($curl, CURLOPT_URL, $url);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+                $headers = array(
+                    "Accept: */*",
+                );
+                curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+                $resp = curl_exec($curl);
+                curl_close($curl);
+                dbg(var_dump($resp));
+            }
+
             $from_address = get_option('bmaw_email_from_address');
-            $cc_address = $value['e2'];
-            $to_address = $value['e1'];
 
             // Do field replacement in to: and cc: address
             $subfield = '{field:email_address}';
