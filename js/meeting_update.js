@@ -209,6 +209,7 @@ jQuery(document).ready(function ($) {
   // form submit handler
   $("#meeting_update_form").submit(function (event) {
     console.log("Handler for .submit() called.");
+    // meeting formats
     var str = "";
     for (var i = 0; i < $("#format-table tr").length; i++) {
       if (get_field_checked_index("format-table", i)) {
@@ -219,7 +220,17 @@ jQuery(document).ready(function ($) {
       str = str.slice(0, -2);
       put_field("formats", str);
     }
+
+    // weekdays
+    for (var i = 0; i < 7; i++) {
+      if (get_field_checked_index("weekday", i) == true) {
+        str = str + weekdays[i] + ", ";
+      }
+    }
+    if (str != "") {
+      str = str.slice(0, -2);
+      put_field("weekday", str);
+    }
     event.preventDefault();
   });
-
 });
