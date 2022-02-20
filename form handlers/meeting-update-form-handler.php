@@ -170,7 +170,7 @@ function meeting_update_form_handler()
                     $subwith = '(blank)';
                 }
                 // special case for meeting change to handle delta
-                if(($subwith == $orig_values['{field:orig_'.$field.'}'])&&($reason=='reason_change'))
+                if((array_key_exists('{field:orig_'.$field.'}',$orig_values))&&($subwith == $orig_values['{field:orig_'.$field.'}'])&&($reason=='reason_change'))
                 {
                     $subwith = '(no change)';
                 }
