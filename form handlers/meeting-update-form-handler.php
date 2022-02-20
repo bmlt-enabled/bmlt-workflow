@@ -85,6 +85,7 @@ function meeting_update_form_handler()
                 // <input type="number" name="contact_number_confidential" id="contact_number_confidential">
                 // <select name="group_relationship" id="group_relationship">
                 // <textarea name="additional_info" id="additional_info" rows="5" cols="50"></textarea>
+                $orig_values = array();
 
                 if ($reason == "reason_change") {
                     dbg("** change template before");
@@ -112,14 +113,16 @@ function meeting_update_form_handler()
                     // Do field replacements in template
                     foreach ($subfields as $bmlt_field => $sub_value) {
                         $subfield = '{field:' . $sub_value . '}';
-                        if (!empty($meeting[0][$bmlt_field])) {
+                        if (!empty($meeting[0][$bmlt_field])) 
+                        {
                             $subwith = $meeting[0][$bmlt_field];
-                            $template = str_replace($subfield, $subwith, $template);
                         }
                         else
                         {
-                            $template = str_replace($subfield, '(blank)', $template);
+                            $subwith = '(blank)';
                         }
+                        $template = str_replace($subfield, $subwith, $template);
+                        $orig_values[$subfield]=$subwith;
                     }
                     // special case for weekday
                     $weekdays = array(0=>"Sunday", 1=>"Monday", 2=>"Tuesday", 3=>"Wednesday", 4=>"Thursday", 5=>"Friday", 6=>"Saturday");
@@ -161,12 +164,19 @@ function meeting_update_form_handler()
                 // $subfield = 'style';
                 if ((isset($_POST[$field]))&&(!empty($_POST[$field]))) {
                     $subwith = $_POST[$field];
-                    $template = str_replace($subfield, $subwith, $template);
                 }
                 else
                 {
-                    $template = str_replace($subfield, '(blank)', $template);
+                    $subwith = '(blank)';
                 }
+                // special case for meeting change to handle delta
+                if(($subwith == $orig_values['orig_'.$subfield])&&($reason=='reason_change'))
+                {
+                    $subwith = '(no change)';
+                }
+                
+                $template = str_replace($subfield, $subwith, $template);
+
             }
             dbg("** template after");
             dbg($template);
