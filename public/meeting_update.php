@@ -36,7 +36,7 @@
                     <option></option>
                 </select>
             </div>
-            <input type="hidden" name="id_bigint" name="id_bigint" value="">
+            <input type="hidden" name="id_bigint" id="id_bigint" value="">
             <br>
             <div id="other_reason">
                 <label for="other_reason">Other Reason</label>
