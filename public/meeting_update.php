@@ -14,7 +14,8 @@
     echo 'var bmaw_bmlt_server_address = "'. get_option('bmaw_bmlt_server_address').'"</script>';
 
 ?>
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
 
 <form action="<?php echo esc_url(admin_url('admin-post.php')); ?>" method="post" id="meeting_update_form">
     <input type="hidden" name="action" value="meeting_update_form_response">
@@ -84,12 +85,12 @@
             </div>
             <div>
                 <label for="start_time">Start Time<span class="bmaw-required-field">*</span></label>
-                <input type="text" name="start_time" id="start_time" required>
+                <input type="time" name="start_time" id="start_time" required>
             </div>
             <br>
             <div>
                 <label for="duration_time">Duration<span class="bmaw-required-field">*</span></label>
-                <input type="text" name="duration_time" id="duration_time" required>
+                <input type="time" name="duration_time" id="duration_time" required>
             </div>
             <br>
             <!-- <div>
