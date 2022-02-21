@@ -5,6 +5,52 @@ function meeting_update_form_handler()
     if (isset($_POST['meeting_update_form_nonce']) && wp_verify_nonce($_POST['meeting_update_form_nonce'], 'meeting_update_form_nonce')) {
 
         // sanitize the input
+        $subfields = array(
+            "first_name" => "text",
+            "last_name" => "text",
+            "meeting_name" => "text",
+            "start_time" => "time",
+            "duration_time" => "time",
+            "location_text" => "text",
+            "location_street" => "text",
+            "location_info" => "text",
+            "location_municipality" => "text",
+            "location_province" => "text",
+            "location_postal_code_1" => "number",
+            "virtual_meeting_link" => "url",
+            "email_address" => "email",
+            "contact_number_confidential",
+            // "time_zone",
+            "formats" => "text",
+            "weekday" => "text",
+            "additional_info" => "textarea",
+            // "comments"
+        );
+
+        foreach ($subfields as $field => $field_type) {
+            switch($field_type)
+            {
+                case ('text'):
+                    $_POST[$field]= sanitize_text_field( $_POST[$field]);
+                    break;
+                case ('number'):
+                    $_POST[$field]= intval( $_POST[$field]);
+                    break;
+                case ('url'):
+                    $_POST[$field]= esc_url_raw($_POST[$field],array('http','https'));
+                    break;
+                case ('email'):
+                    $_POST[$field]= sanitize_email( $_POST[$field]);
+                    break;
+                case ('textarea'):
+                    $_POST[$field]= sanitize_textarea_field( $_POST[$field]);
+                    break;
+                default:
+                    $_POST[$field]="UNSANITISED";
+
+            }
+        }
+
         // $nds_user_meta_key = sanitize_key( $_POST['nds']['user_meta_key'] );
         // $nds_user_meta_value = sanitize_text_field( $_POST['nds']['user_meta_value'] );
         // $nds_user =  get_user_by( 'login',  $_POST['nds']['user_select'] );
@@ -91,7 +137,7 @@ function meeting_update_form_handler()
                     dbg("** change template before");
                     dbg($template);
                     // field substitution from BMLT
-                    $subfields = array(
+                    $orig_subfields = array(
                         "meeting_name" => "orig_meeting_name",
                         "start_time" => "orig_start_time",
                         "duration_time" => "orig_duration_time",
@@ -111,7 +157,7 @@ function meeting_update_form_handler()
                     );
 
                     // Do field replacements in template
-                    foreach ($subfields as $bmlt_field => $sub_value) {
+                    foreach ($orig_subfields as $bmlt_field => $sub_value) {
                         $subfield = '{field:' . $sub_value . '}';
                         if (!empty($meeting[0][$bmlt_field])) {
                             $subwith = $meeting[0][$bmlt_field];
@@ -134,30 +180,10 @@ function meeting_update_form_handler()
             dbg("** template before");
             dbg($template);
             // field substitution from form
-            $subfields = array(
-                "first_name",
-                "last_name",
-                "meeting_name",
-                "start_time",
-                "duration_time",
-                "location_text",
-                "location_street",
-                "location_info",
-                "location_municipality",
-                "location_province",
-                "location_postal_code_1",
-                "virtual_meeting_link",
-                "email_address",
-                "contact_number_confidential",
-                // "time_zone",
-                "formats",
-                "weekday",
-                "additional_info"
-                // "comments"
-            );
+
             dbg('post location_info = "' . $_POST['location_info'] . '"');
             // Do field replacements in template
-            foreach ($subfields as $field) {
+            foreach ($subfields as $field => $formattype) {
                 $subfield = '{field:' . $field . '}';
                 // $subfield = 'style';
                 if ((isset($_POST[$field])) && (!empty($_POST[$field]))) {

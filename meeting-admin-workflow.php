@@ -329,7 +329,7 @@ function bmaw_existing_meeting_template_html()
 {
     echo <<<END
     <div class="bmaw_info_text">
-    <br>This template will be used when emailing meeting admins about an 'other' change type.
+    <br>This template will be used when emailing meeting admins about a change to an existing meeting.
     <br><br>
     </div>
     END;
