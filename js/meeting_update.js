@@ -95,6 +95,8 @@ jQuery(document).ready(function ($) {
     // clear_field("time_zone", mdata[id].time_zone);
 
     clear_field("id_bigint");
+    // reset email checkbox
+    put_field_checked_index("add_email",0,true);
 
     // clear all the formats
     for (var i = 0; i < $("#format-table tr").length; i++) 
