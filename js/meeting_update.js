@@ -97,11 +97,17 @@ jQuery(document).ready(function ($) {
     clear_field("id_bigint");
 
     // clear all the formats
-    for (var i = 0; i < $("#format-table tr").length; i++) {
-      if (get_field_checked_index("format-table", i) == true) {
+    for (var i = 0; i < $("#format-table tr").length; i++) 
+    {
         put_field_checked_index("format-table", i, false);
-      }
     }
+
+    // clear weekdays
+    for (var i = 0; i < 7; i++) 
+    {
+        put_field_checked_index("weekday", i, false);
+    }
+
     // reset selector
     $("#meeting-searcher").val('').trigger('change')
   }
