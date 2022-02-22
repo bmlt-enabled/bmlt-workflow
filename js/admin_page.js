@@ -1,5 +1,5 @@
 jQuery(document).ready(function ($) {
-  if(get_option("bmaw_test_successful"))
+  if(bmaw_test_successful)
   {
     $("#bmaw_test_yes").show();
     $("#bmaw_test_no").hide();  
@@ -9,8 +9,8 @@ jQuery(document).ready(function ($) {
     $("#bmaw_test_no").show();
     $("#bmaw_test_yes").hide();  
   }
-  
-  $("#bmaw_test_successful").val(get_option("bmaw_test_successful"));
+
+  $("#bmaw_test_successful").val(bmaw_test_successful);
 
   $("#bmaw_test_bmlt_server").on("click", function (event) {
     console.log("clicked");
@@ -22,7 +22,7 @@ jQuery(document).ready(function ($) {
         console.log("validated ok");
         $("#bmaw_test_successful").val("true");
         $("#bmaw_test_yes").show();
-        update_option("bmaw_test_successful", "true");
+        // update_option("bmaw_test_successful", "true");
       });
   });
 
