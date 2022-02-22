@@ -90,7 +90,7 @@
             <br>
             <div>
                 <label for="duration_time">Duration<span class="bmaw-required-field">*</span></label>
-                <input type="time" name="duration_time" id="duration_time" required>
+                <input type="text" name="duration_time" id="duration_time" required>
             </div>
             <br>
             <!-- <div>

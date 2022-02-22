@@ -42,6 +42,12 @@ jQuery(document).ready(function ($) {
     $(field).trigger("change");
   }
 
+  function clear_field(fieldname, value) {
+    var field = "#" + fieldname;
+    $(field)[0].value = "";
+    $(field).trigger("change");
+  }
+
   function put_field_checked_index(fieldname, index, value) {
     var field = "#" + fieldname + "-" + index;
     $(field)[0].checked = value;
@@ -74,6 +80,32 @@ jQuery(document).ready(function ($) {
     );
   }
 
+  function clear_form()
+  {
+    clear_field("meeting_name");
+    clear_field("start_time");
+    clear_field("duration_time");
+    clear_field("location_street");
+    clear_field("location_text");
+    clear_field("location_info");
+    clear_field("location_municipality");
+    clear_field("location_province");
+    clear_field("location_postal_code_1");
+    // clear_field("comments", mdata[id].comments);
+    // clear_field("time_zone", mdata[id].time_zone);
+
+    clear_field("id_bigint");
+
+    // clear all the formats
+    for (var i = 0; i < $("#format-table tr").length; i++) {
+      if (get_field_checked_index("format-table", i) == true) {
+        put_field_checked_index("format-table", i, false);
+      }
+    }
+    // reset selector
+    $("#meeting-searcher").val('').trigger('change')
+  }
+
   // meeting logic
   $("#meeting_selector").hide();
   $("#other_reason").hide();
@@ -81,24 +113,25 @@ jQuery(document).ready(function ($) {
 
   $("#update_reason").change(function () {
     if ($(this).val() === "reason_new") {
-      console.log("new");
+      clear_form();
       $("#meeting_selector").hide();
       $("#other_reason").hide();
       $("#meeting_content").show();
       $("#starter_pack").show();
     } else if ($(this).val() === "reason_change" || $(this).val() === "reason_close") {
+      clear_form();
       $("#meeting_selector").show();
       $("#other_reason").hide();
       $("#meeting_content").show();
       $("#starter_pack").hide();
     } else if ($(this).val() === "reason_other") {
+      clear_form();
       $("#meeting_selector").hide();
       $("#other_reason").show();
       $("#meeting_content").show();
       $("#starter_pack").hide();
     }
   });
-  // populate format list
 
   // $bmlt_address = get_option('bmaw_bmlt_server_address');
   var format_results_address = bmaw_bmlt_server_address + "/client_interface/jsonp/?switcher=GetFormats";
