@@ -1,18 +1,32 @@
-jQuery(document).ready(function($) {
+jQuery(document).ready(function ($) {
+  if(get_option("bmaw_test_successful"))
+  {
+    $("#bmaw_test_yes").show();
+    $("#bmaw_test_no").hide();  
+  }
+  else
+  {
+    $("#bmaw_test_no").show();
+    $("#bmaw_test_yes").hide();  
+  }
+  
+  $("#bmaw_test_successful").val(get_option("bmaw_test_successful"));
 
-$("#bmaw_test_bmlt_server").on("click", function(event) {
-console.log("clicked");
-var format_results_address = $("#bmaw_bmlt_server_address").val()+'/client_interface/jsonp/?switcher=GetFormats';
+  $("#bmaw_test_bmlt_server").on("click", function (event) {
+    console.log("clicked");
+    var format_results_address = $("#bmaw_bmlt_server_address").val() + "/client_interface/jsonp/?switcher=GetFormats";
 
-fetchJsonp(format_results_address)
-  .then((response) => response.json())
-  .then((data) => {
-console.log("validated ok");
+    fetchJsonp(format_results_address)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("validated ok");
+        $("#bmaw_test_successful").val("true");
+        $("#bmaw_test_yes").show();
+        update_option("bmaw_test_successful", "true");
+      });
   });
 
-});
-
-$("#bmaw-service-committee-table tbody").on("click", "tr td:nth-child(4)", function (event) {
+  $("#bmaw-service-committee-table tbody").on("click", "tr td:nth-child(4)", function (event) {
     var rowCount = $("#bmaw-service-committee-table tr").length - 2;
     var clicked = $(this).closest("tr").index();
     console.log("table length " + rowCount + " row clicked " + clicked);
