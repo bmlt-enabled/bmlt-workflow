@@ -4,8 +4,8 @@ $arr = get_option('bmaw_service_committee_option_array');
 $js_array = json_encode($arr);
 
 echo '<div class="wrap"><script>';
-echo "var bmaw_service_form_array = ". $js_array . ";";
-echo "var bmaw_test_successful = ". get_option('bmaw_test_successful').";</script>";
+echo '<script>var bmaw_service_form_array = '. $js_array . '</script>';
+echo '<script>var bmaw_test_successful = '. get_option('bmaw_test_successful').'</script>';
 echo '<script src="'.esc_url( plugins_url( 'js/admin_page.js', dirname(__FILE__))).'"></script>';
 echo '<form method="post" action="options.php">';
 
