@@ -26,7 +26,7 @@ jQuery(document).ready(function ($) {
   });
 
   $("#bmaw_bmlt_server_address").on("change", function (event) {
-    update_option("bmaw_test_successful", "failed");
+    // update_option("bmaw_test_successful", "failed");
     $("#bmaw_test_yes").hide();
     $("#bmaw_test_no").hide();  
   });
