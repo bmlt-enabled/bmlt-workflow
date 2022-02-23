@@ -2,12 +2,12 @@
 
 $arr = get_option('bmaw_service_committee_option_array');
 $js_array = json_encode($arr);
-$success = get_option('bmaw_test_successful');
-if($success!='succeeded')
+$test_result = get_option('bmaw_test_successful','failed');
+if($test_result!='succeeded')
 {
-    $success = "failed";
+    $test_result = "failed";
 }
-echo '<script>var bmaw_test_successful = '. $success .'</script>';
+echo '<script>var bmaw_test_successful = '. $test_result .'</script>';
 echo '<div class="wrap"><script>';
 echo '<script>var bmaw_service_form_array = '. $js_array . '</script>';
 echo '<script>var bmaw_test_successful = '. get_option('bmaw_test_successful').'</script>';
