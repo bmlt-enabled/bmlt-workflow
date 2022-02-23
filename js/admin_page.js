@@ -22,7 +22,7 @@ jQuery(document).ready(function ($) {
         console.log("validated ok");
         $("#bmaw_test_successful").val("succeeded");
         $("#bmaw_test_yes").show();
-        // update_option("bmaw_test_successful", "true");
+        $("#bmaw_test_no").hide();  
       });
   });
 
