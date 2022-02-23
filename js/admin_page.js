@@ -22,7 +22,9 @@ jQuery(document).ready(function ($) {
         $("#bmaw_test_yes").show();
         $("#bmaw_test_no").hide();  
         // update_option("bmaw_test_successful", "succeeded");
-      });
+      })
+      .catch(error => {$("#bmaw_test_successful").val("failed");console.log("fetchp failed")}
+      );
   });
 
   $("#bmaw_bmlt_server_address").on("change", function (event) {
