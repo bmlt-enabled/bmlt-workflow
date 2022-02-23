@@ -400,9 +400,11 @@ function bmaw_service_committee_table_html()
 
 function display_admin_options_page()
 {
+    dbg("before include");
     ob_start();
     include('admin/admin_options.php');
     $content = ob_get_clean();
+    dbg("after include");
     echo $content;
 }
 
