@@ -13,13 +13,11 @@ jQuery(document).ready(function ($) {
   $("#bmaw_test_successful").val(bmaw_test_successful);
 
   $("#bmaw_test_bmlt_server").on("click", function (event) {
-    console.log("clicked");
     var format_results_address = $("#bmaw_bmlt_server_address").val() + "/client_interface/jsonp/?switcher=GetFormats";
 
     fetchJsonp(format_results_address)
       .then((response) => response.json())
       .then((data) => {
-        console.log("validated ok");
         $("#bmaw_test_successful").val("succeeded");
         $("#bmaw_test_yes").show();
         $("#bmaw_test_no").hide();  
@@ -27,7 +25,7 @@ jQuery(document).ready(function ($) {
       });
   });
 
-  $("#bmaw_test_bmlt_server").on("change", function (event) {
+  $("#bmaw_bmlt_server_address").on("change", function (event) {
     update_option("bmaw_test_successful", "failed");
     $("#bmaw_test_yes").hide();
     $("#bmaw_test_no").hide();  
