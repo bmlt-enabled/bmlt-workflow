@@ -5,12 +5,11 @@ $js_array = json_encode($arr);
 $test_result = get_option('bmaw_test_successful','failed');
 if($test_result!='succeeded')
 {
-    $test_result = "failed";
+    $test_result = 'failed';
 }
-echo '<script>var bmaw_test_successful = "'. $test_result .'"</script>';
-echo '<div class="wrap"><script>';
+echo '<div class="wrap">';
 echo '<script>var bmaw_service_form_array = '. $js_array . '</script>';
-echo '<script>var bmaw_test_successful = '. get_option('bmaw_test_successful').'</script>';
+echo '<script>var bmaw_test_successful = "'. $test_result .'"</script>';
 echo '<script src="'.esc_url( plugins_url( 'js/admin_page.js', dirname(__FILE__))).'"></script>';
 echo '<form method="post" action="options.php">';
 
