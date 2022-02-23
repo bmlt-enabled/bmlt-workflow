@@ -7,7 +7,7 @@ if($test_result!='succeeded')
 {
     $test_result = "failed";
 }
-echo '<script>var bmaw_test_successful = '. $test_result .'</script>';
+echo '<script>var bmaw_test_successful = "'. $test_result .'"</script>';
 echo '<div class="wrap"><script>';
 echo '<script>var bmaw_service_form_array = '. $js_array . '</script>';
 echo '<script>var bmaw_test_successful = '. get_option('bmaw_test_successful').'</script>';
