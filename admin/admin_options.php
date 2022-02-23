@@ -2,9 +2,14 @@
 
 $arr = get_option('bmaw_service_committee_option_array');
 $js_array = json_encode($arr);
-
+$success = get_option('bmaw_test_successful');
+if($success!='succeeded')
+{
+    $success = "failed";
+}
+echo '<script>var bmaw_test_successful = '. $success .'</script>';
 echo '<div class="wrap"><script>';
-echo '<script>avar bmaw_service_form_array = '. $js_array . '</script>';
+echo '<script>var bmaw_service_form_array = '. $js_array . '</script>';
 echo '<script>var bmaw_test_successful = '. get_option('bmaw_test_successful').'</script>';
 echo '<script src="'.esc_url( plugins_url( 'js/admin_page.js', dirname(__FILE__))).'"></script>';
 echo '<form method="post" action="options.php">';

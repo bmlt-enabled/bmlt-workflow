@@ -1,5 +1,5 @@
 jQuery(document).ready(function ($) {
-  if(bmaw_test_successful)
+  if(bmaw_test_successful == "succeeded")
   {
     $("#bmaw_test_yes").show();
     $("#bmaw_test_no").hide();  
@@ -20,7 +20,7 @@ jQuery(document).ready(function ($) {
       .then((response) => response.json())
       .then((data) => {
         console.log("validated ok");
-        $("#bmaw_test_successful").val("true");
+        $("#bmaw_test_successful").val("succeeded");
         $("#bmaw_test_yes").show();
         // update_option("bmaw_test_successful", "true");
       });
