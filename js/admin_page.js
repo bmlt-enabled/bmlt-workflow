@@ -27,6 +27,12 @@ jQuery(document).ready(function ($) {
       });
   });
 
+  $("#bmaw_test_bmlt_server").on("change", function (event) {
+    update_option("bmaw_test_successful", "failed");
+    $("#bmaw_test_yes").hide();
+    $("#bmaw_test_no").hide();  
+  });
+
   $("#bmaw-service-committee-table tbody").on("click", "tr td:nth-child(4)", function (event) {
     var rowCount = $("#bmaw-service-committee-table tr").length - 2;
     var clicked = $(this).closest("tr").index();
