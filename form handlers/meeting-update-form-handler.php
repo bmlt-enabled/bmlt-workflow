@@ -9,8 +9,8 @@ function meeting_update_form_handler()
             "first_name" => "text",
             "last_name" => "text",
             "meeting_name" => "text",
-            "start_time" => "time",
-            "duration_time" => "time",
+            "start_time" => "text",
+            "duration_time" => "text",
             "location_text" => "text",
             "location_street" => "text",
             "location_info" => "text",
@@ -19,7 +19,7 @@ function meeting_update_form_handler()
             "location_postal_code_1" => "number",
             "virtual_meeting_link" => "url",
             "email_address" => "email",
-            "contact_number_confidential",
+            "contact_number_confidential" => "text",
             // "time_zone",
             "formats" => "text",
             "weekday" => "text",
@@ -43,7 +43,13 @@ function meeting_update_form_handler()
                     break;
                 case ('textarea'):
                     $_POST[$field] = sanitize_textarea_field($_POST[$field]);
-                    break;
+//                     break;
+//                 case ('time'):
+//                     if(!preg_match('/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9][\s]{0,1}[aApP][mM]$/', '12:34 ZM'))
+// {
+//     $_POST[$field] = "(invalid time)"
+// }
+//                         break;
                 default:
                     $_POST[$field] = "UNSANITISED";
             }
@@ -106,30 +112,6 @@ function meeting_update_form_handler()
                     wp_die("meeting id not set");
                 }
             }
-
-            // <input type="hidden" name="id_bigint" id="id_bigint" value="">
-            // <input type="text" name="other_reason" id="other_reason">
-            // <input type="text" name="meeting_name" size="50" id="meeting_name">
-            // <input type="text" name="start_time" id="start_time" required>
-            // <input type="text" name="duration_time" id="duration_time" required>
-            // <select name="time_zone" id="time_zone">
-            // <select name="service_area" id="service_area">
-            // <input type="text" name="location_text" id="location_text">
-            // <input type="text" name="location_street" size="50" id="location_street">
-            // <input type="text" name="location_info" id="location_info">
-            // <input type="text" name="location_municipality" id="location_municipality">
-            // <input type="text" name="location_province" id="location_province">
-            // <input type="number" name="location_postal_code_1" max="9999" id="location_postal_code_1">
-            //     <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
-            // <input type="text" name="comments" id="comments">
-            // <input type="date" name="date_required" id="date_required" required>
-            // <input type="text" name="first_name" id="first_name" required>
-            // <input type="text" name="last_name" id="last_name" required>
-            // <input type="email" name="email_address" id="email_address" size="50" required>
-            //         <input name="checkbox-group-1644381304426[]" id="checkbox-group-1644381304426-0" value="yes" type="checkbox" checked="checked">
-            // <input type="number" name="contact_number_confidential" id="contact_number_confidential">
-            // <select name="group_relationship" id="group_relationship">
-            // <textarea name="additional_info" id="additional_info" rows="5" cols="50"></textarea>
             $orig_values = array();
 
             if ($reason == "reason_change") {
@@ -150,7 +132,7 @@ function meeting_update_form_handler()
                     "virtual_meeting_link" => "orig_virtual_meeting_link",
                     // "comments" => "orig_comments",
                     // "email_address" => "orig_email_address",
-                    "contact_number_confidential" => "contact_number_confidential",
+                    // "contact_number_confidential" => "contact_number_confidential",
                     "formats" => "orig_formats"
                     // "orig_weekday",
                 );
@@ -176,8 +158,8 @@ function meeting_update_form_handler()
             }
         }
 
-        dbg("** template before");
-        dbg($template);
+        // dbg("** template before");
+        // dbg($template);
         // field substitution from form
 
         dbg('post location_info = "' . $_POST['location_info'] . '"');
