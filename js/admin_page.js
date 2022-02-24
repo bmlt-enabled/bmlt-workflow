@@ -1,5 +1,5 @@
 jQuery(document).ready(function ($) {
-  if (bmaw_bmlt_test_status == "success") {
+  if (test_status == "success") {
     $("#bmaw_test_yes").show();
     $("#bmaw_test_no").hide();
   } else {
@@ -14,7 +14,7 @@ jQuery(document).ready(function ($) {
     $("#bmaw_close_meeting_template_default").attr("disabled", "disabled");
   });
 
-  $("#bmaw_bmlt_test_status").val(bmaw_bmlt_test_status);
+  $("#bmaw_bmlt_test_status").val(test_status);
 
   $("#bmaw_test_bmlt_server").on("click", function (event) {
     var format_results_address = $("#bmaw_bmlt_server_address").val() + "/client_interface/jsonp/?switcher=GetFormats";
