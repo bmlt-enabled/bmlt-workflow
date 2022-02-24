@@ -296,7 +296,7 @@ function bmaw_register_setting()
 function bmaw_bmlt_server_address_html()
 {
     $bmaw_bmlt_server_address = get_option('bmaw_bmlt_server_address');
-    $bmaw_bmlt_test_status = update_option('bmaw_bmlt_test_status',"failure");
+    $bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status',"failure");
     echo <<<END
     <div class="bmaw_info_text">
     <br>Your BMLT server address, used to populate the meeting list for meeting changes and closures. For example: <code>https://na.org.au/main_server/</code>
