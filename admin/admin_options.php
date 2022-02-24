@@ -13,7 +13,7 @@ if($test_result!='succeeded')
 echo '<div class="wrap">';
 echo '<script>var bmaw_service_form_array = '. $js_array . '</script>';
 echo '<script>var bmaw_test_successful = "'. $test_result .'"</script>';
-echo '<script>var default_close_meeting_email_template = "'. $default_close_meeting_email_template .'"</script>';
+echo '<script>var default_close_meeting_email_template = `'. $default_close_meeting_email_template .'`</script>';
 echo '<script src="'.esc_url( plugins_url( 'js/admin_page.js', dirname(__FILE__))).'"></script>';
 echo '<form method="post" action="options.php">';
 
