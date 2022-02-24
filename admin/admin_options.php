@@ -15,7 +15,7 @@ if($test_result!='succeeded')
 
 echo '<div class="wrap">';
 echo '<script src="'.esc_url( plugins_url( 'js/clipboard.js', dirname(__FILE__))).'"></script>';
-echo '<script>new ClipboardJS(".clipboard-button");</script>';
+echo '<script>clipboard = new ClipboardJS(".clipboard-button");</script>';
 
 echo '<script>var bmaw_service_form_array = '. $js_array . '</script>';
 echo '<script>var bmaw_test_successful = "'. $test_result .'"</script>';
