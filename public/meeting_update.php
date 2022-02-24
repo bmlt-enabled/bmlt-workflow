@@ -1,5 +1,6 @@
 <?php 
     $bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status',"failure");
+    dbg("bmaw_bmlt_test_status = ".$bmaw_bmlt_test_status);
     if($bmaw_bmlt_test_status != "success")
     {
         wp_die("BMLT Server not configured and tested.");
