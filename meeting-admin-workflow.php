@@ -348,7 +348,7 @@ function bmaw_new_meeting_template_html()
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
     // echo '<br><button type="button" id="bmaw_new_meeting_template_reload">Copy default template to clipboard</button>';
-    echo '<button data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
+    echo '<button type="button" data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
     echo '<br><br>';
 }
 
@@ -365,8 +365,7 @@ function bmaw_existing_meeting_template_html()
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
     // echo '<br><button type="button" id="bmaw_existing_meeting_template_reload">Copy default template to clipboard</button>';
-    echo '<button data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
-
+    echo '<button type="button" data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
     echo '<br><br>';
 }
 
@@ -383,7 +382,7 @@ function bmaw_other_meeting_template_html()
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
     // echo '<br><button type="button" id="bmaw_other_meeting_template_reload">Copy default template to clipboard</button>';
-    echo '<button data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
+    echo '<button type="button" data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
     echo '<br><br>';
 }
 
@@ -400,7 +399,7 @@ function bmaw_close_meeting_template_html()
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
     // echo '<br><button type="button" id="bmaw_close_meeting_template_reload">Copy default template to clipboard</button>';
-    echo '<button data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
+    echo '<button type="button" data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
     echo '<br><br>';
 }
 
