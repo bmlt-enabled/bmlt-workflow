@@ -50,6 +50,10 @@
                 <input type="text" name="other_reason" id="other_reason">
             </div>
             <br>
+            <p id="reason_change_text" style="display: none;">We've retrieved the details below from our system. Please make any changes and then submit your update.
+            <p id="reason_other_text" style="display: none;">Please let us know the details about your meeting change.
+            <p id="reason_new_text" style="display: none;">Please fill in the details of your new meeting, and whether your new meeting needs a starter pack provided, and then submit your update.
+            <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
             <div>
                 <label for="meeting_name">Group Name</label>
                 <input type="text" name="meeting_name" size="50" id="meeting_name">

@@ -123,18 +123,50 @@ jQuery(document).ready(function ($) {
     if ($(this).val() === "reason_new") {
       clear_form();
       $("#meeting_selector").hide();
+      // display form instructions
+      $("#reason_new_text").show();
+      $("#reason_change_text").hide();
+      $("#reason_close_text").hide();
+      $("#reason_other_text").hide();
+
       $("#other_reason").hide();
       $("#meeting_content").show();
       $("#starter_pack").show();
-    } else if ($(this).val() === "reason_change" || $(this).val() === "reason_close") {
+    } else if ($(this).val() === "reason_change") {
       clear_form();
       $("#meeting_selector").show();
+
+      // display form instructions
+      $("#reason_change_text").show();
+      $("#reason_other_text").hide();
+      $("#reason_close_text").hide();
+      $("#reason_new_text").hide();
+
+      $("#other_reason").hide();
+      $("#meeting_content").show();
+      $("#starter_pack").hide();
+    } else if ( $(this).val() === "reason_close") {
+      clear_form();
+      $("#meeting_selector").show();
+
+        // display form instructions
+      $("#reason_close_text").show();
+      $("#reason_change_text").hide();
+      $("#reason_other_text").hide();
+      $("#reason_new_text").hide();
       $("#other_reason").hide();
       $("#meeting_content").show();
       $("#starter_pack").hide();
     } else if ($(this).val() === "reason_other") {
       clear_form();
       $("#meeting_selector").hide();
+
+      // display form instructions
+      $("#reason_other_text").show();
+      $("#reason_change_text").hide();
+      $("#reason_close_text").hide();
+      $("#reason_new_text").hide();
+
       $("#other_reason").show();
       $("#meeting_content").show();
       $("#starter_pack").hide();
