@@ -16,7 +16,7 @@ if($test_result!='succeeded')
 echo '<div class="wrap">';
 echo '<script src="'.esc_url( plugins_url( 'js/clipboard.js', dirname(__FILE__))).'"></script>';
 // echo '<script>clipboard = new ClipboardJS(".clipboard-button");</script>';
-echo '<script>var cloned = null; clipboard = new ClipboardJS(".btn-clip-prev-sibling", {target: function (trigger) {var prev = $(trigger.previousElementSibling);if ($(prev).is(":disabled")) {$("body").append(cloned = $(prev).clone().attr("disabled", false).css("opacity", "0").css("position", "absolute").css("z-index", "-999"));return cloned[0];}cloned = null;return prev[0];}});</script>';
+echo '<script>var cloned = null; clipboard = new ClipboardJS(".clipboard-button", {target: function (trigger) {var prev = $(trigger.previousElementSibling);if ($(prev).is(":disabled")) {$("body").append(cloned = $(prev).clone().attr("disabled", false).css("opacity", "0").css("position", "absolute").css("z-index", "-999"));return cloned[0];}cloned = null;return prev[0];}});</script>';
 echo '<script>var bmaw_service_form_array = '. $js_array . '</script>';
 echo '<script>var bmaw_test_successful = "'. $test_result .'"</script>';
 // echo '<script>var default_close_meeting_email_template = `'. $default_close_meeting_email_template .'`</script>';
