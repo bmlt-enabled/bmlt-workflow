@@ -43,13 +43,13 @@ function meeting_update_form_handler()
                     break;
                 case ('textarea'):
                     $_POST[$field] = sanitize_textarea_field($_POST[$field]);
-//                     break;
-//                 case ('time'):
-//                     if(!preg_match('/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9][\s]{0,1}[aApP][mM]$/', '12:34 ZM'))
-// {
-//     $_POST[$field] = "(invalid time)"
-// }
-//                         break;
+                    break;
+                    //                 case ('time'):
+                    //                     if(!preg_match('/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9][\s]{0,1}[aApP][mM]$/', '12:34 ZM'))
+                    // {
+                    //     $_POST[$field] = "(invalid time)"
+                    // }
+                    //                         break;
                 default:
                     $_POST[$field] = "UNSANITISED";
             }
