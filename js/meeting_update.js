@@ -50,13 +50,13 @@ jQuery(document).ready(function ($) {
 
   function enable_field(fieldname) {
     var field = "#" + fieldname;
-    $(field)[0].prop( "disabled", false )
+    $(field).prop( "disabled", false )
     $(field).trigger("change");
   }
 
   function disable_field(fieldname) {
     var field = "#" + fieldname;
-    $(field)[0].prop( "disabled", true )
+    $(field).prop( "disabled", true )
     $(field).trigger("change");
   }
 
@@ -181,7 +181,7 @@ jQuery(document).ready(function ($) {
   });
 
   disable_field("first_name");
-  
+
   // $bmlt_address = get_option('bmaw_bmlt_server_address');
   var format_results_address = bmaw_bmlt_server_address + "/client_interface/jsonp/?switcher=GetFormats";
 
