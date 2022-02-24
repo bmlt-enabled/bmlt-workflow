@@ -7,7 +7,7 @@ $default_close_meeting_email_template = file_get_contents(BMAW_PLUGIN_DIR . 'tem
 $default_other_meeting_email_template = file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_other_meeting_email_template.html');
 $default_new_meeting_email_template = file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_new_meeting_email_template.html');
 $default_existing_meeting_email_template = file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_existing_meeting_email_template.html');
-
+dbg("close meeting template = ".$default_close_meeting_email_template);
 if($test_result!='succeeded')
 {
     $test_result = 'failed';
