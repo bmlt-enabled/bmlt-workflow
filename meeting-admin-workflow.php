@@ -299,7 +299,7 @@ function bmaw_bmlt_server_address_html()
     echo <<<END
     <div class="bmaw_info_text">
     <br>Your BMLT server address, used to populate the meeting list for meeting changes and closures. For example: <code>https://na.org.au/main_server/</code>
-    <br>Ensure you have used the <b>Test Server</b> button and saved settings before using the form
+    <br>Ensure you have used the <b>Test Server</b> button and saved settings before using the shortcode form
     <br><br>
     </div>
     END;
@@ -347,7 +347,8 @@ function bmaw_new_meeting_template_html()
     $editor_id = 'bmaw_new_meeting_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
-    echo '<br><button type="button" id="bmaw_new_meeting_template_reload">Copy default template to clipboard</button>';
+    // echo '<br><button type="button" id="bmaw_new_meeting_template_reload">Copy default template to clipboard</button>';
+    echo '<button class="btn" data-clipboard-target="#bmaw_default_new_meeting_template">Copy to clipboard</button>';
     echo '<br><br>';
 }
 
