@@ -279,6 +279,18 @@ function bmaw_register_setting()
             'label_for' => 'bmaw_service_committee_option_array'
         )
     );
+
+    add_settings_field(
+        'bmaw_close_meeting_template',
+        'Email Template for Close Meeting',
+        'bmaw_close_meeting_template_html',
+        'bmaw-settings',
+        'bmaw-settings-section-id',
+        array(
+            'label_for' => 'bmaw_service_committee_option_array'
+        )
+    );
+
 }
 
 function bmaw_bmlt_server_address_html()
