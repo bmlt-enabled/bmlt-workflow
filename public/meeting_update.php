@@ -186,12 +186,12 @@
             </div>
             <br>
             <div>
-                <label for="checkbox-group-1644381304426" class="formbuilder-checkbox-group-label">Add this email as contact
+                <label for="add_email" class="add_email">Add this email as a contact
                     address for the group</label>
                 <div class="checkbox-group">
                     <div>
-                        <input name="checkbox-group-1644381304426[]" id="checkbox-group-1644381304426-0" value="yes" type="checkbox" checked="checked">
-                        <label for="checkbox-group-1644381304426-0">Yes</label>
+                        <input name="add_email" id="add_email-0" value="yes" type="checkbox" checked="checked">
+                        <label for="add_email-0">Yes</label>
                     </div>
                 </div>
             </div>

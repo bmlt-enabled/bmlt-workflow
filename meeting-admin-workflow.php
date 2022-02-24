@@ -153,7 +153,7 @@ function bmaw_register_setting()
             'description' => 'bmaw_new_meeting_template',
             'sanitize_callback' => 'editor_sanitize_callback',
             'show_in_rest' => false,
-            'default' => file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_new_meeting_email_template.html')
+            'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_new_meeting_email_template.html')
         )
     );
 
@@ -165,7 +165,7 @@ function bmaw_register_setting()
             'description' => 'bmaw_existing_meeting_template',
             'sanitize_callback' => 'editor_sanitize_callback',
             'show_in_rest' => false,
-            'default' => file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_existing_meeting_email_template.html')
+            'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_existing_meeting_email_template.html')
 
         )
     );
@@ -178,9 +178,22 @@ function bmaw_register_setting()
             'description' => 'bmaw_other_meeting_template',
             'sanitize_callback' => 'editor_sanitize_callback',
             'show_in_rest' => false,
-            'default' => file_get_contents(plugin_dir_url(__FILE__) . 'templates/default_other_meeting_email_template.html')
+            'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_other_meeting_email_template.html')
         )
     );
+
+    register_setting(
+        'bmaw-settings-group', // settings group name
+        'bmaw_close_meeting_template',
+        array(
+            'type' => 'array',
+            'description' => 'bmaw_close_meeting_template',
+            'sanitize_callback' => 'editor_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_close_meeting_email_template.html')
+        )
+    );
+
     add_settings_section(
         'bmaw-settings-section-id',
         '',
@@ -274,6 +287,7 @@ function bmaw_bmlt_server_address_html()
     echo <<<END
     <div class="bmaw_info_text">
     <br>Your BMLT server address, used to populate the meeting list for meeting changes and closures. For example: <code>https://na.org.au/main_server/</code>
+    <br>Ensure you have used the <b>Test Server</b> button and saved settings before using the form
     <br><br>
     </div>
     END;
@@ -357,6 +371,21 @@ function bmaw_other_meeting_template_html()
     echo '<br><br>';
 }
 
+function bmaw_close_meeting_template_html()
+{
+    echo <<<END
+    <div class="bmaw_info_text">
+    <br>This template will be used when emailing meeting admins about closing a meeting.
+    <br><br>
+    </div>
+    END;
+    $content = get_option('bmaw_close_meeting_template');
+    $editor_id = 'bmaw_close_meeting_template';
+
+    wp_editor($content, $editor_id, array('media_buttons' => false));
+    echo '<br><br>';
+}
+
 function bmaw_service_committee_table_html()
 {
 
@@ -393,7 +422,7 @@ function bmaw_service_committee_table_html()
     }
     echo '<tr><td></td><td></td><td></td><td><span id="bmaw-service-committee-new-row" class="dashicons dashicons-insert"></span></td></tr>';
     echo '</tbody></table>';
-    echo '<br><button type="button" id="bmaw_service_committee_option_array_reload">Reload saved</button>';
+    // echo '<br><button type="button" id="bmaw_service_committee_option_array_reload">Reload saved</button>';
     echo '<br><br>';
 }
 

@@ -61,19 +61,19 @@ function meeting_update_form_handler()
             dbg("update reason = " . $_POST['update_reason']);
             switch ($reason) {
                 case ('reason_new'):
-                    $template = file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_new_meeting_email_template.html');
+                    $template = get_option('bmaw_new_meeting_template');
                     $subject = 'New meeting notification';
                     break;
                 case ('reason_change'):
-                    $template = file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_existing_meeting_email_template.html');
+                    $template = get_option('bmaw_existing_meeting_template');
                     $subject = 'Change meeting notification';
                     break;
                 case ('reason_close'):
-                    $template = file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_close_meeting_email_template.html');
+                    $template = get_option('bmaw_close_meeting_template');
                     $subject = 'Close meeting notification';
                     break;
                 case ('reason_other'):
-                    $template = file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_other_meeting_email_template.html');
+                    $template = get_option('bmaw_other_meeting_template');
                     $subject = 'Meeting notification - Other';
                     break;
                 default:
