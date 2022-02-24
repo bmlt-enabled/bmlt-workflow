@@ -11,10 +11,19 @@ jQuery(document).ready(function ($) {
   }
 
   function copyToClipboard(text) {
-    window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+    window.prompt("Copy to clipboard: Ctrl+C, Enter (then paste into HTML editor)", text);
   }
   $("#bmaw_test_successful").val(bmaw_test_successful);
 
+  $("#bmaw_new_meeting_template_reload").on("click", function (event) {
+    copyToClipboard(default_new_meeting_email_template);
+  });
+  $("#bmaw_other_meeting_template_reload").on("click", function (event) {
+    copyToClipboard(default_other_meeting_email_template);
+  });
+  $("#bmaw_existing_meeting_template_reload").on("click", function (event) {
+    copyToClipboard(default_existing_meeting_email_template);
+  });
   $("#bmaw_close_meeting_template_reload").on("click", function (event) {
     copyToClipboard(default_close_meeting_email_template);
   });
