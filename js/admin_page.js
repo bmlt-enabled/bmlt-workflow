@@ -10,8 +10,15 @@ jQuery(document).ready(function ($) {
     $("#bmaw_test_yes").hide();  
   }
 
+  function copyToClipboard(text) {
+    window.prompt("Copy to clipboard: Ctrl+C, Enter", text);
+  }
   $("#bmaw_test_successful").val(bmaw_test_successful);
 
+  $("#bmaw_close_meeting_template_reload").on("click", function (event) {
+    copyToClipboard(default_close_meeting_email_template);
+  });
+  
   $("#bmaw_test_bmlt_server").on("click", function (event) {
     var format_results_address = $("#bmaw_bmlt_server_address").val() + "/client_interface/jsonp/?switcher=GetFormats";
 
