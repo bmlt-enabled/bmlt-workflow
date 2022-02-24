@@ -23,10 +23,11 @@ echo '<script>var bmaw_test_successful = "'. $test_result .'"</script>';
 // echo '<script>var default_other_meeting_email_template = `'. $default_other_meeting_email_template .'`</script>';
 // echo '<script>var default_new_meeting_email_template = `'. $default_new_meeting_email_template .'`</script>';
 //echo '<script>var default_existing_meeting_email_template = `'. $default_existing_meeting_email_template .'`</script>';
+
 echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmaw_new_meeting_template_default">'.$bmaw_new_meeting_template_default.'</textarea></div>';
-echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmaw_existing_meeting_template_default">'.$bmaw_existing_meeting_template_default.'</textarea><div style="position:absolute; top:0; left:-500px;">';
-echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmaw_close_meeting_template_default">'.$bmaw_close_meeting_template_default.'</textarea><div style="position:absolute; top:0; left:-500px;">';
-echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmaw_other_meeting_template_default">'.$bmawt_other_meeting_template_defaul.'</textarea><div style="position:absolute; top:0; left:-500px;">';
+echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmaw_existing_meeting_template_default">'.$bmaw_existing_meeting_template_default.'</textarea></div>';
+echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmaw_close_meeting_template_default">'.$bmaw_close_meeting_template_default.'</textarea></div>';
+echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmaw_other_meeting_template_default">'.$bmawt_other_meeting_template_defaul.'</textarea></div>';
 echo '<script src="'.esc_url( plugins_url( 'js/admin_page.js', dirname(__FILE__))).'"></script>';
 echo '<form method="post" action="options.php">';
 
