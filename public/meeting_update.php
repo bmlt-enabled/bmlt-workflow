@@ -3,7 +3,7 @@
     dbg("bmaw_bmlt_test_status = ".$bmaw_bmlt_test_status);
     if($bmaw_bmlt_test_status != "success")
     {
-        wp_die("BMLT Server not configured and tested.");
+        wp_die("<h3>BMLT Server not configured and tested.</h3>");
     }
     // bmaw_service_areas_string from include
     $bmaw_service_areas_string = explode(",",$bmaw_service_areas_string);
