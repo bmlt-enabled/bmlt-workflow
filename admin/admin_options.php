@@ -16,17 +16,17 @@ if($test_result!='succeeded')
 echo '<div class="wrap">';
 echo '<script src="'.esc_url( plugins_url( 'js/clipboard.js', dirname(__FILE__))).'"></script>';
 // echo '<script>clipboard = new ClipboardJS(".clipboard-button");</script>';
-echo '<script>var cloned = null; clipboard = new ClipboardJS(".clipboard-button", {target: function (trigger) {var prev = jQuery(trigger.previousElementSibling);if (jQuery(prev).is(":disabled")) {jQuery("body").append(cloned = jQuery(prev).clone().attr("disabled", false).css("opacity", "0").css("position", "absolute").css("z-index", "-999"));return cloned[0];}cloned = null;return prev[0];}});</script>';
+echo '<script>clipboard = new ClipboardJS();</script>';
 echo '<script>var bmaw_service_form_array = '. $js_array . '</script>';
 echo '<script>var bmaw_test_successful = "'. $test_result .'"</script>';
 // echo '<script>var default_close_meeting_email_template = `'. $default_close_meeting_email_template .'`</script>';
 // echo '<script>var default_other_meeting_email_template = `'. $default_other_meeting_email_template .'`</script>';
 // echo '<script>var default_new_meeting_email_template = `'. $default_new_meeting_email_template .'`</script>';
 //echo '<script>var default_existing_meeting_email_template = `'. $default_existing_meeting_email_template .'`</script>';
-echo '<textarea style="display: none;" id="bmaw_new_meeting_template_default">'.$bmaw_new_meeting_template_default.'</textarea>';
-echo '<textarea style="display: none;" id="bmaw_existing_meeting_template_default">'.$bmaw_existing_meeting_template_default.'</textarea>';
-echo '<textarea style="display: none;" id="bmaw_close_meeting_template_default">'.$bmaw_close_meeting_template_default.'</textarea>';
-echo '<textarea style="display: none;" id="bmaw_other_meeting_template_default">'.$bmawt_other_meeting_template_defaul.'</textarea>';
+echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmaw_new_meeting_template_default">'.$bmaw_new_meeting_template_default.'</textarea></div>';
+echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmaw_existing_meeting_template_default">'.$bmaw_existing_meeting_template_default.'</textarea><div style="position:absolute; top:0; left:-500px;">';
+echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmaw_close_meeting_template_default">'.$bmaw_close_meeting_template_default.'</textarea><div style="position:absolute; top:0; left:-500px;">';
+echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmaw_other_meeting_template_default">'.$bmawt_other_meeting_template_defaul.'</textarea><div style="position:absolute; top:0; left:-500px;">';
 echo '<script src="'.esc_url( plugins_url( 'js/admin_page.js', dirname(__FILE__))).'"></script>';
 echo '<form method="post" action="options.php">';
 
