@@ -234,7 +234,7 @@ function meeting_update_form_handler()
         dbg('sending mail');
         wp_mail($to_address, $subject, $body, $headers);
         dbg('mail sent');
-        echo '<h3>Form submission successful</h3>';
+        exit("<h3>Form submission successful</h3>");
         // redirect the user to the appropriate page
         // wp_redirect( 'https://www.google.com' );
         exit;
