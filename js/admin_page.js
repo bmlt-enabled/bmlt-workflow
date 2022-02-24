@@ -12,6 +12,11 @@ jQuery(document).ready(function ($) {
 
   $("#bmaw_test_successful").val(bmaw_test_successful);
 
+  clipboard.on('success', function(e) {
+    console.info('Action:', e.action);
+    console.info('Text:', e.text);
+    console.info('Trigger:', e.trigger);
+  });
   // function copyToClipboard(text) {
   //   window.prompt("Copy to clipboard: Ctrl+C, Enter (then paste into HTML editor)", text);
   // }
