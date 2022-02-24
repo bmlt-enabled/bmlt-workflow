@@ -80,8 +80,7 @@ jQuery(document).ready(function ($) {
     );
   }
 
-  function clear_form()
-  {
+  function clear_form() {
     clear_field("meeting_name");
     clear_field("start_time");
     clear_field("duration_time");
@@ -91,27 +90,30 @@ jQuery(document).ready(function ($) {
     clear_field("location_municipality");
     clear_field("location_province");
     clear_field("location_postal_code_1");
+    clear_field("first_name");
+    clear_field("last_name");
+    clear_field("contact_number_confidential");
+    clear_field("email_address");
+
     // clear_field("comments", mdata[id].comments);
     // clear_field("time_zone", mdata[id].time_zone);
 
     clear_field("id_bigint");
     // reset email checkbox
-    put_field_checked_index("add_email",0,true);
+    put_field_checked_index("add_email", 0, true);
 
     // clear all the formats
-    for (var i = 0; i < $("#format-table tr").length; i++) 
-    {
-        put_field_checked_index("format-table", i, false);
+    for (var i = 0; i < $("#format-table tr").length; i++) {
+      put_field_checked_index("format-table", i, false);
     }
 
     // clear weekdays
-    for (var i = 0; i < 7; i++) 
-    {
-        put_field_checked_index("weekday", i, false);
+    for (var i = 0; i < 7; i++) {
+      put_field_checked_index("weekday", i, false);
     }
 
     // reset selector
-    $("#meeting-searcher").val('').trigger('change')
+    $("#meeting-searcher").val("").trigger("change");
   }
 
   // meeting logic
@@ -120,56 +122,44 @@ jQuery(document).ready(function ($) {
   $("#meeting_content").hide();
 
   $("#update_reason").change(function () {
-    if ($(this).val() === "reason_new") {
-      clear_form();
-      $("#meeting_selector").hide();
-      // display form instructions
-      $("#reason_new_text").show();
-      $("#reason_change_text").hide();
-      $("#reason_close_text").hide();
-      $("#reason_other_text").hide();
+    // hide all the optional items
+    $("#reason_new_text").hide();
+    $("#reason_change_text").hide();
+    $("#reason_close_text").hide();
+    $("#reason_other_text").hide();
+    $("#starter_pack").hide();
+    $("#meeting_selector").hide();
+    $("#other_reason").hide();
+    // enable the meeting form
+    $("#meeting_content").show();
 
-      $("#other_reason").hide();
-      $("#meeting_content").show();
-      $("#starter_pack").show();
-    } else if ($(this).val() === "reason_change") {
-      clear_form();
-      $("#meeting_selector").show();
-
-      // display form instructions
-      $("#reason_change_text").show();
-      $("#reason_other_text").hide();
-      $("#reason_close_text").hide();
-      $("#reason_new_text").hide();
-
-      $("#other_reason").hide();
-      $("#meeting_content").show();
-      $("#starter_pack").hide();
-    } else if ( $(this).val() === "reason_close") {
-      clear_form();
-      $("#meeting_selector").show();
-
+    // enable items as required
+    var reason = $(this).val();
+    switch (reason) {
+      case "reason_new":
+        clear_form();
         // display form instructions
-      $("#reason_close_text").show();
-      $("#reason_change_text").hide();
-      $("#reason_other_text").hide();
-      $("#reason_new_text").hide();
-      $("#other_reason").hide();
-      $("#meeting_content").show();
-      $("#starter_pack").hide();
-    } else if ($(this).val() === "reason_other") {
-      clear_form();
-      $("#meeting_selector").hide();
-
-      // display form instructions
-      $("#reason_other_text").show();
-      $("#reason_change_text").hide();
-      $("#reason_close_text").hide();
-      $("#reason_new_text").hide();
-
-      $("#other_reason").show();
-      $("#meeting_content").show();
-      $("#starter_pack").hide();
+        $("#reason_new_text").show();
+        // new meeting has a starter pack
+        $("#starter_pack").show();
+        break;
+      case "reason_change":
+        clear_form();
+        // change meeting has a search bar
+        $("#meeting_selector").show();
+        break;
+      case "reason_close":
+        clear_form();
+        // close meeting has a search bar
+        $("#meeting_selector").show();
+        break;
+      case "reason_other":
+        clear_form();
+        // display form instructions
+        $("#reason_other_text").show();
+        // other reason has a textarea
+        $("#other_reason").show();
+        break;
     }
   });
 
@@ -223,7 +213,7 @@ jQuery(document).ready(function ($) {
       $(".select2-ajax").on("select2:select", function (e) {
         var data = e.params.data;
         var id = data.id;
-
+        // set the weekday format
         var str = "";
         for (var i = 0; i < 7; i++) {
           if (i == mdata[id].weekday_tinyint - 1) {
@@ -241,7 +231,7 @@ jQuery(document).ready(function ($) {
         if (str != "") {
           str = str.slice(0, -2);
         }
-
+        // fill in the other fields from bmlt
         put_field("meeting_name", mdata[id].meeting_name);
         put_field("start_time", mdata[id].start_time);
         put_field("duration_time", mdata[id].duration_time);
@@ -271,6 +261,20 @@ jQuery(document).ready(function ($) {
           var j = formatlookup[fmtspl[i]];
           put_field_checked_index("format-table", j, true);
         }
+        // tweak form instructions
+        var reason = $("#update_reason");
+        switch (reason) {
+
+          case "reason_change":
+            $("#reason_change_text").show();
+            break;
+    
+          case "reason_close":
+            $("#reason_close_text").show();
+            break;
+
+        }
+
       });
     });
   // form submit handler
