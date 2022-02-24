@@ -194,6 +194,8 @@ function bmaw_register_setting()
         )
     );
 
+    add_option('bmaw_bmlt_test_status','failure');
+
     add_settings_section(
         'bmaw-settings-section-id',
         '',
