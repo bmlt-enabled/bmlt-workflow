@@ -1,39 +1,21 @@
 jQuery(document).ready(function ($) {
-  if(bmaw_test_successful == "succeeded")
-  {
+  if (bmaw_test_successful == "succeeded") {
     $("#bmaw_test_yes").show();
-    $("#bmaw_test_no").hide();  
-  }
-  else
-  {
+    $("#bmaw_test_no").hide();
+  } else {
     $("#bmaw_test_no").show();
-    $("#bmaw_test_yes").hide();  
+    $("#bmaw_test_yes").hide();
   }
 
+  $("form").on("submit", function () {
+    $("#bmaw_new_meeting_template_default").attr("disabled", "disabled");
+    $("#bmaw_existing_meeting_template_default").attr("disabled", "disabled");
+    $("#bmaw_other_meeting_template_default").attr("disabled", "disabled");
+    $("#bmaw_close_meeting_template_default").attr("disabled", "disabled");
+  });
+  
   $("#bmaw_test_successful").val(bmaw_test_successful);
 
-  clipboard.on('success', function(e) {
-    console.info('Action:', e.action);
-    console.info('Text:', e.text);
-    console.info('Trigger:', e.trigger);
-  });
-  // function copyToClipboard(text) {
-  //   window.prompt("Copy to clipboard: Ctrl+C, Enter (then paste into HTML editor)", text);
-  // }
-
-  // $("#bmaw_new_meeting_template_reload").on("click", function (event) {
-  //   copyToClipboard(default_new_meeting_email_template);
-  // });
-  // $("#bmaw_other_meeting_template_reload").on("click", function (event) {
-  //   copyToClipboard(default_other_meeting_email_template);
-  // });
-  // $("#bmaw_existing_meeting_template_reload").on("click", function (event) {
-  //   copyToClipboard(default_existing_meeting_email_template);
-  // });
-  // $("#bmaw_close_meeting_template_reload").on("click", function (event) {
-  //   copyToClipboard(default_close_meeting_email_template);
-  // });
-  
   $("#bmaw_test_bmlt_server").on("click", function (event) {
     var format_results_address = $("#bmaw_bmlt_server_address").val() + "/client_interface/jsonp/?switcher=GetFormats";
 
@@ -42,22 +24,19 @@ jQuery(document).ready(function ($) {
       .then((data) => {
         $("#bmaw_test_successful").val("succeeded");
         $("#bmaw_test_yes").show();
-        $("#bmaw_test_no").hide();  
-        // update_option("bmaw_test_successful", "succeeded");
+        $("#bmaw_test_no").hide();
       })
-      .catch(error => {
+      .catch((error) => {
         $("#bmaw_test_successful").val("failed");
         $("#bmaw_test_no").show();
-        $("#bmaw_test_yes").hide();  
-        // console.log("fetchp failed")
-      }
-      );
+        $("#bmaw_test_yes").hide();
+      });
   });
 
   $("#bmaw_bmlt_server_address").on("change", function (event) {
     // update_option("bmaw_test_successful", "failed");
     $("#bmaw_test_yes").hide();
-    $("#bmaw_test_no").hide();  
+    $("#bmaw_test_no").hide();
   });
 
   $("#bmaw-service-committee-table tbody").on("click", "tr td:nth-child(4)", function (event) {
