@@ -116,9 +116,8 @@ jQuery(document).ready(function ($) {
     $("#meeting-searcher").val("").trigger("change");
   }
 
-  // meeting logic
+  // meeting logic before selection is made
   $("#meeting_selector").hide();
-  $("#other_reason").hide();
   $("#meeting_content").hide();
 
   $("#update_reason").change(function () {
