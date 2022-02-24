@@ -48,6 +48,18 @@ jQuery(document).ready(function ($) {
     $(field).trigger("change");
   }
 
+  function enable_field(fieldname) {
+    var field = "#" + fieldname;
+    $(field)[0].prop( "disabled", false )
+    $(field).trigger("change");
+  }
+
+  function disable_field(fieldname) {
+    var field = "#" + fieldname;
+    $(field)[0].prop( "disabled", true )
+    $(field).trigger("change");
+  }
+
   function put_field_checked_index(fieldname, index, value) {
     var field = "#" + fieldname + "-" + index;
     $(field)[0].checked = value;
@@ -78,6 +90,12 @@ jQuery(document).ready(function ($) {
         "</td>" +
         "</tr>"
     );
+  }
+
+  function enable_edits() {
+  }
+
+  function disable_edits() {
   }
 
   function clear_form() {
@@ -162,6 +180,8 @@ jQuery(document).ready(function ($) {
     }
   });
 
+  disable_field("first_name");
+  
   // $bmlt_address = get_option('bmaw_bmlt_server_address');
   var format_results_address = bmaw_bmlt_server_address + "/client_interface/jsonp/?switcher=GetFormats";
 
