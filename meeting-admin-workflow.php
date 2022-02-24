@@ -343,7 +343,6 @@ function bmaw_new_meeting_template_html()
     <br><br>
     </div>
     END;
-    // echo "<p>This template will be used when emailing meeting admins about request to create a new meeting</p>";
     $content = get_option('bmaw_new_meeting_template');
     $editor_id = 'bmaw_new_meeting_template';
 
@@ -359,8 +358,6 @@ function bmaw_existing_meeting_template_html()
     <br><br>
     </div>
     END;
-
-    // echo "<p>This template will be used when emailing meeting admins about a change to an existing meeting</p>";
     $content = get_option('bmaw_existing_meeting_template');
     $editor_id = 'bmaw_existing_meeting_template';
 
@@ -395,6 +392,7 @@ function bmaw_close_meeting_template_html()
     $editor_id = 'bmaw_close_meeting_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
+    echo '<br><button type="button" id="bmaw_close_meeting_template_reload">Reload default template</button>';
     echo '<br><br>';
 }
 
