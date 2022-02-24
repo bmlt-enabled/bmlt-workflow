@@ -102,6 +102,12 @@ function editor_sanitize_callback($args)
     return $args;
 }
 
+function string_sanitize_callback($args)
+{
+    dbg("called string sanitize");
+    return $args;
+}
+
 function bmaw_register_setting()
 {
 
@@ -139,7 +145,7 @@ function bmaw_register_setting()
         array(
             'type' => 'string',
             'description' => 'Email from address',
-            'sanitize_callback' => 'array_sanitize_callback',
+            'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
             'default' => 'example@example'
         )
@@ -149,9 +155,9 @@ function bmaw_register_setting()
         'bmaw-settings-group', // settings group name
         'bmaw_new_meeting_template',
         array(
-            'type' => 'array',
+            'type' => 'string',
             'description' => 'bmaw_new_meeting_template',
-            'sanitize_callback' => 'editor_sanitize_callback',
+            'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
             'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_new_meeting_email_template.html')
         )
@@ -161,9 +167,9 @@ function bmaw_register_setting()
         'bmaw-settings-group', // settings group name
         'bmaw_existing_meeting_template',
         array(
-            'type' => 'array',
+            'type' => 'string',
             'description' => 'bmaw_existing_meeting_template',
-            'sanitize_callback' => 'editor_sanitize_callback',
+            'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
             'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_existing_meeting_email_template.html')
 
@@ -174,9 +180,9 @@ function bmaw_register_setting()
         'bmaw-settings-group', // settings group name
         'bmaw_other_meeting_template',
         array(
-            'type' => 'array',
+            'type' => 'string',
             'description' => 'bmaw_other_meeting_template',
-            'sanitize_callback' => 'editor_sanitize_callback',
+            'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
             'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_other_meeting_email_template.html')
         )
@@ -186,15 +192,25 @@ function bmaw_register_setting()
         'bmaw-settings-group', // settings group name
         'bmaw_close_meeting_template',
         array(
-            'type' => 'array',
+            'type' => 'string',
             'description' => 'bmaw_close_meeting_template',
-            'sanitize_callback' => 'editor_sanitize_callback',
+            'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
             'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_close_meeting_email_template.html')
         )
     );
 
-    add_option('bmaw_bmlt_test_status','failure');
+    register_setting(
+        'bmaw-settings-group', // settings group name
+        'bmaw_bmlt_test_status',
+        array(
+            'type' => 'string',
+            'description' => 'bmaw_bmlt_test_status',
+            'sanitize_callback' => 'string_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => 'failure'
+        )
+    );
 
     add_settings_section(
         'bmaw-settings-section-id',
