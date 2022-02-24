@@ -261,13 +261,11 @@ jQuery(document).ready(function ($) {
           put_field_checked_index("format-table", j, true);
         }
         // tweak form instructions
-        var reason = $("#update_reason");
+        var reason = $("#update_reason").val();
         switch (reason) {
-
           case "reason_change":
             $("#reason_change_text").show();
             break;
-    
           case "reason_close":
             $("#reason_close_text").show();
             break;
