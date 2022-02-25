@@ -530,8 +530,9 @@ function bmaw_service_committee_table_html()
         $j = 0;
         $required = 'required';
         foreach ($value as $k2 => $v2) {
-            if($j==3)
+            if($j==2)
             {
+                // just the first two fields are required
                 $required="";
             }
             $j++;
