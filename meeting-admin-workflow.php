@@ -414,8 +414,7 @@ function bmaw_fso_email_address_html()
     </div>
     END;
 
-
-    echo '<br><label for="bmaw_email_from_address"><b>From Address:</b></label><input type="text" size="50" name="bmaw_email_from_address" value="' . $from_address . '"/>';
+    echo '<br><label for="bmaw_email_from_address"><b>FSO Email Address:</b></label><input type="text" size="50" name="bmaw_fso_email_address" value="' . $from_address . '"/>';
     echo '<br><br>';
 }
 
