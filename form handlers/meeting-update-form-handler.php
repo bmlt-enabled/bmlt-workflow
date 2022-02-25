@@ -185,7 +185,7 @@ function meeting_update_form_handler()
             }
         }
 
-        if (empty($to_address) || empty($cc_address)) {
+        if (empty($to_address)){
             wp_die(("No valid service committee found."));
         }
 
@@ -195,8 +195,11 @@ function meeting_update_form_handler()
         $subfield = '{field:email_address}';
         $subwith = $_POST['email_address'];
         $to_address = str_replace($subfield, $subwith, $to_address);
-        $cc_address = str_replace($subfield, $subwith, $cc_address);
-
+        if (!empty($cc_address))
+        {
+            $cc_address = str_replace($subfield, $subwith, $cc_address);
+        }
+        
         $body = $template;
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address, 'Cc: ' . $cc_address);
         // Send the email
