@@ -25,3 +25,34 @@ See the BMAW Settings in your Wordpress Admin page. You'll need to put in a vali
 
 Update the 'From Address' to an address that your mailer is permitted to send from
 
+### Shortcode
+
+Use a shortcode with the form [bmaw-meeting-update-form service_areas=1,2,3,..] - substituting your service areas from BMLT in the parameters
+
+### Email field substitution
+
+You can add fields to the email templates to substitute content from the form submission, or from a BMLT lookup
+
+The following fields are currently supported:
+
+Within email template body or within To/CC address in the service area contact details configuration:
+- {field:email_address}
+
+Within email template body only:
+- {field:first_name}
+- {field:last_name}
+- {field:meeting_name}
+- {field:start_time}
+- {field:duration_time}
+- {field:location_text}
+- {field:location_street}
+- {field:location_info}
+- {field:location_municipality}
+- {field:location_province}
+- {field:location_postal_code_1}
+- {field:virtual_meeting_link}
+- {field:contact_number_confidential}
+- {field:formats}
+- {field:weekday}
+- {field:additional_info}
+- {field:starter_kit_postal_address} - email body
