@@ -55,6 +55,11 @@ function meeting_update_form_handler()
                 default:
                     $_POST[$field] = "UNSANITISED";
             }
+            if(empty($_POST[$field]))
+            {
+                dbg("post field invalid ".$_POST[$field]);
+                wp_die("Invalid form field input");
+            }
         }
 
 
