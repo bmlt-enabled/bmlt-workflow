@@ -133,7 +133,7 @@ jQuery(document).ready(function ($) {
     disable_field("location_province");
     disable_field("location_postal_code_1");
     for (var i = 0; i < $("#format-table tr").length; i++) {
-      disable_field_index("format-table", j);
+      disable_field_index("format-table", i);
     }
     for (var i = 0; i < 7; i++) {
       disable_field_index("weekday", i);
