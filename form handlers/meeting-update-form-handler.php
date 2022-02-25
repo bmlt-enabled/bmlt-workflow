@@ -210,7 +210,6 @@ function meeting_update_form_handler()
         // Handle the FSO emails
         if ($reason == "reason_new") {
             if (($_POST['starter_kit_required'] === 'yes') && (!empty($_POST['starter_kit_postal_address']))) {
-
                 $template = get_option('bmaw_fso_email_template');
                 $subject = 'Starter Kit Request';
                 $to_address = get_option('bmaw_fso_email_address');
@@ -225,7 +224,7 @@ function meeting_update_form_handler()
                 }
                 $body = $template;
                 $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-dbg("sending fso email ".$to_address.",".$subject.",".$body.",".$headers);
+dbg("sending fso email ".$to_address.",".$subject.",".$body.",".var_dump($headers));
                 wp_mail($to_address, $subject, $body, $headers);
             }
         }

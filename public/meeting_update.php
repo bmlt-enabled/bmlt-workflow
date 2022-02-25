@@ -55,7 +55,7 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
             <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
             <div>
                 <label for="meeting_name">Group Name</label>
-                <input type="text" name="meeting_name" size="50" id="meeting_name">
+                <input type="text" name="meeting_name" size="50" id="meeting_name" required>
             </div>
             <br>
             <div>
