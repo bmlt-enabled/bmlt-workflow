@@ -1,6 +1,5 @@
 <?php
 $bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status', "failure");
-dbg("bmaw_bmlt_test_status = " . $bmaw_bmlt_test_status);
 if ($bmaw_bmlt_test_status != "success") {
     wp_die("<h4>BMAW Plugin Error: BMLT Server not configured and tested.</h4>");
 }
@@ -13,9 +12,6 @@ foreach ($bmaw_service_areas_string as $i) {
 }
 
 echo substr_replace($service_areas_parsed, "", -1) . '";';
-// $service_areas_parsed .=
-// $are_option = get_option('bmaw_bmlt_server_address');
-// dbg($are_option);
 echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '"</script>';
 
 ?>

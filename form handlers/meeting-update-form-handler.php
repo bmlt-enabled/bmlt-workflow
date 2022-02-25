@@ -60,7 +60,6 @@ function meeting_update_form_handler()
 
         if (isset($_POST['update_reason'])) {
             $reason = $_POST['update_reason'];
-            dbg("update reason = " . $_POST['update_reason']);
             switch ($reason) {
                 case ('reason_new'):
                     $template = get_option('bmaw_new_meeting_template');
@@ -84,12 +83,10 @@ function meeting_update_form_handler()
 
             if (($reason == "reason_change") || ($reason == 'reason_close')) {
                 if (isset($_POST['id_bigint'])) {
-                    dbg("getting http from server");
                     $meeting_id = $_POST['id_bigint'];
                     $bmaw_bmlt_server_address = get_option('bmaw_bmlt_server_address');
                     $url = $bmaw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" . $meeting_id . "&lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&&recursive=1&sort_keys=start_time";
 
-                    dbg("url = " . $url);
                     $curl = curl_init($url);
                     curl_setopt($curl, CURLOPT_URL, $url);
                     curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -100,7 +97,6 @@ function meeting_update_form_handler()
                     curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
                     $resp = curl_exec($curl);
-                    dbg("curl returned " . gettype($resp));
                     if (!$resp) {
                         wp_die("curl failed");
                     }
@@ -113,8 +109,6 @@ function meeting_update_form_handler()
             $orig_values = array();
 
             if ($reason == "reason_change") {
-                dbg("** change template before");
-                dbg($template);
                 // field substitution from BMLT
                 $orig_subfields = array(
                     "meeting_name" => "orig_meeting_name",
@@ -150,9 +144,6 @@ function meeting_update_form_handler()
                 $weekdays = array(0 => "Sunday", 1 => "Monday", 2 => "Tuesday", 3 => "Wednesday", 4 => "Thursday", 5 => "Friday", 6 => "Saturday");
                 $idx = $meeting[0]['weekday_tinyint'] - 1;
                 $template = str_replace('{field:orig_weekday}', $weekdays[$idx], $template);
-                dbg("weekday lookup = " . $weekdays[$idx]);
-                dbg("** change template after");
-                dbg($template);
             }
         }
 
@@ -183,7 +174,6 @@ function meeting_update_form_handler()
         $service_committees = get_option('bmaw_service_committee_option_array');
         foreach ($service_committees as $key => $value) {
             if ($value['name'] == $_POST['service_area']) {
-                dbg("* Found our service area! To = " . $value['e1'] . " CC: " . $value['e2']);
                 $cc_address = $value['e2'];
                 $to_address = $value['e1'];
                 break;
@@ -224,7 +214,6 @@ function meeting_update_form_handler()
                 }
                 $body = $template;
                 $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-dbg("sending fso email ".$to_address.",".$subject.",".$body.",".print_r($headers));
                 wp_mail($to_address, $subject, $body, $headers);
             }
         }

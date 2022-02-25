@@ -2,11 +2,11 @@
 
 /**
  * Plugin Name: BMLT Meeting Admin Workflow
- * Plugin URI: 
+ * Plugin URI: https://github.com/nigel-bmlt/meeting-admin-workflow
  * Description: BMLT Meeting Admin Workflow
  * Version: 1.0
- * Author: @nb-bmlt
- * Author URI: 
+ * Author: @nigel-bmlt
+ * Author URI: https://github.com/nigel-bmlt
  **/
 
 define('BMAW_PLUGIN_DIR', plugin_dir_path(__FILE__));
@@ -92,19 +92,19 @@ add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
 
 function array_sanitize_callback($args)
 {
-    dbg('array sanitise called' . $args);
+    // dbg('array sanitise called' . $args);
     return $args;
 }
 
 function editor_sanitize_callback($args)
 {
-    dbg("called editor sanitize");
+    // dbg("called editor sanitize");
     return $args;
 }
 
 function string_sanitize_callback($args)
 {
-    dbg("called string sanitize");
+    // dbg("called string sanitize");
     return $args;
 }
 
@@ -543,11 +543,9 @@ function bmaw_service_committee_table_html()
 function display_admin_options_page()
 {
     $content = '';
-    dbg("before include");
     ob_start();
     include('admin/admin_options.php');
     $content = ob_get_clean();
-    dbg("after include");
     echo $content;
 }
 
