@@ -40,15 +40,13 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
             <label for="other_reason">Other Reason</label>
             <input type="text" name="other_reason" id="other_reason">
         </div>
-        <br>
-        <div id="meeting_content">
-            <div id="meeting_selector">
+        <div id="meeting_selector">
                 <br><select class="select2-ajax" id="meeting-searcher">
                     <option></option>
                 </select>
             </div>
             <input type="hidden" name="id_bigint" id="id_bigint" value="">
-            <br>
+        <div id="meeting_content">
             <p id="reason_change_text" style="display: none;">We've retrieved the details below from our system. Please make any changes and then submit your update.
             <p id="reason_other_text" style="display: none;">Please let us know the details about your meeting change.
             <p id="reason_new_text" style="display: none;">Please fill in the details of your new meeting, and whether your new meeting needs a starter pack provided, and then submit your update.
