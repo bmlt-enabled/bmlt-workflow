@@ -41,10 +41,11 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
             <input type="text" name="other_reason" id="other_reason">
         </div>
         <div id="meeting_selector">
-                <br><select class="select2-ajax" id="meeting-searcher">
+                <br>
+                <select class="select2-ajax" id="meeting-searcher">
                     <option></option>
                 </select>
-                <br>
+                <br><br>
                 <input type="hidden" name="id_bigint" id="id_bigint" value="">
         </div>
         <div id="meeting_content">
