@@ -54,8 +54,20 @@ jQuery(document).ready(function ($) {
     $(field).trigger("change");
   }
 
+  function enable_field_index(fieldname,index) {
+    var field = "#" + fieldname + "-" + index;
+    $(field).prop( "disabled", false )
+    $(field).trigger("change");
+  }
+
   function disable_field(fieldname) {
     var field = "#" + fieldname;
+    $(field).prop( "disabled", true )
+    $(field).trigger("change");
+  }
+
+  function disable_field_index(fieldname,index) {
+    var field = "#" + fieldname + "-" + index;
     $(field).prop( "disabled", true )
     $(field).trigger("change");
   }
@@ -93,9 +105,40 @@ jQuery(document).ready(function ($) {
   }
 
   function enable_edits() {
+    enable_field("meeting_name");
+    enable_field("start_time");
+    enable_field("duration_time");
+    enable_field("location_street");
+    enable_field("location_text");
+    enable_field("location_info");
+    enable_field("location_municipality");
+    enable_field("location_province");
+    enable_field("location_postal_code_1");
+    for (var i = 0; i < $("#format-table tr").length; i++) {
+      enable_field_index("format-table", i);
+    }
+    for (var i = 0; i < 7; i++) {
+      enable_field_index("weekday", i);
+    }
   }
 
   function disable_edits() {
+    disable_field("meeting_name");
+    disable_field("start_time");
+    disable_field("duration_time");
+    disable_field("location_street");
+    disable_field("location_text");
+    disable_field("location_info");
+    disable_field("location_municipality");
+    disable_field("location_province");
+    disable_field("location_postal_code_1");
+    for (var i = 0; i < $("#format-table tr").length; i++) {
+      disable_field_index("format-table", j);
+    }
+    for (var i = 0; i < 7; i++) {
+      disable_field_index("weekday", i);
+    }
+
   }
 
   function clear_form() {
@@ -149,7 +192,7 @@ jQuery(document).ready(function ($) {
     $("#other_reason").hide();
     // enable the meeting form
     $("#meeting_content").show();
-
+    enable_edits();
     // enable items as required
     var reason = $(this).val();
     switch (reason) {
@@ -179,8 +222,6 @@ jQuery(document).ready(function ($) {
         break;
     }
   });
-
-  disable_field("first_name");
 
   // $bmlt_address = get_option('bmaw_bmlt_server_address');
   var format_results_address = bmaw_bmlt_server_address + "/client_interface/jsonp/?switcher=GetFormats";
@@ -288,6 +329,7 @@ jQuery(document).ready(function ($) {
             break;
           case "reason_close":
             $("#reason_close_text").show();
+            disable_edits();
             break;
 
         }
