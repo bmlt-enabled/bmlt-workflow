@@ -224,7 +224,7 @@ function meeting_update_form_handler()
                 }
                 $body = $template;
                 $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-dbg("sending fso email ".$to_address.",".$subject.",".$body.",".var_dump($headers));
+dbg("sending fso email ".$to_address.",".$subject.",".$body.",".print_r($headers));
                 wp_mail($to_address, $subject, $body, $headers);
             }
         }
