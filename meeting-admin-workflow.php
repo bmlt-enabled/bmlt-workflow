@@ -200,6 +200,19 @@ function bmaw_register_setting()
         )
     );
 
+
+    register_setting(
+        'bmaw-settings-group', // settings group name
+        'bmaw_fso_template',
+        array(
+            'type' => 'string',
+            'description' => 'bmaw_fso_template',
+            'sanitize_callback' => 'string_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_fso_template.html')
+        )
+    );
+
     register_setting(
         'bmaw-settings-group', // settings group name
         'bmaw_bmlt_test_status',
@@ -267,6 +280,18 @@ function bmaw_register_setting()
     );
 
     add_settings_field(
+        'bmaw_email_from_address',
+        'Email From Address',
+        'bmaw_email_from_address_html',
+        'bmaw-settings',
+        'bmaw-settings-section-id',
+        array(
+            'label_for' => 'bmaw_service_committee_option_array'
+        )
+    );
+
+
+    add_settings_field(
         'bmaw_fso_email_address',
         'Email address for the FSO (Starter Kit Notifications)',
         'bmaw_fso_email_address_html',
@@ -276,10 +301,12 @@ function bmaw_register_setting()
             'label_for' => 'bmaw_service_committee_option_array'
         )
     );
+    
+
     add_settings_field(
-        'bmaw_email_from_address',
-        'Email From Address',
-        'bmaw_email_from_address_html',
+        'bmaw_fso_template',
+        'Email Template for FSO emails (Starter Kit Notifications)',
+        'bmaw_fso_template_html',
         'bmaw-settings',
         'bmaw-settings-section-id',
         array(
@@ -391,6 +418,23 @@ function bmaw_fso_email_address_html()
     echo '<br><label for="bmaw_email_from_address"><b>From Address:</b></label><input type="text" size="50" name="bmaw_email_from_address" value="' . $from_address . '"/>';
     echo '<br><br>';
 }
+
+function bmaw_fso_template_html()
+{
+    echo <<<END
+    <div class="bmaw_info_text">
+    <br>This template will be used when emailing the FSO about starter kit requests.
+    <br><br>
+    </div>
+    END;
+    $content = get_option('bmaw_fso_email_template');
+    $editor_id = 'bmaw_fso_email_template';
+
+    wp_editor($content, $editor_id, array('media_buttons' => false));
+    echo '<button class="clipboard-button" type="button" data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
+    echo '<br><br>';
+}
+
 function bmaw_new_meeting_template_html()
 {
     echo <<<END
@@ -403,7 +447,6 @@ function bmaw_new_meeting_template_html()
     $editor_id = 'bmaw_new_meeting_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
-    // echo '<br><button type="button" id="bmaw_new_meeting_template_reload">Copy default template to clipboard</button>';
     echo '<button class="clipboard-button" type="button" data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
     echo '<br><br>';
 }
@@ -420,7 +463,6 @@ function bmaw_existing_meeting_template_html()
     $editor_id = 'bmaw_existing_meeting_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
-    // echo '<br><button type="button" id="bmaw_existing_meeting_template_reload">Copy default template to clipboard</button>';
     echo '<button class="clipboard-button" type="button" data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
     echo '<br><br>';
 }
@@ -437,7 +479,6 @@ function bmaw_other_meeting_template_html()
     $editor_id = 'bmaw_other_meeting_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
-    // echo '<br><button type="button" id="bmaw_other_meeting_template_reload">Copy default template to clipboard</button>';
     echo '<button class="clipboard-button" type="button" data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
     echo '<br><br>';
 }
