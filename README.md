@@ -9,8 +9,8 @@ For admins, modification of email templates, service committees and email contac
 
 This initial release is quite specific to the NA Australian Region use case (particularly the FSO/Starter Kit email) but the code is written such that templates are relatively easy to adjust based on feedback from other regions.
 ## Features
-- User - Form field population from BMLT
-- Form recipient - Simple to understand changes, including delta from the current BMLT entry
+- Form Sender - Form field population from BMLT
+- Form Recipient - Simple to understand changes, including deltas from the current BMLT entry
 - Admin - Configurable BMLT settings
 - Admin - Service Area email address management
 - Admin - Email template management for update, close, new, other request, with form fields inserted from the form submission
