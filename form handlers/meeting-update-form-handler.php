@@ -44,7 +44,6 @@ function meeting_update_form_handler()
                     $_POST[$field] = sanitize_email($_POST[$field]);
                     if(empty($_POST[$field]))
                     {
-                        dbg("post field invalid ".$field);
                         wp_die("Invalid form field input");
                     }
                     break;
