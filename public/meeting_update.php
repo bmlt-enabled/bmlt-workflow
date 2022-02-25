@@ -1,23 +1,22 @@
-<?php 
-    $bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status',"failure");
-    dbg("bmaw_bmlt_test_status = ".$bmaw_bmlt_test_status);
-    if($bmaw_bmlt_test_status != "success")
-    {
-        wp_die("<h4>BMAW Plugin Error: BMLT Server not configured and tested.</h4>");
-    }
-    // bmaw_service_areas_string from include
-    $bmaw_service_areas_string = explode(",",$bmaw_service_areas_string);
-    echo '<script>var bmaw_service_areas="';
-    $service_areas_parsed="";
-    foreach( $bmaw_service_areas_string as $i ) {
-        $service_areas_parsed .= 'services[]='.$i.'&';
-    }
+<?php
+$bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status', "failure");
+dbg("bmaw_bmlt_test_status = " . $bmaw_bmlt_test_status);
+if ($bmaw_bmlt_test_status != "success") {
+    wp_die("<h4>BMAW Plugin Error: BMLT Server not configured and tested.</h4>");
+}
+// bmaw_service_areas_string from include
+$bmaw_service_areas_string = explode(",", $bmaw_service_areas_string);
+echo '<script>var bmaw_service_areas="';
+$service_areas_parsed = "";
+foreach ($bmaw_service_areas_string as $i) {
+    $service_areas_parsed .= 'services[]=' . $i . '&';
+}
 
-    echo substr_replace($service_areas_parsed ,"", -1).'";';
-    // $service_areas_parsed .=
-    // $are_option = get_option('bmaw_bmlt_server_address');
-    // dbg($are_option);
-    echo 'var bmaw_bmlt_server_address = "'. get_option('bmaw_bmlt_server_address').'"</script>';
+echo substr_replace($service_areas_parsed, "", -1) . '";';
+// $service_areas_parsed .=
+// $are_option = get_option('bmaw_bmlt_server_address');
+// dbg($are_option);
+echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '"</script>';
 
 ?>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
@@ -37,6 +36,11 @@
                 <option value="reason_other">Other</option>
                 </select>
         </div>
+        <div id="other_reason">
+            <label for="other_reason">Other Reason</label>
+            <input type="text" name="other_reason" id="other_reason">
+        </div>
+        <br>
         <div id="meeting_content">
             <div id="meeting_selector">
                 <br><select class="select2-ajax" id="meeting-searcher">
@@ -44,11 +48,6 @@
                 </select>
             </div>
             <input type="hidden" name="id_bigint" id="id_bigint" value="">
-            <br>
-            <div id="other_reason">
-                <label for="other_reason">Other Reason</label>
-                <input type="text" name="other_reason" id="other_reason">
-            </div>
             <br>
             <p id="reason_change_text" style="display: none;">We've retrieved the details below from our system. Please make any changes and then submit your update.
             <p id="reason_other_text" style="display: none;">Please let us know the details about your meeting change.
@@ -165,9 +164,10 @@
                 </table>
                 <input type="hidden" name="formats" id="formats" value="">
             </div>
-            <br><div>
+            <br>
+            <div>
                 <label for=" virtual_meeting_link">Online Meeting Link</label>
-                    <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
+                <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
             </div>
             <br>
             <!-- <div>

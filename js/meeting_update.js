@@ -191,13 +191,14 @@ jQuery(document).ready(function ($) {
     $("#meeting_selector").hide();
     $("#other_reason").hide();
     // enable the meeting form
-    $("#meeting_content").show();
+    $("#meeting_content").hide();
     enable_edits();
     // enable items as required
     var reason = $(this).val();
     switch (reason) {
       case "reason_new":
         clear_form();
+        $("#meeting_content").show();
         // display form instructions
         $("#reason_new_text").show();
         // new meeting has a starter pack
@@ -207,6 +208,7 @@ jQuery(document).ready(function ($) {
         clear_form();
         // change meeting has a search bar
         $("#meeting_selector").show();
+        
         break;
       case "reason_close":
         clear_form();
@@ -326,9 +328,13 @@ jQuery(document).ready(function ($) {
         switch (reason) {
           case "reason_change":
             $("#reason_change_text").show();
+            $("#meeting_content").show();
+
             break;
           case "reason_close":
             $("#reason_close_text").show();
+            $("#meeting_content").show();
+
             disable_edits();
             break;
 
