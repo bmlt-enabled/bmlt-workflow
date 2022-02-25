@@ -203,10 +203,10 @@ function bmaw_register_setting()
 
     register_setting(
         'bmaw-settings-group', // settings group name
-        'bmaw_fso_template',
+        'bmaw_fso_email_template',
         array(
             'type' => 'string',
-            'description' => 'bmaw_fso_template',
+            'description' => 'bmaw_fso_email_template',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
             'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_fso_email_template.html')
@@ -304,9 +304,9 @@ function bmaw_register_setting()
     
 
     add_settings_field(
-        'bmaw_fso_template',
+        'bmaw_fso_email_template',
         'Email Template for FSO emails (Starter Kit Notifications)',
-        'bmaw_fso_template_html',
+        'bmaw_fso_email_template_html',
         'bmaw-settings',
         'bmaw-settings-section-id',
         array(
@@ -419,7 +419,7 @@ function bmaw_fso_email_address_html()
     echo '<br><br>';
 }
 
-function bmaw_fso_template_html()
+function bmaw_fso_email_template_html()
 {
     echo <<<END
     <div class="bmaw_info_text">
