@@ -209,7 +209,7 @@ function bmaw_register_setting()
             'description' => 'bmaw_fso_template',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
-            'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_fso_template.html')
+            'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_fso_email_template.html')
         )
     );
 
