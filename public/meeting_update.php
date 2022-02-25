@@ -44,8 +44,9 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
                 <br><select class="select2-ajax" id="meeting-searcher">
                     <option></option>
                 </select>
-            </div>
-            <input type="hidden" name="id_bigint" id="id_bigint" value="">
+                <br>
+                <input type="hidden" name="id_bigint" id="id_bigint" value="">
+        </div>
         <div id="meeting_content">
             <p id="reason_change_text" style="display: none;">We've retrieved the details below from our system. Please make any changes and then submit your update.
             <p id="reason_other_text" style="display: none;">Please let us know the details about your meeting change.

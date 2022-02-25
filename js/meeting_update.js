@@ -192,6 +192,8 @@ jQuery(document).ready(function ($) {
     $("#meeting_selector").hide();
     // enable the meeting form
     $("#meeting_content").hide();
+    $("#other_reason").hide();
+
     enable_edits();
     // enable items as required
     var reason = $(this).val();
