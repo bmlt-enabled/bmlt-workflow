@@ -238,7 +238,7 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
                 <br>
                 <div>
                     <label for="starter_kit_postal_address">Starter Kit Postal Address</label>
-                    <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" rows="5" cols="50"></textarea>
+                    <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" rows="5" cols="50" required></textarea>
                 </div>
             </div>
             <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
