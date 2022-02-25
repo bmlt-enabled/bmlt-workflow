@@ -9,7 +9,7 @@ $bmaw_new_meeting_template_default = htmlentities(file_get_contents(BMAW_PLUGIN_
 $bmaw_existing_meeting_template_default = htmlentities(file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_existing_meeting_email_template.html'));
 
 echo '<div class="wrap">';
-echo '<script src="'.esc_url( plugins_url( 'js/clipboard.js', dirname(__FILE__))).'"></script>';
+echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.10/clipboard.min.js"></script>';
 echo '<script>var clipboard = new ClipboardJS(".clipboard-button");</script>';
 echo '<script>var bmaw_service_form_array = '. $js_array . '</script>';
 echo '<script>var test_status = "'. $test_result .'"</script>';
