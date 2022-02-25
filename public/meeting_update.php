@@ -129,7 +129,7 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
             <br>
             <div>
                 <label for="location_text">Location (eg: a building name)</label>
-                <input type="text" name="location_text" id="location_text">
+                <input type="text" name="location_text" size="50" id="location_text">
             </div>
             <br>
             <div>
@@ -139,12 +139,12 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
             <br>
             <div>
                 <label for="location_info">Extra Location Info (eg: Near the park)</label>
-                <input type="text" name="location_info" id="location_info">
+                <input type="text" name="location_info" size="50" id="location_info">
             </div>
             <br>
             <div>
                 <label for="location_municipality">City/Town/Suburb</label>
-                <input type="text" name="location_municipality" id="location_municipality">
+                <input type="text" name="location_municipality" size="50" id="location_municipality">
             </div>
             <br>
             <div>

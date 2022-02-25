@@ -24,6 +24,8 @@ function meeting_update_form_handler()
             "formats" => "text",
             "weekday" => "text",
             "additional_info" => "textarea",
+            "starter_kit_postal_address" => "textarea",
+            "starter_kit_required" => "text"
             // "comments"
         );
 
@@ -55,10 +57,6 @@ function meeting_update_form_handler()
             }
         }
 
-        // $nds_user_meta_key = sanitize_key( $_POST['nds']['user_meta_key'] );
-        // $nds_user_meta_value = sanitize_text_field( $_POST['nds']['user_meta_value'] );
-        // $nds_user =  get_user_by( 'login',  $_POST['nds']['user_select'] );
-        // $nds_user_id = absint( $nds_user->ID ) ;
 
         if (isset($_POST['update_reason'])) {
             $reason = $_POST['update_reason'];
@@ -158,11 +156,6 @@ function meeting_update_form_handler()
             }
         }
 
-        // dbg("** template before");
-        // dbg($template);
-        // field substitution from form
-
-        dbg('post location_info = "' . $_POST['location_info'] . '"');
         // Do field replacements in template
         foreach ($subfields as $field => $formattype) {
             $subfield = '{field:' . $field . '}';
@@ -184,8 +177,6 @@ function meeting_update_form_handler()
             }
             $template = str_replace($subfield, $subwith, $template);
         }
-        dbg("** template after");
-        dbg($template);
 
         $cc_address = "";
         $to_address = "";
@@ -213,13 +204,34 @@ function meeting_update_form_handler()
 
         $body = $template;
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address, 'Cc: ' . $cc_address);
-        dbg('sending mail');
+        // Send the email
         wp_mail($to_address, $subject, $body, $headers);
-        dbg('mail sent');
+
+        // Handle the FSO emails
+        if ($reason == "reason_new") {
+            if (($_POST['starter_kit_required'] === 'yes') && (!empty($_POST['starter_kit_postal_address']))) {
+
+                $template = get_option('bmaw_fso_email_template');
+                $subject = 'Starter Kit Request';
+                $to_address = get_option('bmaw_fso_email_address');
+                foreach ($subfields as $field => $formattype) {
+                    $subfield = '{field:' . $field . '}';
+                    if ((isset($_POST[$field])) && (!empty($_POST[$field]))) {
+                        $subwith = $_POST[$field];
+                    } else {
+                        $subwith = '(blank)';
+                    }
+                    $template = str_replace($subfield, $subwith, $template);
+                }
+                $body = $template;
+                $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+dbg("sending fso email ".$to_address.",".$subject.",".$body.",".$headers);
+                wp_mail($to_address, $subject, $body, $headers);
+            }
+        }
+
         exit("<h3>Form submission successful</h3>");
-        // redirect the user to the appropriate page
         // wp_redirect( 'https://www.google.com' );
-        exit;
     } else {
         wp_die('invalid nonce');
     }
