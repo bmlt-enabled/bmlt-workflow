@@ -42,6 +42,11 @@ function meeting_update_form_handler()
                     break;
                 case ('email'):
                     $_POST[$field] = sanitize_email($_POST[$field]);
+                    if(empty($_POST[$field]))
+                    {
+                        dbg("post field invalid ".$field);
+                        wp_die("Invalid form field input");
+                    }
                     break;
                 case ('textarea'):
                     $_POST[$field] = sanitize_textarea_field($_POST[$field]);
@@ -54,11 +59,6 @@ function meeting_update_form_handler()
                     //                         break;
                 default:
                     $_POST[$field] = "UNSANITISED";
-            }
-            if(empty($_POST[$field]))
-            {
-                dbg("post field invalid ".$_POST[$field]);
-                wp_die("Invalid form field input");
             }
         }
 
