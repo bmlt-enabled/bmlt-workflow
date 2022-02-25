@@ -527,8 +527,15 @@ function bmaw_service_committee_table_html()
     $i = 0;
     foreach ($arr as $key => $value) {
         echo '<tr>';
+        $j = 0;
+        $required = 'required';
         foreach ($value as $k2 => $v2) {
-            echo '<td><input type="text" name="bmaw_service_committee_option_array[' . $i . '][' . $k2 . ']" value="' . $v2 . '"/></td>';
+            if($j==3)
+            {
+                $required="";
+            }
+            $j++;
+            echo '<td><input type="text" name="bmaw_service_committee_option_array[' . $i . '][' . $k2 . ']" value="' . $v2 . '" '.$required.'/></td>';
         }
         echo '<td><span class="dashicons dashicons-remove" id="bmaw-service-committee-' . $key . '-remove"></span></td></tr>';
         $i++;

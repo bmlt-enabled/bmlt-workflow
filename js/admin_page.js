@@ -49,9 +49,9 @@ jQuery(document).ready(function ($) {
         .after(
           '<tr><td><input type="text" name="bmaw_service_committee_option_array[' +
             rowCount +
-            '][name]" value=""/></td><td><input type="text" name="bmaw_service_committee_option_array[' +
+            '][name]" value="" required/></td><td><input type="text" name="bmaw_service_committee_option_array[' +
             rowCount +
-            '][e1]" value=""/></td><td><input type="text" name="bmaw_service_committee_option_array[' +
+            '][e1]" value="" required/></td><td><input type="text" name="bmaw_service_committee_option_array[' +
             rowCount +
             '][e2]" value=""/></td><td><span id="bmaw-service-committee-new-row" class="dashicons dashicons-remove"></span></td></tr>'
         );
