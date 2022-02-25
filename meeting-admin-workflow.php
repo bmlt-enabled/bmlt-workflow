@@ -212,6 +212,18 @@ function bmaw_register_setting()
         )
     );
 
+    register_setting(
+        'bmaw-settings-group', // settings group name
+        'bmaw_fso_email_address',
+        array(
+            'type' => 'string',
+            'description' => 'FSO email address',
+            'sanitize_callback' => 'string_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => 'example@example.example'
+        )
+    );
+
     add_settings_section(
         'bmaw-settings-section-id',
         '',
@@ -254,6 +266,16 @@ function bmaw_register_setting()
         )
     );
 
+    add_settings_field(
+        'bmaw_fso_email_address',
+        'Email address for the FSO (Starter Kit Notifications)',
+        'bmaw_fso_email_address_html',
+        'bmaw-settings',
+        'bmaw-settings-section-id',
+        array(
+            'label_for' => 'bmaw_service_committee_option_array'
+        )
+    );
     add_settings_field(
         'bmaw_email_from_address',
         'Email From Address',
@@ -355,6 +377,20 @@ function bmaw_email_from_address_html()
     echo '<br><br>';
 }
 
+function bmaw_fso_email_address_html()
+{
+    $from_address = get_option('bmaw_fso_email_address');
+    echo <<<END
+    <div class="bmaw_info_text">
+    <br>The email address to notify the FSO that starter kits are required.
+    <br><br>
+    </div>
+    END;
+
+
+    echo '<br><label for="bmaw_email_from_address"><b>From Address:</b></label><input type="text" size="50" name="bmaw_email_from_address" value="' . $from_address . '"/>';
+    echo '<br><br>';
+}
 function bmaw_new_meeting_template_html()
 {
     echo <<<END
