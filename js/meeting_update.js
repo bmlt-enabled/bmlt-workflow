@@ -180,6 +180,7 @@ jQuery(document).ready(function ($) {
   // meeting logic before selection is made
   $("#meeting_selector").hide();
   $("#meeting_content").hide();
+  $("#other_reason").hide();
 
   $("#update_reason").change(function () {
     // hide all the optional items
@@ -189,7 +190,6 @@ jQuery(document).ready(function ($) {
     $("#reason_other_text").hide();
     $("#starter_pack").hide();
     $("#meeting_selector").hide();
-    $("#other_reason").hide();
     // enable the meeting form
     $("#meeting_content").hide();
     enable_edits();
