@@ -259,7 +259,7 @@ jQuery(document).ready(function ($) {
         var city = ""
         if(mdata[i].location_municipality != "")
         {
-          city = mdata[i].location_municipality + ",";
+          city = mdata[i].location_municipality + ", ";
         }
         if(mdata[i].location_province != "")
         {
