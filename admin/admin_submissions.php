@@ -50,7 +50,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $this->items = $data;
         
 
-add_filter('page_row_actions', 'search_google', 10, 2);
+add_filter('bmaw_meeting_submissions_page_row_actions', 'search_google', 10, 2);
     }
 
     public function get_columns()
