@@ -14,12 +14,14 @@ class bmaw_meeting_submissions_admin_page
 
     public function bmaw_meeting_submissions_admin_page()
     {
+        dbg("adding menu page");
         add_menu_page('Meeting Submissions', 'Meeting Submissions', 'manage_options', 'bmaw-meeting-submissions.php', array($this, 'list_table_page'));
     }
 
     public function list_table_page()
     {
         $exampleListTable = new bmaw_meeting_submissions_page();
+        dbg("created new bmaw_meeting_submissions_page");
         $exampleListTable->prepare_items();
 ?>
         <div class="wrap">
