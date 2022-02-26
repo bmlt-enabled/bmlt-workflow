@@ -29,7 +29,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $data = $this->table_data();
         usort($data, array(&$this, 'sort_data'));
 
-        $perPage = 2;
+        $perPage = 10;
         $currentPage = $this->get_pagenum();
         $totalItems = count($data);
 
