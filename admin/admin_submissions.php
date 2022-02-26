@@ -2,7 +2,9 @@
 
 if (is_admin()) {
    
-        $exampleListTable = new bmaw_meeting_submissions_page();
+    add_filter('bmaw_meeting_submissions_page_row_actions', 'search_google', 10, 2);
+    $exampleListTable = new bmaw_meeting_submissions_page();
+
         error_log("created new bmaw_meeting_submissions_page");
         $exampleListTable->prepare_items();
 ?>
@@ -49,8 +51,6 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $this->_column_headers = array($columns, $hidden, $sortable);
         $this->items = $data;
         
-
-add_filter('bmaw_meeting_submissions_page_row_actions', 'search_google', 10, 2);
     }
 
     public function get_columns()
