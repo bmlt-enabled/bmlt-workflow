@@ -552,6 +552,7 @@ function display_admin_options_page()
     $content = '';
     ob_start();
     include('admin/admin_options.php');
+    include('admin/admin_submissions.php');
     $content = ob_get_clean();
     echo $content;
 }
