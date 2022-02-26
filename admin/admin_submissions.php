@@ -135,8 +135,9 @@ class bmaw_meeting_submissions_page extends WP_List_Table
  
         // Get actions.
         $actions = array(
-            'edit'   => '<a target="_blank" href="' . esc_url( $edit_link ) . '">' . esc_html__( 'Edit', 'my_plugin' ) . '</a>',
-            'view'   => '<a target="_blank" href="' . esc_url( $view_link ) . '">' . esc_html__( 'View', 'my_plugin' ) . '</a>',
+            'Approve'   => '<a target="_blank" href="' . esc_url( $edit_link ) . '">' . esc_html__( 'Edit', 'my_plugin' ) . '</a>',
+            'Reject'   => '<a target="_blank" href="' . esc_url( $view_link ) . '">' . esc_html__( 'View', 'my_plugin' ) . '</a>',
+            'Edit In BMLT'   => '<a target="_blank" href="' . esc_url( $view_link ) . '">' . esc_html__( 'View', 'my_plugin' ) . '</a>',
         );
  
         $row_actions = array();
