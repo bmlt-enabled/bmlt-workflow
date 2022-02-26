@@ -141,7 +141,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
     private function sort_data($a, $b)
     {
         // Set defaults
-        $orderby = 'title';
+        $orderby = 'submitter_name';
         $order = 'asc';
 
         // If orderby is set, use this as the sort column
