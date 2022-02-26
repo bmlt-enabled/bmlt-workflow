@@ -11,12 +11,6 @@
 
 define('BMAW_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-function dbg($logmsg)
-{
-    // $log = plugin_dir_path(__FILE__) . 'debug.log';
-    // error_log($logmsg . PHP_EOL, 3, $log);
-    error_log($logmsg);
-}
 
 include 'form handlers/meeting-update-form-handler.php';
 
