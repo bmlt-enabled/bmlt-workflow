@@ -8,6 +8,7 @@ class bmaw_meeting_submissions_admin_page
 {
     public function __construct()
     {
+        dbg("adding admin page");
         add_action('admin_menu', array($this, 'bmaw_meeting_submissions_admin_page'));
     }
 
