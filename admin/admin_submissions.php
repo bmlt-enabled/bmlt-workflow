@@ -1,25 +1,7 @@
 <?php
 
 if (is_admin()) {
-    new bmaw_meeting_submissions_admin_page();
-}
-
-class bmaw_meeting_submissions_admin_page
-{
-    public function __construct()
-    {
-        error_log("adding admin page");
-        add_action('admin_menu', array($this, 'bmaw_meeting_submissions_admin_page'));
-    }
-
-    public function bmaw_meeting_submissions_admin_page()
-    {
-        error_log("adding menu page");
-        add_menu_page('Meeting Submissions', 'Meeting Submissions', 'manage_options', 'bmaw-meeting-submissions.php', array($this, 'list_table_page'));
-    }
-
-    public function list_table_page()
-    {
+   
         $exampleListTable = new bmaw_meeting_submissions_page();
         error_log("created new bmaw_meeting_submissions_page");
         $exampleListTable->prepare_items();
@@ -30,7 +12,6 @@ class bmaw_meeting_submissions_admin_page
             <?php $exampleListTable->display(); ?>
         </div>
 <?php
-    }
 }
 
 if (!class_exists('WP_List_Table')) {
