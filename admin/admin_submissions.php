@@ -2,7 +2,6 @@
 
 if (is_admin()) {
    
-    add_filter('bmaw_meeting_submissions_page_row_actions', 'search_google', 10, 2);
     $exampleListTable = new bmaw_meeting_submissions_page();
 
         error_log("created new bmaw_meeting_submissions_page");
@@ -22,12 +21,6 @@ if (!class_exists('WP_List_Table')) {
 
 class bmaw_meeting_submissions_page extends WP_List_Table
 {
-    public function search_google($actions, $page_object)
-{
-   $actions['google_link'] = '<a href="http://google.com/search?q=' . $page_object->post_title . '" class="google_link">' . __('Search Google for Page Title') . '</a>';
-
-   return $actions;
-}
     public function prepare_items()
     {
         $columns = $this->get_columns();
@@ -132,10 +125,35 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         return $data;
     }
 
+    public function column_id(  $item ) {
+        $edit_link = admin_url( 'post.php?action=edit&amp;post=' .  $item->id  );
+        $view_link = get_permalink( $item->id ); 
+        $output    = '';
+ 
+        // Title.
+        $output .= '<strong><a href="' . esc_url( $edit_link ) . '" class="row-title">' . esc_html(  $item->id   ) . '</a></strong>';
+ 
+        // Get actions.
+        $actions = array(
+            'edit'   => '<a target="_blank" href="' . esc_url( $edit_link ) . '">' . esc_html__( 'Edit', 'my_plugin' ) . '</a>',
+            'view'   => '<a target="_blank" href="' . esc_url( $view_link ) . '">' . esc_html__( 'View', 'my_plugin' ) . '</a>',
+        );
+ 
+        $row_actions = array();
+ 
+        foreach ( $actions as $action => $link ) {
+            $row_actions[] = '<span class="' . esc_attr( $action ) . '">' . $link . '</span>';
+        }
+ 
+        $output .= '<div class="row-actions">' . implode( ' | ', $row_actions ) . '</div>';
+ 
+        return $output;
+    }
+
     public function column_default($item, $column_name)
     {
         switch ($column_name) {
-            case 'id':
+            // case 'id':
             case 'submitter_name':
             case 'submitter_email':
             case 'submission_type':
