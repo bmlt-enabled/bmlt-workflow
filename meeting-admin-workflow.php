@@ -61,8 +61,8 @@ function bmaw_options_page()
         2 // priority
     );
     add_options_page(
-        'BMAW Settings', // page <title>Title</title>
-        'BMAW Settings', // menu link text
+        'BMAW Submissions', // page <title>Title</title>
+        'BMAW Submissions', // menu link text
         'manage_options', // capability to access the page
         'bmaw-submissions', // page URL slug
         'display_admin_submissions_page', // callback function with content
