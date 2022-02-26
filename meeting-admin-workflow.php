@@ -52,13 +52,20 @@ function bmaw_admin_scripts($hook)
 
 function bmaw_options_page()
 {
-
     add_options_page(
         'BMAW Settings', // page <title>Title</title>
         'BMAW Settings', // menu link text
         'manage_options', // capability to access the page
         'bmaw-settings', // page URL slug
         'display_admin_options_page', // callback function with content
+        2 // priority
+    );
+    add_options_page(
+        'BMAW Settings', // page <title>Title</title>
+        'BMAW Settings', // menu link text
+        'manage_options', // capability to access the page
+        'bmaw-submissions', // page URL slug
+        'display_admin_submissions_page', // callback function with content
         2 // priority
     );
 }
@@ -542,6 +549,13 @@ function display_admin_options_page()
     $content = '';
     ob_start();
     include('admin/admin_options.php');
+    $content = ob_get_clean();
+    echo $content;
+}
+function display_admin_submissions_page()
+{
+    $content = '';
+    ob_start();
     include('admin/admin_submissions.php');
     $content = ob_get_clean();
     echo $content;
