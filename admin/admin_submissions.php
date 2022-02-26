@@ -20,6 +20,12 @@ if (!class_exists('WP_List_Table')) {
 
 class bmaw_meeting_submissions_page extends WP_List_Table
 {
+    public function search_google($actions, $page_object)
+{
+   $actions['google_link'] = '<a href="http://google.com/search?q=' . $page_object->post_title . '" class="google_link">' . __('Search Google for Page Title') . '</a>';
+
+   return $actions;
+}
     public function prepare_items()
     {
         $columns = $this->get_columns();
@@ -42,6 +48,9 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
         $this->_column_headers = array($columns, $hidden, $sortable);
         $this->items = $data;
+        
+
+add_filter('page_row_actions', 'search_google', 10, 2);
     }
 
     public function get_columns()
