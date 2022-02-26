@@ -4,32 +4,56 @@ function meeting_update_form_handler()
 
     if (isset($_POST['meeting_update_form_nonce']) && wp_verify_nonce($_POST['meeting_update_form_nonce'], 'meeting_update_form_nonce')) {
 
+        $reason_new_bool = false;
+        $reason_other_bool = false;
+        $reason_change_bool = false;
+        $reason_close_bool = false;
+
+        if (isset($_POST['update_reason'])) {
+            $reason_new_bool = (($_POST['update_reason']) === 'reason_new');
+            $reason_other_bool = (($_POST['update_reason']) === 'reason_other');
+            $reason_change_bool = (($_POST['update_reason']) === 'reason_change');
+            $reason_close_bool = (($_POST['update_reason']) === 'reason_close');
+        }
+
+        if (!(isset($_POST['update_reason']) || (!$reason_new_bool && !$reason_other_bool && !$reason_change_bool && !$reason_close_bool))) {
+            wp_die("No valid meeting update reason provided");
+        }
+
         // sanitize the input
+        // subfields value is 'input type', boolean (true if required)
+
         $subfields = array(
-            "first_name" => "text",
-            "last_name" => "text",
-            "meeting_name" => "text",
-            "start_time" => "text",
-            "duration_time" => "text",
-            "location_text" => "text",
-            "location_street" => "text",
-            "location_info" => "text",
-            "location_municipality" => "text",
-            "location_province" => "text",
-            "location_postal_code_1" => "number",
-            "virtual_meeting_link" => "url",
-            "email_address" => "email",
-            "contact_number_confidential" => "text",
+            "update_reason" => array("text", true),
+            "first_name" => array("text", true),
+            "last_name" => array("text", true),
+            "meeting_name" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+            "start_time" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+            "duration_time" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+            "location_text" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+            "location_street" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+            "location_info" => array("text", false),
+            "location_municipality" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+            "location_province" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+            "location_postal_code_1" => array("number", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+            "virtual_meeting_link" => array("url", false),
+            "email_address" => array("email", true),
+            "contact_number_confidential" => array("text", false),
             // "time_zone",
-            "formats" => "text",
-            "weekday" => "text",
-            "additional_info" => "textarea",
-            "starter_kit_postal_address" => "textarea",
-            "starter_kit_required" => "text"
+            "formats" => array("text", false),
+            "weekday" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+            "additional_info" => array("textarea", false),
+            "starter_kit_postal_address" => array("textarea", false),
+            "starter_kit_required" => array("text", false),
+            "other_reason" => array("textarea", $reason_other_bool)
             // "comments"
         );
 
-        foreach ($subfields as $field => $field_type) {
+        foreach ($subfields as $field => $validation) {
+            $field_type = $validation[0];
+            if (($validation[1]) && (!isset($_POST[$field]))) {
+                wp_die("Missing required form field " . $field);
+            }
             switch ($field_type) {
                 case ('text'):
                     $_POST[$field] = sanitize_text_field($_POST[$field]);
@@ -42,8 +66,7 @@ function meeting_update_form_handler()
                     break;
                 case ('email'):
                     $_POST[$field] = sanitize_email($_POST[$field]);
-                    if(empty($_POST[$field]))
-                    {
+                    if (empty($_POST[$field])) {
                         wp_die("Invalid form field input");
                     }
                     break;
@@ -148,7 +171,7 @@ function meeting_update_form_handler()
                 $weekdays = array(0 => "Sunday", 1 => "Monday", 2 => "Tuesday", 3 => "Wednesday", 4 => "Thursday", 5 => "Friday", 6 => "Saturday");
                 $idx = $meeting[0]['weekday_tinyint'] - 1;
                 $orig_values['{field:orig_weekday}'] = $weekdays[$idx];
-//                $template = str_replace('{field:orig_weekday}', $weekdays[$idx], $template);
+                //                $template = str_replace('{field:orig_weekday}', $weekdays[$idx], $template);
             }
         }
 
@@ -185,7 +208,7 @@ function meeting_update_form_handler()
             }
         }
 
-        if (empty($to_address)){
+        if (empty($to_address)) {
             wp_die(("No valid service committee found."));
         }
 
@@ -195,11 +218,10 @@ function meeting_update_form_handler()
         $subfield = '{field:email_address}';
         $subwith = $_POST['email_address'];
         $to_address = str_replace($subfield, $subwith, $to_address);
-        if (!empty($cc_address))
-        {
+        if (!empty($cc_address)) {
             $cc_address = str_replace($subfield, $subwith, $cc_address);
         }
-        
+
         $body = $template;
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address, 'Cc: ' . $cc_address);
         // Send the email

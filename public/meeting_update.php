@@ -34,7 +34,7 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
         </div>
         <div id="other_reason">
             <label for="other_reason">Other Reason</label>
-            <input type="text" name="other_reason" id="other_reason">
+            <textarea name="other_reason" id="other_reason" rows="5" cols="50" required></textarea>
         </div>
         <div id="meeting_selector">
                 <br>
@@ -50,12 +50,12 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
             <p id="reason_new_text" style="display: none;">Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update.
             <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
             <div>
-                <label for="meeting_name">Group Name</label>
+                <label for="meeting_name">Group Name<span class="bmaw-required-field"> *</span></label>
                 <input type="text" name="meeting_name" size="50" id="meeting_name" required>
             </div>
             <br>
             <div>
-                <label for="day_of_the_week">Group Meets On Which Days<span class="bmaw-required-field">*</span></label>
+                <label for="day_of_the_week">Group Meets On Which Days<span class="bmaw-required-field"> *</span></label>
                 <ul style="list-style-type:none;" id="day_of_the_week">
                     <li>
                         <input name="Sunday" id="weekday-0" value="Sunday" type="checkbox">
@@ -89,13 +89,13 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
                 <input type="hidden" name="weekday" id="weekday" value="">
             </div>
             <div>
-                <label for="start_time">Start Time<span class="bmaw-required-field">*</span></label>
-                <input type="time" name="start_time" id="start_time" required>
+                <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
+                <input type="time" name="start_time" size="10" id="start_time" required>
             </div>
             <br>
             <div>
-                <label for="duration_time">Duration<span class="bmaw-required-field">*</span></label>
-                <input type="text" name="duration_time" id="duration_time" required>
+                <label for="duration_time">Duration<span class="bmaw-required-field"> *</span></label>
+                <input type="text" name="duration_time" size="10" id="duration_time" required>
             </div>
             <br>
             <!-- <div>
@@ -124,13 +124,13 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
             </div>
             <br>
             <div>
-                <label for="location_text">Location (eg: a building name)</label>
-                <input type="text" name="location_text" size="50" id="location_text">
+                <label for="location_text">Location (eg: a building name)<span class="bmaw-required-field"> *</span></label>
+                <input type="text" name="location_text" size="50" id="location_text" required>
             </div>
             <br>
             <div>
-                <label for="location_street">Street Address</label>
-                <input type="text" name="location_street" size="50" id="location_street">
+                <label for="location_street">Street Address<span class="bmaw-required-field"> *</span></label>
+                <input type="text" name="location_street" size="50" id="location_street" required>
             </div>
             <br>
             <div>
@@ -139,18 +139,18 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
             </div>
             <br>
             <div>
-                <label for="location_municipality">City/Town/Suburb</label>
-                <input type="text" name="location_municipality" size="50" id="location_municipality">
+                <label for="location_municipality">City/Town/Suburb<span class="bmaw-required-field"> *</span></label>
+                <input type="text" name="location_municipality" size="50" id="location_municipality" required>
             </div>
             <br>
             <div>
-                <label for="location_province">State</label>
-                <input type="text" name="location_province" id="location_province">
+                <label for="location_province">State<span class="bmaw-required-field"> *</span></label>
+                <input type="text" name="location_province" size="50" id="location_province" required>
             </div>
             <br>
             <div>
-                <label for="location_postal_code_1">Postcode</label>
-                <input type="number" name="location_postal_code_1" max="9999" id="location_postal_code_1">
+                <label for="location_postal_code_1">Postcode<span class="bmaw-required-field"> *</span></label>
+                <input type="number" name="location_postal_code_1" size="5" max="9999" id="location_postal_code_1" required>
             </div>
             <br>
             <div>
@@ -173,17 +173,17 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
             <br>
             <div>
                 <label for="date_required">Date Change Required<span class="bmaw-required-field">*</span></label>
-                <input type="date" name="date_required" id="date_required" required>
+                <input type="date" name="date_required" size="15" id="date_required" required>
             </div>
             <br>
             <div>
                 <label for="first_name">First Name<span class="bmaw-required-field">*</span></label>
-                <input type="text" name="first_name" id="first_name" required>
+                <input type="text" name="first_name" size="20" id="first_name" required>
             </div>
             <br>
             <div>
                 <label for="last_name">Last Name<span class="bmaw-required-field">*</span></label>
-                <input type="text" name="last_name" id="last_name" required>
+                <input type="text" name="last_name" size="20" id="last_name" required>
             </div>
             <br>
             <div>
@@ -233,7 +233,7 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
                 </div>
                 <br>
                 <div>
-                    <label for="starter_kit_postal_address">Starter Kit Postal Address</label>
+                    <label for="starter_kit_postal_address">Starter Kit Postal Address<span class="bmaw-required-field"> *</span></label>
                     <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" rows="5" cols="50" required></textarea>
                 </div>
             </div>
