@@ -126,12 +126,12 @@ class bmaw_meeting_submissions_page extends WP_List_Table
     }
 
     public function column_id(  $item ) {
-        $edit_link = admin_url( 'post.php?action=edit&amp;post=' .  $item->id  );
-        $view_link = get_permalink( $item->id ); 
+        $edit_link = admin_url( 'post.php?action=edit&amp;post=' .  $item['id']  );
+        $view_link = get_permalink( $item['id'] ); 
         $output    = '';
  
         // Title.
-        $output .= '<strong><a href="' . esc_url( $edit_link ) . '" class="row-title">' . esc_html(  $item->id   ) . '</a></strong>';
+        $output .= '<strong><a href="' . esc_url( $edit_link ) . '" class="row-title">' . esc_html(  $item['id']   ) . '</a></strong>';
  
         // Get actions.
         $actions = array(
