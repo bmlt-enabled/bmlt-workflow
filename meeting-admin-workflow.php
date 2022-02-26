@@ -16,7 +16,6 @@ include 'form handlers/meeting-update-form-handler.php';
 
 function meeting_update_form($atts = [], $content = null, $tag = '')
 {
-    // dbg("atts = ".$atts);
     $parsed_atts = shortcode_atts(
         array(
             'service-areas' => '1',
@@ -87,19 +86,16 @@ add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
 
 function array_sanitize_callback($args)
 {
-    // dbg('array sanitise called' . $args);
     return $args;
 }
 
 function editor_sanitize_callback($args)
 {
-    // dbg("called editor sanitize");
     return $args;
 }
 
 function string_sanitize_callback($args)
 {
-    // dbg("called string sanitize");
     return $args;
 }
 
@@ -497,7 +493,6 @@ function bmaw_close_meeting_template_html()
 function bmaw_service_committee_table_html()
 {
 
-    // dbg("printing the text field");
     $arr = get_option('bmaw_service_committee_option_array');
 
     echo <<<END

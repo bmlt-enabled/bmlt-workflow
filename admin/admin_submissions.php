@@ -8,20 +8,20 @@ class bmaw_meeting_submissions_admin_page
 {
     public function __construct()
     {
-        dbg("adding admin page");
+        error_log("adding admin page");
         add_action('admin_menu', array($this, 'bmaw_meeting_submissions_admin_page'));
     }
 
     public function bmaw_meeting_submissions_admin_page()
     {
-        dbg("adding menu page");
+        error_log("adding menu page");
         add_menu_page('Meeting Submissions', 'Meeting Submissions', 'manage_options', 'bmaw-meeting-submissions.php', array($this, 'list_table_page'));
     }
 
     public function list_table_page()
     {
         $exampleListTable = new bmaw_meeting_submissions_page();
-        dbg("created new bmaw_meeting_submissions_page");
+        error_log("created new bmaw_meeting_submissions_page");
         $exampleListTable->prepare_items();
 ?>
         <div class="wrap">
