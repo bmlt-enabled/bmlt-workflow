@@ -64,7 +64,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
     public function get_sortable_columns()
     {
-        return array('title' => array('title', false));
+        return array('submitter_name' => array('submitter_name', false));
     }
 
     private function table_data()
