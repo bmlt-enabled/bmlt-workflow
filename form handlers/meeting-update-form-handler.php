@@ -66,6 +66,8 @@ function meeting_update_form_handler()
 
         foreach ($subfields as $field => $validation) {
             $field_type = $validation[0];
+            
+            // if the form field is required, check if the submission is empty or non existent
             if ($validation[1] && (!isset($_POST[$field])||(empty($_POST[$field])))) {
                 wp_die("Missing required form field " . $field);
             }
