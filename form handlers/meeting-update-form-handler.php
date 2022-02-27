@@ -24,7 +24,7 @@ function meeting_update_form_handler()
             $reason_change_bool = ($_POST['update_reason'] === 'reason_change');
             $reason_close_bool = ($_POST['update_reason'] === 'reason_close');
         }
-        
+
         error_log("reason_new_bool " . vdump($reason_new_bool));
         error_log("reason_other_bool " . vdump($reason_other_bool));
         error_log("reason_change_bool " . vdump($reason_change_bool));
@@ -66,7 +66,7 @@ function meeting_update_form_handler()
 
         foreach ($subfields as $field => $validation) {
             $field_type = $validation[0];
-            if (($validation[1]) && (!isset($_POST[$field]))) {
+            if ($validation[1] && (!isset($_POST[$field])||(empty($_POST[$field])))) {
                 wp_die("Missing required form field " . $field);
             }
             switch ($field_type) {
