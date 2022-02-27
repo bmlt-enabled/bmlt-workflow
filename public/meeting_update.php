@@ -13,8 +13,9 @@ foreach ($bmaw_service_areas_string as $i) {
 
 echo substr_replace($service_areas_parsed, "", -1) . '";';
 echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '"</script>';
-
+echo '<link rel="stylesheet" href="'.esc_url( plugins_url( 'css/meeting-update-form.css', dirname(__FILE__))).'">';
 ?>
+
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
 
@@ -37,12 +38,12 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
             <textarea name="other_reason" id="other_reason" rows="5" cols="50" required></textarea>
         </div>
         <div id="meeting_selector">
-                <br>
-                <select class="select2-ajax" id="meeting-searcher">
-                    <option></option>
-                </select>
-                <br><br>
-                <input type="hidden" name="id_bigint" id="id_bigint" value="">
+            <br>
+            <select class="select2-ajax" id="meeting-searcher">
+                <option></option>
+            </select>
+            <br><br>
+            <input type="hidden" name="id_bigint" id="id_bigint" value="">
         </div>
         <div id="meeting_content">
             <p id="reason_change_text" style="display: none;">We've retrieved the details below from our system. Please make any changes and then submit your update.
