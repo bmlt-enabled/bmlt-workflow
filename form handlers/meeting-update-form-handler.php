@@ -15,7 +15,12 @@ function meeting_update_form_handler()
             $reason_change_bool = (($_POST['update_reason']) === 'reason_change');
             $reason_close_bool = (($_POST['update_reason']) === 'reason_close');
         }
-
+        error_log("reason_new_bool ".print_r($reason_new_bool));
+        error_log("reason_other_bool ".print_r($reason_other_bool));
+        error_log("reason_change_bool ".print_r($reason_change_bool));
+        error_log("reason_close_bool ".print_r($reason_close_bool));
+        error_log("new|change|close ".print_r($reason_new_bool | $reason_change_bool | $reason_close_bool));
+        
         if (!(isset($_POST['update_reason']) || (!$reason_new_bool && !$reason_other_bool && !$reason_change_bool && !$reason_close_bool))) {
             wp_die("No valid meeting update reason provided");
         }
