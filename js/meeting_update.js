@@ -247,7 +247,7 @@ jQuery(document).ready(function ($) {
     "root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1," +
     "contact_email_1,contact_name_2,contact_phone_2,contact_email_2&" +
     bmaw_service_areas +
-    "&recursive=1&sort_keys=start_time";
+    "&recursive=1&sort_keys=meeting_name";
 
   fetchJsonp(search_results_address)
     .then((response) => response.json())
