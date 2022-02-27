@@ -1,4 +1,13 @@
 <?php
+function vdump($object)
+{
+    ob_start();
+    var_dump($object);
+    $contents = ob_get_contents();
+    ob_end_clean();
+    return $contents;
+}
+
 function meeting_update_form_handler()
 {
 
@@ -10,17 +19,18 @@ function meeting_update_form_handler()
         $reason_close_bool = false;
 
         if (isset($_POST['update_reason'])) {
-            $reason_new_bool = (($_POST['update_reason']) === 'reason_new');
-            $reason_other_bool = (($_POST['update_reason']) === 'reason_other');
-            $reason_change_bool = (($_POST['update_reason']) === 'reason_change');
-            $reason_close_bool = (($_POST['update_reason']) === 'reason_close');
+            $reason_new_bool = ($_POST['update_reason'] === 'reason_new');
+            $reason_other_bool = ($_POST['update_reason'] === 'reason_other');
+            $reason_change_bool = ($_POST['update_reason'] === 'reason_change');
+            $reason_close_bool = ($_POST['update_reason'] === 'reason_close');
         }
-        error_log("reason_new_bool ".print_r($reason_new_bool));
-        error_log("reason_other_bool ".print_r($reason_other_bool));
-        error_log("reason_change_bool ".print_r($reason_change_bool));
-        error_log("reason_close_bool ".print_r($reason_close_bool));
-        error_log("new|change|close ".print_r($reason_new_bool | $reason_change_bool | $reason_close_bool));
         
+        error_log("reason_new_bool " . vdump($reason_new_bool));
+        error_log("reason_other_bool " . vdump($reason_other_bool));
+        error_log("reason_change_bool " . vdump($reason_change_bool));
+        error_log("reason_close_bool " . vdump($reason_close_bool));
+        error_log("new|change|close " . vdump($reason_new_bool | $reason_change_bool | $reason_close_bool));
+
         if (!(isset($_POST['update_reason']) || (!$reason_new_bool && !$reason_other_bool && !$reason_change_bool && !$reason_close_bool))) {
             wp_die("No valid meeting update reason provided");
         }
