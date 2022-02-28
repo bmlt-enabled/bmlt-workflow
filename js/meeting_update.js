@@ -50,25 +50,25 @@ jQuery(document).ready(function ($) {
 
   function enable_field(fieldname) {
     var field = "#" + fieldname;
-    $(field).prop( "disabled", false )
+    $(field).prop("disabled", false);
     $(field).trigger("change");
   }
 
-  function enable_field_index(fieldname,index) {
+  function enable_field_index(fieldname, index) {
     var field = "#" + fieldname + "-" + index;
-    $(field).prop( "disabled", false )
+    $(field).prop("disabled", false);
     $(field).trigger("change");
   }
 
   function disable_field(fieldname) {
     var field = "#" + fieldname;
-    $(field).prop( "disabled", true )
+    $(field).prop("disabled", true);
     $(field).trigger("change");
   }
 
-  function disable_field_index(fieldname,index) {
+  function disable_field_index(fieldname, index) {
     var field = "#" + fieldname + "-" + index;
-    $(field).prop( "disabled", true )
+    $(field).prop("disabled", true);
     $(field).trigger("change");
   }
 
@@ -138,7 +138,6 @@ jQuery(document).ready(function ($) {
     for (var i = 0; i < 7; i++) {
       disable_field_index("weekday", i);
     }
-
   }
 
   function clear_form() {
@@ -210,7 +209,7 @@ jQuery(document).ready(function ($) {
         clear_form();
         // change meeting has a search bar
         $("#meeting_selector").show();
-        
+
         break;
       case "reason_close":
         clear_form();
@@ -247,7 +246,7 @@ jQuery(document).ready(function ($) {
     "root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1," +
     "contact_email_1,contact_name_2,contact_phone_2,contact_email_2&" +
     bmaw_service_areas +
-    "&recursive=1&sort_keys=start_time";
+    "&recursive=1&sort_keys=meeting_name";
 
   fetchJsonp(search_results_address)
     .then((response) => response.json())
@@ -256,23 +255,47 @@ jQuery(document).ready(function ($) {
 
       for (let i = 0, length = mdata.length; i < length; i++) {
         let str = mdata[i].meeting_name + " [ " + weekdays[mdata[i].weekday_tinyint - 1] + ", " + mdata[i].start_time + " ]";
-        var city = ""
-        if(mdata[i].location_municipality != "")
-        {
+        var city = "";
+        if (mdata[i].location_municipality != "") {
           city = mdata[i].location_municipality + ", ";
         }
-        if(mdata[i].location_province != "")
-        {
+        if (mdata[i].location_province != "") {
           city += mdata[i].location_province;
         }
-        if(city != "")
-        {
+        if (city != "") {
           city = "[ " + city + " ]";
         }
-        
+
         str = str + city;
-        
+
         mtext[i] = { text: str, id: i };
+      }
+
+      function matchCustom(params, data) {
+        // If there are no search terms, return all of the data
+        if ($.trim(params.term) === "") {
+          return data;
+        }
+
+        // Do not display the item if there is no 'text' property
+        if (typeof data.text === "undefined") {
+          return null;
+        }
+
+        // `params.term` should be the term that is used for searching
+        // `data.text` is the text that is displayed for the data object
+
+        // split the term on spaces and search them all as independent terms
+        var allterms = params.term.split(/\s/).filter(function (x) {return x;});
+        var ltext = data.text.toLowerCase();
+        for (var i = 0; i < allterms.length; ++i) {
+          if (ltext.indexOf(allterms[i].toLowerCase()) > -1) {
+            return data;
+          }
+        }
+
+        // Return `null` if the term should not be displayed
+        return null;
       }
 
       $(".select2-ajax").select2({
@@ -280,6 +303,7 @@ jQuery(document).ready(function ($) {
         placeholder: "Select a meeting",
         allowClear: true,
         dropdownAutoWidth: true,
+        matcher: matchCustom,
       });
 
       $("#meeting-searcher").one("select2:open", function (e) {
@@ -351,9 +375,7 @@ jQuery(document).ready(function ($) {
 
             disable_edits();
             break;
-
         }
-
       });
     });
   // form submit handler

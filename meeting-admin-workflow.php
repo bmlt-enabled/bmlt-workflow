@@ -11,7 +11,6 @@
 
 define('BMAW_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
-
 include 'form handlers/meeting-update-form-handler.php';
 
 function meeting_update_form($atts = [], $content = null, $tag = '')
