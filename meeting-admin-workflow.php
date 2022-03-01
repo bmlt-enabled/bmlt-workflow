@@ -9,10 +9,6 @@
  * Author URI: https://github.com/nigel-bmlt
  **/
 
-if (!current_user_can( 'activate_plugins' ))
-{
-    wp_die("This page cannot be accessed");
-}
 
 define('BMAW_PLUGIN_DIR', plugin_dir_path(__FILE__));
 global $bmaw_db_version;
@@ -130,7 +126,11 @@ function string_sanitize_callback($args)
 
 function bmaw_register_setting()
 {
-
+    if (!current_user_can( 'activate_plugins' ))
+    {
+        wp_die("This page cannot be accessed");
+    }
+    
     register_setting(
         'bmaw-settings-group', // settings group name
         'bmaw_service_committee_option_array',
