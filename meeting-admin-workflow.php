@@ -51,7 +51,15 @@ function bmaw_admin_scripts($hook)
 
 function bmaw_menu_pages()
 {
-    add_menu_page('BMAW', 'BMAW', 'manage_options', 'bmaw_admin');
+    add_menu_page(
+        'BMAW',
+        'BMAW',
+        'manage_options',
+        'bmaw_admin',
+        '',
+        'dashicons-analytics',
+        null
+    );
 
     add_submenu_page(
         'bmaw_admin',
@@ -60,7 +68,6 @@ function bmaw_menu_pages()
         'manage_options', // capability to access the page
         'bmaw-settings', // page URL slug
         'display_bmaw_admin_options_page', // callback function with content
-        'dashicons-analytics',
         2 // priority
     );
     add_submenu_page(
@@ -303,7 +310,7 @@ function bmaw_register_setting()
             'label_for' => 'bmaw_service_committee_option_array'
         )
     );
-    
+
 
     add_settings_field(
         'bmaw_fso_email_template',
@@ -359,13 +366,12 @@ function bmaw_register_setting()
             'label_for' => 'bmaw_service_committee_option_array'
         )
     );
-
 }
 
 function bmaw_bmlt_server_address_html()
 {
     $bmaw_bmlt_server_address = get_option('bmaw_bmlt_server_address');
-    $bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status',"failure");
+    $bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status', "failure");
     echo <<<END
     <div class="bmaw_info_text">
     <br>Your BMLT server address, used to populate the meeting list for meeting changes and closures. For example: <code>https://na.org.au/main_server/</code>
@@ -377,7 +383,7 @@ function bmaw_bmlt_server_address_html()
     echo '<br><label for="bmaw_bmlt_server_address"><b>Server Address:</b></label><input type="url" size="50" id="bmaw_bmlt_server_address" name="bmaw_bmlt_server_address" value="' . $bmaw_bmlt_server_address . '"/>';
     echo '<button type="button" id="bmaw_test_bmlt_server">Test Server Address</button><span style="display: none;" id="bmaw_test_yes" class="dashicons dashicons-yes"></span><span style="display: none;" id="bmaw_test_no" class="dashicons dashicons-no"></span>';
     echo '<br><br>';
-    echo '<input type="hidden" id="bmaw_bmlt_test_status" name="bmaw_bmlt_test_status" value="'.$bmaw_bmlt_test_status.'"></input>';
+    echo '<input type="hidden" id="bmaw_bmlt_test_status" name="bmaw_bmlt_test_status" value="' . $bmaw_bmlt_test_status . '"></input>';
     // echo '<input type="hidden" id="bmaw_bmlt_test_status" name="bmaw_bmlt_test_status" value="lol"></input>';
 }
 
@@ -432,7 +438,7 @@ function bmaw_fso_email_template_html()
     $editor_id = 'bmaw_fso_email_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
-    echo '<button class="clipboard-button" type="button" data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
+    echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
     echo '<br><br>';
 }
 
@@ -448,7 +454,7 @@ function bmaw_new_meeting_template_html()
     $editor_id = 'bmaw_new_meeting_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
-    echo '<button class="clipboard-button" type="button" data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
+    echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
     echo '<br><br>';
 }
 
@@ -464,7 +470,7 @@ function bmaw_existing_meeting_template_html()
     $editor_id = 'bmaw_existing_meeting_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
-    echo '<button class="clipboard-button" type="button" data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
+    echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
     echo '<br><br>';
 }
 
@@ -480,7 +486,7 @@ function bmaw_other_meeting_template_html()
     $editor_id = 'bmaw_other_meeting_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
-    echo '<button class="clipboard-button" type="button" data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
+    echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
     echo '<br><br>';
 }
 
@@ -497,7 +503,7 @@ function bmaw_close_meeting_template_html()
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
     // echo '<br><button type="button" id="bmaw_close_meeting_template_reload">Copy default template to clipboard</button>';
-    echo '<button class="clipboard-button" type="button" data-clipboard-target="#'.$editor_id.'_default">Copy default template to clipboard</button>';
+    echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
     echo '<br><br>';
 }
 
@@ -531,13 +537,12 @@ function bmaw_service_committee_table_html()
         $j = 0;
         $required = 'required';
         foreach ($value as $k2 => $v2) {
-            if($j==2)
-            {
+            if ($j == 2) {
                 // just the first two fields are required
-                $required="";
+                $required = "";
             }
             $j++;
-            echo '<td><input type="text" name="bmaw_service_committee_option_array[' . $i . '][' . $k2 . ']" value="' . $v2 . '" '.$required.'/></td>';
+            echo '<td><input type="text" name="bmaw_service_committee_option_array[' . $i . '][' . $k2 . ']" value="' . $v2 . '" ' . $required . '/></td>';
         }
         echo '<td><span class="dashicons dashicons-remove" id="bmaw-service-committee-' . $key . '-remove"></span></td></tr>';
         $i++;
@@ -565,5 +570,3 @@ function display_bmaw_admin_submissions_page()
     $content = ob_get_clean();
     echo $content;
 }
-
-?>
