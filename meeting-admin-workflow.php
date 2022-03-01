@@ -62,7 +62,7 @@ function bmaw_menu_pages()
     );
 
     add_submenu_page(
-        'bmaw_admin',
+        'bmaw-settings',
         'BMAW Settings', // page <title>Title</title>
         'BMAW Settings', // menu link text
         'manage_options', // capability to access the page
@@ -71,7 +71,7 @@ function bmaw_menu_pages()
         2 // priority
     );
     add_submenu_page(
-        'bmaw_admin',
+        'bmaw-settings',
         'BMAW Submissions', // page <title>Title</title>
         'BMAW Submissions', // menu link text
         'manage_options', // capability to access the page
