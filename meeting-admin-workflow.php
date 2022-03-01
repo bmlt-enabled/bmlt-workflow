@@ -583,7 +583,6 @@ function display_bmaw_admin_submissions_page()
     echo $content;
 }
 
-
 function bmaw_install()
 {
     global $wpdb;
