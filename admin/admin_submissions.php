@@ -1,8 +1,6 @@
 <?php
 
-if (!current_user_can('activate_plugins')) {
-    wp_die("This page cannot be accessed");
-}
+if (!defined('ABSPATH')) exit; // die if being called directly
 
 $exampleListTable = new bmaw_meeting_submissions_page();
 

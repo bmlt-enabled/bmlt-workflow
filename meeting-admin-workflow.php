@@ -9,6 +9,7 @@
  * Author URI: https://github.com/nigel-bmlt
  **/
 
+if (!defined('ABSPATH')) exit; // die if being called directly
 
 define('BMAW_PLUGIN_DIR', plugin_dir_path(__FILE__));
 global $bmaw_db_version;

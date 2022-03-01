@@ -1,8 +1,6 @@
 <?php
 
-if (!current_user_can('activate_plugins')) {
-    wp_die("This page cannot be accessed");
-}
+if (!defined('ABSPATH')) exit; // die if being called directly
 
 $arr = get_option('bmaw_service_committee_option_array');
 $js_array = json_encode($arr);
