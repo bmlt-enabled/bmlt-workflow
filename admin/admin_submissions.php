@@ -117,7 +117,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
             case 'change_time':
             case 'changed_by':
             case 'change_made':
-
+            case 'submission_time':
                 return $item[$column_name];
 
             default:
