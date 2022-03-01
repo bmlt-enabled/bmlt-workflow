@@ -15,6 +15,7 @@ define('BMAW_PLUGIN_DIR', plugin_dir_path(__FILE__));
 global $bmaw_db_version;
 $bmaw_db_version = '1.0';
 global $wpdb;
+global $bmaw_submissions_table_name;
 $bmaw_submissions_table_name = $wpdb->prefix . 'bmaw_submissions';
 
 include 'form handlers/meeting-update-form-handler.php';
@@ -612,8 +613,7 @@ function bmaw_install()
 function bmaw_install_data()
 {
     global $wpdb;
-
-    $bmaw_submissions_table_name = $wpdb->prefix . 'bmaw_submissions';
+    global $bmaw_submissions_table_name;
 
     $wpdb->insert($bmaw_submissions_table_name, array(
         'id'          => 1,
