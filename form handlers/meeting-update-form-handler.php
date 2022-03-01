@@ -265,6 +265,53 @@ function meeting_update_form_handler()
             }
         }
 
+        // id mediumint(9) NOT NULL AUTO_INCREMENT,
+		// submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+		// change_time datetime DEFAULT '0000-00-00 00:00:00',
+        // changed_by varchar(10),
+        // change_made varchar(10),
+		// submitter_name tinytext NOT NULL,
+		// submission_type tinytext NOT NULL,
+        // submitter_email varchar(320) NOT NULL,
+
+        // insert into submissions db
+        global $wpdb;
+        global $bmaw_submissions_table_name;
+
+        $submitter_name = $_POST['first_name']." ".$_POST['last_name'];
+        $db_reason = '';
+        switch ($reason) {
+            case ('reason_new'):
+                $db_reason = 'New Meeting';
+                break;
+            case ('reason_change'):
+                $db_reason = 'Change Meeting';
+                break;
+            case ('reason_close'):
+                $db_reason = 'Close Meeting';
+                break;
+            case ('reason_other'):
+                $db_reason = 'Other Meeting';
+                break;
+        }     
+        $submitter_email = $_POST['email_address'];
+
+        $wpdb->insert(
+            $bmaw_submissions_table_name,
+            array(
+              'submission_time'   => current_time('mysql',true),
+              'submitter_name' => $submitter_name,
+              'submission_type'  => $db_reason,
+              'submitter_email' => $submitter_email,
+            ),
+            array(
+              '%s',
+              '%s',
+              '%s',
+              '%s',
+            )
+          );
+
         exit("<h3>Form submission successful</h3>");
         // wp_redirect( 'https://www.google.com' );
     } else {
