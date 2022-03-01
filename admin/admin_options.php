@@ -1,5 +1,9 @@
 <?php
 
+if (!current_user_can('activate_plugins')) {
+    wp_die("This page cannot be accessed");
+}
+
 $arr = get_option('bmaw_service_committee_option_array');
 $js_array = json_encode($arr);
 $test_result = get_option('bmaw_bmlt_test_status','failure');

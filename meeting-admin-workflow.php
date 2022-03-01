@@ -9,7 +9,16 @@
  * Author URI: https://github.com/nigel-bmlt
  **/
 
+if (!current_user_can( 'activate_plugins' ))
+{
+    wp_die("This page cannot be accessed");
+}
+
 define('BMAW_PLUGIN_DIR', plugin_dir_path(__FILE__));
+global $bmaw_db_version;
+$bmaw_db_version = '1.0';
+global $wpdb;
+$bmaw_submissions_table_name = $wpdb->prefix . 'bmaw_submissions';
 
 include 'form handlers/meeting-update-form-handler.php';
 
@@ -92,7 +101,7 @@ function add_plugin_link($plugin_actions, $plugin_file)
     return array_merge($new_actions, $plugin_actions);
 }
 
-// actions, shortcodes and filters
+// actions, shortcodes, menus and filters
 add_action('admin_post_nopriv_meeting_update_form_response', 'meeting_update_form_handler');
 add_action('admin_post_meeting_update_form_response', 'meeting_update_form_handler');
 add_action('wp_enqueue_scripts', 'enqueue_form_deps');
@@ -101,6 +110,8 @@ add_action('admin_enqueue_scripts', 'bmaw_admin_scripts');
 add_action('admin_init',  'bmaw_register_setting');
 add_shortcode('bmaw-meeting-update-form', 'meeting_update_form');
 add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
+register_activation_hook( __FILE__, 'bmaw_install' );
+register_activation_hook( __FILE__, 'bmaw_install_data' );
 
 function array_sanitize_callback($args)
 {
@@ -569,4 +580,86 @@ function display_bmaw_admin_submissions_page()
     include('admin/admin_submissions.php');
     $content = ob_get_clean();
     echo $content;
+}
+
+
+function bmaw_install()
+{
+    global $wpdb;
+    global $bmaw_db_version;
+    global $bmaw_submissions_table_name;
+
+    $charset_collate = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE $bmaw_submissions_table_name (
+		id mediumint(9) NOT NULL AUTO_INCREMENT,
+		submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+		change_time datetime DEFAULT '0000-00-00 00:00:00',
+        changed_by varchar(10),
+        change_made varchar(10),
+		submitter_name tinytext NOT NULL,
+		submission_type tinytext NOT NULL,
+        submitter_email varchar(320) NOT NULL,
+		PRIMARY KEY (id)
+	) $charset_collate;";
+
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    dbDelta($sql);
+
+    add_option('bmaw_db_version', $bmaw_db_version);
+}
+
+function bmaw_install_data()
+{
+    global $wpdb;
+
+    $bmaw_submissions_table_name = $wpdb->prefix . 'bmaw_submissions';
+
+    $wpdb->insert($bmaw_submissions_table_name, array(
+        'id'          => 1,
+        'submitter_name'       => 'First1 Last1',
+        'submitter_email' => 'email1@mail1.com.',
+        'submission_type'        => 'update',
+        'submission_time'    => '26 Feb 2022, 10:34am'
+    ));
+
+    $wpdb->insert($bmaw_submissions_table_name, array(
+        'id'          => 2,
+        'submitter_name'       => 'First2 Last2',
+        'submitter_email' => 'email2@mail2.com.',
+        'submission_type'        => 'update',
+        'submission_time'    => '26 Feb 2022, 10:34am'
+    ));
+
+    $wpdb->insert($bmaw_submissions_table_name, array(
+        'id'          => 3,
+        'submitter_name'       => 'First3 Last3',
+        'submitter_email' => 'email3@mail3.com.',
+        'submission_type'        => 'update',
+        'submission_time'    => '26 Feb 2022, 10:34am'
+    ));
+
+    $wpdb->insert($bmaw_submissions_table_name, array(
+        'id'          => 4,
+        'submitter_name'       => 'First4 Last4',
+        'submitter_email' => 'email4@mail4.com.',
+        'submission_type'        => 'update',
+        'submission_time'    => '26 Feb 2022, 10:34am'
+    ));
+
+    $wpdb->insert($bmaw_submissions_table_name, array(
+        'id'          => 5,
+        'submitter_name'       => 'First5 Last5',
+        'submitter_email' => 'email5@mail5.com.',
+        'submission_type'        => 'update',
+        'submission_time'    => '26 Feb 2022, 10:34am'
+    ));
+
+    $wpdb->insert($bmaw_submissions_table_name, array(
+        'id'          => 6,
+        'submitter_name'       => 'First6 Last6',
+        'submitter_email' => 'email6@mail6.com.',
+        'submission_type'        => 'update',
+        'submission_time'    => '26 Feb 2022, 10:34am'
+    ));
 }

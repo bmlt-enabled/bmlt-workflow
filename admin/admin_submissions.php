@@ -1,19 +1,20 @@
 <?php
 
-if (is_admin()) {
-   
-    $exampleListTable = new bmaw_meeting_submissions_page();
-
-        error_log("created new bmaw_meeting_submissions_page");
-        $exampleListTable->prepare_items();
-?>
-        <div class="wrap">
-            <div id="icon-users" class="icon32"></div>
-            <h2>Meeting Submissions</h2>
-            <?php $exampleListTable->display(); ?>
-        </div>
-<?php
+if (!current_user_can('activate_plugins')) {
+    wp_die("This page cannot be accessed");
 }
+
+$exampleListTable = new bmaw_meeting_submissions_page();
+
+error_log("created new bmaw_meeting_submissions_page");
+$exampleListTable->prepare_items();
+?>
+<div class="wrap">
+    <div id="icon-users" class="icon32"></div>
+    <h2>Meeting Submissions</h2>
+    <?php $exampleListTable->display(); ?>
+</div>
+<?php
 
 if (!class_exists('WP_List_Table')) {
     require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
@@ -43,8 +44,15 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
         $this->_column_headers = array($columns, $hidden, $sortable);
         $this->items = $data;
-        
     }
+    // id mediumint(9) NOT NULL AUTO_INCREMENT,
+    // submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    // change_time datetime DEFAULT '0000-00-00 00:00:00',
+    // changed_by varchar(10),
+    // change_made varchar(10),
+    // submitter_name tinytext NOT NULL,
+    // submission_type tinytext NOT NULL,
+    // submitter_email varchar(320) NOT NULL,
 
     public function get_columns()
     {
@@ -53,7 +61,10 @@ class bmaw_meeting_submissions_page extends WP_List_Table
             'submitter_name'       => 'Submitter Name',
             'submitter_email' => 'Submitter Email',
             'submission_type'        => 'Change Type',
-            'submission_date_time'    => 'Submission Time',
+            'submission_time'    => 'Submission Time',
+            'change_time' => 'Change Time',
+            'changed_by' => 'Changed By',
+            'change_made' => 'Change Made'
         );
 
         return $columns;
@@ -69,101 +80,59 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         return array('submitter_name' => array('submitter_name', false));
     }
 
-    private function table_data()
+
+    public function column_id($item)
     {
-        $data = array();
-
-        $data[] = array(
-            'id'          => 1,
-            'submitter_name'       => 'First1 Last1',
-            'submitter_email' => 'email1@mail1.com.',
-            'submission_type'        => 'update',
-            'submission_date_time'    => '26 Feb 2022, 10:34am'
-        );
-
-        $data[] = array(
-            'id'          => 2,
-            'submitter_name'       => 'First2 Last2',
-            'submitter_email' => 'email2@mail2.com.',
-            'submission_type'        => 'update',
-            'submission_date_time'    => '26 Feb 2022, 10:34am'
-        );
-
-        $data[] = array(
-            'id'          => 3,
-            'submitter_name'       => 'First3 Last3',
-            'submitter_email' => 'email3@mail3.com.',
-            'submission_type'        => 'update',
-            'submission_date_time'    => '26 Feb 2022, 10:34am'
-        );
-
-        $data[] = array(
-            'id'          => 4,
-            'submitter_name'       => 'First4 Last4',
-            'submitter_email' => 'email4@mail4.com.',
-            'submission_type'        => 'update',
-            'submission_date_time'    => '26 Feb 2022, 10:34am'
-        );
-
-        $data[] = array(
-            'id'          => 5,
-            'submitter_name'       => 'First5 Last5',
-            'submitter_email' => 'email5@mail5.com.',
-            'submission_type'        => 'update',
-            'submission_date_time'    => '26 Feb 2022, 10:34am'
-        );
-
-        $data[] = array(
-            'id'          => 6,
-            'submitter_name'       => 'First6 Last6',
-            'submitter_email' => 'email6@mail6.com.',
-            'submission_type'        => 'update',
-            'submission_date_time'    => '26 Feb 2022, 10:34am'
-        );
-
-
-        return $data;
-    }
-
-    public function column_id(  $item ) {
-        $edit_link = admin_url( 'post.php?action=edit&amp;post=' .  $item['id']  );
-        $view_link = get_permalink( $item['id'] ); 
+        $edit_link = admin_url('post.php?action=edit&amp;post=' .  $item['id']);
+        $view_link = get_permalink($item['id']);
         $output    = '';
- 
+
         // Title.
-        $output .= '<strong><a href="' . esc_url( $edit_link ) . '" class="row-title">' . esc_html(  $item['id']   ) . '</a></strong>';
- 
+        $output .= '<strong><a href="' . esc_url($edit_link) . '" class="row-title">' . esc_html($item['id']) . '</a></strong>';
+
         // Get actions.
         $actions = array(
-            '1'   => '<a target="_blank" href="' . esc_url( $edit_link ) . '">' . esc_html__( 'Approve', 'my_plugin' ) . '</a>',
-            '2'   => '<a target="_blank" href="' . esc_url( $view_link ) . '">' . esc_html__( 'Reject', 'my_plugin' ) . '</a>',
-            '3'   => '<a target="_blank" href="' . esc_url( $view_link ) . '">' . esc_html__( 'View Detail', 'my_plugin' ) . '</a>',
+            '1'   => '<a target="_blank" href="' . esc_url($edit_link) . '">' . esc_html__('Approve', 'my_plugin') . '</a>',
+            '2'   => '<a target="_blank" href="' . esc_url($view_link) . '">' . esc_html__('Reject', 'my_plugin') . '</a>',
+            '3'   => '<a target="_blank" href="' . esc_url($view_link) . '">' . esc_html__('View Detail', 'my_plugin') . '</a>',
         );
- 
+
         $row_actions = array();
- 
-        foreach ( $actions as $action => $link ) {
-            $row_actions[] = '<span class="' . esc_attr( $action ) . '">' . $link . '</span>';
+
+        foreach ($actions as $action => $link) {
+            $row_actions[] = '<span class="' . esc_attr($action) . '">' . $link . '</span>';
         }
- 
-        $output .= '<div class="row-actions">' . implode( ' | ', $row_actions ) . '</div>';
- 
+
+        $output .= '<div class="row-actions">' . implode(' | ', $row_actions) . '</div>';
+
         return $output;
     }
 
     public function column_default($item, $column_name)
     {
         switch ($column_name) {
-            // case 'id':
+                // case 'id':
             case 'submitter_name':
             case 'submitter_email':
             case 'submission_type':
             case 'submission_date_time':
+            case 'change_time':
+            case 'changed_by':
+            case 'change_made':
+
                 return $item[$column_name];
 
             default:
                 return print_r($item, true);
         }
+    }
+
+    private function table_data()
+    {
+        global $wpdb;
+        $result = $wpdb->get_results("SELECT element_value FROM wp_formmaker_submits WHERE DATE(date) = CURDATE()");
+
+        return $result;
     }
 
     private function sort_data($a, $b)
