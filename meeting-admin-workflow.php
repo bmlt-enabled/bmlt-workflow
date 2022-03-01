@@ -55,7 +55,7 @@ function bmaw_menu_pages()
         'BMAW',
         'BMAW',
         'manage_options',
-        'bmaw_admin',
+        'bmaw-settings',
         '',
         'dashicons-analytics',
         null
