@@ -1,4 +1,7 @@
 <?php
+
+if (!defined('ABSPATH')) exit; // die if being called directly
+
 function vdump($object)
 {
     ob_start();

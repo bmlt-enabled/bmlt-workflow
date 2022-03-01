@@ -9,6 +9,8 @@
  * Author URI: https://github.com/nigel-bmlt
  **/
 
+if (!defined('ABSPATH')) exit; // die if being called directly
+
 define('BMAW_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 include 'form handlers/meeting-update-form-handler.php';

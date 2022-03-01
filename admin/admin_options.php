@@ -1,5 +1,7 @@
 <?php
 
+if (!defined('ABSPATH')) exit; // die if being called directly
+
 $arr = get_option('bmaw_service_committee_option_array');
 $js_array = json_encode($arr);
 $test_result = get_option('bmaw_bmlt_test_status','failure');

@@ -1,4 +1,7 @@
 <?php
+
+if (!defined('ABSPATH')) exit; // die if being called directly
+
 $bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status', "failure");
 if ($bmaw_bmlt_test_status != "success") {
     wp_die("<h4>BMAW Plugin Error: BMLT Server not configured and tested.</h4>");
