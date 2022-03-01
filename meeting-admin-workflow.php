@@ -592,7 +592,7 @@ function bmaw_install()
 
     $charset_collate = $wpdb->get_charset_collate();
 
-    $sql = "CREATE TABLE $bmaw_submissions_table_name (
+    $sql = "CREATE TABLE ".$bmaw_submissions_table_name." (
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
 		submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 		change_time datetime DEFAULT '0000-00-00 00:00:00',

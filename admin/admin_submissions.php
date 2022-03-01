@@ -128,7 +128,9 @@ class bmaw_meeting_submissions_page extends WP_List_Table
     private function table_data()
     {
         global $wpdb;
-        $result = $wpdb->get_results("SELECT * FROM bmaw_submissions_table_name");
+        global $bmaw_submissions_table_name;
+        
+        $result = $wpdb->get_results('SELECT * FROM ".$bmaw_submissions_table_name."');
 
         return $result;
     }
