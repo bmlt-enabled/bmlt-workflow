@@ -49,8 +49,7 @@ function enqueue_form_deps()
 
 function bmaw_admin_scripts($hook)
 {
-    if ($hook != 'settings_page_bmaw-settings') {
-        error_log($hook);
+    if ($hook != 'toplevel_page_bmaw-settings') {
         return;
     }
     wp_enqueue_style('bmaw-admin-css', plugin_dir_url(__FILE__) . 'css/admin_page.css', false, filemtime(plugin_dir_path(__FILE__) . 'css/admin_page.css'), 'all');
