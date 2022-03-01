@@ -49,22 +49,27 @@ function bmaw_admin_scripts($hook)
     wp_enqueue_script('bmawjs', plugin_dir_url(__FILE__) . 'js/script_includes.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/script_includes.js'), true);
 }
 
-function bmaw_options_page()
+function bmaw_menu_pages()
 {
-    add_options_page(
+    add_menu_page('BMAW', 'BMAW', 'manage_options', 'bmaw_admin');
+
+    add_submenu_page(
+        'bmaw_admin',
         'BMAW Settings', // page <title>Title</title>
         'BMAW Settings', // menu link text
         'manage_options', // capability to access the page
         'bmaw-settings', // page URL slug
-        'display_admin_options_page', // callback function with content
+        'display_bmaw_admin_options_page', // callback function with content
+        'dashicons-analytics',
         2 // priority
     );
-    add_options_page(
+    add_submenu_page(
+        'bmaw_admin',
         'BMAW Submissions', // page <title>Title</title>
         'BMAW Submissions', // menu link text
         'manage_options', // capability to access the page
         'bmaw-submissions', // page URL slug
-        'display_admin_submissions_page', // callback function with content
+        'display_bmaw_admin_submissions_page', // callback function with content
         2 // priority
     );
 }
@@ -84,7 +89,7 @@ function add_plugin_link($plugin_actions, $plugin_file)
 add_action('admin_post_nopriv_meeting_update_form_response', 'meeting_update_form_handler');
 add_action('admin_post_meeting_update_form_response', 'meeting_update_form_handler');
 add_action('wp_enqueue_scripts', 'enqueue_form_deps');
-add_action('admin_menu', 'bmaw_options_page');
+add_action('admin_menu', 'bmaw_menu_pages');
 add_action('admin_enqueue_scripts', 'bmaw_admin_scripts');
 add_action('admin_init',  'bmaw_register_setting');
 add_shortcode('bmaw-meeting-update-form', 'meeting_update_form');
@@ -543,7 +548,7 @@ function bmaw_service_committee_table_html()
     echo '<br><br>';
 }
 
-function display_admin_options_page()
+function display_bmaw_admin_options_page()
 {
     $content = '';
     ob_start();
@@ -551,7 +556,8 @@ function display_admin_options_page()
     $content = ob_get_clean();
     echo $content;
 }
-function display_admin_submissions_page()
+
+function display_bmaw_admin_submissions_page()
 {
     $content = '';
     ob_start();
