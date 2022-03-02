@@ -66,6 +66,7 @@ class bmaw_submissions_rest extends WP_REST_Controller {
 	 */
 	public function get_items_permissions_check( $request ) {
         $user = wp_get_current_user();
+        var_dump($user);
         error_log($user->roles[0]);
 
         $data = get_userdata( get_current_user_id() );
