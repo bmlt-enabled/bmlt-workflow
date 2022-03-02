@@ -172,7 +172,7 @@ function bmaw_register_setting()
             'description' => 'bmlt automation username',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
-            'default' => 'https://na.org.au/main_server'
+            'default' => ''
         )
     );
 
