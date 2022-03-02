@@ -127,6 +127,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 		$result     = rest_get_server()->response_to_data( $response, true );
 		error_log(print_r($result));
         return $result;
+		
     }
 
     private function sort_data($a, $b)
