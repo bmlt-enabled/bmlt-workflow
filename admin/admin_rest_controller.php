@@ -65,7 +65,7 @@ class bmaw_submissions_rest extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		if ( ! current_user_can( 'read' ) ) {
+		if ( ! current_user_can( 'manage_options' ) ) {
 			return new WP_Error( 'rest_forbidden', esc_html__( 'You cannot view the submission resource.' ), array( 'status' => $this->authorization_status_code() ) );
 		}
 		return true;
