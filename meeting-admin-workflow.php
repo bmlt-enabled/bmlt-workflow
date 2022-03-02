@@ -158,7 +158,31 @@ function bmaw_register_setting()
         array(
             'type' => 'array',
             'description' => 'bmlt server address',
-            'sanitize_callback' => 'array_sanitize_callback',
+            'sanitize_callback' => 'string_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => 'https://na.org.au/main_server'
+        )
+    );
+
+    register_setting(
+        'bmaw-settings-group',
+        'bmaw_bmlt_username',
+        array(
+            'type' => 'array',
+            'description' => 'bmlt automation username',
+            'sanitize_callback' => 'string_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => 'https://na.org.au/main_server'
+        )
+    );
+
+    register_setting(
+        'bmaw-settings-group',
+        'bmaw_bmlt_password',
+        array(
+            'type' => 'array',
+            'description' => 'bmlt automation password',
+            'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
             'default' => 'https://na.org.au/main_server'
         )
@@ -278,6 +302,14 @@ function bmaw_register_setting()
     );
 
     add_settings_field(
+        'bmaw_bmlt_address',
+        'BMLT Automaion Login Details',
+        'bmaw_bmlt_bot_login_html',
+        'bmaw-settings',
+        'bmaw-settings-section-id'
+    );
+
+    add_settings_field(
         'bmaw_shortcode_unused',
         'Meeting Update Form Shortcode',
         'bmaw_shortcode_html',
@@ -368,7 +400,23 @@ function bmaw_bmlt_server_address_html()
     echo '<button type="button" id="bmaw_test_bmlt_server">Test Server Address</button><span style="display: none;" id="bmaw_test_yes" class="dashicons dashicons-yes"></span><span style="display: none;" id="bmaw_test_no" class="dashicons dashicons-no"></span>';
     echo '<br><br>';
     echo '<input type="hidden" id="bmaw_bmlt_test_status" name="bmaw_bmlt_test_status" value="' . $bmaw_bmlt_test_status . '"></input>';
-    // echo '<input type="hidden" id="bmaw_bmlt_test_status" name="bmaw_bmlt_test_status" value="lol"></input>';
+}
+
+function bmaw_bmlt_bot_login_html()
+{
+    $bmaw_bmlt_username = get_option('bmaw_bmlt_username');
+    $bmaw_bmlt_test_login_status = get_option('bmaw_bmlt_test_login_status', "failure");
+
+    echo <<<END
+    <div class="bmaw_info_text">
+    <br>Username and password for BMLT automation
+    </div>
+    END;
+    echo '<br><label for="bmaw_bmlt_server_address"><b>BMLT Username:</b></label><input type="text" size="50" id="bmaw_bmlt_username" name="bmaw_bmlt_username" value="' . $bmaw_bmlt_username . '"/>';
+    echo '<br><label for="bmaw_bmlt_server_address"><b>BMLT Password:</b></label><input type="password" size="50" id="bmaw_bmlt_password" name="bmaw_bmlt_password"/>';
+    echo '<button type="button" id="bmaw_test_bmlt_server_login">Test Login</button><span style="display: none;" id="bmaw_test_login_yes" class="dashicons dashicons-yes"></span><span style="display: none;" id="bmaw_test_login_no" class="dashicons dashicons-no"></span>';
+    echo '<br><br>';
+    echo '<input type="hidden" id="bmaw_bmlt_test_login_status" name="bmaw_bmlt_test_login_status" value="' . $bmaw_bmlt_test_login_status . '"></input>';
 }
 
 function bmaw_shortcode_html()
