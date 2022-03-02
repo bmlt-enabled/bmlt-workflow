@@ -65,8 +65,11 @@ class bmaw_submissions_rest extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
+
         $data = get_userdata( get_current_user_id() );
-error_log("before");
+        error_log("user id:".print_r(get_current_user_id()));
+
+        error_log("before");
 error_log(print_r($data));
 if ( is_object( $data) ) {
     error_log("after");
