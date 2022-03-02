@@ -190,7 +190,7 @@ class My_List_Table extends WP_List_Table {
 		/**
 		 * Adds a nonce field
 		 */
-		wp_nonce_field( 'ajax-custom-list-nonce', '_ajax_custom_list_nonce' );
+		wp_nonce_field( '_wpnonce', '_wpnonce' );
 
 		/**
 		 * Adds field order and orderby
@@ -200,56 +200,6 @@ class My_List_Table extends WP_List_Table {
 
 		parent::display();
 	}
-
-	/**
-	 * @Override ajax_response method
-	 */
-
-	function ajax_response() {
-
-		check_ajax_referer( 'ajax-custom-list-nonce', '_ajax_custom_list_nonce' );
-
-		$this->prepare_items();
-
-		extract( $this->_args );
-		extract( $this->_pagination_args, EXTR_SKIP );
-
-		ob_start();
-		if ( ! empty( $_REQUEST['no_placeholder'] ) )
-			$this->display_rows();
-		else
-			$this->display_rows_or_placeholder();
-		$rows = ob_get_clean();
-
-		ob_start();
-		$this->print_column_headers();
-		$headers = ob_get_clean();
-
-		ob_start();
-		$this->pagination('top');
-		$pagination_top = ob_get_clean();
-
-		ob_start();
-		$this->pagination('bottom');
-		$pagination_bottom = ob_get_clean();
-
-		$response = array( 'rows' => $rows );
-		$response['pagination']['top'] = $pagination_top;
-		$response['pagination']['bottom'] = $pagination_bottom;
-		$response['column_headers'] = $headers;
-
-		if ( isset( $total_items ) )
-			$response['total_items_i18n'] = sprintf( _n( '1 item', '%s items', $total_items ), number_format_i18n( $total_items ) );
-
-		if ( isset( $total_pages ) ) {
-			$response['total_pages'] = $total_pages;
-			$response['total_pages_i18n'] = number_format_i18n( $total_pages );
-		}
-
-		die( json_encode( $response ) );
-	}
-
-}
 
 function _display_bmaw_admin_submissions_page() {
 
@@ -263,7 +213,7 @@ function _display_bmaw_admin_submissions_page() {
 
 			<div id="ts-history-table" style="">
 				<?php
-				wp_nonce_field( 'ajax-custom-list-nonce', '_ajax_custom_list_nonce' );
+				wp_nonce_field( '_wpnonce', '_wpnonce' );
 				?>
 			</div>
 
@@ -274,48 +224,6 @@ function _display_bmaw_admin_submissions_page() {
 <?php
 
 }
-
-/**
- * Action wp_ajax for fetching ajax_response
- */
-
-function _ajax_fetch_sts_history_callback() {
-
-	$wp_list_table = new My_List_Table();
-	$wp_list_table->ajax_response();
-
-}
-
-add_action( 'wp_ajax__ajax_fetch_sts_history', '_ajax_fetch_sts_history_callback' );
-
-/**
- * Action wp_ajax for fetching the first time table structure
- */
-
-function _ajax_sts_display_callback() {
-
-	check_ajax_referer( 'ajax-custom-list-nonce', '_ajax_custom_list_nonce', true );
-
-	$wp_list_table = new My_List_Table();
-	$wp_list_table->prepare_items();
-
-	ob_start();
-	$wp_list_table->display();
-	$display = ob_get_clean();
-
-	die(
-
-		json_encode(array(
-
-			"display" => $display
-
-		))
-
-	);
-
-}
-
-add_action('wp_ajax__ajax_sts_display', '_ajax_sts_display_callback');
 
 /**
  * fetch_ts_script function based from Charlie's original function
@@ -357,7 +265,7 @@ function fetch_ts_script() {
 						url: myajaxurl,
 						dataType: 'json',
 						data: {
-							_ajax_custom_list_nonce: $('#_ajax_custom_list_nonce').val(),
+							_wpnonce: $('#_wpnonce').val(),
 						},
 						success: function (response) {
 
@@ -429,7 +337,7 @@ function fetch_ts_script() {
 						url: myajaxurl,
 						data: $.extend(
 							{
-								_ajax_custom_list_nonce: $('#_ajax_custom_list_nonce').val(),
+								_wpnonce: $('#_wpnonce').val(),
 							},
 							data
 						),
