@@ -66,8 +66,10 @@ class bmaw_submissions_rest extends WP_REST_Controller {
 	 */
 	public function get_items_permissions_check( $request ) {
         $data = get_userdata( get_current_user_id() );
- 
+error_log("before");
 if ( is_object( $data) ) {
+    error_log("after");
+
     $current_user_caps = $data->allcaps;
      
     // print it to the screen
