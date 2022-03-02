@@ -108,8 +108,11 @@ add_action('admin_enqueue_scripts', 'bmaw_admin_scripts');
 add_action('admin_init',  'bmaw_register_setting');
 add_shortcode('bmaw-meeting-update-form', 'meeting_update_form');
 add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
+
 register_activation_hook( __FILE__, 'bmaw_install' );
 register_activation_hook( __FILE__, 'bmaw_install_data' );
+
+add_action('rest_api_init', 'bmaw_submissions_controller' );
 
 function array_sanitize_callback($args)
 {
@@ -413,8 +416,8 @@ function bmaw_bmlt_bot_login_html()
     <br><br>
     </div>
     END;
-    echo '<br><label for="bmaw_bmlt_server_address"><b>BMLT Username:</b></label><input type="text" size="50" id="bmaw_bmlt_username" name="bmaw_bmlt_username" value="' . $bmaw_bmlt_username . '"/>';
-    echo '<br><label for="bmaw_bmlt_server_address"><b>BMLT Password:</b></label><input type="password" size="50" id="bmaw_bmlt_password" name="bmaw_bmlt_password"/>';
+    echo '<br><label for="bmaw_bmlt_server_address"><b>BMLT Username:</b></label><input type="text" size="10" id="bmaw_bmlt_username" name="bmaw_bmlt_username" value="' . $bmaw_bmlt_username . '"/>';
+    echo '<br><label for="bmaw_bmlt_server_address"><b>BMLT Password:</b></label><input type="password" size="10" id="bmaw_bmlt_password" name="bmaw_bmlt_password"/>';
     echo '<button type="button" id="bmaw_test_bmlt_server_login">Test Login</button><span style="display: none;" id="bmaw_test_login_yes" class="dashicons dashicons-yes"></span><span style="display: none;" id="bmaw_test_login_no" class="dashicons dashicons-no"></span>';
     echo '<br><br>';
     echo '<input type="hidden" id="bmaw_bmlt_test_login_status" name="bmaw_bmlt_test_login_status" value="' . $bmaw_bmlt_test_login_status . '"></input>';
