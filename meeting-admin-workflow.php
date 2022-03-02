@@ -18,7 +18,8 @@ global $wpdb;
 global $bmaw_submissions_table_name;
 $bmaw_submissions_table_name = $wpdb->prefix . 'bmaw_submissions';
 
-include 'form handlers/meeting-update-form-handler.php';
+include_once 'form handlers/meeting-update-form-handler.php';
+include_once 'admin/admin_rest_controller.php';
 
 function meeting_update_form($atts = [], $content = null, $tag = '')
 {
