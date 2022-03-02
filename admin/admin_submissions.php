@@ -6,6 +6,8 @@ if ( ! class_exists( 'WP_List_Table' ) )
 
 $myajaxurl = "http://54.153.167.239/flop/wp-json/bmaw-submission/v1/submission";
 
+_display_bmaw_admin_submissions_page();
+
 /**
  *
  * As Charlie suggested in its plugin https://github.com/Askelon/Custom-AJAX-List-Table-Example
@@ -143,7 +145,7 @@ class My_List_Table extends WP_List_Table {
 		 */
 		// $data = $this->sample_data;
         $data = array();
-        
+
 		function usort_reorder( $a, $b ) {
 
 			$orderby = ( ! empty( $_REQUEST['orderby'] ) ) ? $_REQUEST['orderby'] : 'title';
@@ -250,7 +252,7 @@ class My_List_Table extends WP_List_Table {
 
 }
 
-function display_bmaw_admin_submissions_page() {
+function _display_bmaw_admin_submissions_page() {
 
 ?>
 
