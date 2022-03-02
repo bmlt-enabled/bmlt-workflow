@@ -212,7 +212,7 @@ function _display_bmaw_admin_submissions_page() {
 
 			<div id="ts-history-table" style="">
 				<?php
-				wp_nonce_field( 'a_wpnonce', '_wpnonce' );
+				wp_nonce_field( '_wpnonce', '_wpnonce' );
 				?>
 			</div>
 
