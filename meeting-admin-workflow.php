@@ -138,7 +138,7 @@ function bmaw_register_setting()
     }
     
     register_setting(
-        'bmaw-settings-group', // settings group name
+        'bmaw-settings-group',
         'bmaw_service_committee_option_array',
         array(
             'type' => 'array',
@@ -151,10 +151,9 @@ function bmaw_register_setting()
             )
         )
     );
-    // https://na.org.au/main_server
 
     register_setting(
-        'bmaw-settings-group', // settings group name
+        'bmaw-settings-group',
         'bmaw_bmlt_server_address',
         array(
             'type' => 'array',
@@ -166,7 +165,7 @@ function bmaw_register_setting()
     );
 
     register_setting(
-        'bmaw-settings-group', // settings group name
+        'bmaw-settings-group',
         'bmaw_email_from_address',
         array(
             'type' => 'string',
@@ -178,7 +177,7 @@ function bmaw_register_setting()
     );
 
     register_setting(
-        'bmaw-settings-group', // settings group name
+        'bmaw-settings-group',
         'bmaw_new_meeting_template',
         array(
             'type' => 'string',
@@ -190,7 +189,7 @@ function bmaw_register_setting()
     );
 
     register_setting(
-        'bmaw-settings-group', // settings group name
+        'bmaw-settings-group',
         'bmaw_existing_meeting_template',
         array(
             'type' => 'string',
@@ -203,7 +202,7 @@ function bmaw_register_setting()
     );
 
     register_setting(
-        'bmaw-settings-group', // settings group name
+        'bmaw-settings-group',
         'bmaw_other_meeting_template',
         array(
             'type' => 'string',
@@ -215,7 +214,7 @@ function bmaw_register_setting()
     );
 
     register_setting(
-        'bmaw-settings-group', // settings group name
+        'bmaw-settings-group',
         'bmaw_close_meeting_template',
         array(
             'type' => 'string',
@@ -228,7 +227,7 @@ function bmaw_register_setting()
 
 
     register_setting(
-        'bmaw-settings-group', // settings group name
+        'bmaw-settings-group',
         'bmaw_fso_email_template',
         array(
             'type' => 'string',
@@ -240,7 +239,7 @@ function bmaw_register_setting()
     );
 
     register_setting(
-        'bmaw-settings-group', // settings group name
+        'bmaw-settings-group',
         'bmaw_bmlt_test_status',
         array(
             'type' => 'string',
@@ -252,7 +251,7 @@ function bmaw_register_setting()
     );
 
     register_setting(
-        'bmaw-settings-group', // settings group name
+        'bmaw-settings-group',
         'bmaw_fso_email_address',
         array(
             'type' => 'string',
@@ -270,17 +269,15 @@ function bmaw_register_setting()
         'bmaw-settings'
     );
 
-    // bmaw_bmlt_address
-
     add_settings_field(
         'bmaw_bmlt_address',
         'BMLT Server Address',
         'bmaw_bmlt_server_address_html',
         'bmaw-settings',
         'bmaw-settings-section-id',
-        array(
-            'label_for' => 'bmaw_service_committee_option_array'
-        )
+        // array(
+        //     'label_for' => 'bmaw_service_committee_option_array'
+        // )
     );
 
     add_settings_field(
