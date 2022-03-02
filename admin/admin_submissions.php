@@ -341,8 +341,8 @@ function fetch_ts_script() {
 	?>
 
 	<script type="text/javascript">
-var myajaxurl="<?php echo $myajaxurl; ?>"
 		(function ($) {
+            var myajaxurl="<?php echo $myajaxurl; ?>"
 
 			list = {
 
