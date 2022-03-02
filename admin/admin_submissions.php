@@ -144,42 +144,42 @@ class My_List_Table extends WP_List_Table {
 		 * from a REST architecture or from database (using $wpdb)
 		 */
 		// $data = $this->sample_data;
-        $data = array();
+        // $data = array();
 
-		function usort_reorder( $a, $b ) {
+		// function usort_reorder( $a, $b ) {
 
-			$orderby = ( ! empty( $_REQUEST['orderby'] ) ) ? $_REQUEST['orderby'] : 'title';
-			$order = ( ! empty( $_REQUEST['order'] ) ) ? $_REQUEST['order'] : 'asc';
-			$result = strcmp( $a[ $orderby ], $b[ $orderby ] );
-			return ( 'asc' === $order ) ? $result : -$result;
-		}
-		usort( $data, 'usort_reorder' );
+		// 	$orderby = ( ! empty( $_REQUEST['orderby'] ) ) ? $_REQUEST['orderby'] : 'title';
+		// 	$order = ( ! empty( $_REQUEST['order'] ) ) ? $_REQUEST['order'] : 'asc';
+		// 	$result = strcmp( $a[ $orderby ], $b[ $orderby ] );
+		// 	return ( 'asc' === $order ) ? $result : -$result;
+		// }
+		// usort( $data, 'usort_reorder' );
 
 		/**
 		 * Get current page calling get_pagenum method
 		 */
-		$current_page = $this->get_pagenum();
+		// $current_page = $this->get_pagenum();
 
-		$total_items = count($data);
+		// $total_items = count($data);
 
-		$data = array_slice($data,(($current_page-1)*$per_page),$per_page);
+		// $data = array_slice($data,(($current_page-1)*$per_page),$per_page);
 
-		$this->items = $data;
+		// $this->items = $data;
 
 		/**
 		 * Call to _set_pagination_args method for informations about
 		 * total items, items for page, total pages and ordering
 		 */
-		$this->set_pagination_args(
-			array(
+		// $this->set_pagination_args(
+		// 	array(
 
-				'total_items'	=> $total_items,
-				'per_page'	    => $per_page,
-				'total_pages'	=> ceil( $total_items / $per_page ),
-				'orderby'	    => ! empty( $_REQUEST['orderby'] ) && '' != $_REQUEST['orderby'] ? $_REQUEST['orderby'] : 'title',
-				'order'		    => ! empty( $_REQUEST['order'] ) && '' != $_REQUEST['order'] ? $_REQUEST['order'] : 'asc'
-			)
-		);
+		// 		'total_items'	=> $total_items,
+		// 		'per_page'	    => $per_page,
+		// 		'total_pages'	=> ceil( $total_items / $per_page ),
+		// 		'orderby'	    => ! empty( $_REQUEST['orderby'] ) && '' != $_REQUEST['orderby'] ? $_REQUEST['orderby'] : 'title',
+		// 		'order'		    => ! empty( $_REQUEST['order'] ) && '' != $_REQUEST['order'] ? $_REQUEST['order'] : 'asc'
+		// 	)
+		// );
 	}
 
 	/**
@@ -362,7 +362,6 @@ function fetch_ts_script() {
 						dataType: 'json',
 						data: {
 							_ajax_custom_list_nonce: $('#_ajax_custom_list_nonce').val(),
-							action: '_ajax_sts_display'
 						},
 						success: function (response) {
 
@@ -430,12 +429,11 @@ function fetch_ts_script() {
 				update: function (data) {
 
 					$.ajax({
-
+                        dataType: 'json',
 						url: myajaxurl,
 						data: $.extend(
 							{
 								_ajax_custom_list_nonce: $('#_ajax_custom_list_nonce').val(),
-								action: '_ajax_fetch_sts_history',
 							},
 							data
 						),
