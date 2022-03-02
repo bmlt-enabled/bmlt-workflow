@@ -410,6 +410,7 @@ function bmaw_bmlt_bot_login_html()
     echo <<<END
     <div class="bmaw_info_text">
     <br>Username and password for BMLT automation
+    <br>
     </div>
     END;
     echo '<br><label for="bmaw_bmlt_server_address"><b>BMLT Username:</b></label><input type="text" size="50" id="bmaw_bmlt_username" name="bmaw_bmlt_username" value="' . $bmaw_bmlt_username . '"/>';
