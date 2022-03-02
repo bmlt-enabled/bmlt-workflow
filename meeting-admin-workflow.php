@@ -128,6 +128,10 @@ function string_sanitize_callback($args)
 
 function bmaw_register_setting()
 {
+    if ( (defined('DOING_AJAX') && DOING_AJAX) || ( strpos($_SERVER['SCRIPT_NAME'], 'admin-post.php') ) ) {
+        return;
+    }
+    
     if (!current_user_can( 'activate_plugins' ))
     {
         wp_die("This page cannot be accessed");
