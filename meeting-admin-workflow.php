@@ -274,10 +274,7 @@ function bmaw_register_setting()
         'BMLT Server Address',
         'bmaw_bmlt_server_address_html',
         'bmaw-settings',
-        'bmaw-settings-section-id',
-        // array(
-        //     'label_for' => 'bmaw_service_committee_option_array'
-        // )
+        'bmaw-settings-section-id'
     );
 
     add_settings_field(
@@ -285,10 +282,7 @@ function bmaw_register_setting()
         'Meeting Update Form Shortcode',
         'bmaw_shortcode_html',
         'bmaw-settings',
-        'bmaw-settings-section-id',
-        array(
-            'label_for' => 'bmaw_service_committee_option_array'
-        )
+        'bmaw-settings-section-id'
     );
 
     add_settings_field(
@@ -296,10 +290,7 @@ function bmaw_register_setting()
         'Service Committee Configuration',
         'bmaw_service_committee_table_html',
         'bmaw-settings',
-        'bmaw-settings-section-id',
-        array(
-            'label_for' => 'bmaw_service_committee_option_array'
-        )
+        'bmaw-settings-section-id'
     );
 
     add_settings_field(
@@ -307,10 +298,7 @@ function bmaw_register_setting()
         'Email From Address',
         'bmaw_email_from_address_html',
         'bmaw-settings',
-        'bmaw-settings-section-id',
-        array(
-            'label_for' => 'bmaw_service_committee_option_array'
-        )
+        'bmaw-settings-section-id'
     );
 
 
@@ -319,10 +307,7 @@ function bmaw_register_setting()
         'Email address for the FSO (Starter Kit Notifications)',
         'bmaw_fso_email_address_html',
         'bmaw-settings',
-        'bmaw-settings-section-id',
-        array(
-            'label_for' => 'bmaw_service_committee_option_array'
-        )
+        'bmaw-settings-section-id'
     );
 
 
@@ -331,10 +316,7 @@ function bmaw_register_setting()
         'Email Template for FSO emails (Starter Kit Notifications)',
         'bmaw_fso_email_template_html',
         'bmaw-settings',
-        'bmaw-settings-section-id',
-        array(
-            'label_for' => 'bmaw_service_committee_option_array'
-        )
+        'bmaw-settings-section-id'
     );
 
     add_settings_field(
@@ -342,10 +324,7 @@ function bmaw_register_setting()
         'Email Template for New Meeting',
         'bmaw_new_meeting_template_html',
         'bmaw-settings',
-        'bmaw-settings-section-id',
-        array(
-            'label_for' => 'bmaw_service_committee_option_array'
-        )
+        'bmaw-settings-section-id'
     );
 
     add_settings_field(
@@ -353,10 +332,7 @@ function bmaw_register_setting()
         'Email Template for Existing Meeting',
         'bmaw_existing_meeting_template_html',
         'bmaw-settings',
-        'bmaw-settings-section-id',
-        array(
-            'label_for' => 'bmaw_service_committee_option_array'
-        )
+        'bmaw-settings-section-id'
     );
 
     add_settings_field(
@@ -364,10 +340,7 @@ function bmaw_register_setting()
         'Email Template for Other Meeting Update',
         'bmaw_other_meeting_template_html',
         'bmaw-settings',
-        'bmaw-settings-section-id',
-        array(
-            'label_for' => 'bmaw_service_committee_option_array'
-        )
+        'bmaw-settings-section-id'
     );
 
     add_settings_field(
@@ -375,10 +348,7 @@ function bmaw_register_setting()
         'Email Template for Close Meeting',
         'bmaw_close_meeting_template_html',
         'bmaw-settings',
-        'bmaw-settings-section-id',
-        array(
-            'label_for' => 'bmaw_service_committee_option_array'
-        )
+        'bmaw-settings-section-id'
     );
 }
 
