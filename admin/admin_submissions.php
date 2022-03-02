@@ -4,7 +4,6 @@ if ( ! class_exists( 'WP_List_Table' ) )
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 
 
-$myajaxurl = "http://54.153.167.239/flop/wp-json/bmaw-submission/v1/submission";
 
 _display_bmaw_admin_submissions_page();
 
@@ -324,6 +323,7 @@ add_action('wp_ajax__ajax_sts_display', '_ajax_sts_display_callback');
 
 function fetch_ts_script() {
 	$screen = get_current_screen();
+    $myajaxurl = "http://54.153.167.239/flop/wp-json/bmaw-submission/v1/submission";
 
 	/**
 	 * For testing purpose, finding Screen ID
@@ -341,7 +341,7 @@ function fetch_ts_script() {
 	?>
 
 	<script type="text/javascript">
-
+var myajaxurl="<?php echo $myajaxurl; ?>"
 		(function ($) {
 
 			list = {
