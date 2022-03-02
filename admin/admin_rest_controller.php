@@ -65,9 +65,17 @@ class bmaw_submissions_rest extends WP_REST_Controller {
 	 * @return bool|WP_Error
 	 */
 	public function get_items_permissions_check( $request ) {
-		// if ( ! current_user_can( 'manage_options' ) ) {
-		// 	return new WP_Error( 'rest_forbidden', esc_html__( 'You cannot view the submission resource.' ), array( 'status' => $this->authorization_status_code() ) );
-		// }
+        $data = get_userdata( get_current_user_id() );
+ 
+if ( is_object( $data) ) {
+    $current_user_caps = $data->allcaps;
+     
+    // print it to the screen
+    error_log(print_r( $current_user_caps, true ));
+}
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return new WP_Error( 'rest_forbidden', esc_html__( 'You cannot view the submission resource.' ), array( 'status' => $this->authorization_status_code() ) );
+		}
 		return true;
 	}
 	/**
