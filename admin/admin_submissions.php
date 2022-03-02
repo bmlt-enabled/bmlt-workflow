@@ -126,7 +126,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
     private function table_data()
     {
-		$request  = new WP_REST_Request( 'GET', '/wp-json/bmaw-submission/v1/submission' );
+		$request  = new WP_REST_Request( 'GET', 'wp-json/bmaw-submission/v1/submission' );
 		$response = rest_do_request( $request );
         var_dump($response);
 		$result     = rest_get_server()->response_to_data( $response, true );
