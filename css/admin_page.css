@@ -20,11 +20,10 @@ table.committeetable td {
 }
 
 label{
-    display: inline-block;
+    display: inline-flex;
     clear: left;
-    width: 250px;
-    text-align: right;
+    width: 200px;
 }
 input {
-  display: inline-block;
+  display: inline-flex;
 }
