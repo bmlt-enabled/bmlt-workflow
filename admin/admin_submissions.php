@@ -188,7 +188,7 @@ class My_List_Table extends WP_List_Table {
 		/**
 		 * Adds a nonce field
 		 */
-		wp_nonce_field( '_wpnonce', '_wpnonce' );
+		wp_nonce_field( 'wp_rest', '_wpnonce' );
 
 		/**
 		 * Adds field order and orderby
@@ -212,7 +212,7 @@ function _display_bmaw_admin_submissions_page() {
 
 			<div id="ts-history-table" style="">
 				<?php
-				wp_nonce_field( '_wpnonce', '_wpnonce' );
+				wp_nonce_field( 'wp_rest', '_wpnonce' );
 				?>
 			</div>
 
