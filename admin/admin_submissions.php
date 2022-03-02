@@ -3,8 +3,6 @@
 if ( ! class_exists( 'WP_List_Table' ) )
 	require_once( ABSPATH . 'wp-admin/includes/class-wp-list-table.php' );
 
-
-
 _display_bmaw_admin_submissions_page();
 
 /**
@@ -200,6 +198,7 @@ class My_List_Table extends WP_List_Table {
 
 		parent::display();
 	}
+}
 
 function _display_bmaw_admin_submissions_page() {
 
@@ -213,7 +212,7 @@ function _display_bmaw_admin_submissions_page() {
 
 			<div id="ts-history-table" style="">
 				<?php
-				wp_nonce_field( '_wpnonce', '_wpnonce' );
+				wp_nonce_field( 'a_wpnonce', '_wpnonce' );
 				?>
 			</div>
 
@@ -265,7 +264,7 @@ function fetch_ts_script() {
 						url: myajaxurl,
 						dataType: 'json',
 						data: {
-							_wpnonce: $('#_wpnonce').val(),
+							_wpnonce: $('#_wpnonce').val()
 						},
 						success: function (response) {
 
@@ -337,7 +336,7 @@ function fetch_ts_script() {
 						url: myajaxurl,
 						data: $.extend(
 							{
-								_wpnonce: $('#_wpnonce').val(),
+								_wpnonce: $('#_wpnonce').val()
 							},
 							data
 						),
