@@ -294,7 +294,7 @@ function bmaw_register_setting()
     );
 
     add_settings_field(
-        'bmaw_bmlt_address',
+        'bmaw_bmlt_server_address',
         'BMLT Server Address',
         'bmaw_bmlt_server_address_html',
         'bmaw-settings',
@@ -302,15 +302,15 @@ function bmaw_register_setting()
     );
 
     add_settings_field(
-        'bmaw_bmlt_address',
-        'BMLT Automaion Login Details',
+        'bmaw_bmlt_bot_login',
+        'BMLT Automation Login Details',
         'bmaw_bmlt_bot_login_html',
         'bmaw-settings',
         'bmaw-settings-section-id'
     );
 
     add_settings_field(
-        'bmaw_shortcode_unused',
+        'bmaw_shortcode',
         'Meeting Update Form Shortcode',
         'bmaw_shortcode_html',
         'bmaw-settings',
@@ -318,7 +318,7 @@ function bmaw_register_setting()
     );
 
     add_settings_field(
-        'bmaw_service_committee_option_array',
+        'bmaw_service_committee_table',
         'Service Committee Configuration',
         'bmaw_service_committee_table_html',
         'bmaw-settings',
