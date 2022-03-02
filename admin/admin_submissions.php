@@ -14,194 +14,159 @@ _display_bmaw_admin_submissions_page();
 
 error_reporting( ~E_NOTICE );
 
-class My_List_Table extends WP_List_Table {
+class bmaw_meeting_submissions_page extends WP_List_Table
+{
+    public function prepare_items()
+    {
+        $columns = $this->get_columns();
+        $hidden = $this->get_hidden_columns();
+        $sortable = $this->get_sortable_columns();
+
+        $data = $this->table_data();
+        usort($data, array(&$this, 'sort_data'));
+
+        $perPage = 10;
+        $currentPage = $this->get_pagenum();
+        $totalItems = count($data);
+
+        $this->set_pagination_args(array(
+            'total_items' => $totalItems,
+            'per_page'    => $perPage
+        ));
+
+        $data = array_slice($data, (($currentPage - 1) * $perPage), $perPage);
+
+        $this->_column_headers = array($columns, $hidden, $sortable);
+        $this->items = $data;
+    }
+    // id mediumint(9) NOT NULL AUTO_INCREMENT,
+    // submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+    // change_time datetime DEFAULT '0000-00-00 00:00:00',
+    // changed_by varchar(10),
+    // change_made varchar(10),
+    // submitter_name tinytext NOT NULL,
+    // submission_type tinytext NOT NULL,
+    // submitter_email varchar(320) NOT NULL,
+
+    public function get_columns()
+    {
+        $columns = array(
+            'id'          => 'ID',
+            'submitter_name'       => 'Submitter Name',
+            'submitter_email' => 'Submitter Email',
+            'submission_type'        => 'Change Type',
+            'submission_time'    => 'Submission Time',
+            'change_time' => 'Change Time',
+            'changed_by' => 'Changed By',
+            'change_made' => 'Change Made'
+        );
+
+        return $columns;
+    }
+
+    public function get_hidden_columns()
+    {
+        return array();
+    }
+
+    public function get_sortable_columns()
+    {
+        return array('submitter_name' => array('submitter_name', false));
+    }
+
+    public function column_id($item)
+    {
+        $edit_link = admin_url('post.php?action=edit&amp;post=' .  $item['id']);
+        $view_link = get_permalink($item['id']);
+        $output    = '';
+
+        // Title.
+        $output .= '<strong><a href="' . esc_url($edit_link) . '" class="row-title">' . esc_html($item['id']) . '</a></strong>';
+
+        // Get actions.
+        $actions = array(
+            '1'   => '<a target="_blank" href="' . esc_url($edit_link) . '">' . esc_html__('Approve', 'my_plugin') . '</a>',
+            '2'   => '<a target="_blank" href="' . esc_url($view_link) . '">' . esc_html__('Reject', 'my_plugin') . '</a>',
+            '3'   => '<a target="_blank" href="' . esc_url($view_link) . '">' . esc_html__('View Detail', 'my_plugin') . '</a>',
+        );
+
+        $row_actions = array();
+
+        foreach ($actions as $action => $link) {
+            $row_actions[] = '<span class="' . esc_attr($action) . '">' . $link . '</span>';
+        }
+
+        $output .= '<div class="row-actions">' . implode(' | ', $row_actions) . '</div>';
+
+        return $output;
+    }
+
+    public function column_default($item, $column_name)
+    {
+        switch ($column_name) {
+                // case 'id':
+            case 'submitter_name':
+            case 'submitter_email':
+            case 'submission_type':
+            case 'submission_date_time':
+            case 'change_time':
+            case 'changed_by':
+            case 'change_made':
+            case 'submission_time':
+                return $item[$column_name];
+
+            default:
+                return print_r($item, true);
+        }
+    }
+
+    private function table_data()
+    {
+        global $wpdb;
+        global $bmaw_submissions_table_name;
+        
+        $result = $wpdb->get_results('SELECT * FROM '.$bmaw_submissions_table_name, ARRAY_A);
+
+        return $result;
+    }
+
+    private function sort_data($a, $b)
+    {
+        // Set defaults
+        $orderby = 'submitter_name';
+        $order = 'asc';
+
+        // If orderby is set, use this as the sort column
+        if (!empty($_GET['orderby'])) {
+            $orderby = $_GET['orderby'];
+        }
+
+        // If order is set use this as the order
+        if (!empty($_GET['order'])) {
+            $order = $_GET['order'];
+        }
 
 
-	/**
-	 *
-	 * @Override of constructor
-	 * Constructor take 3 parameters:
-	 * singular : name of an element in the List Table
-	 * plural : name of all of the elements in the List Table
-	 * ajax : if List Table supports AJAX set to true
-	 *
-	 */
+        $result = strcmp($a[$orderby], $b[$orderby]);
 
-	function __construct() {
+        if ($order === 'asc') {
+            return $result;
+        }
 
-		parent::__construct(
-			array(
-				'singular'  => '60s hit',
-				'plural'    => '60s hits',
-				'ajax'      => true
-			)
-		);
-
-	}
-
-	/**
-	 * @return array
-	 *
-	 * The array is associative :
-	 * keys are slug columns
-	 * values are description columns
-	 *
-	 */
-
-	function get_columns() {
-
-		$columns = array(
-			'id'      => 'ID',
-			'title'   => 'Title',
-			'artist'  => 'Artist',
-			'year'    => 'Year'
-		);
-		return $columns;
-
-	}
-
-	/**
-	 * @param $item
-	 * @param $column_name
-	 *
-	 * @return mixed
-	 *
-	 * Method column_default let at your choice the rendering of everyone of column
-	 *
-	 */
-
-	function column_default( $item, $column_name ) {
-		switch( $column_name ) {
-			case 'id':
-			case 'title':
-			case 'artist':
-			case 'year':
-				return $item[ $column_name ];
-			default:
-				return print_r( $item, true );
-		}
-	}
-
-	/**
-	 * @var array
-	 *
-	 * Array contains slug columns that you want hidden
-	 *
-	 */
-
-	private $hidden_columns = array(
-		'id'
-	);
-
-	/**
-	 * @return array
-	 *
-	 * The array is associative :
-	 * keys are slug columns
-	 * values are array of slug and a boolean that indicates if is sorted yet
-	 *
-	 */
-
-	function get_sortable_columns() {
-
-		return $sortable_columns = array(
-			'title'	 	=> array( 'title', false ),
-			'artist'	=> array( 'artist', false ),
-			'year'   	=> array( 'year', false )
-		);
-	}
-
-	/**
-	 * @Override of prepare_items method
-	 *
-	 */
-
-	function prepare_items() {
-
-		/**
-		 * How many records for page do you want to show?
-		 */
-		$per_page = 5;
-
-		/**
-		 * Define of column_headers. It's an array that contains:
-		 * columns of List Table
-		 * hiddens columns of table
-		 * sortable columns of table
-		 * optionally primary column of table
-		 */
-		$columns  = $this->get_columns();
-		$hidden   = $this->hidden_columns;
-		$sortable = $this->get_sortable_columns();
-		$this->_column_headers = array($columns, $hidden, $sortable);
-
-		/**
-		 * Following lines are only a sample with a static array
-		 * in a real situation you can get data
-		 * from a REST architecture or from database (using $wpdb)
-		 */
-		// $data = $this->sample_data;
-        // $data = array();
-
-		// function usort_reorder( $a, $b ) {
-
-		// 	$orderby = ( ! empty( $_REQUEST['orderby'] ) ) ? $_REQUEST['orderby'] : 'title';
-		// 	$order = ( ! empty( $_REQUEST['order'] ) ) ? $_REQUEST['order'] : 'asc';
-		// 	$result = strcmp( $a[ $orderby ], $b[ $orderby ] );
-		// 	return ( 'asc' === $order ) ? $result : -$result;
-		// }
-		// usort( $data, 'usort_reorder' );
-
-		/**
-		 * Get current page calling get_pagenum method
-		 */
-		// $current_page = $this->get_pagenum();
-
-		// $total_items = count($data);
-
-		// $data = array_slice($data,(($current_page-1)*$per_page),$per_page);
-
-		// $this->items = $data;
-
-		/**
-		 * Call to _set_pagination_args method for informations about
-		 * total items, items for page, total pages and ordering
-		 */
-		// $this->set_pagination_args(
-		// 	array(
-
-		// 		'total_items'	=> $total_items,
-		// 		'per_page'	    => $per_page,
-		// 		'total_pages'	=> ceil( $total_items / $per_page ),
-		// 		'orderby'	    => ! empty( $_REQUEST['orderby'] ) && '' != $_REQUEST['orderby'] ? $_REQUEST['orderby'] : 'title',
-		// 		'order'		    => ! empty( $_REQUEST['order'] ) && '' != $_REQUEST['order'] ? $_REQUEST['order'] : 'asc'
-		// 	)
-		// );
-	}
-
-	/**
-	 * @Override of display method
-	 */
-
-	function display() {
-
-		/**
-		 * Adds a nonce field
-		 */
-		wp_nonce_field( 'wp_rest', '_wpnonce' );
-
-		/**
-		 * Adds field order and orderby
-		 */
-		echo '<input type="hidden" id="order" name="order" value="' . $this->_pagination_args['order'] . '" />';
-		echo '<input type="hidden" id="orderby" name="orderby" value="' . $this->_pagination_args['orderby'] . '" />';
-
-		parent::display();
-	}
+        return -$result;
+    }
 }
 
 function _display_bmaw_admin_submissions_page() {
 
+    $exampleListTable = new bmaw_meeting_submissions_page();
+
+    error_log("created new bmaw_meeting_submissions_page");
+    $exampleListTable->prepare_items();
+    ?>
+    <div class="wrap">
+        <div id="icon-users" class="icon32"></div>
+        <h2>Meeting Submissions</h2>
 ?>
 
 	<div class="wrap">
@@ -214,6 +179,8 @@ function _display_bmaw_admin_submissions_page() {
 				<?php
 				wp_nonce_field( 'wp_rest', '_wpnonce' );
 				?>
+                        <?php $exampleListTable->display(); ?>
+
 			</div>
 
 		</form>
