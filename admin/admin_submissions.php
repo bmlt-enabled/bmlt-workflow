@@ -335,7 +335,7 @@ function fetch_ts_script() {
 
 	<?php
 
-	if ( $screen->id != "toplevel_page_wp_ajax_list_test" )
+	if ( $screen->id != "bmaw_page_bmaw-submissions" )
 		return;
 
 	?>
