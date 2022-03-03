@@ -4,14 +4,10 @@ var mdata = [];
 var mtext = [];
 
 jQuery(document).ready(function ($) {
-  $("#submit").click(function (event) {
-    event.preventDefault();
+  $("#meeting_update_form").submit(function() {
     $.post(
       "/flop/wp-json/bmaw-submission/v1/submissions",
-      {
-        _wpnonce: $("#_wpnonce").val(),
-        data: $("meeting_update_form").serialize()
-      },
+      $.param($(this).serializeArray()),
       function (response) {
         alert(response);
       }
