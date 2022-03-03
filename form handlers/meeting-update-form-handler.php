@@ -140,7 +140,7 @@ function meeting_update_form_handler_rest($data)
                 wp_die("curl failed");
             }
             curl_close($curl);
-            $meeting = json_decode($resp, true);
+            $meeting = json_decode($resp, true)[0];
 
             $changes = array();
             $change_subfields = array(
