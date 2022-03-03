@@ -31,7 +31,7 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
     <div class="rendered-form">
         <div>
             <label for="update_reason"">Reason For Update</label>
-            <select name=" update_reason" id="update_reason">
+            <select name="update_reason" id="update_reason">
                 <option disabled="null" selected="null">Select Reason...</option>
                 <option value="reason_new">New Meeting</option>
                 <option value="reason_change">Change Existing Meeting</option>
