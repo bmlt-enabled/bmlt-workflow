@@ -14,7 +14,9 @@ printf(
   __('View details', 'graphql-api'),
   __('Plugin documentation', 'graphql-api')
 );
+echo '<input type="hidden" value="'.wp_nonce_field( 'wp_rest', '_wpnonce' ).'">';
 ?>
+
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
     <h2>Meeting Submissions</h2>
