@@ -50,6 +50,7 @@ function enqueue_form_deps()
 
 function bmaw_admin_scripts($hook)
 {
+    error_log($hook);
     if ($hook != 'toplevel_page_bmaw-settings') {
         return;
     }
