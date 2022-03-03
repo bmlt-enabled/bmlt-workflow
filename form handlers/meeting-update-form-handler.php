@@ -156,17 +156,23 @@ function meeting_update_form_handler_rest($data)
                 "virtual_meeting_link",
                 "formats"
             );
-
+            error_log(vdump($meeting));
             switch ($reason) {
                 case 'reason_change':
                     foreach ($change_subfields as $field) {
+                        error_log("checking ".$field);
                         if (array_key_exists($field, $meeting)) {
+                            error_log("key exists");
                             if ($meeting[$field] != $data[$field]) {
                                 $changes[$field] = $data[$field];
+                                error_log("field is different ".$data[$field]." ".$meeting[$field]);
+                            }
+                            else
+                            {
+                                error_log("field is the same ".$data[$field]." ".$meeting[$field]);
                             }
                         }
                     }
-
                     break;
 
                 case 'reason_new':
