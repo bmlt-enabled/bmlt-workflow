@@ -81,20 +81,27 @@ function bmaw_menu_pages()
         'manage_options',
         'bmaw-settings',
         'display_bmaw_admin_options_page',
-        2 
+        2
     );
-
-    $modal = $_REQUEST['modal'] ? 'display_bmaw_admin_submissions_modal' : 'display_bmaw_admin_submissions_page';
 
     add_submenu_page(
         'bmaw-settings',
         'BMAW Submissions',
-        'BMAW Submissions', 
-        'manage_options', 
-        'bmaw-submissions', 
-        $modal,
-        2 
+        'BMAW Submissions',
+        'manage_options',
+        'bmaw-submissions',
+        'submissions_modal',
+        2
     );
+}
+
+function submissions_modal()
+{
+    if (isset($_REQUEST['modal']) && (!empty($_REQUEST['modal']))) {
+        display_bmaw_admin_submissions_modal();
+    } else {
+        display_bmaw_admin_submissions_page();
+    }
 }
 
 function add_plugin_link($plugin_actions, $plugin_file)
@@ -118,10 +125,10 @@ add_action('admin_init',  'bmaw_register_setting');
 add_shortcode('bmaw-meeting-update-form', 'meeting_update_form');
 add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
 
-register_activation_hook( __FILE__, 'bmaw_install' );
-register_activation_hook( __FILE__, 'bmaw_install_data' );
+register_activation_hook(__FILE__, 'bmaw_install');
+register_activation_hook(__FILE__, 'bmaw_install_data');
 
-add_action('rest_api_init', 'bmaw_submissions_controller' );
+add_action('rest_api_init', 'bmaw_submissions_controller');
 
 function array_sanitize_callback($args)
 {
@@ -140,15 +147,14 @@ function string_sanitize_callback($args)
 
 function bmaw_register_setting()
 {
-    if ( (defined('DOING_AJAX') && DOING_AJAX) || ( strpos($_SERVER['SCRIPT_NAME'], 'admin-post.php') ) ) {
+    if ((defined('DOING_AJAX') && DOING_AJAX) || (strpos($_SERVER['SCRIPT_NAME'], 'admin-post.php'))) {
         return;
     }
-    
-    if (!current_user_can( 'activate_plugins' ))
-    {
+
+    if (!current_user_can('activate_plugins')) {
         wp_die("This page cannot be accessed");
     }
-    
+
     register_setting(
         'bmaw-settings-group',
         'bmaw_service_committee_option_array',
@@ -631,7 +637,7 @@ function bmaw_install()
 
     $charset_collate = $wpdb->get_charset_collate();
 
-    $sql = "CREATE TABLE ".$bmaw_submissions_table_name." (
+    $sql = "CREATE TABLE " . $bmaw_submissions_table_name . " (
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
 		submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 		change_time datetime DEFAULT '0000-00-00 00:00:00',
