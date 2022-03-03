@@ -88,18 +88,17 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
     public function column_id($item)
     {
-        $edit_link = admin_url('post.php?action=edit&amp;post=' .  $item['id']);
         $view_link = get_permalink($item['id']);
         $output    = '';
 
         // Title.
-        $output .= '<strong><a href="' . esc_url($edit_link) . '" class="row-title">' . esc_html($item['id']) . '</a></strong>';
+        $output .= '<strong><a href="#" class="row-title">' . esc_html($item['id']) . '</a></strong>';
 
         // Get actions.
         $actions = array(
-            '1'   => '<a id="approve" target="_blank" href="' . esc_url($edit_link) . '">' . esc_html__('Approve') . '</a>',
-            '2'   => '<a target="_blank" href="' . esc_url($view_link) . '">' . esc_html__('Reject') . '</a>',
-            '3'   => '<a target="_blank" href="' . esc_url($view_link) . '">' . esc_html__('Quick Edit') . '</a>',
+            '1'   => '<a id="approve" target="_blank" href="#">' . esc_html__('Approve') . '</a>',
+            '2'   => '<a target="_blank" href="#">' . esc_html__('Reject') . '</a>',
+            '3'   => '<a target="_blank" href="#">' . esc_html__('Quick Edit') . '</a>',
         );
 
         $row_actions = array();
