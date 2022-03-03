@@ -12,7 +12,7 @@ class BMLTIntegration
 
     public function postConfiguredRootServerRequest($url, $postargs)
     {
-        if ($this->authfailure < $this->MAXFAILS)
+        if ($this->authfailure < self::MAXFAILS)
         {    
             return $this->postRooServerRequest(get_option('bmaw_bmlt_server_address') . $url, $postargs);
         }
@@ -24,7 +24,7 @@ class BMLTIntegration
 
     public function getConfiguredRootServerRequest($url)
     {
-        if ($this->authfailure < $this->MAXFAILS)
+        if ($this->authfailure < self::MAXFAILS)
         {
             return $this->getRootServerRequest(get_option('bmaw_bmlt_server_address') . $url);
         }
