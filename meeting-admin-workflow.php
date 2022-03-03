@@ -92,7 +92,7 @@ function bmaw_menu_pages()
         'BMAW Submissions', 
         'manage_options', 
         'bmaw-submissions', 
-        'modal',
+        $modal,
         2 
     );
 }
