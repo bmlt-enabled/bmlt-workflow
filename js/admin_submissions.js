@@ -4,9 +4,7 @@ jQuery(document).ready(function ($) {
     $.post(
       "/flop/wp-json/bmaw-submission/v1/submissions/12/approve",
       {
-        data: {
           _wpnonce: $("#_wpnonce").val(),
-        },
       },
       function (response) {
         alert(response);
