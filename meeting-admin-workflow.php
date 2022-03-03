@@ -62,8 +62,11 @@ function enqueue_form_deps()
 {
     wp_register_style('select2css', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
     wp_register_script('select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
-    deny_cache_register_script('bmawjs','js/script_includes.js');
-    deny_cache_register_script('meetingupdatejs','js/meeting_update.js');
+    deny_cache_register_script('bmaw-general-js','js/script_includes.js');
+    deny_cache_register_script('bmaw-meeting-update-js','js/meeting_update.js');
+    deny_cache_register_style('bmaw-meeting-update-css','css/meeting-update-form.css');
+    wp_register_script('jquery.validate','https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
+    wp_register_script('jquery.validate.additional','https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery'), '1.0', true);  
 }
 
 function bmaw_admin_scripts($hook)

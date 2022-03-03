@@ -1,9 +1,12 @@
 <?php
 
+wp_enqueue_script('bmaw-general-js');
+wp_enqueue_script('bmaw-meeting-update-js');
+wp_enqueue_style('bmaw-meeting-update-css');
+wp_enqueue_script('jquery-validate');
+wp_enqueue_script('jquery-validate-additional');
 wp_enqueue_style('select2css');
 wp_enqueue_script('select2');
-wp_enqueue_script('bmawjs');
-wp_enqueue_script('meetingupdatejs');
 
 $bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status', "failure");
 if ($bmaw_bmlt_test_status != "success") {
@@ -19,13 +22,9 @@ foreach ($bmaw_service_areas_string as $i) {
 
 echo substr_replace($service_areas_parsed, "", -1) . '";';
 echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '"</script>';
-echo '<link rel="stylesheet" href="' . esc_url(plugins_url('css/meeting-update-form.css', dirname(__FILE__))) . '">';
 echo '<input type="hidden" value="' . wp_nonce_field('wp_rest', '_wpnonce') . '">';
 
 ?>
-
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js"></script>
 
 <form action="#" method="post" id="meeting_update_form">
     <input type="hidden" name="action" value="meeting_update_form_response">
