@@ -6,14 +6,33 @@ if (!defined('ABSPATH')) exit; // die if being called directly
 class BMLTIntegration
 {
 
+    protected $cookies = null; // our authentication cookies
+    protected $authfailure = 0; // authentication is failing - don't keep bashing the front door
+    protected const MAXFAILS = 2; // how many failures we'll retry
+
     public function postConfiguredRootServerRequest($url, $postargs)
     {
-        return $this->postRooServerRequest(get_option('bmaw_bmlt_server_address') . $url, $postargs);
+        if ($this->authfailure < $this->MAXFAILS)
+        {    
+            return $this->postRooServerRequest(get_option('bmaw_bmlt_server_address') . $url, $postargs);
+        }
+        else
+        {
+            return new WP_Error( 'bmaw', "Fatal BMLT Authentication Failure - check the credentials in BMAW settings" );
+        }
     }
 
     public function getConfiguredRootServerRequest($url)
     {
-        return $this->getRootServerRequest(get_option('bmaw_bmlt_server_address') . $url);
+        if ($this->authfailure < $this->MAXFAILS)
+        {
+            return $this->getRootServerRequest(get_option('bmaw_bmlt_server_address') . $url);
+        }
+        else
+        {
+            return new WP_Error( 'bmaw', "Fatal BMLT Authentication Failure - check the credentials in BMAW settings" );
+        }
+
     }
 
     private function vdump($object)
@@ -27,22 +46,31 @@ class BMLTIntegration
 
     private function authenticateRootServer()
     {
-        $postargs = array(
-            'admin_action' => 'login',
-            'c_comdef_admin_login' => get_option('bmaw_bmlt_username'),
-            'c_comdef_admin_password' => get_option('bmaw_bmlt_password')
-        );
-        $url = get_option('bmaw_bmlt_server_address') . "index.php";
+        if ($this->cookies == null) {
+            $postargs = array(
+                'admin_action' => 'login',
+                'c_comdef_admin_login' => get_option('bmaw_bmlt_username'),
+                'c_comdef_admin_password' => get_option('bmaw_bmlt_password')
+            );
+            $url = get_option('bmaw_bmlt_server_address') . "index.php";
 
-        error_log("AUTH URL = ".$url);
-        $ret = $this->post($url,null, $postargs);
-        error_log($this->vdump($ret));
-        error_log("*********");
-
-        return $ret;
+            error_log("AUTH URL = " . $url);
+            $ret = $this->post($url, null, $postargs);
+            if(preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/',$ret['body'])) // best way I could find to check for invalid login
+            {
+                $this->authfailure++;
+                $this->cookies = null;
+                return new WP_Error('bmaw','authenticateRootServer: Authentication Failure');
+            }
+            else
+            {
+                $this->authfailure = 0;
+                $this->cookies = wp_remote_retrieve_cookies($ret);
+            }
+        }
     }
 
-    private function set_args($cookies,$body = null)
+    private function set_args($cookies, $body = null)
     {
         $args = array(
             'timeout' => '120',
@@ -58,39 +86,61 @@ class BMLTIntegration
 
     private function get($url, $cookies = null)
     {
-        return wp_remote_get($url, $this->set_args($cookies));
+        $ret = wp_remote_get($url, $this->set_args($cookies));
+        if(preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/',$ret['body'])) // best way I could find to check for invalid login
+        {
+            $this->authfailure++;
+            $this->cookies = null;
+            $ret =  $this->authenticateRootServer();
+            if( is_wp_error( $ret ) ) {
+                return $ret;
+            }    
+            // try once more in case it was a session timeout
+            $ret = wp_remote_post($url, $this->set_args($cookies));
+        }
+        return $ret;
     }
 
     private function post($url, $cookies = null, $postargs)
     {
-        error_log("POSTING URL = ".$url);
-        error_log($this->vdump($this->set_args($cookies,http_build_query($postargs))));
+        error_log("POSTING URL = " . $url);
+        error_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
         error_log("*********");
-        return wp_remote_post($url, $this->set_args($cookies,http_build_query($postargs)));
+        $ret = wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
+        if(preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/',$ret['body'])) // best way I could find to check for invalid login
+        {
+            $this->authfailure++;
+            $this->cookies = null;
+            $ret =  $this->authenticateRootServer();
+            if( is_wp_error( $ret ) ) {
+                return $ret;
+            }    
+            // try once more in case it was a session timeout
+            $ret = wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
+        }
+        return $ret;
     }
 
     private function getRootServerRequest($url)
     {
-        $cookies = null;
-        $auth_response = $this->authenticateRootServer();
-        $cookies = wp_remote_retrieve_cookies($auth_response);
         error_log("GETROOTSERVERREQUEST COOKIES");
-        error_log($this->vdump($cookies));
+        error_log($this->vdump($this->cookies));
         error_log("*********");
-        return $this->get($url, $cookies);
+        $ret =  $this->authenticateRootServer();
+        if( is_wp_error( $ret ) ) {
+            return $ret;
+        }
+        return $this->get($url, $this->cookies);
     }
 
     private function postRooServerRequest($url, $postargs)
     {
-        $cookies = null;
-        $auth_response = $this->authenticateRootServer();
-        $cookies = wp_remote_retrieve_cookies($auth_response);
-        error_log("POSTROOTSERVERREQUEST COOKIES");
-        error_log($this->vdump($cookies));
-        error_log("*********");
-        return $this->post($url, $cookies, $postargs);
+        $ret =  $this->authenticateRootServer();
+        if( is_wp_error( $ret ) ) {
+            return $ret;
+        }
+        return $this->post($url, $this->cookies, $postargs);
     }
-
 }
 
 ?>
