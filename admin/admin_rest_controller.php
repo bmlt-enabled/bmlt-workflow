@@ -1,42 +1,28 @@
 <?php
 
+if (!class_exists('BMLTIntegration')) {
+    require_once(BMAW_PLUGIN_DIR . 'admin/bmlt_integration.php');
+}
+
 function bmaw_submissions_controller() {
 	$controller = new bmaw_submissions_rest();
 	$controller->register_routes();
 }
 
-/**
- * Add rest api endpoint for category listing
- */
 
-/**
- * Class Category_List_Rest
- */
 class bmaw_submissions_rest extends WP_REST_Controller {
-	/**
-	 * The namespace.
-	 *
-	 * @var string
-	 */
+	
 	protected $namespace;
-	/**
-	 * Rest base for the current object.
-	 *
-	 * @var string
-	 */
 	protected $rest_base;
 
-	/**
-	 * Category_List_Rest constructor.
-	 */
 	public function __construct() {
 
 		$this->namespace = 'bmaw-submission/v1';
 		$this->rest_base = 'submissions';
+		$this->bmlt_integration = new BMLTIntegration;
+
 	}
-	/**
-	 * Register the routes for the objects of the controller.
-	 */
+
 	public function register_routes() {
 
         // submissions/
@@ -146,6 +132,14 @@ class bmaw_submissions_rest extends WP_REST_Controller {
 		return rest_ensure_response( $result );
 	}
 
+	private function vdump($object)
+{
+    ob_start();
+    var_dump($object);
+    $contents = ob_get_contents();
+    ob_end_clean();
+    return $contents;
+}
     /**
 	 * Approve a single submission
 	 *
@@ -155,8 +149,20 @@ class bmaw_submissions_rest extends WP_REST_Controller {
 	 */
 
     public function approve_submission( $request ) {
-
+		// bmlt_ajax_callback=1&do_meeting_search=1&sort_key=time&simple_other_fields=1&services[]=1&advanced_published=0&salt=1646289683445
+		$postargs = array(
+			'bmlt_ajax_callback' => 1,
+			'do_meeting_search' => 1,
+			'sort_key' => 'time',
+			'simple_other_fields' => 1,
+			'services[]' => 1,
+			'advanced_published' => 0,
+			'salt' => 1646289683445
+		);
+		$response = $this->bmlt_integration->postConfiguredRootServerRequest('', $postargs );
+		error_log($this->vdump($response));
 error_log("approve submission ".$request['id']);
+
 	}
 
 	/**
