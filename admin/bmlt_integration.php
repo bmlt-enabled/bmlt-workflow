@@ -8,12 +8,12 @@ class BMLTIntegration
 
     public function postConfiguredRootServerRequest($url, $postargs)
     {
-        return $this->postRooServerRequest(get_option('bmaw_bmlt_server_address') . "/" . $url, $postargs);
+        return $this->postRooServerRequest(get_option('bmaw_bmlt_server_address') . $url, $postargs);
     }
 
     public function getConfiguredRootServerRequest($url)
     {
-        return $this->getRootServerRequest(get_option('bmaw_bmlt_server_address') . "/" . $url);
+        return $this->getRootServerRequest(get_option('bmaw_bmlt_server_address') . $url);
     }
 
     private function authenticateRootServer()
