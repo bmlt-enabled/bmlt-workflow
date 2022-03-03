@@ -45,7 +45,7 @@ function deny_cache_enqueue_script($handle, $name)
 
 function deny_cache_enqueue_style($handle, $name)
 {
-    wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, false, filemtime(plugin_dir_path(__FILE__) . $name, 'all'));
+    wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, false, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
 }
 
 function enqueue_form_deps()
