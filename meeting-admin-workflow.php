@@ -38,6 +38,16 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     return $content;
 }
 
+function deny_cache_register_script($handle, $name)
+{
+    wp_register_script($handle, plugin_dir_url(__FILE__) . $name, array('jquery'), filemtime(plugin_dir_path(__FILE__) . $name), true);
+}
+
+function deny_cache_register_style($handle, $name)
+{
+    wp_register_style($handle, plugin_dir_url(__FILE__) . $name, false, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
+}
+
 function deny_cache_enqueue_script($handle, $name)
 {
     wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, array('jquery'), filemtime(plugin_dir_path(__FILE__) . $name), true);
@@ -52,12 +62,8 @@ function enqueue_form_deps()
 {
     wp_register_style('select2css', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
     wp_register_script('select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
-    wp_enqueue_style('select2css');
-    wp_enqueue_script('select2');
-//    wp_enqueue_script('bmawjs', plugin_dir_url(__FILE__) . 'js/script_includes.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/script_includes.js'), true);
-    deny_cache_enqueue_script('bmawjs','js/script_includes.js');
-    // wp_enqueue_script('bmaw-meetingupdatejs', plugin_dir_url(__FILE__) . 'js/meeting_update.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/meeting_update.js'), true);
-    deny_cache_enqueue_script('meetingupdatejs','js/meeting_update.js');
+    deny_cache_register_script('bmawjs','js/script_includes.js');
+    deny_cache_register_script('meetingupdatejs','js/meeting_update.js');
 }
 
 function bmaw_admin_scripts($hook)
@@ -67,9 +73,7 @@ function bmaw_admin_scripts($hook)
         return;
     }
 
-    // wp_enqueue_style('bmaw-admin-css', plugin_dir_url(__FILE__) . 'css/admin_page.css', false, filemtime(plugin_dir_path(__FILE__) . 'css/admin_page.css'), 'all');
     deny_cache_enqueue_style('bmaw-admin-css','css/admin_page.css');
-    // wp_enqueue_script('bmawjs', plugin_dir_url(__FILE__) . 'js/script_includes.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/script_includes.js'), true);
     deny_cache_enqueue_script('bmawjs','js/script_includes.js');
 
     if ($hook == 'bmaw_page_bmaw-submissions')

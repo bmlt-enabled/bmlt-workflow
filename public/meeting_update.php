@@ -1,4 +1,10 @@
 <?php
+
+wp_enqueue_style('select2css');
+wp_enqueue_script('select2');
+wp_enqueue_script('bmawjs');
+wp_enqueue_script('meetingupdatejs');
+
 $bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status', "failure");
 if ($bmaw_bmlt_test_status != "success") {
     wp_die("<h4>BMAW Plugin Error: BMLT Server not configured and tested.</h4>");
@@ -15,7 +21,7 @@ echo '<input type="hidden" value="' . wp_nonce_field('wp_rest', '_wpnonce') . '"
 
 echo substr_replace($service_areas_parsed, "", -1) . '";';
 echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '"</script>';
-echo '<link rel="stylesheet" href="'.esc_url( plugins_url( 'css/meeting-update-form.css', dirname(__FILE__))).'">';
+echo '<link rel="stylesheet" href="' . esc_url(plugins_url('css/meeting-update-form.css', dirname(__FILE__))) . '">';
 ?>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
