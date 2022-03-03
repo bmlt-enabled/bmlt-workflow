@@ -1,16 +1,9 @@
 <?php
-function vdump($object)
-{
-    ob_start();
-    var_dump($object);
-    $contents = ob_get_contents();
-    ob_end_clean();
-    return $contents;
-}
 
-function meeting_update_form_handler()
+function meeting_update_form_handler_rest($data)
 {
-
+    error_log("in rest handler");
+    error_log($data);
     if (isset($_POST['meeting_update_form_nonce']) && wp_verify_nonce($_POST['meeting_update_form_nonce'], 'meeting_update_form_nonce')) {
 
         $reason_new_bool = false;
@@ -25,11 +18,11 @@ function meeting_update_form_handler()
             $reason_close_bool = ($_POST['update_reason'] === 'reason_close');
         }
 
-        error_log("reason_new_bool " . vdump($reason_new_bool));
-        error_log("reason_other_bool " . vdump($reason_other_bool));
-        error_log("reason_change_bool " . vdump($reason_change_bool));
-        error_log("reason_close_bool " . vdump($reason_close_bool));
-        error_log("new|change|close " . vdump($reason_new_bool | $reason_change_bool | $reason_close_bool));
+        // error_log("reason_new_bool " . vdump($reason_new_bool));
+        // error_log("reason_other_bool " . vdump($reason_other_bool));
+        // error_log("reason_change_bool " . vdump($reason_change_bool));
+        // error_log("reason_close_bool " . vdump($reason_close_bool));
+        // error_log("new|change|close " . vdump($reason_new_bool | $reason_change_bool | $reason_close_bool));
 
         if (!(isset($_POST['update_reason']) || (!$reason_new_bool && !$reason_other_bool && !$reason_change_bool && !$reason_close_bool))) {
             wp_die("No valid meeting update reason provided");

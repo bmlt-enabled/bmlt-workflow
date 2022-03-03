@@ -124,13 +124,21 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         }
     }
 
+    private function vdump($object)
+{
+    ob_start();
+    var_dump($object);
+    $contents = ob_get_contents();
+    ob_end_clean();
+    return $contents;
+}
+
     private function table_data()
     {
         $request  = new WP_REST_Request( 'GET', '/bmaw-submission/v1/submissions/12' );
 		$response = rest_do_request( $request );
 		$result     = rest_get_server()->response_to_data( $response, true );
-        var_dump($result);
-        error_log(print_r($result));
+        error_log($this->vdump($result));
 
 		$request  = new WP_REST_Request( 'GET', '/bmaw-submission/v1/submissions' );
 		$response = rest_do_request( $request );
