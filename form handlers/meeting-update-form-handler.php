@@ -1,9 +1,18 @@
 <?php
 
+function vdump($object)
+{
+    ob_start();
+    var_dump($object);
+    $contents = ob_get_contents();
+    ob_end_clean();
+    return $contents;
+}
+
 function meeting_update_form_handler_rest($data)
 {
     error_log("in rest handler");
-    error_log($data);
+    error_log(vdump($data));
 
     $reason_new_bool = false;
     $reason_other_bool = false;
