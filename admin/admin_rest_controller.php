@@ -127,6 +127,14 @@ class bmaw_submissions_rest extends WP_REST_Controller {
 		return rest_ensure_response( $result );
 	}
 
+    /**
+	 * Returns a single submission
+	 *
+	 * @param WP_REST_Request $request get data from request.
+	 *
+	 * @return mixed|WP_REST_Response
+	 */
+
     public function get_submission( $request ) {
 
         global $wpdb;
@@ -136,6 +144,19 @@ class bmaw_submissions_rest extends WP_REST_Controller {
 
 		// Return all of our comment response data.
 		return rest_ensure_response( $result );
+	}
+
+    /**
+	 * Approve a single submission
+	 *
+	 * @param WP_REST_Request $request get data from request.
+	 *
+	 * @return mixed|WP_REST_Response
+	 */
+
+    public function approve_submission( $request ) {
+
+error_log("approve submission ".$request['id']);
 	}
 
 	/**
