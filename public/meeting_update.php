@@ -26,11 +26,8 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
 ?>
 
 <form action="#" method="post" id="meeting_update_form">
-<?php
-    echo '<input type="hidden" value="' . wp_nonce_field('wp_rest', '_wpnonce') . '">';
-?>
     <input type="hidden" name="action" value="meeting_update_form_response">
-    <input type="hidden" name="meeting_update_form_nonce" value="<?php echo wp_create_nonce('meeting_update_form_nonce'); ?>" />
+    <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('wp_rest'); ?>" />
     <div class="rendered-form">
         <div>
             <label for="update_reason"">Reason For Update</label>
