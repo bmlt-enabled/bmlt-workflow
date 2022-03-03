@@ -57,7 +57,7 @@ function bmaw_admin_scripts($hook)
     wp_enqueue_script('bmawjs', plugin_dir_url(__FILE__) . 'js/script_includes.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/script_includes.js'), true);
     wp_enqueue_style('thickbox');
     wp_enqueue_script('plugin-install');
-    if (get_current_screen()->id == 'my_menu_page' && $_REQUEST['modal_window']) {
+    if (get_current_screen()->id == 'my_menu_page' && $_REQUEST['modal']) {
         wp_enqueue_style('modal-window', plugins_url('css/admin-modal.css', __FILE__));
     }
 }
@@ -84,7 +84,7 @@ function bmaw_menu_pages()
         2 
     );
 
-    $option_function = $_REQUEST['modal_window'] ? 'display_bmaw_admin_submissions_modal' : 'display_bmaw_admin_submissions_page';
+    $modal = $_REQUEST['modal'] ? 'display_bmaw_admin_submissions_modal' : 'display_bmaw_admin_submissions_page';
 
     add_submenu_page(
         'bmaw-settings',
@@ -92,7 +92,7 @@ function bmaw_menu_pages()
         'BMAW Submissions', 
         'manage_options', 
         'bmaw-submissions', 
-        'option_function',
+        'modal',
         2 
     );
 }

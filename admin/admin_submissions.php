@@ -6,7 +6,7 @@ $exampleListTable = new bmaw_meeting_submissions_page();
 
 error_log("created new bmaw_meeting_submissions_page");
 $exampleListTable->prepare_items();
-$url = admin_url('admin.php?page=bmaw-submissions&TB_iframe=true&width=600&height=550&modal_window=true');
+$url = admin_url('admin.php?page=bmaw-submissions&TB_iframe=true&width=600&height=550&modal=true');
 printf(
   '<a href="%s" class="thickbox open-plugin-details-modal" data-title="%s">%s</a>',
   $url,
