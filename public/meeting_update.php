@@ -17,11 +17,11 @@ foreach ($bmaw_service_areas_string as $i) {
     $service_areas_parsed .= 'services[]=' . $i . '&';
 }
 
-echo '<input type="hidden" value="' . wp_nonce_field('wp_rest', '_wpnonce') . '">';
-
 echo substr_replace($service_areas_parsed, "", -1) . '";';
 echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '"</script>';
 echo '<link rel="stylesheet" href="' . esc_url(plugins_url('css/meeting-update-form.css', dirname(__FILE__))) . '">';
+echo '<input type="hidden" value="' . wp_nonce_field('wp_rest', '_wpnonce') . '">';
+
 ?>
 
 <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js"></script>
