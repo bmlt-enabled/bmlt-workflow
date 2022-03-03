@@ -56,9 +56,10 @@ function bmaw_admin_scripts($hook)
 
     wp_enqueue_style('bmaw-admin-css', plugin_dir_url(__FILE__) . 'css/admin_page.css', false, filemtime(plugin_dir_path(__FILE__) . 'css/admin_page.css'), 'all');
     wp_enqueue_script('bmawjs', plugin_dir_url(__FILE__) . 'js/script_includes.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/script_includes.js'), true);
-    print($hook);
+    error_log("in here ".$hook);
     if ($hook == 'bmaw_page_bmaw-submissions')
     {
+        error_log("in here 2".$hook);
         wp_enqueue_style('thickbox');
         wp_enqueue_script('plugin-install');
         if ($_REQUEST['modal']) {
