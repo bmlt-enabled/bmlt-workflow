@@ -52,7 +52,7 @@ function bmaw_admin_scripts($hook)
 {
     error_log("top ".$hook);
 
-    if (($hook != 'toplevel_page_bmaw-settings') || ($hook != 'bmaw_page_bmaw-submissions')){
+    if (($hook != 'toplevel_page_bmaw-settings') && ($hook != 'bmaw_page_bmaw-submissions')){
         return;
     }
 
