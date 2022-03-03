@@ -4,7 +4,8 @@ if (!defined('ABSPATH')) exit; // die if being called directly
 
 $exampleListTable = new bmaw_meeting_submissions_page();
 
-error_log("created new bmaw_meeting_submissions_page");
+// echo '<script src="'.esc_url( plugins_url( 'js/admin_page.js', dirname(__FILE__))).'"></script>';
+
 $exampleListTable->prepare_items();
 $url = admin_url('admin.php?page=bmaw-submissions&TB_iframe=true&width=600&height=550&modal=true');
 printf(
@@ -96,7 +97,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
         // Get actions.
         $actions = array(
-            '1'   => '<a target="_blank" href="' . esc_url($edit_link) . '">' . esc_html__('Approve') . '</a>',
+            '1'   => '<a id="approve" target="_blank" href="' . esc_url($edit_link) . '">' . esc_html__('Approve') . '</a>',
             '2'   => '<a target="_blank" href="' . esc_url($view_link) . '">' . esc_html__('Reject') . '</a>',
             '3'   => '<a target="_blank" href="' . esc_url($view_link) . '">' . esc_html__('Quick Edit') . '</a>',
         );
