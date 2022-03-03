@@ -57,6 +57,7 @@ function bmaw_admin_scripts($hook)
     wp_enqueue_script('bmawjs', plugin_dir_url(__FILE__) . 'js/script_includes.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/script_includes.js'), true);
     wp_enqueue_style('thickbox');
     wp_enqueue_script('plugin-install');
+    ?>console.log("<?php echo get_current_screen()->id?>");<?php
     if (get_current_screen()->id == 'bmaw-submissions' && $_REQUEST['modal']) {
         wp_enqueue_style('modal-window', plugins_url('css/admin-modal.css', __FILE__));
     }
