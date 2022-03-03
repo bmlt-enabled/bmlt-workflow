@@ -126,21 +126,14 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
     private function table_data()
     {
-		$request  = new WP_REST_Request( 'GET', '/bmaw-submission/v1/submission' );
+        $request  = new WP_REST_Request( 'GET', '/bmaw-submission/v1/submissions/12' );
 		$response = rest_do_request( $request );
-        // var_dump($response);
-        // if ( $response->is_error() ) {
-        //     // Convert to a WP_Error object.
-        //     $error = $response->as_error();
-        //     $message = $error->get_error_message();
-        //     $error_data = $error->get_error_data();
-        //     $status = isset( $error_data['status'] ) ? $error_data['status'] : 500;
-        //     wp_die( printf( '<p>An error occurred: %s (%d)</p>', $message, $error_data ) );
-        // }
 		$result     = rest_get_server()->response_to_data( $response, true );
-        // var_dump($result);
-        // error_log(print_r($response));
-        // error_log(print_r($result));
+        error_log(print_r($result));
+
+		$request  = new WP_REST_Request( 'GET', '/bmaw-submission/v1/submissions' );
+		$response = rest_do_request( $request );
+		$result     = rest_get_server()->response_to_data( $response, true );
         return $result;
     }
 
@@ -159,7 +152,6 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         if (!empty($_GET['order'])) {
             $order = $_GET['order'];
         }
-
 
         $result = strcmp($a[$orderby], $b[$orderby]);
 
