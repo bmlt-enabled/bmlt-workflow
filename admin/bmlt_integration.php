@@ -68,7 +68,9 @@ class BMLTIntegration
         $cookies = null;
         $auth_response = $this->authenticateRootServer();
         $cookies = wp_remote_retrieve_cookies($auth_response);
-
+        error_log("GETROOTSERVERREQUEST COOKIES");
+        error_log($this->vdump($cookies));
+        error_log("*********");
         return $this->get($url, $cookies);
     }
 
@@ -77,7 +79,9 @@ class BMLTIntegration
         $cookies = null;
         $auth_response = $this->authenticateRootServer();
         $cookies = wp_remote_retrieve_cookies($auth_response);
-
+        error_log("POSTROOTSERVERREQUEST COOKIES");
+        error_log($this->vdump($cookies));
+        error_log("*********");
         return $this->post($url, $cookies, $postargs);
     }
 
