@@ -22,7 +22,6 @@ foreach ($bmaw_service_areas_string as $i) {
 
 echo substr_replace($service_areas_parsed, "", -1) . '";';
 echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '"</script>';
-echo '<input type="hidden" value="' . wp_nonce_field('wp_rest', '_wpnonce') . '">';
 
 ?>
 
