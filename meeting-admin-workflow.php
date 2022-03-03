@@ -43,6 +43,11 @@ function deny_cache_enqueue_script($handle, $name)
     wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, array('jquery'), filemtime(plugin_dir_path(__FILE__) . $name), true);
 }
 
+function deny_cache_enqueue_style($handle, $name)
+{
+    wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, false, filemtime(plugin_dir_path(__FILE__) . $name, 'all'));
+}
+
 function enqueue_form_deps()
 {
     wp_register_style('select2css', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
@@ -57,19 +62,18 @@ function enqueue_form_deps()
 
 function bmaw_admin_scripts($hook)
 {
-    error_log("top ".$hook);
 
     if (($hook != 'toplevel_page_bmaw-settings') && ($hook != 'bmaw_page_bmaw-submissions')){
         return;
     }
 
-    wp_enqueue_style('bmaw-admin-css', plugin_dir_url(__FILE__) . 'css/admin_page.css', false, filemtime(plugin_dir_path(__FILE__) . 'css/admin_page.css'), 'all');
+    // wp_enqueue_style('bmaw-admin-css', plugin_dir_url(__FILE__) . 'css/admin_page.css', false, filemtime(plugin_dir_path(__FILE__) . 'css/admin_page.css'), 'all');
+    deny_cache_enqueue_style('bmaw-admin-css','css/admin_page.css');
     // wp_enqueue_script('bmawjs', plugin_dir_url(__FILE__) . 'js/script_includes.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/script_includes.js'), true);
     deny_cache_enqueue_script('bmawjs','js/script_includes.js');
 
     if ($hook == 'bmaw_page_bmaw-submissions')
     {
-        error_log("in here 2".$hook);
         wp_enqueue_style('thickbox');
         wp_enqueue_script('plugin-install');
         // wp_enqueue_script('adminsubmissionsjs', plugin_dir_url(__FILE__) . 'js/admin_submissions.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/admin_submissions.js'), true);
