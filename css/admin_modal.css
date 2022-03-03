@@ -1,0 +1,13 @@
+#adminmenumain,
+#wpadminbar {
+  display: none;
+}
+html.wp-toolbar {
+  padding-top: 0;
+}
+
+.modal-window-container img {
+    max-width: 100%;
+    width: auto;
+    height: auto;
+  }
