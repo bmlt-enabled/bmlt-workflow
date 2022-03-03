@@ -157,7 +157,7 @@ class bmaw_submissions_rest extends WP_REST_Controller {
 			'simple_other_fields' => 1,
 			'services[]' => 1,
 			'advanced_published' => 0,
-			'salt' => 1646289683445
+			// 'salt' => 1646289683445
 		);
 		$response = $this->bmlt_integration->postConfiguredRootServerRequest('', $postargs );
 		error_log($this->vdump($response));
