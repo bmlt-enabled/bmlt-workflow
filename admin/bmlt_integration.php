@@ -56,7 +56,7 @@ class BMLTIntegration
     private function post($url, $cookies = null, $postargs)
     {
         error_log("POSTING URL = ".$url);
-        error_log(vdump($postargs));
+        error_log($this->vdump($postargs));
         return wp_remote_post($url, $this->set_args($cookies), $postargs);
     }
 
