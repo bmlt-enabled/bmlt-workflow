@@ -181,9 +181,9 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	{
 		error_log($this->vdump($request->get_body_params()));
 
-		meeting_update_form_handler_rest("data");
+		$resp = meeting_update_form_handler_rest($request->get_body_params());
 
-		return rest_ensure_response("data");
+		return rest_ensure_response($resp);
 	}
 
 	/**
