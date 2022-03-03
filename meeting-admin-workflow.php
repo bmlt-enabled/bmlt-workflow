@@ -64,7 +64,7 @@ function bmaw_admin_scripts($hook)
         error_log("in here 2".$hook);
         wp_enqueue_style('thickbox');
         wp_enqueue_script('plugin-install');
-        if ($_REQUEST['modal']) {
+        if (isset($_REQUEST['modal']) && (!empty($_REQUEST['modal']))) {
             wp_enqueue_style('modal-window', plugins_url('css/admin-modal.css', __FILE__));
         }
     }
