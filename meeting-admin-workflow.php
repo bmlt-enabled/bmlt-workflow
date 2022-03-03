@@ -55,6 +55,11 @@ function bmaw_admin_scripts($hook)
     }
     wp_enqueue_style('bmaw-admin-css', plugin_dir_url(__FILE__) . 'css/admin_page.css', false, filemtime(plugin_dir_path(__FILE__) . 'css/admin_page.css'), 'all');
     wp_enqueue_script('bmawjs', plugin_dir_url(__FILE__) . 'js/script_includes.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/script_includes.js'), true);
+    wp_enqueue_style('thickbox');
+    wp_enqueue_script('plugin-install');
+    if (get_current_screen()->id == 'my_menu_page' && $_REQUEST['modal_window']) {
+        wp_enqueue_style('modal-window', plugins_url('css/admin-modal.css', __FILE__));
+    }
 }
 
 function bmaw_menu_pages()
@@ -71,21 +76,24 @@ function bmaw_menu_pages()
 
     add_submenu_page(
         'bmaw-settings',
-        'BMAW Settings', // page <title>Title</title>
-        'BMAW Settings', // menu link text
-        'manage_options', // capability to access the page
-        'bmaw-settings', // page URL slug
-        'display_bmaw_admin_options_page', // callback function with content
-        2 // priority
+        'BMAW Settings',
+        'BMAW Settings',
+        'manage_options',
+        'bmaw-settings',
+        'display_bmaw_admin_options_page',
+        2 
     );
+
+    $option_function = $_REQUEST['modal_window'] ? 'display_bmaw_admin_submissions_modal' : 'display_bmaw_admin_submissions_page';
+
     add_submenu_page(
         'bmaw-settings',
-        'BMAW Submissions', // page <title>Title</title>
-        'BMAW Submissions', // menu link text
-        'manage_options', // capability to access the page
-        'bmaw-submissions', // page URL slug
-        'display_bmaw_admin_submissions_page', // callback function with content
-        2 // priority
+        'BMAW Submissions',
+        'BMAW Submissions', 
+        'manage_options', 
+        'bmaw-submissions', 
+        'option_function',
+        2 
     );
 }
 
@@ -606,6 +614,13 @@ function display_bmaw_admin_submissions_page()
     include('admin/admin_submissions.php');
     $content = ob_get_clean();
     echo $content;
+}
+
+function display_bmaw_admin_submissions_modal()
+{
+    print('<div class="modal-window-container">');
+    print('<h2>lol</h2>');
+    print('</div>');
 }
 
 function bmaw_install()
