@@ -673,6 +673,8 @@ function bmaw_install()
 		submitter_name tinytext NOT NULL,
 		submission_type tinytext NOT NULL,
         submitter_email varchar(320) NOT NULL,
+        meeting_id bigint(20) unsigned,
+        changes_requested varchar(1024),
 		PRIMARY KEY (id)
 	) $charset_collate;";
 
@@ -684,54 +686,54 @@ function bmaw_install()
 
 function bmaw_install_data()
 {
-    global $wpdb;
-    global $bmaw_submissions_table_name;
+    // global $wpdb;
+    // global $bmaw_submissions_table_name;
 
-    $wpdb->insert($bmaw_submissions_table_name, array(
-        'id'          => 1,
-        'submitter_name'       => 'First1 Last1',
-        'submitter_email' => 'email1@mail1.com.',
-        'submission_type'        => 'update',
-        'submission_time'    => '26 Feb 2022, 10:34am'
-    ));
+    // $wpdb->insert($bmaw_submissions_table_name, array(
+    //     'id'          => 1,
+    //     'submitter_name'       => 'First1 Last1',
+    //     'submitter_email' => 'email1@mail1.com.',
+    //     'submission_type'        => 'update',
+    //     'submission_time'    => '26 Feb 2022, 10:34am'
+    // ));
 
-    $wpdb->insert($bmaw_submissions_table_name, array(
-        'id'          => 2,
-        'submitter_name'       => 'First2 Last2',
-        'submitter_email' => 'email2@mail2.com.',
-        'submission_type'        => 'update',
-        'submission_time'    => '26 Feb 2022, 10:34am'
-    ));
+    // $wpdb->insert($bmaw_submissions_table_name, array(
+    //     'id'          => 2,
+    //     'submitter_name'       => 'First2 Last2',
+    //     'submitter_email' => 'email2@mail2.com.',
+    //     'submission_type'        => 'update',
+    //     'submission_time'    => '26 Feb 2022, 10:34am'
+    // ));
 
-    $wpdb->insert($bmaw_submissions_table_name, array(
-        'id'          => 3,
-        'submitter_name'       => 'First3 Last3',
-        'submitter_email' => 'email3@mail3.com.',
-        'submission_type'        => 'update',
-        'submission_time'    => '26 Feb 2022, 10:34am'
-    ));
+    // $wpdb->insert($bmaw_submissions_table_name, array(
+    //     'id'          => 3,
+    //     'submitter_name'       => 'First3 Last3',
+    //     'submitter_email' => 'email3@mail3.com.',
+    //     'submission_type'        => 'update',
+    //     'submission_time'    => '26 Feb 2022, 10:34am'
+    // ));
 
-    $wpdb->insert($bmaw_submissions_table_name, array(
-        'id'          => 4,
-        'submitter_name'       => 'First4 Last4',
-        'submitter_email' => 'email4@mail4.com.',
-        'submission_type'        => 'update',
-        'submission_time'    => '26 Feb 2022, 10:34am'
-    ));
+    // $wpdb->insert($bmaw_submissions_table_name, array(
+    //     'id'          => 4,
+    //     'submitter_name'       => 'First4 Last4',
+    //     'submitter_email' => 'email4@mail4.com.',
+    //     'submission_type'        => 'update',
+    //     'submission_time'    => '26 Feb 2022, 10:34am'
+    // ));
 
-    $wpdb->insert($bmaw_submissions_table_name, array(
-        'id'          => 5,
-        'submitter_name'       => 'First5 Last5',
-        'submitter_email' => 'email5@mail5.com.',
-        'submission_type'        => 'update',
-        'submission_time'    => '26 Feb 2022, 10:34am'
-    ));
+    // $wpdb->insert($bmaw_submissions_table_name, array(
+    //     'id'          => 5,
+    //     'submitter_name'       => 'First5 Last5',
+    //     'submitter_email' => 'email5@mail5.com.',
+    //     'submission_type'        => 'update',
+    //     'submission_time'    => '26 Feb 2022, 10:34am'
+    // ));
 
-    $wpdb->insert($bmaw_submissions_table_name, array(
-        'id'          => 6,
-        'submitter_name'       => 'First6 Last6',
-        'submitter_email' => 'email6@mail6.com.',
-        'submission_type'        => 'update',
-        'submission_time'    => '26 Feb 2022, 10:34am'
-    ));
+    // $wpdb->insert($bmaw_submissions_table_name, array(
+    //     'id'          => 6,
+    //     'submitter_name'       => 'First6 Last6',
+    //     'submitter_email' => 'email6@mail6.com.',
+    //     'submission_type'        => 'update',
+    //     'submission_time'    => '26 Feb 2022, 10:34am'
+    // ));
 }

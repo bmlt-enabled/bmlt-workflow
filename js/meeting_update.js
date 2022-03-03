@@ -4,6 +4,19 @@ var mdata = [];
 var mtext = [];
 
 jQuery(document).ready(function ($) {
+  $("#submit").click(function (event) {
+    event.preventDefault();
+    $.post(
+      "/flop/wp-json/bmaw-submission/v1/submissions",
+      {
+        _wpnonce: $("#_wpnonce").val(),
+      },
+      function (response) {
+        alert(response);
+      }
+    );
+  });
+
   $("#meeting_update_form").validate();
 
   $("#starter_kit_required").on("change", function () {
@@ -286,7 +299,9 @@ jQuery(document).ready(function ($) {
         // `data.text` is the text that is displayed for the data object
 
         // split the term on spaces and search them all as independent terms
-        var allterms = params.term.split(/\s/).filter(function (x) {return x;});
+        var allterms = params.term.split(/\s/).filter(function (x) {
+          return x;
+        });
         var ltext = data.text.toLowerCase();
         for (var i = 0; i < allterms.length; ++i) {
           if (ltext.indexOf(allterms[i].toLowerCase()) > -1) {
