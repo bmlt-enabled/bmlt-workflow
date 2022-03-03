@@ -27,15 +27,15 @@ class BMLTIntegration
 
     private function authenticateRootServer()
     {
-        $query_string = http_build_query(array(
+        $postargs = array(
             'admin_action' => 'login',
             'c_comdef_admin_login' => get_option('bmaw_bmlt_username'),
-            'c_comdef_admin_password' => get_option('bmaw_bmlt_password'), '&'
-        ));
-        $url = get_option('bmaw_bmlt_server_address') . "index.php?" . $query_string;
+            'c_comdef_admin_password' => get_option('bmaw_bmlt_password')
+        );
+        $url = get_option('bmaw_bmlt_server_address') . "index.php";
 
         error_log("AUTH URL = ".$url);
-        $ret = $this->get($url);
+        $ret = $this->post($url,null, $postargs);
         error_log($this->vdump($ret));
         error_log("*********");
 
