@@ -4,17 +4,15 @@ if (!defined('ABSPATH')) exit; // die if being called directly
 
 $exampleListTable = new bmaw_meeting_submissions_page();
 
-// echo '<script src="'.esc_url( plugins_url( 'js/admin_page.js', dirname(__FILE__))).'"></script>';
-
 $exampleListTable->prepare_items();
 $url = admin_url('admin.php?page=bmaw-submissions&TB_iframe=true&width=600&height=550&modal=true');
 printf(
-  '<a href="%s" class="thickbox open-plugin-details-modal" data-title="%s">%s</a>',
-  $url,
-  __('View details', 'graphql-api'),
-  __('Plugin documentation', 'graphql-api')
+    '<a href="%s" class="thickbox open-plugin-details-modal" data-title="%s">%s</a>',
+    $url,
+    __('View details', 'graphql-api'),
+    __('Plugin documentation', 'graphql-api')
 );
-echo '<input type="hidden" value="'.wp_nonce_field( 'wp_rest', '_wpnonce' ).'">';
+echo '<input type="hidden" value="' . wp_nonce_field('wp_rest', '_wpnonce') . '">';
 ?>
 
 <div class="wrap">
@@ -134,24 +132,24 @@ class bmaw_meeting_submissions_page extends WP_List_Table
     }
 
     private function vdump($object)
-{
-    ob_start();
-    var_dump($object);
-    $contents = ob_get_contents();
-    ob_end_clean();
-    return $contents;
-}
+    {
+        ob_start();
+        var_dump($object);
+        $contents = ob_get_contents();
+        ob_end_clean();
+        return $contents;
+    }
 
     private function table_data()
     {
         // $request  = new WP_REST_Request( 'GET', '/bmaw-submission/v1/submissions/12' );
-		// $response = rest_do_request( $request );
-		// $result     = rest_get_server()->response_to_data( $response, true );
+        // $response = rest_do_request( $request );
+        // $result     = rest_get_server()->response_to_data( $response, true );
         // error_log($this->vdump($result));
 
-		$request  = new WP_REST_Request( 'GET', '/bmaw-submission/v1/submissions' );
-		$response = rest_do_request( $request );
-		$result     = rest_get_server()->response_to_data( $response, true );
+        $request  = new WP_REST_Request('GET', '/bmaw-submission/v1/submissions');
+        $response = rest_do_request($request);
+        $result     = rest_get_server()->response_to_data($response, true);
         return $result;
     }
 
