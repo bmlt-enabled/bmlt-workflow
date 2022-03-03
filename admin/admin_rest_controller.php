@@ -153,11 +153,8 @@ class bmaw_submissions_rest extends WP_REST_Controller {
 		$postargs = array(
 			'bmlt_ajax_callback' => 1,
 			'do_meeting_search' => 1,
-			'sort_key' => 'time',
-			'simple_other_fields' => 1,
-			'services[]' => 1,
-			'advanced_published' => 0,
-			// 'salt' => 1646289683445
+			'meeting_key' => 'id_bigint',
+			'meeting_key_value' => $request['id'],
 		);
 		$response = $this->bmlt_integration->postConfiguredRootServerRequest('', $postargs );
 		error_log($this->vdump($response));
@@ -179,17 +176,6 @@ error_log("approve submission ".$request['id']);
 		$data = [];
 
         meeting_update_form_handler_rest($data);
-
-		// if ( ! isset( $request['order'] ) ) {
-		// 	return new WP_Error( 'invalid_data', __( 'Cannot update category order.' ), array( 'status' => 400 ) );
-		// }
-		// $res = update_option( 'category_order', $request['order'] );
-
-		// if ( $res ) {
-		// 	$data['msg'] = __( 'Category order updated', '' );
-		// } else {
-		// 	return new WP_Error( 'cant update', __( 'Please provide proper data' ), array( 'status' => 400 ) );
-		// }
 
 		return rest_ensure_response( $data );
 	}
