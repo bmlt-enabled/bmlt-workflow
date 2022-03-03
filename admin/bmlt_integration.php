@@ -20,8 +20,8 @@ class BMLTIntegration
     {
         $query_string = http_build_query(array(
             'admin_action' => 'login',
-            'c_comdef_admin_login' => $this->options['bmaw_bmlt_username'],
-            'c_comdef_admin_password' => $this->options['bmaw_bmlt_password'], '&'
+            'c_comdef_admin_login' => get_option('bmaw_bmlt_username'),
+            'c_comdef_admin_password' => get_option('bmaw_bmlt_password'), '&'
         ));
         $url = get_option('bmaw_bmlt_server_address') . "server_admin/json.php?" . $query_string;
         return $this->get($url);
