@@ -39,7 +39,7 @@ class BMLTIntegration
         error_log($this->vdump($ret));
         error_log("*********");
 
-        return $this->get($url);
+        return $ret;
     }
 
     private function set_args($cookies,$body = null)
