@@ -36,14 +36,16 @@ class BMLTIntegration
         return $this->get($url);
     }
 
-    private function set_args($cookies)
+    private function set_args($cookies,$body = null)
     {
         $args = array(
             'timeout' => '120',
             'headers' => array(
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36'
             ),
-            'cookies' => isset($cookies) ? $cookies : null
+            'cookies' => isset($cookies) ? $cookies : null,
+            'body' => isset($body) ? $body : null
+
         );
         return $args;
     }
@@ -57,7 +59,7 @@ class BMLTIntegration
     {
         error_log("POSTING URL = ".$url);
         error_log($this->vdump($postargs));
-        return wp_remote_post($url, $this->set_args($cookies), $postargs);
+        return wp_remote_post($url, $this->set_args($cookies,http_build_query($postargs)));
     }
 
     private function getRootServerRequest($url)
