@@ -10,6 +10,7 @@ jQuery(document).ready(function ($) {
       "/flop/wp-json/bmaw-submission/v1/submissions",
       {
         _wpnonce: $("#_wpnonce").val(),
+        data: $("meeting_update_form").serialize()
       },
       function (response) {
         alert(response);
