@@ -38,33 +38,33 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     return $content;
 }
 
-function deny_cache_register_script($handle, $name)
+function deny_cache_register_script($handle, $deps, $name)
 {
-    wp_register_script($handle, plugin_dir_url(__FILE__) . $name, array('jquery'), filemtime(plugin_dir_path(__FILE__) . $name), true);
+    wp_register_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
 }
 
-function deny_cache_register_style($handle, $name)
+function deny_cache_register_style($handle, $deps, $name)
 {
-    wp_register_style($handle, plugin_dir_url(__FILE__) . $name, false, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
+    wp_register_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
 }
 
-function deny_cache_enqueue_script($handle, $name)
+function deny_cache_enqueue_script($handle, $deps, $name)
 {
-    wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, array('jquery'), filemtime(plugin_dir_path(__FILE__) . $name), true);
+    wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
 }
 
-function deny_cache_enqueue_style($handle, $name)
+function deny_cache_enqueue_style($handle, $deps, $name)
 {
-    wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, false, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
+    wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
 }
 
 function enqueue_form_deps()
 {
     wp_register_style('select2css', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
     wp_register_script('select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
-    deny_cache_register_script('bmaw-general-js','js/script_includes.js');
-    deny_cache_register_script('bmaw-meeting-update-js','js/meeting_update.js');
-    deny_cache_register_style('bmaw-meeting-update-css','css/meeting-update-form.css');
+    deny_cache_register_script('bmaw-general-js',array('jquery'),'js/script_includes.js');
+    deny_cache_register_script('bmaw-meeting-update-js',array('jquery'),'js/meeting_update.js');
+    deny_cache_register_style('bmaw-meeting-update-css',array('jquery'),'css/meeting-update-form.css');
     wp_register_script('jquery.validate','https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
     wp_register_script('jquery.validate.additional','https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery'), '1.0', true);  
 }
@@ -76,23 +76,21 @@ function bmaw_admin_scripts($hook)
         return;
     }
 
-    deny_cache_enqueue_style('bmaw-admin-css','css/admin_page.css');
-    deny_cache_enqueue_script('bmawjs','js/script_includes.js');
+    deny_cache_enqueue_style('bmaw-admin-css',false,'css/admin_page.css');
+    deny_cache_enqueue_script('bmawjs',array('jquery'),'js/script_includes.js');
 
     if ($hook == 'bmaw_page_bmaw-submissions')
     {
         wp_enqueue_style('thickbox');
         wp_enqueue_script('plugin-install');
-        // wp_enqueue_script('adminsubmissionsjs', plugin_dir_url(__FILE__) . 'js/admin_submissions.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/admin_submissions.js'), true);
-        deny_cache_enqueue_script('admin_submissions_js','js/admin_submissions.js');
+        deny_cache_enqueue_script('admin_submissions_js',array('jquery'),'js/admin_submissions.js');
         if (isset($_REQUEST['modal']) && (!empty($_REQUEST['modal']))) {
             wp_enqueue_style('modal-window', plugins_url('css/admin-modal.css', __FILE__));
         }
     }
     else
     {
-        // wp_enqueue_script('adminoptionssjs', plugin_dir_url(__FILE__) . 'js/admin_options.js', array('jquery'), filemtime(plugin_dir_path(__FILE__) . 'js/admin_options.js'), true);
-        deny_cache_enqueue_script('admin_options_js','js/admin_options.js');
+        deny_cache_enqueue_script('admin_options_js',array('jquery'),'js/admin_options.js');
     }
 }
 
