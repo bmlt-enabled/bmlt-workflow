@@ -33,6 +33,12 @@ class BMLTIntegration
             'c_comdef_admin_password' => get_option('bmaw_bmlt_password'), '&'
         ));
         $url = get_option('bmaw_bmlt_server_address') . "server_admin/json.php?" . $query_string;
+
+        error_log("AUTH URL = ".$url);
+        $ret = $this->get($url);
+        error_log($this->vdump($ret));
+        error_log("*********");
+
         return $this->get($url);
     }
 
