@@ -16,6 +16,15 @@ class BMLTIntegration
         return $this->getRootServerRequest(get_option('bmaw_bmlt_server_address') . $url);
     }
 
+    private function vdump($object)
+    {
+        ob_start();
+        var_dump($object);
+        $contents = ob_get_contents();
+        ob_end_clean();
+        return $contents;
+    }
+
     private function authenticateRootServer()
     {
         $query_string = http_build_query(array(
@@ -46,7 +55,8 @@ class BMLTIntegration
 
     private function post($url, $cookies = null, $postargs)
     {
-
+        error_log("POSTING URL = ".$url);
+        error_log(vdump($postargs));
         return wp_remote_post($url, $this->set_args($cookies), $postargs);
     }
 
