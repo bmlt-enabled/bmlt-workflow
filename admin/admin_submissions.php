@@ -6,6 +6,13 @@ $exampleListTable = new bmaw_meeting_submissions_page();
 
 error_log("created new bmaw_meeting_submissions_page");
 $exampleListTable->prepare_items();
+$url = admin_url('admin.php?page=bmaw-submissionse&TB_iframe=true&width=600&height=550&modal_window=true');
+printf(
+  '<a href="%s" class="thickbox open-plugin-details-modal" data-title="%s">%s</a>',
+  $url,
+  __('View details', 'graphql-api'),
+  __('Plugin documentation', 'graphql-api')
+);
 ?>
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
@@ -89,9 +96,9 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
         // Get actions.
         $actions = array(
-            '1'   => '<a target="_blank" href="' . esc_url($edit_link) . '">' . esc_html__('Approve', 'my_plugin') . '</a>',
-            '2'   => '<a target="_blank" href="' . esc_url($view_link) . '">' . esc_html__('Reject', 'my_plugin') . '</a>',
-            '3'   => '<a target="_blank" href="' . esc_url($view_link) . '">' . esc_html__('View Detail', 'my_plugin') . '</a>',
+            '1'   => '<a target="_blank" href="' . esc_url($edit_link) . '">' . esc_html__('Approve') . '</a>',
+            '2'   => '<a target="_blank" href="' . esc_url($view_link) . '">' . esc_html__('Reject') . '</a>',
+            '3'   => '<a target="_blank" href="' . esc_url($view_link) . '">' . esc_html__('View Detail') . '</a>',
         );
 
         $row_actions = array();
@@ -135,10 +142,10 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
     private function table_data()
     {
-        $request  = new WP_REST_Request( 'GET', '/bmaw-submission/v1/submissions/12' );
-		$response = rest_do_request( $request );
-		$result     = rest_get_server()->response_to_data( $response, true );
-        error_log($this->vdump($result));
+        // $request  = new WP_REST_Request( 'GET', '/bmaw-submission/v1/submissions/12' );
+		// $response = rest_do_request( $request );
+		// $result     = rest_get_server()->response_to_data( $response, true );
+        // error_log($this->vdump($result));
 
 		$request  = new WP_REST_Request( 'GET', '/bmaw-submission/v1/submissions' );
 		$response = rest_do_request( $request );
