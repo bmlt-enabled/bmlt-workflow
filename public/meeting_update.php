@@ -54,7 +54,7 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
         <div id="meeting_content">
             <p id="reason_change_text" style="display: none;">We've retrieved the details below from our system. Please make any changes and then submit your update.
             <p id="reason_other_text" style="display: none;">Please let us know the details about your meeting change.
-            <p id="reason_new_text" style="display: none;">Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update.
+            <p id="reason_new_text" style="display: none;">Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet.
             <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
             <div>
                 <label for="meeting_name">Group Name<span class="bmaw-required-field"> *</span></label>
@@ -62,7 +62,7 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
             </div>
             <br>
             <div>
-                <label for="day_of_the_week">Group Meets On Which Days<span class="bmaw-required-field"> *</span></label>
+                <label for="day_of_the_week">Group Meets On Which Day (only one day per meeting entry)<span class="bmaw-required-field"> *</span></label>
                 <ul style="list-style-type:none;" id="day_of_the_week">
                     <li>
                         <input name="Sunday" id="weekday-0" value="Sunday" type="radio">
