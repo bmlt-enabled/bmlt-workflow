@@ -56,7 +56,7 @@ function meeting_update_form_handler_rest($data)
         "email_address" => array("email", true),
         "contact_number_confidential" => array("text", false),
         // "time_zone",
-        "formats" => array("text", false),
+        "format_shared_id_list" => array("text", false),
         "weekday" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
         "additional_info" => array("textarea", false),
         "starter_kit_postal_address" => array("textarea", false),
@@ -154,7 +154,7 @@ function meeting_update_form_handler_rest($data)
                 "location_province",
                 "location_postal_code_1",
                 "virtual_meeting_link",
-                "formats"
+                "format_shared_id_list"
             );
             error_log(vdump($meeting));
             switch ($reason) {
