@@ -429,7 +429,7 @@ jQuery(document).ready(function ($) {
         // set the new formats
         var fmtspl = mdata[id].format_shared_id_list.split(",");
         for (var i = 0; i < fmtspl.length; i++) {
-          put_field_checked_id("format-table", fmtspl[i], true);
+          put_field_checked_index("format-table", fmtspl[i], true);
         }
 
         // tweak form instructions
