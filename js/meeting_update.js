@@ -424,7 +424,7 @@ jQuery(document).ready(function ($) {
         // clear all the formats
         var formatlookup = {};
         for (let i = 0, length = g_format_object_array.length; i < length; i++) {
-          put_field_checked_index("format-table", g_format_object_array[i].key, false);
+          put_field_checked_index("format-table", g_format_object_array[i].id, false);
         }
         // set the new formats
         var fmtspl = mdata[id].format_shared_id_list.split(",");
