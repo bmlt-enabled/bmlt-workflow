@@ -166,9 +166,9 @@ jQuery(document).ready(function ($) {
 
     // clear all the formats
     $("#format-table tr").each(function(){
-      let inpid = $(this).find("td input").attr('id'));
+      let inpid = $(this).find("td input").attr('id');
       put_field_checked_index("format-table", inpid, false);
-    }
+    });
 
     // clear weekdays
     for (var i = 0; i < 7; i++) {
