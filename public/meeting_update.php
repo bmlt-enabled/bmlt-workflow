@@ -65,31 +65,31 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
                 <label for="day_of_the_week">Group Meets On Which Days<span class="bmaw-required-field"> *</span></label>
                 <ul style="list-style-type:none;" id="day_of_the_week">
                     <li>
-                        <input name="Sunday" id="weekday-0" value="Sunday" type="checkbox">
+                        <input name="Sunday" id="weekday-0" value="Sunday" type="radio">
                         <label for="weekday-0">Sunday</label>
                     </li>
                     <li>
-                        <input name="Monday" id="weekday-1" value="Monday" type="checkbox">
+                        <input name="Monday" id="weekday-1" value="Monday" type="radio">
                         <label for="weekday-1">Monday</label>
                     </li>
                     <li>
-                        <input name="Tuesday" id="weekday-2" value="Tuesday" type="checkbox">
+                        <input name="Tuesday" id="weekday-2" value="Tuesday" type="radio">
                         <label for="weekday-2">Tuesday</label>
                     </li>
                     <li>
-                        <input name="Wednesday" id="weekday-3" value="Wednesday" type="checkbox">
+                        <input name="Wednesday" id="weekday-3" value="Wednesday" type="radio">
                         <label for="weekday-3">Wednesday</label>
                     </li>
                     <li>
-                        <input name="Thursday" id="weekday-4" value="Thursday" type="checkbox">
+                        <input name="Thursday" id="weekday-4" value="Thursday" type="radio">
                         <label for="weekday-4">Thursday</label>
                     </li>
                     <li>
-                        <input name="Friday" id="weekday-5" value="Friday" type="checkbox">
+                        <input name="Friday" id="weekday-5" value="Friday" type="radio">
                         <label for="weekday-5">Friday</label>
                     </li>
                     <li>
-                        <input name="Saturday" id="weekday-6" value="Saturday" type="checkbox">
+                        <input name="Saturday" id="weekday-6" value="Saturday" type="radio">
                         <label for="weekday-6">Saturday</label>
                     </li>
                 </ul>
