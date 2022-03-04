@@ -24,49 +24,42 @@ jQuery(document).ready(function ($) {
 
   function get_field_checked_index(fieldname, index) {
     var field = "#" + fieldname + "-" + index;
-    return $(field).attr('checked');
+    return $(field).prop('checked');
   }
 
   function put_field(fieldname, value) {
     var field = "#" + fieldname;
     $(field).val(value);
-    $(field).trigger("change");
   }
 
   function clear_field(fieldname, value) {
     var field = "#" + fieldname;
     $(field).val('');
-    $(field).trigger("change");
   }
 
   function enable_field(fieldname) {
     var field = "#" + fieldname;
     $(field).prop("disabled", false);
-    $(field).trigger("change");
   }
 
   function enable_field_index(fieldname, index) {
     var field = "#" + fieldname + "-" + index;
     $(field).prop("disabled", false);
-    $(field).trigger("change");
   }
 
   function disable_field(fieldname) {
     var field = "#" + fieldname;
     $(field).prop("disabled", true);
-    $(field).trigger("change");
   }
 
   function disable_field_index(fieldname, index) {
     var field = "#" + fieldname + "-" + index;
     $(field).prop("disabled", true);
-    $(field).trigger("change");
   }
 
   function put_field_checked_index(fieldname, index, value) {
     var field = "#" + fieldname + "-" + index;
-    $(field).attr('checked') = value;
-    $(field).trigger("change");
+    $(field).prop('checked', value);
   }
 
   function add_checkbox_row_to_table(formatcode, id, name, description, container_id) {
