@@ -22,35 +22,20 @@ jQuery(document).ready(function ($) {
 
   var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-  function get_field(fieldname) {
-    var field = "#" + fieldname;
-    return $(field).attr(value);
-  }
-
   function get_field_checked_index(fieldname, index) {
     var field = "#" + fieldname + "-" + index;
     return $(field).attr('checked');
   }
 
-  function get_field_value_index(fieldname, index) {
-    var field = "#" + fieldname + "-" + index;
-    return $(field).attr(value);
-  }
-
-  function get_field_optionval(fieldname) {
-    var field = "#" + fieldname;
-    return $(field).val();
-  }
-
   function put_field(fieldname, value) {
     var field = "#" + fieldname;
-    $(field).attr('value') = value;
+    $(field).val(value);
     $(field).trigger("change");
   }
 
   function clear_field(fieldname, value) {
     var field = "#" + fieldname;
-    $(field).attr('value') = "";
+    $(field).val('');
     $(field).trigger("change");
   }
 
