@@ -305,7 +305,7 @@ jQuery(document).ready(function ($) {
   ];
 
   // insert all the formats
-  for (let i = 0, length = fdata.length; i < length; i++) {
+  for (let i = 0, length = g_format_object_array.length; i < length; i++) {
     add_checkbox_row_to_table(g_format_object_array[i].key, g_format_object_array[i].id,g_format_object_array[i].name, g_format_object_array[i].description, "format-table");
   }
 
