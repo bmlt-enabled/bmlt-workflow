@@ -165,8 +165,9 @@ jQuery(document).ready(function ($) {
     put_field_checked_index("add_email", 0, true);
 
     // clear all the formats
-    for (var i = 0; i < $("#format-table tr").length; i++) {
-      put_field_checked_index("format-table", i, false);
+    $("#format-table tr").each(function(){
+      let inpid = $(this).find("td input").attr('id'));
+      put_field_checked_index("format-table", inpid, false);
     }
 
     // clear weekdays
