@@ -461,7 +461,7 @@ jQuery(document).ready(function ($) {
     $("#format-table tr").each(function(){
       let inpid = $(this).find("td input").attr('id').replace('format-table-','');
       if (get_field_checked_index("format-table", inpid)) {
-        str = str + get_field_value_index("format-table", i) + ",";
+        str = str + inpid + ",";
       }
   });
 
