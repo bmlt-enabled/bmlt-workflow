@@ -62,7 +62,7 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
             </div>
             <br>
             <div>
-                <label for="day_of_the_week">Group Meets On Which Day (only one day per meeting entry)<span class="bmaw-required-field"> *</span></label>
+                <label for="day_of_the_week">This meeting is for the following day:<span class="bmaw-required-field"> *</span></label>
                 <ul style="list-style-type:none;" id="day_of_the_week">
                     <li>
                         <input name="weekday_radio" id="weekday-0" value="Sunday" type="radio">
