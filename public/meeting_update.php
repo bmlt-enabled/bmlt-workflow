@@ -165,7 +165,7 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
                 <table id="format-table">
                     <tbody></tbody>
                 </table>
-                <input type="hidden" name="formats" id="formats" value="">
+                <input type="hidden" name="format_shared_id_list" id="format_shared_id_list" value="">
             </div>
             <br>
             <div>

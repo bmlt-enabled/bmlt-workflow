@@ -454,10 +454,17 @@ jQuery(document).ready(function ($) {
     console.log("Handler for .submit() called.");
     // meeting formats
     var str = "";
+    // $("#format-table tr").each(function(){
+    //   var i = $(this).find("input").val('id');
+    //   console.log(i);
+    // });
     $("#format-table tr").each(function(){
-      var i = $(this).find("input").val('id');
-      console.log(i);
-    });
+      let inpid = $(this).find("td input").attr('id').replace('format-table-','');
+      if (get_field_checked_index("format-table", inpid)) {
+        str = str + get_field_value_index("format-table", i) + ",";
+      }
+  });
+
     //  i++) {
     //   if (get_field_checked_index("format-table", i)) {
     //     str = str + get_field_value_index("format-table", i) + ",";
@@ -465,7 +472,7 @@ jQuery(document).ready(function ($) {
     // }
     if (str != "") {
       str = str.slice(0, -1);
-      put_field("formats", str);
+      put_field("format_shared_id_list", str);
     }
 
     var str = "";
