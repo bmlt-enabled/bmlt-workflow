@@ -24,17 +24,17 @@ jQuery(document).ready(function ($) {
 
   function get_field(fieldname) {
     var field = "#" + fieldname;
-    return $(field)[0].value;
+    return $(field).attr(value);
   }
 
   function get_field_checked_index(fieldname, index) {
     var field = "#" + fieldname + "-" + index;
-    return $(field)[0].checked;
+    return $(field).attr('checked');
   }
 
   function get_field_value_index(fieldname, index) {
     var field = "#" + fieldname + "-" + index;
-    return $(field)[0].value;
+    return $(field).attr(value);
   }
 
   function get_field_optionval(fieldname) {
@@ -44,13 +44,13 @@ jQuery(document).ready(function ($) {
 
   function put_field(fieldname, value) {
     var field = "#" + fieldname;
-    $(field)[0].value = value;
+    $(field).attr(value) = value;
     $(field).trigger("change");
   }
 
   function clear_field(fieldname, value) {
     var field = "#" + fieldname;
-    $(field)[0].value = "";
+    $(field).attr(value) = "";
     $(field).trigger("change");
   }
 
@@ -80,7 +80,7 @@ jQuery(document).ready(function ($) {
 
   function put_field_checked_index(fieldname, index, value) {
     var field = "#" + fieldname + "-" + index;
-    $(field)[0].checked = value;
+    $(field).attr('checked') = value;
     $(field).trigger("change");
   }
 
