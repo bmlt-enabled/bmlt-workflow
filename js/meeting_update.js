@@ -44,13 +44,13 @@ jQuery(document).ready(function ($) {
 
   function put_field(fieldname, value) {
     var field = "#" + fieldname;
-    $(field).attr(value) = value;
+    $(field).attr('value') = value;
     $(field).trigger("change");
   }
 
   function clear_field(fieldname, value) {
     var field = "#" + fieldname;
-    $(field).attr(value) = "";
+    $(field).attr('value') = "";
     $(field).trigger("change");
   }
 
