@@ -89,7 +89,7 @@ jQuery(document).ready(function ($) {
     let row = "<tr><td>";
     $("#" + container_id + " > tbody:last-child").append(
       "<tr>" +
-        '<td><input type="checkbox" id="' + id +
+        '<td><input type="checkbox" id="' + container_id + '-' + id +
         '" value="' +
         formatcode +
         '"></input></td>' +
@@ -422,18 +422,15 @@ jQuery(document).ready(function ($) {
 
         // clear all the formats
         var formatlookup = {};
-        for (var i = 0; i < $("#format-table tr").length; i++) {
-          if (get_field_checked_index("format-table", i) == true) {
-            put_field_checked_index("format-table", i, false);
-          }
-          formatlookup[$("#format-table-" + i).attr("value")] = i;
+        for (let i = 0, length = g_format_object_array.length; i < length; i++) {
+          put_field_checked_index("format-table", g_format_object_array[i].key, false);
         }
         // set the new formats
-        var fmtspl = mdata[id].formats.split(",");
+        var fmtspl = mdata[id].format_shared_id_list.split(",");
         for (var i = 0; i < fmtspl.length; i++) {
-          var j = formatlookup[fmtspl[i]];
-          put_field_checked_index("format-table", j, true);
+          put_field_checked_id("format-table", fmtspl[i], true);
         }
+
         // tweak form instructions
         var reason = $("#update_reason").val();
         switch (reason) {
@@ -456,11 +453,15 @@ jQuery(document).ready(function ($) {
     console.log("Handler for .submit() called.");
     // meeting formats
     var str = "";
-    for (var i = 0; i < $("#format-table tr").length; i++) {
-      if (get_field_checked_index("format-table", i)) {
-        str = str + get_field_value_index("format-table", i) + ",";
-      }
-    }
+    $("#format-table tr").each(function(){
+      var i = $(this).find("input").val('id');
+      console.log(i);
+    });
+    //  i++) {
+    //   if (get_field_checked_index("format-table", i)) {
+    //     str = str + get_field_value_index("format-table", i) + ",";
+    //   }
+    // }
     if (str != "") {
       str = str.slice(0, -1);
       put_field("formats", str);
