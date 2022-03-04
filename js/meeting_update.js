@@ -88,7 +88,7 @@ jQuery(document).ready(function ($) {
     $(field).trigger("change");
   }
 
-  function add_checkbox_row_to_table(formatcode, formatid, name, description, container_id) {
+  function add_checkbox_row_to_table(formatcode, name, description, container_id) {
     let container = $("#" + container_id);
     let next_id = $("#" + container_id + " tr").length;
     let row = "<tr><td>";
@@ -99,7 +99,7 @@ jQuery(document).ready(function ($) {
         "-" +
         next_id +
         '" value="' +
-        formatid +
+        formatcode +
         '"></input></td>' +
         "<td>(" +
         formatcode +
@@ -244,7 +244,7 @@ jQuery(document).ready(function ($) {
     .then((data) => {
       let fdata = data;
       for (let i = 0, length = fdata.length; i < length; i++) {
-        add_checkbox_row_to_table(fdata[i].key_string, fdata[i].id, fdata[i].name_string, fdata[i].description_string, "format-table");
+        add_checkbox_row_to_table(fdata[i].key_string, fdata[i].name_string, fdata[i].description_string, "format-table");
       }
     });
 
