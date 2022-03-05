@@ -314,10 +314,11 @@ jQuery(document).ready(function ($) {
         put_field("id_bigint", mdata[id].id_bigint);
 
         // clear all the formats
-        var formatlookup = {};
-        for (let i = 0, length = g_format_object_array.length; i < length; i++) {
-          put_field_checked_index("format-table", g_format_object_array[i].id, false);
-        }
+        $("#format-table tr").each(function(){
+          let inpid = $(this).find("td input").attr('id').replace('format-table-','');
+          put_field_checked_index("format-table", inpid, false);
+        });
+
         // set the new formats
         var fmtspl = mdata[id].format_shared_id_list.split(",");
         for (var i = 0; i < fmtspl.length; i++) {
