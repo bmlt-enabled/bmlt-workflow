@@ -7,7 +7,7 @@ jQuery(document).ready(function ($) {
           _wpnonce: $("#_wpnonce").val(),
       },
       function (response) {
-        alert(response);
+        // alert(response);
       }
     );
   });
