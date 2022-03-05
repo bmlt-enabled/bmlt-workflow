@@ -4,11 +4,6 @@ var mdata = [];
 var mtext = [];
 
 jQuery(document).ready(function ($) {
-  $("#meeting_update_form").submit(function () {
-    $.post("/flop/wp-json/bmaw-submission/v1/submissions", $.param($(this).serializeArray()), function (response) {
-      alert(response);
-    });
-  });
 
   $("#meeting_update_form").validate();
 
