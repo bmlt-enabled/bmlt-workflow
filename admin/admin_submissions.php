@@ -162,6 +162,8 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         // Set defaults
         $orderby = 'id';
         $order = 'num';
+        print_r($a);
+        print_r($b);
 error_log("sorting ".$a." vs ".$b);
         // If orderby is set, use this as the sort column
         if (!empty($_GET['orderby'])) {
