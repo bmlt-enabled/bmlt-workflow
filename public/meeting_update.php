@@ -172,9 +172,10 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
                         		$bmlt_integration = new BMLTIntegration;
 
                         		$response = $bmlt_integration->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('admin_action'=>'get_format_info'));
-
+                                if( is_wp_error( $response ) ) {
+                                    wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
+                                }    
                                 $formatarr = json_decode($response['body'],true)['row'];
-                            //    error_log(vdump($formatarr));
                                 foreach ($formatarr as $key => $value)
                                 {
                                     error_log("key ".$key);

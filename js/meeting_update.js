@@ -429,7 +429,7 @@ jQuery(document).ready(function ($) {
     });
   // form submit handler
   $("#meeting_update_form").submit(function (event) {
-    console.log("Handler for .submit() called.");
+    event.preventDefault();
     // meeting formats
     var str = "";
     // $("#format-table tr").each(function(){
@@ -451,18 +451,6 @@ jQuery(document).ready(function ($) {
     if (str != "") {
       str = str.slice(0, -1);
       put_field("format_shared_id_list", str);
-    }
-
-    var str = "";
-    // weekdays
-    for (var i = 0; i < 7; i++) {
-      if (get_field_checked_index("weekday", i) == true) {
-        str = str + weekdays[i] + ", ";
-      }
-    }
-    if (str != "") {
-      str = str.slice(0, -2);
-      put_field("weekday", str);
     }
   });
 });
