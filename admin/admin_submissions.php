@@ -91,21 +91,13 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         error_log(vdump($item));
         $row_actions = array();
 
-        $action = 'approval';
-        $link = "http://www.google.com";
-        $row_actions[] = '<span class="' . esc_attr($action) . '">' . $link . '</span>';
-        print_r($row_actions);
-        $action = 'approve';
-        $row_actions[] = '<span class="' . esc_attr($action) . '">' . $link . '</span>';
-        print_r($row_actions);
-
         // Title.
         $output .= '<strong><a href="#" class="row-title">' . esc_html($item['id']) . '</a></strong>';
 
         $actions = array();
         if($item['change_made'] != 'Approved')
         {
-            $actions['approval'] = '<a class="bmaw_approve" id="bmaw_approve_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Approve') . '</a>';
+               $actions['approve'] = '<a class="bmaw_approve" id="bmaw_approve_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Approve') . '</a>';
             // $actions['approve'] = '<a class="bmaw_approve" id="bmaw_approve_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Approve') . '</a>';
         }
         if($item['change_made'] != 'Rejected')
