@@ -178,7 +178,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		error_log(vdump($change));
 		$change['admin_action']='modify_meeting';
 		
-		$response = $this->bmlt_integration->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('modify_meeting'=>'get_format_info'));
+		$response = $this->bmlt_integration->postConfiguredRootServerRequest('local_server/server_admin/json.php', $change);
 		// if( is_wp_error( $response ) ) {
 		// 	wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
 		// }    
