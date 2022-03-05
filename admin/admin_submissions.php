@@ -162,7 +162,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
     {
         // Set defaults
         $orderby = 'id';
-        $order = 'asc';
+        $order = 'num';
 
         // If orderby is set, use this as the sort column
         if (!empty($_GET['orderby'])) {
@@ -174,10 +174,12 @@ class bmaw_meeting_submissions_page extends WP_List_Table
             $order = $_GET['order'];
         }
 
-        $result = strcmp($a[$orderby], $b[$orderby]);
 
         if ($order === 'asc') {
+            $result = strcmp($a[$orderby], $b[$orderby]);
             return $result;
+        } elseif ($order === 'num') {
+            $result = $a - $b;
         }
 
         return -$result;
