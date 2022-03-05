@@ -173,6 +173,9 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		{
 			error_log("no result found");
 		}
+		$change = unserialize($result[0]['changes_requested']);
+		error_log("deserialised");
+		error_log(vdump($change));
 
 		// // bmlt_ajax_callback=1&do_meeting_search=1&sort_key=time&simple_other_fields=1&services[]=1&advanced_published=0&salt=1646289683445
 		// $postargs = array(
