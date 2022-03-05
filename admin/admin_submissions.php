@@ -97,16 +97,15 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $actions = array();
         if($item['change_made'] != 'Approved')
         {
-               $actions['approval'] = '<a class="bmaw_approve" id="bmaw_approve_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Approve') . '</a>';
-            // $actions['approve'] = '<a class="bmaw_approve" id="bmaw_approve_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Approve') . '</a>';
+            $actions['bmaw_approve'] = '<a class="bmaw_approve" id="bmaw_approve_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Approve') . '</a>';
         }
         if($item['change_made'] != 'Rejected')
         {
-            $actions['reject'] = '<a class="bmaw_reject" id="bmaw_reject_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Reject') . '</a>';
+            $actions['bmaw_reject'] = '<a class="bmaw_reject" id="bmaw_reject_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Reject') . '</a>';
         }
         // if($item['change_made'] = '')
         // {
-            $actions['quickedit'] = '<a class="bmaw_quickedit" id="bmaw_quickedit_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Quick Edit') . '</a>';
+            $actions['bmaw_quickedit'] = '<a class="bmaw_quickedit" id="bmaw_quickedit_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Quick Edit') . '</a>';
         // }
 
         $row_actions = array();
