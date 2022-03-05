@@ -84,10 +84,10 @@ class bmaw_meeting_submissions_page extends WP_List_Table
     public function get_sortable_columns()
     {
         return array(
-            'id' => array('id', false),
-            'submission_time' => array('submission_time', false),
-            'submitter_name' => array('submitter_name', false),
-            'submitter_email' => array('submitter_email', false),
+            'id' => array('id', 'num'),
+            'submission_time' => array('submission_time', 'asc'),
+            'submitter_name' => array('submitter_name', 'asc'),
+            'submitter_email' => array('submitter_email', 'asc'),
     );
     }
 
