@@ -163,6 +163,14 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		global $wpdb;
 		global $bmaw_submissions_table_name;
+
+		$sql = $wpdb->prepare('SELECT change_made FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+		$result = $wpdb->get_results($sql, ARRAY_A);
+		if($result[0]['change_made']) === 'Approved')
+		{
+			return "{'response':'already approved'}";
+		}
+		
 		$sql = $wpdb->prepare('SELECT changes_requested FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
 		$result = $wpdb->get_results($sql, ARRAY_A);
 		if ($result)
@@ -179,9 +187,14 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		$change['admin_action']='modify_meeting';
 		
 		$response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
+		// ERROR HANDLING NEEDED
 		// if( is_wp_error( $response ) ) {
 		// 	wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
 		// }    
+		$current_user = wp_get_current_user();
+		$username = $current_user->user_login;
+		$sql = $wpdb->prepare('UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s" where id="%d" limit 1', 'Approved', $username, $request['id']);
+		$result = $wpdb->get_results($sql, ARRAY_A);
 
 		return "{'response':'approved'}";
 	}
