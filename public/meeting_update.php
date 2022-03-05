@@ -172,9 +172,8 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
                         		$bmlt_integration = new BMLTIntegration;
 
                         		$response = $bmlt_integration->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('admin_action'=>'get_format_info'));
-                                error_log(vdump($response));
 
-                                $formatarr = json_decode($response('body'));
+                                $formatarr = json_decode($response['body']);
                                 error_log(vdump($formatarr));
 
                         ?>
