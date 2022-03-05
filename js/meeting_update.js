@@ -4,7 +4,6 @@ var mdata = [];
 var mtext = [];
 
 jQuery(document).ready(function ($) {
-
   $("#meeting_update_form").validate();
 
   $("#starter_kit_required").on("change", function () {
@@ -19,7 +18,7 @@ jQuery(document).ready(function ($) {
 
   function get_field_checked_index(fieldname, index) {
     var field = "#" + fieldname + "-" + index;
-    return $(field).prop('checked');
+    return $(field).prop("checked");
   }
 
   function put_field(fieldname, value) {
@@ -29,7 +28,7 @@ jQuery(document).ready(function ($) {
 
   function clear_field(fieldname, value) {
     var field = "#" + fieldname;
-    $(field).val('');
+    $(field).val("");
   }
 
   function enable_field(fieldname) {
@@ -54,7 +53,7 @@ jQuery(document).ready(function ($) {
 
   function put_field_checked_index(fieldname, index, value) {
     var field = "#" + fieldname + "-" + index;
-    $(field).prop('checked', value);
+    $(field).prop("checked", value);
   }
 
   function add_checkbox_row_to_table(formatcode, id, name, description, container_id) {
@@ -62,7 +61,10 @@ jQuery(document).ready(function ($) {
     let row = "<tr><td>";
     $("#" + container_id + " > tbody:last-child").append(
       "<tr>" +
-        '<td><input type="checkbox" id="' + container_id + '-' + id +
+        '<td><input type="checkbox" id="' +
+        container_id +
+        "-" +
+        id +
         '" value="' +
         formatcode +
         '"></input></td>' +
@@ -138,8 +140,8 @@ jQuery(document).ready(function ($) {
     put_field_checked_index("add_email", 0, true);
 
     // clear all the formats
-    $("#format-table tr").each(function(){
-      let inpid = $(this).find("td input").attr('id').replace('format-table-','');
+    $("#format-table tr").each(function () {
+      let inpid = $(this).find("td input").attr("id").replace("format-table-", "");
       put_field_checked_index("format-table", inpid, false);
     });
 
@@ -314,8 +316,8 @@ jQuery(document).ready(function ($) {
         put_field("id_bigint", mdata[id].id_bigint);
 
         // clear all the formats
-        $("#format-table tr").each(function(){
-          let inpid = $(this).find("td input").attr('id').replace('format-table-','');
+        $("#format-table tr").each(function () {
+          let inpid = $(this).find("td input").attr("id").replace("format-table-", "");
           put_field_checked_index("format-table", inpid, false);
         });
 
@@ -351,12 +353,12 @@ jQuery(document).ready(function ($) {
     //   var i = $(this).find("input").val('id');
     //   console.log(i);
     // });
-    $("#format-table tr").each(function(){
-      let inpid = $(this).find("td input").attr('id').replace('format-table-','');
-      if (get_field_checked_index("format-table", inpid)) {
+    $("#format-table tr").each(function () {
+      if ($(this).find("td input").prop("checked")) {
+        let inpid = $(this).find("td input").attr("id").replace("format-table-", "");
         str = str + inpid + ",";
       }
-  });
+    });
 
     //  i++) {
     //   if (get_field_checked_index("format-table", i)) {
