@@ -93,7 +93,6 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
     public function column_id($item)
     {
-        $view_link = get_permalink($item['id']);
         $output    = '';
 
         // Title.
@@ -101,9 +100,9 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
         // Get actions.
         $actions = array(
-            '1'   => '<a id="approve" target="_blank" href="#">' . esc_html__('Approve') . '</a>',
-            '2'   => '<a target="_blank" href="#">' . esc_html__('Reject') . '</a>',
-            '3'   => '<a target="_blank" href="#">' . esc_html__('Quick Edit') . '</a>',
+            '1'   => '<a class="bmaw_approve" id="bmaw_approve_id_"'.$item['id'].'" target="_blank" href="#">' . esc_html__('Approve') . '</a>',
+            '2'   => '<a class="bmaw_reject" id="bmaw_reject_id_"'.$item['id'].'" target="_blank" href="#">' . esc_html__('Reject') . '</a>',
+            '3'   => '<a class="bmaw_quickedit" id="bmaw_quickedit_id_"'.$item['id'].'" target="_blank" href="#">' . esc_html__('Quick Edit') . '</a>',
         );
 
         $row_actions = array();

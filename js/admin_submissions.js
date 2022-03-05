@@ -1,8 +1,8 @@
 jQuery(document).ready(function ($) {
-  $("#approve").click(function (event) {
-    event.preventDefault(); 
+  $(".bmaw_approve").click(function (event) {
+    var id = $this.id;
     $.post(
-      "/flop/wp-json/bmaw-submission/v1/submissions/24/approve",
+      "/flop/wp-json/bmaw-submission/v1/submissions/"+id+"/approve",
       {
           _wpnonce: $("#_wpnonce").val(),
       },
