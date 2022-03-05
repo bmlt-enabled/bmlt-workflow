@@ -93,10 +93,10 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $output .= '<strong><a href="#" class="row-title">' . esc_html($item['id']) . '</a></strong>';
 
         $actions = array();
-        if($item['change_made'] != 'Approved')
-        {
+        // if($item['change_made'] != 'Approved')
+        // {
             $actions['approve'] = '<a class="bmaw_approve" id="bmaw_approve_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Approve') . '</a>';
-        }
+        // }
         if($item['change_made'] != 'Rejected')
         {
             $actions['reject'] = '<a class="bmaw_reject" id="bmaw_reject_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Reject') . '</a>';
