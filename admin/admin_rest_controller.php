@@ -165,9 +165,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 			'meeting_key_value' => $request['id'],
 		);
 		$response = $this->bmlt_integration->postConfiguredRootServerRequest('', $postargs);
-		error_log($this->vdump($response));
-		error_log("approve submission " . $request['id']);
-		return "ok";
+		return "{'response':'approved'}";
 	}
 
 	/**

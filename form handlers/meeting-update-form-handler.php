@@ -122,6 +122,7 @@ function meeting_update_form_handler_rest($data)
     if (($reason == "reason_change") || ($reason == 'reason_close')) {
         if (isset($data['id_bigint'])) {
             $meeting_id = $data['id_bigint'];
+            // get the meeting details from BMLT so we can compare them
             $bmaw_bmlt_server_address = get_option('bmaw_bmlt_server_address');
             $url = $bmaw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" . $meeting_id . "&lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&&recursive=1&sort_keys=start_time";
 
@@ -140,8 +141,9 @@ function meeting_update_form_handler_rest($data)
             }
             curl_close($curl);
             $meeting = json_decode($resp, true)[0];
-
+            // these are the meeting changes we'll submit
             $changes = array();
+
             $change_subfields = array(
                 "meeting_name",
                 "start_time",
@@ -157,23 +159,24 @@ function meeting_update_form_handler_rest($data)
             );
             error_log(vdump($meeting));
             switch ($reason) {
+                // change meeting - just add the deltas. no real reason to do this as bmlt result would be the same, but safe to filter it regardless
                 case 'reason_change':
                     foreach ($change_subfields as $field) {
-                        error_log("checking ".$field);
+                        // error_log("checking ".$field);
                         if (array_key_exists($field, $meeting)) {
-                            error_log("key exists");
+                            // error_log("key exists");
                             if ($meeting[$field] != $data[$field]) {
                                 $changes[$field] = $data[$field];
-                                error_log("field is different ".$data[$field]." ".$meeting[$field]);
+                                // error_log("field is different ".$data[$field]." ".$meeting[$field]);
                             }
-                            else
-                            {
-                                error_log("field is the same ".$data[$field]." ".$meeting[$field]);
-                            }
+                            // else
+                            // {
+                            //     error_log("field is the same ".$data[$field]." ".$meeting[$field]);
+                            // }
                         }
                     }
                     break;
-
+                // new meeting - add all fields to the changes requested
                 case 'reason_new':
                     foreach ($change_subfields as $field) {
                         $changes[$field] = $data[$field];
@@ -184,6 +187,9 @@ function meeting_update_form_handler_rest($data)
                 default:
                     break;
             }
+            // add the meeting id to the change list
+            $changes['id'] = $meeting_id;
+
         } else {
             wp_die("meeting id not set");
         }
