@@ -161,10 +161,8 @@ class bmaw_meeting_submissions_page extends WP_List_Table
     {
         // Set defaults
         $orderby = 'id';
-        $order = 'num';
-        print_r($a);
-        print_r($b);
-error_log("sorting ".$a." vs ".$b);
+        $order = 'asc';
+        
         // If orderby is set, use this as the sort column
         if (!empty($_GET['orderby'])) {
             $orderby = $_GET['orderby'];
@@ -176,15 +174,14 @@ error_log("sorting ".$a." vs ".$b);
         }
 
 
-        if ($order === 'asc') {
-            $result = strcmp($a[$orderby], $b[$orderby]);
-            return $result;
-        } elseif ($order === 'num') {
-            $result = $a - $b;
+        $result = strnatcmp( $a[$orderby], $b[$orderby] );
+
+        if($order === 'asc')
+        {
             return $result;
         }
 
-        return 0;
+        return -$result;
     }
 }
 ?>
