@@ -174,8 +174,17 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
                         		$response = $bmlt_integration->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('admin_action'=>'get_format_info'));
 
                                 $formatarr = json_decode($response['body']);
-                                error_log(vdump($formatarr));
-
+//                                error_log(vdump($formatarr));
+                                $row = '';
+                                foreach ($formatarr as $key => $value)
+                                {
+                                    $row += '<tr>';
+                                    $row += '<td><input type="checkbox" id="format-table-' + $key; '" value="'+ $value['formatcode'] + '"></input></td>';
+                                    $row += "<td>(" + $value['formatcode'] +")</td>";
+                                    $row += "<td>" + $value['name'] + "</td><td>" + $value['description'] +"</td>";
+                                    $row += '</tr>';
+                                    echo $row;
+                                }
                         ?>
                     </tbody>
                 </table>
