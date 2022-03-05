@@ -193,7 +193,8 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		// }    
 		$current_user = wp_get_current_user();
 		$username = $current_user->user_login;
-		$sql = $wpdb->prepare('UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s" where id="%d" limit 1', 'Approved', $username, $request['id']);
+
+		$sql = $wpdb->prepare('UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%" where id="%d" limit 1', 'Approved', $username, $request['id'],current_time('mysql', true));
 		$result = $wpdb->get_results($sql, ARRAY_A);
 
 		return "{'response':'approved'}";
