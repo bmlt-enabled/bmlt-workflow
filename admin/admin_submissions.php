@@ -5,7 +5,6 @@ if (!defined('ABSPATH')) exit; // die if being called directly
 $exampleListTable = new bmaw_meeting_submissions_page();
 
 $exampleListTable->prepare_items();
-$url = admin_url('admin.php?page=bmaw-submissions&TB_iframe=true&width=600&height=550&modal=true');
 echo '<input type="hidden" value="' . wp_nonce_field('wp_rest', '_wpnonce') . '">';
 ?>
 <div class="wrap">
@@ -131,7 +130,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
                 return $item[$column_name];
 
             default:
-                return print_r($item, true);
+                return;
         }
     }
 
