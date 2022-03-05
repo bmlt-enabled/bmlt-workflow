@@ -6,12 +6,6 @@ $exampleListTable = new bmaw_meeting_submissions_page();
 
 $exampleListTable->prepare_items();
 $url = admin_url('admin.php?page=bmaw-submissions&TB_iframe=true&width=600&height=550&modal=true');
-printf(
-    '<a href="%s" class="thickbox open-plugin-details-modal" data-title="%s">%s</a>',
-    $url,
-    __('View details', 'graphql-api'),
-    __('Plugin documentation', 'graphql-api')
-);
 echo '<input type="hidden" value="' . wp_nonce_field('wp_rest', '_wpnonce') . '">';
 ?>
 
@@ -162,7 +156,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         // Set defaults
         $orderby = 'id';
         $order = 'asc';
-        
+
         // If orderby is set, use this as the sort column
         if (!empty($_GET['orderby'])) {
             $orderby = $_GET['orderby'];
