@@ -8,6 +8,10 @@ wp_enqueue_script('jquery-validate-additional');
 wp_enqueue_style('select2css');
 wp_enqueue_script('select2');
 
+if (!class_exists('BMLTIntegration')) {
+	require_once(BMAW_PLUGIN_DIR . 'admin/bmlt_integration.php');
+}
+
 $bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status', "failure");
 if ($bmaw_bmlt_test_status != "success") {
     wp_die("<h4>BMAW Plugin Error: BMLT Server not configured and tested.</h4>");
@@ -62,7 +66,7 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
             </div>
             <br>
             <div>
-                <label for="day_of_the_week">This meeting is for the following day:<span class="bmaw-required-field"> *</span></label>
+                <label for="day_of_the_week">The Day Of Your Meeting:<span class="bmaw-required-field"> *</span></label>
                 <ul style="list-style-type:none;" id="day_of_the_week">
                     <li>
                         <input name="weekday_radio" id="weekday-0" value="Sunday" type="radio">
@@ -163,7 +167,15 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
             <div>
                 <label for="format-table">Meeting Format</label>
                 <table id="format-table">
-                    <tbody></tbody>
+                    <tbody>
+                        <?php
+                        		$bmlt_integration = new BMLTIntegration;
+
+                        		$response = $bmlt_integration->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('admin_action'=>'get_format_info'));
+error_log(vdump($response));
+
+                        ?>
+                    </tbody>
                 </table>
                 <input type="hidden" name="format_shared_id_list" id="format_shared_id_list" value="">
             </div>
