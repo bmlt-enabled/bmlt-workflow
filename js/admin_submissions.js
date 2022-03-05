@@ -1,6 +1,6 @@
 jQuery(document).ready(function ($) {
   $(".bmaw_approve").click(function (event) {
-    var id = $this.id.replace("bmaw_approve_id_","");
+    var id = this.id.replace("bmaw_approve_id_","");
     $.post(
       "/flop/wp-json/bmaw-submission/v1/submissions/"+id+"/approve",
       {
