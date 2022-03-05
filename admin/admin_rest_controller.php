@@ -157,7 +157,23 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function approve_submission($request)
 	{
-		error_log(vdump($request));
+		$change_id = $request->get_param('id');
+
+		error_log("getting changes for id ".$change_id);
+
+		global $wpdb;
+		global $bmaw_submissions_table_name;
+		$sql = $wpdb->prepare('SELECT changes_requested FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+		$result = $wpdb->get_results($sql, ARRAY_A);
+		if ($result)
+		{
+			error_log(vdump($result));
+		}
+		else
+		{
+			error_log("no result found");
+		}
+
 		// // bmlt_ajax_callback=1&do_meeting_search=1&sort_key=time&simple_other_fields=1&services[]=1&advanced_published=0&salt=1646289683445
 		// $postargs = array(
 		// 	'bmlt_ajax_callback' => 1,
@@ -169,7 +185,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		return "{'response':'approved'}";
 
-		$response = $this->bmlt_integration->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('admin_action'=>'get_format_info'));
+		$response = $this->bmlt_integration->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('modify_meeting'=>'get_format_info'));
 		if( is_wp_error( $response ) ) {
 			wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
 		}    
