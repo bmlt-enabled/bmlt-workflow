@@ -88,7 +88,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
     public function column_id($item)
     {
         $output    = '';
-
+        error_log(vdump($item));
         // Title.
         $output .= '<strong><a href="#" class="row-title">' . esc_html($item['id']) . '</a></strong>';
 
