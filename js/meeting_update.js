@@ -369,5 +369,15 @@ jQuery(document).ready(function ($) {
       str = str.slice(0, -1);
       put_field("format_shared_id_list", str);
     }
+
+    $.post(
+      "/flop/wp-json/bmaw-submission/v1/submissions",
+      {
+          _wpnonce: $("#_wpnonce").val(),
+      },
+      function (response) {
+        console.log("submitted");
+      }
+    );   
   });
 });
