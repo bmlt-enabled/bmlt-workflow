@@ -177,6 +177,8 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
 //                                error_log(vdump($formatarr));
                                 foreach ($formatarr as $key => $value)
                                 {
+                                    error_log("key ".$key);
+                                    error_log(vdump($value));
                                     $row = '<tr>';
                                     $row .= '<td><input type="checkbox" id="format-table-' + $key; '" value="'+ $value['formatcode'] + '"></input></td>';
                                     $row .= "<td>(" + $value['formatcode'] +")</td>";
