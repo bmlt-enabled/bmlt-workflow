@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) exit; // die if being called directly
 $submissionsListTable = new bmaw_meeting_submissions_page();
 $submissionsListTable->prepare_items();
 
-wp_nonce_field('wp_rest', '_wpnonce');
+wp_nonce_field('wp_rest', '_wprestnonce');
 
 ?>
 
@@ -98,15 +98,15 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $actions = array();
         if($item['change_made'] != 'Approved')
         {
-            $actions['bmaw_approve'] = '<a class="bmaw_approve" id="bmaw_approve_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Approve') . '</a>';
+            $actions['bmaw_span_approve'] = '<a class="bmaw_approve" id="bmaw_approve_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Approve') . '</a>';
         }
         if($item['change_made'] != 'Rejected')
         {
-            $actions['bmaw_reject'] = '<a class="bmaw_reject" id="bmaw_reject_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Reject') . '</a>';
+            $actions['bmaw_span_reject'] = '<a class="bmaw_reject" id="bmaw_reject_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Reject') . '</a>';
         }
         // if($item['change_made'] = '')
         // {
-            $actions['bmaw_quickedit'] = '<a class="bmaw_quickedit" id="bmaw_quickedit_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Quick Edit') . '</a>';
+            $actions['bmaw_span_quickedit'] = '<a class="bmaw_quickedit" id="bmaw_quickedit_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Quick Edit') . '</a>';
         // }
 
         $row_actions = array();
