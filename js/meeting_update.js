@@ -372,9 +372,7 @@ jQuery(document).ready(function ($) {
 
     $.post(
       "/flop/wp-json/bmaw-submission/v1/submissions",
-      {
-          _wpnonce: $("#_wpnonce").val(),
-      },
+      $("#meeting_update_form").serialize(),
       function (response) {
         console.log("submitted");
       }
