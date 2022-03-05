@@ -180,9 +180,10 @@ class bmaw_meeting_submissions_page extends WP_List_Table
             return $result;
         } elseif ($order === 'num') {
             $result = $a - $b;
+            return $result;
         }
 
-        return -$result;
+        return 0;
     }
 }
 ?>
