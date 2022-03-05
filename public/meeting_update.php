@@ -175,7 +175,7 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
 
                                 $formatarr = json_decode($response['body']);
 //                                error_log(vdump($formatarr));
-                                foreach ($formatarr as $key => $value)
+                                foreach ($formatarr['row'] as $key => $value)
                                 {
                                     error_log("key ".$key);
                                     error_log(vdump($value));
