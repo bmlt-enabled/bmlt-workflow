@@ -166,11 +166,11 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		$sql = $wpdb->prepare('SELECT change_made FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
 		$result = $wpdb->get_results($sql, ARRAY_A);
-		if($result[0]['change_made']) === 'Approved')
+		if($result[0]['change_made'] === 'Approved')
 		{
 			return "{'response':'already approved'}";
 		}
-		
+
 		$sql = $wpdb->prepare('SELECT changes_requested FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
 		$result = $wpdb->get_results($sql, ARRAY_A);
 		if ($result)
