@@ -176,22 +176,12 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		$change = unserialize($result[0]['changes_requested']);
 		error_log("deserialised");
 		error_log(vdump($change));
-
-		// // bmlt_ajax_callback=1&do_meeting_search=1&sort_key=time&simple_other_fields=1&services[]=1&advanced_published=0&salt=1646289683445
-		// $postargs = array(
-		// 	'bmlt_ajax_callback' => 1,
-		// 	'do_meeting_search' => 1,
-		// 	'meeting_key' => 'id_bigint',
-		// 	'meeting_key_value' => $request['id'],
-		// );
-		// $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $postargs);
-
-		return "{'response':'approved'}";
-
+		$change['admin_action']='modify_meeting';
+		
 		$response = $this->bmlt_integration->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('modify_meeting'=>'get_format_info'));
-		if( is_wp_error( $response ) ) {
-			wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
-		}    
+		// if( is_wp_error( $response ) ) {
+		// 	wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
+		// }    
 
 		return "{'response':'approved'}";
 	}
