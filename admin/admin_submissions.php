@@ -2,9 +2,10 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-$exampleListTable = new bmaw_meeting_submissions_page();
+$submissionsListTable = new bmaw_meeting_submissions_page();
+$submissionsListTable->prepare_items();
 
-$exampleListTable->prepare_items();
+wp_nonce_field('wp_rest', '_wpnonce');
 
 ?>
 
@@ -12,7 +13,7 @@ $exampleListTable->prepare_items();
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
     <h2>Meeting Submissions</h2>
-    <?php $exampleListTable->display(); ?>
+    <?php $submissionsListTable->display(); ?>
 </div>
 <?php
 
