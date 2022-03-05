@@ -188,7 +188,7 @@ function meeting_update_form_handler_rest($data)
                     break;
             }
             // add the meeting id to the change list
-            $changes['id'] = $meeting_id;
+            $changes['id_bigint'] = $meeting_id;
 
         } else {
             wp_die("meeting id not set");
