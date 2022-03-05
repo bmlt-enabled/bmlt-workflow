@@ -53,7 +53,7 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
                 <option></option>
             </select>
             <br><br>
-            <input type="hidden" name="id_bigint" id="id_bigint" value="">
+            <input type="hidden" name="meeting_id" id="meeting_id" value="">
         </div>
         <div id="meeting_content">
             <p id="reason_change_text" style="display: none;">We've retrieved the details below from our system. Please make any changes and then submit your update.

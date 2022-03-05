@@ -135,7 +135,7 @@ jQuery(document).ready(function ($) {
     // clear_field("comments", mdata[id].comments);
     // clear_field("time_zone", mdata[id].time_zone);
 
-    clear_field("id_bigint");
+    clear_field("meeting_id");
     // reset email checkbox
     put_field_checked_index("add_email", 0, true);
 
@@ -313,7 +313,7 @@ jQuery(document).ready(function ($) {
         // put_field("time_zone", mdata[id].time_zone);
 
         // store the selected meeting ID away
-        put_field("id_bigint", mdata[id].id_bigint);
+        put_field("meeting_id", mdata[id].id_bigint);
 
         // clear all the formats
         $("#format-table tr").each(function () {
