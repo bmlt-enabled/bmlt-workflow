@@ -180,9 +180,9 @@ echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address')
                                     error_log("key ".$key);
                                     error_log(vdump($value));
                                     $row = '<tr>';
-                                    $row .= '<td><input type="checkbox" id="format-table-' + $key; '" value="'+ $key + '"></input></td>';
-                                    $row .= "<td>(" + $value['key_string'] +")</td>";
-                                    $row .= "<td>" + $value['name_string'] + "</td><td>" + $value['description_string'] +"</td>";
+                                    $row .= '<td><input type="checkbox" id="format-table-' . $key . '" value="' . $key . '"></input></td>';
+                                    $row .= "<td>(" . $value['key_string'] . ")</td>";
+                                    $row .= "<td>" . $value['name_string'] . "</td><td>" . $value['description_string'] . "</td>";
                                     $row .= '</tr>';
                                     echo $row;
                                 }
