@@ -111,6 +111,10 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
         foreach ($actions as $action => $link) {
             $row_actions[] = '<span class="' . esc_attr($action) . '">' . $link . '</span>';
+            print_r($row_actions);
+            $action = 'approve';
+            $row_actions[] = '<span class="' . esc_attr($action) . '">' . $link . '</span>';
+            print_r($row_actions);
         }
 
         $output .= '<div class="row-actions">' . implode(' | ', $row_actions) . '</div>';
