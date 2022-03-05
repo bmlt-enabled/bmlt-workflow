@@ -89,6 +89,16 @@ class bmaw_meeting_submissions_page extends WP_List_Table
     {
         $output    = '';
         error_log(vdump($item));
+        $row_actions = array();
+
+        $action = 'approval';
+        $link = "http://www.google.com";
+        $row_actions[] = '<span class="' . esc_attr($action) . '">' . $link . '</span>';
+        print_r($row_actions);
+        $action = 'approve';
+        $row_actions[] = '<span class="' . esc_attr($action) . '">' . $link . '</span>';
+        print_r($row_actions);
+
         // Title.
         $output .= '<strong><a href="#" class="row-title">' . esc_html($item['id']) . '</a></strong>';
 
@@ -111,10 +121,6 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
         foreach ($actions as $action => $link) {
             $row_actions[] = '<span class="' . esc_attr($action) . '">' . $link . '</span>';
-            print_r($row_actions);
-            $action = 'approve';
-            $row_actions[] = '<span class="' . esc_attr($action) . '">' . $link . '</span>';
-            print_r($row_actions);
         }
 
         $output .= '<div class="row-actions">' . implode(' | ', $row_actions) . '</div>';
