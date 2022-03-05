@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) exit; // die if being called directly
 $exampleListTable = new bmaw_meeting_submissions_page();
 
 $exampleListTable->prepare_items();
-echo '<input type="hidden" value="' . wp_nonce_field('wp_rest', '_wpnonce') . '">';
+// echo '<input type="hidden" value="' . wp_nonce_field('wp_rest', '_wpnonce') . '">';
 ?>
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
