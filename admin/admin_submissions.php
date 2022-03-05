@@ -83,7 +83,12 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
     public function get_sortable_columns()
     {
-        return array('submitter_name' => array('submitter_name', false));
+        return array(
+            'id' => array('id', false),
+            'submission_time' => array('submission_time', false),
+            'submitter_name' => array('submitter_name', false),
+            'submitter_email' => array('submitter_email', false),
+    );
     }
 
     public function column_id($item)
@@ -156,7 +161,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
     private function sort_data($a, $b)
     {
         // Set defaults
-        $orderby = 'submitter_name';
+        $orderby = 'id';
         $order = 'asc';
 
         // If orderby is set, use this as the sort column
