@@ -1,6 +1,4 @@
-/* .wp-list-table .column-id {
-    width: 5%;
-}
+/*
 .wp-list-table .column-changed_by {
     width: 5%;
 }
@@ -26,4 +24,8 @@
 
 .wp-list-table [class ^= "column-"] {
     width: auto;
+}
+
+.wp-list-table .column-id {
+    width: 5%;
 }
