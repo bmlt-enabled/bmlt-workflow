@@ -24,6 +24,7 @@ if (!class_exists('WP_List_Table')) {
 
 class bmaw_meeting_submissions_page extends WP_List_Table
 {
+
     public function prepare_items()
     {
         $columns = $this->get_columns();
@@ -31,6 +32,9 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $sortable = $this->get_sortable_columns();
 
         $data = $this->table_data();
+        error_log("TABLE OUTPUT");
+        error_log(vdump($data));
+
         usort($data, array(&$this, 'sort_data'));
 
         $perPage = 10;
@@ -63,6 +67,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
             'submitter_name'       => 'Submitter Name',
             'submitter_email' => 'Submitter Email',
             'submission_type'        => 'Change Type',
+            'change_summary' => 'Change Summary',
             'submission_time'    => 'Submission Time',
             'change_time' => 'Change Time',
             'changed_by' => 'Changed By',
@@ -129,6 +134,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
             case 'submitter_email':
             case 'submission_type':
             case 'submission_date_time':
+            case 'change_summary':
             case 'change_time':
             case 'changed_by':
             case 'change_made':
@@ -151,11 +157,6 @@ class bmaw_meeting_submissions_page extends WP_List_Table
 
     private function table_data()
     {
-        // $request  = new WP_REST_Request( 'GET', '/bmaw-submission/v1/submissions/12' );
-        // $response = rest_do_request( $request );
-        // $result     = rest_get_server()->response_to_data( $response, true );
-        // error_log($this->vdump($result));
-
         $request  = new WP_REST_Request('GET', '/bmaw-submission/v1/submissions');
         $response = rest_do_request($request);
         $result     = rest_get_server()->response_to_data($response, true);
