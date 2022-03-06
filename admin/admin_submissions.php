@@ -95,7 +95,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
     public function column_id($item)
     {
         $output    = '';
-        error_log(vdump($item));
+        // error_log(vdump($item));
         $row_actions = array();
 
         // Title.
@@ -120,7 +120,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         foreach ($actions as $action => $link) {
             $row_actions[] = '<span class="' . esc_attr($action) . '">' . $link . '</span>';
         }
-        error_log(vdump($row_actions));
+        // error_log(vdump($row_actions));
         $output .= '<div class="row-actions">' . implode(' | ', $row_actions) . '</div>';
 
         return $output;
@@ -160,6 +160,25 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $request  = new WP_REST_Request('GET', '/bmaw-submission/v1/submissions');
         $response = rest_do_request($request);
         $result     = rest_get_server()->response_to_data($response, true);
+        // format the changes requested
+        foreach ($result as $index)
+        {
+            $change = unserialize($result[$index]['changes_requested']);
+            // error_log("deserialised");
+            // error_log(vdump($change));
+            $summary = '';
+            foreach ($change as $key => $value)
+            {
+                // skip meeting_id as it is always required
+                if($key != 'meeting_id')
+                {
+                    $summary .= $key . " = " . $value . "<br>" ;
+                }
+            }
+            // chop trailing <br>
+            $result[$index]['change_summary'] = substr($summary, 0, -4); ;
+        }
+
         return $result;
     }
 
