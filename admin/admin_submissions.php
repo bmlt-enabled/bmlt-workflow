@@ -161,8 +161,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
     protected function get_views() { 
         $status_links = array(
             "all"       => __("<a href='#'>All</a>",'bmaw-submissions'),
-            "published" => __("<a href='#'>Published</a>",'bmaw-submissions'),
-            "trashed"   => __("<a href='#'>Trashed</a>",'bmaw-submissions')
+            "not approved" => __("<a href='#'>Not Approved</a>",'bmaw-submissions')
         );
         return $status_links;
     }
