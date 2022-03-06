@@ -161,22 +161,22 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $response = rest_do_request($request);
         $result     = rest_get_server()->response_to_data($response, true);
         // format the changes requested
-        foreach ($result as $index)
+        foreach ($result as $key => $value)
         {
-            $change = unserialize($result[$index]['changes_requested']);
+            $change = unserialize($value['changes_requested']);
             // error_log("deserialised");
             // error_log(vdump($change));
             $summary = '';
-            foreach ($change as $key => $value)
+            foreach ($change as $key2 => $value2)
             {
                 // skip meeting_id as it is always required
-                if($key != 'meeting_id')
+                if($key2 != 'meeting_id')
                 {
-                    $summary .= $key . " = " . $value . "<br>" ;
+                    $summary .= $key2 . " = " . $value2 . "<br>" ;
                 }
             }
             // chop trailing <br>
-            $result[$index]['change_summary'] = substr($summary, 0, -4); ;
+            $results[$key]['change_summary'] = substr($summary, 0, -4); ;
         }
 
         return $result;
