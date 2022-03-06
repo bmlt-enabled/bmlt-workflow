@@ -83,6 +83,7 @@ function bmaw_admin_scripts($hook)
         wp_enqueue_style('thickbox');
         wp_enqueue_script('plugin-install');
         deny_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
+        deny_cache_enqueue_style('bmaw-admin-submissions-css', false, 'css/admin_submissions.css');
         if (isset($_REQUEST['modal']) && (!empty($_REQUEST['modal']))) {
             wp_enqueue_style('modal-window', plugins_url('css/admin-modal.css', __FILE__));
         }
