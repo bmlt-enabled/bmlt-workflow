@@ -6,7 +6,8 @@ $submissionsListTable = new bmaw_meeting_submissions_page();
 $submissionsListTable->prepare_items();
 
 wp_nonce_field('wp_rest', '_wprestnonce');
-
+add_settings_error('bmaw-submissions','bmaw_error_invalid_json','Invalid JSON was returned','error');
+settings_errors('bmaw_error_invalid_json',false,true);
 ?>
 
 
