@@ -1,6 +1,29 @@
-.wp-list-table .column-id {
+/* .wp-list-table .column-id {
     width: 5%;
 }
 .wp-list-table .column-changed_by {
     width: 5%;
+}
+
+.wp-list-table .column-submitter_name {
+    width: 10%;
+}
+
+.wp-list-table .column-change_type {
+    width: 10%;
+}
+
+.wp-list-table .column-change_made {
+    width: 10%;
+}
+
+.wp-list-table .column-submission_time {
+    width: auto;
+}
+.wp-list-table .column-change_time {
+    width: 10%;
+} */
+
+.wp-list-table [class ^= "column-"] {
+    width: auto;
 }
