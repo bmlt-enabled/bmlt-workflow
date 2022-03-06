@@ -13,6 +13,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
     <h2>Meeting Submissions</h2>
+    <hr class="wp-header-end">
     <?php $submissionsListTable->display(); ?>
 </div>
 <?php
