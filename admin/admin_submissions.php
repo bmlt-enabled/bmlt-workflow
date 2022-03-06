@@ -3,6 +3,8 @@
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 $submissionsListTable = new bmaw_meeting_submissions_page();
+$submissionsListTable->views();
+
 $submissionsListTable->prepare_items();
 
 wp_nonce_field('wp_rest', '_wprestnonce');
@@ -153,6 +155,15 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $contents = ob_get_contents();
         ob_end_clean();
         return $contents;
+    }
+
+    protected function get_views() { 
+        $status_links = array(
+            "all"       => __("<a href='#'>All</a>",'bmaw-submissions'),
+            "published" => __("<a href='#'>Published</a>",'bmaw-submissions'),
+            "trashed"   => __("<a href='#'>Trashed</a>",'bmaw-submissions')
+        );
+        return $status_links;
     }
 
     private function table_data()
