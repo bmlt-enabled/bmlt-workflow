@@ -176,7 +176,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
                 }
             }
             // chop trailing <br>
-            $results[$key]['change_summary'] = substr($summary, 0, -4); ;
+            $result[$key]['change_summary'] = substr($summary, 0, -4); ;
         }
 
         return $result;
