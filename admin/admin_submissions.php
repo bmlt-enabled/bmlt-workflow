@@ -3,9 +3,6 @@
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 $submissionsListTable = new bmaw_meeting_submissions_page();
-$submissionsListTable->views();
-
-$submissionsListTable->prepare_items();
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
@@ -16,7 +13,11 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <div id="icon-users" class="icon32"></div>
     <h2>Meeting Submissions</h2>
     <hr class="wp-header-end">
-    <?php $submissionsListTable->display(); ?>
+    <?php 
+    $submissionsListTable->views();
+    $submissionsListTable->prepare_items();
+    $submissionsListTable->display(); 
+    ?>
 </div>
 <?php
 
