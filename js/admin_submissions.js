@@ -1,7 +1,7 @@
 jQuery(document).ready(function ($) {
-  function bmaw_create_row_link_modal($element, $title) {
-    $("#" + $element + "-dialog").dialog({
-      title: $title,
+  function bmaw_create_row_link_modal(element, title) {
+    $("#" + element + "-dialog").dialog({
+      title: title,
       dialogClass: "wp-dialog",
       autoOpen: false,
       draggable: false,
@@ -16,7 +16,7 @@ jQuery(document).ready(function ($) {
       },
       buttons: {
         Ok: function () {
-          fn = window[$element + "_ok"];
+          fn = window[element + "_ok"];
           if (typeof fn === "function") fn($(this).data("id"));
         },
         Cancel: function () {
@@ -26,7 +26,7 @@ jQuery(document).ready(function ($) {
       open: function () {
         // close dialog by clicking the overlay behind it
         $(".ui-widget-overlay").bind("click", function () {
-          $($element).dialog("close");
+          $(element).dialog("close");
         });
       },
       create: function () {
@@ -34,10 +34,10 @@ jQuery(document).ready(function ($) {
       },
     });
     // hook the approve flow
-    $("." + $element).on("click", function (event) {
+    $("." + element).on("click", function (event) {
       event.preventDefault();
-      var id = this.id.replace($element + "_id_", "");
-      $("#" + $element + "-dialog")
+      var id = this.id.replace(element + "_id_", "");
+      $("#" + element + "-dialog")
         .data("id", id)
         .dialog("open");
     });
