@@ -45,24 +45,31 @@ class bmaw_submissions_rest extends WP_REST_Controller
 			'schema' => null,
 
 		));
-		// submissions/<id>
+		// GET submissions/<id>
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', array(
 			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => array($this, 'get_submission'),
 			'permission_callback' => array($this, 'get_submissions_permissions_check'),
 		));
-		// submissions/<id>/approve
+		// POST submissions/<id>/approve
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)/approve', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => array($this, 'approve_submission'),
-			'permission_callback' => array($this, 'post_submissions_action_permissions_check'),
+			'permission_callback' => array($this, 'approve_submission_action_permissions_check'),
 		));
-		// submissions/<id>/reject
+		// POST submissions/<id>/reject
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)/reject', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => array($this, 'reject_submission'),
-			'permission_callback' => array($this, 'post_submissions_action_permissions_check'),
+			'permission_callback' => array($this, 'reject_submission_action_permissions_check'),
 		));
+		// DELETE submissions/<id>
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', array(
+			'methods'             => WP_REST_Server::DELETABLE,
+			'callback'            => array($this, 'delete_submission'),
+			'permission_callback' => array($this, 'delete_submission_permissions_check'),
+		));
+		
 	}
 	/**
 	 * Check permissions for submission management. These are general purpose checks for all submission editors, granular edit permission will be checked within the callback itself.
@@ -79,7 +86,23 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		return true;
 	}
 
-	public function post_submissions_action_permissions_check($request)
+	public function approve_submission_action_permissions_check($request)
+	{
+		if (!current_user_can('manage_options')) {
+			return new WP_Error('rest_forbidden', esc_html__('You cannot manage the submissions resource.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
+	public function reject_submission_action_permissions_check($request)
+	{
+		if (!current_user_can('manage_options')) {
+			return new WP_Error('rest_forbidden', esc_html__('You cannot manage the submissions resource.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
+	public function delete_submission_action_permissions_check($request)
 	{
 		if (!current_user_can('manage_options')) {
 			return new WP_Error('rest_forbidden', esc_html__('You cannot manage the submissions resource.'), array('status' => $this->authorization_status_code()));
