@@ -58,7 +58,7 @@ jQuery(document).ready(function ($) {
   // });
 
   // hook the delete flow
-  $('#bmaw_submission_delete').on("click", function (event)
+  $('.bmaw_submission_delete').on("click", function (event)
   {
     event.preventDefault();
     var id = this.id.replace("bmaw_submission_delete_id_", "");
