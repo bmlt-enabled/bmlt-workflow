@@ -117,7 +117,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         // {
             $actions['bmaw_span_quickedit'] = '<a class="bmaw_submission_quickedit" id="bmaw_submission_quickedit_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Quick Edit') . '</a>';
         // }
-        $actions['bmaw_span_delete'] = '<a class="bmaw_submission_delete" id="bmaw_submission_delete_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Quick Edit') . '</a>';
+        $actions['bmaw_span_delete'] = '<a class="bmaw_submission_delete" id="bmaw_submission_delete_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Delete') . '</a>';
 
         $row_actions = array();
 
