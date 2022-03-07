@@ -9,13 +9,11 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 ?>
 
 <div id="bmaw_submission_approve_dialog" class="hidden" style="max-width:800px">
-  <h3>Approve Submission</h3>
   <p>Use the quickedit function to make changes before approval.</p>
   <p>Are you sure you would like to approve the submission directly?</p>
 </div>
 
 <div id="bmaw_submission_delete_dialog" class="hidden" style="max-width:800px">
-  <h3>Delete Submission</h3>
   <p>Use the quickedit function to make changes before approval.</p>
   <p>Are you sure you would like to delete the submission directly?</p>
 </div>
@@ -116,10 +114,10 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $output .= '<strong><a href="#" class="row-title">' . esc_html($item['id']) . '</a></strong>';
 
         $actions = array();
-        if($item['change_made'] != 'Approved')
-        {
+        // if($item['change_made'] != 'Approved')
+        // {
             $actions['bmaw_span_approve'] = '<a class="bmaw_submission_approve" id="bmaw_submission_approve_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Approve') . '</a>';
-        }
+        // }
         if($item['change_made'] != 'Rejected')
         {
             $actions['bmaw_span_reject'] = '<a class="bmaw_submission_reject" id="bmaw_submission_reject_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Reject') . '</a>';
