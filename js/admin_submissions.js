@@ -1,24 +1,24 @@
 jQuery(document).ready(function ($) {
 
-  dialog = $( "#dialog-form" ).dialog({
-    autoOpen: false,
-    height: 400,
-    width: 350,
-    modal: true,
-    buttons: {
-      Cancel: function() {
-        dialog.dialog( "close" );
+    dlg = $( "#dialog-confirm" ).dialog({
+      resizable: false,
+      height: "auto",
+      width: 400,
+      modal: true,
+      buttons: {
+        "Delete all items": function() {
+          $( this ).dialog( "close" );
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
       }
-    },
-    close: function() {
-      form[ 0 ].reset();
-      allFields.removeClass( "ui-state-error" );
-    }
-  });
+    });
+
 
   $(".bmaw_submission_delete").click(function (event) {
     event.preventDefault();
-    dialog.dialog( "open" );
+    dlg.dialog( "open" );
   });
 
   $(".bmaw_submission_approve").click(function (event) {
