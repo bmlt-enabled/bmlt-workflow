@@ -39,13 +39,13 @@ jQuery(document).ready(function ($) {
       },
     });
     // hook the approve flow
-    $(classname).on("click", function (event) {
-      event.preventDefault();
-      var id = this.id.replace(idname, "");
-      $(dialogname)
-        .data("id", id)
-        .dialog("open");
-    });
+    // $(classname).on("click", function (event) {
+    //   event.preventDefault();
+    //   var id = this.id.replace(idname, "");
+    //   $(dialogname)
+    //     .data("id", id)
+    //     .dialog("open");
+    // });
   }
   bmaw_create_row_link_modal("bmaw_submission_delete", "Delete Submission");
   bmaw_create_row_link_modal("bmaw_submission_approve", "Approve Submission");
@@ -58,12 +58,12 @@ jQuery(document).ready(function ($) {
   // });
 
   // hook the delete flow
-  // $('#bmaw_submission_delete').on("click", function (event)
-  // {
-  //   event.preventDefault();
-  //   var id = this.id.replace("bmaw_submission_delete_id_", "");
-  //   $("#" + $element + "-dialog").data('id', id).dialog("open");
-  // });
+  $('#bmaw_submission_delete').on("click", function (event)
+  {
+    event.preventDefault();
+    var id = this.id.replace("bmaw_submission_delete_id_", "");
+    $("#" + $element + "-dialog").data('id', id).dialog("open");
+  });
 
   function bmaw_submission_approve_ok(id) {
     $.post("/flop/wp-json/bmaw-submission/v1/submissions/" + id + "/approve", {
