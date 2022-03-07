@@ -55,15 +55,23 @@ jQuery(document).ready(function ($) {
   //   var id = this.id.replace("bmaw_submission_approve_id_", "");
   //   $("#" + $element + "-dialog").data('id', id).dialog("open");
   // });
+  // hook the approve flow
+  $(".bmaw_submission_approve").on("click", function (event) {
+    event.preventDefault();
+    var id = this.id.replace('/.*_id_/i', "");
+    var dialog = '#'+this.id.substr(1)+"_dialog";
+    $(dialog).data("id", id).dialog("open");
+  });
 
   // hook the delete flow
   $(".bmaw_submission_delete").on("click", function (event) {
     event.preventDefault();
-    var id = this.id.replace("bmaw_submission_delete_id_", "");
-    $("#bmaw_submission_delete_dialog").data("id", id).dialog("open");
+    var id = this.id.replace('/.*_id_/i', "");
+    var dialog = '#'+this.id.substr(1)+"_dialog";
+    $(dialog).data("id", id).dialog("open");
   });
 
-  function bmaw_submission_approve_dialog_ok(id) {
+  bmaw_submission_approve_dialog_ok = function(id) {
     $.post("/flop/wp-json/bmaw-submission/v1/submissions/" + id + "/approve", {
       _wpnonce: $("#_wprestnonce").val(),
     })
