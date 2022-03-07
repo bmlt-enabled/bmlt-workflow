@@ -58,16 +58,16 @@ jQuery(document).ready(function ($) {
   // hook the approve flow
   $(".bmaw_submission_approve").on("click", function (event) {
     event.preventDefault();
-    var id = this.id.replace('/.*_id_/i', "");
-    var dialog = '#'+this.id.substr(1)+"_dialog";
+    var id = this.id.replace('/.*_id_/i', '');
+    var dialog = '#'+this.id.substring(0,this.id.indexOf('_id_'))+'_dialog';
     $(dialog).data("id", id).dialog("open");
   });
 
   // hook the delete flow
   $(".bmaw_submission_delete").on("click", function (event) {
     event.preventDefault();
-    var id = this.id.replace('/.*_id_/i', "");
-    var dialog = '#'+this.id.substr(1)+"_dialog";
+    var id = this.id.replace('/.*_id_/i', '');
+    var dialog = '#'+this.id.substring(0,this.id.indexOf('_id_'))+'_dialog';
     $(dialog).data("id", id).dialog("open");
   });
 
