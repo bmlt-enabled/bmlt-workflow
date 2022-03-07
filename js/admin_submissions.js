@@ -1,6 +1,6 @@
 jQuery(document).ready(function ($) {
   function bmaw_create_row_link_modal(element, title) {
-    $("#" + element + "-dialog").dialog({
+    $("#" + element + "_dialog").dialog({
       title: title,
       dialogClass: "wp-dialog",
       autoOpen: false,
@@ -37,7 +37,7 @@ jQuery(document).ready(function ($) {
     $("." + element).on("click", function (event) {
       event.preventDefault();
       var id = this.id.replace(element + "_id_", "");
-      $("#" + element + "-dialog")
+      $("#" + element + "_dialog")
         .data("id", id)
         .dialog("open");
     });
