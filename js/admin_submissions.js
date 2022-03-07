@@ -58,7 +58,7 @@ jQuery(document).ready(function ($) {
   // hook the approve flow
   $(".bmaw_submission_approve").on("click", function (event) {
     event.preventDefault();
-    var id = this.id.replace('/.*_id_/i', '');
+    var id = this.id.substring(this.id.indexOf('_id_')+4, this.id.length);
     var dialog = '#'+this.id.substring(0,this.id.indexOf('_id_'))+'_dialog';
     $(dialog).data("id", id).dialog("open");
   });
@@ -66,7 +66,7 @@ jQuery(document).ready(function ($) {
   // hook the delete flow
   $(".bmaw_submission_delete").on("click", function (event) {
     event.preventDefault();
-    var id = this.id.replace('/.*_id_/i', '');
+    var id = this.id.substring(this.id.indexOf('_id_')+4, this.id.length);
     var dialog = '#'+this.id.substring(0,this.id.indexOf('_id_'))+'_dialog';
     $(dialog).data("id", id).dialog("open");
   });
