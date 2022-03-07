@@ -1,25 +1,35 @@
 jQuery(document).ready(function ($) {
 
-    dlg = $( "#dialog-confirm" ).dialog({
-      resizable: false,
-      height: "auto",
-      width: 400,
-      modal: true,
-      buttons: {
-        "Delete all items": function() {
-          $( this ).dialog( "close" );
-        },
-        Cancel: function() {
-          $( this ).dialog( "close" );
-        }
-      }
-    });
-
+  $('#my-dialog').dialog({
+    title: 'My Dialog',
+    dialogClass: 'wp-dialog',
+    autoOpen: false,
+    draggable: false,
+    width: 'auto',
+    modal: true,
+    resizable: false,
+    closeOnEscape: true,
+    position: {
+      my: "center",
+      at: "center",
+      of: window
+    },
+    open: function () {
+      // close dialog by clicking the overlay behind it
+      $('.ui-widget-overlay').bind('click', function(){
+        $('#my-dialog').dialog('close');
+      })
+    },
+    create: function () {
+      // style fix for WordPress admin
+      $('.ui-dialog-titlebar-close').addClass('ui-button');
+    },
+  });
 
   $(".bmaw_submission_delete").click(function (event) {
     event.preventDefault();
-    dlg.dialog( "open" );
-  });
+    $('#my-dialog').dialog('open');
+    });
 
   $(".bmaw_submission_approve").click(function (event) {
     event.preventDefault();
