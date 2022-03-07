@@ -90,7 +90,7 @@ jQuery(document).ready(function ($) {
       });
   }
 
-  function bmaw_submission_delete_dialog_ok(id) {
+   bmaw_submission_delete_dialog_ok = function(id) {
     $.post("/flop/wp-json/bmaw-submission/v1/submissions/" + id + "/delete", {
       _wpnonce: $("#_wprestnonce").val(),
     })
