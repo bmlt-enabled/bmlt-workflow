@@ -12,7 +12,12 @@ wp_nonce_field('wp_rest', '_wprestnonce');
   <h3>Approve Submission</h3>
   <p>Use the quickedit function to make changes before approval.</p>
   <p>Are you sure you would like to approve the submission directly?</p>
+</div>
 
+<div id="bmaw_submissions_delete_dialog" class="hidden" style="max-width:800px">
+  <h3>Delete Submission</h3>
+  <p>Use the quickedit function to make changes before approval.</p>
+  <p>Are you sure you would like to delete the submission directly?</p>
 </div>
 
 <div class="wrap">
