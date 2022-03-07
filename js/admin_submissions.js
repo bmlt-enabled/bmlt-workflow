@@ -62,7 +62,7 @@ jQuery(document).ready(function ($) {
   {
     event.preventDefault();
     var id = this.id.replace("bmaw_submission_delete_id_", "");
-    $("#" + $element + "-dialog").data('id', id).dialog("open");
+    $("#bmaw_submission_delete_dialog").data('id', id).dialog("open");
   });
 
   function bmaw_submission_approve_ok(id) {
