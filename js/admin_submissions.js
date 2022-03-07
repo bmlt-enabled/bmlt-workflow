@@ -1,48 +1,47 @@
 jQuery(document).ready(function ($) {
+  function bmaw_create_modal($element, $title) {
+    $("#" + $element + "-dialog").dialog({
+      title: $title,
+      dialogClass: "wp-dialog",
+      autoOpen: false,
+      draggable: false,
+      width: "auto",
+      modal: true,
+      resizable: false,
+      closeOnEscape: true,
+      position: {
+        my: "center",
+        at: "center",
+        of: window,
+      },
+      buttons: {
+        "Ok": function() {
+          fn = window[$element+'_ok']
+          if (typeof fn === "function") fn();
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      },
+      open: function () {
+        // close dialog by clicking the overlay behind it
+        $(".ui-widget-overlay").bind("click", function () {
+          $($element).dialog("close");
+        });
+      },
+      create: function () {
+        $(".ui-dialog-titlebar-close").addClass("ui-button");
+      },
+    });
+    // Add open hook
+    $("." + $element).on("click", function (event) {
+      event.preventDefault();
+      $("#" + $element + "-dialog").dialog("open");
+    });
+
+  }
+  bmaw_create_modal("bmaw_submission_delete", "Delete Submission");
   console.log("ready");
-  // function bmaw_create_modal($element, $title) {
-  //   $("#" + $element + "-dialog").dialog({
-  //     title: $title,
-  //     dialogClass: "wp-dialog",
-  //     autoOpen: false,
-  //     draggable: false,
-  //     width: "auto",
-  //     modal: true,
-  //     resizable: false,
-  //     closeOnEscape: true,
-  //     position: {
-  //       my: "center",
-  //       at: "center",
-  //       of: window,
-  //     },
-  //     buttons: {
-  //       "Ok": function() {
-  //         fn = window[$element+'_ok']
-  //         if (typeof fn === "function") fn();
-  //       },
-  //       Cancel: function() {
-  //         $( this ).dialog( "close" );
-  //       }
-  //     },
-  //     open: function () {
-  //       // close dialog by clicking the overlay behind it
-  //       $(".ui-widget-overlay").bind("click", function () {
-  //         $($element).dialog("close");
-  //       });
-  //     },
-  //     create: function () {
-  //       $(".ui-dialog-titlebar-close").addClass("ui-button");
-  //     },
-  //   });
-  //   // Add open hook
-  //   $("." + $element).on("click", function (event) {
-  //     event.preventDefault();
-  //     $("#" + $element + "-dialog").dialog("open");
-  //   });
-
-  // }
-
-  // bmaw_create_modal("bmaw_submission_delete", "Delete Submission");
   // bmaw_create_modal("bmaw_submission_approve", "Approve Submission");
 
   // function bmaw_submission_approve_ok(event) {
