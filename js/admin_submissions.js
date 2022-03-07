@@ -47,8 +47,8 @@ jQuery(document).ready(function ($) {
     //     .dialog("open");
     // });
   }
-  bmaw_create_row_link_modal("bmaw_submission_delete", "Delete Submission");
-  bmaw_create_row_link_modal("bmaw_submission_approve", "Approve Submission");
+  bmaw_create_row_link_modal("bmaw_submissions_delete", "Delete Submission");
+  bmaw_create_row_link_modal("bmaw_submissions_approve", "Approve Submission");
   // hook the approve flow
   // $('#bmaw_submission_approve').on("click", function (event)
   // {
@@ -58,11 +58,11 @@ jQuery(document).ready(function ($) {
   // });
 
   // hook the delete flow
-  $('.bmaw_submission_delete').on("click", function (event)
+  $('.bmaw_submissions_delete').on("click", function (event)
   {
     event.preventDefault();
-    var id = this.id.replace("bmaw_submission_delete_id_", "");
-    $("#bmaw_submission_delete_dialog").data('id', id).dialog("open");
+    var id = this.id.replace("bmaw_submissions_delete_id_", "");
+    $("#bmaw_submissions_delete_dialog").data('id', id).dialog("open");
   });
 
   function bmaw_submission_approve_ok(id) {
