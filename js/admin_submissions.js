@@ -35,7 +35,7 @@ jQuery(document).ready(function ($) {
       },
     });
     // Add open hook
-    $("." + $element).click(function (event) {
+    $("." + $element).on("click", function (event) {
       event.preventDefault();
       $("#" + $element + "-dialog").dialog("open");
     });
