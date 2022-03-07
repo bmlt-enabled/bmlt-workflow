@@ -162,6 +162,9 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $status_links = array(
             "all"       => __("<a href='#'>All</a>",'bmaw-submissions'),
             "not approved" => __("<a href='#'>Not Approved</a>",'bmaw-submissions')
+            // add class='current'
+            // add total post numbers
+
         );
         return $status_links;
     }
@@ -183,7 +186,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
                 // skip meeting_id as it is always required
                 if($key2 != 'meeting_id')
                 {
-                    $summary .= "<b>" . $key2 . "</b>" . " = " . $value2 . "<br>" ;
+                    $summary .= '<b>' . $key2 . '</b>' . ' <span class="dashicons dashicons-arrow-right-alt"></span> ' . $value2 . '<br>' ;
                 }
             }
             // chop trailing <br>
