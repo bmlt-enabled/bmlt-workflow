@@ -1,37 +1,56 @@
 jQuery(document).ready(function ($) {
 
-  $('#my-dialog').dialog({
-    title: 'My Dialog',
-    dialogClass: 'wp-dialog',
-    autoOpen: false,
-    draggable: false,
-    width: 'auto',
-    modal: true,
-    resizable: false,
-    closeOnEscape: true,
-    position: {
-      my: "center",
-      at: "center",
-      of: window
-    },
-    open: function () {
-      // close dialog by clicking the overlay behind it
-      $('.ui-widget-overlay').bind('click', function(){
-        $('#my-dialog').dialog('close');
-      })
-    },
-    create: function () {
-      // style fix for WordPress admin
-      $('.ui-dialog-titlebar-close').addClass('ui-button');
-    },
-  });
-
-  $(".bmaw_submission_delete").click(function (event) {
-    event.preventDefault();
-    $('#my-dialog').dialog('open');
+  function bmaw_create_modal($element, $title) {
+    $("#" + $element + "-dialog").dialog({
+      title: $title,
+      dialogClass: "wp-dialog",
+      autoOpen: false,
+      draggable: false,
+      width: "auto",
+      modal: true,
+      resizable: false,
+      closeOnEscape: true,
+      position: {
+        my: "center",
+        at: "center",
+        of: window,
+      },
+      buttons: {
+        "Ok": function() {
+          fn = window[$element+'_ok']
+          if (typeof fn === "function") fn();
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      },
+      open: function () {
+        // close dialog by clicking the overlay behind it
+        $(".ui-widget-overlay").bind("click", function () {
+          $($element).dialog("close");
+        });
+      },
+      create: function () {
+        $(".ui-dialog-titlebar-close").addClass("ui-button");
+      },
     });
+    // Add cancel hook
+    $("." + $element + "-cancel").click(function (event) {
+      event.preventDefault();
+      $($element).dialog("close");
+    });
+    // Add open hook
+    $("." + $element).click(function (event) {
+      event.preventDefault();
+      $("#" + $element + "-dialog").dialog("open");
+    });
+  
+  }
 
-  $(".bmaw_submission_approve").click(function (event) {
+  bmaw_create_modal("bmaw_submission_delete", "Delete Submission");
+  bmaw_create_modal("bmaw_submission_approve", "Approve Submission");
+
+  function bmaw_submission_approve_ok(event) {
     event.preventDefault();
     var id = this.id.replace("bmaw_approve_id_", "");
     $.post("/flop/wp-json/bmaw-submission/v1/submissions/" + id + "/approve", {
@@ -58,5 +77,5 @@ jQuery(document).ready(function ($) {
             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>'
         );
       });
-  });
+  };
 });

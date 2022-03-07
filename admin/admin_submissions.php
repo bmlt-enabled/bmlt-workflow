@@ -8,15 +8,11 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
 ?>
 
-<div id="my-dialog" class="hidden" style="max-width:800px">
-  <h3>Dialog content</h3>
-  <p>This is some terribly exciting content inside this dialog. Don't you agree?</p>
-  <p>I'm just adding some more content to make this look more like actual content.</p>
-  <p><strong>Look!</strong> There's a horse with a moustache behind this modal!</p>
-  <p>...</p>
-  <p>...</p>
-  <p>You <em>idiot</em>, horses can't have facial hair.</p>
-  <p>I bet you feel real stupid right now.</p>
+<div id="bmaw_submissions_approve_dialog" class="hidden" style="max-width:800px">
+  <h3>Approve Submission</h3>
+  <p>Use the quickedit function to make changes before approval.</p>
+  <p>Are you sure you would like to approve the submission directly?</p>
+
 </div>
 
 <div class="wrap">
