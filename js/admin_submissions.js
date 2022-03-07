@@ -1,5 +1,23 @@
 jQuery(document).ready(function ($) {
 
+  var $info = $("#modal-content");
+  $info.dialog({
+    dialogClass: "wp-dialog",
+    modal: true,
+    autoOpen: false,
+    closeOnEscape: true,
+    buttons: {
+      Close: function () {
+        $(this).dialog("close");
+      },
+    },
+  });
+  
+  $(".bmaw_submission_delete").click(function (event) {
+    event.preventDefault();
+    $info.dialog("open");
+  });
+
   $(".bmaw_submission_approve").click(function (event) {
     event.preventDefault();
     var id = this.id.replace("bmaw_approve_id_", "");
@@ -28,5 +46,4 @@ jQuery(document).ready(function ($) {
         );
       });
   });
-
 });
