@@ -34,11 +34,6 @@ jQuery(document).ready(function ($) {
         $(".ui-dialog-titlebar-close").addClass("ui-button");
       },
     });
-    // Add cancel hook
-    $("." + $element + "-cancel").click(function (event) {
-      event.preventDefault();
-      $($element).dialog("close");
-    });
     // Add open hook
     $("." + $element).click(function (event) {
       event.preventDefault();
