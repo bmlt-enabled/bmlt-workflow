@@ -34,7 +34,7 @@ jQuery(document).ready(function ($) {
       },
     });
     // hook the approve flow
-    $("#" + $element).on("click", function (event) {
+    $("." + $element).on("click", function (event) {
       event.preventDefault();
       var id = this.id.replace($element + "_id_", "");
       $("#" + $element + "-dialog")
