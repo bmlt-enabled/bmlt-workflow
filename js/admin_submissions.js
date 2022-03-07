@@ -1,7 +1,7 @@
 jQuery(document).ready(function ($) {
 
-  var $info = $("#modal-content");
-  $info.dialog({
+  var info = $("#modal-content");
+  info.dialog({
     dialogClass: "wp-dialog",
     modal: true,
     autoOpen: false,
@@ -12,7 +12,7 @@ jQuery(document).ready(function ($) {
       },
     },
   });
-  
+
   $(".bmaw_submission_delete").click(function (event) {
     event.preventDefault();
     $info.dialog("open");
