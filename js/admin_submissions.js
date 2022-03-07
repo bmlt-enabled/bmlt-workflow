@@ -1,6 +1,6 @@
 jQuery(document).ready(function ($) {
 
-  var info = $("#modal-content");
+  var info = $("#dialog-form");
   info.dialog({
     dialogClass: "wp-dialog",
     modal: true,
