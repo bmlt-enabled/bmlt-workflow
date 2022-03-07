@@ -20,7 +20,7 @@ jQuery(document).ready(function ($) {
       },
       buttons: {
         Ok: function () {
-          fn = window[element + "_ok"];
+          fn = window[this.id + "_ok"];
           if (typeof fn === "function") fn($(this).data("id"));
         },
         Cancel: function () {
@@ -63,7 +63,7 @@ jQuery(document).ready(function ($) {
     $("#bmaw_submission_delete_dialog").data("id", id).dialog("open");
   });
 
-  function bmaw_submission_approve_ok(id) {
+  function bmaw_submission_approve_dialog_ok(id) {
     $.post("/flop/wp-json/bmaw-submission/v1/submissions/" + id + "/approve", {
       _wpnonce: $("#_wprestnonce").val(),
     })
@@ -90,7 +90,7 @@ jQuery(document).ready(function ($) {
       });
   }
 
-  function bmaw_submission_delete_ok(id) {
+  function bmaw_submission_delete_dialog_ok(id) {
     $.post("/flop/wp-json/bmaw-submission/v1/submissions/" + id + "/delete", {
       _wpnonce: $("#_wprestnonce").val(),
     })
