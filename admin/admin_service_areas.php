@@ -853,7 +853,7 @@ function recurse_service_bodies($arr, $sblist)
             // echo "<br>** recursing<br><br>";
             // var_dump($idx);
             // echo "<br>** recursing<br>";
-            recurse_service_bodies($idx, $sblist);
+            $sblist = recurse_service_bodies($idx, $sblist);
         }
     }
     if(array_key_exists('@attributes', $arr))
@@ -863,7 +863,9 @@ function recurse_service_bodies($arr, $sblist)
             // var_dump($arr['@attributes']['name']);
             // echo "<br>";
             $sblist[] = $arr['@attributes']['name'];
-             echo "<br> got one " . $arr['@attributes']['name'];
+            //  echo "<br> got one " . $arr['@attributes']['name'];
+            //  echo "<br> sblist = ";
+            //  var_dump($sblist);
     }
     return $sblist;
 }
