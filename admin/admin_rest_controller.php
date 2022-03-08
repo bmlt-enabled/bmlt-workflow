@@ -51,6 +51,12 @@ class bmaw_submissions_rest extends WP_REST_Controller
 			'callback'            => array($this, 'get_submission'),
 			'permission_callback' => array($this, 'get_submissions_permissions_check'),
 		));
+		// DELETE submissions/<id>
+		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', array(
+			'methods'             => WP_REST_Server::DELETABLE,
+			'callback'            => array($this, 'delete_submission'),
+			'permission_callback' => array($this, 'delete_submission_permissions_check'),
+		));		
 		// POST submissions/<id>/approve
 		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)/approve', array(
 			'methods'             => WP_REST_Server::CREATABLE,
@@ -62,12 +68,6 @@ class bmaw_submissions_rest extends WP_REST_Controller
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => array($this, 'reject_submission'),
 			'permission_callback' => array($this, 'reject_submission_action_permissions_check'),
-		));
-		// DELETE submissions/<id>
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', array(
-			'methods'             => WP_REST_Server::DELETABLE,
-			'callback'            => array($this, 'delete_submission'),
-			'permission_callback' => array($this, 'delete_submission_permissions_check'),
 		));
 		
 	}
@@ -102,7 +102,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		return true;
 	}
 
-	public function delete_submission_action_permissions_check($request)
+	public function delete_submission_permissions_check($request)
 	{
 		if (!current_user_can('manage_options')) {
 			return new WP_Error('rest_forbidden', esc_html__('You cannot manage the submissions resource.'), array('status' => $this->authorization_status_code()));
@@ -156,6 +156,26 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		global $wpdb;
 		global $bmaw_submissions_table_name;
 		$sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+		$result = $wpdb->get_results($sql, ARRAY_A);
+
+		// Return all of our comment response data.
+		return rest_ensure_response($result);
+	}
+
+	/**
+	 * Deletes a single submission
+	 *
+	 * @param WP_REST_Request $request get data from request.
+	 *
+	 * @return mixed|WP_REST_Response
+	 */
+
+	public function delete_submission($request)
+	{
+
+		global $wpdb;
+		global $bmaw_submissions_table_name;
+		$sql = $wpdb->prepare('DELETE * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
 		$result = $wpdb->get_results($sql, ARRAY_A);
 
 		// Return all of our comment response data.

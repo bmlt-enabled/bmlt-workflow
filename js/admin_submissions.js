@@ -75,6 +75,7 @@ jQuery(document).ready(function ($) {
       });
 
     $("#bmaw_submission_approve_dialog").dialog("close");
+    location.reload();
   };
 
   bmaw_submission_delete_dialog_ok = function (id) {
@@ -108,5 +109,6 @@ jQuery(document).ready(function ($) {
       });
 
     $("#bmaw_submission_delete_dialog").dialog("close");
+    location.reload();
   };
 });
