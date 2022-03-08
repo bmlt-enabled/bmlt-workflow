@@ -322,11 +322,14 @@ jQuery(document).ready(function ($) {
         });
 
         // set the new formats
-        var fmtspl = mdata[id].format_shared_id_list.split(",");
-        for (var i = 0; i < fmtspl.length; i++) {
-          put_field_checked_index("format-table", fmtspl[i], true);
-        }
 
+        // check formats aren't empty
+        if (mdata[id].format_shared_id_list !== undefined && mdata[id].format_shared_id_list !== "") {
+          var fmtspl = mdata[id].format_shared_id_list.split(",");
+          for (var i = 0; i < fmtspl.length; i++) {
+            put_field_checked_index("format-table", fmtspl[i], true);
+          }
+        }
         // tweak form instructions
         var reason = $("#update_reason").val();
         switch (reason) {
@@ -370,12 +373,8 @@ jQuery(document).ready(function ($) {
       put_field("format_shared_id_list", str);
     }
 
-    $.post(
-      "/flop/wp-json/bmaw-submission/v1/submissions",
-      $("#meeting_update_form").serialize(),
-      function (response) {
-        console.log("submitted");
-      }
-    );   
+    $.post("/flop/wp-json/bmaw-submission/v1/submissions", $("#meeting_update_form").serialize(), function (response) {
+      console.log("submitted");
+    });
   });
 });

@@ -67,6 +67,7 @@ jQuery(document).ready(function ($) {
             response.error_message +
             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
         $(".wp-header-end").after(msg);
+        location.reload();
       })
       .fail(function (xhr) {
         $(".wp-header-end").after(
@@ -79,7 +80,6 @@ jQuery(document).ready(function ($) {
       });
 
     $("#bmaw_submission_approve_dialog").dialog("close");
-    location.reload();
   };
 
   bmaw_submission_delete_dialog_ok = function (id) {
@@ -104,6 +104,7 @@ jQuery(document).ready(function ($) {
             response.error_message +
             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
         $(".wp-header-end").after(msg);
+        location.reload();
       })
       .fail(function (xhr) {
         $(".wp-header-end").after(
@@ -116,6 +117,5 @@ jQuery(document).ready(function ($) {
       });
 
     $("#bmaw_submission_delete_dialog").dialog("close");
-    // location.reload();
   };
 });
