@@ -38,34 +38,17 @@ jQuery(document).ready(function ($) {
       },
     });
     // hook the approve flow
-  $(classname).on("click", function (event) {
-    event.preventDefault();
-    let id = this.id.substring(this.id.indexOf('_id_')+4, this.id.length);
-    let dialog = '#'+this.id.substring(0,this.id.indexOf('_id_'))+'_dialog';
-    $(dialog).data("id", id).dialog("open");
-  });
-}
+    $(classname).on("click", function (event) {
+      event.preventDefault();
+      let id = this.id.substring(this.id.indexOf("_id_") + 4, this.id.length);
+      let dialog = "#" + this.id.substring(0, this.id.indexOf("_id_")) + "_dialog";
+      $(dialog).data("id", id).dialog("open");
+    });
+  }
   bmaw_create_row_link_modal("bmaw_submission_delete", "Delete Submission");
   bmaw_create_row_link_modal("bmaw_submission_approve", "Approve Submission");
 
-  // // hook the approve flow
-  // $(".bmaw_submission_approve").on("click", function (event) {
-  //   event.preventDefault();
-  //   var id = this.id.substring(this.id.indexOf('_id_')+4, this.id.length);
-  //   var dialog = '#'+this.id.substring(0,this.id.indexOf('_id_'))+'_dialog';
-  //   $(dialog).data("id", id).dialog("open");
-  // });
-
-  // // hook the delete flow
-  // $(".bmaw_submission_delete").on("click", function (event) {
-  //   event.preventDefault();
-  //   var id = this.id.substring(this.id.indexOf('_id_')+4, this.id.length);
-  //   var dialog = '#'+this.id.substring(0,this.id.indexOf('_id_'))+'_dialog';
-  //   $(dialog).data("id", id).dialog("open");
-  // });
-
-  bmaw_submission_approve_dialog_ok = function(id) {
-
+  bmaw_submission_approve_dialog_ok = function (id) {
     $.post("/flop/wp-json/bmaw-submission/v1/submissions/" + id + "/approve", {
       _wpnonce: $("#_wprestnonce").val(),
     })
@@ -91,14 +74,16 @@ jQuery(document).ready(function ($) {
         );
       });
 
-      $('#bmaw_submission_approve_dialog').dialog("close");
+    $("#bmaw_submission_approve_dialog").dialog("close");
+  };
 
-  }
-
-   bmaw_submission_delete_dialog_ok = function(id) {
-
-    $.post("/flop/wp-json/bmaw-submission/v1/submissions/" + id + "/delete", {
-      _wpnonce: $("#_wprestnonce").val(),
+  bmaw_submission_delete_dialog_ok = function (id) {
+    $.ajax({
+      url: "/flop/wp-json/bmaw-submission/v1/submissions/" + id,
+      type: "DELETE",
+      data: {
+        _wpnonce: $("#_wprestnonce").val(),
+      },
     })
       .done(function (response) {
         var msg = "";
@@ -122,8 +107,6 @@ jQuery(document).ready(function ($) {
         );
       });
 
-      $('#bmaw_submission_delete_dialog').dialog("close");
-
-  }
-
+    $("#bmaw_submission_delete_dialog").dialog("close");
+  };
 });
