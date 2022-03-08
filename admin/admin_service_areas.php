@@ -20,7 +20,7 @@ $xml = simplexml_load_string($response['body']);
 $arr = json_decode(json_encode($xml),1);
 // $arr = json_decode($response['body'],true);
 
-// var_dump($arr);
+var_dump($arr);
 $sblist = array();
 
 $sblist = recurse_service_bodies($arr['service_body'],$sblist);
