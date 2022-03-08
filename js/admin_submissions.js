@@ -86,6 +86,9 @@ jQuery(document).ready(function ($) {
         _wpnonce: $("#_wprestnonce").val(),
       },
     })
+      .always(function (response) {
+        console.log(response);
+      })
       .done(function (response) {
         var msg = "";
         if (response.error_message == "")
