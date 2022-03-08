@@ -72,7 +72,7 @@ function enqueue_form_deps()
 function bmaw_admin_scripts($hook)
 {
 
-    if (($hook != 'toplevel_page_bmaw-settings') && ($hook != 'bmaw_page_bmaw-submissions')) {
+    if (($hook != 'toplevel_page_bmaw-settings') && ($hook != 'bmaw_page_bmaw-submissions') && ($hook != 'bmaw_page_bmaw-service-areas')) {
         return;
     }
 
@@ -123,18 +123,19 @@ function bmaw_menu_pages()
         'BMAW Submissions',
         'manage_options',
         'bmaw-submissions',
-        'submissions_modal',
+        'display_bmaw_admin_submissions_page',
         2
     );
-}
 
-function submissions_modal()
-{
-    if (isset($_REQUEST['modal']) && (!empty($_REQUEST['modal']))) {
-        display_bmaw_admin_submissions_modal();
-    } else {
-        display_bmaw_admin_submissions_page();
-    }
+    add_submenu_page(
+        'bmaw-settings',
+        'BMAW Service Areas',
+        'BMAW Service Areas',
+        'manage_options',
+        'bmaw-service-areas',
+        'display_bmaw_admin_service_areas_page',
+        2
+    );
 }
 
 function add_plugin_link($plugin_actions, $plugin_file)
@@ -655,11 +656,13 @@ function display_bmaw_admin_submissions_page()
     echo $content;
 }
 
-function display_bmaw_admin_submissions_modal()
+function display_bmaw_admin_service_areas_page()
 {
-    print('<div class="modal-window-container">');
-    print('<h2>lol</h2>');
-    print('</div>');
+    $content = '';
+    ob_start();
+    include('admin/admin_service_areas.php');
+    $content = ob_get_clean();
+    echo $content;
 }
 
 function bmaw_install()
@@ -692,54 +695,5 @@ function bmaw_install()
 
 function bmaw_install_data()
 {
-    // global $wpdb;
-    // global $bmaw_submissions_table_name;
 
-    // $wpdb->insert($bmaw_submissions_table_name, array(
-    //     'id'          => 1,
-    //     'submitter_name'       => 'First1 Last1',
-    //     'submitter_email' => 'email1@mail1.com.',
-    //     'submission_type'        => 'update',
-    //     'submission_time'    => '26 Feb 2022, 10:34am'
-    // ));
-
-    // $wpdb->insert($bmaw_submissions_table_name, array(
-    //     'id'          => 2,
-    //     'submitter_name'       => 'First2 Last2',
-    //     'submitter_email' => 'email2@mail2.com.',
-    //     'submission_type'        => 'update',
-    //     'submission_time'    => '26 Feb 2022, 10:34am'
-    // ));
-
-    // $wpdb->insert($bmaw_submissions_table_name, array(
-    //     'id'          => 3,
-    //     'submitter_name'       => 'First3 Last3',
-    //     'submitter_email' => 'email3@mail3.com.',
-    //     'submission_type'        => 'update',
-    //     'submission_time'    => '26 Feb 2022, 10:34am'
-    // ));
-
-    // $wpdb->insert($bmaw_submissions_table_name, array(
-    //     'id'          => 4,
-    //     'submitter_name'       => 'First4 Last4',
-    //     'submitter_email' => 'email4@mail4.com.',
-    //     'submission_type'        => 'update',
-    //     'submission_time'    => '26 Feb 2022, 10:34am'
-    // ));
-
-    // $wpdb->insert($bmaw_submissions_table_name, array(
-    //     'id'          => 5,
-    //     'submitter_name'       => 'First5 Last5',
-    //     'submitter_email' => 'email5@mail5.com.',
-    //     'submission_type'        => 'update',
-    //     'submission_time'    => '26 Feb 2022, 10:34am'
-    // ));
-
-    // $wpdb->insert($bmaw_submissions_table_name, array(
-    //     'id'          => 6,
-    //     'submitter_name'       => 'First6 Last6',
-    //     'submitter_email' => 'email6@mail6.com.',
-    //     'submission_type'        => 'update',
-    //     'submission_time'    => '26 Feb 2022, 10:34am'
-    // ));
 }
