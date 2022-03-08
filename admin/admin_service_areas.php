@@ -846,7 +846,7 @@ function recurse_service_bodies($arr, $sblist)
 {
     if(array_key_exists('service_bodies', $arr))
     {
-        echo "gettype is "+gettype($arr['service_bodies']);
+        echo "gettype is " . gettype($arr['service_bodies']);
         // echo "size is "+count($arr['service_bodies']);
         foreach ($arr['service_bodies']['service_body'] as $idx)
         {
@@ -863,7 +863,7 @@ function recurse_service_bodies($arr, $sblist)
             var_dump($arr['@attributes']['name']);
             echo "<br>";
             $sblist[] = $arr['@attributes']['name'];
-            echo "<br> got one "+$arr['@attributes']['name'];
+            echo "<br> got one " . $arr['@attributes']['name'];
     }
     return $sblist;
 }
