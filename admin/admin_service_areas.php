@@ -848,6 +848,9 @@ function recurse_service_bodies($arr, $sblist)
     {
         foreach ($arr['service_bodies'] as $idx)
         {
+            echo "<br>** recursing<br><br>";
+            var_dump($idx);
+            echo "<br>** recursing<br>";
             recurse_service_bodies($idx, $sblist);
         }
     }
