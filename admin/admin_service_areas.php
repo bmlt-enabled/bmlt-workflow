@@ -823,12 +823,12 @@ $xml = simplexml_load_string($response['body']);
 $arr = json_decode(json_encode($xml),1);
 // $arr = json_decode($response['body'],true);
 
-var_dump($arr);
+// var_dump($arr);
 $sblist = array();
 
 $sblist = recurse_service_bodies($arr['service_body'],$sblist);
 echo "<h1>hows it going</h1>";
-// var_dump($sblist);
+var_dump($sblist);
 
 foreach ($sblist as $item)
 {
@@ -863,7 +863,7 @@ function recurse_service_bodies($arr, $sblist)
             // var_dump($arr['@attributes']['name']);
             // echo "<br>";
             $sblist[] = $arr['@attributes']['name'];
-            // echo "<br> got one " . $arr['@attributes']['name'];
+             echo "<br> got one " . $arr['@attributes']['name'];
     }
     return $sblist;
 }
