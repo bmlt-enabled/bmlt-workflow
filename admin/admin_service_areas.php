@@ -828,11 +828,11 @@ $sblist = array();
 
 $sblist = recurse_service_bodies($arr['service_body'],$sblist);
 echo "<h1>hows it going</h1>";
-var_dump($sblist);
+// var_dump($sblist);
 
 foreach ($sblist as $item)
 {
-    echo '<br>'+$item+'<br>';
+    echo '<br>'.$item.'<br>';
 }
 
 // array(1) { ["service_body"]=> 
@@ -846,24 +846,24 @@ function recurse_service_bodies($arr, $sblist)
 {
     if(array_key_exists('service_bodies', $arr))
     {
-        echo "gettype is " . gettype($arr['service_bodies']);
+        // echo "gettype is " . gettype($arr['service_bodies']);
         // echo "size is "+count($arr['service_bodies']);
         foreach ($arr['service_bodies']['service_body'] as $idx)
         {
-            echo "<br>** recursing<br><br>";
-            var_dump($idx);
-            echo "<br>** recursing<br>";
+            // echo "<br>** recursing<br><br>";
+            // var_dump($idx);
+            // echo "<br>** recursing<br>";
             recurse_service_bodies($idx, $sblist);
         }
     }
     if(array_key_exists('@attributes', $arr))
     {
-            echo "<br>";
-            var_dump($arr['@attributes']);
-            var_dump($arr['@attributes']['name']);
-            echo "<br>";
+            // echo "<br>";
+            // var_dump($arr['@attributes']);
+            // var_dump($arr['@attributes']['name']);
+            // echo "<br>";
             $sblist[] = $arr['@attributes']['name'];
-            echo "<br> got one " . $arr['@attributes']['name'];
+            // echo "<br> got one " . $arr['@attributes']['name'];
     }
     return $sblist;
 }
