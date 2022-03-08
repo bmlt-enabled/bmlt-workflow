@@ -49,8 +49,12 @@ jQuery(document).ready(function ($) {
   bmaw_create_row_link_modal("bmaw_submission_approve", "Approve Submission");
 
   bmaw_submission_approve_dialog_ok = function (id) {
-    $.post("/flop/wp-json/bmaw-submission/v1/submissions/" + id + "/approve", {
-      _wpnonce: $("#_wprestnonce").val(),
+    $.ajax({
+      url: "/flop/wp-json/bmaw-submission/v1/submissions/" + id + "/approve",
+      type: "POST",
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+      },
     })
       .done(function (response) {
         var msg = "";
@@ -82,8 +86,8 @@ jQuery(document).ready(function ($) {
     $.ajax({
       url: "/flop/wp-json/bmaw-submission/v1/submissions/" + id,
       type: "DELETE",
-      data: {
-        _wpnonce: $("#_wprestnonce").val(),
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
     })
       .always(function (response) {
