@@ -112,6 +112,6 @@ jQuery(document).ready(function ($) {
       });
 
     $("#bmaw_submission_delete_dialog").dialog("close");
-    location.reload();
+    // location.reload();
   };
 });
