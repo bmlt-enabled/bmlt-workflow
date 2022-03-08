@@ -846,6 +846,7 @@ function recurse_service_bodies($arr, $sblist)
 {
     if(array_key_exists('service_bodies', $arr))
     {
+        echo "size is "+count($arr['service_bodies']);
         foreach ($arr['service_bodies'] as $idx)
         {
             echo "<br>** recursing<br><br>";
