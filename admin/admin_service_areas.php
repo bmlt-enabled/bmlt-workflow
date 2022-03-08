@@ -859,6 +859,7 @@ function recurse_service_bodies($arr, $sblist)
     if(array_key_exists('@attributes', $arr))
     {
             $sblist[] = $arr['@attributes']['name'];
+            echo "<br> got one "+$arr['@attributes']['name'];
     }
     return $sblist;
 }
