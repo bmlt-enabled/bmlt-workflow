@@ -24,6 +24,7 @@ $arr = json_decode(json_encode($xml),1);
 $sblist = array();
 
 $sblist = recurse_service_bodies($arr['service_body'],$sblist);
+echo "<h1>hows it going</h1>";
 var_dump($sblist);
 
 foreach ($sblist as $item)
