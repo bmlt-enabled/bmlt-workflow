@@ -826,7 +826,7 @@ $arr = json_decode(json_encode($xml),1);
 var_dump($arr);
 $sblist = array();
 
-$sblist = recurse_service_bodies($arr,$sblist);
+$sblist = recurse_service_bodies($arr['service_body'],$sblist);
 echo "<h1>hows it going</h1>";
 var_dump($sblist);
 
@@ -844,9 +844,9 @@ foreach ($sblist as $item)
 
 function recurse_service_bodies($arr, $sblist)
 {
-    if(array_key_exists('service bodies', $arr))
+    if(array_key_exists('service_bodies', $arr))
     {
-        foreach ($arr['service bodies'] as $idx)
+        foreach ($arr['service_bodies'] as $idx)
         {
             recurse_service_bodies($idx, $sblist);
         }
