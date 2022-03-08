@@ -826,7 +826,7 @@ $arr = json_decode(json_encode($xml),1);
 var_dump($arr);
 $sblist = array();
 
-$sblist = recurse_service_bodies($arr['service_body'],$sblist);
+$sblist = recurse_service_bodies($arr,$sblist);
 echo "<h1>hows it going</h1>";
 var_dump($sblist);
 
