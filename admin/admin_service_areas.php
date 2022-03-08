@@ -16,7 +16,9 @@ $response = $bmlt_integration->postConfiguredRootServerRequestSemantic('local_se
 if( is_wp_error( $response ) ) {
     wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
 }
-$response['body']=<<<EOD
+// $response['body']=<<<EOD
+
+$test=<<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <service_bodies xmlns="http://na.org.au"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://na.org.au:443/main_server/client_interface/xsd/HierServiceBodies.php">
@@ -835,37 +837,18 @@ foreach ($sblist as $item)
     echo '<br>'.$item.'<br>';
 }
 
-// array(1) { ["service_body"]=> 
-    //array(7) { ["@attributes"]=> 
-        //array(3) { ["id"]=> string(1) "1" ["name"]=> string(17) "Australian Region" ["type"]=> string(2) "AS" } 
-        //["service_body_type"]=> string(22) "Area Service Committee" 
-        //["description"]=> string(17) "Australian Region" 
-        //["uri"]=> string(9) "na.org.au" ["helpline"]=> string(12) "+61488811247" ["editors"]=> array(3) { ["service_body_editors"]=> array(1) { ["editor"]=> array(1) { ["@attributes"]=> array(3) { ["id"]=> string(1) "2" ["admin_type"]=> string(6) "direct" ["admin_name"]=> string(27) "Meetings List Administrator" } } } ["meeting_list_editors"]=> array(1) { ["editor"]=> array(12) { [0]=> array(1) { ["@attributes"]=> array(3) { ["id"]=> string(1) "4" ["admin_type"]=> string(6) "direct" ["admin_name"]=> string(30) "Meetings List Administrator 03" } } [1]=> array(1) { ["@attributes"]=> array(3) { ["id"]=> string(1) "5" ["admin_type"]=> string(6) "direct" ["admin_name"]=> string(30) "Meetings List Administrator 04" } } [2]=> array(1) { ["@attributes"]=> array(3) { ["id"]=> string(1) "6" ["admin_type"]=> string(6) "direct" ["admin_name"]=> string(30) "Meetings List Administrator 05" } } [3]=> array(1) { ["@attributes"]=> array(3) { ["id"]=> string(1) "7" ["admin_type"]=> string(6) "direct" ["admin_name"]=> string(30) "Meetings List Administrator 07" } } [4]=> array(1) { ["@attributes"]=> array(3) { ["id"]=> string(1) "8" ["admin_type"]=> string(6) "direct" ["admin_name"]=> string(30) "M
-
 function recurse_service_bodies($arr, $sblist)
 {
     if(array_key_exists('service_bodies', $arr))
     {
-        // echo "gettype is " . gettype($arr['service_bodies']);
-        // echo "size is "+count($arr['service_bodies']);
         foreach ($arr['service_bodies']['service_body'] as $idx)
         {
-            // echo "<br>** recursing<br><br>";
-            // var_dump($idx);
-            // echo "<br>** recursing<br>";
             $sblist = recurse_service_bodies($idx, $sblist);
         }
     }
     if(array_key_exists('@attributes', $arr))
     {
-            // echo "<br>";
-            // var_dump($arr['@attributes']);
-            // var_dump($arr['@attributes']['name']);
-            // echo "<br>";
             $sblist[] = $arr['@attributes']['name'];
-            //  echo "<br> got one " . $arr['@attributes']['name'];
-            //  echo "<br> sblist = ";
-            //  var_dump($sblist);
     }
     return $sblist;
 }
