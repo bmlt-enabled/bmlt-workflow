@@ -237,7 +237,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		// ERROR HANDLING NEEDED
 		// if( is_wp_error( $response ) ) {
 		// 	wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
-		// }    
+		// }
 		$current_user = wp_get_current_user();
 		$username = $current_user->user_login;
 
