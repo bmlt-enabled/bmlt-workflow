@@ -17,9 +17,9 @@ if( is_wp_error( $response ) ) {
     wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
 }
 $xml = simplexml_load_string($response['body']);
-
+$arr = json_decode(json_encode($xml),1);
 // $arr = json_decode($response['body'],true);
 
-var_dump($xml);
+var_dump($arr);
 
 ?>
