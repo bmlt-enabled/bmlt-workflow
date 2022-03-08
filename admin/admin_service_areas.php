@@ -835,6 +835,12 @@ foreach ($sblist as $item)
     echo '<br>'+$item+'<br>';
 }
 
+// array(1) { ["service_body"]=> 
+    //array(7) { ["@attributes"]=> 
+        //array(3) { ["id"]=> string(1) "1" ["name"]=> string(17) "Australian Region" ["type"]=> string(2) "AS" } 
+        //["service_body_type"]=> string(22) "Area Service Committee" 
+        //["description"]=> string(17) "Australian Region" 
+        //["uri"]=> string(9) "na.org.au" ["helpline"]=> string(12) "+61488811247" ["editors"]=> array(3) { ["service_body_editors"]=> array(1) { ["editor"]=> array(1) { ["@attributes"]=> array(3) { ["id"]=> string(1) "2" ["admin_type"]=> string(6) "direct" ["admin_name"]=> string(27) "Meetings List Administrator" } } } ["meeting_list_editors"]=> array(1) { ["editor"]=> array(12) { [0]=> array(1) { ["@attributes"]=> array(3) { ["id"]=> string(1) "4" ["admin_type"]=> string(6) "direct" ["admin_name"]=> string(30) "Meetings List Administrator 03" } } [1]=> array(1) { ["@attributes"]=> array(3) { ["id"]=> string(1) "5" ["admin_type"]=> string(6) "direct" ["admin_name"]=> string(30) "Meetings List Administrator 04" } } [2]=> array(1) { ["@attributes"]=> array(3) { ["id"]=> string(1) "6" ["admin_type"]=> string(6) "direct" ["admin_name"]=> string(30) "Meetings List Administrator 05" } } [3]=> array(1) { ["@attributes"]=> array(3) { ["id"]=> string(1) "7" ["admin_type"]=> string(6) "direct" ["admin_name"]=> string(30) "Meetings List Administrator 07" } } [4]=> array(1) { ["@attributes"]=> array(3) { ["id"]=> string(1) "8" ["admin_type"]=> string(6) "direct" ["admin_name"]=> string(30) "M
 
 function recurse_service_bodies($arr, $sblist)
 {
@@ -844,12 +850,7 @@ function recurse_service_bodies($arr, $sblist)
     }
     if(array_key_exists('service_body', $arr))
     {
-        foreach ($arr['service_body'] as $idx)
-        {
-            // echo("*idx*");
-            // var_dump($idx);
-            $sblist[] = $idx['@attributes']['name'];
-        }
+            $sblist[] = $arr['service_body']['@attributes']['name'];
     }
     return $sblist;
 }
