@@ -179,7 +179,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		global $wpdb;
 		global $bmaw_submissions_table_name;
-		$sql = $wpdb->prepare('DELETE * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+		$sql = $wpdb->prepare('DELETE FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
 		$result = $wpdb->get_results($sql, ARRAY_A);
 
 		// Return all of our comment response data.
