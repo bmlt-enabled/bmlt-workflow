@@ -16,7 +16,9 @@ global $bmaw_db_version;
 $bmaw_db_version = '1.0';
 global $wpdb;
 global $bmaw_submissions_table_name;
+global $bmaw_service_areas_submissions_table_name;
 $bmaw_submissions_table_name = $wpdb->prefix . 'bmaw_submissions';
+$bmaw_service_areas_submissions_table_name = $wpdb->prefix . 'bmaw_service_areas';
 
 include_once 'form handlers/meeting-update-form-handler.php';
 include_once 'admin/admin_rest_controller.php';
@@ -689,6 +691,8 @@ function bmaw_install()
 
     $charset_collate = $wpdb->get_charset_collate();
 
+    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
     $sql = "CREATE TABLE " . $bmaw_submissions_table_name . " (
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
 		submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
@@ -703,9 +707,15 @@ function bmaw_install()
 		PRIMARY KEY (id)
 	) $charset_collate;";
 
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta($sql);
 
+    $sql = "CREATE TABLE " . $bmaw_service_areas_table_name . " (
+		service_area_id mediumint(9) NOT NULL ,
+        user_array varchar(1024),
+		PRIMARY KEY (id)
+	) $charset_collate;";
+
+    dbDelta($sql);
     add_option('bmaw_db_version', $bmaw_db_version);
 }
 
