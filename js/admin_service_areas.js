@@ -2,7 +2,7 @@
 jQuery(document).ready(function ($) {
     $('.bmaw-userlist').select2({
         ajax: {
-          url: bmaw_admin_bmaw_users_rest_url + "/" + this.id.substring(this.id.indexOf("_id_") + 4, this.id.length),
+          url: function () { return bmaw_admin_bmaw_users_rest_url + "/" + this.id.substring(this.id.indexOf("_id_") + 4, this.id.length) },
           dataType: 'json',
           beforeSend: function (xhr) {
             xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
