@@ -91,7 +91,7 @@ function bmaw_admin_scripts($hook)
             wp_enqueue_style('wp-jquery-ui-dialog');
 
             // make sure our rest url is populated
-            $script  = 'bmaw_admin_submissions_rest_url = '. json_encode(get_rest_url()+'bmaw-submission/v1/submissions/') . '; ';
+            $script  = 'bmaw_admin_submissions_rest_url = '. json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';
             wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;    
         case ('bmaw_page_bmaw-service-areas'):   
