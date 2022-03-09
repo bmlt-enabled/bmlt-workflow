@@ -9,13 +9,15 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 ?>
 
 <div id="bmaw_submission_approve_dialog" class="hidden" style="max-width:800px">
-  <p>Use the quickedit function to make changes before approval.</p>
-  <p>Are you sure you would like to approve the submission directly?</p>
+  <label class='dialog_label' for="bmaw_submission_approve_dialog_textarea">Approval note:</label>
+  <textarea class='dialog_textarea' id="bmaw_submission_approve_dialog_textarea" rows=5 cols=60 placeholder='Add a note to this approval for the submitter'></textarea>
+<p>You can use the quickedit function to make changes before approval.</p><br>
+<p>Are you sure you would like to approve the submission directly?</p>
 </div>
 
 <div id="bmaw_submission_delete_dialog" class="hidden" style="max-width:800px">
-  <p>Use the quickedit function to make changes before approval.</p>
-  <p>Are you sure you would like to delete the submission directly?</p>
+  <p>This change cannot be undone. Use this to remove an entirely unwanted submission from the list.</p>
+  <p>Are you sure you would like to delete the submission completely?</p>
 </div>
 
 <div class="wrap">

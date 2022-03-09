@@ -35,8 +35,5 @@
     width: 25%;
 }
 
-
-/* .wp-list-table [class ^= "column-"] {
-    width: auto;
-} */
-
+.dialog_label {display:block;}
+.dialog_textarea {display:block}; 
