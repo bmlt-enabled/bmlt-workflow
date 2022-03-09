@@ -830,10 +830,10 @@ $sblist = array();
 
 $sblist = recurse_service_bodies($arr['service_body'],$sblist);
 
-foreach ($sblist as $item)
-{
-    echo '<br>'.$item.'<br>';
-}
+// foreach ($sblist as $item)
+// {
+//     echo '<br>'.$item.'<br>';
+// }
 
 function recurse_service_bodies($arr, $sblist)
 {
@@ -846,7 +846,33 @@ function recurse_service_bodies($arr, $sblist)
     }
     if(array_key_exists('@attributes', $arr))
     {
-            $sblist[] = $arr['@attributes']['name'];
+            $sblist[] = array($arr['@attributes']['name'],$arr['@attributes']['id']);
     }
     return $sblist;
 }
+?>
+
+<div class="wrap">
+    <div id="icon-users" class="icon32"></div>
+    <h2>Service Area Configuration</h2>
+
+    <table class="bmaw-userlist-table"">
+<thead>
+  <tr>
+    <th class="bmaw-userlist-header">Service Area</th>
+    <th class="bmaw-userlist-header">Wordpress Users with Access</th>
+  </tr>
+</thead>
+<tbody>
+    <?php
+    foreach ($sblist as $item) {
+        echo '<tr> class="bmaw-userlist-row"';
+        echo '<td>'.$item['name'].'</td>';
+        echo '<td><select class="bmaw-userlist-'.$item['id'].'" id="bmaw-userlist-'.$item['id'].'"><option></option></select></td></tr>';
+    }
+    echo '</tr>';
+    ?>
+</tbody>
+</table>
+
+</div>
