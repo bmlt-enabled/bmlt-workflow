@@ -104,7 +104,7 @@ function bmaw_admin_scripts($hook)
      
             deny_cache_enqueue_script('admin_service_areas_js', array('jquery'), 'js/admin_service_areas.js');
             // make sure our rest url is populated
-            $script  = 'bmaw_admin_bmaw_users_rest_url = '. json_encode(get_rest_url() . 'bmaw-submission/v1/users') . '; ';
+            $script  = 'bmaw_admin_bmaw_service_areas_rest_url = '. json_encode(get_rest_url() . 'bmaw-submission/v1/serviceareas') . '; ';
             wp_add_inline_script('admin_service_areas_js', $script, 'before');
             break;
         default:
