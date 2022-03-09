@@ -299,7 +299,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		$sql = $wpdb->prepare('SELECT user_array FROM ' . $bmaw_service_areas_table_name . ' where id="%d" limit 1', $request['id']);
 		$sqlresult = $wpdb->get_results($sql, ARRAY_A);
 
-		error_log("sqlresult = ".$sqlresult);
+		error_log("sqlresult = ".vdump($sqlresult));
 		
 		$request = new WP_REST_Request( 'GET', '/wp/v2/users' );
 		$result = rest_do_request( $request );
