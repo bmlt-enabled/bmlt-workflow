@@ -22,7 +22,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		$this->namespace = 'bmaw-submission/v1';
 		$this->submissions_rest_base = 'submissions';
-		$this->users_rest_base = 'users';
+		$this->service_areas_rest_base = 'serviceareas';
 		$this->bmlt_integration = new BMLTIntegration;
 	}
 
@@ -71,12 +71,12 @@ class bmaw_submissions_rest extends WP_REST_Controller
 			'permission_callback' => array($this, 'reject_submission_action_permissions_check'),
 		));
 		
-		register_rest_route($this->namespace, '/' . $this->users_rest_base, array(
+		register_rest_route($this->namespace, '/' . $this->service_areas_rest_base . '/(?P<id>[\d]+)', array(
 
 			array(
 				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => array($this, 'get_users'),
-				'permission_callback' => array($this, 'get_users_permissions_check'),
+				'callback'            => array($this, 'get_service_areas'),
+				'permission_callback' => array($this, 'get_service_areas_permissions_check'),
 			),
 			'schema' => null,
 
@@ -132,11 +132,11 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	 *
 	 * @return bool|WP_Error
 	 */
-	public function get_users_permissions_check($request)
+	public function get_service_areas_permissions_check($request)
 	{
-		error_log("get_users_permissions_check ".get_current_user_id());
+		error_log("get_service_areas_permissions_check ".get_current_user_id());
 		if (!current_user_can('manage_options')) {
-			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view users.'), array('status' => $this->authorization_status_code()));
+			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view service_areas.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -291,14 +291,16 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		return rest_ensure_response($resp);
 	}
 
-	public function get_users($request)
+	public function get_service_areas($request)
 	{
 		global $wpdb;
-		global $bmaw_submissions_table_name;
+		global $bmaw_service_areas_table_name;
 
-		$sql = $wpdb->prepare('SELECT allowed_user FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
-		$result = $wpdb->get_results($sql, ARRAY_A);
+		$sql = $wpdb->prepare('SELECT user_array FROM ' . $bmaw_service_areas_table_name . ' where id="%d" limit 1', $request['id']);
+		$sqlresult = $wpdb->get_results($sql, ARRAY_A);
 
+		error_log("sqlresult = ".$sqlresult);
+		
 		$request = new WP_REST_Request( 'GET', '/wp/v2/users' );
 		$result = rest_do_request( $request );
 
