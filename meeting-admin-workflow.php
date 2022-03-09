@@ -81,6 +81,7 @@ function bmaw_admin_scripts($hook)
 
     switch ($hook)
     {
+
         case ('bmaw_page_bmaw-submissions'):
             wp_enqueue_style('thickbox');
             wp_enqueue_script('plugin-install');
@@ -88,6 +89,10 @@ function bmaw_admin_scripts($hook)
             deny_cache_enqueue_style('bmaw-admin-submissions-css', false, 'css/admin_submissions.css');
             wp_enqueue_script('jquery-ui-dialog');
             wp_enqueue_style('wp-jquery-ui-dialog');
+
+            // make sure our rest url is populated
+            $script  = 'bmaw_admin_submissions_rest_url = '. json_encode(get_rest_url()) .'; ';
+            wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;    
         case ('bmaw_page_bmaw-service-areas'):   
             break;
