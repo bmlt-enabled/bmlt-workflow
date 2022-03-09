@@ -206,7 +206,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
                 // skip meeting_id as it is always required
                 if($key2 != 'meeting_id')
                 {
-                    $summary .= '<b>' . $key2 . '</b>' . ' <span class="dashicons dashicons-arrow-right-alt"></span> ' . $value2 . '<br>' ;
+                    $summary .= $key2 . ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' . $value2 . '</b><br>' ;
                 }
             }
             // chop trailing <br>
