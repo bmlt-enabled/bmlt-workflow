@@ -1,6 +1,6 @@
 
 jQuery(document).ready(function ($) {
-    $('#bmaw-userlist').select2({
+    $('.bmaw-userlist').select2({
         ajax: {
           url: bmaw_admin_bmaw_users_rest_url + "/" + this.id.substring(this.id.indexOf("_id_") + 4, this.id.length),
           dataType: 'json',
