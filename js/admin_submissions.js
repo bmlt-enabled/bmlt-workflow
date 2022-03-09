@@ -58,7 +58,7 @@ jQuery(document).ready(function ($) {
 
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
-    if (!$.trim($("#"+slug+"_dialog_textarea").val())) {
+    if ($.trim($("#"+slug+"_dialog_textarea").val())) {
       parameters["custom_message"] = $("#"+slug+"_dialog_textarea");
     }
     // url = "/approve"
