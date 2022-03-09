@@ -11,7 +11,7 @@ jQuery(document).ready(function ($) {
       },
     }).done(function (response) {
       response["results"].forEach((element) => {
-        var opt = new Option(element.text, element.id, false, false);
+        var opt = new Option(element.text, element.id, false, element.selected);
         $('#'+id).append(opt).trigger("change");
       });
     });
