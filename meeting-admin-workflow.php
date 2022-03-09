@@ -18,7 +18,7 @@ global $wpdb;
 global $bmaw_submissions_table_name;
 global $bmaw_service_areas_submissions_table_name;
 $bmaw_submissions_table_name = $wpdb->prefix . 'bmaw_submissions';
-$bmaw_service_areas_submissions_table_name = $wpdb->prefix . 'bmaw_service_areas';
+$bmaw_service_areas_table_name = $wpdb->prefix . 'bmaw_service_areas';
 
 include_once 'form handlers/meeting-update-form-handler.php';
 include_once 'admin/admin_rest_controller.php';
