@@ -95,6 +95,8 @@ function bmaw_admin_scripts($hook)
             wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;    
         case ('bmaw_page_bmaw-service-areas'):
+            wp_register_style('select2css', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
+            wp_register_script('select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);        
             deny_cache_enqueue_script('admin_service_areas_js', array('jquery'), 'js/admin_service_areas.js');
             // make sure our rest url is populated
             $script  = 'bmaw_admin_bmaw_users_rest_url = '. json_encode(get_rest_url() . 'bmaw-submission/v1/users') . '; ';
