@@ -305,9 +305,8 @@ class bmaw_submissions_rest extends WP_REST_Controller
 			$i++;
 		}
 		// var_dump( $select );
-
 		// Return all of our comment response data.
-		return rest_ensure_response($result);
+		return rest_ensure_response($select);
 	}
 
 	/**
