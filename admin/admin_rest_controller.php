@@ -296,7 +296,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		global $wpdb;
 		global $bmaw_service_areas_table_name;
 
-		$sql = $wpdb->prepare('SELECT user_array FROM ' . $bmaw_service_areas_table_name . ' where id="%d" limit 1', $request['id']);
+		$sql = $wpdb->prepare('SELECT user_array FROM ' . $bmaw_service_areas_table_name . ' where service_area_id="%d" limit 1', $request['id']);
 		$sqlresult = $wpdb->get_results($sql, ARRAY_A);
 
 		error_log("sqlresult = ".vdump($sqlresult));
