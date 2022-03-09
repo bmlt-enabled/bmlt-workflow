@@ -65,6 +65,7 @@ jQuery(document).ready(function ($) {
     $.ajax({
       url: bmaw_admin_submissions_rest_url + id + url,
       type: action,
+      data: JSON.stringify(parameters),
       beforeSend: function (xhr) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
