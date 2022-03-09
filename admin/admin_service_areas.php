@@ -821,13 +821,13 @@ $test=<<<EOD
     </service_body>
 </service_bodies>
 EOD;
+
 $xml = simplexml_load_string($response['body']);
 $arr = json_decode(json_encode($xml),1);
 // when xml gets fixed
 // $arr = json_decode($response['body'],true);
 
 $sblist = array();
-
 $sblist = recurse_service_bodies($arr['service_body'],$sblist);
 
 // foreach ($sblist as $item)
@@ -856,7 +856,6 @@ function recurse_service_bodies($arr, $sblist)
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
     <h2>Service Area Configuration</h2>
-
     <table class="bmaw-userlist-table"">
 <thead>
   <tr>
