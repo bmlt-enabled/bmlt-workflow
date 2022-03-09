@@ -293,16 +293,20 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function get_users($request)
 	{
+		global $wpdb;
+		global $bmaw_submissions_table_name;
+
+		$sql = $wpdb->prepare('SELECT allowed_user FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+		$result = $wpdb->get_results($sql, ARRAY_A);
+
 		$request = new WP_REST_Request( 'GET', '/wp/v2/users' );
 		$result = rest_do_request( $request );
 
 		$data = $result->get_data();
 		$select = array( 'results' => array());
-		$i=0;
 		foreach ($data as $user)
 		{
-			$select['results'][] = array('id'=> $i, 'text' => $user['name']);
-			$i++;
+			$select['results'][] = array('id'=> $user['id'], 'text' => $user['name']);
 		}
 		// var_dump( $select );
 		// Return all of our comment response data.
