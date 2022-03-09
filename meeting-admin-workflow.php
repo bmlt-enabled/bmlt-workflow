@@ -16,7 +16,7 @@ global $bmaw_db_version;
 $bmaw_db_version = '1.0';
 global $wpdb;
 global $bmaw_submissions_table_name;
-global $bmaw_service_areas_submissions_table_name;
+global $bmaw_service_areas_table_name;
 $bmaw_submissions_table_name = $wpdb->prefix . 'bmaw_submissions';
 $bmaw_service_areas_table_name = $wpdb->prefix . 'bmaw_service_areas';
 
@@ -689,7 +689,7 @@ function bmaw_install()
     global $bmaw_db_version;
     global $bmaw_submissions_table_name;
     global $bmaw_service_areas_table_name;
-    
+
     $charset_collate = $wpdb->get_charset_collate();
 
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
