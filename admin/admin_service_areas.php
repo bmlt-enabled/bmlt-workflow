@@ -169,6 +169,38 @@ $response['body']=<<<EOD
                             </observers>
                         </editors>
                     </service_body>
+                    <service_body id="6" name="Sydney East" type="AS">
+                        <service_body_type>Area Service Committee</service_body_type>
+                        <description>Eastern Sydney Metropolitan Area</description>
+                        <helpline>+61295196200</helpline>
+                        <parent_service_body id="2" type="MA">Sydney Metro</parent_service_body>
+                        <editors>
+                            <service_body_editors>
+                                <editor id="2" admin_type="direct" admin_name="Meetings List Administrator"/>
+                                <editor id="21" admin_type="direct" admin_name="SydneyMetro"/>
+                            </service_body_editors>
+                            <meeting_list_editors>
+                                <editor id="4" admin_type="direct" admin_name="Meetings List Administrator 03"/>
+                                <editor id="5" admin_type="direct" admin_name="Meetings List Administrator 04"/>
+                                <editor id="6" admin_type="direct" admin_name="Meetings List Administrator 05"/>
+                                <editor id="7" admin_type="direct" admin_name="Meetings List Administrator 07"/>
+                                <editor id="8" admin_type="direct" admin_name="Meetings List Administrator 08"/>
+                                <editor id="9" admin_type="direct" admin_name="Tony S"/>
+                                <editor id="12" admin_type="direct" admin_name="Jamie W"/>
+                                <editor id="13" admin_type="direct" admin_name="Sinclair"/>
+                                <editor id="16" admin_type="direct" admin_name="Bruce"/>
+                                <editor id="17" admin_type="direct" admin_name="MarkD"/>
+                                <editor id="20" admin_type="inherit" admin_name="michaeld"/>
+                                <editor id="29" admin_type="inherit" admin_name="nigelb"/>
+                                <editor id="37" admin_type="inherit" admin_name="Anitak"/>
+                            </meeting_list_editors>
+                            <observers>
+                                <editor id="32" admin_type="inherit" admin_name="regionalpr"/>
+                            </observers>
+                        </editors>
+                    </service_body>
+                </service_bodies>
+            </service_body>
         </service_bodies>
     </service_body>
 </service_bodies>
