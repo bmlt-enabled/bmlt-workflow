@@ -300,6 +300,8 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		$sqlresult = $wpdb->get_results($sql, ARRAY_A);
 
 		error_log("sqlresult = ".vdump($sqlresult));
+		$arr = unserialize($sqlresult[0]['user_array']);
+		error_log("arr = ".vdump($arr));
 		
 		$request = new WP_REST_Request( 'GET', '/wp/v2/users' );
 		$result = rest_do_request( $request );
