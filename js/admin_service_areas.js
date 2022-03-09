@@ -1,6 +1,6 @@
 
 jQuery(document).ready(function ($) {
-  $("bmaw-userlist").each(function() {
+  $(".bmaw-userlist").each(function() {
     console.log("found "+ $(this).attr('id'));
   });
 
