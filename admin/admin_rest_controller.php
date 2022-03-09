@@ -296,13 +296,16 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		global $wpdb;
 		global $bmaw_service_areas_table_name;
 
+		// user_array is a comma seperated list of all the users entitled to edit this service area with bmaw
 		$sql = $wpdb->prepare('SELECT user_array FROM ' . $bmaw_service_areas_table_name . ' where service_area_id="%d" limit 1', $request['id']);
 		$sqlresult = $wpdb->get_results($sql, ARRAY_A);
 
-		error_log("sqlresult = ".vdump($sqlresult));
-		$arr = unserialize($sqlresult[0]['user_array']);
-		error_log("arr = ".vdump($arr));
-		
+		// error_log("sqlresult = ".vdump($sqlresult));
+		$str = unserialize($sqlresult[0]['user_array']);
+		// error_log("arr = ".vdump($str));
+		// split the list up and then search it when creating the select
+		$arr = explode(",", $str);
+
 		$request = new WP_REST_Request( 'GET', '/wp/v2/users' );
 		$result = rest_do_request( $request );
 
@@ -310,7 +313,12 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		$select = array( 'results' => array());
 		foreach ($data as $user)
 		{
-			$select['results'][] = array('id'=> $user['id'], 'text' => $user['name']);
+			$selected = false;
+			if(in_array($user['id'], $arr))
+			{
+				$selected = true;
+			}
+			$select['results'][] = array('id'=> $user['id'], 'text' => $user['name'], 'selected' => $selected);
 		}
 		// var_dump( $select );
 		// Return all of our comment response data.
