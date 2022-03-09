@@ -1,17 +1,10 @@
 jQuery(document).ready(function ($) {
   $(".bmaw-userlist").each(function () {
     console.log("found " + $(this).attr("id"));
-
+    id = $(this).attr('id');
+    url = bmaw_admin_bmaw_service_areas_rest_url +"/"+id.substring(id.indexOf("_id_") + 4, id.length)
     $.ajax({
-      url: function () {
-        return (
-          bmaw_admin_bmaw_service_areas_rest_url +
-          "/" +
-          $(this)
-            .attr("id")
-            .substring($(this).attr("id").indexOf("_id_") + 4, $(this).attr("id").length)
-        );
-      },
+      url: url,
       dataType: "json",
       beforeSend: function (xhr) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
