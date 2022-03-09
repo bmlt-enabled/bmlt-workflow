@@ -200,7 +200,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
             $change = unserialize($value['changes_requested']);
             // error_log("deserialised");
             // error_log(vdump($change));
-            $summary = 'Change Type: <b>' . $value['submission_type'] . '</b><br>';
+            $summary = 'Change Type: <b>' . $value['submission_type'] . '</b><br><br>';
             foreach ($change as $key2 => $value2)
             {
                 // skip meeting_id as it is always required
