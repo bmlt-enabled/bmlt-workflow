@@ -7,35 +7,35 @@ $submissionsListTable = new bmaw_meeting_submissions_page();
 wp_nonce_field('wp_rest', '_wprestnonce');
 
 ?>
-// Approve dialog
+<!-- Approve dialog -->
 <div id="bmaw_submission_approve_dialog" class="hidden" style="max-width:800px">
-  <label class='dialog_label' for="bmaw_submission_approve_dialog_textarea">Approval note:</label>
-  <textarea class='dialog_textarea' id="bmaw_submission_approve_dialog_textarea" rows=5 cols=60 placeholder='Add a note to this approval for the submitter'></textarea>
-<p>You can use the quickedit function to make any extra changes before approval.</p>
-<p>Are you sure you would like to approve the submission?</p>
+    <label class='dialog_label' for="bmaw_submission_approve_dialog_textarea">Approval note:</label>
+    <textarea class='dialog_textarea' id="bmaw_submission_approve_dialog_textarea" rows=5 cols=60 placeholder='Add a note to this approval for the submitter'></textarea>
+    <p>You can use the quickedit function to make any extra changes before approval.</p>
+    <p>Are you sure you would like to approve the submission?</p>
 </div>
 
-// Delete dialog
+<!-- Delete dialog -->
 <div id="bmaw_submission_delete_dialog" class="hidden" style="max-width:800px">
-  <p>This change cannot be undone. Use this to remove an entirely unwanted submission from the list.</p>
-  <p>Are you sure you would like to delete the submission completely?</p>
+    <p>This change cannot be undone. Use this to remove an entirely unwanted submission from the list.</p>
+    <p>Are you sure you would like to delete the submission completely?</p>
 </div>
 
-// Reject dialog
+<!-- Reject dialog -->
 <div id="bmaw_submission_reject_dialog" class="hidden" style="max-width:800px">
-  <label class='dialog_label' for="bmaw_submission_reject_dialog_textarea">Rejection note:</label>
-  <textarea class='dialog_textarea' id="bmaw_submission_reject_dialog_textarea" rows=5 cols=60 placeholder='Add a note to this rejection for the submitter'></textarea>
-<p>Are you sure you would like to reject this submission?</p>
+    <label class='dialog_label' for="bmaw_submission_reject_dialog_textarea">Rejection note:</label>
+    <textarea class='dialog_textarea' id="bmaw_submission_reject_dialog_textarea" rows=5 cols=60 placeholder='Add a note to this rejection for the submitter'></textarea>
+    <p>Are you sure you would like to reject this submission?</p>
 </div>
 
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
     <h2>Meeting Submissions</h2>
     <hr class="wp-header-end">
-    <?php 
+    <?php
     $submissionsListTable->views();
     $submissionsListTable->prepare_items();
-    $submissionsListTable->display(); 
+    $submissionsListTable->display();
     ?>
 </div>
 <?php
@@ -111,7 +111,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
             'submission_time' => array('submission_time', 'asc'),
             'submitter_name' => array('submitter_name', 'asc'),
             'submitter_email' => array('submitter_email', 'asc'),
-    );
+        );
     }
 
     public function column_id($item)
@@ -126,17 +126,16 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $actions = array();
         // if($item['change_made'] != 'Approved')
         // {
-            $actions['bmaw_span_approve'] = '<a class="bmaw_submission_approve" id="bmaw_submission_approve_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Approve') . '</a>';
+        $actions['bmaw_span_approve'] = '<a class="bmaw_submission_approve" id="bmaw_submission_approve_id_' . $item['id'] . '" target="_blank" href="#!">' . esc_html__('Approve') . '</a>';
         // }
-        if($item['change_made'] != 'Rejected')
-        {
-            $actions['bmaw_span_reject'] = '<a class="bmaw_submission_reject" id="bmaw_submission_reject_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Reject') . '</a>';
+        if ($item['change_made'] != 'Rejected') {
+            $actions['bmaw_span_reject'] = '<a class="bmaw_submission_reject" id="bmaw_submission_reject_id_' . $item['id'] . '" target="_blank" href="#!">' . esc_html__('Reject') . '</a>';
         }
         // if($item['change_made'] = '')
         // {
-            $actions['bmaw_span_quickedit'] = '<a class="bmaw_submission_quickedit" id="bmaw_submission_quickedit_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Quick Edit') . '</a>';
+        $actions['bmaw_span_quickedit'] = '<a class="bmaw_submission_quickedit" id="bmaw_submission_quickedit_id_' . $item['id'] . '" target="_blank" href="#!">' . esc_html__('Quick Edit') . '</a>';
         // }
-        $actions['bmaw_span_delete'] = '<a class="bmaw_submission_delete" id="bmaw_submission_delete_id_'.$item['id'].'" target="_blank" href="#!">' . esc_html__('Delete') . '</a>';
+        $actions['bmaw_span_delete'] = '<a class="bmaw_submission_delete" id="bmaw_submission_delete_id_' . $item['id'] . '" target="_blank" href="#!">' . esc_html__('Delete') . '</a>';
 
         $row_actions = array();
 
@@ -155,7 +154,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
                 // case 'id':
             case 'submitter_name':
             case 'submitter_email':
-            // case 'submission_type':
+                // case 'submission_type':
             case 'submission_date_time':
             case 'change_summary':
             case 'change_time':
@@ -178,10 +177,11 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         return $contents;
     }
 
-    protected function get_views() { 
+    protected function get_views()
+    {
         $status_links = array(
-            "all"       => __("<a href='#'>All</a>",'bmaw-submissions'),
-            "not approved" => __("<a href='#'>Not Approved</a>",'bmaw-submissions')
+            "all"       => __("<a href='#'>All</a>", 'bmaw-submissions'),
+            "not approved" => __("<a href='#'>Not Approved</a>", 'bmaw-submissions')
             // add class='current'
             // add total post numbers
 
@@ -195,22 +195,19 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $response = rest_do_request($request);
         $result     = rest_get_server()->response_to_data($response, true);
         // format the changes requested
-        foreach ($result as $key => $value)
-        {
+        foreach ($result as $key => $value) {
             $change = unserialize($value['changes_requested']);
             // error_log("deserialised");
             // error_log(vdump($change));
             $summary = '<b>Change Type: ' . $value['submission_type'] . '</b><br><br>';
-            foreach ($change as $key2 => $value2)
-            {
+            foreach ($change as $key2 => $value2) {
                 // skip meeting_id as it is always required
-                if($key2 != 'meeting_id')
-                {
-                    $summary .= $key2 . ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' . $value2 . '</b><br>' ;
+                if ($key2 != 'meeting_id') {
+                    $summary .= $key2 . ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' . $value2 . '</b><br>';
                 }
             }
             // chop trailing <br>
-            $result[$key]['change_summary'] = substr($summary, 0, -4); ;
+            $result[$key]['change_summary'] = substr($summary, 0, -4);;
         }
 
         return $result;
@@ -233,10 +230,9 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         }
 
 
-        $result = strnatcmp( $a[$orderby], $b[$orderby] );
+        $result = strnatcmp($a[$orderby], $b[$orderby]);
 
-        if($order === 'asc')
-        {
+        if ($order === 'asc') {
             return $result;
         }
 
