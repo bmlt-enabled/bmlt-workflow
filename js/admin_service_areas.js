@@ -12,7 +12,7 @@ jQuery(document).ready(function ($) {
     }).done(function (response) {
       response["results"].forEach((element) => {
         var opt = new Option(element.text, element.id, false, false);
-        $(this).append(opt).trigger("change");
+        $('#'+id).append(opt).trigger("change");
       });
     });
   });
