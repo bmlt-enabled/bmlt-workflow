@@ -688,7 +688,8 @@ function bmaw_install()
     global $wpdb;
     global $bmaw_db_version;
     global $bmaw_submissions_table_name;
-
+    global $bmaw_service_areas_table_name;
+    
     $charset_collate = $wpdb->get_charset_collate();
 
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
@@ -712,7 +713,7 @@ function bmaw_install()
     $sql = "CREATE TABLE " . $bmaw_service_areas_table_name . " (
 		service_area_id mediumint(9) NOT NULL ,
         user_array varchar(1024),
-		PRIMARY KEY (id)
+		PRIMARY KEY (service_area_id)
 	) $charset_collate;";
 
     dbDelta($sql);
