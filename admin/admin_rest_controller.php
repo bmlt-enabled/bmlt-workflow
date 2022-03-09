@@ -21,7 +21,8 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	{
 
 		$this->namespace = 'bmaw-submission/v1';
-		$this->rest_base = 'submissions';
+		$this->submissions_rest_base = 'submissions';
+		$this->users_rest_base = 'users';
 		$this->bmlt_integration = new BMLTIntegration;
 	}
 
@@ -29,7 +30,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	{
 
 		// submissions/
-		register_rest_route($this->namespace, '/' . $this->rest_base, array(
+		register_rest_route($this->namespace, '/' . $this->submissions_rest_base, array(
 
 			array(
 				'methods'             => WP_REST_Server::READABLE,
@@ -70,6 +71,16 @@ class bmaw_submissions_rest extends WP_REST_Controller
 			'permission_callback' => array($this, 'reject_submission_action_permissions_check'),
 		));
 		
+		register_rest_route($this->namespace, '/' . $this->users_rest_base, array(
+
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_users'),
+				'permission_callback' => array($this, 'get_users_permissions_check'),
+			),
+			'schema' => null,
+
+		));
 	}
 	/**
 	 * Check permissions for submission management. These are general purpose checks for all submission editors, granular edit permission will be checked within the callback itself.
@@ -110,6 +121,22 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		error_log("delete submission current user ".get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot delete this submission.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
+	/**
+	 * Check permissions for user management.
+	 *
+	 * @param WP_REST_Request $request get data from request.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function get_users_permissions_check($request)
+	{
+		error_log("get_users_permissions_check ".get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view users.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -262,6 +289,25 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		$resp = meeting_update_form_handler_rest($request->get_body_params());
 
 		return rest_ensure_response($resp);
+	}
+
+	public function get_users($request)
+	{
+		$request = new WP_REST_Request( 'GET', '/wp/v2/users' );
+		$result = rest_do_request( $request );
+
+		$data = $result->get_data();
+		$select = array( 'results' => array());
+		$i=0;
+		foreach ($data as $user)
+		{
+			$select['results'][] = array('id'=> $i, 'text' => $user['name']);
+			$i++;
+		}
+		// var_dump( $select );
+
+		// Return all of our comment response data.
+		return rest_ensure_response($result);
 	}
 
 	/**
