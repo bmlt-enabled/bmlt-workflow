@@ -18,6 +18,7 @@ jQuery(document).ready(function ($) {
   });
 
   $(".bmaw-userlist").select2({
-    multiple:true
+    multiple:true,
+    width: '100%'
   });
 });
