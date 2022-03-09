@@ -830,11 +830,11 @@ $sblist = array();
 
 $sblist = recurse_service_bodies($arr['service_body'],$sblist);
 
-foreach ($sblist as $item)
-{
-//     echo '<br>'.$item.'<br>';
-var_dump($item);
-}
+// foreach ($sblist as $item)
+// {
+// //     echo '<br>'.$item.'<br>';
+// var_dump($item);
+// }
 
 function recurse_service_bodies($arr, $sblist)
 {
@@ -847,7 +847,7 @@ function recurse_service_bodies($arr, $sblist)
     }
     if(array_key_exists('@attributes', $arr))
     {
-            $sblist[] = array($arr['@attributes']['name'],$arr['@attributes']['id']);
+            $sblist[] = array('name'=>$arr['@attributes']['name'],'id'=>$arr['@attributes']['id']);
     }
     return $sblist;
 }
