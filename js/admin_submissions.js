@@ -1,7 +1,7 @@
 jQuery(document).ready(function ($) {
 
   console.log(bmaw_admin_submissions_rest_url);
-  
+
   function bmaw_create_row_link_modal(element, title) {
     dialogname = "#" + element + "_dialog";
     classname = "." + element;
@@ -57,13 +57,13 @@ jQuery(document).ready(function ($) {
   bmaw_submission_delete_dialog_ok = function(id) { generic_approve_handler(id,'DELETE','','bmaw_submission_delete') };
 
   function generic_approve_handler(id, action, url, slug) {
-    $parameters = {};
+    parameters = {};
     if (!$.trim($("#"+slug+"_dialog_textarea").val())) {
-      $parameters["custom_message"] = $("#"+slug+"_dialog_textarea");
+      parameters["custom_message"] = $("#"+slug+"_dialog_textarea");
     }
     // url = "/approve"
     $.ajax({
-      url: "/flop/wp-json/bmaw-submission/v1/submissions/" + id + url,
+      url: bmaw_admin_submissions_rest_url + id + url,
       type: action,
       beforeSend: function (xhr) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
