@@ -868,7 +868,7 @@ function recurse_service_bodies($arr, $sblist)
     foreach ($sblist as $item) {
         echo '<tr class="bmaw-userlist-row">';
         echo '<td>'.$item['name'].'</td>';
-        echo '<td><select class="bmaw-userlist" id="bmaw_userlist_id_'.$item['id'].'" style="width: auto"><option></option></select></td></tr>';
+        echo '<td><select class="bmaw-userlist" id="bmaw_userlist_id_'.$item['id'].'" style="width: auto"></select></td></tr>';
     }
     echo '</tr>';
     ?>
