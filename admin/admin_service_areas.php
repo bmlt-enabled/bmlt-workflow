@@ -16,7 +16,8 @@ $response = $bmlt_integration->postConfiguredRootServerRequestSemantic('local_se
 if( is_wp_error( $response ) ) {
     wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
 }
-$response['body']=<<<EOD
+// $response['body']=<<<EOD
+$test=<<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <service_bodies xmlns="http://na.org.au"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://na.org.au:443/main_server/client_interface/xsd/HierServiceBodies.php">
