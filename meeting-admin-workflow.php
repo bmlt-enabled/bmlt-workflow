@@ -736,13 +736,13 @@ function bmaw_install()
 
     // add custom capability to any editable role that contains read capability already
     global $bmaw_capability_manage_submissions;
-    error_log("adding capabilities");
+    // error_log("adding capabilities");
     $roles = get_editable_roles();
-    error_log(vdump($roles));
+    // error_log(vdump($roles));
     foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
         if (isset($roles[$key]) && $role->has_cap('read')) {
-            error_log("adding cap to role");
-            error_log(vdump($role));
+            // error_log("adding cap to role");
+            // error_log(vdump($role));
             // add it but dont grant it yet
             $role->add_cap($bmaw_capability_manage_submissions,false);
         }
