@@ -301,10 +301,15 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		$sqlresult = $wpdb->get_results($sql, ARRAY_A);
 
 		// error_log("sqlresult = ".vdump($sqlresult));
-		$str = unserialize($sqlresult[0]['user_array']);
-		// error_log("arr = ".vdump($str));
-		// split the list up and then search it when creating the select
-		$arr = explode(",", $str);
+		$arr = array();
+		// Did we even get a result?
+		if($sqlresult)
+		{
+			$str = unserialize($sqlresult[0]['user_array']);
+			// error_log("arr = ".vdump($str));
+			// split the list up and then search it when creating the select
+			$arr = explode(",", $str);
+		}
 
 		$request = new WP_REST_Request( 'GET', '/wp/v2/users' );
 		$result = rest_do_request( $request );

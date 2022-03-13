@@ -19,6 +19,8 @@ global $bmaw_submissions_table_name;
 global $bmaw_service_areas_table_name;
 $bmaw_submissions_table_name = $wpdb->prefix . 'bmaw_submissions';
 $bmaw_service_areas_table_name = $wpdb->prefix . 'bmaw_service_areas';
+global $bmaw_capability_manage_submissions;
+$bmaw_capability_manage_submissions = 'bmaw_manage_submissions';
 
 include_once 'form handlers/meeting-update-form-handler.php';
 include_once 'admin/admin_rest_controller.php';
@@ -179,8 +181,7 @@ add_shortcode('bmaw-meeting-update-form', 'meeting_update_form');
 add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
 
 register_activation_hook(__FILE__, 'bmaw_install');
-register_activation_hook(__FILE__, 'bmaw_install_data');
-
+register_deactivation_hook(__FILE__, 'bmaw_uninstall');
 
 function array_sanitize_callback($args)
 {
@@ -718,8 +719,27 @@ function bmaw_install()
 
     dbDelta($sql);
     add_option('bmaw_db_version', $bmaw_db_version);
+
+    // add custom capability
+    global $bmaw_capability_manage_submissions;
+    
+    $roles = get_editable_roles();
+    foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
+        if (isset($roles[$key]) && $role->has_cap('BUILT_IN_CAP')) {
+            $role->add_cap($bmaw_capability_manage_submissions);
+        }
+    }
 }
 
-function bmaw_install_data()
+function bmaw_uninstall()
 {
+    // remove custom capability
+    global $bmaw_capability_manage_submissions;
+
+    $roles = get_editable_roles();
+    foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
+        if (isset($roles[$key]) && $role->has_cap($bmaw_capability_manage_submissions)) {
+            $role->remove_cap($bmaw_capability_manage_submissions);
+        }
+    }
 }
