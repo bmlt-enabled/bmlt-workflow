@@ -822,6 +822,7 @@ $test=<<<EOD
 EOD;
 
 $xml = simplexml_load_string($response['body']);
+var_dump($xml);
 $arr = json_decode(json_encode($xml),1);
 // when xml gets fixed
 // $arr = json_decode($response['body'],true);
