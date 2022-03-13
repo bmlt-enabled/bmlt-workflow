@@ -17,8 +17,12 @@ $bmaw_db_version = '1.0';
 global $wpdb;
 global $bmaw_submissions_table_name;
 global $bmaw_service_areas_table_name;
+global $bmaw_service_areas_access;
+
 $bmaw_submissions_table_name = $wpdb->prefix . 'bmaw_submissions';
 $bmaw_service_areas_table_name = $wpdb->prefix . 'bmaw_service_areas';
+$bmaw_service_areas_access = $wpdb->prefix . 'bmaw_service_areas_access';
+
 global $bmaw_capability_manage_submissions;
 $bmaw_capability_manage_submissions = 'bmaw_manage_submissions';
 
@@ -713,11 +717,20 @@ function bmaw_install()
 
     $sql = "CREATE TABLE " . $bmaw_service_areas_table_name . " (
 		service_area_id mediumint(9) NOT NULL ,
-        user_array varchar(1024),
+        show_on_form bool,
 		PRIMARY KEY (service_area_id)
 	) $charset_collate;";
 
     dbDelta($sql);
+
+    $sql = "CREATE TABLE " . $bmaw_service_areas_access . " (
+		service_area_id mediumint(9) NOT NULL ,
+        wp_uid bigint(20) unsigned  NOT NULL ,
+		FOREIGN KEY (service_area_id) REFERENCES " . $bmaw_service_areas_table_name . "(service_area_id) 
+	) $charset_collate;";
+
+    dbDelta($sql);
+
     add_option('bmaw_db_version', $bmaw_db_version);
 
     // add custom capability to any editable role that contains read capability already

@@ -92,7 +92,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	public function get_submissions_permissions_check($request)
 	{
 		error_log("get submissions current user ".get_current_user_id());
-		if (!current_user_can('manage_options')) {
+		if (!current_user_can('bmaw_manage_submissions')) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view submissions.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -101,7 +101,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	public function approve_submission_action_permissions_check($request)
 	{
 		error_log("approve submission current user ".get_current_user_id());
-		if (!current_user_can('manage_options')) {
+		if (!current_user_can('bmaw_manage_submissions')) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot accept this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -110,7 +110,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	public function reject_submission_action_permissions_check($request)
 	{
 		error_log("reject submission current user ".get_current_user_id());
-		if (!current_user_can('manage_options')) {
+		if (!current_user_can('bmaw_manage_submissions')) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot reject this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -119,7 +119,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	public function delete_submission_permissions_check($request)
 	{
 		error_log("delete submission current user ".get_current_user_id());
-		if (!current_user_can('manage_options')) {
+		if (!current_user_can('bmaw_manage_submissions')) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot delete this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -142,7 +142,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	}
 
 	/**
-	 * Check permissions for the update
+	 * Check permissions for form post
 	 *
 	 * @param WP_REST_Request $request get data from request.
 	 *
@@ -154,7 +154,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		return true;
 	}
 	/**
-	 * Grabs all the submission list.
+	 * Grabs all the submissions in the list.
 	 *
 	 * @param WP_REST_Request $request get data from request.
 	 *
