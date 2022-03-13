@@ -722,10 +722,13 @@ function bmaw_install()
 
     // add custom capability
     global $bmaw_capability_manage_submissions;
-    
+    error_log("adding capabilities");
     $roles = get_editable_roles();
+    error_log(vdump($roles));
     foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
         if (isset($roles[$key]) && $role->has_cap('BUILT_IN_CAP')) {
+            error_log("adding cap to role");
+            error_log(vdump($role));
             $role->add_cap($bmaw_capability_manage_submissions);
         }
     }
@@ -735,6 +738,7 @@ function bmaw_uninstall()
 {
     // remove custom capability
     global $bmaw_capability_manage_submissions;
+    error_log("deleting capabilities");
 
     $roles = get_editable_roles();
     foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
