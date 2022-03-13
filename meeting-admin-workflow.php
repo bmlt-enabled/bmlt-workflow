@@ -720,18 +720,21 @@ function bmaw_install()
     dbDelta($sql);
     add_option('bmaw_db_version', $bmaw_db_version);
 
-    // add custom capability
+    // add custom capability to any editable role that contains read capability already
     global $bmaw_capability_manage_submissions;
     error_log("adding capabilities");
     $roles = get_editable_roles();
     error_log(vdump($roles));
     foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
-        if (isset($roles[$key]) && $role->has_cap('BUILT_IN_CAP')) {
+        if (isset($roles[$key]) && $role->has_cap('read')) {
             error_log("adding cap to role");
             error_log(vdump($role));
-            $role->add_cap($bmaw_capability_manage_submissions);
+            // add it but dont grant it yet
+            $role->add_cap($bmaw_capability_manage_submissions,false);
         }
     }
+    // add a custom role just for trusted servants
+    add_role( 'bmaw_trusted_servant', 'BMAW Trusted Servant', array( $bmaw_capability_manage_submissions => true ) );
 }
 
 function bmaw_uninstall()
