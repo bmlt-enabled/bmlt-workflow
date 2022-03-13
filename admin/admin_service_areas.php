@@ -829,11 +829,11 @@ $arr = json_decode(json_encode($xml),1);
 $sblist = array();
 $sblist = recurse_service_bodies($arr['service_body'],$sblist);
 
-// foreach ($sblist as $item)
-// {
-// //     echo '<br>'.$item.'<br>';
-// var_dump($item);
-// }
+foreach ($sblist as $item)
+{
+//     echo '<br>'.$item.'<br>';
+var_dump($item);
+}
 
 function recurse_service_bodies($arr, $sblist)
 {
