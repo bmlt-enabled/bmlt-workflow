@@ -17,11 +17,11 @@ $bmaw_db_version = '1.0';
 global $wpdb;
 global $bmaw_submissions_table_name;
 global $bmaw_service_areas_table_name;
-global $bmaw_service_areas_access;
+global $bmaw_service_areas_access_table_name;
 
 $bmaw_submissions_table_name = $wpdb->prefix . 'bmaw_submissions';
 $bmaw_service_areas_table_name = $wpdb->prefix . 'bmaw_service_areas';
-$bmaw_service_areas_access = $wpdb->prefix . 'bmaw_service_areas_access';
+$bmaw_service_areas_access_table_name = $wpdb->prefix . 'bmaw_service_areas_access';
 
 global $bmaw_capability_manage_submissions;
 $bmaw_capability_manage_submissions = 'bmaw_manage_submissions';
@@ -694,6 +694,7 @@ function bmaw_install()
     global $bmaw_db_version;
     global $bmaw_submissions_table_name;
     global $bmaw_service_areas_table_name;
+    global $bmaw_service_areas_access_table_name;
 
     $charset_collate = $wpdb->get_charset_collate();
 
@@ -723,7 +724,7 @@ function bmaw_install()
 
     dbDelta($sql);
 
-    $sql = "CREATE TABLE " . $bmaw_service_areas_access . " (
+    $sql = "CREATE TABLE " . $bmaw_service_areas_access_table_name . " (
 		service_area_id mediumint(9) NOT NULL ,
         wp_uid bigint(20) unsigned  NOT NULL ,
 		FOREIGN KEY (service_area_id) REFERENCES " . $bmaw_service_areas_table_name . "(service_area_id) 
