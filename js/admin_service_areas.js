@@ -6,13 +6,14 @@ jQuery(document).ready(function ($) {
     $.ajax({
       url: url,
       dataType: "json",
+      custom: id,
       beforeSend: function (xhr) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
-    }).done(function (response, id) {
+    }).done(function (response, ) {
       response["results"].forEach((element) => {
         var opt = new Option(element.text, element.id, false, element.selected);
-        $('#'+this.id).append(opt).trigger("change");
+        $('#'+this.custom).append(opt).trigger("change");
       });
     });
   });
