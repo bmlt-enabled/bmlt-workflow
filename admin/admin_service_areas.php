@@ -827,5 +827,5 @@ EOD;
 <tbody>
 </tbody>
 </table>
-
+<input id="bmaw_submit" type="button">Save Settings</input>
 </div>

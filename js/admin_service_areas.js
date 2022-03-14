@@ -1,4 +1,9 @@
 jQuery(document).ready(function ($) {
+
+  $("#bmaw_submit").on("click", function(){
+    console.log("clicked");
+  });
+
   function attach_select_options_for_sbid(sblist, userlist, sbid, selectid) {
     Object.keys(userlist).forEach((item) => {
       wp_uid = userlist[item]["id"];
