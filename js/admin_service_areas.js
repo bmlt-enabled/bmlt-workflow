@@ -5,8 +5,25 @@ jQuery(document).ready(function ($) {
     width: '100%'
   });
 
-  url = wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route;
+  function create_select_options_for_sbid (sblist, userlist, sbid)
+  {
+    Object.keys(userlist).forEach(item => 
+      {
+        id = userlist[item]['id'];
+        username = userlist[item]['name'];
+        membership = sblist[sbid]['membership'];
+        selected = false;
+        if (membership.contains(id))
+        {
+          selected = true;
+        }
+        var opt = new Option(username, id, false, selected);
+      }
+    );
 
+  }
+
+  url = wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route;
   $.ajax({
     url: url,
     dataType: "json",
@@ -26,11 +43,19 @@ jQuery(document).ready(function ($) {
       console.log('service body list');
       console.log(this.sblist);
       console.log('userlist');
+      // var select_userlist = { "results": {} };
+      
       console.log(response);
       var sblist = this.sblist;
+      var userlist = response;
       Object.keys(sblist).forEach(item => 
         {
-          $('#bmaw-userlist-table tbody').append("<tr><td>"+sblist[item]['name']+"</td><td>lol2</td></tr>");
+          $('#bmaw-userlist-table tbody').append("<tr><td>"+sblist[item]['name']+"</td>");
+
+          create_select_options_for_sbid(sblist, userlist, item );
+          
+          // <td><select class="bmaw-userlist" id="bmaw_userlist_id_'.$item['id'].'" style="width: auto"></select></td></tr>';
+          // <td>lol2</td></tr>");
         }
       );
     });
