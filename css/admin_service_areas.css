@@ -1,0 +1,29 @@
+table.committeetable tr:hover > td {
+    background: #fff;
+}
+table.committeetable th {
+    padding-left: 15px;
+    padding-right: 0px;
+    padding-bottom: 0px;
+    width: auto;
+}
+
+table.committeetable td {
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+
+.bmaw_info_text {
+    padding-left: 15px;
+    background: #fff;
+    border-left: 5px solid lightblue;
+}
+
+label{
+    display: inline-flex;
+    clear: left;
+    width: 150px;
+}
+input {
+  display: inline-flex;
+}
