@@ -316,15 +316,17 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		$sblist = array();
 		$idlist = array();
 
+		// make our list of service bodies
 		foreach ($arr['service_body'] as $key => $value) {
 			error_log("looping key = ".$key);
-			$idlist[] = $value['@attributes']['id'];
 			if (array_key_exists('@attributes', $value)) {
-				$sblist['id'] = array('name' => $value['@attributes']['name']);
+				$sbid = $value['@attributes']['id'];
+				$idlist[] = $sbid;
+				$sblist[$sbid] = array('name' => $value['@attributes']['name']);
 			}
 		}
 
-		// update our service area list in case there have been some new ones added
+		// update our service area list in the database in case there have been some new ones added
 		error_log("get ids");
 		$sqlresult = $wpdb->get_col('SELECT service_area_id FROM ' . $bmaw_service_areas_table_name . ';',0);
 		// error_log($sql);
