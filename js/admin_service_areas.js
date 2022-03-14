@@ -1,5 +1,4 @@
 jQuery(document).ready(function ($) {
-
   function attach_select_options_for_sbid(sblist, userlist, sbid, selectid) {
     Object.keys(userlist).forEach((item) => {
       var wp_uid = userlist[item]["id"];
@@ -16,14 +15,23 @@ jQuery(document).ready(function ($) {
     $(selectid).trigger("change");
   }
 
-  function create_service_area_permission_post()
-  {
-    $(".bmaw-userlist").each( function(){
-      console.log("got id"+$(this).attr('id'));
+  // {
+  //   1: { name: "nigel test area", membership: "1,2" },
+  //   2: { name: "another top level SC", membership: "" },
+  //   3: { name: "second level SC under nigel", membership: "" },
+  //   4: { name: "another second level sc", membership: "" },
+  // };
+
+  function create_service_area_permission_post() {
+    $(".bmaw-userlist").each(function () {
+      console.log("got id " + $(this).attr("id"));
+      console.log("got real id" + $(this).data("id"));
+      console.log("got name" + $(this).data("name"));
+
     });
   }
 
-  $("#bmaw_submit").on("click", function(){
+  $("#bmaw_submit").on("click", function () {
     console.log("clicked");
     post = create_service_area_permission_post();
   });
@@ -53,16 +61,17 @@ jQuery(document).ready(function ($) {
       var sblist = this.sblist;
       var userlist = response;
       Object.keys(sblist).forEach((item) => {
+        var id = "bmaw_userlist_id_" + item;
+        var appendstr = "<tr>";
 
-        var id = 'bmaw_userlist_id_'+item;
-        var appendstr = '<tr>';
-
-        appendstr += '<td>'+ sblist[item]["name"] + '</td>';
+        appendstr += "<td>" + sblist[item]["name"] + "</td>";
         appendstr += '<td><input type="checkbox"></td>';
-        appendstr += '<td><select class="bmaw-userlist" id="' + id + '" style="width: auto"></select></td>'
-        appendstr += '</tr>';        
+        appendstr += '<td><select class="bmaw-userlist" id="' + id + '" style="width: auto"></select></td>';
+        appendstr += "</tr>";
         $("#bmaw-userlist-table tbody").append(appendstr);
-
+        $("#"+id).data('id') = item;
+        $("#"+id).data('name') = sblist[item]["name"];
+        
         $(".bmaw-userlist").select2({
           multiple: true,
           width: "100%",
