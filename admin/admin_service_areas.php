@@ -839,7 +839,8 @@ var_dump($item);
 
 function recurse_service_bodies($arr, $sblist)
 {
-    echo "recursing";
+    echo "recursing<br><br>";
+    var_dump($arr);
     if(array_key_exists('service_bodies', $arr))
     {
         echo "service bodies exists";
