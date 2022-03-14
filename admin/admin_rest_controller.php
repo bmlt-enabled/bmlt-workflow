@@ -332,7 +332,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		foreach ($missing as $value)
 		{
-			$sql = $wpdb->prepare('INSERT into '. $bmaw_service_areas_table_name . ' values (service_area_id="%d", show_on_form=NULL',$value);
+			$sql = $wpdb->prepare('INSERT into '. $bmaw_service_areas_table_name . ' set service_area_id="%d", show_on_form=NULL',$value);
 			$wpdb->query($sql);
 		}
 
