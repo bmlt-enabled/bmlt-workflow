@@ -38,7 +38,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 				'permission_callback' => array($this, 'get_submissions_permissions_check'),
 			),
 			array(
-				'methods'         => WP_REST_Server::EDITABLE,
+				'methods'         => WP_REST_Server::CREATABLE,
 				'callback'        => array($this, 'post_submissions'),
 				'permission_callback' => array($this, 'post_submissions_permissions_check'),
 				'args'            => $this->get_endpoint_args_for_item_schema(false),
@@ -80,7 +80,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 				'permission_callback' => array($this, 'get_service_areas_permissions_check'),
 			),
 			array(
-				'methods'             => WP_REST_Server::EDITABLE,
+				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'post_service_areas'),
 				'permission_callback' => array($this, 'post_service_areas_permissions_check'),
 			),
