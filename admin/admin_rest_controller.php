@@ -295,7 +295,8 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		global $wpdb;
 		global $bmaw_service_areas_table_name;
-
+		global $bmaw_service_areas_access_table_name;
+		
 		$req = array();
 		$req['admin_action'] = 'get_service_body_info';
 		$req['flat'] = '';
