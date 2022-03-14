@@ -1,7 +1,7 @@
 jQuery(document).ready(function ($) {
   $(".bmaw-userlist").each(function () {
     console.log("found " + $(this).attr("id"));
-    id = $(this).attr('id');
+    var id = $(this).attr('id');
     url = bmaw_admin_bmaw_service_areas_rest_url +"/"+id.substring(id.indexOf("_id_") + 4, id.length)
     $.ajax({
       url: url,
@@ -9,10 +9,10 @@ jQuery(document).ready(function ($) {
       beforeSend: function (xhr) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
-    }).done(function (response) {
+    }).done(function (response, id) {
       response["results"].forEach((element) => {
         var opt = new Option(element.text, element.id, false, element.selected);
-        $('#'+id).append(opt).trigger("change");
+        $('#'+this.id).append(opt).trigger("change");
       });
     });
   });
