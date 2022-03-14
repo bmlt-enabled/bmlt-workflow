@@ -28,7 +28,7 @@ jQuery(document).ready(function ($) {
       console.log('userlist');
       console.log(response);
       var sblist = this.sblist;
-      Object.keys(this.sblist).forEach(item => 
+      Object.keys(sblist).forEach(item => 
         {
           $('#bmaw-userlist-table tbody').append("<tr><td>"+sblist[item]['name']+"</td><td>lol2</td></tr>");
         }
