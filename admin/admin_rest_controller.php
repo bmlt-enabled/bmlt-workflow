@@ -311,6 +311,8 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		$xml = simplexml_load_string($response['body']);
 		$arr = json_decode(json_encode($xml), 1);
 
+		error_log(vdump($arr));
+		
 		$sblist = array();
 		$idlist = array();
 
@@ -339,7 +341,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		error_log("our sblist");
 		error_log(vdump($sblist));
-		
+
 		// make our group membership lists
 		foreach ($sblist as $key => $value)
 		{
