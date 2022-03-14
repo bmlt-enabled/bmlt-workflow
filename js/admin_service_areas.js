@@ -27,6 +27,7 @@ jQuery(document).ready(function ($) {
       console.log(this.sblist);
       console.log('userlist');
       console.log(response);
+      $('#bmaw-userlist-table tbody').append("<tr><td>lol</td><td>lol2</td></tr>")
     });
   });
 });
@@ -54,3 +55,12 @@ jQuery(document).ready(function ($) {
 // $(".bmaw-userlist").each(function () {
 //   console.log("found " + $(this).attr("id"));
 // });
+
+// <?php
+// foreach ($sblist as $item) {
+//     echo '<tr class="bmaw-userlist-row">';
+//     echo '<td>'.$item['name'].'</td>';
+//     echo '<td><select class="bmaw-userlist" id="bmaw_userlist_id_'.$item['id'].'" style="width: auto"></select></td></tr>';
+// }
+// echo '</tr>';
+// ?>
