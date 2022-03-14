@@ -5,7 +5,8 @@ jQuery(document).ready(function ($) {
     width: '100%'
   });
 
-  url = bmaw_admin_bmaw_service_areas_rest_url;
+  url = wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route;
+
   $.ajax({
     url: url,
     dataType: "json",
@@ -13,7 +14,7 @@ jQuery(document).ready(function ($) {
       xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
     },
   }).done(function (response) {
-    url = '/wp/v2/users';
+    url = wp_rest_base + '/wp/v2/users';
     $.ajax({
       url: url,
       dataType: "json",
