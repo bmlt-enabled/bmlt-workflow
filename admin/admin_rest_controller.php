@@ -312,11 +312,12 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		$arr = json_decode(json_encode($xml), 1);
 
 		error_log(vdump($arr));
-		
+
 		$sblist = array();
 		$idlist = array();
 
 		foreach ($arr['service_body'] as $key => $value) {
+			error_log("looping key = ".$key);
 			$idlist[] = $value['@attributes']['id'];
 			if (array_key_exists('@attributes', $value)) {
 				$sblist['id'] = array('name' => $value['@attributes']['name']);
