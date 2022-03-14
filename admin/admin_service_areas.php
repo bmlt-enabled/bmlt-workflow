@@ -830,18 +830,18 @@ $arr = json_decode(json_encode($xml),1);
 // when xml gets fixed
 // $arr = json_decode($response['body'],true);
 
-$sblist = array();
-foreach ($arr['service_body'] as $key=>$value)
-{
-    $sblist[] = recurse_service_bodies($value, $sblist);
-}
-// $sblist = recurse_service_bodies($arr['service_body'],$sblist);
+// $sblist = array();
+// foreach ($arr['service_body'] as $key=>$value)
+// {
+//     $sblist[] = recurse_service_bodies($value, $sblist);
+// }
+// // $sblist = recurse_service_bodies($arr['service_body'],$sblist);
 
-foreach ($sblist as $item)
-{
-//     echo '<br>'.$item.'<br>';
-var_dump($item);
-}
+// foreach ($sblist as $item)
+// {
+// //     echo '<br>'.$item.'<br>';
+// var_dump($item);
+// }
 
 function recurse_service_bodies($arr, $sblist)
 {
