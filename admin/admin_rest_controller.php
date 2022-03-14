@@ -322,12 +322,16 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		// update our service area list in case there have been some new ones added
 		error_log("get ids");
-		$sql = $wpdb->prepare('SELECT service_area_id FROM ' . $bmaw_service_areas_table_name);
+		$sql = $wpdb->query('SELECT service_area_id FROM ' . $bmaw_service_areas_table_name);
 		$sqlresult = $wpdb->get_col($sql, 0);
-		error_log(vdump($sqlresult));
-		foreach ($idlist as $value)
-		{
+		// error_log(vdump($sqlresult));
+		$missing = array_diff($idlist, $sqlresult);
+		error_log("missing ids");
+		error_log(vdump($missing));
 
+		foreach ($missing as $value)
+		{
+			$sql = $wpdb->prepare('INSERT into '. $bmaw_service_areas_table_name . ' values (service_area_id="%d", show_on_form=NULL',$value);
 		}
 
 		// $sql = $wpdb->prepare('SELECT user_array FROM ' . $bmaw_service_areas_table_name . ' where service_area_id="%d" limit 1', $request['id']);
