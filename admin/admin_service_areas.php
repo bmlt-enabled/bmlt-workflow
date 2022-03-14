@@ -839,6 +839,7 @@ var_dump($item);
 
 function recurse_service_bodies($arr, $sblist)
 {
+    echo "recursing";
     if(array_key_exists('service_bodies', $arr))
     {
         foreach ($arr['service_bodies']['service_body'] as $idx)
@@ -848,6 +849,7 @@ function recurse_service_bodies($arr, $sblist)
     }
     if(array_key_exists('@attributes', $arr))
     {
+        echo "reading attributes";
             $sblist[] = array('name'=>$arr['@attributes']['name'],'id'=>$arr['@attributes']['id']);
     }
     return $sblist;
