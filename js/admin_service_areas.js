@@ -26,7 +26,7 @@ jQuery(document).ready(function ($) {
       console.log('service body list');
       console.log(this.sblist);
       console.log('userlist');
-      console.log(this.response);
+      console.log(response);
     });
   });
 });
