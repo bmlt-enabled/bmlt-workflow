@@ -47,40 +47,39 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		));
 		// GET submissions/<id>
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', array(
+		register_rest_route($this->namespace, '/' . $this->submissions_rest_base . '/(?P<id>[\d]+)', array(
 			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => array($this, 'get_submission'),
 			'permission_callback' => array($this, 'get_submissions_permissions_check'),
 		));
 		// DELETE submissions/<id>
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)', array(
+		register_rest_route($this->namespace, '/' . $this->submissions_rest_base . '/(?P<id>[\d]+)', array(
 			'methods'             => WP_REST_Server::DELETABLE,
 			'callback'            => array($this, 'delete_submission'),
 			'permission_callback' => array($this, 'delete_submission_permissions_check'),
-		));		
+		));
 		// POST submissions/<id>/approve
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)/approve', array(
+		register_rest_route($this->namespace, '/' . $this->submissions_rest_base . '/(?P<id>[\d]+)/approve', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => array($this, 'approve_submission'),
 			'permission_callback' => array($this, 'approve_submission_action_permissions_check'),
 		));
 		// POST submissions/<id>/reject
-		register_rest_route($this->namespace, '/' . $this->rest_base . '/(?P<id>[\d]+)/reject', array(
+		register_rest_route($this->namespace, '/' . $this->submissions_rest_base . '/(?P<id>[\d]+)/reject', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => array($this, 'reject_submission'),
 			'permission_callback' => array($this, 'reject_submission_action_permissions_check'),
 		));
-		
-		register_rest_route($this->namespace, '/' . $this->service_areas_rest_base . '/(?P<id>[\d]+)', array(
 
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->service_areas_rest_base,
 			array(
 				'methods'             => WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_service_areas'),
 				'permission_callback' => array($this, 'get_service_areas_permissions_check'),
 			),
-			'schema' => null,
-
-		));
+		);
 	}
 	/**
 	 * Check permissions for submission management. These are general purpose checks for all submission editors, granular edit permission will be checked within the callback itself.
@@ -91,7 +90,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	 */
 	public function get_submissions_permissions_check($request)
 	{
-		error_log("get submissions current user ".get_current_user_id());
+		error_log("get submissions current user " . get_current_user_id());
 		if (!current_user_can('bmaw_manage_submissions')) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view submissions.'), array('status' => $this->authorization_status_code()));
 		}
@@ -100,7 +99,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function approve_submission_action_permissions_check($request)
 	{
-		error_log("approve submission current user ".get_current_user_id());
+		error_log("approve submission current user " . get_current_user_id());
 		if (!current_user_can('bmaw_manage_submissions')) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot accept this submission.'), array('status' => $this->authorization_status_code()));
 		}
@@ -109,7 +108,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function reject_submission_action_permissions_check($request)
 	{
-		error_log("reject submission current user ".get_current_user_id());
+		error_log("reject submission current user " . get_current_user_id());
 		if (!current_user_can('bmaw_manage_submissions')) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot reject this submission.'), array('status' => $this->authorization_status_code()));
 		}
@@ -118,7 +117,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function delete_submission_permissions_check($request)
 	{
-		error_log("delete submission current user ".get_current_user_id());
+		error_log("delete submission current user " . get_current_user_id());
 		if (!current_user_can('bmaw_manage_submissions')) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot delete this submission.'), array('status' => $this->authorization_status_code()));
 		}
@@ -134,7 +133,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	 */
 	public function get_service_areas_permissions_check($request)
 	{
-		error_log("get_service_areas_permissions_check ".get_current_user_id());
+		error_log("get_service_areas_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view service_areas.'), array('status' => $this->authorization_status_code()));
 		}
@@ -233,33 +232,29 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	{
 		$change_id = $request->get_param('id');
 
-		error_log("getting changes for id ".$change_id);
+		error_log("getting changes for id " . $change_id);
 
 		global $wpdb;
 		global $bmaw_submissions_table_name;
 
 		$sql = $wpdb->prepare('SELECT change_made FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
 		$result = $wpdb->get_results($sql, ARRAY_A);
-		if($result[0]['change_made'] === 'Approved')
-		{
+		if ($result[0]['change_made'] === 'Approved') {
 			return "{'response':'already approved'}";
 		}
 
 		$sql = $wpdb->prepare('SELECT changes_requested FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
 		$result = $wpdb->get_results($sql, ARRAY_A);
-		if ($result)
-		{
+		if ($result) {
 			error_log(vdump($result));
-		}
-		else
-		{
+		} else {
 			error_log("no result found");
 		}
 		$change = unserialize($result[0]['changes_requested']);
 		error_log("deserialised");
 		error_log(vdump($change));
-		$change['admin_action']='modify_meeting';
-		
+		$change['admin_action'] = 'modify_meeting';
+
 		$response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
 		// ERROR HANDLING NEEDED
 		// if( is_wp_error( $response ) ) {
@@ -293,42 +288,86 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function get_service_areas($request)
 	{
+
+		// call bmlt for service area list
+		// add list of wp uids with access
+		// return as array of all service areas
+
 		global $wpdb;
 		global $bmaw_service_areas_table_name;
 
-		// user_array is a comma seperated list of all the users entitled to edit this service area with bmaw
+		$req = array();
+		$req['admin_action'] = 'get_service_body_info';
+		$req['flat'] = '';
+		$bmlt_integration = new BMLTIntegration;
+
+		// get an xml for a workaround
+		$response = $bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
+		if (is_wp_error($response)) {
+			wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
+		}
+
+		$xml = simplexml_load_string($response['body']);
+		$arr = json_decode(json_encode($xml), 1);
+
+		$sblist = array();
+		$idlist = array();
+
+		foreach ($arr['service_body'] as $key => $value) {
+			$idlist[] = $value['@attributes']['id'];
+			if (array_key_exists('@attributes', $value)) {
+				$sblist[] = array('name' => $value['@attributes']['name'], 'id' => $value['@attributes']['id']);
+			}
+		}
+
+		// update our service area list in case there have been some new ones added
+		$sql = $wpdb->prepare('SELECT service_area_id FROM ' . $bmaw_service_areas_table_name);
+		$sqlresult = $wpdb->get_col($sql, 0);
+		error_log(vdump($sqlresult));
+		foreach ($idlist as $value)
+		{
+
+		}
+
 		$sql = $wpdb->prepare('SELECT user_array FROM ' . $bmaw_service_areas_table_name . ' where service_area_id="%d" limit 1', $request['id']);
 		$sqlresult = $wpdb->get_results($sql, ARRAY_A);
 
-		// error_log("sqlresult = ".vdump($sqlresult));
-		$arr = array();
-		// Did we even get a result?
-		if($sqlresult)
-		{
-			$str = unserialize($sqlresult[0]['user_array']);
-			// error_log("arr = ".vdump($str));
-			// split the list up and then search it when creating the select
-			$arr = explode(",", $str);
-		}
+		error_log("sqlresult = " . vdump($sqlresult));
 
-		$request = new WP_REST_Request( 'GET', '/wp/v2/users' );
-		$result = rest_do_request( $request );
 
-		$data = $result->get_data();
-		$select = array( 'results' => array());
-		foreach ($data as $user)
-		{
-			$data = array('id'=> $user['id'], 'text' => $user['name']);
-			// if we have a match from the administration list, mark it as selected
-			if(in_array($user['id'], $arr))
-			{
-				$data['selected']=true;
-			}
-			$select['results'][] = $data;
-		}
-		// var_dump( $select );
-		// Return all of our comment response data.
-		return rest_ensure_response($select);
+		// global $wpdb;
+		// global $bmaw_service_areas_table_name;
+
+		// // user_array is a comma seperated list of all the users entitled to edit this service area with bmaw
+		// $sql = $wpdb->prepare('SELECT user_array FROM ' . $bmaw_service_areas_table_name . ' where service_area_id="%d" limit 1', $request['id']);
+		// $sqlresult = $wpdb->get_results($sql, ARRAY_A);
+
+		// // error_log("sqlresult = ".vdump($sqlresult));
+		// $arr = array();
+		// // Did we even get a result?
+		// if ($sqlresult) {
+		// 	$str = unserialize($sqlresult[0]['user_array']);
+		// 	// error_log("arr = ".vdump($str));
+		// 	// split the list up and then search it when creating the select
+		// 	$arr = explode(",", $str);
+		// }
+
+		// $request = new WP_REST_Request('GET', '/wp/v2/users');
+		// $result = rest_do_request($request);
+
+		// $data = $result->get_data();
+		// $select = array('results' => array());
+		// foreach ($data as $user) {
+		// 	$data = array('id' => $user['id'], 'text' => $user['name']);
+		// 	// if we have a match from the administration list, mark it as selected
+		// 	if (in_array($user['id'], $arr)) {
+		// 		$data['selected'] = true;
+		// 	}
+		// 	$select['results'][] = $data;
+		// }
+		// // var_dump( $select );
+		// // Return all of our comment response data.
+		// return rest_ensure_response($select);
 	}
 
 	/**
