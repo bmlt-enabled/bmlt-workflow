@@ -40,6 +40,17 @@ jQuery(document).ready(function ($) {
     console.log("clicked");
     post = create_service_area_permission_post();
     console.log("post = "+post);
+    $.ajax({
+      url: wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route,
+      method: 'POST',
+      data: post,
+      dataType: "json",
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+      },
+    }).done(function (response) {
+      console.log("posted");
+    });
   });
 
   // get the permissions, and the userlist from wordpress, and create our select lists
