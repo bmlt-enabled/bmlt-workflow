@@ -69,8 +69,8 @@ jQuery(document).ready(function ($) {
         appendstr += '<td><select class="bmaw-userlist" id="' + id + '" style="width: auto"></select></td>';
         appendstr += "</tr>";
         $("#bmaw-userlist-table tbody").append(appendstr);
-        $("#"+id).data('id') = item;
-        $("#"+id).data('name') = sblist[item]["name"];
+        $("#"+id).data('id', item);
+        $("#"+id).data('name', sblist[item]["name"]);
         
         $(".bmaw-userlist").select2({
           multiple: true,
