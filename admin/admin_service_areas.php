@@ -826,7 +826,7 @@ $xml = simplexml_load_string($response['body']);
 $arr = json_decode(json_encode($xml),1);
 // when xml gets fixed
 // $arr = json_decode($response['body'],true);
-
+var_dump($arr);
 $sblist = array();
 foreach ($arr['service_body'] as $key=>$value)
 {
