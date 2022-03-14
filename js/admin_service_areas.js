@@ -1,7 +1,7 @@
 jQuery(document).ready(function ($) {
 
   $(".bmaw-userlist").select2({
-    multiple:true,
+    multiple: true,
     width: '100%'
   });
 
@@ -52,13 +52,8 @@ jQuery(document).ready(function ($) {
       var userlist = response;
       Object.keys(sblist).forEach(item => 
         {
-          $('#bmaw-userlist-table tbody').append("<tr><td>"+sblist[item]['name']+"</td>");
-          $('#bmaw-userlist-table tbody').append('<td><select class="bmaw-userlist" id="bmaw_userlist_id_'+item+'" style="width: auto"></select></td></tr>');
-
+          $('#bmaw-userlist-table tbody').append('<tr><td>'+sblist[item]['name']+'</td><td><select class="bmaw-userlist" id="bmaw_userlist_id_'+item+'" style="width: auto"></select></td></tr>');
           attach_select_options_for_sbid(sblist, userlist, item, "#bmaw_userlist_id_"+item );
-
-          // <td><select class="bmaw-userlist" id="bmaw_userlist_id_'.$item['id'].'" style="width: auto"></select></td></tr>';
-          // <td>lol2</td></tr>");
         }
       );
     });
