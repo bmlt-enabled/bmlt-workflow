@@ -13,11 +13,12 @@ jQuery(document).ready(function ($) {
         username = userlist[item]['name'];
         membership = sblist[sbid]['membership'];
         selected = false;
-        if (membership.contains(id))
+        if (membership.includes(id))
         {
           selected = true;
         }
         var opt = new Option(username, id, false, selected);
+        console.log(opt);
       }
     );
 
@@ -53,7 +54,7 @@ jQuery(document).ready(function ($) {
           $('#bmaw-userlist-table tbody').append("<tr><td>"+sblist[item]['name']+"</td>");
 
           create_select_options_for_sbid(sblist, userlist, item );
-          
+
           // <td><select class="bmaw-userlist" id="bmaw_userlist_id_'.$item['id'].'" style="width: auto"></select></td></tr>';
           // <td>lol2</td></tr>");
         }
