@@ -16,15 +16,16 @@ jQuery(document).ready(function ($) {
     $(selectid).trigger("change");
   }
 
+  function create_service_area_permission_post()
+  {
+    $(".bmaw-userlist").each( function(){
+      console.log("got id"+$(this).attr('id'));
+    });
+  }
 
   $("#bmaw_submit").on("click", function(){
     console.log("clicked");
-    post = create_service_area_permission_post()
-    {
-      $(".bmaw-userlist").each( function(){
-        console.log("got id"+$(this).attr('id'));
-      })
-    }
+    post = create_service_area_permission_post();
   });
 
   // get the permissions, and the userlist from wordpress, and create our select lists
