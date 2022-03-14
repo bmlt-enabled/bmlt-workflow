@@ -321,6 +321,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		}
 
 		// update our service area list in case there have been some new ones added
+		error_log("get ids");
 		$sql = $wpdb->prepare('SELECT service_area_id FROM ' . $bmaw_service_areas_table_name);
 		$sqlresult = $wpdb->get_col($sql, 0);
 		error_log(vdump($sqlresult));
@@ -329,10 +330,10 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		}
 
-		$sql = $wpdb->prepare('SELECT user_array FROM ' . $bmaw_service_areas_table_name . ' where service_area_id="%d" limit 1', $request['id']);
-		$sqlresult = $wpdb->get_results($sql, ARRAY_A);
+		// $sql = $wpdb->prepare('SELECT user_array FROM ' . $bmaw_service_areas_table_name . ' where service_area_id="%d" limit 1', $request['id']);
+		// $sqlresult = $wpdb->get_results($sql, ARRAY_A);
 
-		error_log("sqlresult = " . vdump($sqlresult));
+		// error_log("sqlresult = " . vdump($sqlresult));
 
 
 		// global $wpdb;
