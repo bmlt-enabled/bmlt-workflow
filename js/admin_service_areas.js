@@ -31,7 +31,7 @@ jQuery(document).ready(function ($) {
       sbname = $(this).data("name");
       console.log("select vals = "+ $(this).val());
       membership = $(this).val();
-      ret['id'] = { "name":sbname, "membership":membership};
+      ret[id] = { "name":sbname, "membership":membership};
     });
     return ret;
   }
