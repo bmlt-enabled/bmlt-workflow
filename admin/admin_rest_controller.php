@@ -316,7 +316,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		foreach ($arr['service_body'] as $key => $value) {
 			$idlist[] = $value['@attributes']['id'];
 			if (array_key_exists('@attributes', $value)) {
-				$sblist[] = array('name' => $value['@attributes']['name'], 'id' => $value['@attributes']['id']);
+				$sblist['id'] = array('name' => $value['@attributes']['name']);
 			}
 		}
 
@@ -334,6 +334,14 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		{
 			$sql = $wpdb->prepare('INSERT into '. $bmaw_service_areas_table_name . ' set service_area_id="%d", show_on_form=NULL',$value);
 			$wpdb->query($sql);
+		}
+
+		// make our group membership lists
+		foreach ($sblist as $key => $value)
+		{
+			$sql = $wpdb->prepare('SELECT DISTINCT wp_uid from wp_bmaw_service_areas_access where service_area_id = "%d"', $key);
+			$result = $wpdb->get_col($sql,0);
+			$sblist[$key]['membership'] = implode(',', $result); 
 		}
 
 		// $sql = $wpdb->prepare('SELECT user_array FROM ' . $bmaw_service_areas_table_name . ' where service_area_id="%d" limit 1', $request['id']);
@@ -374,7 +382,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		// }
 		// // var_dump( $select );
 		// // Return all of our comment response data.
-		// return rest_ensure_response($select);
+		return rest_ensure_response($sblist);
 	}
 
 	/**
