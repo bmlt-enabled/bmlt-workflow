@@ -1,14 +1,14 @@
-table.committeetable tr:hover > td {
+table tr:hover > td {
     background: #fff;
 }
-table.committeetable th {
+table th {
     padding-left: 15px;
     padding-right: 0px;
     padding-bottom: 0px;
     width: auto;
 }
 
-table.committeetable td {
+table td {
     padding-bottom: 5px;
     padding-top: 5px;
 }
