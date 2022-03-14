@@ -43,7 +43,8 @@ jQuery(document).ready(function ($) {
     $.ajax({
       url: wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route,
       method: 'POST',
-      data: post,
+      data: JSON.stringify(post),
+      contentType: "application/json; charset=utf-8",
       dataType: "json",
       processData: false,
       beforeSend: function (xhr) {
