@@ -852,7 +852,10 @@ function recurse_service_bodies($arr, $sblist)
         echo "<br><br>";
         foreach ($arr['service_bodies']['service_body'] as $idx)
         {
-            $sblist = recurse_service_bodies($idx, $sblist);
+            echo "going into<br><br>";
+            var_dump($idx);
+            echo "<br><br>";
+            $sblist[] = recurse_service_bodies($idx, $sblist);
         }
     }
     if(array_key_exists('@attributes', $arr))
