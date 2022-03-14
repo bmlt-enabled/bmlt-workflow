@@ -23,17 +23,23 @@ jQuery(document).ready(function ($) {
   // };
 
   function create_service_area_permission_post() {
+    ret = {};
     $(".bmaw-userlist").each(function () {
-      console.log("got id " + $(this).attr("id"));
       console.log("got real id " + $(this).data("id"));
+      id =  $(this).data("id");
       console.log("got name " + $(this).data("name"));
+      sbname = $(this).data("name");
       console.log("select vals = "+ $(this).val());
+      membership = $(this).val();
+      ret['id'] = { "name":sbname, "membership":membership};
     });
+    return ret;
   }
 
   $("#bmaw_submit").on("click", function () {
     console.log("clicked");
     post = create_service_area_permission_post();
+    console.log("post = "+post);
   });
 
   // get the permissions, and the userlist from wordpress, and create our select lists
