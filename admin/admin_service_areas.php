@@ -826,11 +826,11 @@ $xml = simplexml_load_string($response['body']);
 $arr = json_decode(json_encode($xml),1);
 // when xml gets fixed
 // $arr = json_decode($response['body'],true);
-var_dump($arr);
+// var_dump($arr);
 $sblist = array();
 foreach ($arr['service_body'] as $key=>$value)
 {
-    if(array_key_exists('@attributes', $arr))
+    if(array_key_exists('@attributes', $value))
     {
         echo "reading attributes";
         echo "<br><br>";
