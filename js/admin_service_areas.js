@@ -45,6 +45,7 @@ jQuery(document).ready(function ($) {
       method: 'POST',
       data: post,
       dataType: "json",
+      processData: false,
       beforeSend: function (xhr) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
