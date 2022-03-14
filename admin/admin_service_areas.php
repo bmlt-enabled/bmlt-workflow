@@ -7,12 +7,13 @@ if (!class_exists('BMLTIntegration')) {
 }
 
 wp_nonce_field('wp_rest', '_wprestnonce');
-
-$change['admin_action']='get_service_body_info';
+$req=array();
+$req['admin_action']='get_service_body_info';
+$req['flat']='';
 $bmlt_integration = new BMLTIntegration;
 
 // get an xml for a workaround
-$response = $bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/xml.php', $change);
+$response = $bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
 if( is_wp_error( $response ) ) {
     wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
 }
@@ -822,8 +823,9 @@ $test=<<<EOD
 EOD;
 
 $xml = simplexml_load_string($response['body']);
-var_dump(json_encode($xml),1);
+// var_dump(json_encode($xml),1);
 // var_dump(json_encode($test),1);
+var_dump($xml);
 $arr = json_decode(json_encode($xml),1);
 // when xml gets fixed
 // $arr = json_decode($response['body'],true);
