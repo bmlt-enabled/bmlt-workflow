@@ -17,7 +17,7 @@ jQuery(document).ready(function ($) {
         {
           selected = true;
         }
-        var opt = new Option(username, id, false, selected);
+        var opt = new Option(username, wp_uid, false, selected);
         $(selectid).append(opt);
         // console.log(opt);
       }
