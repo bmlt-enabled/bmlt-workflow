@@ -1,15 +1,11 @@
 jQuery(document).ready(function ($) {
 
-  $("#bmaw_submit").on("click", function(){
-    console.log("clicked");
-  });
-
   function attach_select_options_for_sbid(sblist, userlist, sbid, selectid) {
     Object.keys(userlist).forEach((item) => {
-      wp_uid = userlist[item]["id"];
-      username = userlist[item]["name"];
-      membership = sblist[sbid]["membership"];
-      selected = false;
+      var wp_uid = userlist[item]["id"];
+      var username = userlist[item]["name"];
+      var membership = sblist[sbid]["membership"];
+      var selected = false;
       if (membership.includes(wp_uid)) {
         selected = true;
       }
@@ -20,17 +16,27 @@ jQuery(document).ready(function ($) {
     $(selectid).trigger("change");
   }
 
-  url = wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route;
+
+  $("#bmaw_submit").on("click", function(){
+    console.log("clicked");
+    post = create_service_area_permission_post()
+    {
+      $(".bmaw-userlist").each( function(){
+        console.log("got id"+$(this).attr('id'));
+      })
+    }
+  });
+
+  // get the permissions, and the userlist from wordpress, and create our select lists
   $.ajax({
-    url: url,
+    url: wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route,
     dataType: "json",
     beforeSend: function (xhr) {
       xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
     },
   }).done(function (response) {
-    url = wp_rest_base + "wp/v2/users";
     $.ajax({
-      url: url,
+      url: wp_rest_base + "wp/v2/users",
       dataType: "json",
       sblist: response,
       beforeSend: function (xhr) {
