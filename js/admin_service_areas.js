@@ -27,7 +27,11 @@ jQuery(document).ready(function ($) {
       console.log(this.sblist);
       console.log('userlist');
       console.log(response);
-      $('#bmaw-userlist-table tbody').append("<tr><td>lol</td><td>lol2</td></tr>")
+      this.sblist.forEach(item => 
+        {
+          $('#bmaw-userlist-table tbody').append("<tr><td>"+item['name']+"</td><td>lol2</td></tr>");
+        }
+      );
     });
   });
 });
