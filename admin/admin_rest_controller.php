@@ -318,12 +318,13 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		$select = array( 'results' => array());
 		foreach ($data as $user)
 		{
-			$selected = false;
+			$data = array('id'=> $user['id'], 'text' => $user['name']);
+			// if we have a match from the administration list, mark it as selected
 			if(in_array($user['id'], $arr))
 			{
-				$selected = true;
+				$data['selected']=true;
 			}
-			$select['results'][] = array('id'=> $user['id'], 'text' => $user['name'], 'selected' => $selected);
+			$select['results'][] = $data;
 		}
 		// var_dump( $select );
 		// Return all of our comment response data.
