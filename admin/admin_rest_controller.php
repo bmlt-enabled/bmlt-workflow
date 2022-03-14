@@ -79,6 +79,11 @@ class bmaw_submissions_rest extends WP_REST_Controller
 				'callback'            => array($this, 'get_service_areas'),
 				'permission_callback' => array($this, 'get_service_areas_permissions_check'),
 			),
+			array(
+				'methods'             => WP_REST_Server::EDITABLE,
+				'callback'            => array($this, 'post_service_areas'),
+				'permission_callback' => array($this, 'post_service_areas_permissions_check'),
+			),
 		);
 	}
 	/**
@@ -136,6 +141,22 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		error_log("get_service_areas_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view service_areas.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
+	/**
+	 * Check permissions for user management.
+	 *
+	 * @param WP_REST_Request $request get data from request.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function post_service_areas_permissions_check($request)
+	{
+		error_log("post_service_areas_permissions_check " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area updates.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -285,6 +306,13 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		return rest_ensure_response($resp);
 	}
+
+	public function post_service_areas($request)
+	{
+		$resp = "lol";
+		return rest_ensure_response($resp);
+	}
+
 
 	public function get_service_areas($request)
 	{
