@@ -5,20 +5,21 @@ jQuery(document).ready(function ($) {
     width: '100%'
   });
 
-  function create_select_options_for_sbid (sblist, userlist, sbid)
+  function attach_select_options_for_sbid (sblist, userlist, sbid, selectid)
   {
     Object.keys(userlist).forEach(item => 
       {
-        id = userlist[item]['id'];
+        wp_uid = userlist[item]['id'];
         username = userlist[item]['name'];
         membership = sblist[sbid]['membership'];
         selected = false;
-        if (membership.includes(id))
+        if (membership.includes(wp_uid))
         {
           selected = true;
         }
         var opt = new Option(username, id, false, selected);
-        console.log(opt);
+        $(selectid).append(opt);
+        // console.log(opt);
       }
     );
 
@@ -52,8 +53,9 @@ jQuery(document).ready(function ($) {
       Object.keys(sblist).forEach(item => 
         {
           $('#bmaw-userlist-table tbody').append("<tr><td>"+sblist[item]['name']+"</td>");
+          $('#bmaw-userlist-table tbody').append('<td><select class="bmaw-userlist" id="bmaw_userlist_id_'+item+'" style="width: auto"></select></td></tr>');
 
-          create_select_options_for_sbid(sblist, userlist, item );
+          attach_select_options_for_sbid(sblist, userlist, item, "#bmaw_userlist_id_"+item );
 
           // <td><select class="bmaw-userlist" id="bmaw_userlist_id_'.$item['id'].'" style="width: auto"></select></td></tr>';
           // <td>lol2</td></tr>");
