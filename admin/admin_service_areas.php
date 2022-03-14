@@ -823,16 +823,20 @@ $test=<<<EOD
 EOD;
 
 $xml = simplexml_load_string($response['body']);
-// var_dump(json_encode($xml),1);
-// var_dump(json_encode($test),1);
-var_dump($xml);
 $arr = json_decode(json_encode($xml),1);
 // when xml gets fixed
 // $arr = json_decode($response['body'],true);
 
-// $sblist = array();
-// foreach ($arr['service_body'] as $key=>$value)
-// {
+$sblist = array();
+foreach ($arr['service_body'] as $key=>$value)
+{
+    if(array_key_exists('@attributes', $arr))
+    {
+        echo "reading attributes";
+        echo "<br><br>";
+        $sblist[] = array('name'=>$value['@attributes']['name'],'id'=>$value['@attributes']['id']);
+    }
+}
 //     $sblist[] = recurse_service_bodies($value, $sblist);
 // }
 // // $sblist = recurse_service_bodies($arr['service_body'],$sblist);
