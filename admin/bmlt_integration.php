@@ -145,6 +145,7 @@ class BMLTIntegration
             {
                 case ('admin_action'):
                 case ('meeting_id'):
+                case ('flat');
                     $newargs .= $key.'='.$value;
                     break;
                 default:
