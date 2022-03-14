@@ -22,7 +22,7 @@ jQuery(document).ready(function ($) {
         // console.log(opt);
       }
     );
-
+    $(selectid).trigger('change');
   }
 
   url = wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route;
