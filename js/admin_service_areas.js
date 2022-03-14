@@ -25,9 +25,9 @@ jQuery(document).ready(function ($) {
   function create_service_area_permission_post() {
     $(".bmaw-userlist").each(function () {
       console.log("got id " + $(this).attr("id"));
-      console.log("got real id" + $(this).data("id"));
-      console.log("got name" + $(this).data("name"));
-
+      console.log("got real id " + $(this).data("id"));
+      console.log("got name " + $(this).data("name"));
+      console.log("select vals = "+ $(this).val());
     });
   }
 
@@ -69,6 +69,7 @@ jQuery(document).ready(function ($) {
         appendstr += '<td><select class="bmaw-userlist" id="' + id + '" style="width: auto"></select></td>';
         appendstr += "</tr>";
         $("#bmaw-userlist-table tbody").append(appendstr);
+        // store metadata away for later
         $("#"+id).data('id', item);
         $("#"+id).data('name', sblist[item]["name"]);
         
