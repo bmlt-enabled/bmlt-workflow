@@ -14,7 +14,7 @@ jQuery(document).ready(function ($) {
       xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
     },
   }).done(function (response) {
-    url = wp_rest_base + '/wp/v2/users';
+    url = wp_rest_base + 'wp/v2/users';
     $.ajax({
       url: url,
       dataType: "json",
