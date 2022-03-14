@@ -41,12 +41,21 @@ jQuery(document).ready(function ($) {
       var sblist = this.sblist;
       var userlist = response;
       Object.keys(sblist).forEach((item) => {
-        $("#bmaw-userlist-table tbody").append("<tr><td>" + sblist[item]["name"] + '</td><td><select class="bmaw-userlist" id="bmaw_userlist_id_' + item + '" style="width: auto"></select></td></tr>');
+
+        var id = 'bmaw_userlist_id_'+item;
+        var appendstr = '<tr>';
+
+        appendstr += '<td>'+ sblist[item]["name"] + '</td>';
+        appendstr += '<td><input type="checkbox"></td>';
+        appendstr += '<td><select class="bmaw-userlist" id="' + id + '" style="width: auto"></select></td>'
+        appendstr += '</tr>';        
+        $("#bmaw-userlist-table tbody").append(appendstr);
+
         $(".bmaw-userlist").select2({
           multiple: true,
           width: "100%",
         });
-        attach_select_options_for_sbid(sblist, userlist, item, "#bmaw_userlist_id_" + item);
+        attach_select_options_for_sbid(sblist, userlist, item, "#" + id);
       });
     });
   });
