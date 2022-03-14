@@ -79,6 +79,11 @@ class bmaw_submissions_rest extends WP_REST_Controller
 				'callback'            => array($this, 'get_service_areas'),
 				'permission_callback' => array($this, 'get_service_areas_permissions_check'),
 			),
+		);
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->service_areas_rest_base,
+
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
 				'callback'            => array($this, 'post_service_areas'),
@@ -346,7 +351,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		// make our list of service bodies
 		foreach ($arr['service_body'] as $key => $value) {
-			error_log("looping key = ".$key);
+			error_log("looping key = " . $key);
 			if (array_key_exists('@attributes', $value)) {
 				$sbid = $value['@attributes']['id'];
 				$idlist[] = $sbid;
@@ -356,7 +361,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		// update our service area list in the database in case there have been some new ones added
 		error_log("get ids");
-		$sqlresult = $wpdb->get_col('SELECT service_area_id FROM ' . $bmaw_service_areas_table_name . ';',0);
+		$sqlresult = $wpdb->get_col('SELECT service_area_id FROM ' . $bmaw_service_areas_table_name . ';', 0);
 		// error_log($sql);
 		// $sqlresult = $wpdb->get_col($sql, 0);
 		error_log(vdump($sqlresult));
@@ -364,9 +369,8 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		error_log("missing ids");
 		error_log(vdump($missing));
 
-		foreach ($missing as $value)
-		{
-			$sql = $wpdb->prepare('INSERT into '.$bmaw_service_areas_table_name.' set service_area_id="%d", show_on_form=NULL',$value);
+		foreach ($missing as $value) {
+			$sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set service_area_id="%d", show_on_form=NULL', $value);
 			$wpdb->query($sql);
 		}
 
@@ -374,13 +378,12 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		error_log(vdump($sblist));
 
 		// make our group membership lists
-		foreach ($sblist as $key => $value)
-		{
-			error_log("getting memberships for ".$key);
-			$sql = $wpdb->prepare('SELECT DISTINCT wp_uid from '.$bmaw_service_areas_access_table_name.' where service_area_id = "%d"', $key);
-			$result = $wpdb->get_col($sql,0);
+		foreach ($sblist as $key => $value) {
+			error_log("getting memberships for " . $key);
+			$sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $bmaw_service_areas_access_table_name . ' where service_area_id = "%d"', $key);
+			$result = $wpdb->get_col($sql, 0);
 			error_log(vdump($result));
-			$sblist[$key]['membership'] = implode(',', $result); 
+			$sblist[$key]['membership'] = implode(',', $result);
 		}
 
 		return rest_ensure_response($sblist);
