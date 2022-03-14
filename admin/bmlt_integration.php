@@ -159,6 +159,7 @@ class BMLTIntegration
             $newargs = substr($newargs,0,-1);
             error_log("our post body is ".$newargs);
             $ret = wp_remote_post($url, $this->set_args($cookies, $newargs));
+            error_log($this->vdump($ret));
             return $ret;
         }
     }
