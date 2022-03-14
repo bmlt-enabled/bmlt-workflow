@@ -5,8 +5,7 @@ jQuery(document).ready(function ($) {
     width: '100%'
   });
 
-  var id = $(this).attr('id');
-  url = bmaw_admin_bmaw_service_areas_rest_url +"/"+id.substring(id.indexOf("_id_") + 4, id.length)
+  url = bmaw_admin_bmaw_service_areas_rest_url;
   $.ajax({
     url: url,
     dataType: "json",
