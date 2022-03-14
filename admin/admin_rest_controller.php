@@ -332,15 +332,17 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		foreach ($missing as $value)
 		{
-			$sql = $wpdb->prepare('INSERT into '. $bmaw_service_areas_table_name . ' set service_area_id="%d", show_on_form=NULL',$value);
+			$sql = $wpdb->prepare('INSERT into "%s" set service_area_id="%d", show_on_form=NULL',$bmaw_service_areas_table_name,$value);
 			$wpdb->query($sql);
 		}
 
 		// make our group membership lists
 		foreach ($sblist as $key => $value)
 		{
-			$sql = $wpdb->prepare('SELECT DISTINCT wp_uid from wp_bmaw_service_areas_access where service_area_id = "%d"', $key);
+			error_log("getting memberships for ".$key);
+			$sql = $wpdb->prepare('SELECT DISTINCT wp_uid from "%s" where service_area_id = "%d"', $bmaw_service_areas_access_table_name, $key);
 			$result = $wpdb->get_col($sql,0);
+			error_log(vdump($result));
 			$sblist[$key]['membership'] = implode(',', $result); 
 		}
 
