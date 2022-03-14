@@ -7,17 +7,7 @@ if (!class_exists('BMLTIntegration')) {
 }
 
 wp_nonce_field('wp_rest', '_wprestnonce');
-$req=array();
-$req['admin_action']='get_service_body_info';
-$req['flat']='';
-$bmlt_integration = new BMLTIntegration;
 
-// get an xml for a workaround
-$response = $bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
-if( is_wp_error( $response ) ) {
-    wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
-}
-// $response['body']=<<<EOD
 $test=<<<EOD
 <?xml version="1.0" encoding="UTF-8"?>
 <service_bodies xmlns="http://na.org.au"
@@ -821,29 +811,12 @@ $test=<<<EOD
     </service_body>
 </service_bodies>
 EOD;
-
-$xml = simplexml_load_string($response['body']);
-$arr = json_decode(json_encode($xml),1);
-// when xml gets fixed
-// $arr = json_decode($response['body'],true);
-
-$sblist = array();
-foreach ($arr['service_body'] as $key=>$value)
-{
-    if(array_key_exists('@attributes', $value))
-    {
-        // echo "reading attributes";
-        // echo "<br><br>";
-        $sblist[] = array('name'=>$value['@attributes']['name'],'id'=>$value['@attributes']['id']);
-    }
-}
-
 ?>
 
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
     <h2>Service Area Configuration</h2>
-    <table class="bmaw-userlist-table"">
+    <table class="bmaw-userlist-table" id="bmaw-userlist-table">
 <thead>
   <tr>
     <th class="bmaw-userlist-header">Service Area</th>
@@ -851,14 +824,6 @@ foreach ($arr['service_body'] as $key=>$value)
   </tr>
 </thead>
 <tbody>
-    <?php
-    foreach ($sblist as $item) {
-        echo '<tr class="bmaw-userlist-row">';
-        echo '<td>'.$item['name'].'</td>';
-        echo '<td><select class="bmaw-userlist" id="bmaw_userlist_id_'.$item['id'].'" style="width: auto"></select></td></tr>';
-    }
-    echo '</tr>';
-    ?>
 </tbody>
 </table>
 
