@@ -826,52 +826,18 @@ $xml = simplexml_load_string($response['body']);
 $arr = json_decode(json_encode($xml),1);
 // when xml gets fixed
 // $arr = json_decode($response['body'],true);
-// var_dump($arr);
+
 $sblist = array();
 foreach ($arr['service_body'] as $key=>$value)
 {
     if(array_key_exists('@attributes', $value))
     {
-        echo "reading attributes";
-        echo "<br><br>";
+        // echo "reading attributes";
+        // echo "<br><br>";
         $sblist[] = array('name'=>$value['@attributes']['name'],'id'=>$value['@attributes']['id']);
     }
 }
-//     $sblist[] = recurse_service_bodies($value, $sblist);
-// }
-// // $sblist = recurse_service_bodies($arr['service_body'],$sblist);
 
-// foreach ($sblist as $item)
-// {
-// //     echo '<br>'.$item.'<br>';
-// var_dump($item);
-// }
-
-function recurse_service_bodies($arr, $sblist)
-{
-    echo "recursing<br><br>";
-    var_dump($arr);
-    echo "<br><br>";
-    if(array_key_exists('service_bodies', $arr))
-    {
-        echo "service bodies exists";
-        echo "<br><br>";
-        foreach ($arr['service_bodies']['service_body'] as $idx)
-        {
-            echo "going into<br><br>";
-            var_dump($idx);
-            echo "<br><br>";
-            $sblist[] = recurse_service_bodies($idx, $sblist);
-        }
-    }
-    if(array_key_exists('@attributes', $arr))
-    {
-        echo "reading attributes";
-        echo "<br><br>";
-        $sblist[] = array('name'=>$arr['@attributes']['name'],'id'=>$arr['@attributes']['id']);
-    }
-    return $sblist;
-}
 ?>
 
 <div class="wrap">
