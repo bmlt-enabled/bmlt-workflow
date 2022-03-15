@@ -1,7 +1,13 @@
 <?php
 
+if (!defined('ABSPATH')) exit; // die if being called directly
+
 if (!class_exists('BMLTIntegration')) {
 	require_once(BMAW_PLUGIN_DIR . 'admin/bmlt_integration.php');
+}
+
+if (!class_exists('bmaw_submissions_rest_handlers')) {
+	require_once(BMAW_PLUGIN_DIR . 'admin/admin_rest_Handlers.php');
 }
 
 function bmaw_submissions_controller()
@@ -9,8 +15,6 @@ function bmaw_submissions_controller()
 	$controller = new bmaw_submissions_rest();
 	$controller->register_routes();
 }
-
-
 class bmaw_submissions_rest extends WP_REST_Controller
 {
 

@@ -1,5 +1,6 @@
 <?php
 
+if (!defined('ABSPATH')) exit; // die if being called directly
 
 class bmaw_submissions_rest_handlers
 {
