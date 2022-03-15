@@ -2,6 +2,7 @@
 
 var mdata = [];
 var mtext = [];
+var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 function update_meeting_list(bmaw_service_areas) {
   var search_results_address =
@@ -179,7 +180,6 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   function get_field_checked_index(fieldname, index) {
     var field = "#" + fieldname + "-" + index;
