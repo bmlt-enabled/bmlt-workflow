@@ -50,11 +50,21 @@ class bmaw_submissions_rest_handlers
 
             // make our list of service bodies
             foreach ($arr['service_body'] as $key => $value) {
-                error_log("looping key = " . $key);
+                // error_log("looping key = " . $key);
                 if (array_key_exists('@attributes', $value)) {
                     $sbid = $value['@attributes']['id'];
                     $idlist[] = $sbid;
                     $sblist[$sbid] = array('name' => $value['@attributes']['name']);
+                }
+                else
+                {
+                    // we need a name at minimum
+                    break;
+                }
+                $sblist[$sbid]['contact_email']='';
+                if (array_key_exists('contact_email', $value))
+                {
+                    $sblist[$sbid]['contact_email'] = $value['contact_email'];
                 }
             }
 
@@ -68,8 +78,14 @@ class bmaw_submissions_rest_handlers
             error_log(vdump($missing));
 
             foreach ($missing as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set service_area_name="%s", service_area_id="%d", show_on_form=0', $sblist[$value]['name'],$value);
+                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s", service_area_id="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'],$value);
                 $wpdb->query($sql);
+            }
+            // update any values that may have changed since last time we looked
+            
+            foreach ($idlist as $value)
+            {
+                $sql = $wpdb->prepare('UPDATE '. $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s where service_area_id="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'],$value);
             }
 
             error_log("our sblist");
