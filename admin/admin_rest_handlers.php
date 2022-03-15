@@ -88,4 +88,68 @@ class bmaw_submissions_rest_handlers
 		return $resp;
 	}
 
+    public function delete_submission_handler($request)
+	{
+
+		global $wpdb;
+		global $bmaw_submissions_table_name;
+		$sql = $wpdb->prepare('DELETE FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+		$result = $wpdb->get_results($sql, ARRAY_A);
+
+		// Return all of our comment response data.
+		return $result;
+	}
+
+    public function get_submission_handler($request)
+	{
+		global $wpdb;
+		global $bmaw_submissions_table_name;
+		$sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+		$result = $wpdb->get_results($sql, ARRAY_A);
+
+		// Return all of our comment response data.
+		return $result;
+	}
+
+    public function approve_submission_handler($request)
+	{
+		$change_id = $request->get_param('id');
+
+		error_log("getting changes for id " . $change_id);
+
+		global $wpdb;
+		global $bmaw_submissions_table_name;
+
+		$sql = $wpdb->prepare('SELECT change_made FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+		$result = $wpdb->get_results($sql, ARRAY_A);
+		if ($result[0]['change_made'] === 'Approved') {
+			return "{'response':'already approved'}";
+		}
+
+		$sql = $wpdb->prepare('SELECT changes_requested FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+		$result = $wpdb->get_results($sql, ARRAY_A);
+		if ($result) {
+			error_log(vdump($result));
+		} else {
+			error_log("no result found");
+		}
+		$change = unserialize($result[0]['changes_requested']);
+		error_log("deserialised");
+		error_log(vdump($change));
+		$change['admin_action'] = 'modify_meeting';
+
+		$response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
+		// ERROR HANDLING NEEDED
+		// if( is_wp_error( $response ) ) {
+		// 	wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
+		// }
+		$current_user = wp_get_current_user();
+		$username = $current_user->user_login;
+
+		$sql = $wpdb->prepare('UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s" where id="%d" limit 1', 'Approved', $username, current_time('mysql', true), $request['id']);
+		$result = $wpdb->get_results($sql, ARRAY_A);
+
+		return "{'response':'approved'}";
+	}
+
 }
