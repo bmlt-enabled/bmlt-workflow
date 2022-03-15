@@ -87,6 +87,7 @@ class bmaw_submissions_rest_handlers
 	{
         global $wpdb;
 		global $bmaw_service_areas_access_table_name;
+        global $bmaw_capability_manage_submissions;
 
         // error_log("request body");
         // error_log(vdump($request->get_json_params()));
@@ -101,6 +102,23 @@ class bmaw_submissions_rest_handlers
             {
                 $sql = $wpdb->prepare('INSERT into '. $bmaw_service_areas_access_table_name . ' SET wp_uid = "%d", service_area_id="%d"',$member,$sb );
                 $wpdb->query($sql);
+            }
+        }
+        // add / remove user capabilities
+        $users = get_users();
+        $sql = $wpdb->query('SELECT DISTINCT wp_uid from'. $bmaw_service_areas_access_table_name);
+		$result = $wpdb->get_results($sql, ARRAY_A);
+
+        foreach ($users as $user)
+        {
+            error_log("checking user id ".$user->get('ID'));
+            if (in_array($user->get('ID'), $result))
+            {
+                $user->add_cap($bmaw_capability_manage_submissions);
+            }
+            else
+            {
+                $user->remove_cap($bmaw_capability_manage_submissions);
             }
         }
         $resp = "ok";
