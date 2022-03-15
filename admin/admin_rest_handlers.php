@@ -88,7 +88,8 @@ class bmaw_submissions_rest_handlers
 
             foreach ($sqlresult as $key => $value)
             {
-                $sblist[$value['service_area_id']]['show_on_form']=$value['show_on_form'];
+                $bool = $value['show_on_form']?(true):(false);
+                $sblist[$value['service_area_id']]['show_on_form']=$bool;
             }
         }
         else
