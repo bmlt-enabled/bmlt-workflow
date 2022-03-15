@@ -28,7 +28,7 @@ class bmaw_submissions_rest_handlers
         $sblist = array();
 
         // only admins can see/modify the permissions list
-        if (current_user_can('manage_options')) {
+        if (current_user_can('crapmanage_options')) {
 
             $req = array();
             $req['admin_action'] = 'get_service_body_info';
