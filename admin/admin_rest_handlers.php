@@ -82,10 +82,11 @@ class bmaw_submissions_rest_handlers
                 $wpdb->query($sql);
             }
             // update any values that may have changed since last time we looked
-            
+
             foreach ($idlist as $value)
             {
                 $sql = $wpdb->prepare('UPDATE '. $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s where service_area_id="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'],$value);
+                $wpdb->query($sql);
             }
 
             error_log("our sblist");
