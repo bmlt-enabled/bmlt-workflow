@@ -93,6 +93,7 @@ class bmaw_submissions_rest_handlers
             {
                 $sblist[$value['service_area_id']]['name']=$value['name'];
             }
+            error_log(vdump($sblist));
         }
         else
         {
