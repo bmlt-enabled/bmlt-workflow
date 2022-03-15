@@ -14,7 +14,6 @@ function update_meeting_list(bmaw_service_areas) {
     bmaw_service_areas +
     "recursive=1&sort_keys=meeting_name";
 
-  var search_results_address = "";
   fetchJsonp(search_results_address)
     .then((response) => response.json())
     .then((data) => {
