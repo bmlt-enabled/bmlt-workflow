@@ -107,8 +107,8 @@ class bmaw_submissions_rest_handlers
         // add / remove user capabilities
         $users = get_users();
         $sql = $wpdb->query('SELECT DISTINCT wp_uid from'. $bmaw_service_areas_access_table_name);
-		$result = $wpdb->get_results($sql, ARRAY_A);
-
+		$result = $wpdb->get_results($sql, ARRAY_N);
+        error_log(vdump($result));
         foreach ($users as $user)
         {
             error_log("checking user id ".$user->get('ID'));
