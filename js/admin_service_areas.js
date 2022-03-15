@@ -2,7 +2,7 @@ jQuery(document).ready(function ($) {
   function attach_select_options_for_sbid(sblist, userlist, sbid, selectid) {
     Object.keys(userlist).forEach((item) => {
       var wp_uid = userlist[item]["id"];
-      var username = userlist[item]["name"];
+      var username = userlist[item]["slug"];
       var membership = sblist[sbid]["membership"];
       var selected = false;
       if (membership.includes(wp_uid)) {
