@@ -12,6 +12,13 @@ jQuery(document).ready(function ($) {
       xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
     },
   }).done(function (response) {
+    Object.keys(response).forEach((item) => {
+      console.log(response);
+      var service_area_id = item['id'];
+
+    // var opt = new Option(username, wp_uid, false, selected);
+    // $('#service_area').append(opt);
+
   });
 
   $("#meeting_update_form").validate();
