@@ -4,6 +4,16 @@ var mdata = [];
 var mtext = [];
 
 jQuery(document).ready(function ($) {
+
+  $.ajax({
+    url: wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route,
+    dataType: "json",
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+    },
+  }).done(function (response) {
+  });
+
   $("#meeting_update_form").validate();
 
   $("#starter_kit_required").on("change", function () {
@@ -204,16 +214,16 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  var search_results_address =
-    bmaw_bmlt_server_address +
-    "/client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&data_field_key=location_postal_code_1,duration_time," +
-    "start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality," +
-    "location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed," +
-    "root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1," +
-    "contact_email_1,contact_name_2,contact_phone_2,contact_email_2&" +
-    bmaw_service_areas +
-    "&recursive=1&sort_keys=meeting_name";
-
+  // var search_results_address =
+  //   bmaw_bmlt_server_address +
+  //   "/client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&data_field_key=location_postal_code_1,duration_time," +
+  //   "start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality," +
+  //   "location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed," +
+  //   "root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1," +
+  //   "contact_email_1,contact_name_2,contact_phone_2,contact_email_2&" +
+  //   bmaw_service_areas +
+  //   "&recursive=1&sort_keys=meeting_name";
+var search_results_address = '';
   fetchJsonp(search_results_address)
     .then((response) => response.json())
     .then((data) => {
