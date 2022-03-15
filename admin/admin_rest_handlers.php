@@ -90,7 +90,7 @@ class bmaw_submissions_rest_handlers
             // create simple service area list
             foreach ($result as $key => $value)
             {
-                $sblist[$value['service_area_id']]['name']=$value['name'];
+                $sblist[$value['service_area_id']]['name']=$value['service_area_name'];
             }
             error_log(vdump($sblist));
         }
