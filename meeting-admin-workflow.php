@@ -83,7 +83,7 @@ function enqueue_form_deps()
     wp_enqueue_script('jquery-validate-additional');
     wp_enqueue_style('select2css');
     wp_enqueue_script('select2');
-    
+
     $script  = 'bmaw_admin_bmaw_service_areas_rest_route = ' . json_encode('bmaw-submission/v1/serviceareas') . '; ';
     $script .= 'wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
     $script .= 'bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '";';
@@ -228,20 +228,20 @@ function bmaw_register_setting()
         wp_die("This page cannot be accessed");
     }
 
-    register_setting(
-        'bmaw-settings-group',
-        'bmaw_service_committee_option_array',
-        array(
-            'type' => 'array',
-            'description' => 'bmaw service committee array',
-            'sanitize_callback' => 'array_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => array(
-                "0" => array("name" => "Committee1", "e1" => "email 1", "e2" => "email 1.1"),
-                "1" => array("name" => "Committee2", "e1" => "email 2", "e2" => "email 2.1"),
-            )
-        )
-    );
+    // register_setting(
+    //     'bmaw-settings-group',
+    //     'bmaw_service_committee_option_array',
+    //     array(
+    //         'type' => 'array',
+    //         'description' => 'bmaw service committee array',
+    //         'sanitize_callback' => 'array_sanitize_callback',
+    //         'show_in_rest' => false,
+    //         'default' => array(
+    //             "0" => array("name" => "Committee1", "e1" => "email 1", "e2" => "email 1.1"),
+    //             "1" => array("name" => "Committee2", "e1" => "email 2", "e2" => "email 2.1"),
+    //         )
+    //     )
+    // );
 
     register_setting(
         'bmaw-settings-group',
@@ -408,13 +408,13 @@ function bmaw_register_setting()
         'bmaw-settings-section-id'
     );
 
-    add_settings_field(
-        'bmaw_service_committee_table',
-        'Service Committee Configuration',
-        'bmaw_service_committee_table_html',
-        'bmaw-settings',
-        'bmaw-settings-section-id'
-    );
+    // add_settings_field(
+    //     'bmaw_service_committee_table',
+    //     'Service Committee Configuration',
+    //     'bmaw_service_committee_table_html',
+    //     'bmaw-settings',
+    //     'bmaw-settings-section-id'
+    // );
 
     add_settings_field(
         'bmaw_email_from_address',
@@ -631,51 +631,51 @@ function bmaw_close_meeting_template_html()
     echo '<br><br>';
 }
 
-function bmaw_service_committee_table_html()
-{
+// function bmaw_service_committee_table_html()
+// {
 
-    $arr = get_option('bmaw_service_committee_option_array');
+//     $arr = get_option('bmaw_service_committee_option_array');
 
-    echo <<<END
-    <div class="bmaw_info_text">
-    <br>Configure your service committee contact details here.
-    <br>
-    <br><b>Service Area</b>: The name as appears in the service area listing on the meeting form.
-    <br><b>To/CC Addresses</b>: A comma seperated list of addresses to send the meeting update notification. {field:email_address} can be used to contact the form submitter.
-    <br><br>
-    </div>
-    <table class="committeetable" id="bmaw-service-committee-table">
-        <thead>
-            <tr>
-                <th>Service Area</th>
-                <th>To Address(es)</th>
-                <th>CC Address(es)</th>
-                <th></th>
-            </tr>
-        </thead>
-    <tbody>
-    END;
-    $i = 0;
-    foreach ($arr as $key => $value) {
-        echo '<tr>';
-        $j = 0;
-        $required = 'required';
-        foreach ($value as $k2 => $v2) {
-            if ($j == 2) {
-                // just the first two fields are required
-                $required = "";
-            }
-            $j++;
-            echo '<td><input type="text" name="bmaw_service_committee_option_array[' . $i . '][' . $k2 . ']" value="' . $v2 . '" ' . $required . '/></td>';
-        }
-        echo '<td><span class="dashicons dashicons-remove" id="bmaw-service-committee-' . $key . '-remove"></span></td></tr>';
-        $i++;
-    }
-    echo '<tr><td></td><td></td><td></td><td><span id="bmaw-service-committee-new-row" class="dashicons dashicons-insert"></span></td></tr>';
-    echo '</tbody></table>';
-    // echo '<br><button type="button" id="bmaw_service_committee_option_array_reload">Reload saved</button>';
-    echo '<br><br>';
-}
+//     echo <<<END
+//     <div class="bmaw_info_text">
+//     <br>Configure your service committee contact details here.
+//     <br>
+//     <br><b>Service Area</b>: The name as appears in the service area listing on the meeting form.
+//     <br><b>To/CC Addresses</b>: A comma seperated list of addresses to send the meeting update notification. {field:email_address} can be used to contact the form submitter.
+//     <br><br>
+//     </div>
+//     <table class="committeetable" id="bmaw-service-committee-table">
+//         <thead>
+//             <tr>
+//                 <th>Service Area</th>
+//                 <th>To Address(es)</th>
+//                 <th>CC Address(es)</th>
+//                 <th></th>
+//             </tr>
+//         </thead>
+//     <tbody>
+//     END;
+//     $i = 0;
+//     foreach ($arr as $key => $value) {
+//         echo '<tr>';
+//         $j = 0;
+//         $required = 'required';
+//         foreach ($value as $k2 => $v2) {
+//             if ($j == 2) {
+//                 // just the first two fields are required
+//                 $required = "";
+//             }
+//             $j++;
+//             echo '<td><input type="text" name="bmaw_service_committee_option_array[' . $i . '][' . $k2 . ']" value="' . $v2 . '" ' . $required . '/></td>';
+//         }
+//         echo '<td><span class="dashicons dashicons-remove" id="bmaw-service-committee-' . $key . '-remove"></span></td></tr>';
+//         $i++;
+//     }
+//     echo '<tr><td></td><td></td><td></td><td><span id="bmaw-service-committee-new-row" class="dashicons dashicons-insert"></span></td></tr>';
+//     echo '</tbody></table>';
+//     // echo '<br><button type="button" id="bmaw_service_committee_option_array_reload">Reload saved</button>';
+//     echo '<br><br>';
+// }
 
 function display_bmaw_admin_options_page()
 {

@@ -119,13 +119,6 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <div>
                 <label for="service_area">Service Committee (or Other if not known)</label>
                 <select name="service_area" id="service_area">
-                    <?php
-                    $arr = get_option('bmaw_service_committee_option_array');
-                    foreach ($arr as $key => $value) {
-                        $committee = $value['name'];
-                        echo '<option value="' . $committee . '">' . $committee . '</option>';
-                    }
-                    ?>
                 </select>
             </div>
             <br>
