@@ -86,15 +86,13 @@ class bmaw_submissions_rest_handlers
             }
 
             error_log("simple list");
-            $result = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form is NULL');
-            // $result = $wpdb->get_col($sql, 0);
+            $result = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form is NULL',ARRAY_A);
             error_log(vdump($result));
 
         }
         else
         {
-            $sql = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form = "TRUE"');
-            $result = $wpdb->get_col($sql, 0);
+            $result = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form = "TRUE"',ARRAY_A);
             error_log(vdump($result));
             foreach ($result as $key => $value)
             {
