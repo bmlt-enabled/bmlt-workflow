@@ -7,7 +7,7 @@ if (!class_exists('BMLTIntegration')) {
 }
 
 if (!class_exists('bmaw_submissions_rest_handlers')) {
-	require_once(BMAW_PLUGIN_DIR . 'admin/admin_rest_Handlers.php');
+	require_once(BMAW_PLUGIN_DIR . 'admin/admin_rest_handlers.php');
 }
 
 function bmaw_submissions_controller()
