@@ -31,7 +31,10 @@ jQuery(document).ready(function ($) {
       sbname = $(this).data("name");
       console.log("select vals = "+ $(this).val());
       membership = $(this).val();
-      ret[id] = { "name":sbname, "membership":membership};
+      console.log("got show_on_form = "+ $(this).data("show_on_form"));
+      show_on_form = $(this).data("show_on_form");
+
+      ret[id] = { "name":sbname, "show_on_form": show_on_form, "membership":membership};
     });
     return ret;
   }
@@ -43,7 +46,7 @@ jQuery(document).ready(function ($) {
       checked = $(tr).find('input:checkbox').prop('checked');
       console.log("got "+checked);
       select = $(tr).find('select');
-      select.data('checked', checked);
+      select.data('show_on_form', checked);
     });
     post = create_service_area_permission_post();
     console.log("post = "+post);
