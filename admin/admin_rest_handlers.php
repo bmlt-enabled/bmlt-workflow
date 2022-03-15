@@ -15,7 +15,7 @@ class bmaw_submissions_rest_handlers
         return $result;
     }
 
-    public function get_service_areas()
+    public function get_service_areas_handler()
     {
         // call bmlt for service area list
         // add list of wp uids with access
@@ -86,6 +86,8 @@ class bmaw_submissions_rest_handlers
     public function post_service_areas($request)
 	{
 		$resp = "lol";
+        error_log("request body");
+        error_log(vdump($request['body']));
 		return $resp;
 	}
 
