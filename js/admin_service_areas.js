@@ -40,7 +40,7 @@ jQuery(document).ready(function ($) {
     console.log("clicked");
     $('#bmaw-userlist-table tbody tr').each(function() {
       tr = $(this);
-      checked = $(tr).find('input:checkbox').val();
+      checked = $(tr).find('input:checkbox').prop('checked');
       console.log("got "+checked);
       select = $(tr).find('select');
       select.data('checked', checked);
