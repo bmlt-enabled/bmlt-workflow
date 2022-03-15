@@ -38,7 +38,7 @@ jQuery(document).ready(function ($) {
 
   $("#bmaw_submit").on("click", function () {
     console.log("clicked");
-    $('#bmaw-userlist-table tr').each(function() {
+    $('#bmaw-userlist-table tbody tr').each(function() {
       tr = $(this);
       checked = $(tr).find('input:checkbox').val();
       console.log("got "+checked);
