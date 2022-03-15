@@ -86,8 +86,8 @@ class bmaw_submissions_rest_handlers
             }
 
             error_log("simple list");
-            $sql = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form is NULL');
-            $result = $wpdb->get_col($sql, 0);
+            $result = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form is NULL');
+            // $result = $wpdb->get_col($sql, 0);
             error_log(vdump($result));
 
         }
