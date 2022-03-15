@@ -69,7 +69,7 @@ class bmaw_submissions_rest_handlers
             error_log(vdump($missing));
 
             foreach ($missing as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set service_area_id="%d", show_on_form=NULL', $value);
+                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set service_body_name="%s", service_area_id="%d", show_on_form=NULL', $sblist[$value]['name'],$value);
                 $wpdb->query($sql);
             }
 
