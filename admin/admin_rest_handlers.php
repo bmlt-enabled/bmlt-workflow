@@ -28,7 +28,7 @@ class bmaw_submissions_rest_handlers
         $sblist = array();
 
         // only admins can see/modify the permissions list
-        if (current_user_can('crapmanage_options')) {
+        if (current_user_can('manage_options')) {
 
             $req = array();
             $req['admin_action'] = 'get_service_body_info';
@@ -94,15 +94,15 @@ class bmaw_submissions_rest_handlers
         }
         else
         {
-            error_log("simple list");
+            // error_log("simple list of service areas and names");
             $result = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form != "0"',ARRAY_A);
-            error_log(vdump($result));
-            // create simple service area list
+            // error_log(vdump($result));
+            // create simple service area list (names of service areas that are enabled by admin with show_on_form)
             foreach ($result as $key => $value)
             {
                 $sblist[$value['service_area_id']]['name']=$value['service_area_name'];
             }
-            error_log(vdump($sblist));
+            // error_log(vdump($sblist));
         }
 
         return $sblist;
