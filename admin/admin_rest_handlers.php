@@ -85,6 +85,9 @@ class bmaw_submissions_rest_handlers
 
     public function post_service_areas($request)
 	{
+        global $wpdb;
+		global $bmaw_service_areas_access_table_name;
+
         // error_log("request body");
         // error_log(vdump($request->get_json_params()));
         $permissions = $request->get_json_params();
@@ -93,14 +96,14 @@ class bmaw_submissions_rest_handlers
         // insert new permissions from form
         foreach ($permissions as $sb => $arr)
         {
-            $members = explode(','$arr['membership']);
+            $members = $arr['membership'];
             foreach ($members as $member)
             {
                 $sql = $wpdb->prepare('INSERT into '. $bmaw_service_areas_access_table_name . 'SET wp_uid = "%d", service_area_id="%d"',$member,$sb );
                 $wpdb->query($sql);
             }
         }
-        $resp = "ok"
+        $resp = "ok";
 		return $resp;
 	}
 
