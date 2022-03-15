@@ -116,10 +116,12 @@ class bmaw_submissions_rest_handlers
             if (in_array($user->get('ID'), $result))
             {
                 $user->add_cap($bmaw_capability_manage_submissions);
+                error_log("adding cap");
             }
             else
             {
                 $user->remove_cap($bmaw_capability_manage_submissions);
+                error_log("removing cap");
             }
         }
         $resp = "ok";
