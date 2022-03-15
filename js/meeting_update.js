@@ -165,7 +165,7 @@ jQuery(document).ready(function ($) {
       var service_area_name = response[item]["name"];
       var opt = new Option(service_area_name, service_area_id, false, false);
       $("#service_area").append(opt);
-      bmaw_service_areas += "services[]=" + id + "&";
+      bmaw_service_areas += "services[]=" + service_area_id + "&";
       update_meeting_list(bmaw_service_areas);
     });
   });
