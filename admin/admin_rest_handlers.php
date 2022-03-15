@@ -61,15 +61,14 @@ class bmaw_submissions_rest_handlers
             // update our service area list in the database in case there have been some new ones added
             error_log("get ids");
             $sqlresult = $wpdb->get_col('SELECT service_area_id FROM ' . $bmaw_service_areas_table_name . ';', 0);
-            // error_log($sql);
-            // $sqlresult = $wpdb->get_col($sql, 0);
+
             error_log(vdump($sqlresult));
             $missing = array_diff($idlist, $sqlresult);
             error_log("missing ids");
             error_log(vdump($missing));
 
             foreach ($missing as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set service_body_name="%s", service_area_id="%d", show_on_form=NULL', $sblist[$value]['name'],$value);
+                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set service_area_name="%s", service_area_id="%d", show_on_form=NULL', $sblist[$value]['name'],$value);
                 $wpdb->query($sql);
             }
 
