@@ -38,6 +38,13 @@ jQuery(document).ready(function ($) {
 
   $("#bmaw_submit").on("click", function () {
     console.log("clicked");
+    $('#bmaw-userlist-table tr').each(function() {
+      tr = $(this);
+      checked = $(tr).find('input:checkbox').val();
+      console.log("got "+checked);
+      select = $(tr).find('select');
+      select.data('checked', checked);
+    });
     post = create_service_area_permission_post();
     console.log("post = "+post);
     $.ajax({
