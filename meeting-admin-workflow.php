@@ -720,7 +720,9 @@ function bmaw_install()
     dbDelta($sql);
 
     $sql = "CREATE TABLE " . $bmaw_service_areas_table_name . " (
-		service_area_id mediumint(9) NOT NULL ,
+		service_area_id mediumint(9) NOT NULL,
+        service_area_name tinytext NOT NULL,
+        contact_email varchar(255) NOT NULL default '',
         show_on_form bool,
 		PRIMARY KEY (service_area_id)
 	) $charset_collate;";
