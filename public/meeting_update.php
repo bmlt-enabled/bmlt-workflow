@@ -8,6 +8,9 @@ $bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status', "failure");
 if ($bmaw_bmlt_test_status != "success") {
     wp_die("<h4>BMAW Plugin Error: BMLT Server not configured and tested.</h4>");
 }
+
+wp_nonce_field('wp_rest', '_wprestnonce');
+
 // FIXME
 // bmaw_service_areas_string from include
 // $bmaw_service_areas_string = explode(",", $bmaw_service_areas_string);
@@ -24,7 +27,6 @@ if ($bmaw_bmlt_test_status != "success") {
 
 <form action="#" method="post" id="meeting_update_form">
     <input type="hidden" name="action" value="meeting_update_form_response">
-    <input type="hidden" name="_wpnonce" value="<?php echo wp_create_nonce('wp_rest'); ?>" />
     <div class="rendered-form">
         <div>
             <label for="update_reason"">Reason For Update</label>
