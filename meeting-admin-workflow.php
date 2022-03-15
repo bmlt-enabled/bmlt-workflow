@@ -75,6 +75,21 @@ function enqueue_form_deps()
     deny_cache_register_style('bmaw-meeting-update-css', array('jquery'), 'css/meeting-update-form.css');
     wp_register_script('jquery.validate', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
     wp_register_script('jquery.validate.additional', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jquery.validate'), '1.0', true);
+
+    wp_enqueue_script('bmaw-general-js');
+    wp_enqueue_script('bmaw-meeting-update-js');
+    wp_enqueue_style('bmaw-meeting-update-css');
+    wp_enqueue_script('jquery-validate');
+    wp_enqueue_script('jquery-validate-additional');
+    wp_enqueue_style('select2css');
+    wp_enqueue_script('select2');
+    
+    $script  = 'bmaw_admin_bmaw_service_areas_rest_route = ' . json_encode('bmaw-submission/v1/serviceareas') . '; ';
+    $script .= 'wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
+    $script .= 'bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '";';
+    wp_add_inline_script('bmaw-meeting-update-js', $script, 'before');
+
+
 }
 
 function bmaw_admin_scripts($hook)
@@ -87,8 +102,7 @@ function bmaw_admin_scripts($hook)
     deny_cache_enqueue_style('bmaw-admin-css', false, 'css/admin_page.css');
     deny_cache_enqueue_script('bmawjs', array('jquery'), 'js/script_includes.js');
 
-    switch ($hook)
-    {
+    switch ($hook) {
 
         case ('bmaw_page_bmaw-submissions'):
             wp_enqueue_style('thickbox');
@@ -99,26 +113,25 @@ function bmaw_admin_scripts($hook)
             wp_enqueue_style('wp-jquery-ui-dialog');
 
             // make sure our rest url is populated
-            $script  = 'bmaw_admin_submissions_rest_url = '. json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';
+            $script  = 'bmaw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';
             wp_add_inline_script('admin_submissions_js', $script, 'before');
-            break;    
+            break;
         case ('bmaw_page_bmaw-service-areas'):
             wp_register_style('select2css', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
-            wp_register_script('select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);   
+            wp_register_script('select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
             wp_enqueue_style('select2css');
             wp_enqueue_script('select2');
-     
+
             deny_cache_enqueue_script('admin_service_areas_js', array('jquery'), 'js/admin_service_areas.js');
             deny_cache_enqueue_style('bmaw-admin-submissions-css', false, 'css/admin_service_areas.css');
 
             // make sure our rest url is populated
-            $script  = 'bmaw_admin_bmaw_service_areas_rest_route = '. json_encode('bmaw-submission/v1/serviceareas') . '; ';
-            $script .= 'wp_rest_base = '.json_encode(get_rest_url()) . '; ';
+            $script  = 'bmaw_admin_bmaw_service_areas_rest_route = ' . json_encode('bmaw-submission/v1/serviceareas') . '; ';
+            $script .= 'wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
             wp_add_inline_script('admin_service_areas_js', $script, 'before');
             break;
         default:
             deny_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
-
     }
 }
 
@@ -749,11 +762,11 @@ function bmaw_install()
             // error_log("adding cap to role");
             // error_log(vdump($role));
             // add it but dont grant it yet
-            $role->add_cap($bmaw_capability_manage_submissions,false);
+            $role->add_cap($bmaw_capability_manage_submissions, false);
         }
     }
     // add a custom role just for trusted servants
-    add_role( 'bmaw_trusted_servant', 'BMAW Trusted Servant', array( $bmaw_capability_manage_submissions => true ) );
+    add_role('bmaw_trusted_servant', 'BMAW Trusted Servant', array($bmaw_capability_manage_submissions => true));
 }
 
 function bmaw_uninstall()

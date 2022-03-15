@@ -1,13 +1,5 @@
 <?php
 
-wp_enqueue_script('bmaw-general-js');
-wp_enqueue_script('bmaw-meeting-update-js');
-wp_enqueue_style('bmaw-meeting-update-css');
-wp_enqueue_script('jquery-validate');
-wp_enqueue_script('jquery-validate-additional');
-wp_enqueue_style('select2css');
-wp_enqueue_script('select2');
-
 if (!class_exists('BMLTIntegration')) {
 	require_once(BMAW_PLUGIN_DIR . 'admin/bmlt_integration.php');
 }
@@ -18,15 +10,15 @@ if ($bmaw_bmlt_test_status != "success") {
 }
 // FIXME
 // bmaw_service_areas_string from include
-$bmaw_service_areas_string = explode(",", $bmaw_service_areas_string);
-echo '<script>var bmaw_service_areas="';
-$service_areas_parsed = "";
-foreach ($bmaw_service_areas_string as $i) {
-    $service_areas_parsed .= 'services[]=' . $i . '&';
-}
+// $bmaw_service_areas_string = explode(",", $bmaw_service_areas_string);
+// echo '<script>var bmaw_service_areas="';
+// $service_areas_parsed = "";
+// foreach ($bmaw_service_areas_string as $i) {
+//     $service_areas_parsed .= 'services[]=' . $i . '&';
+// }
 
-echo substr_replace($service_areas_parsed, "", -1) . '";';
-echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '"</script>';
+// echo substr_replace($service_areas_parsed, "", -1) . '";';
+// echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '"</script>';
 // FIXME
 ?>
 
