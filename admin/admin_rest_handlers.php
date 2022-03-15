@@ -68,7 +68,7 @@ class bmaw_submissions_rest_handlers
             error_log(vdump($missing));
 
             foreach ($missing as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set service_area_name="%s", service_area_id="%d", show_on_form=NULL', $sblist[$value]['name'],$value);
+                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set service_area_name="%s", service_area_id="%d", show_on_form=0', $sblist[$value]['name'],$value);
                 $wpdb->query($sql);
             }
 
@@ -83,12 +83,18 @@ class bmaw_submissions_rest_handlers
                 error_log(vdump($result));
                 $sblist[$key]['membership'] = implode(',', $result);
             }
+            // get the form display settings
+            $sqlresult = $wpdb->get_results('SELECT service_area_id,show_on_form FROM ' . $bmaw_service_areas_table_name);
 
+            foreach ($sqlresult as $key => $value)
+            {
+                $sblist[$value['service_body_id']]['show_on_form']=$value['show_on_form'];
+            }
         }
         else
         {
             error_log("simple list");
-            $result = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form is not NULL',ARRAY_A);
+            $result = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form is not 0',ARRAY_A);
             error_log(vdump($result));
             // create simple service area list
             foreach ($result as $key => $value)
@@ -96,7 +102,6 @@ class bmaw_submissions_rest_handlers
                 $sblist[$value['service_area_id']]['name']=$value['service_area_name'];
             }
             error_log(vdump($sblist));
-
         }
 
         return $sblist;
@@ -126,7 +131,7 @@ class bmaw_submissions_rest_handlers
             $sql = $wpdb->prepare('UPDATE ' . $bmaw_service_areas_table_name . ' SET show_on_form = "%d" where service_area_id="%d"', $show_on_form, $sb);
             $wpdb->query($sql);
         }
-        
+
         // add / remove user capabilities
         $users = get_users();
         $result = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $bmaw_service_areas_access_table_name, 0);
