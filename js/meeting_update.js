@@ -4,7 +4,6 @@ var mdata = [];
 var mtext = [];
 
 jQuery(document).ready(function ($) {
-
   $.ajax({
     url: wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route,
     dataType: "json",
@@ -14,10 +13,10 @@ jQuery(document).ready(function ($) {
   }).done(function (response) {
     Object.keys(response).forEach((item) => {
       console.log(response);
-      var service_area_id = item['id'];
-
-    // var opt = new Option(username, wp_uid, false, selected);
-    // $('#service_area').append(opt);
+      var service_area_id = item;
+      var service_area_name = response[item]["name"];
+      var opt = new Option(service_area_name, service_area_id, false, false);
+      $("#service_area").append(opt);
     });
   });
 
@@ -230,7 +229,7 @@ jQuery(document).ready(function ($) {
   //   "contact_email_1,contact_name_2,contact_phone_2,contact_email_2&" +
   //   bmaw_service_areas +
   //   "&recursive=1&sort_keys=meeting_name";
-var search_results_address = '';
+  var search_results_address = "";
   fetchJsonp(search_results_address)
     .then((response) => response.json())
     .then((data) => {
