@@ -91,10 +91,11 @@ jQuery(document).ready(function ($) {
       var userlist = response;
       Object.keys(sblist).forEach((item) => {
         var id = "bmaw_userlist_id_" + item;
+        var checked = sblist[item]["show_on_form"]?("checked"):("");
         var appendstr = "<tr>";
 
         appendstr += "<td>" + sblist[item]["name"] + "</td>";
-        appendstr += '<td><input type="checkbox"></td>';
+        appendstr += '<td><input type="checkbox" '+checked+'></td>';
         appendstr += '<td><select class="bmaw-userlist" id="' + id + '" style="width: auto"></select></td>';
         appendstr += "</tr>";
         $("#bmaw-userlist-table tbody").append(appendstr);
