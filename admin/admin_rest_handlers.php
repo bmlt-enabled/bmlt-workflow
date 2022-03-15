@@ -95,7 +95,7 @@ class bmaw_submissions_rest_handlers
         else
         {
             error_log("simple list");
-            $result = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form is not 0',ARRAY_A);
+            $result = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form != "0"',ARRAY_A);
             error_log(vdump($result));
             // create simple service area list
             foreach ($result as $key => $value)
