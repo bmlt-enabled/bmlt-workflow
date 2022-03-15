@@ -106,8 +106,10 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	 */
 	public function get_submissions_permissions_check($request)
 	{
+		global $bmaw_capability_manage_submissions;
+
 		error_log("get submissions current user " . get_current_user_id());
-		if (!current_user_can('bmaw_manage_submissions')) {
+		if (!current_user_can($bmaw_capability_manage_submissions)) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view submissions.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -115,8 +117,10 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function approve_submission_action_permissions_check($request)
 	{
+		global $bmaw_capability_manage_submissions;
+
 		error_log("approve submission current user " . get_current_user_id());
-		if (!current_user_can('bmaw_manage_submissions')) {
+		if (!current_user_can($bmaw_capability_manage_submissions)) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot accept this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -124,8 +128,10 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function reject_submission_action_permissions_check($request)
 	{
+		global $bmaw_capability_manage_submissions;
+
 		error_log("reject submission current user " . get_current_user_id());
-		if (!current_user_can('bmaw_manage_submissions')) {
+		if (!current_user_can($bmaw_capability_manage_submissions)) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot reject this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -133,8 +139,10 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function delete_submission_permissions_check($request)
 	{
+		// delete submissions is limited to admin
+		
 		error_log("delete submission current user " . get_current_user_id());
-		if (!current_user_can('bmaw_manage_submissions')) {
+		if (!current_user_can('manage_options')) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot delete this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -149,10 +157,12 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	 */
 	public function get_service_areas_permissions_check($request)
 	{
-		error_log("get_service_areas_permissions_check " . get_current_user_id());
-		if (!current_user_can('manage_options')) {
-			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view service_areas.'), array('status' => $this->authorization_status_code()));
-		}
+		// get service areas is unauthenticated as it is also used by the end-user form - permission checks will be done inside the handler
+
+		// error_log("get_service_areas_permissions_check " . get_current_user_id());
+		// if (!current_user_can('manage_options')) {
+		// 	return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view service_areas.'), array('status' => $this->authorization_status_code()));
+		// }
 		return true;
 	}
 
