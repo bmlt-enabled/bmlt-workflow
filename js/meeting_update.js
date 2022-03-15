@@ -18,7 +18,7 @@ jQuery(document).ready(function ($) {
 
     // var opt = new Option(username, wp_uid, false, selected);
     // $('#service_area').append(opt);
-
+    });
   });
 
   $("#meeting_update_form").validate();
