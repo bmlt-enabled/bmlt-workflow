@@ -84,7 +84,7 @@ class bmaw_submissions_rest_handlers
                 $sblist[$key]['membership'] = implode(',', $result);
             }
             // get the form display settings
-            $sqlresult = $wpdb->get_results('SELECT service_area_id,show_on_form FROM ' . $bmaw_service_areas_table_name);
+            $sqlresult = $wpdb->get_results('SELECT service_area_id,show_on_form FROM ' . $bmaw_service_areas_table_name, ARRAY_A);
 
             foreach ($sqlresult as $key => $value)
             {
