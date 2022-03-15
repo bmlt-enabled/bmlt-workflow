@@ -99,7 +99,7 @@ class bmaw_submissions_rest_handlers
             $members = $arr['membership'];
             foreach ($members as $member)
             {
-                $sql = $wpdb->prepare('INSERT into '. $bmaw_service_areas_access_table_name . 'SET wp_uid = "%d", service_area_id="%d"',$member,$sb );
+                $sql = $wpdb->prepare('INSERT into '. $bmaw_service_areas_access_table_name . ' SET wp_uid = "%d", service_area_id="%d"',$member,$sb );
                 $wpdb->query($sql);
             }
         }
