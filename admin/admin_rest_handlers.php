@@ -79,5 +79,13 @@ class bmaw_submissions_rest_handlers
             error_log(vdump($result));
             $sblist[$key]['membership'] = implode(',', $result);
         }
+        return $sblist;
     }
+
+    public function post_service_areas($request)
+	{
+		$resp = "lol";
+		return $resp;
+	}
+
 }
