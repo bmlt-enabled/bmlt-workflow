@@ -87,7 +87,7 @@ class bmaw_submissions_rest_handlers
 	{
 		$resp = "lol";
         error_log("request body");
-        error_log(vdump($request['body']));
+        error_log(vdump($request));
 		return $resp;
 	}
 
