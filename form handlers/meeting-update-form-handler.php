@@ -102,26 +102,51 @@ function meeting_update_form_handler_rest($data)
     }
 
     $reason = $data['update_reason'];
+
+    if ($reason == "reason_other") {
+        // handle this case seperately
+    }
+
+    if (isset($data['meeting_id'])) {
+        $meeting_id = $data['meeting_id'];
+    } else {
+        if ($reason != "reason_new") {
+            // Change or Close should have gotten here with a meeting id selected
+            wp_die("This change type requires a meeting selection");
+        }
+    }
+
+    // these are the form fields we'll accept
+    $changes = array();
+
+    $change_subfields = array(
+        "meeting_name",
+        "start_time",
+        "duration_time",
+        "location_text",
+        "location_street",
+        "location_info",
+        "location_municipality",
+        "location_province",
+        "location_postal_code_1",
+        "virtual_meeting_link",
+        "format_shared_id_list"
+    );
+
     switch ($reason) {
         case ('reason_new'):
             $subject = 'New meeting notification';
+
+            // new meeting - add all fields to the changes requested
+            foreach ($change_subfields as $field) {
+                $changes[$field] = $data[$field];
+            }
+
             break;
         case ('reason_change'):
             $subject = 'Change meeting notification';
-            break;
-        case ('reason_close'):
-            $subject = 'Close meeting notification';
-            break;
-        case ('reason_other'):
-            $subject = 'Meeting notification - Other';
-            break;
-        default:
-            wp_die('Invalid meeting change');
-    }
+            // change meeting - just add the deltas. no real reason to do this as bmlt result would be the same, but safe to filter it regardless
 
-    if (($reason == "reason_change") || ($reason == 'reason_close')) {
-        if (isset($data['meeting_id'])) {
-            $meeting_id = $data['meeting_id'];
             // get the meeting details from BMLT so we can compare them
             $bmaw_bmlt_server_address = get_option('bmaw_bmlt_server_address');
             $url = $bmaw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" . $meeting_id . "&lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&&recursive=1&sort_keys=start_time";
@@ -141,61 +166,23 @@ function meeting_update_form_handler_rest($data)
             }
             curl_close($curl);
             $meeting = json_decode($resp, true)[0];
-            // these are the meeting changes we'll submit
-            $changes = array();
 
-            $change_subfields = array(
-                "meeting_name",
-                "start_time",
-                "duration_time",
-                "location_text",
-                "location_street",
-                "location_info",
-                "location_municipality",
-                "location_province",
-                "location_postal_code_1",
-                "virtual_meeting_link",
-                "format_shared_id_list"
-            );
-            error_log(vdump($meeting));
-            error_log("reason is ".$reason);
-            switch ($reason) {
-                // change meeting - just add the deltas. no real reason to do this as bmlt result would be the same, but safe to filter it regardless
-                case 'reason_change':
-                    foreach ($change_subfields as $field) {
-                        // error_log("checking ".$field);
-                        if (array_key_exists($field, $meeting)) {
-                            // error_log("key exists");
-                            if ($meeting[$field] != $data[$field]) {
-                                $changes[$field] = $data[$field];
-                                // error_log("field is different ".$data[$field]." ".$meeting[$field]);
-                            }
-                            // else
-                            // {
-                            //     error_log("field is the same ".$data[$field]." ".$meeting[$field]);
-                            // }
-                        }
-                    }
-                    break;
-                // new meeting - add all fields to the changes requested
-                case 'reason_new':
-                    error_log("new changes");
-                    foreach ($change_subfields as $field) {
+            foreach ($change_subfields as $field) {
+                if (array_key_exists($field, $meeting)) {
+                    if ($meeting[$field] != $data[$field]) {
                         $changes[$field] = $data[$field];
                     }
-
-                    break;
-
-                default:
-                    break;
+                }
             }
-            // add the meeting id to the change list
-            $changes['meeting_id'] = $meeting_id;
-            error_log("these are our changes");
-            error_log(vdump($changes));
-        } else {
-            wp_die("meeting id not set");
-        }
+            break;
+        case ('reason_close'):
+            $subject = 'Close meeting notification';
+            break;
+        case ('reason_other'):
+            $subject = 'Meeting notification - Other';
+            break;
+        default:
+            wp_die('Invalid meeting change');
     }
 
     $cc_address = "";
@@ -287,7 +274,7 @@ function meeting_update_form_handler_rest($data)
             'submitter_name' => $submitter_name,
             'submission_type'  => $db_reason,
             'submitter_email' => $submitter_email,
-            'changes_requested' => wp_json_encode($changes,0,1)
+            'changes_requested' => wp_json_encode($changes, 0, 1)
         ),
         array(
             '%s',
