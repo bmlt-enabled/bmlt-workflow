@@ -112,7 +112,7 @@ function bmaw_admin_scripts($hook)
             wp_enqueue_script('jquery-ui-dialog');
             wp_enqueue_style('wp-jquery-ui-dialog');
             wp_register_style('dtcss', '//cdn.datatables.net/v/dt/dt-1.11.5/datatables.min.css', false, '1.0', 'all');
-            wp_register_script('dt', '//cdn.datatables.net/v/dt/dt-1.11.5/datatables.min.js', array('jquery'), '1.0', true);
+            wp_register_script('dt', '//cdn.datatables.net/v/dt/dt-1.11.5/datatables.js', array('jquery'), '1.0', true);
             wp_enqueue_style('dtcss');
             wp_enqueue_script('dt');
 
