@@ -94,7 +94,7 @@ jQuery(document).ready(function ($) {
               case "format_shared_id_list":
                 friendlyname = "Meeting Formats";
                 // convert the meeting formats to human readable
-                summary = "";
+                friendlydata = "";
                 strarr = data["format_shared_id_list"].split(",");
                 strarr.forEach((element) => {
                   friendlydata += "(" + bmaw_bmlt_formats[element]["key_string"] + ")-" + bmaw_bmlt_formats[element]["name_string"] + " ";
