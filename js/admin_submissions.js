@@ -59,9 +59,22 @@ jQuery(document).ready(function ($) {
               summary = '<b>Change Type: ' + data['submission_type'] + '</b><br><br>';
                 for (var key in data)
                 {
-                  if (( key != 'meeting_id')&&( key != 'submission_type'))
+                  switch (key)
                   {
-                    summary += key + ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' + data[key] + '</b><br>';
+                    case 'meeting_id':
+                    case 'submission_type':
+                      break;
+                    case 'format_shared_id':
+                      // convert the meeting formats to human readable
+                      summary += 'Meeting Formats <span class="dashicons dashicons-arrow-right-alt"></span> <b>"'
+                      strarr = data['format_shared_id'].split(',');
+                      strarr.forEach(element => {
+                        summary += bmaw_bmlt_formats[element]['key_string']+'-'+bmaw_bmlt_formats[element]['name_string'] + ' ';
+                      });
+                      summary += "</b><br>";
+                    default:
+                      summary += key + ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' + data[key] + '</b><br>';
+                      break;
                   }
                 }
                 return summary;
