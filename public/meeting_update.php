@@ -11,18 +11,6 @@ if ($bmaw_bmlt_test_status != "success") {
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
-// FIXME
-// bmaw_service_areas_string from include
-// $bmaw_service_areas_string = explode(",", $bmaw_service_areas_string);
-// echo '<script>var bmaw_service_areas="';
-// $service_areas_parsed = "";
-// foreach ($bmaw_service_areas_string as $i) {
-//     $service_areas_parsed .= 'services[]=' . $i . '&';
-// }
-
-// echo substr_replace($service_areas_parsed, "", -1) . '";';
-// echo 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '"</script>';
-// FIXME
 ?>
 
 <form action="#" method="post" id="meeting_update_form">
@@ -158,12 +146,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <tbody>
                         <?php
                         		$bmlt_integration = new BMLTIntegration;
+                                $formatarr = $bmlt_integration->getMeetingFormats();
 
-                        		$response = $bmlt_integration->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('admin_action'=>'get_format_info'));
-                                if( is_wp_error( $response ) ) {
-                                    wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
-                                }    
-                                $formatarr = json_decode($response['body'],true)['row'];
                                 foreach ($formatarr as $key => $value)
                                 {
                                     error_log("key ".$key);

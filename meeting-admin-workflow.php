@@ -118,6 +118,11 @@ function bmaw_admin_scripts($hook)
 
             // make sure our rest url is populated
             $script  = 'bmaw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';
+
+            $bmlt_integration = new BMLTIntegration;
+            $formatarr = $bmlt_integration->getMeetingFormats();
+            $script .= 'var bmaw_bmlt_formats = ' . json_encode($formatarr) .'; ';
+            
             wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;
         case ('bmaw_page_bmaw-service-areas'):

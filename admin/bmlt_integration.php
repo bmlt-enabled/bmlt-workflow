@@ -10,6 +10,17 @@ class BMLTIntegration
     protected $authfailure = 0; // authentication is failing - don't keep bashing the front door
     protected const MAXFAILS = 2; // how many failures we'll retry
 
+    
+    public function getMeetingFormats()
+    {
+        $response = $this->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('admin_action'=>'get_format_info'));
+        if( is_wp_error( $response ) ) {
+            wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
+        }    
+        $formatarr = json_decode($response['body'],true)['row'];
+        return $formatarr;
+    }
+
     // postargs is an array
     public function postConfiguredRootServerRequest($url, $postargs)
     {
