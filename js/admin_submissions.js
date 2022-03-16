@@ -32,6 +32,7 @@ jQuery(document).ready(function ($) {
             for ( var i=0, ien=json.length ; i<ien ; i++ ) {
               json[i]['changes_requested']['submission_type']=json[i]['submission_type']
             }
+            return json;
           },
         },
         "columns": [
