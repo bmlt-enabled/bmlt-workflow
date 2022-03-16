@@ -59,7 +59,7 @@ jQuery(document).ready(function ($) {
               summary = '<b>Change Type: ' + data['submission_type'] + '</b><br><br>';
                 for (var key in data)
                 {
-                  if (( key != 'meeting_id')||( key != 'submission_type'))
+                  if (( key != 'meeting_id')&&( key != 'submission_type'))
                   {
                     summary += key + ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' + data[key] + '</b><br>';
                   }
