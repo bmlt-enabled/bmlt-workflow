@@ -14,7 +14,7 @@ class bmaw_submissions_rest_handlers
         $result = $wpdb->get_results('SELECT * FROM ' . $bmaw_submissions_table_name, ARRAY_A);
         foreach ($result as $key => $value)
         {
-            $value['changes_requested'] = json_decode($value['changes_requested'],true,2);
+            $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'],true,2);
         }
         // $myrequested = $result[0]['changes_requested'];
         // error_log("myrequested = ".$myrequested);
