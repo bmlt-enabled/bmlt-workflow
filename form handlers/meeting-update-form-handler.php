@@ -158,6 +158,7 @@ function meeting_update_form_handler_rest($data)
                 "format_shared_id_list"
             );
             error_log(vdump($meeting));
+            error_log("reason is ".$reason);
             switch ($reason) {
                 // change meeting - just add the deltas. no real reason to do this as bmlt result would be the same, but safe to filter it regardless
                 case 'reason_change':
