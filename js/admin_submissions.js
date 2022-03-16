@@ -1,5 +1,4 @@
 jQuery(document).ready(function ($) {
-
   console.log(bmaw_admin_submissions_rest_url);
 
   // {"id":"33",
@@ -22,71 +21,99 @@ jQuery(document).ready(function ($) {
   // <th>Changed By</th>
   // <th>Change Made</th>
 
-    $('#dt-submission').DataTable( {
-        "ajax": {
-          url: bmaw_admin_submissions_rest_url,
-          beforeSend: function (xhr) {
-            xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
-          },
-          "dataSrc": function ( json ) {
-            for ( var i=0, ien=json.length ; i<ien ; i++ ) {
-              json[i]['changes_requested']['submission_type']=json[i]['submission_type']
+  $("#dt-submission").DataTable({
+    ajax: {
+      url: bmaw_admin_submissions_rest_url,
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+      },
+      dataSrc: function (json) {
+        for (var i = 0, ien = json.length; i < ien; i++) {
+          json[i]["changes_requested"]["submission_type"] = json[i]["submission_type"];
+        }
+        return json;
+      },
+    },
+    columns: [
+      { data: "id" },
+      { data: "submitter_name" },
+      { data: "submitter_email" },
+      // { "data": "submission_type" },
+      {
+        data: "changes_requested",
+        render: function (data, type, row) {
+          // $change = unserialize($value['changes_requested']);
+          // // error_log("deserialised");
+          // // error_log(vdump($change));
+          // $summary = '<b>Change Type: ' . $value['submission_type'] . '</b><br><br>';
+          // foreach ($change as $key2 => $value2) {
+          //     // skip meeting_id as it is always required
+          //     if ($key2 != 'meeting_id') {
+          //         $summary .= $key2 . ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' . $value2 . '</b><br>';
+          //     }
+          // }
+          // // chop trailing <br>
+          // $result[$key]['change_summary'] = substr($summary, 0, -4);;
+          var summary = "";
+          summary = "<b>Change Type: " + data["submission_type"] + "</b><br><br>";
+          for (var key in data) {
+            friendlyname = key;
+            friendlydata = data[key];
+
+            switch (key) {
+              case "meeting_id":
+              case "submission_type":
+                break;
+              case "meeting_name":
+                friendlyname = "Meeting Name";
+                break;
+              case "start_time":
+                friendlyname = "Start Time";
+                break;
+              case "duration_time":
+                friendlyname = "Duration";
+                break;
+              case "location_text":
+                friendlyname = "Location";
+                break;
+              case "location_street":
+                friendlyname = "Street";
+                break;
+              case "location_info":
+                friendlyname = "Location Info";
+                break;
+              case "location_municipality":
+                friendlyname = "Municipality";
+                break;
+              case "location_province":
+                friendlyname = "Province/State";
+                break;
+              case "location_postal_code_1":
+                friendlyname = "Post Code";
+                break;
+              case "format_shared_id_list":
+                friendlyname = "Meeting Formats";
+                // convert the meeting formats to human readable
+                summary = "";
+                strarr = data["format_shared_id_list"].split(",");
+                strarr.forEach((element) => {
+                  friendlydata += "(" + bmaw_bmlt_formats[element]["key_string"] + ")-" + bmaw_bmlt_formats[element]["name_string"] + " ";
+                });
+                break;
+              default:
+                break;
             }
-            return json;
-          },
+            summary += friendlyname + ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' + friendlydata + "</b><br>";
+          }
+          return summary;
         },
-        "columns": [
-            { "data": "id" },
-            { "data": "submitter_name" },
-            { "data": "submitter_email" },
-            // { "data": "submission_type" },
-            { "data": "changes_requested",
-            "render": function (data,type,row)
-            {
-              // $change = unserialize($value['changes_requested']);
-              // // error_log("deserialised");
-              // // error_log(vdump($change));
-              // $summary = '<b>Change Type: ' . $value['submission_type'] . '</b><br><br>';
-              // foreach ($change as $key2 => $value2) {
-              //     // skip meeting_id as it is always required
-              //     if ($key2 != 'meeting_id') {
-              //         $summary .= $key2 . ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' . $value2 . '</b><br>';
-              //     }
-              // }
-              // // chop trailing <br>
-              // $result[$key]['change_summary'] = substr($summary, 0, -4);;
-              var summary = '';
-              summary = '<b>Change Type: ' + data['submission_type'] + '</b><br><br>';
-                for (var key in data)
-                {
-                  switch (key)
-                  {
-                    case 'meeting_id':
-                    case 'submission_type':
-                      break;
-                    case 'format_shared_id_list':
-                      // convert the meeting formats to human readable
-                      summary += 'Meeting Formats <span class="dashicons dashicons-arrow-right-alt"></span> <b>'
-                      strarr = data['format_shared_id_list'].split(',');
-                      strarr.forEach(element => {
-                        summary += '('+bmaw_bmlt_formats[element]['key_string']+')-'+bmaw_bmlt_formats[element]['name_string'] + ' ';
-                      });
-                      summary += "</b><br>";
-                      break;
-                    default:
-                      summary += key + ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' + data[key] + '</b><br>';
-                      break;
-                  }
-                }
-                return summary;
-            }
-           },
-            { "data": "submission_time" },
-            { "data": "change_time" },
-            { "data": "changed_by" },
-            { "data": "change_made" },
-        ]
-    } );
+      },
+      { data: "submission_time" },
+      { data: "change_time" },
+      { data: "changed_by" },
+      { data: "change_made" },
+    ],
+  });
 
   function bmaw_create_row_link_modal(element, title) {
     dialogname = "#" + element + "_dialog";
@@ -138,14 +165,20 @@ jQuery(document).ready(function ($) {
   bmaw_create_row_link_modal("bmaw_submission_approve", "Approve Submission");
   bmaw_create_row_link_modal("bmaw_submission_reject", "Reject Submission");
 
-  bmaw_submission_approve_dialog_ok = function(id) { generic_approve_handler(id,'POST','/approve','bmaw_submission_approve') };
-  bmaw_submission_reject_dialog_ok = function(id) { generic_approve_handler(id,'POST','/reject','bmaw_submission_reject') };
-  bmaw_submission_delete_dialog_ok = function(id) { generic_approve_handler(id,'DELETE','','bmaw_submission_delete') };
+  bmaw_submission_approve_dialog_ok = function (id) {
+    generic_approve_handler(id, "POST", "/approve", "bmaw_submission_approve");
+  };
+  bmaw_submission_reject_dialog_ok = function (id) {
+    generic_approve_handler(id, "POST", "/reject", "bmaw_submission_reject");
+  };
+  bmaw_submission_delete_dialog_ok = function (id) {
+    generic_approve_handler(id, "DELETE", "", "bmaw_submission_delete");
+  };
 
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
-    if ($.trim($("#"+slug+"_dialog_textarea").val())) {
-      parameters["custom_message"] = $("#"+slug+"_dialog_textarea");
+    if ($.trim($("#" + slug + "_dialog_textarea").val())) {
+      parameters["custom_message"] = $("#" + slug + "_dialog_textarea");
     }
     // url = "/approve"
     $.ajax({
@@ -179,7 +212,6 @@ jQuery(document).ready(function ($) {
         );
       });
 
-    $("#"+slug+"_dialog").dialog("close");
-  };
-
+    $("#" + slug + "_dialog").dialog("close");
+  }
 });
