@@ -294,6 +294,7 @@ function meeting_update_form_handler_rest($data)
             '%s'
         )
     );
+    $insert_id = $wpdb->insert_id;
 
     exit("<h3>Form submission successful</h3>");
     // wp_redirect( 'https://www.google.com' );

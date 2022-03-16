@@ -44,7 +44,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         </div>
         <div id="meeting_selector">
             <br>
-            <select class="select2-ajax" id="meeting-searcher">
+            <select class="meeting-searcher" id="meeting-searcher">
                 <option></option>
             </select>
             <br><br>

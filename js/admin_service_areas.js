@@ -15,13 +15,6 @@ jQuery(document).ready(function ($) {
     $(selectid).trigger("change");
   }
 
-  // {
-  //   1: { name: "nigel test area", membership: "1,2" },
-  //   2: { name: "another top level SC", membership: "" },
-  //   3: { name: "second level SC under nigel", membership: "" },
-  //   4: { name: "another second level sc", membership: "" },
-  // };
-
   function create_service_area_permission_post() {
     ret = {};
     $(".bmaw-userlist").each(function () {

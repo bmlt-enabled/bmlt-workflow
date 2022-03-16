@@ -2,6 +2,42 @@ jQuery(document).ready(function ($) {
 
   console.log(bmaw_admin_submissions_rest_url);
 
+  // {"id":"33",
+  // "submission_time":"2022-03-08 06:37:22",
+  // "change_time":"0000-00-00 00:00:00",
+  // "changed_by":"test",
+  // "change_made":"Approved",
+  // "submitter_name":"Nigel TestSubmitter",
+  // "submission_type":"Change Meeting",
+  // "submitter_email":"nigel.brittain+test@gmail.com",
+  // "meeting_id":null,
+  // "changes_requested":"a:2:{s:12:\"meeting_name\";s:15:\"changegroupname\";s:10:\"meeting_id\";s:1:\"2\";}"}];
+  // <th>ID</th>
+  // <th>Submitter Name</th>
+  // <th>Submitter Email</th>
+  // <th>Change Type</th>
+  // <th>Change Summary</th>
+  // <th>Submission Time</th>
+  // <th>Change Time</th>
+  // <th>Changed By</th>
+  // <th>Change Made</th>
+
+    $('#dt-submission').DataTable( {
+        "ajax": bmaw_admin_submissions_rest_url,
+        "dataSrc":'',
+        "columns": [
+            { "data": "id" },
+            { "data": "submitter_name" },
+            { "data": "submitter_email" },
+            { "data": "submission_type" },
+            { "data": "changes_requested" },
+            { "data": "submission_time" },
+            { "data": "change_time" },
+            { "data": "changed_by" },
+            { "data": "change_made" },
+        ]
+    } );
+
   function bmaw_create_row_link_modal(element, title) {
     dialogname = "#" + element + "_dialog";
     classname = "." + element;
@@ -96,79 +132,4 @@ jQuery(document).ready(function ($) {
     $("#"+slug+"_dialog").dialog("close");
   };
 
-//   bmaw_submission_approve_dialog_ok = function (id) {
-//     $parameters = {};
-//     if (!$.trim($("#bmaw_submission_approve_dialog_textarea").val())) {
-//       $parameters["approve_message"] = $("#bmaw_submission_approve_dialog_textarea");
-//     }
-
-//     $.ajax({
-//       url: "/flop/wp-json/bmaw-submission/v1/submissions/" + id + "/approve",
-//       type: "POST",
-//       beforeSend: function (xhr) {
-//         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
-//       },
-//     })
-//       .done(function (response) {
-//         var msg = "";
-//         if (response.error_message == "")
-//           msg =
-//             '<div class="notice notice-success is-dismissible my_notice"><p><strong>SUCCESS: </strong>This is my success message.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
-//         else
-//           msg =
-//             '<div class="notice notice-error is-dismissible my_notice"><p><strong>ERROR: </strong>' +
-//             response.error_message +
-//             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
-//         $(".wp-header-end").after(msg);
-//         location.reload();
-//       })
-//       .fail(function (xhr) {
-//         $(".wp-header-end").after(
-//           '<div class="notice notice-error is-dismissible my_notice"><p><strong>ERROR: </strong>' +
-//             xhr.status +
-//             " " +
-//             xhr.statusText +
-//             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>'
-//         );
-//       });
-
-//     $("#bmaw_submission_approve_dialog").dialog("close");
-//   };
-
-//   bmaw_submission_delete_dialog_ok = function (id) {
-//     $.ajax({
-//       url: "/flop/wp-json/bmaw-submission/v1/submissions/" + id,
-//       type: "DELETE",
-//       beforeSend: function (xhr) {
-//         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
-//       },
-//     })
-//       .always(function (response) {
-//         console.log(response);
-//       })
-//       .done(function (response) {
-//         var msg = "";
-//         if (response.error_message == "")
-//           msg =
-//             '<div class="notice notice-success is-dismissible my_notice"><p><strong>SUCCESS: </strong>This is my success message.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
-//         else
-//           msg =
-//             '<div class="notice notice-error is-dismissible my_notice"><p><strong>ERROR: </strong>' +
-//             response.error_message +
-//             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
-//         $(".wp-header-end").after(msg);
-//         location.reload();
-//       })
-//       .fail(function (xhr) {
-//         $(".wp-header-end").after(
-//           '<div class="notice notice-error is-dismissible my_notice"><p><strong>ERROR: </strong>' +
-//             xhr.status +
-//             " " +
-//             xhr.statusText +
-//             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>'
-//         );
-//       });
-
-//     $("#bmaw_submission_delete_dialog").dialog("close");
-//   };
 });

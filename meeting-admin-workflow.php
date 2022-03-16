@@ -105,12 +105,16 @@ function bmaw_admin_scripts($hook)
     switch ($hook) {
 
         case ('bmaw_page_bmaw-submissions'):
-            wp_enqueue_style('thickbox');
-            wp_enqueue_script('plugin-install');
+            // wp_enqueue_style('thickbox');
+            // wp_enqueue_script('plugin-install');
             deny_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
             deny_cache_enqueue_style('bmaw-admin-submissions-css', false, 'css/admin_submissions.css');
             wp_enqueue_script('jquery-ui-dialog');
             wp_enqueue_style('wp-jquery-ui-dialog');
+            wp_register_style('dtcss', '//cdn.datatables.net/v/dt/dt-1.11.5/datatables.min.css', false, '1.0', 'all');
+            wp_register_script('dt', '//cdn.datatables.net/v/dt/dt-1.11.5/datatables.min.js', array('jquery'), '1.0', true);
+            wp_enqueue_style('dtcss');
+            wp_enqueue_script('dt');
 
             // make sure our rest url is populated
             $script  = 'bmaw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';

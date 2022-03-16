@@ -5,10 +5,11 @@ var mtext = [];
 var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 jQuery(document).ready(function ($) {
+
   function update_meeting_list(bmaw_service_areas) {
     var search_results_address =
       bmaw_bmlt_server_address +
-      "/client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&data_field_key=location_postal_code_1,duration_time," +
+      "client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&data_field_key=location_postal_code_1,duration_time," +
       "start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality," +
       "location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed," +
       "root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1," +
@@ -68,7 +69,7 @@ jQuery(document).ready(function ($) {
           return null;
         }
 
-        $(".select2-ajax").select2({
+        $("#meeting-searcher").select2({
           data: mtext,
           placeholder: "Select a meeting",
           allowClear: true,
@@ -76,11 +77,11 @@ jQuery(document).ready(function ($) {
           matcher: matchCustom,
         });
 
-        $("#meeting-searcher").one("select2:open", function (e) {
+        $("#meeting-searcher").on("select2:open", function (e) {
           $("input.select2-search__field").prop("placeholder", "Begin typing your meeting name");
         });
 
-        $(".select2-ajax").on("select2:select", function (e) {
+        $("#meeting-searcher").on("select2:select", function (e) {
           var data = e.params.data;
           var id = data.id;
           // set the weekday format

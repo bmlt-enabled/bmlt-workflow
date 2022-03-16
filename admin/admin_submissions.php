@@ -2,7 +2,7 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-$submissionsListTable = new bmaw_meeting_submissions_page();
+// $submissionsListTable = new bmaw_meeting_submissions_page();
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
@@ -33,16 +33,54 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <h2>Meeting Submissions</h2>
     <hr class="wp-header-end">
     <?php
-    $submissionsListTable->views();
-    $submissionsListTable->prepare_items();
-    $submissionsListTable->display();
+    // $submissionsListTable->views();
+    // $submissionsListTable->prepare_items();
+    // $submissionsListTable->display();
+    // 'id'          => 'ID',
+    // 'submitter_name'       => 'Submitter Name',
+    // 'submitter_email' => 'Submitter Email',
+    // // 'submission_type'        => 'Change Type',
+    // 'change_summary' => 'Change Summary',
+    // 'submission_time'    => 'Submission Time',
+    // 'change_time' => 'Change Time',
+    // 'changed_by' => 'Changed By',
+    // 'change_made' => 'Change Made'
+
     ?>
+    <table id="dt-submission" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Submitter Name</th>
+                <th>Submitter Email</th>
+                <th>Change Type</th>
+                <th>Change Summary</th>
+                <th>Submission Time</th>
+                <th>Change Time</th>
+                <th>Changed By</th>
+                <th>Change Made</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>ID</th>
+                <th>Submitter Name</th>
+                <th>Submitter Email</th>
+                <th>Change Type</th>
+                <th>Change Summary</th>
+                <th>Submission Time</th>
+                <th>Change Time</th>
+                <th>Changed By</th>
+                <th>Change Made</th>
+            </tr>
+        </tfoot>
+    </table>
 </div>
 <?php
 
-if (!class_exists('WP_List_Table')) {
-    require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
-}
+// if (!class_exists('WP_List_Table')) {
+//     require_once(ABSPATH . 'wp-admin/includes/class-wp-list-table.php');
+// }
 
 class bmaw_meeting_submissions_page extends WP_List_Table
 {
@@ -73,6 +111,7 @@ class bmaw_meeting_submissions_page extends WP_List_Table
         $this->_column_headers = array($columns, $hidden, $sortable);
         $this->items = $data;
     }
+
     // id mediumint(9) NOT NULL AUTO_INCREMENT,
     // submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
     // change_time datetime DEFAULT '0000-00-00 00:00:00',
