@@ -122,7 +122,7 @@ function bmaw_admin_scripts($hook)
             $bmlt_integration = new BMLTIntegration;
             $formatarr = $bmlt_integration->getMeetingFormats();
             $script .= 'var bmaw_bmlt_formats = ' . json_encode($formatarr) .'; ';
-            
+
             wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;
         case ('bmaw_page_bmaw-service-areas'):
