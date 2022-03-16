@@ -13,6 +13,7 @@ class bmaw_submissions_rest_handlers
 
         $result = $wpdb->get_results('SELECT * FROM ' . $bmaw_submissions_table_name, ARRAY_A);
         $myrequested = $result[0]['changes_requested'];
+        error_log("myrequested = ".$myrequested);
         $result[0]['changes_requested'] = json_decode($myrequested,true,1);
         error_log("this is our changes requested array");
         error_log(vdump($result));
