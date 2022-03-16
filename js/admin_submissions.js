@@ -64,10 +64,10 @@ jQuery(document).ready(function ($) {
                     case 'meeting_id':
                     case 'submission_type':
                       break;
-                    case 'format_shared_id':
+                    case 'format_shared_id_list':
                       // convert the meeting formats to human readable
                       summary += 'Meeting Formats <span class="dashicons dashicons-arrow-right-alt"></span> <b>"'
-                      strarr = data['format_shared_id'].split(',');
+                      strarr = data['format_shared_id_list'].split(',');
                       strarr.forEach(element => {
                         summary += bmaw_bmlt_formats[element]['key_string']+'-'+bmaw_bmlt_formats[element]['name_string'] + ' ';
                       });
