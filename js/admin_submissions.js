@@ -63,6 +63,7 @@ jQuery(document).ready(function ($) {
             switch (key) {
               case "meeting_id":
               case "submission_type":
+                friendlyname = '';
                 break;
               case "meeting_name":
                 friendlyname = "Meeting Name";
@@ -89,7 +90,7 @@ jQuery(document).ready(function ($) {
                 friendlyname = "Province/State";
                 break;
               case "location_postal_code_1":
-                friendlyname = "Post Code";
+                friendlyname = "Postcode";
                 break;
               case "format_shared_id_list":
                 friendlyname = "Meeting Formats";
@@ -103,7 +104,10 @@ jQuery(document).ready(function ($) {
               default:
                 break;
             }
-            summary += friendlyname + ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' + friendlydata + "</b><br>";
+            if ((friendlyname != '')&&(friendlydata != ''))
+            {
+              summary += friendlyname + ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' + friendlydata + "</b><br>";
+            }
           }
           return summary;
         },
