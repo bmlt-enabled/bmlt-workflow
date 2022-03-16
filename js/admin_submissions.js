@@ -28,13 +28,17 @@ jQuery(document).ready(function ($) {
           beforeSend: function (xhr) {
             xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
           },
-          "dataSrc":'',
+          "dataSrc": function ( json ) {
+            for ( var i=0, ien=json.length ; i<ien ; i++ ) {
+              json[i]['changes_requested']['submission_type']=json[i]['submission_type']
+            }
+          },
         },
         "columns": [
             { "data": "id" },
             { "data": "submitter_name" },
             { "data": "submitter_email" },
-            { "data": "submission_type" },
+            // { "data": "submission_type" },
             { "data": "changes_requested",
             "render": function (data,type,row)
             {
@@ -51,9 +55,10 @@ jQuery(document).ready(function ($) {
               // // chop trailing <br>
               // $result[$key]['change_summary'] = substr($summary, 0, -4);;
               var summary = '';
+              summary = '<b>Change Type: ' + data['submission_type'] + '</b><br><br>';
                 for (var key in data)
                 {
-                  if ( key != 'meeting_id')
+                  if (( key != 'meeting_id')||( key != 'submission_type'))
                   {
                     summary += key + ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' + data[key] + '</b><br>';
                   }
