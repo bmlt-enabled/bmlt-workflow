@@ -35,7 +35,32 @@ jQuery(document).ready(function ($) {
             { "data": "submitter_name" },
             { "data": "submitter_email" },
             { "data": "submission_type" },
-            { "data": "changes_requested" },
+            { "data": "changes_requested",
+            "render": function (data,type,row)
+            {
+              // $change = unserialize($value['changes_requested']);
+              // // error_log("deserialised");
+              // // error_log(vdump($change));
+              // $summary = '<b>Change Type: ' . $value['submission_type'] . '</b><br><br>';
+              // foreach ($change as $key2 => $value2) {
+              //     // skip meeting_id as it is always required
+              //     if ($key2 != 'meeting_id') {
+              //         $summary .= $key2 . ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' . $value2 . '</b><br>';
+              //     }
+              // }
+              // // chop trailing <br>
+              // $result[$key]['change_summary'] = substr($summary, 0, -4);;
+              var summary = '';
+                for (var key in data)
+                {
+                  if ( key != 'meeting_id')
+                  {
+                    summary += key + ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' + data[key] + '</b><br>';
+                  }
+                }
+                return summary;
+            }
+           },
             { "data": "submission_time" },
             { "data": "change_time" },
             { "data": "changed_by" },

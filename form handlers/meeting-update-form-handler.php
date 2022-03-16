@@ -197,18 +197,18 @@ function meeting_update_form_handler_rest($data)
 
     $cc_address = "";
     $to_address = "";
-    $service_committees = get_option('bmaw_service_committee_option_array');
-    foreach ($service_committees as $key => $value) {
-        if ($value['name'] == $data['service_area']) {
-            $cc_address = $value['e2'];
-            $to_address = $value['e1'];
-            break;
-        }
-    }
+    // $service_committees = get_option('bmaw_service_committee_option_array');
+    // foreach ($service_committees as $key => $value) {
+    //     if ($value['name'] == $data['service_area']) {
+    //         $cc_address = $value['e2'];
+    //         $to_address = $value['e1'];
+    //         break;
+    //     }
+    // }
 
-    if (empty($to_address)) {
-        wp_die(("No valid service committee found."));
-    }
+    // if (empty($to_address)) {
+    //     wp_die(("No valid service committee found."));
+    // }
 
     $from_address = get_option('bmaw_email_from_address');
 
@@ -223,7 +223,7 @@ function meeting_update_form_handler_rest($data)
     $body = "mesage";
     $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address, 'Cc: ' . $cc_address);
     // Send the email
-    wp_mail($to_address, $subject, $body, $headers);
+    // wp_mail($to_address, $subject, $body, $headers);
 
     // Handle the FSO emails
     if ($reason == "reason_new") {
@@ -284,7 +284,7 @@ function meeting_update_form_handler_rest($data)
             'submitter_name' => $submitter_name,
             'submission_type'  => $db_reason,
             'submitter_email' => $submitter_email,
-            'changes_requested' => serialize($changes)
+            'changes_requested' => wp_json_encode($changes,0,1)
         ),
         array(
             '%s',

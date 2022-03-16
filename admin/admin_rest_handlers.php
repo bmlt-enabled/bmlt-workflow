@@ -215,8 +215,8 @@ class bmaw_submissions_rest_handlers
         } else {
             error_log("no result found");
         }
-        $change = unserialize($result[0]['changes_requested']);
-        error_log("deserialised");
+        $change = json_decode($result[0]['changes_requested']);
+        error_log("json decoded");
         error_log(vdump($change));
         $change['admin_action'] = 'modify_meeting';
 
