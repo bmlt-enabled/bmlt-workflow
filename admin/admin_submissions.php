@@ -47,35 +47,37 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     // 'change_made' => 'Change Made'
 
     ?>
-    <table id="dt-submission" class="display" style="width:100%">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Submitter Name</th>
-                <th>Submitter Email</th>
-                <!-- <th>Change Type</th> -->
-                <th>Change Summary</th>
-                <th>Submission Time</th>
-                <th>Change Time</th>
-                <th>Changed By</th>
-                <th>Change Made</th>
-            </tr>
-        </thead>
-        <tfoot>
-            <tr>
-                <th>ID</th>
-                <th>Submitter Name</th>
-                <th>Submitter Email</th>
-                <!-- <th>Change Type</th> -->
-                <th>Change Summary</th>
-                <th>Submission Time</th>
-                <th>Change Time</th>
-                <th>Changed By</th>
-                <th>Change Made</th>
-            </tr>
-        </tfoot>
-    </table>
-</div>
+    <div class="dt-container">
+        <table id="dt-submission" class="display" style="width:80%">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Submitter Name</th>
+                    <th>Submitter Email</th>
+                    <!-- <th>Change Type</th> -->
+                    <th>Change Summary</th>
+                    <th>Submission Time</th>
+                    <th>Change Time</th>
+                    <th>Changed By</th>
+                    <th>Change Made</th>
+                </tr>
+            </thead>
+            <tfoot>
+                <tr>
+                    <th>ID</th>
+                    <th>Submitter Name</th>
+                    <th>Submitter Email</th>
+                    <!-- <th>Change Type</th> -->
+                    <th>Change Summary</th>
+                    <th>Submission Time</th>
+                    <th>Change Time</th>
+                    <th>Changed By</th>
+                    <th>Change Made</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>>
 <?php
 
 // if (!class_exists('WP_List_Table')) {
