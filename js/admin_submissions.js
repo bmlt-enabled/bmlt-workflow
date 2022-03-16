@@ -27,9 +27,9 @@ jQuery(document).ready(function ($) {
           url: bmaw_admin_submissions_rest_url,
           beforeSend: function (xhr) {
             xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
-          }
+          },
+          "dataSrc":'',
         },
-        "dataSrc":'',
         "columns": [
             { "data": "id" },
             { "data": "submitter_name" },
