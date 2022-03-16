@@ -23,7 +23,12 @@ jQuery(document).ready(function ($) {
   // <th>Change Made</th>
 
     $('#dt-submission').DataTable( {
-        "ajax": bmaw_admin_submissions_rest_url,
+        "ajax": {
+          url: bmaw_admin_submissions_rest_url,
+          beforeSend: function (xhr) {
+            xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+          }
+        },
         "dataSrc":'',
         "columns": [
             { "data": "id" },
