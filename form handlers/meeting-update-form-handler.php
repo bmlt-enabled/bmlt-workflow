@@ -178,6 +178,7 @@ function meeting_update_form_handler_rest($data)
                     break;
                 // new meeting - add all fields to the changes requested
                 case 'reason_new':
+                    error_log("new changes");
                     foreach ($change_subfields as $field) {
                         $changes[$field] = $data[$field];
                     }
@@ -189,7 +190,8 @@ function meeting_update_form_handler_rest($data)
             }
             // add the meeting id to the change list
             $changes['meeting_id'] = $meeting_id;
-
+            error_log("these are our changes");
+            error_log(vdump($changes));
         } else {
             wp_die("meeting id not set");
         }
