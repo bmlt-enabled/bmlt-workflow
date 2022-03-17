@@ -221,6 +221,7 @@ class bmaw_submissions_rest_handlers
 
         error_log("json decoded");
         error_log(vdump($change));
+        error_log("change type = ".$change_type);
         switch ($change_type) {
             case 'reason_new':
                 $change['admin_action'] = 'add_meeting';
