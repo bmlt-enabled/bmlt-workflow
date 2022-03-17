@@ -52,32 +52,32 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <label for="day_of_the_week">The Day Of Your Meeting:<span class="bmaw-required-field"> *</span></label>
                 <ul style="list-style-type:none;" id="day_of_the_week">
                     <li>
-                        <input name="weekday_radio" id="weekday-0" value="Sunday" type="radio">
-                        <label for="weekday-0">Sunday</label>
+                        <input name="weekday_tinyint" id="weekday-1" value="1" type="radio">
+                        <label for="weekday-1">Sunday</label>
                     </li>
                     <li>
-                        <input name="weekday_radio" id="weekday-1" value="Monday" type="radio">
-                        <label for="weekday-1">Monday</label>
+                        <input name="weekday_tinyint" id="weekday-2" value="2" type="radio">
+                        <label for="weekday-2">Monday</label>
                     </li>
                     <li>
-                        <input name="weekday_radio" id="weekday-2" value="Tuesday" type="radio">
-                        <label for="weekday-2">Tuesday</label>
+                        <input name="weekday_tinyint" id="weekday-3" value="3" type="radio">
+                        <label for="weekday-3">Tuesday</label>
                     </li>
                     <li>
-                        <input name="weekday_radio" id="weekday-3" value="Wednesday" type="radio">
-                        <label for="weekday-3">Wednesday</label>
+                        <input name="weekday_tinyint" id="weekday-4" value="4" type="radio">
+                        <label for="weekday-4">Wednesday</label>
                     </li>
                     <li>
-                        <input name="weekday_radio" id="weekday-4" value="Thursday" type="radio">
-                        <label for="weekday-4">Thursday</label>
+                        <input name="weekday_tinyint" id="weekday-5" value="5" type="radio">
+                        <label for="weekday-5">Thursday</label>
                     </li>
                     <li>
-                        <input name="weekday_radio" id="weekday-5" value="Friday" type="radio">
-                        <label for="weekday-5">Friday</label>
+                        <input name="weekday_tinyint" id="weekday-6" value="6" type="radio">
+                        <label for="weekday-6">Friday</label>
                     </li>
                     <li>
-                        <input name="weekday_radio" id="weekday-6" value="Saturday" type="radio">
-                        <label for="weekday-6">Saturday</label>
+                        <input name="weekday_tinyint" id="weekday-7" value="7" type="radio">
+                        <label for="weekday-7">Saturday</label>
                     </li>
                 </ul>
                 <input type="hidden" name="weekday" id="weekday" value="">
