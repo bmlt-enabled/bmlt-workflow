@@ -35,7 +35,6 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <!-- $actions['bmaw_span_approve'] = '<a class="bmaw_submission_approve" id="bmaw_submission_approve_id_' . $item['id'] . '" target="_blank" href="#!">' . esc_html__('Approve') . '</a>'; -->
 
     <?php
-    echo '<a class="bmaw_submission_approve" id="bmaw_submission_approve_id_1" target="_blank" href="#!">' . esc_html__('Approve') . '</a>';
     // $submissionsListTable->views();
     // $submissionsListTable->prepare_items();
     // $submissionsListTable->display();
