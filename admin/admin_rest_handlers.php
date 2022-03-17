@@ -227,7 +227,10 @@ class bmaw_submissions_rest_handlers
                 // $change['admin_action'] = 'add_meeting';
                 // workaround for new meeting bug
                 $change['id_bigint'] = 0;
-                $response = $this->bmlt_integration->postConfiguredRootServerRequest('', "bmlt_ajax_callback=1&set_meeting_change=".$change);
+                $changearr = array();
+                $changearr['bmlt_ajax_callback']=1;
+                $changearr['set_meeting_change']=$change;
+                $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
                 break;
             case 'reason_change':
                 $change['admin_action'] = 'modify_meeting';
