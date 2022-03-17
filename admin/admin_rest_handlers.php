@@ -229,7 +229,7 @@ class bmaw_submissions_rest_handlers
                 $change['id_bigint'] = 0;
                 $changearr = array();
                 $changearr['bmlt_ajax_callback']=1;
-                $changearr['set_meeting_change']=$change;
+                $changearr['set_meeting_change']=json_encode($change);
                 $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
                 break;
             case 'reason_change':
