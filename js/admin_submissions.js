@@ -22,6 +22,7 @@ jQuery(document).ready(function ($) {
   // <th>Change Made</th>
 
   $("#dt-submission").DataTable({
+    select: true,
     ajax: {
       url: bmaw_admin_submissions_rest_url,
       beforeSend: function (xhr) {
