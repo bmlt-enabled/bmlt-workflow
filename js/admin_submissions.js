@@ -11,7 +11,7 @@ jQuery(document).ready(function ($) {
         action: function (e, dt, button, config) {
           var count = dt.rows({ selected: true }).count();
 
-          console.log("<div>" + count + " row(s) selected</div>");
+          console.log(dt.cell({ selected: true},0).data());
         },
       },
     ],
