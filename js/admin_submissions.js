@@ -6,14 +6,29 @@ jQuery(document).ready(function ($) {
     select: true,
     buttons: [
       {
-        text: "Get selected data",
+        text: "Approve",
         extend: 'selected',
         action: function (e, dt, button, config) {
-          var count = dt.rows({ selected: true }).count();
-
-          console.log(dt.cell({ selected: true},0).data());
+          var id = dt.cell('.selected',0).data();
+          bmaw_submission_approve_dialog_ok(id);
         },
       },
+      {
+        text: "Reject",
+        extend: 'selected',
+        action: function (e, dt, button, config) {
+          var id = dt.cell('.selected',0).data();
+          bmaw_submission_reject_dialog_ok(id);
+        },
+      },
+      {
+        text: "Delete",
+        extend: 'selected',
+        action: function (e, dt, button, config) {
+          var id = dt.cell('.selected',0).data();
+          bmaw_submission_delete_dialog_ok(id);
+        },
+      }
     ],
     ajax: {
       url: bmaw_admin_submissions_rest_url,
