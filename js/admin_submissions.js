@@ -2,6 +2,7 @@ jQuery(document).ready(function ($) {
   console.log(bmaw_admin_submissions_rest_url);
 
   $("#dt-submission").DataTable({
+    dom: 'Bfrtip',
     select: true,
     buttons: [
       {
