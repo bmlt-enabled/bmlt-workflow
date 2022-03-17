@@ -1,5 +1,5 @@
 jQuery(document).ready(function ($) {
-  console.log(bmaw_admin_submissions_rest_url);
+  // console.log(bmaw_admin_submissions_rest_url);
 
   $("#dt-submission").DataTable({
     dom: "Bfrtip",
@@ -58,6 +58,8 @@ jQuery(document).ready(function ($) {
 
             switch (key) {
               case "meeting_id":
+                friendlyname = "";
+                break;
               case "submission_type":
                 friendlyname = "";
                 break;
