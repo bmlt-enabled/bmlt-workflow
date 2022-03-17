@@ -111,8 +111,8 @@ function bmaw_admin_scripts($hook)
             deny_cache_enqueue_style('bmaw-admin-submissions-css', false, 'css/admin_submissions.css');
             wp_enqueue_script('jquery-ui-dialog');
             wp_enqueue_style('wp-jquery-ui-dialog');
-            wp_register_style('dtcss', 'https://cdn.datatables.net/v/dt/dt-1.11.5/sl-1.3.4/datatables.min.css', false, '1.0', 'all');
-            wp_register_script('dt', 'https://cdn.datatables.net/v/dt/dt-1.11.5/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
+            wp_register_style('dtcss', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.css', false, '1.0', 'all');
+            wp_register_script('dt', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
             wp_enqueue_style('dtcss');
             wp_enqueue_script('dt');
 

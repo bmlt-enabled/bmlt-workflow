@@ -1,28 +1,18 @@
 jQuery(document).ready(function ($) {
   console.log(bmaw_admin_submissions_rest_url);
 
-  // {"id":"33",
-  // "submission_time":"2022-03-08 06:37:22",
-  // "change_time":"0000-00-00 00:00:00",
-  // "changed_by":"test",
-  // "change_made":"Approved",
-  // "submitter_name":"Nigel TestSubmitter",
-  // "submission_type":"Change Meeting",
-  // "submitter_email":"nigel.brittain+test@gmail.com",
-  // "meeting_id":null,
-  // "changes_requested":"a:2:{s:12:\"meeting_name\";s:15:\"changegroupname\";s:10:\"meeting_id\";s:1:\"2\";}"}];
-  // <th>ID</th>
-  // <th>Submitter Name</th>
-  // <th>Submitter Email</th>
-  // <th>Change Type</th>
-  // <th>Change Summary</th>
-  // <th>Submission Time</th>
-  // <th>Change Time</th>
-  // <th>Changed By</th>
-  // <th>Change Made</th>
-
   $("#dt-submission").DataTable({
     select: true,
+    buttons: [
+      {
+        text: "Get selected data",
+        action: function () {
+          var count = table.rows({ selected: true }).count();
+
+          console.log("<div>" + count + " row(s) selected</div>");
+        },
+      },
+    ],
     ajax: {
       url: bmaw_admin_submissions_rest_url,
       beforeSend: function (xhr) {
@@ -43,18 +33,6 @@ jQuery(document).ready(function ($) {
       {
         data: "changes_requested",
         render: function (data, type, row) {
-          // $change = unserialize($value['changes_requested']);
-          // // error_log("deserialised");
-          // // error_log(vdump($change));
-          // $summary = '<b>Change Type: ' . $value['submission_type'] . '</b><br><br>';
-          // foreach ($change as $key2 => $value2) {
-          //     // skip meeting_id as it is always required
-          //     if ($key2 != 'meeting_id') {
-          //         $summary .= $key2 . ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' . $value2 . '</b><br>';
-          //     }
-          // }
-          // // chop trailing <br>
-          // $result[$key]['change_summary'] = substr($summary, 0, -4);;
           var summary = "";
           summary = "<b>Change Type: " + data["submission_type"] + "</b><br><br>";
           for (var key in data) {
@@ -64,7 +42,7 @@ jQuery(document).ready(function ($) {
             switch (key) {
               case "meeting_id":
               case "submission_type":
-                friendlyname = '';
+                friendlyname = "";
                 break;
               case "meeting_name":
                 friendlyname = "Meeting Name";
@@ -105,8 +83,7 @@ jQuery(document).ready(function ($) {
               default:
                 break;
             }
-            if ((friendlyname != '')&&(friendlydata != ''))
-            {
+            if (friendlyname != "" && friendlydata != "") {
               summary += friendlyname + ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' + friendlydata + "</b><br>";
             }
           }
