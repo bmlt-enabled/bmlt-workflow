@@ -108,6 +108,18 @@ class bmaw_submissions_rest extends WP_REST_Controller
 				'permission_callback' => array($this, 'post_service_areas_permissions_check'),
 			),
 		);
+				// POST serviceareas
+				register_rest_route(
+					$this->namespace,
+					'/' . $this->service_areas_rest_base . '/detail',
+		
+					array(
+						'methods'             => WP_REST_Server::CREATABLE,
+						'callback'            => array($this, 'post_service_areas_detail'),
+						'permission_callback' => array($this, 'post_service_areas_detail_permissions_check'),
+					),
+				);
+		
 	}
 	/**
 	 * Check permissions for submission management. These are general purpose checks for all submission editors, granular edit permission will be checked within the callback itself.
@@ -199,6 +211,15 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		return true;
 	}
 
+	public function post_service_areas_detail_permissions_check($request)
+	{
+		error_log("post_service_areas_permissions_check " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area updates.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
 	/**
 	 * Check permissions for form post
 	 *
@@ -265,6 +286,12 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	public function post_service_areas($request)
 	{
 		$result = $this->handlers->post_service_areas($request);
+		return rest_ensure_response($result);
+	}
+
+	public function post_service_areas_detail($request)
+	{
+		$result = $this->handlers->post_service_areas_detail($request);
 		return rest_ensure_response($result);
 	}
 

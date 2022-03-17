@@ -130,7 +130,7 @@ class bmaw_submissions_rest_handlers
         return $sblist;
     }
 
-    public function post_service_areas($request)
+    public function post_service_areas_detail($request)
     {
         global $wpdb;
         global $bmaw_service_areas_access_table_name;
