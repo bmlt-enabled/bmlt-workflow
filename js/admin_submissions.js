@@ -90,7 +90,8 @@ jQuery(document).ready(function ($) {
                 break;
                 case "weekday_tinyint":
                   weekdays = ['Error','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-                  friendlyname = weekdays[data['weekday_tinyint']];
+                  friendlydata = weekdays[data['weekday_tinyint']];
+                  friendlyname = 'Meeting Day';
                   break;
                 case "format_shared_id_list":
                 friendlyname = "Meeting Formats";
