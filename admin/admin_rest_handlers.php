@@ -211,9 +211,9 @@ class bmaw_submissions_rest_handlers
 
         $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
         $result = $wpdb->get_row($sql, ARRAY_A);
-        if ($result['change_made'] === 'Approved') {
-            return "{'response':'already approved'}";
-        }
+        // if ($result['change_made'] === 'Approved') {
+        //     return "{'response':'already approved'}";
+        // }
 
         $submission_type = $result['submission_type'];
 
