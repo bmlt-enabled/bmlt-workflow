@@ -2,33 +2,33 @@ jQuery(document).ready(function ($) {
   console.log(bmaw_admin_submissions_rest_url);
 
   $("#dt-submission").DataTable({
-    dom: 'Bfrtip',
+    dom: "Bfrtip",
     select: true,
     buttons: [
       {
         text: "Approve",
-        extend: 'selected',
+        extend: "selected",
         action: function (e, dt, button, config) {
-          var id = dt.cell('.selected',0).data();
+          var id = dt.cell(".selected", 0).data();
           $("#bmaw_submission_approve_dialog").data("id", id).dialog("open");
         },
       },
       {
         text: "Reject",
-        extend: 'selected',
+        extend: "selected",
         action: function (e, dt, button, config) {
-          var id = dt.cell('.selected',0).data();
+          var id = dt.cell(".selected", 0).data();
           $("#bmaw_submission_reject_dialog").data("id", id).dialog("open");
         },
       },
       {
         text: "Delete",
-        extend: 'selected',
+        extend: "selected",
         action: function (e, dt, button, config) {
-          var id = dt.cell('.selected',0).data();
+          var id = dt.cell(".selected", 0).data();
           $("#bmaw_submission_delete_dialog").data("id", id).dialog("open");
         },
-      }
+      },
     ],
     ajax: {
       url: bmaw_admin_submissions_rest_url,
@@ -88,12 +88,16 @@ jQuery(document).ready(function ($) {
               case "location_postal_code_1":
                 friendlyname = "Postcode";
                 break;
-                case "weekday_tinyint":
-                  weekdays = ['Error','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-                  friendlydata = weekdays[data['weekday_tinyint']];
-                  friendlyname = 'Meeting Day';
-                  break;
-                case "format_shared_id_list":
+              case "weekday_tinyint":
+                weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                friendlydata = weekdays[data["weekday_tinyint"]];
+                friendlyname = "Meeting Day";
+                break;
+              case "service_body_bigint":
+                friendlydata = bmaw_admin_bmaw_service_areas[data["service_body_bigint"]]["name"];
+                friendlyname = "Service Body";
+                break;
+              case "format_shared_id_list":
                 friendlyname = "Meeting Formats";
                 // convert the meeting formats to human readable
                 friendlydata = "";
@@ -120,8 +124,7 @@ jQuery(document).ready(function ($) {
   });
 
   function bmaw_create_generic_modal(dialogid, title) {
-
-    $('#'+dialogid).dialog({
+    $("#" + dialogid).dialog({
       title: title,
       dialogClass: "wp-dialog",
       autoOpen: false,
@@ -195,7 +198,7 @@ jQuery(document).ready(function ($) {
             response.error_message +
             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
         $(".wp-header-end").after(msg);
-        $("#dt-submission").DataTable().ajax.reload()
+        $("#dt-submission").DataTable().ajax.reload();
       })
       .fail(function (xhr) {
         $(".wp-header-end").after(
