@@ -103,24 +103,6 @@ function meeting_update_form_handler_rest($data)
 
     $reason = $data['update_reason'];
 
-    if ($reason == "reason_other") {
-        // handle this case seperately
-    }
-
-    if (isset($data['meeting_id'])) {
-        if (!is_numeric($data['meeting_id']))
-        {
-            wp_die("Invalid meeting id");
-        }
-        $meeting_id = $data['meeting_id'];
-
-    } else {
-        if ($reason != "reason_new") {
-            // Change or Close should have gotten here with a meeting id selected
-            wp_die("This change type requires a meeting selection");
-        }
-    }
-
     // these are the form fields we'll accept
     $changes = array();
 
@@ -147,10 +129,23 @@ function meeting_update_form_handler_rest($data)
                 $changes[$field] = $data[$field];
             }
 
+            $changes['meeting_id'] = 0;
+
             break;
         case ('reason_change'):
             $subject = 'Change meeting notification';
             // change meeting - just add the deltas. no real reason to do this as bmlt result would be the same, but safe to filter it regardless
+
+            if (isset($data['meeting_id'])) {
+                if (!is_numeric($data['meeting_id']))
+                {
+                    wp_die("Invalid meeting id");
+                }
+                $meeting_id = $data['meeting_id'];
+            }
+
+            // add in the meeting id
+            $changes['meeting_id'] = $meeting_id;
 
             // get the meeting details from BMLT so we can compare them
             $bmaw_bmlt_server_address = get_option('bmaw_bmlt_server_address');
@@ -180,15 +175,16 @@ function meeting_update_form_handler_rest($data)
                 }
             }
 
-            // add in the meeting id
-            $changes['meeting_id'] = $meeting_id;
+
 
             break;
         case ('reason_close'):
             $subject = 'Close meeting notification';
+            wp_die('Not implemented');
             break;
         case ('reason_other'):
             $subject = 'Meeting notification - Other';
+            wp_die('Not implemented');
             break;
         default:
             wp_die('Invalid meeting change');
