@@ -16,7 +16,8 @@ class BMLTIntegration
         $response = $this->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('admin_action'=>'get_format_info'));
         if( is_wp_error( $response ) ) {
             wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
-        }    
+        }
+        error_log($response['body']);  
         $formatarr = json_decode($response['body'],true)['row'];
         $newformat = array();
         foreach ($formatarr as $key => $value)
