@@ -7,8 +7,9 @@ jQuery(document).ready(function ($) {
     buttons: [
       {
         text: "Get selected data",
-        action: function () {
-          var count = $("#dt-submission").rows({ selected: true }).count();
+        extend: 'selected',
+        action: function (e, dt, button, config) {
+          var count = dt.rows({ selected: true }).count();
 
           console.log("<div>" + count + " row(s) selected</div>");
         },
