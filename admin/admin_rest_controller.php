@@ -77,6 +77,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 			'permission_callback' => array($this, 'reject_submission_action_permissions_check'),
 		));
 
+		// GET serviceareas
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->service_areas_rest_base,
@@ -86,6 +87,18 @@ class bmaw_submissions_rest extends WP_REST_Controller
 				'permission_callback' => array($this, 'get_service_areas_permissions_check'),
 			),
 		);
+		// GET serviceareas/detail
+				register_rest_route(
+					$this->namespace,
+					'/' . $this->service_areas_rest_base . '/detail',
+					array(
+						'methods'             => WP_REST_Server::READABLE,
+						'callback'            => array($this, 'get_service_areas_detail'),
+						'permission_callback' => array($this, 'get_service_areas_detail_permissions_check'),
+					),
+				);
+		
+		// POST serviceareas
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->service_areas_rest_base,
@@ -157,12 +170,17 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	 */
 	public function get_service_areas_permissions_check($request)
 	{
-		// get service areas is unauthenticated as it is also used by the end-user form - permission checks will be done inside the handler
+		// get service areas is unauthenticated as it is also used by the end-user form 
 
-		// error_log("get_service_areas_permissions_check " . get_current_user_id());
-		// if (!current_user_can('manage_options')) {
-		// 	return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view service_areas.'), array('status' => $this->authorization_status_code()));
-		// }
+		return true;
+	}
+
+	public function get_service_areas_detail_permissions_check($request)
+	{
+		error_log("get_service_areas_detail_permissions_check " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view service areas detail.'), array('status' => $this->authorization_status_code()));
+		}
 		return true;
 	}
 

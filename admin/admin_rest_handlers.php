@@ -21,113 +21,111 @@ class bmaw_submissions_rest_handlers
         foreach ($result as $key => $value) {
             $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 2);
         }
-        // $myrequested = $result[0]['changes_requested'];
-        // error_log("myrequested = ".$myrequested);
-        // error_log(vdump(json_decode($myrequested,true,1)));
-        // $result[0]['changes_requested'] = json_decode($myrequested,true,2);
-        // error_log("this is our changes requested array");
         error_log(vdump($result));
         return $result;
     }
 
-    public function get_service_areas_handler()
+    public function get_service_areas_detail_handler()
     {
-        // call bmlt for service area list
-        // add list of wp uids with access
-        // return as array of all service areas
-
         global $wpdb;
         global $bmaw_service_areas_table_name;
         global $bmaw_service_areas_access_table_name;
 
         $sblist = array();
 
-        // only admins can see/modify the permissions list
-        if (current_user_can('manage_options')) {
+        $req = array();
+        $req['admin_action'] = 'get_service_body_info';
+        $req['flat'] = '';
+        $bmlt_integration = new BMLTIntegration;
 
-            $req = array();
-            $req['admin_action'] = 'get_service_body_info';
-            $req['flat'] = '';
-            $bmlt_integration = new BMLTIntegration;
-
-            // get an xml for a workaround
-            $response = $bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
-            if (is_wp_error($response)) {
-                wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
-            }
-
-            $xml = simplexml_load_string($response['body']);
-            $arr = json_decode(json_encode($xml), 1);
-
-            error_log(vdump($arr));
-
-            $idlist = array();
-
-            // make our list of service bodies
-            foreach ($arr['service_body'] as $key => $value) {
-                // error_log("looping key = " . $key);
-                if (array_key_exists('@attributes', $value)) {
-                    $sbid = $value['@attributes']['id'];
-                    $idlist[] = $sbid;
-                    $sblist[$sbid] = array('name' => $value['@attributes']['name']);
-                } else {
-                    // we need a name at minimum
-                    break;
-                }
-                $sblist[$sbid]['contact_email'] = '';
-                if (array_key_exists('contact_email', $value)) {
-                    $sblist[$sbid]['contact_email'] = $value['contact_email'];
-                }
-            }
-
-            // update our service area list in the database in case there have been some new ones added
-            error_log("get ids");
-            $sqlresult = $wpdb->get_col('SELECT service_area_id FROM ' . $bmaw_service_areas_table_name . ';', 0);
-
-            error_log(vdump($sqlresult));
-            $missing = array_diff($idlist, $sqlresult);
-            error_log("missing ids");
-            error_log(vdump($missing));
-
-            foreach ($missing as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s", service_area_id="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
-                $wpdb->query($sql);
-            }
-            // update any values that may have changed since last time we looked
-
-            foreach ($idlist as $value) {
-                $sql = $wpdb->prepare('UPDATE ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s" where service_area_id="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
-                $wpdb->query($sql);
-            }
-
-            error_log("our sblist");
-            error_log(vdump($sblist));
-
-            // make our group membership lists
-            foreach ($sblist as $key => $value) {
-                error_log("getting memberships for " . $key);
-                $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $bmaw_service_areas_access_table_name . ' where service_area_id = "%d"', $key);
-                $result = $wpdb->get_col($sql, 0);
-                error_log(vdump($result));
-                $sblist[$key]['membership'] = implode(',', $result);
-            }
-            // get the form display settings
-            $sqlresult = $wpdb->get_results('SELECT service_area_id,show_on_form FROM ' . $bmaw_service_areas_table_name, ARRAY_A);
-
-            foreach ($sqlresult as $key => $value) {
-                $bool = $value['show_on_form'] ? (true) : (false);
-                $sblist[$value['service_area_id']]['show_on_form'] = $bool;
-            }
-        } else {
-            // error_log("simple list of service areas and names");
-            $result = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form != "0"', ARRAY_A);
-            // error_log(vdump($result));
-            // create simple service area list (names of service areas that are enabled by admin with show_on_form)
-            foreach ($result as $key => $value) {
-                $sblist[$value['service_area_id']]['name'] = $value['service_area_name'];
-            }
-            // error_log(vdump($sblist));
+        // get an xml for a workaround
+        $response = $bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
+        if (is_wp_error($response)) {
+            wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
         }
+
+        $xml = simplexml_load_string($response['body']);
+        $arr = json_decode(json_encode($xml), 1);
+
+        error_log(vdump($arr));
+
+        $idlist = array();
+
+        // make our list of service bodies
+        foreach ($arr['service_body'] as $key => $value) {
+            // error_log("looping key = " . $key);
+            if (array_key_exists('@attributes', $value)) {
+                $sbid = $value['@attributes']['id'];
+                $idlist[] = $sbid;
+                $sblist[$sbid] = array('name' => $value['@attributes']['name']);
+            } else {
+                // we need a name at minimum
+                break;
+            }
+            $sblist[$sbid]['contact_email'] = '';
+            if (array_key_exists('contact_email', $value)) {
+                $sblist[$sbid]['contact_email'] = $value['contact_email'];
+            }
+        }
+
+        // update our service area list in the database in case there have been some new ones added
+        error_log("get ids");
+        $sqlresult = $wpdb->get_col('SELECT service_area_id FROM ' . $bmaw_service_areas_table_name . ';', 0);
+
+        error_log(vdump($sqlresult));
+        $missing = array_diff($idlist, $sqlresult);
+        error_log("missing ids");
+        error_log(vdump($missing));
+
+        foreach ($missing as $value) {
+            $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s", service_area_id="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+            $wpdb->query($sql);
+        }
+        // update any values that may have changed since last time we looked
+
+        foreach ($idlist as $value) {
+            $sql = $wpdb->prepare('UPDATE ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s" where service_area_id="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+            $wpdb->query($sql);
+        }
+
+        error_log("our sblist");
+        error_log(vdump($sblist));
+
+        // make our group membership lists
+        foreach ($sblist as $key => $value) {
+            error_log("getting memberships for " . $key);
+            $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $bmaw_service_areas_access_table_name . ' where service_area_id = "%d"', $key);
+            $result = $wpdb->get_col($sql, 0);
+            error_log(vdump($result));
+            $sblist[$key]['membership'] = implode(',', $result);
+        }
+        // get the form display settings
+        $sqlresult = $wpdb->get_results('SELECT service_area_id,show_on_form FROM ' . $bmaw_service_areas_table_name, ARRAY_A);
+
+        foreach ($sqlresult as $key => $value) {
+            $bool = $value['show_on_form'] ? (true) : (false);
+            $sblist[$value['service_area_id']]['show_on_form'] = $bool;
+        }
+
+
+        return $sblist;
+    }
+
+    public function get_service_areas_handler()
+    {
+        global $wpdb;
+        global $bmaw_service_areas_table_name;
+        global $bmaw_service_areas_access_table_name;
+
+        $sblist = array();
+        // error_log("simple list of service areas and names");
+        $result = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form != "0"', ARRAY_A);
+        // error_log(vdump($result));
+        // create simple service area list (names of service areas that are enabled by admin with show_on_form)
+        foreach ($result as $key => $value) {
+            $sblist[$value['service_area_id']]['name'] = $value['service_area_name'];
+        }
+        // error_log(vdump($sblist));
 
         return $sblist;
     }
@@ -221,15 +219,15 @@ class bmaw_submissions_rest_handlers
 
         error_log("json decoded");
         error_log(vdump($change));
-        error_log("change type = ".$submission_type);
+        error_log("change type = " . $submission_type);
         switch ($submission_type) {
             case 'reason_new':
                 // $change['admin_action'] = 'add_meeting';
                 // workaround for new meeting bug
                 $change['id_bigint'] = 0;
                 $changearr = array();
-                $changearr['bmlt_ajax_callback']=1;
-                $changearr['set_meeting_change']=json_encode($change);
+                $changearr['bmlt_ajax_callback'] = 1;
+                $changearr['set_meeting_change'] = json_encode($change);
                 $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
                 break;
             case 'reason_change':

@@ -119,9 +119,17 @@ function bmaw_admin_scripts($hook)
             // make sure our rest url is populated
             $script  = 'bmaw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';
 
+            // add meeting formats
             $bmlt_integration = new BMLTIntegration;
             $formatarr = $bmlt_integration->getMeetingFormats();
             $script .= 'var bmaw_bmlt_formats = ' . json_encode($formatarr) .'; ';
+
+            // do a one off lookup for our serviceareas
+            $request  = new WP_REST_Request('GET', '/bmaw-submission/v1/serviceareas');
+            $response = rest_do_request($request);
+            $result     = rest_get_server()->response_to_data($response, true);
+    
+            $script .= 'var bmaw_admin_bmaw_service_areas = ' . json_encode($result) . '; ';
 
             wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;
@@ -135,7 +143,7 @@ function bmaw_admin_scripts($hook)
             deny_cache_enqueue_style('bmaw-admin-submissions-css', false, 'css/admin_service_areas.css');
 
             // make sure our rest url is populated
-            $script  = 'bmaw_admin_bmaw_service_areas_rest_route = ' . json_encode('bmaw-submission/v1/serviceareas') . '; ';
+            $script  = 'bmaw_admin_bmaw_service_areas_rest_route = ' . json_encode('bmaw-submission/v1/serviceareas/detail') . '; ';
             $script .= 'wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
             wp_add_inline_script('admin_service_areas_js', $script, 'before');
             break;
