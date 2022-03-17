@@ -10,24 +10,24 @@ class BMLTIntegration
     protected $authfailure = 0; // authentication is failing - don't keep bashing the front door
     protected const MAXFAILS = 2; // how many failures we'll retry
 
-    
+
     public function getMeetingFormats()
     {
-        $response = $this->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('admin_action'=>'get_format_info'));
-        if( is_wp_error( $response ) ) {
+        $response = $this->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('admin_action' => 'get_format_info'));
+        if (is_wp_error($response)) {
             wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
         }
         // error_log($response['body']);  
-        $formatarr = json_decode($response['body'],true)['row'];
+        $formatarr = json_decode($response['body'], true)['row'];
         $newformat = array();
-        foreach ($formatarr as $key => $value)
-        {
-            // handle blank values
-            if (is_object($value))
-            {
-                $value = '';
+        foreach ($formatarr as $key => $value) {
+            foreach ($value as $key2 => $value2) {
+                // handle blank values
+                if (is_object($value2)) {
+                    $value[$key2] = '';
+                }
             }
-            $newformat[$formatarr[$key]['id']] = $value; 
+            $newformat[$formatarr[$key]['id']] = $value;
         }
         return $newformat;
     }
@@ -35,38 +35,28 @@ class BMLTIntegration
     // postargs is an array
     public function postConfiguredRootServerRequest($url, $postargs)
     {
-        if ($this->authfailure < self::MAXFAILS)
-        {    
+        if ($this->authfailure < self::MAXFAILS) {
             return $this->postRootServerRequest(get_option('bmaw_bmlt_server_address') . $url, $postargs);
-        }
-        else
-        {
-            return new WP_Error( 'bmaw', "Fatal BMLT Authentication Failure - check the credentials in BMAW settings" );
+        } else {
+            return new WP_Error('bmaw', "Fatal BMLT Authentication Failure - check the credentials in BMAW settings");
         }
     }
 
     public function postConfiguredRootServerRequestSemantic($url, $postargs)
     {
-        if ($this->authfailure < self::MAXFAILS)
-        {    
+        if ($this->authfailure < self::MAXFAILS) {
             return $this->postRootServerRequestSemantic(get_option('bmaw_bmlt_server_address') . $url, $postargs);
-        }
-        else
-        {
-            return new WP_Error( 'bmaw', "Fatal BMLT Authentication Failure - check the credentials in BMAW settings" );
+        } else {
+            return new WP_Error('bmaw', "Fatal BMLT Authentication Failure - check the credentials in BMAW settings");
         }
     }
     public function getConfiguredRootServerRequest($url)
     {
-        if ($this->authfailure < self::MAXFAILS)
-        {
+        if ($this->authfailure < self::MAXFAILS) {
             return $this->getRootServerRequest(get_option('bmaw_bmlt_server_address') . $url);
+        } else {
+            return new WP_Error('bmaw', "Fatal BMLT Authentication Failure - check the credentials in BMAW settings");
         }
-        else
-        {
-            return new WP_Error( 'bmaw', "Fatal BMLT Authentication Failure - check the credentials in BMAW settings" );
-        }
-
     }
 
     private function vdump($object)
@@ -90,14 +80,12 @@ class BMLTIntegration
 
             error_log("AUTH URL = " . $url);
             $ret = $this->post($url, null, $postargs);
-            if(preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/',$ret['body'])) // best way I could find to check for invalid login
+            if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $ret['body'])) // best way I could find to check for invalid login
             {
                 $this->authfailure++;
                 $this->cookies = null;
-                return new WP_Error('bmaw','authenticateRootServer: Authentication Failure');
-            }
-            else
-            {
+                return new WP_Error('bmaw', 'authenticateRootServer: Authentication Failure');
+            } else {
                 $this->authfailure = 0;
                 $this->cookies = wp_remote_retrieve_cookies($ret);
             }
@@ -121,14 +109,14 @@ class BMLTIntegration
     private function get($url, $cookies = null)
     {
         $ret = wp_remote_get($url, $this->set_args($cookies));
-        if(preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/',$ret['body'])) // best way I could find to check for invalid login
+        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $ret['body'])) // best way I could find to check for invalid login
         {
             $this->authfailure++;
             $this->cookies = null;
             $ret =  $this->authenticateRootServer();
-            if( is_wp_error( $ret ) ) {
+            if (is_wp_error($ret)) {
                 return $ret;
-            }    
+            }
             // try once more in case it was a session timeout
             $ret = wp_remote_post($url, $this->set_args($cookies));
         }
@@ -141,14 +129,14 @@ class BMLTIntegration
         error_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
         error_log("*********");
         $ret = wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
-        if(preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/',$ret['body'])) // best way I could find to check for invalid login
+        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $ret['body'])) // best way I could find to check for invalid login
         {
             $this->authfailure++;
             $this->cookies = null;
             $ret =  $this->authenticateRootServer();
-            if( is_wp_error( $ret ) ) {
+            if (is_wp_error($ret)) {
                 return $ret;
-            }    
+            }
             // try once more in case it was a session timeout
             $ret = wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
         }
@@ -161,25 +149,22 @@ class BMLTIntegration
         error_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
         error_log("*********");
         $newargs = '';
-        foreach ($postargs as $key => $value)
-        {
-            switch ($key)
-            {
+        foreach ($postargs as $key => $value) {
+            switch ($key) {
                 case ('admin_action'):
                 case ('meeting_id'):
                 case ('flat');
-                    $newargs .= $key.'='.$value;
+                    $newargs .= $key . '=' . $value;
                     break;
                 default:
-                    $newargs .= "meeting_field[]=".$key.','.$value;
+                    $newargs .= "meeting_field[]=" . $key . ',' . $value;
             }
             $newargs .= '&';
         }
-        if ($newargs != '')
-        {   
+        if ($newargs != '') {
             // chop trailing &
-            $newargs = substr($newargs,0,-1);
-            error_log("our post body is ".$newargs);
+            $newargs = substr($newargs, 0, -1);
+            error_log("our post body is " . $newargs);
             $ret = wp_remote_post($url, $this->set_args($cookies, $newargs));
             error_log($this->vdump($ret));
             return $ret;
@@ -192,7 +177,7 @@ class BMLTIntegration
         error_log($this->vdump($this->cookies));
         error_log("*********");
         $ret =  $this->authenticateRootServer();
-        if( is_wp_error( $ret ) ) {
+        if (is_wp_error($ret)) {
             return $ret;
         }
         return $this->get($url, $this->cookies);
@@ -201,7 +186,7 @@ class BMLTIntegration
     private function postRootServerRequest($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
-        if( is_wp_error( $ret ) ) {
+        if (is_wp_error($ret)) {
             return $ret;
         }
         return $this->post($url, $this->cookies, $postargs);
@@ -210,12 +195,11 @@ class BMLTIntegration
     private function postRootServerRequestSemantic($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
-        if( is_wp_error( $ret ) ) {
+        if (is_wp_error($ret)) {
             return $ret;
         }
         return $this->postsemantic($url, $this->cookies, $postargs);
     }
-
 }
 
 ?>
