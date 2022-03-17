@@ -116,7 +116,7 @@ jQuery(document).ready(function ($) {
 
   function bmaw_create_generic_modal(dialogid, title) {
 
-    $(id).dialog({
+    $('#'+dialogid).dialog({
       title: title,
       dialogClass: "wp-dialog",
       autoOpen: false,
