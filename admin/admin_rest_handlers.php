@@ -5,6 +5,12 @@ if (!defined('ABSPATH')) exit; // die if being called directly
 class bmaw_submissions_rest_handlers
 {
 
+
+	public function __construct()
+	{
+		$this->bmlt_integration = new BMLTIntegration;
+	}
+
     public function get_submissions_handler()
     {
 
