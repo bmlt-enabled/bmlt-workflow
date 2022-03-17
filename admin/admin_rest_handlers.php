@@ -215,7 +215,7 @@ class bmaw_submissions_rest_handlers
             return "{'response':'already approved'}";
         }
 
-        $change_type = $result['change_made'];
+        $change_type = $result['submission_type'];
 
         $change = json_decode($result['changes_requested'], 1);
 
