@@ -268,10 +268,15 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		return rest_ensure_response($result);
 	}
 
-
 	public function get_service_areas($request)
 	{
 		$result = $this->handlers->get_service_areas_handler($request);
+		return rest_ensure_response($result);
+	}
+
+	public function get_service_areas_detail($request)
+	{
+		$result = $this->handlers->get_service_areas_detail_handler($request);
 		return rest_ensure_response($result);
 	}
 
