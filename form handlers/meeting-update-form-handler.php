@@ -252,19 +252,16 @@ function meeting_update_form_handler_rest($data)
     $submitter_name = $data['first_name'] . " " . $data['last_name'];
     $db_reason = '';
     switch ($reason) {
-        case ('reason_new'):
-            $db_reason = 'New Meeting';
+        case 'reason_new':
+        case 'reason_change':
+        case 'reason_close':
+        case 'reason_other':
+            $db_reason = $reason;
             break;
-        case ('reason_change'):
-            $db_reason = 'Change Meeting';
-            break;
-        case ('reason_close'):
-            $db_reason = 'Close Meeting';
-            break;
-        case ('reason_other'):
-            $db_reason = 'Other Meeting';
-            break;
+        default:
+            return '{"response":"invalid change type"}';
     }
+    
     $submitter_email = $data['email_address'];
 
     $wpdb->insert(

@@ -6,10 +6,10 @@ class bmaw_submissions_rest_handlers
 {
 
 
-	public function __construct()
-	{
-		$this->bmlt_integration = new BMLTIntegration;
-	}
+    public function __construct()
+    {
+        $this->bmlt_integration = new BMLTIntegration;
+    }
 
     public function get_submissions_handler()
     {
@@ -18,9 +18,8 @@ class bmaw_submissions_rest_handlers
         global $bmaw_submissions_table_name;
 
         $result = $wpdb->get_results('SELECT * FROM ' . $bmaw_submissions_table_name, ARRAY_A);
-        foreach ($result as $key => $value)
-        {
-            $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'],true,2);
+        foreach ($result as $key => $value) {
+            $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 2);
         }
         // $myrequested = $result[0]['changes_requested'];
         // error_log("myrequested = ".$myrequested);
@@ -71,15 +70,12 @@ class bmaw_submissions_rest_handlers
                     $sbid = $value['@attributes']['id'];
                     $idlist[] = $sbid;
                     $sblist[$sbid] = array('name' => $value['@attributes']['name']);
-                }
-                else
-                {
+                } else {
                     // we need a name at minimum
                     break;
                 }
-                $sblist[$sbid]['contact_email']='';
-                if (array_key_exists('contact_email', $value))
-                {
+                $sblist[$sbid]['contact_email'] = '';
+                if (array_key_exists('contact_email', $value)) {
                     $sblist[$sbid]['contact_email'] = $value['contact_email'];
                 }
             }
@@ -94,14 +90,13 @@ class bmaw_submissions_rest_handlers
             error_log(vdump($missing));
 
             foreach ($missing as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s", service_area_id="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'],$value);
+                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s", service_area_id="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
                 $wpdb->query($sql);
             }
             // update any values that may have changed since last time we looked
 
-            foreach ($idlist as $value)
-            {
-                $sql = $wpdb->prepare('UPDATE '. $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s" where service_area_id="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'],$value);
+            foreach ($idlist as $value) {
+                $sql = $wpdb->prepare('UPDATE ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s" where service_area_id="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
                 $wpdb->query($sql);
             }
 
@@ -119,21 +114,17 @@ class bmaw_submissions_rest_handlers
             // get the form display settings
             $sqlresult = $wpdb->get_results('SELECT service_area_id,show_on_form FROM ' . $bmaw_service_areas_table_name, ARRAY_A);
 
-            foreach ($sqlresult as $key => $value)
-            {
-                $bool = $value['show_on_form']?(true):(false);
-                $sblist[$value['service_area_id']]['show_on_form']=$bool;
+            foreach ($sqlresult as $key => $value) {
+                $bool = $value['show_on_form'] ? (true) : (false);
+                $sblist[$value['service_area_id']]['show_on_form'] = $bool;
             }
-        }
-        else
-        {
+        } else {
             // error_log("simple list of service areas and names");
-            $result = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form != "0"',ARRAY_A);
+            $result = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form != "0"', ARRAY_A);
             // error_log(vdump($result));
             // create simple service area list (names of service areas that are enabled by admin with show_on_form)
-            foreach ($result as $key => $value)
-            {
-                $sblist[$value['service_area_id']]['name']=$value['service_area_name'];
+            foreach ($result as $key => $value) {
+                $sblist[$value['service_area_id']]['name'] = $value['service_area_name'];
             }
             // error_log(vdump($sblist));
         }
@@ -218,23 +209,28 @@ class bmaw_submissions_rest_handlers
         global $wpdb;
         global $bmaw_submissions_table_name;
 
-        $sql = $wpdb->prepare('SELECT change_made FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+        $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
         $result = $wpdb->get_row($sql, ARRAY_A);
         if ($result['change_made'] === 'Approved') {
             return "{'response':'already approved'}";
         }
 
-        $sql = $wpdb->prepare('SELECT changes_requested FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
-        $result = $wpdb->get_row($sql, ARRAY_A);
-        if ($result) {
-            error_log(vdump($result));
-        } else {
-            error_log("no result found");
-        }
-        $change = json_decode($result['changes_requested'],1);
+        $change_type = $result['change_made'];
+
+        $change = json_decode($result['changes_requested'], 1);
+
         error_log("json decoded");
         error_log(vdump($change));
-        $change['admin_action'] = 'modify_meeting';
+        switch ($change_type) {
+            case 'reason_new':
+                $change['admin_action'] = 'add_meeting';
+                break;
+            case 'reason_change':
+                $change['admin_action'] = 'modify_meeting';
+                break;
+            default:
+                return "{'response':'cant approve this type of change'}";
+        }
 
         $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
         // ERROR HANDLING NEEDED
