@@ -190,7 +190,7 @@ jQuery(document).ready(function ($) {
             response.error_message +
             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
         $(".wp-header-end").after(msg);
-        location.reload();
+        $("#dt-submission").DataTable().ajax.reload()
       })
       .fail(function (xhr) {
         $(".wp-header-end").after(
