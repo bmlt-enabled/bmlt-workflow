@@ -108,7 +108,12 @@ function meeting_update_form_handler_rest($data)
     }
 
     if (isset($data['meeting_id'])) {
+        if (!is_numeric($data['meeting_id']))
+        {
+            wp_die("Invalid meeting id");
+        }
         $meeting_id = $data['meeting_id'];
+
     } else {
         if ($reason != "reason_new") {
             // Change or Close should have gotten here with a meeting id selected
@@ -174,6 +179,10 @@ function meeting_update_form_handler_rest($data)
                     }
                 }
             }
+
+            // add in the meeting id
+            $changes['meeting_id'] = $meeting_id;
+
             break;
         case ('reason_close'):
             $subject = 'Close meeting notification';
@@ -261,7 +270,7 @@ function meeting_update_form_handler_rest($data)
         default:
             return '{"response":"invalid change type"}';
     }
-    
+
     $submitter_email = $data['email_address'];
 
     $wpdb->insert(
