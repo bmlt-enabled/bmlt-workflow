@@ -32,7 +32,10 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <div id="icon-users" class="icon32"></div>
     <h2>Meeting Submissions</h2>
     <hr class="wp-header-end">
+    <!-- $actions['bmaw_span_approve'] = '<a class="bmaw_submission_approve" id="bmaw_submission_approve_id_' . $item['id'] . '" target="_blank" href="#!">' . esc_html__('Approve') . '</a>'; -->
+
     <?php
+    echo '<a class="bmaw_submission_approve" id="bmaw_submission_approve_id_1" target="_blank" href="#!">' . esc_html__('Approve') . '</a>';
     // $submissionsListTable->views();
     // $submissionsListTable->prepare_items();
     // $submissionsListTable->display();
