@@ -10,7 +10,7 @@ jQuery(document).ready(function ($) {
         extend: 'selected',
         action: function (e, dt, button, config) {
           var id = dt.cell('.selected',0).data();
-          bmaw_submission_approve_dialog_ok(id);
+          $("#bmaw_submission_approve_dialog").data("id", id).dialog("open");
         },
       },
       {
@@ -18,7 +18,7 @@ jQuery(document).ready(function ($) {
         extend: 'selected',
         action: function (e, dt, button, config) {
           var id = dt.cell('.selected',0).data();
-          bmaw_submission_reject_dialog_ok(id);
+          $("#bmaw_submission_reject_dialog").data("id", id).dialog("open");
         },
       },
       {
@@ -26,7 +26,7 @@ jQuery(document).ready(function ($) {
         extend: 'selected',
         action: function (e, dt, button, config) {
           var id = dt.cell('.selected',0).data();
-          bmaw_submission_delete_dialog_ok(id);
+          $("#bmaw_submission_delete_dialog").data("id", id).dialog("open");
         },
       }
     ],
@@ -114,12 +114,9 @@ jQuery(document).ready(function ($) {
     ],
   });
 
-  function bmaw_create_row_link_modal(element, title) {
-    dialogname = "#" + element + "_dialog";
-    classname = "." + element;
-    idname = element + "_id_";
+  function bmaw_create_generic_modal(dialogid, title) {
 
-    $(dialogname).dialog({
+    $(id).dialog({
       title: title,
       dialogClass: "wp-dialog",
       autoOpen: false,
@@ -152,17 +149,11 @@ jQuery(document).ready(function ($) {
         $(".ui-dialog-titlebar-close").addClass("ui-button");
       },
     });
-    // hook the approve flow
-    $(classname).on("click", function (event) {
-      event.preventDefault();
-      let id = this.id.substring(this.id.indexOf("_id_") + 4, this.id.length);
-      let dialog = "#" + this.id.substring(0, this.id.indexOf("_id_")) + "_dialog";
-      $(dialog).data("id", id).dialog("open");
-    });
   }
-  bmaw_create_row_link_modal("bmaw_submission_delete", "Delete Submission");
-  bmaw_create_row_link_modal("bmaw_submission_approve", "Approve Submission");
-  bmaw_create_row_link_modal("bmaw_submission_reject", "Reject Submission");
+
+  bmaw_create_generic_modal("bmaw_submission_delete_dialog", "Delete Submission");
+  bmaw_create_generic_modal("bmaw_submission_approve_dialog", "Approve Submission");
+  bmaw_create_generic_modal("bmaw_submission_reject_dialog", "Reject Submission");
 
   bmaw_submission_approve_dialog_ok = function (id) {
     generic_approve_handler(id, "POST", "/approve", "bmaw_submission_approve");
