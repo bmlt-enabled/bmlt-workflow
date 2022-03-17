@@ -105,8 +105,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </div> -->
             <br>
             <div>
-                <label for="service_area_bigint">Service Committee (or Other if not known)</label>
-                <select name="service_area_bigint" id="service_area_bigint">
+                <label for="service_body_bigint">Service Committee (or Other if not known)</label>
+                <select name="service_body_bigint" id="service_body_bigint">
                 </select>
             </div>
             <br>

@@ -53,7 +53,7 @@ function meeting_update_form_handler_rest($data)
         "location_province" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
         "location_postal_code_1" => array("number", $reason_new_bool | $reason_change_bool | $reason_close_bool),
         "weekday_tinyint" => array("weekday", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "service_area_bigint" => array("bigint", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "service_body_bigint" => array("bigint", $reason_new_bool | $reason_change_bool | $reason_close_bool),
         "virtual_meeting_link" => array("url", false),
         "email_address" => array("email", true),
         "contact_number_confidential" => array("text", false),
@@ -125,6 +125,7 @@ function meeting_update_form_handler_rest($data)
         "location_province",
         "location_postal_code_1",
         "weekday_tinyint",
+        "service_body_bigint",
         "virtual_meeting_link",
         "format_shared_id_list"
     );
