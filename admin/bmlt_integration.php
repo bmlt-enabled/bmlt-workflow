@@ -17,7 +17,7 @@ class BMLTIntegration
         if (is_wp_error($response)) {
             wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
         }
-        // error_log($response['body']);  
+        error_log($response['body']);  
         $formatarr = json_decode($response['body'], true)['row'];
         $newformat = array();
         foreach ($formatarr as $key => $value) {
