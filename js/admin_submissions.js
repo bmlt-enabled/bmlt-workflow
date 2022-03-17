@@ -88,7 +88,11 @@ jQuery(document).ready(function ($) {
               case "location_postal_code_1":
                 friendlyname = "Postcode";
                 break;
-              case "format_shared_id_list":
+                case "weekday_tinyint":
+                  weekdays = ['Error','Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+                  friendlyname = weekdays[data['weekday_tinyint']];
+                  break;
+                case "format_shared_id_list":
                 friendlyname = "Meeting Formats";
                 // convert the meeting formats to human readable
                 friendlydata = "";

@@ -52,7 +52,7 @@ function meeting_update_form_handler_rest($data)
         "location_municipality" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
         "location_province" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
         "location_postal_code_1" => array("number", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "weekday_tinyint" => array("number", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "weekday_tinyint" => array("weekday", $reason_new_bool | $reason_change_bool | $reason_close_bool),
         "virtual_meeting_link" => array("url", false),
         "email_address" => array("email", true),
         "contact_number_confidential" => array("text", false),
@@ -78,6 +78,11 @@ function meeting_update_form_handler_rest($data)
                 break;
             case ('number'):
                 $data[$field] = intval($data[$field]);
+                break;
+            case ('weekday'):
+                if (!(($data[$field] >= 1) && ($data[$field] <= 7))) {
+                    wp_die("Invalid form field input");
+                }
                 break;
             case ('url'):
                 $data[$field] = esc_url_raw($data[$field], array('http', 'https'));
@@ -139,8 +144,7 @@ function meeting_update_form_handler_rest($data)
             // change meeting - just add the deltas. no real reason to do this as bmlt result would be the same, but safe to filter it regardless
 
             if (isset($data['meeting_id'])) {
-                if (!is_numeric($data['meeting_id']))
-                {
+                if (!is_numeric($data['meeting_id'])) {
                     wp_die("Invalid meeting id");
                 }
                 $meeting_id = $data['meeting_id'];
@@ -289,7 +293,7 @@ function meeting_update_form_handler_rest($data)
         )
     );
     $insert_id = $wpdb->insert_id;
-    error_log("id = ".$insert_id);
+    error_log("id = " . $insert_id);
     exit("<h3>Form submission successful</h3>");
     // wp_redirect( 'https://www.google.com' );
 }
