@@ -77,7 +77,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </tfoot>
         </table>
     </div>
-</div>>
+</div>
 <?php
 
 // if (!class_exists('WP_List_Table')) {

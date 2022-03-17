@@ -111,8 +111,8 @@ function bmaw_admin_scripts($hook)
             deny_cache_enqueue_style('bmaw-admin-submissions-css', false, 'css/admin_submissions.css');
             wp_enqueue_script('jquery-ui-dialog');
             wp_enqueue_style('wp-jquery-ui-dialog');
-            wp_register_style('dtcss', '//cdn.datatables.net/v/dt/dt-1.11.5/datatables.min.css', false, '1.0', 'all');
-            wp_register_script('dt', '//cdn.datatables.net/v/dt/dt-1.11.5/datatables.js', array('jquery'), '1.0', true);
+            wp_register_style('dtcss', 'https://cdn.datatables.net/v/dt/dt-1.11.5/sl-1.3.4/datatables.min.css', false, '1.0', 'all');
+            wp_register_script('dt', 'https://cdn.datatables.net/v/dt/dt-1.11.5/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
             wp_enqueue_style('dtcss');
             wp_enqueue_script('dt');
 
@@ -126,8 +126,8 @@ function bmaw_admin_scripts($hook)
             wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;
         case ('bmaw_page_bmaw-service-areas'):
-            wp_register_style('select2css', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
-            wp_register_script('select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
+            wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
+            wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
             wp_enqueue_style('select2css');
             wp_enqueue_script('select2');
 
