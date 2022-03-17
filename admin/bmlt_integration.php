@@ -23,8 +23,7 @@ class BMLTIntegration
         foreach ($formatarr as $key => $value) {
             foreach ($value as $key2 => $value2) {
                 // handle blank values
-                if (is_object($value2)) {
-                    error_log("FOUND A BLANK ONE");
+                if (is_array($value2)) {
                     $value[$key2] = '';
                 }
             }
