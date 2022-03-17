@@ -215,14 +215,14 @@ class bmaw_submissions_rest_handlers
             return "{'response':'already approved'}";
         }
 
-        $change_type = $result['submission_type'];
+        $submission_type = $result['submission_type'];
 
         $change = json_decode($result['changes_requested'], 1);
 
         error_log("json decoded");
         error_log(vdump($change));
-        error_log("change type = ".$change_type);
-        switch ($change_type) {
+        error_log("change type = ".$submission_type);
+        switch ($submission_type) {
             case 'reason_new':
                 $change['admin_action'] = 'add_meeting';
                 break;
