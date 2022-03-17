@@ -29,7 +29,6 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		$this->service_areas_rest_base = 'serviceareas';
 		$this->bmlt_integration = new BMLTIntegration;
 		$this->handlers = new bmaw_submissions_rest_handlers();
-
 	}
 
 	public function register_routes()
@@ -88,16 +87,16 @@ class bmaw_submissions_rest extends WP_REST_Controller
 			),
 		);
 		// GET serviceareas/detail
-				register_rest_route(
-					$this->namespace,
-					'/' . $this->service_areas_rest_base . '/detail',
-					array(
-						'methods'             => WP_REST_Server::READABLE,
-						'callback'            => array($this, 'get_service_areas_detail'),
-						'permission_callback' => array($this, 'get_service_areas_detail_permissions_check'),
-					),
-				);
-		
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->service_areas_rest_base . '/detail',
+			array(
+				'methods'             => WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_service_areas_detail'),
+				'permission_callback' => array($this, 'get_service_areas_detail_permissions_check'),
+			),
+		);
+
 		// POST serviceareas
 		register_rest_route(
 			$this->namespace,
@@ -153,7 +152,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	public function delete_submission_permissions_check($request)
 	{
 		// delete submissions is limited to admin
-		
+
 		error_log("delete submission current user " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot delete this submission.'), array('status' => $this->authorization_status_code()));
@@ -212,7 +211,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		// Anyone can post a form submission
 		return true;
 	}
-	
+
 	public function get_submissions($request)
 	{
 		$result = $this->handlers->get_submissions_handler($request);
