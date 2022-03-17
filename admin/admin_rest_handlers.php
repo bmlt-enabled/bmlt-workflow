@@ -224,16 +224,19 @@ class bmaw_submissions_rest_handlers
         error_log("change type = ".$submission_type);
         switch ($submission_type) {
             case 'reason_new':
-                $change['admin_action'] = 'add_meeting';
+                // $change['admin_action'] = 'add_meeting';
+                // workaround for new meeting bug
+                $change['id_bigint'] = 0;
+                $response = $this->bmlt_integration->postConfiguredRootServerRequest('', "bmlt_ajax_callback=1&set_meeting_change=".$change);
                 break;
             case 'reason_change':
                 $change['admin_action'] = 'modify_meeting';
+                $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
                 break;
             default:
                 return "{'response':'cant approve this type of change'}";
         }
 
-        $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
         // ERROR HANDLING NEEDED
         // if( is_wp_error( $response ) ) {
         // 	wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
