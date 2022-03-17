@@ -213,19 +213,19 @@ class bmaw_submissions_rest_handlers
         global $bmaw_submissions_table_name;
 
         $sql = $wpdb->prepare('SELECT change_made FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
-        $result = $wpdb->get_results($sql, ARRAY_A);
-        if ($result[0]['change_made'] === 'Approved') {
+        $result = $wpdb->get_row($sql, ARRAY_A);
+        if ($result['change_made'] === 'Approved') {
             return "{'response':'already approved'}";
         }
 
         $sql = $wpdb->prepare('SELECT changes_requested FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
-        $result = $wpdb->get_results($sql, ARRAY_A);
+        $result = $wpdb->get_row($sql, ARRAY_A);
         if ($result) {
             error_log(vdump($result));
         } else {
             error_log("no result found");
         }
-        $change = json_decode($result[0]['changes_requested']);
+        $change = json_decode($result['changes_requested'],1);
         error_log("json decoded");
         error_log(vdump($change));
         $change['admin_action'] = 'modify_meeting';
