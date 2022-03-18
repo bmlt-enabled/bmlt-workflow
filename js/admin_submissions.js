@@ -51,7 +51,24 @@ jQuery(document).ready(function ($) {
         data: "changes_requested",
         render: function (data, type, row) {
           var summary = "";
-          summary = "<b>Change Type: " + data["submission_type"] + "</b><br><br>";
+          var submission_type = "";
+          switch (data["submission_type"]) {
+            case "reason_new":
+              submission_type = "New Meeting";
+              break;
+            case "reason_close":
+              submission_type = "Close Meeting";
+              break;
+            case "reason_change":
+              submission_type = "Modify Meeting";
+              break;
+            case "reason_other":
+              submission_type = "Other Request";
+              break;
+            default:
+              submission_type = data["submission_type"];
+          }
+          summary = "<b>Change Type: " + submission_type + "</b><br><br>";
           for (var key in data) {
             friendlyname = key;
             friendlydata = data[key];
@@ -121,7 +138,18 @@ jQuery(document).ready(function ($) {
       { data: "submission_time" },
       { data: "change_time" },
       { data: "changed_by" },
-      { data: "change_made" },
+      {
+        data: "change_made",
+        render: function (data, type, row) {
+          switch (data["change_made"]) {
+            case "approved":
+              return "Approved";
+            case "rejected":
+              return "Rejected";
+          }
+          return data["change_made"];
+        },
+      },
     ],
   });
 
