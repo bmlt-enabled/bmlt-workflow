@@ -10,6 +10,11 @@ function dismiss_notice(element) {
 jQuery(document).ready(function ($) {
   // console.log(bmaw_admin_submissions_rest_url);
 
+  function clear_notices()
+  {
+    jQuery('.notice-dismiss').each(function(i,e){dismiss_notice(e)})
+  }
+
   $("#dt-submission").DataTable({
     dom: "Bfrtip",
     select: true,
@@ -19,6 +24,7 @@ jQuery(document).ready(function ($) {
         text: "Approve",
         enabled: false,
         action: function (e, dt, button, config) {
+          clear_notices();
           var id = dt.cell(".selected", 0).data();
           $("#bmaw_submission_approve_dialog").data("id", id).dialog("open");
         },
@@ -28,6 +34,7 @@ jQuery(document).ready(function ($) {
         text: "Reject",
         enabled: false,
         action: function (e, dt, button, config) {
+          clear_notices();
           var id = dt.cell(".selected", 0).data();
           $("#bmaw_submission_reject_dialog").data("id", id).dialog("open");
         },
@@ -37,6 +44,7 @@ jQuery(document).ready(function ($) {
         text: "Delete",
         extend: "selected",
         action: function (e, dt, button, config) {
+          clear_notices();
           var id = dt.cell(".selected", 0).data();
           $("#bmaw_submission_delete_dialog").data("id", id).dialog("open");
         },
