@@ -216,11 +216,11 @@ class bmaw_submissions_rest_handlers
         global $wpdb;
         global $bmaw_submissions_table_name;
 
-        $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+        $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
         $result = $wpdb->get_row($sql, ARRAY_A);
-        // if ($result['change_made'] === 'Approved') {
-        //     return "{'response':'already approved'}";
-        // }
+        if ($result['change_made'] === 'approved') {
+            return $this->bmaw_rest_error("Submission id ({$change_id}) is already approved", 400 );
+        }
 
         $submission_type = $result['submission_type'];
 
@@ -255,7 +255,7 @@ class bmaw_submissions_rest_handlers
         $current_user = wp_get_current_user();
         $username = $current_user->user_login;
 
-        $sql = $wpdb->prepare('UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s" where id="%d" limit 1', 'Approved', $username, current_time('mysql', true), $request['id']);
+        $sql = $wpdb->prepare('UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s" where id="%d" limit 1', 'approved', $username, current_time('mysql', true), $request['id']);
         $result = $wpdb->get_results($sql, ARRAY_A);
 
         return new $this->bmaw_rest_success( 'Approved submission id '.$change_id );
