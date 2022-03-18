@@ -224,10 +224,10 @@ jQuery(document).ready(function ($) {
         console.log(response);
         if (response.message == "")
           msg =
-            '<div class="notice notice-success is-dismissible my_notice"><p><strong>SUCCESS: </strong>This is my success message.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
+            '<div class="notice notice-success is-dismissible my_notice"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
         else
           msg =
-            '<div class="notice notice-error is-dismissible my_notice"><p><strong>ERROR: </strong>' +
+            '<div class="notice notice-error is-dismissible my_notice"><p><strong>SUCCESS: </strong>' +
             response.message +
             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
         $(".wp-header-end").after(msg);
