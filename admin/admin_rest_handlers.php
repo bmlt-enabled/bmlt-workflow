@@ -7,7 +7,6 @@ if (!defined('ABSPATH')) exit; // die if being called directly
 class bmaw_submissions_rest_handlers
 {
 
-
     public function __construct()
     {
         $this->bmlt_integration = new BMLTIntegration;
@@ -16,6 +15,11 @@ class bmaw_submissions_rest_handlers
     private function bmaw_rest_success($message)
     {
 		return new WP_Error( 'bmaw_success', __( $message ), array( 'status' => 200 ) );
+    }
+
+    private function bmaw_rest_error($message, $code)
+    {
+		return new WP_Error( 'bmaw_error', __( $message ), array( 'status' => $code ) );
     }
 
     public function get_submissions_handler()
@@ -48,7 +52,7 @@ class bmaw_submissions_rest_handlers
         // get an xml for a workaround
         $response = $bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
         if (is_wp_error($response)) {
-            return new WP_Error( 'bmlt_error', 'BMLT Communication Error - Check the BMLT configuration settings', array( 'status' => 500 ) );
+            return $this->bmaw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500 );
         }
 
         $xml = simplexml_load_string($response['body']);
@@ -240,21 +244,20 @@ class bmaw_submissions_rest_handlers
                 $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
                 break;
             default:
-
-                return new WP_Error( 'bmaw_error', "This change type ({$submission_type}) cannot be approved", array( 'status' => 400 ) );
+                return $this->bmaw_rest_error("This change type ({$submission_type}) cannot be approved", 400 );
 
         }
 
-        // ERROR HANDLING NEEDED
-        // if( is_wp_error( $response ) ) {
-        // 	wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
-        // }
+        if( is_wp_error( $response ) ) {
+            return $this->bmaw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500 );
+        }
+
         $current_user = wp_get_current_user();
         $username = $current_user->user_login;
 
         $sql = $wpdb->prepare('UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s" where id="%d" limit 1', 'Approved', $username, current_time('mysql', true), $request['id']);
         $result = $wpdb->get_results($sql, ARRAY_A);
 
-        return new WP_REST_Response( 'Approved submission id '.$change_id );
+        return new $this->bmaw_rest_success( 'Approved submission id '.$change_id );
     }
 }
