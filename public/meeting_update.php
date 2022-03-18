@@ -1,7 +1,7 @@
 <?php
 
 if (!class_exists('BMLTIntegration')) {
-	require_once(BMAW_PLUGIN_DIR . 'admin/bmlt_integration.php');
+    require_once(BMAW_PLUGIN_DIR . 'admin/bmlt_integration.php');
 }
 
 $bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status', "failure");
@@ -18,7 +18,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <div class="rendered-form">
         <div>
             <label for="update_reason"">Reason For Update</label>
-            <select name="update_reason" id="update_reason">
+            <select name=" update_reason" id="update_reason">
                 <option disabled="null" selected="null">Select Reason...</option>
                 <option value="reason_new">New Meeting</option>
                 <option value="reason_change">Change Existing Meeting</option>
@@ -89,6 +89,35 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <br>
             <div>
                 <label for="duration_time">Duration<span class="bmaw-required-field"> *</span></label>
+                <select>
+                    <option>0</option>
+                    <option selected="selected">1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                </select> h
+                <select>
+                    <option selected="selected">0</option>
+                    <option>5</option>
+                    <option>10</option>
+                    <option>15</option>
+                    <option>20</option>
+                    <option>25</option>
+                    <option>30</option>
+                    <option>35</option>
+                    <option>40</option>
+                    <option>45</option>
+                    <option>50</option>
+                    <option>55</option>
+                </select> m
                 <input type="text" name="duration_time" size="10" id="duration_time" required>
             </div>
             <br>
@@ -145,20 +174,19 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <table id="format-table">
                     <tbody>
                         <?php
-                        		$bmlt_integration = new BMLTIntegration;
-                                $formatarr = $bmlt_integration->getMeetingFormats();
+                        $bmlt_integration = new BMLTIntegration;
+                        $formatarr = $bmlt_integration->getMeetingFormats();
 
-                                foreach ($formatarr as $key => $value)
-                                {
-                                    error_log("key ".$key);
-                                    error_log(vdump($value));
-                                    $row = '<tr>';
-                                    $row .= '<td><input type="checkbox" id="format-table-' . $key . '" value="' . $key . '"></input></td>';
-                                    $row .= "<td>(" . $value['key_string'] . ")</td>";
-                                    $row .= "<td>" . $value['name_string'] . "</td><td>" . $value['description_string'] . "</td>";
-                                    $row .= '</tr>';
-                                    echo $row;
-                                }
+                        foreach ($formatarr as $key => $value) {
+                            error_log("key " . $key);
+                            error_log(vdump($value));
+                            $row = '<tr>';
+                            $row .= '<td><input type="checkbox" id="format-table-' . $key . '" value="' . $key . '"></input></td>';
+                            $row .= "<td>(" . $value['key_string'] . ")</td>";
+                            $row .= "<td>" . $value['name_string'] . "</td><td>" . $value['description_string'] . "</td>";
+                            $row .= '</tr>';
+                            echo $row;
+                        }
                         ?>
                     </tbody>
                 </table>
