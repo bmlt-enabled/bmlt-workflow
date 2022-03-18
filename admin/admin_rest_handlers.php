@@ -230,7 +230,7 @@ class bmaw_submissions_rest_handlers
         // strip out anything that somehow made it this far, before we send it to bmlt
         $change_subfields = array(
             "meeting_name",
-            "id_bigint",
+            "meeting_id",
             "start_time",
             "duration_time",
             "location_text",
