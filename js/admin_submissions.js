@@ -281,7 +281,10 @@ jQuery(document).ready(function ($) {
             response.message +
             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
         $(".wp-header-end").after(msg);
+        // reload the table to pick up any changes
         $("#dt-submission").DataTable().ajax.reload();
+        // reset the buttons correctly
+        $("#dt-submission").trigger("deselect");
       })
       .fail(function (xhr) {
         $(".wp-header-end").after(
@@ -290,7 +293,6 @@ jQuery(document).ready(function ($) {
             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
         );
       });
-
     $("#" + slug + "_dialog").dialog("close");
   }
 });
