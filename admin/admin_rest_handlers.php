@@ -173,7 +173,9 @@ class bmaw_submissions_rest_handlers
             }
         }
 
-        return new WP_REST_Response( 'Updated Service Areas' );
+        // return new WP_REST_Response( 'Updated Service Areas' );
+
+		return new WP_Error( 'rest_cookie_invalid_nonce', __( 'Cookie check failed' ), array( 'status' => 403 ) );
     }
 
     public function delete_submission_handler($request)
