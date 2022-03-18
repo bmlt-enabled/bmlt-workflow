@@ -1,3 +1,9 @@
+function dismiss_notice(element)
+{
+    jQuery(element).parent().slideUp("normal", function() {jQuery(this).remove();});
+    return false;
+}
+
 jQuery(document).ready(function ($) {
   // console.log(bmaw_admin_submissions_rest_url);
 
@@ -204,12 +210,6 @@ jQuery(document).ready(function ($) {
   bmaw_submission_delete_dialog_ok = function (id) {
     generic_approve_handler(id, "DELETE", "", "bmaw_submission_delete");
   };
-
-  function dismiss_notice(element)
-  {
-      $(element).parent().slideUp("normal", function() {$(this).remove();});
-      return false;
-  }
   
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
