@@ -140,6 +140,7 @@ jQuery(document).ready(function ($) {
       { data: "changed_by" },
       {
         data: "change_made",
+        defaultContent: "",
         render: function (data, type, row) {
           console.log(data);
           // if(data === null) { return "" }
