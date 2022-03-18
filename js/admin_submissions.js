@@ -143,6 +143,7 @@ jQuery(document).ready(function ($) {
         defaultContent: "",
         render: function (data, type, row) {
           // console.log(data);
+          if(data === null) { return "" }
           switch (data["change_made"]) {
             case "approved":
               return "Approved";
