@@ -12,7 +12,7 @@
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 // vendor autoloader
-// require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 
 define('BMAW_PLUGIN_DIR', plugin_dir_path(__FILE__));
 global $bmaw_db_version;
