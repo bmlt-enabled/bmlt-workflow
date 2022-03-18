@@ -81,6 +81,7 @@ jQuery(document).ready(function ($) {
         render: function (data, type, row) {
           var summary = "";
           var submission_type = "";
+          var namestr = "";
           switch (data["submission_type"]) {
             case "reason_new":
               submission_type = "New Meeting";
@@ -90,6 +91,8 @@ jQuery(document).ready(function ($) {
               break;
             case "reason_change":
               submission_type = "Modify Meeting";
+              meeting_name = data["meeting_name"];
+              namestr = "<br>Meeting: " + meeting_name;
               break;
             case "reason_other":
               submission_type = "Other Request";
@@ -97,16 +100,16 @@ jQuery(document).ready(function ($) {
             default:
               submission_type = data["submission_type"];
           }
-          summary = "<b>Change Type: " + submission_type + "</b><br><br>";
+          summary = "Submission Type: " + submission_type + namestr + "<br><br>";
           for (var key in data) {
             friendlyname = key;
             friendlydata = data[key];
 
             switch (key) {
+              // skip these ones - we already used them above 
               case "meeting_id":
-                friendlyname = "";
-                break;
               case "submission_type":
+              case "original_meeting_name":
                 friendlyname = "";
                 break;
               case "meeting_name":
@@ -158,7 +161,7 @@ jQuery(document).ready(function ($) {
                 break;
             }
             if (friendlyname != "" && friendlydata != "") {
-              summary += friendlyname + ' <span class="dashicons dashicons-arrow-right-alt"></span> <b>' + friendlydata + "</b><br>";
+              summary += friendlyname + ' <span class="dashicons dashicons-arrow-right-alt"></span> ' + friendlydata + "<br>";
             }
           }
           return summary;
