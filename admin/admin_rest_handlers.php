@@ -227,6 +227,32 @@ class bmaw_submissions_rest_handlers
 
         $change = json_decode($result['changes_requested'], 1);
 
+        // strip out anything that somehow made it this far, before we send it to bmlt
+        $change_subfields = array(
+            "meeting_name",
+            "id_bigint",
+            "start_time",
+            "duration_time",
+            "location_text",
+            "location_street",
+            "location_info",
+            "location_municipality",
+            "location_province",
+            "location_postal_code_1",
+            "weekday_tinyint",
+            "service_body_bigint",
+            "virtual_meeting_link",
+            "format_shared_id_list"
+        );
+
+        foreach ($change as $key => $value)
+        {
+            if (!in_array($key,$change_subfields))
+            {
+                unset($change[$key]);
+            }
+        }
+
         error_log("json decoded");
         error_log(vdump($change));
         error_log("change type = " . $submission_type);
