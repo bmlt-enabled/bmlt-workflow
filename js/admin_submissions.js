@@ -221,6 +221,7 @@ jQuery(document).ready(function ($) {
     })
       .done(function (response) {
         var msg = "";
+        console.log(response);
         if (response.message == "")
           msg =
             '<div class="notice notice-success is-dismissible my_notice"><p><strong>SUCCESS: </strong>This is my success message.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
