@@ -1,6 +1,13 @@
 <?php
 
+
+use Phpro\ApiProblem\Exception;
+
 if (!defined('ABSPATH')) exit; // die if being called directly
+
+throw new ApiProblemException(
+    new HttpApiProblem(418, ['detail' => 'Did you know 4,000 people are injured by teapots every year?!'])
+);
 
 class bmaw_submissions_rest_handlers
 {
@@ -113,6 +120,7 @@ class bmaw_submissions_rest_handlers
 
     public function get_service_areas_handler()
     {
+
         global $wpdb;
         global $bmaw_service_areas_table_name;
         global $bmaw_service_areas_access_table_name;

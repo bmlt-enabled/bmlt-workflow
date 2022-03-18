@@ -1,0 +1,5 @@
+{
+    "require": {
+        "phpro/api-problem": "^1.5"
+    }
+}
