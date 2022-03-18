@@ -17,7 +17,7 @@ jQuery(document).ready(function ($) {
       {
         name: "approve",
         text: "Approve",
-        enabled: "false",
+        enabled: false,
         action: function (e, dt, button, config) {
           var id = dt.cell(".selected", 0).data();
           $("#bmaw_submission_approve_dialog").data("id", id).dialog("open");
@@ -26,7 +26,7 @@ jQuery(document).ready(function ($) {
       {
         name: "reject",
         text: "Reject",
-        enabled: "false",
+        enabled: false,
         action: function (e, dt, button, config) {
           var id = dt.cell(".selected", 0).data();
           $("#bmaw_submission_reject_dialog").data("id", id).dialog("open");
