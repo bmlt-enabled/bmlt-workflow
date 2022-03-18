@@ -91,7 +91,7 @@ jQuery(document).ready(function ($) {
               break;
             case "reason_change":
               submission_type = "Modify Meeting";
-              meeting_name = data["meeting_name"];
+              meeting_name = data["original_meeting_name"];
               namestr = "<br>Meeting: " + meeting_name;
               break;
             case "reason_other":
