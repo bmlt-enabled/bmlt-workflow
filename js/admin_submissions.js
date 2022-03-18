@@ -140,8 +140,8 @@ jQuery(document).ready(function ($) {
       { data: "changed_by" },
       {
         data: "change_made",
-        render: function (data, type, row) {
-          console.log(data);
+        // render: function (data, type, row) {
+        //   console.log(data);
           // if(data === null) { return "" }
           // switch (data["change_made"]) {
           //   case "approved":
@@ -150,7 +150,7 @@ jQuery(document).ready(function ($) {
           //     return "Rejected";
           // }
           // return data["change_made"];
-        },
+        // },
       },
     ],
   });
