@@ -2,7 +2,7 @@
 
 var mdata = [];
 var mtext = [];
-var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+var weekdays = ["none","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 jQuery(document).ready(function ($) {
 
@@ -23,7 +23,7 @@ jQuery(document).ready(function ($) {
         mdata = data;
 
         for (let i = 0, length = mdata.length; i < length; i++) {
-          let str = mdata[i].meeting_name + " [ " + weekdays[mdata[i].weekday_tinyint - 1] + ", " + mdata[i].start_time + " ]";
+          let str = mdata[i].meeting_name + " [ " + weekdays[mdata[i].weekday_tinyint] + ", " + mdata[i].start_time + " ]";
           var city = "";
           if (mdata[i].location_municipality != "") {
             city = mdata[i].location_municipality + ", ";
@@ -87,7 +87,7 @@ jQuery(document).ready(function ($) {
           // set the weekday format
           var str = "";
           for (var i = 0; i < 7; i++) {
-            if (i == mdata[id].weekday_tinyint - 1) {
+            if (i == mdata[id].weekday_tinyint) {
               if (get_field_checked_index("weekday", i) != true) {
                 put_field_checked_index("weekday", i, true);
               }
