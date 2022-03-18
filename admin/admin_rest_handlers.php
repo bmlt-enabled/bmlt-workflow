@@ -178,7 +178,7 @@ class bmaw_submissions_rest_handlers
             }
         }
 
-        return bmaw_rest_success( 'Updated Service Areas' );
+        return $this->bmaw_rest_success( 'Updated Service Areas' );
     }
 
     public function delete_submission_handler($request)
@@ -189,7 +189,7 @@ class bmaw_submissions_rest_handlers
         $sql = $wpdb->prepare('DELETE FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
         $wpdb->query($sql, ARRAY_A);
 
-        return bmaw_rest_success( 'Deleted submission id '.$request['id'] );
+        return $this->bmaw_rest_success( 'Deleted submission id '.$request['id'] );
 
     }
 
