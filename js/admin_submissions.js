@@ -141,6 +141,7 @@ jQuery(document).ready(function ($) {
       {
         data: "change_made",
         render: function (data, type, row) {
+          if(data === null) { return "" }
           switch (data["change_made"]) {
             case "approved":
               return "Approved";
