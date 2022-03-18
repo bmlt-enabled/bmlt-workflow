@@ -1,5 +1,0 @@
-suites:
-  apiproblem_suite:
-    namespace: Phpro\ApiProblem
-    psr4_prefix: Phpro\ApiProblem
-  formatter.name: pretty

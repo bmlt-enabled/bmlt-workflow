@@ -1,5 +1,5 @@
 {
     "require": {
-        "phpro/api-problem": "^1.5"
+        "crell/api-problem": "^3.6"
     }
 }

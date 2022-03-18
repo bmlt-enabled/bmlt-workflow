@@ -1,9 +1,0 @@
-grumphp:
-    tasks:
-      phpcsfixer2:
-        config: ".php-cs-fixer.dist.php"
-        config_contains_finder: true
-      phpspec:
-        format: dot
-      composer:
-        no_check_lock: true
