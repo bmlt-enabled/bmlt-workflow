@@ -171,7 +171,9 @@ jQuery(document).ready(function ($) {
     update_meeting_list(bmaw_service_areas);
   });
 
-  $("#meeting_update_form").validate();
+  $("#meeting_update_form").validate({
+    submitHandler: real_submit_handler()
+  });
 
   $("#starter_kit_required").on("change", function () {
     if (this.value == "yes") {
@@ -370,14 +372,12 @@ jQuery(document).ready(function ($) {
   });
 
   // form submit handler
-  $("#meeting_update_form").submit(function (event) {
-    event.preventDefault();
+  // $("#meeting_update_form").submit(function (event) {
+    function real_submit_handler(){
+    // event.preventDefault();
+    
     // meeting formats
     var str = "";
-    // $("#format-table tr").each(function(){
-    //   var i = $(this).find("input").val('id');
-    //   console.log(i);
-    // });
     $("#format-table tr").each(function () {
       if ($(this).find("td input").prop("checked")) {
         let inpid = $(this).find("td input").attr("id").replace("format-table-", "");
@@ -385,11 +385,6 @@ jQuery(document).ready(function ($) {
       }
     });
 
-    //  i++) {
-    //   if (get_field_checked_index("format-table", i)) {
-    //     str = str + get_field_value_index("format-table", i) + ",";
-    //   }
-    // }
     if (str != "") {
       str = str.slice(0, -1);
       put_field("format_shared_id_list", str);
