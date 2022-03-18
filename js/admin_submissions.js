@@ -205,6 +205,12 @@ jQuery(document).ready(function ($) {
     generic_approve_handler(id, "DELETE", "", "bmaw_submission_delete");
   };
 
+  function dismiss_notice(element)
+  {
+      $(element).parent().slideUp("normal", function() {$(this).remove();});
+      return false;
+  }
+  
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
     if ($.trim($("#" + slug + "_dialog_textarea").val())) {
@@ -221,23 +227,23 @@ jQuery(document).ready(function ($) {
     })
       .done(function (response) {
         var msg = "";
-        console.log(response);
+        // console.log(response);
         if (response.message == "")
           msg =
-            '<div class="notice notice-success is-dismissible my_notice"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
+            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"></button></div>';
         else
           msg =
-            '<div class="notice notice-error is-dismissible my_notice"><p><strong>SUCCESS: </strong>' +
+            '<div class="notice notice-error is-dismissible"><p><strong>SUCCESS: </strong>' +
             response.message +
-            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>';
+            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
         $(".wp-header-end").after(msg);
         $("#dt-submission").DataTable().ajax.reload();
       })
       .fail(function (xhr) {
         $(".wp-header-end").after(
-          '<div class="notice notice-error is-dismissible my_notice"><p><strong>ERROR: </strong>' +
+          '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
             xhr.responseJSON.message +
-            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>'
+            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
         );
       });
 
