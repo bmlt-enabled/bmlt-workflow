@@ -1,6 +1,5 @@
 <?php
 
-
 use Phpro\ApiProblem\Exception;
 
 if (!defined('ABSPATH')) exit; // die if being called directly
