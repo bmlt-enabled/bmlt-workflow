@@ -172,7 +172,7 @@ jQuery(document).ready(function ($) {
   });
 
   $("#meeting_update_form").submit($(this).validate({
-    submitHandler: real_submit_handler()
+    submitHandler: function(){real_submit_handler()}
   }));
 
   $("#starter_kit_required").on("change", function () {
