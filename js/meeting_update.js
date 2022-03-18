@@ -171,9 +171,9 @@ jQuery(document).ready(function ($) {
     update_meeting_list(bmaw_service_areas);
   });
 
-  $("#meeting_update_form").validate({
+  $("#meeting_update_form").submit(validate({
     submitHandler: real_submit_handler()
-  });
+  }));
 
   $("#starter_kit_required").on("change", function () {
     if (this.value == "yes") {
@@ -371,8 +371,9 @@ jQuery(document).ready(function ($) {
     }
   });
 
+    // $("#meeting_update_form").submit(function (event) {
+
   // form submit handler
-  // $("#meeting_update_form").submit(function (event) {
     function real_submit_handler(){
     // event.preventDefault();
 
