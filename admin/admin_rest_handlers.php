@@ -13,6 +13,11 @@ class bmaw_submissions_rest_handlers
         $this->bmlt_integration = new BMLTIntegration;
     }
 
+    private function bmaw_rest_success($message)
+    {
+		return new WP_Error( 'bmaw_success', __( $message ), array( 'status' => 200 ) );
+    }
+
     public function get_submissions_handler()
     {
 
@@ -173,9 +178,7 @@ class bmaw_submissions_rest_handlers
             }
         }
 
-        // return new WP_REST_Response( 'Updated Service Areas' );
-
-		return new WP_Error( 'rest_cookie_invalid_nonce', __( 'Cookie check failed' ), array( 'status' => 403 ) );
+        return bmaw_rest_success( 'Updated Service Areas' );
     }
 
     public function delete_submission_handler($request)
@@ -186,7 +189,7 @@ class bmaw_submissions_rest_handlers
         $sql = $wpdb->prepare('DELETE FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
         $wpdb->query($sql, ARRAY_A);
 
-        return new WP_REST_Response( 'Deleted submission id '.$request['id'] );
+        return bmaw_rest_success( 'Deleted submission id '.$request['id'] );
 
     }
 
