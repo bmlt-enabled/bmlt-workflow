@@ -195,7 +195,7 @@ jQuery(document).ready(function ($) {
       var not_actioned = ((change_made !== 'Approved')||(change_made !== 'Rejected'))
       $("#dt-submission")
         .DataTable().button('approve:name')
-        .enable((not_actioned);
+        .enable(not_actioned);
       $("#dt-submission")
         .DataTable().button('reject:name')
         .enable(not_actioned);
