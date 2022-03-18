@@ -191,7 +191,7 @@ jQuery(document).ready(function ($) {
   $("#dt-submission")
     .DataTable()
     .on("select deselect", function () {
-      var change_made = $("#dt-submission").DataTable().row({ selected: true }).column("change_made:name").value();
+      var change_made = $("#dt-submission").DataTable().row({ selected: true }).data()["change_made"];
       var not_actioned = ((change_made !== 'Approved')||(change_made !== 'Rejected'))
       $("#dt-submission")
         .DataTable().button('approve:name')
