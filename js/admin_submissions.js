@@ -236,7 +236,7 @@ jQuery(document).ready(function ($) {
       .fail(function (xhr) {
         $(".wp-header-end").after(
           '<div class="notice notice-error is-dismissible my_notice"><p><strong>ERROR: </strong>' +
-            xhr.responseJson.message +
+            xhr.responseJSON.message +
             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"><span class="screen-reader-text">Dismiss this notice.</span></button></div>'
         );
       });
