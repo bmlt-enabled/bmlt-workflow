@@ -171,9 +171,9 @@ jQuery(document).ready(function ($) {
     update_meeting_list(bmaw_service_areas);
   });
 
-  $("#meeting_update_form").submit($(this).validate({
+  $("#meeting_update_form").validate({
     submitHandler: function(){real_submit_handler()}
-  }));
+  });
 
   $("#starter_kit_required").on("change", function () {
     if (this.value == "yes") {
