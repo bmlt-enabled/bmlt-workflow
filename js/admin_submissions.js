@@ -191,7 +191,7 @@ jQuery(document).ready(function ($) {
   $("#dt-submission")
     .DataTable()
     .on("select deselect", function () {
-      var not_actioned = false;
+      var actioned = false;
       if ($("#dt-submission").DataTable().row({ selected: true }).count())
       {
         var change_made = $("#dt-submission").DataTable().row({ selected: true }).data()["change_made"];
