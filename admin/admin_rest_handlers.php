@@ -267,8 +267,16 @@ class bmaw_submissions_rest_handlers
                 $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
                 break;
             case 'reason_change':
-                $change['admin_action'] = 'modify_meeting';
-                $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
+                // needs an id_bigint not a meeting_id
+                $change['id_bigint'] = $change['meeting_id'];
+                unset($change['meeting_id']);
+                $changearr = array();
+                $changearr['bmlt_ajax_callback'] = 1;
+                $changearr['set_meeting_change'] = json_encode($change);
+                $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
+
+                // $change['admin_action'] = 'modify_meeting';
+                // $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
                 break;
             default:
                 return $this->bmaw_rest_error("This change type ({$submission_type}) cannot be approved", 400 );
