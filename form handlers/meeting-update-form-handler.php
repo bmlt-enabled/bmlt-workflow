@@ -9,10 +9,20 @@ function vdump($object)
     return $contents;
 }
 
+function bmaw_rest_success($message)
+{
+    return new WP_Error( 'bmaw_success', __( $message ), array( 'status' => 200 ) );
+}
+
+function bmaw_rest_error($message, $code)
+{
+    return new WP_Error( 'bmaw_error', __( $message ), array( 'status' => $code ) );
+}
+
 function meeting_update_form_handler_rest($data)
 {
-    error_log("in rest handler");
-    error_log(vdump($data));
+    // error_log("in rest handler");
+    // error_log(vdump($data));
 
     $reason_new_bool = false;
     $reason_other_bool = false;
@@ -26,14 +36,8 @@ function meeting_update_form_handler_rest($data)
         $reason_close_bool = ($data['update_reason'] === 'reason_close');
     }
 
-    // error_log("reason_new_bool " . vdump($reason_new_bool));
-    // error_log("reason_other_bool " . vdump($reason_other_bool));
-    // error_log("reason_change_bool " . vdump($reason_change_bool));
-    // error_log("reason_close_bool " . vdump($reason_close_bool));
-    // error_log("new|change|close " . vdump($reason_new_bool | $reason_change_bool | $reason_close_bool));
-
     if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_other_bool && !$reason_change_bool && !$reason_close_bool))) {
-        wp_die("No valid meeting update reason provided");
+        return bmaw_rest_error('No valid meeting update reason provided', 400 );
     }
 
     // sanitize the input
@@ -71,8 +75,9 @@ function meeting_update_form_handler_rest($data)
 
         // if the form field is required, check if the submission is empty or non existent
         if ($validation[1] && (!isset($data[$field]) || (empty($data[$field])))) {
-            wp_die("Missing required form field " . $field);
+            return bmaw_rest_error('Form field "'.$field.'" is required.', 400 );
         }
+
         switch ($field_type) {
             case ('text'):
                 $data[$field] = sanitize_text_field($data[$field]);
@@ -83,7 +88,7 @@ function meeting_update_form_handler_rest($data)
                 break;
             case ('weekday'):
                 if (!(($data[$field] >= 1) && ($data[$field] <= 7))) {
-                    wp_die("Invalid form field input");
+                    return bmaw_rest_error('Form field "'.$field.'" is invalid.', 400 );
                 }
                 break;
             case ('url'):
@@ -92,7 +97,7 @@ function meeting_update_form_handler_rest($data)
             case ('email'):
                 $data[$field] = sanitize_email($data[$field]);
                 if (empty($data[$field])) {
-                    wp_die("Invalid form field input");
+                    return bmaw_rest_error('Form field "'.$field.'" is invalid.', 400 );
                 }
                 break;
             case ('textarea'):
@@ -148,7 +153,7 @@ function meeting_update_form_handler_rest($data)
 
             if (isset($data['meeting_id'])) {
                 if (!is_numeric($data['meeting_id'])) {
-                    wp_die("Invalid meeting id");
+                    return bmaw_rest_error('Invalid meeting id.', 400 );
                 }
                 $meeting_id = $data['meeting_id'];
             }
@@ -171,7 +176,7 @@ function meeting_update_form_handler_rest($data)
 
             $resp = curl_exec($curl);
             if (!$resp) {
-                wp_die("curl failed");
+                return bmaw_rest_error('Server error retrieving meeting list', 500 );
             }
             curl_close($curl);
             $meeting = json_decode($resp, true)[0];
@@ -196,7 +201,7 @@ function meeting_update_form_handler_rest($data)
             wp_die('Not implemented');
             break;
         default:
-            wp_die('Invalid meeting change');
+            return bmaw_rest_error('Invalid meeting change', 400 );
     }
 
     $cc_address = "";
@@ -297,6 +302,5 @@ function meeting_update_form_handler_rest($data)
     );
     $insert_id = $wpdb->insert_id;
     error_log("id = " . $insert_id);
-    exit("<h3>Form submission successful</h3>");
-    // wp_redirect( 'https://www.google.com' );
+    bmaw_rest_success('Form submission successful, submission id '.$insert_id);
 }
