@@ -284,7 +284,7 @@ jQuery(document).ready(function ($) {
         // reload the table to pick up any changes
         $("#dt-submission").DataTable().ajax.reload();
         // reset the buttons correctly
-        $("#dt-submission").trigger("deselect");
+        $("#dt-submission").DataTable().rows().deselect();
       })
       .fail(function (xhr) {
         $(".wp-header-end").after(
