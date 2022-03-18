@@ -195,14 +195,14 @@ jQuery(document).ready(function ($) {
       if ($("#dt-submission").DataTable().row({ selected: true }).count())
       {
         var change_made = $("#dt-submission").DataTable().row({ selected: true }).data()["change_made"];
-        var not_actioned = ((change_made !== 'approved')||(change_made !== 'rejected'))
+        var actioned = ((change_made === 'approved')||(change_made === 'rejected'))
       }
       $("#dt-submission")
         .DataTable().button('approve:name')
-        .enable(not_actioned);
+        .enable(!actioned);
       $("#dt-submission")
         .DataTable().button('reject:name')
-        .enable(not_actioned);
+        .enable(!actioned);
     });
 
   function bmaw_create_generic_modal(dialogid, title) {
