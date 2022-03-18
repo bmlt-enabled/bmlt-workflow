@@ -26,9 +26,9 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <option value="reason_other">Other</option>
                 </select>
         </div>
-        <div id="other_reason">
+        <div id="other_reason_div">
             <label for="other_reason">Other Reason</label>
-            <textarea name="other_reason" id="other_reason" rows="5" cols="50" required></textarea>
+            <textarea name="other_reason" id="other_reason" rows="5" cols="50"></textarea>
         </div>
         <div id="meeting_selector">
             <br>
@@ -238,7 +238,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <br>
                 <div>
                     <label for="starter_kit_postal_address">Starter Kit Postal Address<span class="bmaw-required-field"> *</span></label>
-                    <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" rows="5" cols="50" required></textarea>
+                    <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" rows="5" cols="50"></textarea>
                 </div>
             </div>
             <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>

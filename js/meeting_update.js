@@ -178,8 +178,11 @@ jQuery(document).ready(function ($) {
   $("#starter_kit_required").on("change", function () {
     if (this.value == "yes") {
       $("#starter_kit_postal_address").show();
+      $("#starter_kit_postal_address").prop("required",true);
+
     } else {
       $("#starter_kit_postal_address").hide();
+      $("#starter_kit_postal_address").prop("required",false);
     }
   });
 
@@ -324,7 +327,8 @@ jQuery(document).ready(function ($) {
   // meeting logic before selection is made
   $("#meeting_selector").hide();
   $("#meeting_content").hide();
-  $("#other_reason").hide();
+  $("#other_reason_div").hide();
+  $("#other_reason").prop("required",false);
 
   $("#update_reason").change(function () {
     // hide all the optional items
@@ -333,10 +337,12 @@ jQuery(document).ready(function ($) {
     $("#reason_close_text").hide();
     $("#reason_other_text").hide();
     $("#starter_pack").hide();
+
     $("#meeting_selector").hide();
     // enable the meeting form
     $("#meeting_content").hide();
-    $("#other_reason").hide();
+    $("#other_reason_div").hide();
+    $("#other_reason").prop("required",false);
 
     enable_edits();
     // enable items as required
@@ -366,7 +372,8 @@ jQuery(document).ready(function ($) {
         // display form instructions
         $("#reason_other_text").show();
         // other reason has a textarea
-        $("#other_reason").show();
+        $("#other_reason_div").show();
+        $("#other_reason").prop("required",true);
         break;
     }
   });
