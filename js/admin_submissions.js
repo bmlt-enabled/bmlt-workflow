@@ -142,15 +142,14 @@ jQuery(document).ready(function ($) {
         data: "change_made",
         defaultContent: "",
         render: function (data, type, row) {
-          console.log(data);
-          // if(data === null) { return "" }
-          // switch (data["change_made"]) {
-          //   case "approved":
-          //     return "Approved";
-          //   case "rejected":
-          //     return "Rejected";
-          // }
-          // return data["change_made"];
+          // console.log(data);
+          switch (data["change_made"]) {
+            case "approved":
+              return "Approved";
+            case "rejected":
+              return "Rejected";
+          }
+          return data["change_made"];
         },
       },
     ],
