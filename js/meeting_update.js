@@ -375,7 +375,7 @@ jQuery(document).ready(function ($) {
   // $("#meeting_update_form").submit(function (event) {
     function real_submit_handler(){
     // event.preventDefault();
-    
+
     // meeting formats
     var str = "";
     $("#format-table tr").each(function () {
@@ -393,5 +393,5 @@ jQuery(document).ready(function ($) {
     $.post("/flop/wp-json/bmaw-submission/v1/submissions", $("#meeting_update_form").serialize(), function (response) {
       console.log("submitted");
     });
-  });
+  };
 });
