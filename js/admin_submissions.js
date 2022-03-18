@@ -140,19 +140,16 @@ jQuery(document).ready(function ($) {
       { data: "changed_by" },
       {
         data: "change_made",
-        defaultContent: "null",
+        defaultContent: "",
         render: function (data, type, row) {
+          if(data === null) { return "" }          
+          switch (data) {
+            case "approved":
+              return "Approved";
+            case "rejected":
+              return "Rejected";
+          }
           return data;
-          // console.log(data);
-          // if(data === null) { return "" }
-          
-          // switch (data["change_made"]) {
-          //   case "approved":
-          //     return "Approved";
-          //   case "rejected":
-          //     return "Rejected";
-          // }
-          // return data["change_made"];
         },
       },
     ],
