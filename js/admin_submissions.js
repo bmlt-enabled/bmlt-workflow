@@ -1,7 +1,10 @@
-function dismiss_notice(element)
-{
-    jQuery(element).parent().slideUp("normal", function() {jQuery(this).remove();});
-    return false;
+function dismiss_notice(element) {
+  jQuery(element)
+    .parent()
+    .slideUp("normal", function () {
+      jQuery(this).remove();
+    });
+  return false;
 }
 
 jQuery(document).ready(function ($) {
@@ -12,22 +15,25 @@ jQuery(document).ready(function ($) {
     select: true,
     buttons: [
       {
+        name: "approve",
         text: "Approve",
-        extend: "selected",
+        enabled: "false",
         action: function (e, dt, button, config) {
           var id = dt.cell(".selected", 0).data();
           $("#bmaw_submission_approve_dialog").data("id", id).dialog("open");
         },
       },
       {
+        name: "reject",
         text: "Reject",
-        extend: "selected",
+        enabled: "false",
         action: function (e, dt, button, config) {
           var id = dt.cell(".selected", 0).data();
           $("#bmaw_submission_reject_dialog").data("id", id).dialog("open");
         },
       },
       {
+        name: "delete",
         text: "Delete",
         extend: "selected",
         action: function (e, dt, button, config) {
@@ -49,11 +55,20 @@ jQuery(document).ready(function ($) {
       },
     },
     columns: [
-      { data: "id" },
-      { data: "submitter_name" },
-      { data: "submitter_email" },
-      // { "data": "submission_type" },
       {
+        name: "id",
+        data: "id",
+      },
+      {
+        name: "submitter_name",
+        data: "submitter_name",
+      },
+      {
+        name: "submitter_email",
+        data: "submitter_email",
+      },
+      {
+        name: "changes_requested",
         data: "changes_requested",
         render: function (data, type, row) {
           var summary = "";
@@ -141,14 +156,26 @@ jQuery(document).ready(function ($) {
           return summary;
         },
       },
-      { data: "submission_time" },
-      { data: "change_time" },
-      { data: "changed_by" },
       {
+        name: "submission_time",
+        data: "submission_time",
+      },
+      {
+        name: "change_time",
+        data: "change_time",
+      },
+      {
+        name: "changed_by",
+        data: "changed_by",
+      },
+      {
+        name: "change_made",
         data: "change_made",
         defaultContent: "",
         render: function (data, type, row) {
-          if(data === null) { return "" }          
+          if (data === null) {
+            return "";
+          }
           switch (data) {
             case "approved":
               return "Approved";
@@ -160,6 +187,19 @@ jQuery(document).ready(function ($) {
       },
     ],
   });
+
+  $("#dt-submission")
+    .DataTable()
+    .on("select deselect", function () {
+      var change_made = $("#dt-submission").DataTable().row({ selected: true }).column("change_made:name").value();
+      var not_actioned = ((change_made !== 'Approved')||(change_made !== 'Rejected'))
+      $("#dt-submission")
+        .DataTable().button('approve:name')
+        .enable((not_actioned);
+      $("#dt-submission")
+        .DataTable().button('reject:name')
+        .enable(not_actioned);
+    });
 
   function bmaw_create_generic_modal(dialogid, title) {
     $("#" + dialogid).dialog({
@@ -210,7 +250,7 @@ jQuery(document).ready(function ($) {
   bmaw_submission_delete_dialog_ok = function (id) {
     generic_approve_handler(id, "DELETE", "", "bmaw_submission_delete");
   };
-  
+
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
     if ($.trim($("#" + slug + "_dialog_textarea").val())) {
@@ -233,7 +273,7 @@ jQuery(document).ready(function ($) {
             '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"></button></div>';
         else
           msg =
-            '<div class="notice notice-error is-dismissible"><p><strong>SUCCESS: </strong>' +
+            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
             response.message +
             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
         $(".wp-header-end").after(msg);
