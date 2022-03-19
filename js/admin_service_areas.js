@@ -17,7 +17,7 @@ jQuery(document).ready(function ($) {
 
   function turn_off_spinner()
   {
-    setTimeout(function(){ $("#spinner-overlay").fadeOut(300); },500);
+    $(".spinner").removeClass("is-active");　
   }
 
   function create_service_area_permission_post() {
@@ -62,7 +62,7 @@ jQuery(document).ready(function ($) {
 
   // enable spinner
   $(document).ajaxSend(function() {
-    $("#spinner-overlay").fadeIn(300);　
+    $(".spinner").addClass("is-active");　
   });
 
   // get the permissions, and the userlist from wordpress, and create our select lists
