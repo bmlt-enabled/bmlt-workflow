@@ -37,3 +37,37 @@
 	letter-spacing: 1px;
 	cursor: pointer;
 }
+
+.bmaw_quickedit_dialog_form input,
+.bmaw_quickedit_dialog_form textarea,
+.bmaw_quickedit_dialog_form select {
+	font-family: 'Lato', Calibri, Arial, sans-serif;
+	line-height: 1.5;
+	font-size: 1.4em;
+	padding: 5px 10px;
+	color: #fff;
+	display: block;
+	width: 100%;
+	background: transparent;
+}
+
+.bmaw_quickedit_dialog_form input,
+.bmaw_quickedit_dialog_form textarea {
+	border: 3px solid #fff;
+}
+
+.bmaw_quickedit_dialog_form textarea {
+	min-height: 200px;
+}
+
+.bmaw_quickedit_dialog_form input:focus,
+.bmaw_quickedit_dialog_form textarea:focus,
+.bmaw_quickedit_dialog_form label:active + input,
+.bmaw_quickedit_dialog_form label:active + textarea {
+	outline: none;
+	border: 3px solid #10689a;
+}
+
+.bmaw_quickedit_dialog_form select:focus {
+	outline: none;
+}
