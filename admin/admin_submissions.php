@@ -28,35 +28,35 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
 <!-- Quickedit dialog -->
 <div id="bmaw_submission_quickedit_dialog" class="quickedit hidden">
-    <form class="bmaw_quickedit_form">
-    <div class="bmaw_quickedit_dialog_column">
-                <label for="start_time">Start Time</label>
-                <input type="text" name="start_time" id="start_time" required>
-                <label for="start_time">Start Time</label>
-                <input type="text" name="start_time" id="start_time1" required>
-                <label for="start_time">Start Time</label>
-                <input type="text" name="start_time" id="start_time2" required>
-                <label for="start_time">Start Time</label>
-                <input type="text" name="start_time" id="start_time3" required>
-                <label for="start_time">Start Time</label>
-                <input type="text" name="start_time" id="start_time4" required>
-                <label for="start_time">Start Time</label>
-                <input type="text" name="start_time" id="start_time5" required>
-    </div>
-    <div class="bmaw_quickedit_dialog_column">
-                <label for="start_time">Start Time</label>
-                <input type="text" name="start_time" id="start_time" required>
-                <label for="start_time">Start Time</label>
-                <input type="text" name="start_time" id="start_time1" required>
-                <label for="start_time">Start Time</label>
-                <input type="text" name="start_time" id="start_time2" required>
-                <label for="start_time">Start Time</label>
-                <input type="text" name="start_time" id="start_time3" required>
-                <label for="start_time">Start Time</label>
-                <input type="text" name="start_time" id="start_time4" required>
-                <label for="start_time">Start Time</label>
-                <input type="text" name="start_time" id="start_time5" required>
-    </div>
+    <form class="bmaw_quickedit_dialog_form">
+        <div class="bmaw_quickedit_dialog_column">
+            <label for="col1a">col1a</label>
+            <input type="text" name="col1a" id="col1a" required>
+            <label for="col1b">col1b</label>
+            <input type="text" name="col1b" id="col1b" required>
+            <label for="col1c">col1c</label>
+            <input type="text" name="col1c" id="col1c" required>
+            <label for="col1d">col1d</label>
+            <input type="text" name="col1d" id="col1d" required>
+            <label for="col1e">col1e</label>
+            <input type="text" name="col1e" id="col1e" required>
+            <label for="col1f">col1f</label>
+            <input type="text" name="col1f" id="col1f" required>
+        </div>
+        <div class="bmaw_quickedit_dialog_column">
+            <label for="col2a">col2a</label>
+            <input type="text" name="col2a" id="col2a" required>
+            <label for="col2b">col2b</label>
+            <input type="text" name="col2b" id="col2b" required>
+            <label for="col2c">col2c</label>
+            <input type="text" name="col2c" id="col2c" required>
+            <label for="col2d">col2d</label>
+            <input type="text" name="col2d" id="col2d" required>
+            <label for="col2e">col2e</label>
+            <input type="text" name="col2e" id="col2e" required>
+            <label for="col2f">col2f</label>
+            <input type="text" name="col2f" id="col2f" required>
+        </div>
     </form>
 </div>
 
