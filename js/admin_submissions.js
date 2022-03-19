@@ -232,7 +232,7 @@ jQuery(document).ready(function ($) {
   function bmaw_create_generic_modal(dialogid, title) {
     $("#" + dialogid).dialog({
       title: title,
-      classes: { 'ui-dialog':'quickedit'},
+      classes: { 'ui-dialog-content':'quickedit'},
       autoOpen: false,
       draggable: false,
       width: "auto",
