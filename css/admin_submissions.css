@@ -20,3 +20,7 @@
 .bmaw_quickedit_dialog_column {
     display: inline-block;
 }
+
+.bmaw_quickedit_dialog_column input {
+    width: 100%;
+  }
