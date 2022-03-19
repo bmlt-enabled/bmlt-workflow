@@ -26,21 +26,47 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <p>Are you sure you would like to reject this submission?</p>
 </div>
 
+<!-- "update_reason" => array("text", true),
+        "first_name" => array("text", true),
+        "last_name" => array("text", true),
+        "meeting_name" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "start_time" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "duration_time" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "location_text" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "location_street" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "location_info" => array("text", false),
+        "location_municipality" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "location_province" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "location_postal_code_1" => array("number", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "weekday_tinyint" => array("weekday", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "service_body_bigint" => array("bigint", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "virtual_meeting_link" => array("url", false),
+        "email_address" => array("email", true),
+        "contact_number_confidential" => array("text", false),
+        // "time_zone",
+        "format_shared_id_list" => array("text",  $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "additional_info" => array("textarea", false),
+        "starter_kit_postal_address" => array("textarea", false),
+        "starter_kit_required" => array("text", false),
+        "other_reason" => array("textarea", $reason_other_bool) -->
+
 <!-- Quickedit dialog -->
 <div id="bmaw_submission_quickedit_dialog" class="hidden bmaw_submission_quickedit_dialog">
         <div class="bmaw-grid-col1">
-            <label for="col1a">col1a</label>
-            <input type="text" name="col1a" id="col1a" required>
-            <label for="col1b">col1b</label>
-            <input type="text" name="col1b" id="col1b" required>
-            <label for="col1c">col1c</label>
-            <input type="text" name="col1c" id="col1c" required>
-            <label for="col1d">col1d</label>
-            <input type="text" name="col1d" id="col1d" required>
-            <label for="col1e">col1e</label>
-            <input type="text" name="col1e" id="col1e" required>
-            <label for="col1f">col1f</label>
-            <input type="text" name="col1f" id="col1f" required>
+            <label for="meeting_name">Meeting Name</label>
+            <input type="text" name="meeting_name" id="meeting_name" class="bmaw_submission_input_half">
+            <label for="start_time">Start Time</label>
+            <input type="time" name="start_time" id="start_time" class="bmaw_submission_input_half" >
+            <label for="duration_time">Duration</label>
+            <input type="text" name="duration_time" id="duration_time" required>
+            <label for="location_text">Location</label>
+            <input type="text" name="location_text" id="location_text" required>
+            <label for="location_street">Street</label>
+            <input type="text" name="location_street" id="location_street" required>
+            <label for="location_info">Location Info</label>
+            <input type="text" name="location_info" id="location_info" required>
+            <label for="location_municipality">Municipality</label>
+            <input type="text" name="location_municipality" id="location_municipality" required>
         </div>
         <div class="bmaw-grid-col2">
             <label for="col2a">col2a</label>
