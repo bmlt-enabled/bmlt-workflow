@@ -267,9 +267,9 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  bmaw_create_generic_modal("bmaw_submission_delete_dialog", "Delete Submission",auto,auto);
-  bmaw_create_generic_modal("bmaw_submission_approve_dialog", "Approve Submission",auto,auto);
-  bmaw_create_generic_modal("bmaw_submission_reject_dialog", "Reject Submission",auto,auto);
+  bmaw_create_generic_modal("bmaw_submission_delete_dialog", "Delete Submission",'auto','auto');
+  bmaw_create_generic_modal("bmaw_submission_approve_dialog", "Approve Submission",'auto','auto');
+  bmaw_create_generic_modal("bmaw_submission_reject_dialog", "Reject Submission",'auto','auto');
   bmaw_create_generic_modal("bmaw_submission_quickedit_dialog", "Submission QuickEdit",'90%',768);
 
   bmaw_submission_approve_dialog_ok = function (id) {
