@@ -43,7 +43,7 @@ input {
     justify-content: center;
     align-items: center;  
   }
-  .spinner {
+  .bmawspinner {
     width: 40px;
     height: 40px;
     border: 4px #ddd solid;
