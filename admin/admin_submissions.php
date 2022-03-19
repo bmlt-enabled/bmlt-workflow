@@ -54,11 +54,11 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 <div id="bmaw_submission_quickedit_dialog" class="hidden bmaw_submission_quickedit_dialog">
         <div class="bmaw-grid-col1">
             <label for="meeting_name">Meeting Name</label>
-            <input type="text" name="meeting_name" id="meeting_name" class="bmaw_submission_input_half">
+            <input type="text" name="meeting_name" id="meeting_name">
             <label for="start_time">Start Time</label>
             <input type="time" name="start_time" id="start_time" class="bmaw_submission_input_half" >
             <label for="duration_time">Duration</label>
-            <input type="text" name="duration_time" id="duration_time" required>
+            <input type="text" name="duration_time" id="duration_time" class="bmaw_submission_input_half" >
             <label for="location_text">Location</label>
             <input type="text" name="location_text" id="location_text" required>
             <label for="location_street">Street</label>
