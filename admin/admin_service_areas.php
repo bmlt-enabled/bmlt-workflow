@@ -18,8 +18,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <thead>
                     <tr>
                         <th class="bmaw-userlist-header">Service Area</th>
-                        <th class="bmaw-userlist-header">Display on end-user Form</th>
                         <th class="bmaw-userlist-header">Wordpress Users with Access</th>
+                        <th class="bmaw-userlist-header">Display on end-user Form</th>
                     </tr>
                 </thead>
                 <tbody>
