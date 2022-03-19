@@ -35,5 +35,41 @@
     width: 25%;
 }
 
-.dialog_label {display:block;}
-.dialog_textarea {display:block}; 
+.dialog_label {
+    display:block;
+}
+
+.dialog_textarea {
+    display:block
+}; 
+
+.bmaw_quickedit_dialog_column
+{
+	width: 50%;
+	padding: 10px 30px;
+	float: left;
+}
+
+.bmaw_quickedit_dialog_form {
+	position: relative;
+}
+
+/* Clearfix hack by Nicolas Gallagher: http://nicolasgallagher.com/micro-clearfix-hack/ */
+.bmaw_quickedit_dialog_form:before, 
+.bmaw_quickedit_dialog_form:after { 
+	content: " "; 
+    display: table; 
+}
+
+.bmaw_quickedit_dialog_form:after { 
+	clear: both; 
+}
+
+.bmaw_quickedit_dialog_form label {
+	display: block;
+	padding: 40px 5px 5px 2px;
+	font-size: 1.1em;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	cursor: pointer;
+}
