@@ -229,15 +229,15 @@ jQuery(document).ready(function ($) {
         .enable(!actioned);
     });
 
-  function bmaw_create_generic_modal(dialogid, title) {
+  function bmaw_create_generic_modal(dialogid, title,width,maxwidth) {
     $("#" + dialogid).dialog({
       title: title,
       classes: { 'ui-dialog-content':'quickedit'},
       autoOpen: false,
       draggable: false,
       // width: "auto",
-      width: "90%",
-      maxWidth: "768px",
+      width: width,
+      maxWidth: maxwidth,
       modal: true,
       resizable: false,
       closeOnEscape: true,
@@ -267,10 +267,10 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  bmaw_create_generic_modal("bmaw_submission_delete_dialog", "Delete Submission");
-  bmaw_create_generic_modal("bmaw_submission_approve_dialog", "Approve Submission");
-  bmaw_create_generic_modal("bmaw_submission_reject_dialog", "Reject Submission");
-  bmaw_create_generic_modal("bmaw_submission_quickedit_dialog", "Submission QuickEdit");
+  bmaw_create_generic_modal("bmaw_submission_delete_dialog", "Delete Submission",auto,auto);
+  bmaw_create_generic_modal("bmaw_submission_approve_dialog", "Approve Submission",auto,auto);
+  bmaw_create_generic_modal("bmaw_submission_reject_dialog", "Reject Submission",auto,auto);
+  bmaw_create_generic_modal("bmaw_submission_quickedit_dialog", "Submission QuickEdit",'90%',768);
 
   bmaw_submission_approve_dialog_ok = function (id) {
     generic_approve_handler(id, "POST", "/approve", "bmaw_submission_approve");
