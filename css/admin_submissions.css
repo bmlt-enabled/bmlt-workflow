@@ -54,3 +54,7 @@
   letter-spacing: 1px;
   cursor: pointer;
 }
+
+.bmaw_submission_input_half {
+    width: 50%;
+}
