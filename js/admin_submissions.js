@@ -232,7 +232,8 @@ jQuery(document).ready(function ($) {
   function bmaw_create_generic_modal(dialogid, title) {
     $("#" + dialogid).dialog({
       title: title,
-      dialogClass: "wp-dialog",
+      // dialogClass: "wp-dialog",
+      dialogClass: "quickedit",
       autoOpen: false,
       draggable: false,
       width: "auto",
