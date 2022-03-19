@@ -27,31 +27,37 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 </div>
 
 <!-- Quickedit dialog -->
-<div id="bmaw_submission_quickedit_dialog" class="hidden" >
-    <div>
-                <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
-                <input type="text" name="start_time" size="10" id="start_time" required>
+<div id="bmaw_submission_quickedit_dialog" class="quickedit hidden">
+    <form class="bmaw_quickedit_form">
+    <div class="bmaw_quickedit_dialog_column">
+                <label for="start_time">Start Time</label>
+                <input type="text" name="start_time" id="start_time" required>
+                <label for="start_time">Start Time</label>
+                <input type="text" name="start_time" id="start_time1" required>
+                <label for="start_time">Start Time</label>
+                <input type="text" name="start_time" id="start_time2" required>
+                <label for="start_time">Start Time</label>
+                <input type="text" name="start_time" id="start_time3" required>
+                <label for="start_time">Start Time</label>
+                <input type="text" name="start_time" id="start_time4" required>
+                <label for="start_time">Start Time</label>
+                <input type="text" name="start_time" id="start_time5" required>
     </div>
-    <div>
-                <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
-                <input type="text" name="start_time" size="10" id="start_time1" required>
+    <div class="bmaw_quickedit_dialog_column">
+                <label for="start_time">Start Time</label>
+                <input type="text" name="start_time" id="start_time" required>
+                <label for="start_time">Start Time</label>
+                <input type="text" name="start_time" id="start_time1" required>
+                <label for="start_time">Start Time</label>
+                <input type="text" name="start_time" id="start_time2" required>
+                <label for="start_time">Start Time</label>
+                <input type="text" name="start_time" id="start_time3" required>
+                <label for="start_time">Start Time</label>
+                <input type="text" name="start_time" id="start_time4" required>
+                <label for="start_time">Start Time</label>
+                <input type="text" name="start_time" id="start_time5" required>
     </div>
-    <div>
-                <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
-                <input type="text" name="start_time" size="10" id="start_time2" required>
-    </div>
-    <div>
-                <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
-                <input type="text" name="start_time" size="10" id="start_time3" required>
-    </div>
-    <div>
-                <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
-                <input type="text" name="start_time" size="10" id="start_time4" required>
-    </div>
-    <div>
-                <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
-                <input type="text" name="start_time" size="10" id="start_time5" required>
-    </div>
+    </form>
 </div>
 
 <div class="wrap">
