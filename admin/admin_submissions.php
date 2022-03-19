@@ -26,6 +26,34 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <p>Are you sure you would like to reject this submission?</p>
 </div>
 
+<!-- Quickedit dialog -->
+<div id="bmaw_submission_quickedit_dialog" class="hidden" >
+    <div>
+                <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
+                <input type="text" name="start_time" size="10" id="start_time" required>
+    </div>
+    <div>
+                <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
+                <input type="text" name="start_time" size="10" id="start_time1" required>
+    </div>
+    <div>
+                <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
+                <input type="text" name="start_time" size="10" id="start_time2" required>
+    </div>
+    <div>
+                <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
+                <input type="text" name="start_time" size="10" id="start_time3" required>
+    </div>
+    <div>
+                <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
+                <input type="text" name="start_time" size="10" id="start_time4" required>
+    </div>
+    <div>
+                <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
+                <input type="text" name="start_time" size="10" id="start_time5" required>
+    </div>
+</div>
+
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
     <h2>Meeting Submissions</h2>

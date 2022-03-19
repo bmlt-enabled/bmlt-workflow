@@ -40,6 +40,16 @@ jQuery(document).ready(function ($) {
         },
       },
       {
+        name: "quickedit",
+        text: "QuickEdit",
+        extend: "selected",
+        action: function (e, dt, button, config) {
+          clear_notices();
+          var id = dt.cell(".selected", 0).data();
+          $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
+        },
+      },
+      {
         name: "delete",
         text: "Delete",
         extend: "selected",
@@ -214,6 +224,9 @@ jQuery(document).ready(function ($) {
       $("#dt-submission")
         .DataTable().button('reject:name')
         .enable(!actioned);
+      $("#dt-submission")
+        .DataTable().button('quickedit:name')
+        .enable(!actioned);
     });
 
   function bmaw_create_generic_modal(dialogid, title) {
@@ -255,6 +268,7 @@ jQuery(document).ready(function ($) {
   bmaw_create_generic_modal("bmaw_submission_delete_dialog", "Delete Submission");
   bmaw_create_generic_modal("bmaw_submission_approve_dialog", "Approve Submission");
   bmaw_create_generic_modal("bmaw_submission_reject_dialog", "Reject Submission");
+  bmaw_create_generic_modal("bmaw_submission_quickedit_dialog", "Submission QuickEdit");
 
   bmaw_submission_approve_dialog_ok = function (id) {
     generic_approve_handler(id, "POST", "/approve", "bmaw_submission_approve");
@@ -264,6 +278,9 @@ jQuery(document).ready(function ($) {
   };
   bmaw_submission_delete_dialog_ok = function (id) {
     generic_approve_handler(id, "DELETE", "", "bmaw_submission_delete");
+  };
+  bmaw_submission_quickedit_dialog_ok = function (id) {
+    generic_approve_handler(id, "AAAAA", "", "a");
   };
 
   function generic_approve_handler(id, action, url, slug) {
