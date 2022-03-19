@@ -62,7 +62,7 @@ jQuery(document).ready(function ($) {
 
   // enable spinner
   $(document).ajaxSend(function() {
-    $("#overlay").fadeIn(300);　
+    $("#spinner-overlay").fadeIn(300);　
   });
 
   // get the permissions, and the userlist from wordpress, and create our select lists
