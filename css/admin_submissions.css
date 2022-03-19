@@ -11,3 +11,7 @@
     column-count: 2;
     column-gap: 40px;
 }
+
+.quickedit input {
+    width: 100%;
+}
