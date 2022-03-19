@@ -235,7 +235,7 @@ jQuery(document).ready(function ($) {
       classes: { 'ui-dialog-content':'quickedit'},
       autoOpen: false,
       draggable: false,
-      width: "auto",
+      // width: "auto",
       modal: true,
       resizable: false,
       closeOnEscape: true,
