@@ -7,7 +7,7 @@
     display:block
 }
 
-.bmaw_quickedit_dialog_form {
+.quickedit {
     column-count: 2;
     column-gap: 40px;
     background: red'
