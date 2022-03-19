@@ -27,17 +27,14 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 </div>
 
 <!-- Quickedit dialog -->
-<div id="bmaw_submission_quickedit_dialog" class="hidden">
-    <form class="bmaw_quickedit_dialog_form">
-        <div class="bmaw_quickedit_dialog_column">
+<div id="bmaw_submission_quickedit_dialog" class="hidden bmaw_submission_quickedit_dialog">
+        <div class="bmaw-grid-col1">
             <label for="col1a">col1a</label>
             <input type="text" name="col1a" id="col1a" required>
             <label for="col1b">col1b</label>
             <input type="text" name="col1b" id="col1b" required>
             <label for="col1c">col1c</label>
             <input type="text" name="col1c" id="col1c" required>
-            <label for="area1">area1</label>
-            <textarea rows="10" cols="20" name="area1"></textarea>
             <label for="col1d">col1d</label>
             <input type="text" name="col1d" id="col1d" required>
             <label for="col1e">col1e</label>
@@ -45,7 +42,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <label for="col1f">col1f</label>
             <input type="text" name="col1f" id="col1f" required>
         </div>
-        <div class="bmaw_quickedit_dialog_column">
+        <div class="bmaw-grid-col2">
             <label for="col2a">col2a</label>
             <input type="text" name="col2a" id="col2a" required>
             <label for="col2b">col2b</label>
@@ -59,8 +56,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <label for="col2f">col2f</label>
             <input type="text" name="col2f" id="col2f" required>
         </div>
-    </form>
 </div>
+
 
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
