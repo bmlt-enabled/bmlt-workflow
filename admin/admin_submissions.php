@@ -36,6 +36,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <input type="text" name="col1b" id="col1b" required>
             <label for="col1c">col1c</label>
             <input type="text" name="col1c" id="col1c" required>
+            <label for="area1">area1</label>
+            <textarea rows="10" cols="20" name="area1"></textarea>
             <label for="col1d">col1d</label>
             <input type="text" name="col1d" id="col1d" required>
             <label for="col1e">col1e</label>
