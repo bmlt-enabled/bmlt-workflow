@@ -1,48 +1,56 @@
-
 .dialog_label {
-    display:block;
+  display: block;
 }
 
 .dialog_textarea {
-    display:block
+  display: block;
 }
 
-.bmaw_submission_quickedit_dialog {  display: grid;
-    grid-template-columns: 1.3fr 1.2fr;
-    grid-template-rows: 1fr;
-    gap: 5px 11px;
-    grid-auto-flow: row;
-    grid-template-areas:
-      "bmaw-grid-col1 bmaw-grid-col2";
-      width: 80%;
-      height: 80%;
-  }
-  
-  .bmaw-grid-col1 { grid-area: bmaw-grid-col1; }
-  
-  .bmaw-grid-col2 { grid-area: bmaw-grid-col2; }
-  
-  .bmaw-grid-col1 input {
-    width: 100%;
-  }
-  
-  .bmaw-grid-col2 input {
-  /*   font-family: 'Lato', Calibri, Arial, sans-serif; */
-      line-height: 1.5;
-      font-size: 1.2em;
-      padding: 5px 10px;
-  /* 	color: #fff; */
-      display: block;
-      width: 90%;
-  /* 	background: transparent; */
-    
-  }
-  
-  .bmaw-grid-col2 label {
-    width: 100%;
-    display: block;
-      padding: 10px 5px 5px 2px;
-  /* 	font-size: 1.1em; */
-      letter-spacing: 1px;
-      cursor: pointer;
-  }
+.bmaw_submission_quickedit_dialog {
+  display: grid;
+  grid-template-columns: 1.3fr 1.2fr;
+  grid-template-rows: 1fr;
+  gap: 5px 11px;
+  grid-auto-flow: row;
+  grid-template-areas: "bmaw-grid-col1 bmaw-grid-col2";
+}
+
+.bmaw-grid-col1 {
+  grid-area: bmaw-grid-col1;
+}
+
+.bmaw-grid-col2 {
+  grid-area: bmaw-grid-col2;
+}
+
+.bmaw-grid-col1 input {
+  line-height: 1.5;
+  font-size: 1.2em;
+  padding: 5px 10px;
+  display: block;
+  width: 90%;
+}
+
+.bmaw-grid-col1 label {
+  width: 100%;
+  display: block;
+  padding: 10px 5px 5px 2px;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.bmaw-grid-col2 input {
+  line-height: 1.5;
+  font-size: 1.2em;
+  padding: 5px 10px;
+  display: block;
+  width: 90%;
+}
+
+.bmaw-grid-col2 label {
+  width: 100%;
+  display: block;
+  padding: 10px 5px 5px 2px;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
