@@ -1,61 +1,61 @@
 table tr:hover > td {
-    background: #fff;
+  background: #fff;
 }
 table th {
-    padding-left: 15px;
-    padding-right: 0px;
-    padding-bottom: 0px;
-    width: auto;
+  padding-left: 15px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+  width: auto;
 }
 
 table td {
-    padding-bottom: 5px;
-    padding-top: 5px;
+  padding-bottom: 5px;
+  padding-top: 5px;
 }
 
 .bmaw_info_text {
-    padding-left: 15px;
-    background: #fff;
-    border-left: 5px solid lightblue;
+  padding-left: 15px;
+  background: #fff;
+  border-left: 5px solid lightblue;
 }
 
-label{
-    display: inline-flex;
-    clear: left;
-    width: 150px;
+label {
+  display: inline-flex;
+  clear: left;
+  width: 150px;
 }
 input {
   display: inline-flex;
 }
 
-#overlay{	
-    position: fixed;
-    top: 0;
-    z-index: 100;
-    width: 100%;
-    height:100%;
-    display: none;
-    background: rgba(0,0,0,0.6);
+#spinner-overlay {
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  height: 100%;
+  display: none;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.cv-spinner {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bmaw-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px #ddd solid;
+  border-top: 4px #2e93e6 solid;
+  border-radius: 50%;
+  animation: sp-anime 0.8s infinite linear;
+}
+
+@keyframes sp-anime {
+  100% {
+    transform: rotate(360deg);
   }
-  .cv-spinner {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;  
-  }
-  .bmawspinner {
-    width: 40px;
-    height: 40px;
-    border: 4px #ddd solid;
-    border-top: 4px #2e93e6 solid;
-    border-radius: 50%;
-    animation: sp-anime 0.8s infinite linear;
-  }
-  @keyframes sp-anime {
-    100% { 
-      transform: rotate(360deg); 
-    }
-  }
-  .is-hide{
-    display:none;
-  }
+}

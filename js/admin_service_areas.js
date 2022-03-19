@@ -15,6 +15,11 @@ jQuery(document).ready(function ($) {
     $(selectid).trigger("change");
   }
 
+  function turn_off_spinner()
+  {
+    setTimeout(function(){ $("#spinner-overlay").fadeOut(300); },500);
+  }
+
   function create_service_area_permission_post() {
     ret = {};
     $(".bmaw-userlist").each(function () {
@@ -33,16 +38,13 @@ jQuery(document).ready(function ($) {
   }
 
   $("#bmaw_submit").on("click", function () {
-    console.log("clicked");
     $('#bmaw-userlist-table tbody tr').each(function() {
       tr = $(this);
       checked = $(tr).find('input:checkbox').prop('checked');
-      console.log("got "+checked);
       select = $(tr).find('select');
       select.data('show_on_form', checked);
     });
     post = create_service_area_permission_post();
-    console.log("post = "+post);
     $.ajax({
       url: wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route,
       method: 'POST',
@@ -54,7 +56,7 @@ jQuery(document).ready(function ($) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
     }).done(function (response) {
-      console.log("posted");
+      turn_off_spinner();
     });
   });
 
@@ -81,7 +83,7 @@ jQuery(document).ready(function ($) {
     }).done(function (response) {
 
       // turn off spinner
-      setTimeout(function(){ $("#overlay").fadeOut(300); },500);
+      turn_off_spinner();
       // console.log("service body list");
       // console.log(this.sblist);
       // console.log("userlist");

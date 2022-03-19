@@ -13,9 +13,9 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
     <h2>Service Area Configuration</h2>
-    <div id="overlay">
+    <div id="spinner-overlay">
         <div class="cv-spinner">
-            <span class="bmawspinner"></span>
+            <span class="bmaw-spinner"></span>
             </div>
 </div>
             <table class="bmaw-userlist-table" id="bmaw-userlist-table">
