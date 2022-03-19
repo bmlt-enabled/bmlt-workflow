@@ -236,6 +236,8 @@ jQuery(document).ready(function ($) {
       autoOpen: false,
       draggable: false,
       // width: "auto",
+      width: "90%",
+      maxWidth: "768px",
       modal: true,
       resizable: false,
       closeOnEscape: true,
