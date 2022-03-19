@@ -25,5 +25,5 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <tbody>
                 </tbody>
             </table>
-            <button id="bmaw_submit">Save Settings</button><span class="spinner" id="bmaw-submit-spinner"></span>
+            <button id="bmaw_submit" style="display: none;">Save Settings</button><span class="spinner" id="bmaw-submit-spinner"></span>
         </div>
