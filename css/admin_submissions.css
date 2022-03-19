@@ -10,7 +10,6 @@
 .quickedit {
     column-count: 2;
     column-gap: 40px;
-    background: red'
 }
 
 .quickedit input {
@@ -18,7 +17,7 @@
 }
 
 .bmaw_quickedit_dialog_column {
-    display: inline-block;
+    break-after: always;
 }
 
 .bmaw_quickedit_dialog_column input {
