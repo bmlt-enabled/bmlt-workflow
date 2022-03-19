@@ -15,21 +15,26 @@ jQuery(document).ready(function ($) {
     $(selectid).trigger("change");
   }
 
-  function turn_off_spinner()
+  function turn_off_spinner(element)
   {
-    $(".spinner").removeClass("is-active");　
+    $(element).removeClass("is-active");　
+  }
+
+  function turn_on_spinner(element)
+  {
+    $(element).addClass("is-active");　
   }
 
   function create_service_area_permission_post() {
     ret = {};
     $(".bmaw-userlist").each(function () {
-      console.log("got real id " + $(this).data("id"));
+      // console.log("got real id " + $(this).data("id"));
       id =  $(this).data("id");
-      console.log("got name " + $(this).data("name"));
+      // console.log("got name " + $(this).data("name"));
       sbname = $(this).data("name");
-      console.log("select vals = "+ $(this).val());
+      // console.log("select vals = "+ $(this).val());
       membership = $(this).val();
-      console.log("got show_on_form = "+ $(this).data("show_on_form"));
+      // console.log("got show_on_form = "+ $(this).data("show_on_form"));
       show_on_form = $(this).data("show_on_form");
 
       ret[id] = { "name":sbname, "show_on_form": show_on_form, "membership":membership};
@@ -53,23 +58,22 @@ jQuery(document).ready(function ($) {
       dataType: "json",
       processData: false,
       beforeSend: function (xhr) {
+        turn_on_spinner("#bmaw-submit-spinner");
+
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
     }).done(function (response) {
-      turn_off_spinner();
+      turn_off_spinner("#bmaw-submit-spinner");
     });
   });
 
-  // enable spinner
-  $(document).ajaxSend(function() {
-    $(".spinner").addClass("is-active");　
-  });
 
   // get the permissions, and the userlist from wordpress, and create our select lists
   $.ajax({
     url: wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route,
     dataType: "json",
     beforeSend: function (xhr) {
+      turn_on_spinner("#bmaw-form-spinner");
       xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
     },
   }).done(function (response) {
@@ -83,7 +87,7 @@ jQuery(document).ready(function ($) {
     }).done(function (response) {
 
       // turn off spinner
-      turn_off_spinner();
+      turn_off_spinner("#bmaw-form-spinner");
       // console.log("service body list");
       // console.log(this.sblist);
       // console.log("userlist");
