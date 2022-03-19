@@ -1,40 +1,4 @@
 
-.wp-list-table .column-id {
-    width: 10%;
-}
-
-.wp-list-table .column-changed_by {
-    width: 5%;
-}
-
-.wp-list-table .column-submitter_name {
-    width: 10%;
-}
-
-.wp-list-table .column-submitter_email {
-    width: 15%;
-}
-
-/* .wp-list-table .column-submission_type {
-    width: 10%;
-} */
-
-.wp-list-table .column-change_made {
-    width: 10%;
-}
-
-.wp-list-table .column-submission_time {
-    width: 10%;
-}
-
-.wp-list-table .column-change_time {
-    width: 10%;
-}
-
-.wp-list-table .column-change_summary {
-    width: 25%;
-}
-
 .dialog_label {
     display:block;
 }
