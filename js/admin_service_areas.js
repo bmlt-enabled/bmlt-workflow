@@ -108,7 +108,7 @@ jQuery(document).ready(function ($) {
         turn_off_spinner("#bmaw-form-spinner");
         // turn on table
         $("#bmaw-userlist-table").show();
-        
+        $("#bmaw_submit").show();
       });
     });
   });
