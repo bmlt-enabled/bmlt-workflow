@@ -16,6 +16,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <div id="overlay">
         <div class="cv-spinner">
             <span class="spinner"></span>
+            </div>
+</div>
             <table class="bmaw-userlist-table" id="bmaw-userlist-table">
                 <thead>
                     <tr>
@@ -29,5 +31,3 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </table>
             <button id="bmaw_submit">Save Settings</button>
         </div>
-    </div>
-</div>
