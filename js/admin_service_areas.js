@@ -99,7 +99,7 @@ jQuery(document).ready(function ($) {
 
         appendstr += "<td>" + sblist[item]["name"] + "</td>";
         appendstr += '<td><select class="bmaw-userlist" id="' + id + '" style="width: auto"></select></td>';
-        appendstr += '<td><input type="checkbox" '+checked+'></td>';
+        appendstr += '<td class="bmaw-center-checkbox"><input type="checkbox" '+checked+'></td>';
         appendstr += "</tr>";
         $("#bmaw-userlist-table tbody").append(appendstr);
         // store metadata away for later
