@@ -16,3 +16,7 @@
 .quickedit input {
     width: 100%;
 }
+
+.bmaw_quickedit_dialog_column {
+    display: inline-block;
+}
