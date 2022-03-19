@@ -27,7 +27,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 </div>
 
 <!-- Quickedit dialog -->
-<div id="bmaw_submission_quickedit_dialog" class="quickedit hidden">
+<div id="bmaw_submission_quickedit_dialog" class="hidden">
     <form class="bmaw_quickedit_dialog_form">
         <div class="bmaw_quickedit_dialog_column">
             <label for="col1a">col1a</label>
