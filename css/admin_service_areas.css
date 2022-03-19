@@ -27,3 +27,7 @@ label {
 input {
   display: inline-flex;
 }
+
+.spinner {
+    float: left;
+}
