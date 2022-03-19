@@ -31,3 +31,8 @@ input {
 .spinner {
     float: left;
 }
+
+.bmaw-center-checkbox {
+    text-align: center; 
+    vertical-align: middle;
+}
