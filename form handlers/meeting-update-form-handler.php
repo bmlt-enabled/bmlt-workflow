@@ -29,6 +29,14 @@ function meeting_update_form_handler_rest($data)
     $reason_change_bool = false;
     $reason_close_bool = false;
 
+    // strip blanks
+    foreach ($data as $key => $value) {
+        if(($data[$key] === "")||($data[$key] === NULL))
+        {
+            unset($data[$key]);
+        }
+    }
+    
     if (isset($data['update_reason'])) {
         $reason_new_bool = ($data['update_reason'] === 'reason_new');
         $reason_other_bool = ($data['update_reason'] === 'reason_other');
@@ -41,7 +49,7 @@ function meeting_update_form_handler_rest($data)
     }
 
     // sanitize the input
-    // subfields value is 'input type', boolean (true if required)
+    // array value [0] is 'input type', [1] is boolean (true if required)
 
     $subfields = array(
         "update_reason" => array("text", true),
