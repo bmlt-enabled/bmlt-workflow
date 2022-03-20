@@ -58,6 +58,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <label for="start_time">Start Time</label>
             <input type="time" name="start_time" id="start_time" class="bmaw_submission_input_half" >
             <!-- <input type="text" name="duration_time" id="duration_time" class="bmaw_submission_input_half" > -->
+<div>
             <label for="weekday_tinyint">Weekday</label>
                 <select name="weekday_tinyint" id="weekday_tinyint">
                     <option value="1">Sunday</option>
@@ -68,6 +69,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <option value="6">Friday</option>
                     <option value="7">Saturday</option>
                 </select>
+</div>
+<div>
                 <label for="duration_time">Duration</label>
 
                 <select id="duration_hours">
@@ -99,6 +102,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <option>50</option>
                     <option>55</option>
                 </select> m
+</div>
             <label for="email_address">Email Address</label>
             <input type="text" name="email_address" id="email_address" required>
             <label for="virtual_meeting_link">Virtual Meeting Link</label>
