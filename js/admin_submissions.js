@@ -34,7 +34,7 @@ jQuery(document).ready(function ($) {
           var item = data[0];
           Object.keys(item).forEach((element) => {
             if ($("#quickedit_" + element) instanceof jQuery) {
-              $("#quickedit_" + element).val(item[element]);
+              $("#quickedit_" + element).val(item[element]).change();
             }
           });
           // fill in and highlight the changes
@@ -42,7 +42,7 @@ jQuery(document).ready(function ($) {
           Object.keys(bmaw_changedata[id].changes_requested).forEach((element) => {
             if ($("#quickedit_" + element) instanceof jQuery) {
               $("#quickedit_" + element).addClass("bmaw-changed");
-              $("#quickedit_" + element).val(bmaw_changedata[id].changes_requested[element]);
+              $("#quickedit_" + element).val(bmaw_changedata[id].changes_requested[element]).change();
             }
           });
           $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
