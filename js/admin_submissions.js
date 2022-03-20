@@ -24,7 +24,7 @@ jQuery(document).ready(function ($) {
     formatdata.push({ text: "(" + bmaw_bmlt_formats[key]["key_string"] + ")-" + bmaw_bmlt_formats[key]["name_string"], id: key });
   });
 
-  $("#bmaw-formatlist").select2({
+  $("#quickedit_formatlist").select2({
     placeholder: "Select a format",
     multiple: true,
     width: "100%",
@@ -65,8 +65,12 @@ jQuery(document).ready(function ($) {
           clear_notices();
           var id = dt.cell(".selected", 0).data();
           // clear quickedit
-          //
+          $('.quickedit-input').removeClass("bmaw-changed");
           // fill quickedit
+          bmaw_changedata[id].changes_requested.forEach(element => 
+            {
+              $('#quickedit_'+element).addClass("bmaw-changed");
+            });
           $('#meeting_name').val(bmaw_changedata[id].changes_requested['meeting_name']);
           $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
         },

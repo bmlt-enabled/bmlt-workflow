@@ -54,21 +54,21 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 <div id="bmaw_submission_quickedit_dialog" class="bmaw-sg hidden">
     <div class="bmaw-sg-col1">
         <div class="bmaw-sg-col1-w1">
-            <label for="meeting_name">Meeting Name</label>
-            <input type="text" name="meeting_name" id="meeting_name" class="bmaw-changed">
-            <label for="bmaw-formatlist">Meeting Formats</label>
-            <select name="bmaw-formatlist" id="bmaw-formatlist" style="width: auto"></select>
+            <label for="quickedit_meeting_name">Meeting Name</label>
+            <input type="text" name="quickedit_meeting_name" id="quickedit_meeting_name" class="quickedit-input">
+            <label for="quickedit_formatlist">Meeting Formats</label>
+            <select name="quickedit_formatlist" id="quickedit_formatlist" style="width: auto"></select>
 
         </div>
 
         <div class="bmaw-sg-col1-t1">
-            <label for="start_time">Start Time</label>
-            <input type="time" name="start_time" id="start_time" class="bmaw_submission_input_half">
+            <label for="quickedit_start_time">Start Time</label>
+            <input type="time" name="quickedit_start_time" id="quickedit_start_time" class="quickedit-input">
 
         </div>
         <div class="bmaw-sg-col1-t2">
-            <label for="weekday_tinyint">Weekday</label>
-            <select name="weekday_tinyint" id="weekday_tinyint">
+            <label for="quickedit_weekday_tinyint">Weekday</label>
+            <select name="quickedit_weekday_tinyint" id="quickedit_weekday_tinyint">
                 <option value="1">Sunday</option>
                 <option value="2">Monday</option>
                 <option value="3">Tuesday</option>
@@ -79,8 +79,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </select>
         </div>
         <div class="bmaw-sg-col1-t3">
-            <label for="duration_hours">Duration</label>
-            <select id="duration_hours">
+            <label for="quickedit_duration_hours">Duration</label>
+            <select id="quickedit_duration_hours">
                 <option>0</option>
                 <option selected="selected">1</option>
                 <option>2</option>
@@ -95,7 +95,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <option>11</option>
                 <option>12</option>
             </select> h
-            <select id="duration_minutes">
+            <select id="quickedit_duration_minutes">
                 <option selected="selected">0</option>
                 <option>5</option>
                 <option>10</option>
@@ -111,25 +111,25 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </select> m
         </div>
         <div class="bmaw-sg-col1-w2">
-            <label for="email_address">Email Address</label>
-            <input type="text" name="email_address" id="email_address" required>
-            <label for="virtual_meeting_link">Virtual Meeting Link</label>
-            <input type="text" name="virtual_meeting_link" id="virtual_meeting_link" required>
+            <label for="quickedit_email_address">Email Address</label>
+            <input type="text" name="quickedit_email_address" id="quickedit_email_address" class="quickedit-input">
+            <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
+            <input type="text" name="quickedit_virtual_meeting_link" id="quickedit_virtual_meeting_link" class="quickedit-input">
         </div>
     </div>
     <div class="bmaw-grid-col2">
-        <label for="location_text">Location</label>
-        <input type="text" name="location_text" id="location_text" required>
-        <label for="location_street">Street</label>
-        <input type="text" name="location_street" id="location_street" required>
-        <label for="location_info">Location Info</label>
-        <input type="text" name="location_info" id="location_info" required>
-        <label for="location_municipality">Municipality</label>
-        <input type="text" name="location_municipality" id="location_municipality" required>
-        <label for="location_province">Province</label>
-        <input type="text" name="location_province" id="location_province" required>
-        <label for="location_postal_code_1">Post Code</label>
-        <input type="text" name="location_postal_code_1" id="location_postal_code_1" required>
+        <label for="quickedit_location_text">Location</label>
+        <input type="text" name="quickedit_quickedit_location_text" id="quickedit_location_text" class="quickedit-input">
+        <label for="quickedit_location_street">Street</label>
+        <input type="text" name="quickedit_location_street" id="quickedit_location_street" class="quickedit-input">
+        <label for="quickedit_location_info">Location Info</label>
+        <input type="text" name="quickedit_location_info" id="quickedit_location_info" class="quickedit-input">
+        <label for="quickedit_location_municipality">Municipality</label>
+        <input type="text" name="quickedit_location_municipality" id="quickedit_location_municipality" class="quickedit-input">
+        <label for="quickedit_location_province">Province</label>
+        <input type="text" name="quickedit_location_province" id="quickedit_location_province" class="quickedit-input">
+        <label for="quickedit_location_postal_code_1">Post Code</label>
+        <input type="text" name="quickedit_location_postal_code_1" id="quickedit_location_postal_code_1" class="quickedit-input">
     </div>
 
 </div>
