@@ -383,6 +383,10 @@ jQuery(document).ready(function ($) {
       put_field("format_shared_id_list", str);
     }
 
+    // construct our duration
+    str = $("#duration_hours").val + ":" + $("#duration_minutes").val + ":00";
+    put_field("duration_time", str);
+
     $.post("/flop/wp-json/bmaw-submission/v1/submissions", $("#meeting_update_form").serialize(), function (response) {
       console.log("submitted");
     });

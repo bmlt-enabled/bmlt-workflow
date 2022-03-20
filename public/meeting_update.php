@@ -67,37 +67,37 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </div>
             <br>
             <div>
-                <label for="duration_time">Duration<span class="bmaw-required-field"> *</span></label>
+                <label for="duration_hours">Duration<span class="bmaw-required-field"> *</span></label>
                 <select id="duration_hours">
-                    <option>0</option>
-                    <option selected="selected">1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                    <option>6</option>
-                    <option>7</option>
-                    <option>8</option>
-                    <option>9</option>
-                    <option>10</option>
-                    <option>11</option>
-                    <option>12</option>
+                    <option value="00">0</option>
+                    <option value="01" selected="selected">1</option>
+                    <option value="02">2</option>
+                    <option value="03">3</option>
+                    <option value="04">4</option>
+                    <option value="05">5</option>
+                    <option value="06">6</option>
+                    <option value="07">7</option>
+                    <option value="08">8</option>
+                    <option value="09">9</option>
+                    <option value="10">10</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
                 </select> h
                 <select id="duration_minutes">
-                    <option selected="selected">0</option>
-                    <option>5</option>
-                    <option>10</option>
-                    <option>15</option>
-                    <option>20</option>
-                    <option>25</option>
-                    <option>30</option>
-                    <option>35</option>
-                    <option>40</option>
-                    <option>45</option>
-                    <option>50</option>
-                    <option>55</option>
+                    <option value="00" selected="selected">0</option>
+                    <option value="05">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                    <option value="20">20</option>
+                    <option value="25">25</option>
+                    <option value="30">30</option>
+                    <option value="35">35</option>
+                    <option value="40">40</option>
+                    <option value="45">45</option>
+                    <option value="50">50</option>
+                    <option value="55">55</option>
                 </select> m
-                <input type="text" name="duration_time" size="10" id="duration_time" required>
+                <input type="hidden" name="duration_time" size="10" id="duration_time" required>
             </div>
             <br>
             <!-- <div>
