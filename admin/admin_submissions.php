@@ -55,10 +55,12 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         <div class="bmaw-grid-col1">
             <label for="meeting_name">Meeting Name</label>
             <input type="text" name="meeting_name" id="meeting_name">
+            <div class="bmaw-col1-t1">
             <label for="start_time">Start Time</label>
             <input type="time" name="start_time" id="start_time" class="bmaw_submission_input_half" >
+            <div class="bmaw-col1-t2">
             <!-- <input type="text" name="duration_time" id="duration_time" class="bmaw_submission_input_half" > -->
-<div>
+
             <label for="weekday_tinyint">Weekday</label>
                 <select name="weekday_tinyint" id="weekday_tinyint">
                     <option value="1">Sunday</option>
@@ -70,7 +72,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <option value="7">Saturday</option>
                 </select>
 </div>
-<div>
+<div class="bmaw-col1-t3">
                 <label for="duration_time">Duration</label>
 
                 <select id="duration_hours">
