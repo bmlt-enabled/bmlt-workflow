@@ -38,7 +38,7 @@
   
   .bmaw-col1-t3 { grid-area: bmaw-col1-t3; }
   
-.bmaw-bmaw_submission_quickedit_dialog input {
+.bmaw_submission_quickedit_dialog input {
   line-height: 1.5;
   font-size: 1.2em;
   padding: 5px 10px;
@@ -46,7 +46,7 @@
   width: 90%;
 }
 
-.bmaw-bmaw_submission_quickedit_dialog label {
+.bmaw_submission_quickedit_dialog label {
   width: 100%;
   display: block;
   padding: 10px 5px 5px 2px;
