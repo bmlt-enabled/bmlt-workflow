@@ -51,36 +51,16 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <div>
                 <label for="day_of_the_week">The Day Of Your Meeting:<span class="bmaw-required-field"> *</span></label>
                 <ul style="list-style-type:none;" id="day_of_the_week">
-                    <li>
-                        <input name="weekday_tinyint" id="weekday-1" value="1" type="radio">
-                        <label for="weekday-1">Sunday</label>
-                    </li>
-                    <li>
-                        <input name="weekday_tinyint" id="weekday-2" value="2" type="radio">
-                        <label for="weekday-2">Monday</label>
-                    </li>
-                    <li>
-                        <input name="weekday_tinyint" id="weekday-3" value="3" type="radio">
-                        <label for="weekday-3">Tuesday</label>
-                    </li>
-                    <li>
-                        <input name="weekday_tinyint" id="weekday-4" value="4" type="radio">
-                        <label for="weekday-4">Wednesday</label>
-                    </li>
-                    <li>
-                        <input name="weekday_tinyint" id="weekday-5" value="5" type="radio">
-                        <label for="weekday-5">Thursday</label>
-                    </li>
-                    <li>
-                        <input name="weekday_tinyint" id="weekday-6" value="6" type="radio">
-                        <label for="weekday-6">Friday</label>
-                    </li>
-                    <li>
-                        <input name="weekday_tinyint" id="weekday-7" value="7" type="radio">
-                        <label for="weekday-7">Saturday</label>
-                    </li>
-                </ul>
-                <input type="hidden" name="weekday" id="weekday" value="">
+                <select id="weekday_tinyint">
+                    <option value=1>Sunday</option>
+                    <option value=2>Monday</option>
+                    <option value=3>Tuesday</option>
+                    <option value=4>Wednesday</option>
+                    <option value=5>Thursday</option>
+                    <option value=6>Friday</option>
+                    <option value=7>Saturday</option>
+                </select>
+                <!-- <input type="hidden" name="weekday" id="weekday" value=""> -->
             </div>
             <div>
                 <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>

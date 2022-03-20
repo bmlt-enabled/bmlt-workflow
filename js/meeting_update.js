@@ -85,23 +85,8 @@ jQuery(document).ready(function ($) {
           var data = e.params.data;
           var id = data.id;
           // set the weekday format
-          var str = "";
-          for (var i = 0; i < 7; i++) {
-            if (i == mdata[id].weekday_tinyint) {
-              if (get_field_checked_index("weekday", i) != true) {
-                put_field_checked_index("weekday", i, true);
-              }
-            } else if (get_field_checked_index("weekday", i)) {
-              put_field_checked_index("weekday", i, false);
-            }
-
-            if (get_field_checked_index("weekday", i)) {
-              str = str + weekdays[i] + ", ";
-            }
-          }
-          if (str != "") {
-            str = str.slice(0, -2);
-          }
+          $("#weekday_tinyint").val(mdata[id].weekday_tinyint);
+          
           // fill in the other fields from bmlt
           put_field("meeting_name", mdata[id].meeting_name);
           put_field("start_time", mdata[id].start_time);
