@@ -191,13 +191,23 @@ function meeting_update_form_handler_rest($data)
             curl_close($curl);
             $meeting = json_decode($resp, true)[0];
             error_log(vdump($meeting));
+
+            // strip blanks
+            foreach ($meeting as $key => $value) {
+                if (($meeting[$key] === "") || ($meeting[$key] === NULL)) {
+                    unset($meeting[$key]);
+                }
+            }
+
+            // if the user submitted something different to what is in bmlt, save it in changes
             foreach ($change_subfields as $field) {
-                if (array_key_exists($field, $meeting)) {
+                if ((array_key_exists($field, $meeting)) && (array_key_exists($field, $data))) {
                     if ($meeting[$field] != $data[$field]) {
                         $changes[$field] = $data[$field];
                     }
                 }
             }
+            
             // store away the meeting name
             $changes['original_meeting_name'] = $data['meeting_name'];
 
