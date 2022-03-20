@@ -84,10 +84,11 @@ jQuery(document).ready(function ($) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
       dataSrc: function (json) {
-        // store the json for us to use in quick editor
-        bmaw_changedata = json;
+        bmaw_changedata = {};
         for (var i = 0, ien = json.length; i < ien; i++) {
           json[i]["changes_requested"]["submission_type"] = json[i]["submission_type"];
+        // store the json for us to use in quick editor
+        bmaw_changedata[i]['id']=json[i];
         }
         return json;
       },
