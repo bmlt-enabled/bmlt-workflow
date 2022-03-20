@@ -384,7 +384,7 @@ jQuery(document).ready(function ($) {
     }
 
     // construct our duration
-    str = $("#duration_hours").val + ":" + $("#duration_minutes").val + ":00";
+    str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
     put_field("duration_time", str);
 
     $.post("/flop/wp-json/bmaw-submission/v1/submissions", $("#meeting_update_form").serialize(), function (response) {
