@@ -52,7 +52,10 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
 <!-- Quickedit dialog -->
 <div id="bmaw_submission_quickedit_dialog" class="bmaw-sg hidden">
-    <h3>Highlighted fields are from the user submission and will be used if the QuickEdit is saved or approved.</h3>
+    <div class="bmaw_info_text">
+    <br>Highlighted fields are from the user submission and will be used if the QuickEdit is saved or approved.
+    <br><br>
+    </div>
     <div class="bmaw-sg-col1">
         <div class="bmaw-sg-col1-w1">
             <label for="quickedit_meeting_name">Meeting Name</label>
