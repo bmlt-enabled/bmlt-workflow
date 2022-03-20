@@ -262,9 +262,10 @@ jQuery(document).ready(function ($) {
         },
       },
       open: function () {
+        var $this = $(this);
         // close dialog by clicking the overlay behind it
         $(".ui-widget-overlay").bind("click", function () {
-          $(this).dialog("close");
+          $this.dialog("close");
         });
       },
       create: function () {
