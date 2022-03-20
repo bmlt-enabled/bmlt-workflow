@@ -30,6 +30,8 @@ jQuery(document).ready(function ($) {
     dropdownParent: $('#bmaw_submission_quickedit_dialog'),
   });
 
+  var changedata = {};
+
   $("#dt-submission").DataTable({
     dom: "Bfrtip",
     select: true,
@@ -61,7 +63,7 @@ jQuery(document).ready(function ($) {
         action: function (e, dt, button, config) {
           clear_notices();
           var id = dt.cell(".selected", 0).data();
-          $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
+          $("#bmaw_submission_quickedit_dialog").data("id", id).data("",i).dialog("open");
         },
       },
       {
@@ -81,6 +83,8 @@ jQuery(document).ready(function ($) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
       dataSrc: function (json) {
+        // store the json for us to use in quick editor
+        changedata = json;
         for (var i = 0, ien = json.length; i < ien; i++) {
           json[i]["changes_requested"]["submission_type"] = json[i]["submission_type"];
         }
