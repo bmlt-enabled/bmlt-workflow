@@ -10,10 +10,23 @@ function dismiss_notice(element) {
 jQuery(document).ready(function ($) {
   // console.log(bmaw_admin_submissions_rest_url);
 
-  function clear_notices()
-  {
-    jQuery('.notice-dismiss').each(function(i,e){dismiss_notice(e)})
+  function clear_notices() {
+    jQuery(".notice-dismiss").each(function (i, e) {
+      dismiss_notice(e);
+    });
   }
+
+  $(".bmaw-formatlist").select2({
+    multiple: true,
+    width: "100%",
+    data: function () {
+      data = {};
+      result = [];
+      Object.keys(bmaw_bmlt_formats).forEach((key) => {
+        result.push({ text: '('+bmaw_bmlt_formats[key]["key_string"]+')-'+bmaw_bmlt_formats[key]["name_string"], id: key });
+      });
+    },
+  });
 
   $("#dt-submission").DataTable({
     dom: "Bfrtip",
@@ -116,7 +129,7 @@ jQuery(document).ready(function ($) {
             friendlydata = data[key];
 
             switch (key) {
-              // skip these ones - we already used them above 
+              // skip these ones - we already used them above
               case "meeting_id":
               case "submission_type":
               case "original_meeting_name":
@@ -213,26 +226,18 @@ jQuery(document).ready(function ($) {
     .DataTable()
     .on("select deselect", function () {
       var actioned = true;
-      if ($("#dt-submission").DataTable().row({ selected: true }).count())
-      {
+      if ($("#dt-submission").DataTable().row({ selected: true }).count()) {
         var change_made = $("#dt-submission").DataTable().row({ selected: true }).data()["change_made"];
-        var actioned = ((change_made === 'approved')||(change_made === 'rejected'))
+        var actioned = change_made === "approved" || change_made === "rejected";
       }
-      $("#dt-submission")
-        .DataTable().button('approve:name')
-        .enable(!actioned);
-      $("#dt-submission")
-        .DataTable().button('reject:name')
-        .enable(!actioned);
-      $("#dt-submission")
-        .DataTable().button('quickedit:name')
-        .enable(!actioned);
+      $("#dt-submission").DataTable().button("approve:name").enable(!actioned);
+      $("#dt-submission").DataTable().button("reject:name").enable(!actioned);
+      $("#dt-submission").DataTable().button("quickedit:name").enable(!actioned);
     });
 
-  function bmaw_create_generic_modal(dialogid, title,width,maxwidth) {
+  function bmaw_create_generic_modal(dialogid, title, width, maxwidth) {
     $("#" + dialogid).dialog({
       title: title,
-      classes: { 'ui-dialog-content':'quickedit'},
       autoOpen: false,
       draggable: false,
       width: width,
@@ -266,10 +271,51 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  bmaw_create_generic_modal("bmaw_submission_delete_dialog", "Delete Submission",'auto','auto');
-  bmaw_create_generic_modal("bmaw_submission_approve_dialog", "Approve Submission",'auto','auto');
-  bmaw_create_generic_modal("bmaw_submission_reject_dialog", "Reject Submission",'auto','auto');
-  bmaw_create_generic_modal("bmaw_submission_quickedit_dialog", "Submission QuickEdit",'60%',768);
+  function bmaw_create_quickedit_modal(dialogid, title, width, maxwidth) {
+    $("#" + dialogid).dialog({
+      title: title,
+      classes: { "ui-dialog-content": "quickedit" },
+      autoOpen: false,
+      draggable: false,
+      width: width,
+      maxWidth: maxwidth,
+      modal: true,
+      resizable: false,
+      closeOnEscape: true,
+      position: {
+        my: "center",
+        at: "center",
+        of: window,
+      },
+      buttons: {
+        "Save and Approve": function () {
+          fn = window[this.id + "_saveapprove"];
+          if (typeof fn === "function") fn($(this).data("id"));
+        },
+        Save: function () {
+          fn = window[this.id + "_save"];
+          if (typeof fn === "function") fn($(this).data("id"));
+        },
+        Cancel: function () {
+          $(this).dialog("close");
+        },
+      },
+      open: function () {
+        // close dialog by clicking the overlay behind it
+        $(".ui-widget-overlay").bind("click", function () {
+          $(this).dialog("close");
+        });
+      },
+      create: function () {
+        $(".ui-dialog-titlebar-close").addClass("ui-button");
+      },
+    });
+  }
+
+  bmaw_create_generic_modal("bmaw_submission_delete_dialog", "Delete Submission", "auto", "auto");
+  bmaw_create_generic_modal("bmaw_submission_approve_dialog", "Approve Submission", "auto", "auto");
+  bmaw_create_generic_modal("bmaw_submission_reject_dialog", "Reject Submission", "auto", "auto");
+  bmaw_create_quickedit_modal("bmaw_submission_quickedit_dialog", "Submission QuickEdit", "60%", 768);
 
   bmaw_submission_approve_dialog_ok = function (id) {
     generic_approve_handler(id, "POST", "/approve", "bmaw_submission_approve");
