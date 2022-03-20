@@ -113,7 +113,7 @@ jQuery(document).ready(function ($) {
   $("#quickedit_format_shared_id_list").select2({
     placeholder: "Select from available formats",
     multiple: true,
-    width: 'element',
+    width: '90%',
     data: formatdata,
     dropdownParent: $("#bmaw_submission_quickedit_dialog"),
   });
