@@ -130,12 +130,11 @@ jQuery(document).ready(function ($) {
             case "reason_change":
               $("#reason_change_text").show();
               $("#meeting_content").show();
-
+              disable_field("service_body_bigint");
               break;
             case "reason_close":
               $("#reason_close_text").show();
               $("#meeting_content").show();
-
               disable_edits();
               break;
           }
@@ -246,7 +245,8 @@ jQuery(document).ready(function ($) {
   function enable_edits() {
     enable_field("meeting_name");
     enable_field("start_time");
-    enable_field("duration_time");
+    enable_field("duration_minutes");
+    enable_field("duration_hours");
     enable_field("location_street");
     enable_field("location_text");
     enable_field("location_info");
@@ -256,15 +256,15 @@ jQuery(document).ready(function ($) {
     for (var i = 0; i < $("#format-table tr").length; i++) {
       enable_field_index("format-table", i);
     }
-    for (var i = 0; i < 7; i++) {
-      enable_field_index("weekday", i);
-    }
+    enable_field("weekday_tinyint");    
+    enable_field("service_body_bigint");
   }
 
   function disable_edits() {
     disable_field("meeting_name");
     disable_field("start_time");
-    disable_field("duration_time");
+    disable_field("duration_minutes");
+    disable_field("duration_hours");
     disable_field("location_street");
     disable_field("location_text");
     disable_field("location_info");
@@ -274,9 +274,8 @@ jQuery(document).ready(function ($) {
     for (var i = 0; i < $("#format-table tr").length; i++) {
       disable_field_index("format-table", i);
     }
-    for (var i = 0; i < 7; i++) {
-      disable_field_index("weekday", i);
-    }
+    disable_field("weekday_tinyint");
+    disable_field("service_body_bigint");      
   }
 
   function clear_form() {
