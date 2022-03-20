@@ -110,7 +110,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         <label for="virtual_meeting_link">Virtual Meeting Link</label>
         <input type="text" name="virtual_meeting_link" id="virtual_meeting_link" required>
     </div>
-    <div class="bmaw-grid-col2">
+    <div class="bmaw-grid-col1">
         <label for="location_text">Location</label>
         <input type="text" name="location_text" id="location_text" required>
         <label for="location_street">Street</label>
