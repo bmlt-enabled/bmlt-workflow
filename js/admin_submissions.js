@@ -65,7 +65,7 @@ jQuery(document).ready(function ($) {
           clear_notices();
           var id = dt.cell(".selected", 0).data();
           $('#meeting_name').val(bmaw_changedata[id].changes_requested['meeting_name']);
-          $("#bmaw_submission_quickedit_dialog").data("id", id).data("",i).dialog("open");
+          $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
         },
       },
       {
