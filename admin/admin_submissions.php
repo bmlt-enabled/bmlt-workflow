@@ -56,8 +56,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         <div class="bmaw-sg-col1-w1">
             <label for="quickedit_meeting_name">Meeting Name</label>
             <input type="text" name="quickedit_meeting_name" id="quickedit_meeting_name" class="quickedit-input">
-            <label for="quickedit_formatlist">Meeting Formats</label>
-            <select name="quickedit_formatlist" id="quickedit_formatlist" style="width: auto"></select>
+            <label for="quickedit_format_shared_id_list">Meeting Formats</label>
+            <select name="quickedit_format_shared_id_list" id="quickedit_format_shared_id_list" style="width: auto"></select>
 
         </div>
 

@@ -47,9 +47,6 @@ jQuery(document).ready(function ($) {
             });
           });
           $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
-        })
-        .catch((error) => {
-console.log(error);
         });
   
     } else if (bmaw_changedata[id].submission_type == "reason_new") {
@@ -76,7 +73,7 @@ console.log(error);
     formatdata.push({ text: "(" + bmaw_bmlt_formats[key]["key_string"] + ")-" + bmaw_bmlt_formats[key]["name_string"], id: key });
   });
 
-  $("#quickedit_formatlist").select2({
+  $("#quickedit_format_shared_id_list").select2({
     placeholder: "Select a format",
     multiple: true,
     width: "100%",
