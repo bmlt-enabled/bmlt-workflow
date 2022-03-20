@@ -33,13 +33,14 @@ jQuery(document).ready(function ($) {
           // fill in all the bmlt stuff
           var item = data[0];
           // split up the duration so we can use it in the select
-          var durationarr = item[duration_time].split(":");
-          // hoping we got both hours, minutes and seconds here
-          if (durationarr.length == 3) {
-            $("#quickedit_duration_hours").val(durationarr[0]);
-            $("#quickedit_duration_minutes").val(durationarr[1]);
+          if ("duration_time" in item) {
+            var durationarr = item["duration_time"].split(":");
+            // hoping we got both hours, minutes and seconds here
+            if (durationarr.length == 3) {
+              $("#quickedit_duration_hours").val(durationarr[0]);
+              $("#quickedit_duration_minutes").val(durationarr[1]);
+            }
           }
-
           // split up the format list so we can use it in the select
           if ("format_shared_id_list" in item) {
             item["format_shared_id_list"] = item["format_shared_id_list"].split(",");
@@ -74,11 +75,13 @@ jQuery(document).ready(function ($) {
       changes_requested = bmaw_changedata[id].changes_requested;
 
       // split up the duration so we can use it in the select
-      var durationarr = changes_requested[duration_time].split(":");
-      // hoping we got both hours, minutes and seconds here
-      if (durationarr.length == 3) {
-        $("#quickedit_duration_hours").val(durationarr[0]);
-        $("#quickedit_duration_minutes").val(durationarr[1]);
+      if ("duration_time" in changes_requested) {
+        var durationarr = changes_requested["duration_time"].split(":");
+        // hoping we got both hours, minutes and seconds here
+        if (durationarr.length == 3) {
+          $("#quickedit_duration_hours").val(durationarr[0]);
+          $("#quickedit_duration_minutes").val(durationarr[1]);
+        }
       }
 
       if ("format_shared_id_list" in changes_requested) {
