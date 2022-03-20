@@ -68,7 +68,36 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <option value="5">Thursday</option>
                     <option value="6">Friday</option>
                     <option value="7">Saturday</option>
-                    </select>
+                </select>
+                <select id="duration_hours">
+                    <option>0</option>
+                    <option selected="selected">1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                    <option>7</option>
+                    <option>8</option>
+                    <option>9</option>
+                    <option>10</option>
+                    <option>11</option>
+                    <option>12</option>
+                </select> h
+                <select id="duration_minutes">
+                    <option selected="selected">0</option>
+                    <option>5</option>
+                    <option>10</option>
+                    <option>15</option>
+                    <option>20</option>
+                    <option>25</option>
+                    <option>30</option>
+                    <option>35</option>
+                    <option>40</option>
+                    <option>45</option>
+                    <option>50</option>
+                    <option>55</option>
+                </select> m
             <label for="email_address">Email Address</label>
             <input type="text" name="email_address" id="email_address" required>
             <label for="virtual_meeting_link">Virtual Meeting Link</label>
