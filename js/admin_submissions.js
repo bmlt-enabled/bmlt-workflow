@@ -70,7 +70,7 @@ jQuery(document).ready(function ($) {
       Object.keys(changes_requested).forEach((element) => {
         if ($("#quickedit_" + element) instanceof jQuery) {
           $("#quickedit_" + element).addClass("bmaw-changed");
-          $("#quickedit_" + element).val(changes_requested[element]);
+          $("#quickedit_" + element).val(changes_requested[element]).change();
         }
       });
       $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
