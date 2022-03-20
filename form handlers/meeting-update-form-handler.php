@@ -86,7 +86,7 @@ function meeting_update_form_handler_rest($data)
         }
 
         // sanitise only fields that have been provided
-        if (isset($field)) {
+        if (isset($data[$field])) {
             switch ($field_type) {
                 case ('text'):
                     $data[$field] = sanitize_text_field($data[$field]);
