@@ -32,9 +32,10 @@ jQuery(document).ready(function ($) {
           // var f = data;
           console.log(data);
           // fill in all the bmlt stuff
-          Object.keys(data).forEach((element) => {
+          var item = data[0];
+          Object.keys(item).forEach((element) => {
             if ($("#quickedit_" + element) instanceof jQuery) {
-              $("#quickedit_" + element).val(data[element]);
+              $("#quickedit_" + element).val(item[element]);
             }
             // fill in and highlight the changes
             console.log(bmaw_changedata[id].changes_requested);
