@@ -45,15 +45,17 @@ jQuery(document).ready(function ($) {
           });
           // fill in and highlight the changes
           console.log(bmaw_changedata[id].changes_requested);
+          changes_requested=bmaw_changedata[id].changes_requested;
+
           if ('format_shared_id_list' in changes_requested)
           {
             changes_requested['format_shared_id_list']=changes_requested['format_shared_id_list'].split(',');
           }
 
-          Object.keys(bmaw_changedata[id].changes_requested).forEach((element) => {
+          Object.keys(changes_requested).forEach((element) => {
             if ($("#quickedit_" + element) instanceof jQuery) {
               $("#quickedit_" + element).addClass("bmaw-changed");
-              $("#quickedit_" + element).val(bmaw_changedata[id].changes_requested[element]).change();
+              $("#quickedit_" + element).val(changes_requested[element]).change();
             }
           });
           $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
