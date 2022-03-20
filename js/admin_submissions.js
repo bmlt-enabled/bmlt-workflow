@@ -41,7 +41,7 @@ jQuery(document).ready(function ($) {
         action: function (e, dt, button, config) {
           clear_notices();
           var id = dt.cell(".selected", 0).data();
-          $("#bmaw_submission_approve_dialog").data("id", id).dialog("open");
+          $("#bmaw_submission_approve_dialog").data("id", id).dialog(opt).dialog("open");
         },
       },
       {
