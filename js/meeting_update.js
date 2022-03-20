@@ -98,7 +98,7 @@ jQuery(document).ready(function ($) {
           put_field("location_postal_code_1", mdata[id].location_postal_code_1);
 
           // handle duration in the select dropdowns
-          durationarr = mdata[id].duration_time.split(':');
+          var durationarr = mdata[id].duration_time.split(':');
           // hoping we got both hours and minutes here
           if(durationarr.length == 2)
           {
