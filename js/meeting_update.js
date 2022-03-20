@@ -103,6 +103,8 @@ jQuery(document).ready(function ($) {
             $("#duration_hours").val(durationarr[0]);
             $("#duration_minutes").val(durationarr[1]);
           }
+          // handle service body in the select dropdown
+          $("#service_body_bigint").val(mdata[id].service_body_bigint);
 
           // store the selected meeting ID away
           put_field("meeting_id", mdata[id].id_bigint);
