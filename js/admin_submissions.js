@@ -46,24 +46,28 @@ jQuery(document).ready(function ($) {
     placeholder: "Select a format",
     multiple: true,
     width: "100%",
-    data: {
-      "results": [
-        {
-          "id": 1,
-          "text": "Option 1"
-        },
-        {
-          "id": 2,
-          "text": "Option 2",
-          "selected": true
-        },
-        {
-          "id": 3,
-          "text": "Option 3",
-          "disabled": true
-        }
-      ]
-    },
+    data: [
+      {
+          id: 0,
+          text: 'enhancement'
+      },
+      {
+          id: 1,
+          text: 'bug'
+      },
+      {
+          id: 2,
+          text: 'duplicate'
+      },
+      {
+          id: 3,
+          text: 'invalid'
+      },
+      {
+          id: 4,
+          text: 'wontfix'
+      }
+  ],
   });
 
   $("#dt-submission").DataTable({
