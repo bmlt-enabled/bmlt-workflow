@@ -218,7 +218,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <h2>Meeting Submissions</h2>
     <hr class="wp-header-end">
     <label for="bmaw-formatlist">Meeting Formats</label>
-            <select name="bmaw-formatlist" id="bmaw-formatlist" style="width: auto"></select>
+            <select name="bmaw-formatlist" id="bmaw-formatlist" style="width: auto">                <option></option>
+</select>
 
     <div class="dt-container">
         <table id="dt-submission" class="display" style="width:90%">
