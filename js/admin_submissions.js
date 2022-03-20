@@ -66,6 +66,7 @@ jQuery(document).ready(function ($) {
           var id = dt.cell(".selected", 0).data();
           // clear quickedit
           $('.quickedit-input').removeClass("bmaw-changed");
+          $('.quickedit-input').val("");
           // fill quickedit
           Object.keys(bmaw_changedata[id].changes_requested).forEach((element) => 
             {
