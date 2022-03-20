@@ -32,13 +32,24 @@ jQuery(document).ready(function ($) {
           console.log(data);
           // fill in all the bmlt stuff
           var item = data[0];
+          // split up the format list so we can use it in the select
+          if ('format_shared_id_list' in item)
+          {
+            item['format_shared_id_list']=item['format_shared_id_list'].split(',');
+          }
+
           Object.keys(item).forEach((element) => {
             if ($("#quickedit_" + element) instanceof jQuery) {
-              $("#quickedit_" + element).val(item[element]).change();
+                $("#quickedit_" + element).val(item[element]).change();
             }
           });
           // fill in and highlight the changes
           console.log(bmaw_changedata[id].changes_requested);
+          if ('format_shared_id_list' in changes_requested)
+          {
+            changes_requested['format_shared_id_list']=changes_requested['format_shared_id_list'].split(',');
+          }
+
           Object.keys(bmaw_changedata[id].changes_requested).forEach((element) => {
             if ($("#quickedit_" + element) instanceof jQuery) {
               $("#quickedit_" + element).addClass("bmaw-changed");
