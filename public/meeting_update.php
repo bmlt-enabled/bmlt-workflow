@@ -89,7 +89,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <br>
             <div>
                 <label for="duration_time">Duration<span class="bmaw-required-field"> *</span></label>
-                <select>
+                <select id="duration_hours">
                     <option>0</option>
                     <option selected="selected">1</option>
                     <option>2</option>
@@ -104,7 +104,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <option>11</option>
                     <option>12</option>
                 </select> h
-                <select>
+                <select id="duration_minutes">
                     <option selected="selected">0</option>
                     <option>5</option>
                     <option>10</option>
