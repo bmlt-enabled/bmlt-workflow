@@ -12,7 +12,7 @@
   grid-template-rows: 1fr;
   gap: 5px 11px;
   grid-auto-flow: row;
-  grid-template-areas: "bmaw-grid-col1 bmaw-grid-col1";
+  grid-template-areas: "bmaw-grid-col1 bmaw-grid-col2";
 }
 
 .bmaw-grid-col1 {
@@ -29,6 +29,7 @@
   .bmaw-col1-t1 { grid-area: bmaw-col1-t1; }
   .bmaw-col1-t2 { grid-area: bmaw-col1-t2; }
   .bmaw-col1-t3 { grid-area: bmaw-col1-t3; }
+  .bmaw-grid-col2 { grid-area: bmaw-grid-col2; }
 
 .bmaw-bmaw_submission_quickedit_dialog input {
   line-height: 1.5;
