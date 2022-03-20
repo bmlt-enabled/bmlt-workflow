@@ -208,6 +208,10 @@ function meeting_update_form_handler_rest($data)
                 // if the field is in bmlt and its different to the submitted item, add it to the list
                 else if ((array_key_exists($field, $meeting)) && (array_key_exists($field, $data))) {
                     if ($meeting[$field] != $data[$field]) {
+                        error_log("meeting");
+                        error_log(vdump($meeting[$field]));
+                        error_log("data");
+                        error_log(vdump($data[$field]));
                         // don't allow someone to modify a meeting service body
                         if ($field === 'service_body_bigint') {
                                 return bmaw_rest_error('Service body cannot be changed.', 400);
