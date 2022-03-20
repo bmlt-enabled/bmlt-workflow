@@ -84,9 +84,9 @@ function enqueue_form_deps()
     wp_enqueue_style('select2css');
     wp_enqueue_script('select2');
 
-    $script  = 'bmaw_admin_bmaw_service_areas_rest_route = ' . json_encode('bmaw-submission/v1/serviceareas') . '; ';
-    $script .= 'wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
-    $script .= 'bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '";';
+    $script  = 'var bmaw_admin_bmaw_service_areas_rest_route = ' . json_encode('bmaw-submission/v1/serviceareas') . '; ';
+    $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
+    $script .= 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '";';
     wp_add_inline_script('bmaw-meeting-update-js', $script, 'before');
 
 
@@ -123,8 +123,11 @@ function bmaw_admin_scripts($hook)
             wp_enqueue_style('select2css');
             wp_enqueue_script('select2');
 
+        
             // make sure our rest url is populated
             $script  = 'var bmaw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';
+            // add our bmlt server for the submission lookups
+            $script .= 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '";';
 
             // add meeting formats
             $bmlt_integration = new BMLTIntegration;
