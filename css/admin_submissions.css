@@ -26,12 +26,13 @@
     gap: 0px 0px;
     grid-auto-flow: row;
     grid-template-areas:
-      ". . ."
-      "bmaw-col1-t1 bmaw-col1-t2 bmaw-col1-t3"
-      ". . .";
-    grid-area: bmaw-grid-col1;
+    "bmaw-grid-col1-wide bmaw-grid-col1-wide bmaw-grid-col1-wide"
+          "bmaw-col1-t1 bmaw-col1-t2 bmaw-col1-t3"
+          "bmaw-grid-col1-wide bmaw-grid-col1-wide bmaw-grid-col1-wide";
+              grid-area: bmaw-grid-col1;
   }
   
+  .bmaw-grid-col1-wide { grid-area: bmaw-grid-col1-wide; }
   .bmaw-col1-t1 { grid-area: bmaw-col1-t1; }
   
   .bmaw-col1-t2 { grid-area: bmaw-col1-t2; }
