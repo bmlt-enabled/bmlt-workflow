@@ -57,13 +57,12 @@
     width: 90%;
   }
   
-
 .bmaw-sg-col1-t3 select {
     line-height: 1.5;
     font-size: 1.2em;
     padding: 5px 10px;
     display: inline;
-    width: auto;
+    width: 30%;
   }
   
 .bmaw-sg .bmaw-changed {
