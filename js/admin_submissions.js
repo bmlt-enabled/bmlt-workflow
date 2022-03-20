@@ -46,7 +46,11 @@ jQuery(document).ready(function ($) {
             });
           });
           $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
+        })
+        .catch((error) => {
+console.log(error);
         });
+  
     } else if (bmaw_changedata[id].submission_type == "reason_new") {
       // fill from changes
       console.log(bmaw_changedata[id].changes_requested);
