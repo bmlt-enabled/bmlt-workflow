@@ -201,13 +201,18 @@ function meeting_update_form_handler_rest($data)
 
             // if the user submitted something different to what is in bmlt, save it in changes
             foreach ($change_subfields as $field) {
-                if ((array_key_exists($field, $meeting)) && (array_key_exists($field, $data))) {
+                // if the field is blank in bmlt, but they submitted a change, add it to the list
+                if ((!array_key_exists($field, $meeting)) && (array_key_exists($field, $data))) {
+                    $changes[$field] = $data[$field];
+                }
+                // if the field is in bmlt and its different to the submitted item, add it to the list
+                else if ((array_key_exists($field, $meeting)) && (array_key_exists($field, $data))) {
                     if ($meeting[$field] != $data[$field]) {
                         $changes[$field] = $data[$field];
                     }
                 }
             }
-            
+
             // store away the meeting name
             $changes['original_meeting_name'] = $data['meeting_name'];
 
