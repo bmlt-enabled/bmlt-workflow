@@ -67,7 +67,7 @@ jQuery(document).ready(function ($) {
       {
         changes_requested['format_shared_id_list']=changes_requested['format_shared_id_list'].split(',');
       }
-      Object.keys(hanges_requested).forEach((element) => {
+      Object.keys(changes_requested).forEach((element) => {
         if ($("#quickedit_" + element) instanceof jQuery) {
           $("#quickedit_" + element).addClass("bmaw-changed");
           $("#quickedit_" + element).val(changes_requested[element]);
