@@ -67,9 +67,12 @@ jQuery(document).ready(function ($) {
           // clear quickedit
           $('.quickedit-input').removeClass("bmaw-changed");
           // fill quickedit
-          bmaw_changedata[id].changes_requested.forEach(element => 
+          Object.keys(bmaw_changedata[id].changes_requested).forEach((element) => 
             {
-              $('#quickedit_'+element).addClass("bmaw-changed");
+              if($('#quickedit_'+element) instanceof jQuery){
+                $('#quickedit_'+element).addClass("bmaw-changed");
+                $('#quickedit_'+element).value(bmaw_changedata[id].changes_requested[element]);  
+              }
             });
           $('#meeting_name').val(bmaw_changedata[id].changes_requested['meeting_name']);
           $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
