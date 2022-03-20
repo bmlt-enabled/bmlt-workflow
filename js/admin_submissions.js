@@ -10,8 +10,7 @@ function dismiss_notice(element) {
 var bmaw_changedata = {};
 
 jQuery(document).ready(function ($) {
-
-  function populate_quickedit(id) {
+  function populate_and_open_quickedit(id) {
     // clear quickedit
     $(".quickedit-input").removeClass("bmaw-changed");
     $(".quickedit-input").val("");
@@ -27,7 +26,9 @@ jQuery(document).ready(function ($) {
         "&lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&&recursive=1&sort_keys=start_time";
 
       fetchJsonp(search_results_address)
-        .then((response) => response.json())
+        .then((response) => {
+          response.json();
+        })
         .then((data) => {
           console.log(data);
           // fill in all the bmlt stuff
@@ -44,6 +45,7 @@ jQuery(document).ready(function ($) {
               }
             });
           });
+          $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
         });
     } else if (bmaw_changedata[id].submission_type == "reason_new") {
       // fill from changes
@@ -54,9 +56,10 @@ jQuery(document).ready(function ($) {
           $("#quickedit_" + element).val(bmaw_changedata[id].changes_requested[element]);
         }
       });
+      $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
     }
   }
-  
+
   function clear_notices() {
     jQuery(".notice-dismiss").each(function (i, e) {
       dismiss_notice(e);
@@ -104,8 +107,7 @@ jQuery(document).ready(function ($) {
         extend: "selected",
         action: function (e, dt, button, config) {
           var id = dt.cell(".selected", 0).data();
-          populate_quickedit(id);
-          $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
+          populate_and_open_quickedit(id);
         },
       },
       {
