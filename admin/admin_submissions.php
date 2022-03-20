@@ -52,16 +52,16 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
 <!-- Quickedit dialog -->
 <div id="bmaw_submission_quickedit_dialog" class="hidden bmaw_submission_quickedit_dialog">
-        <div class="bmaw-grid-col1">
-            <label for="meeting_name">Meeting Name</label>
-            <input type="text" name="meeting_name" id="meeting_name">
-            <div class="bmaw-col1-t1">
+    <div class="bmaw-grid-col1">
+        <label for="meeting_name">Meeting Name</label>
+        <input type="text" name="meeting_name" id="meeting_name">
+        <div class="bmaw-col1-t1">
             <label for="start_time">Start Time</label>
-            <input type="time" name="start_time" id="start_time" class="bmaw_submission_input_half" >
+            <input type="time" name="start_time" id="start_time" class="bmaw_submission_input_half">
             <div class="bmaw-col1-t2">
-            <!-- <input type="text" name="duration_time" id="duration_time" class="bmaw_submission_input_half" > -->
+                <!-- <input type="text" name="duration_time" id="duration_time" class="bmaw_submission_input_half" > -->
 
-            <label for="weekday_tinyint">Weekday</label>
+                <label for="weekday_tinyint">Weekday</label>
                 <select name="weekday_tinyint" id="weekday_tinyint">
                     <option value="1">Sunday</option>
                     <option value="2">Monday</option>
@@ -71,8 +71,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <option value="6">Friday</option>
                     <option value="7">Saturday</option>
                 </select>
-</div>
-<div class="bmaw-col1-t3">
+            </div>
+            <div class="bmaw-col1-t3">
                 <label for="duration_time">Duration</label>
 
                 <select id="duration_hours">
@@ -104,7 +104,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <option>50</option>
                     <option>55</option>
                 </select> m
-</div>
+            </div>
             <label for="email_address">Email Address</label>
             <input type="text" name="email_address" id="email_address" required>
             <label for="virtual_meeting_link">Virtual Meeting Link</label>
@@ -112,7 +112,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
         </div>
         <div class="bmaw-grid-col2">
-        <label for="location_text">Location</label>
+            <label for="location_text">Location</label>
             <input type="text" name="location_text" id="location_text" required>
             <label for="location_street">Street</label>
             <input type="text" name="location_street" id="location_street" required>
@@ -125,6 +125,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <label for="location_postal_code_1">Post Code</label>
             <input type="text" name="location_postal_code_1" id="location_postal_code_1" required>
         </div>
+    </div>
 </div>
 
 
