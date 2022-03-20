@@ -56,6 +56,9 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         <div class="bmaw-sg-col1-w1">
             <label for="meeting_name">Meeting Name</label>
             <input type="text" name="meeting_name" id="meeting_name">
+            <label for="bmaw-formatlist">Meeting Formats</label>
+            <select name="bmaw-formatlist" id="bmaw-formatlist" style="width: auto"></select>
+
         </div>
 
         <div class="bmaw-sg-col1-t1">
@@ -112,8 +115,6 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <input type="text" name="email_address" id="email_address" required>
             <label for="virtual_meeting_link">Virtual Meeting Link</label>
             <input type="text" name="virtual_meeting_link" id="virtual_meeting_link" required>
-            <label for="bmaw-formatlist">Meeting Formats</label>
-            <select name="bmaw-formatlist" id="bmaw-formatlist" style="width: auto"></select>
         </div>
     </div>
     <div class="bmaw-grid-col2">
