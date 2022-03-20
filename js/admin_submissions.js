@@ -8,6 +8,8 @@ function dismiss_notice(element) {
   return false;
 }
 
+var bmaw_changedata = {};
+
 jQuery(document).ready(function ($) {
   // console.log(bmaw_admin_submissions_rest_url);
 
@@ -30,7 +32,6 @@ jQuery(document).ready(function ($) {
     dropdownParent: $('#bmaw_submission_quickedit_dialog'),
   });
 
-  var changedata = {};
 
   $("#dt-submission").DataTable({
     dom: "Bfrtip",
@@ -84,7 +85,7 @@ jQuery(document).ready(function ($) {
       },
       dataSrc: function (json) {
         // store the json for us to use in quick editor
-        changedata = json;
+        bmaw_changedata = json;
         for (var i = 0, ien = json.length; i < ien; i++) {
           json[i]["changes_requested"]["submission_type"] = json[i]["submission_type"];
         }
