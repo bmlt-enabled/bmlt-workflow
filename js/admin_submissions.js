@@ -44,7 +44,6 @@ jQuery(document).ready(function ($) {
             }
           });
           // fill in and highlight the changes
-          console.log(bmaw_changedata[id].changes_requested);
           changes_requested=bmaw_changedata[id].changes_requested;
 
           if ('format_shared_id_list' in changes_requested)
@@ -62,11 +61,16 @@ jQuery(document).ready(function ($) {
         });
     } else if (bmaw_changedata[id].submission_type == "reason_new") {
       // fill from changes
-      console.log(bmaw_changedata[id].changes_requested);
-      Object.keys(bmaw_changedata[id].changes_requested).forEach((element) => {
+      changes_requested=bmaw_changedata[id].changes_requested;
+
+      if ('format_shared_id_list' in changes_requested)
+      {
+        changes_requested['format_shared_id_list']=changes_requested['format_shared_id_list'].split(',');
+      }
+      Object.keys(hanges_requested).forEach((element) => {
         if ($("#quickedit_" + element) instanceof jQuery) {
           $("#quickedit_" + element).addClass("bmaw-changed");
-          $("#quickedit_" + element).val(bmaw_changedata[id].changes_requested[element]);
+          $("#quickedit_" + element).val(hanges_requested[element]);
         }
       });
       $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
@@ -85,7 +89,7 @@ jQuery(document).ready(function ($) {
   });
 
   $("#quickedit_format_shared_id_list").select2({
-    placeholder: "Select a format",
+    placeholder: "Select from available formats",
     multiple: true,
     width: "100%",
     data: formatdata,
