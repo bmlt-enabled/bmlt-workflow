@@ -29,8 +29,8 @@ jQuery(document).ready(function ($) {
         .then((response) => 
           response.json())
         .then((data) => {
-          var f = data;
-          console.log(f);
+          // var f = data;
+          console.log(data);
           // fill in all the bmlt stuff
           Object.keys(data).forEach((element) => {
             if ($("#quickedit_" + element) instanceof jQuery) {
