@@ -1,3 +1,4 @@
+
 function dismiss_notice(element) {
   jQuery(element)
     .parent()
@@ -9,6 +10,15 @@ function dismiss_notice(element) {
 
 jQuery(document).ready(function ($) {
   // console.log(bmaw_admin_submissions_rest_url);
+
+  //select2 jquery bugfix
+  if ($.ui && $.ui.dialog && $.ui.dialog.prototype._allowInteraction) {
+    var ui_dialog_interaction = $.ui.dialog.prototype._allowInteraction;
+    $.ui.dialog.prototype._allowInteraction = function(e) {
+        if ($(e.target).closest('.select2-dropdown').length) return true;
+        return ui_dialog_interaction.apply(this, arguments);
+    };
+  }
 
   function clear_notices() {
     jQuery(".notice-dismiss").each(function (i, e) {
@@ -274,6 +284,9 @@ jQuery(document).ready(function ($) {
   function bmaw_create_quickedit_modal(dialogid, title, width, maxwidth) {
     $("#" + dialogid).dialog({
       title: title,
+      _allowInteraction: function (event) {
+        return !!$(event.target).is(".select2-input") || this._super(event);
+      },    
       classes: { "ui-dialog-content": "quickedit" },
       autoOpen: false,
       draggable: false,
