@@ -109,15 +109,22 @@ function bmaw_admin_scripts($hook)
             // wp_enqueue_script('plugin-install');
             deny_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
             deny_cache_enqueue_style('bmaw-admin-submissions-css', false, 'css/admin_submissions.css');
+            // jquery dialogs
             wp_enqueue_script('jquery-ui-dialog');
             wp_enqueue_style('wp-jquery-ui-dialog');
+            // datatables
             wp_register_style('dtcss', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.css', false, '1.0', 'all');
             wp_register_script('dt', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
             wp_enqueue_style('dtcss');
             wp_enqueue_script('dt');
+            // select2 for quick editor
+            wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
+            wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
+            wp_enqueue_style('select2css');
+            wp_enqueue_script('select2');
 
             // make sure our rest url is populated
-            $script  = 'bmaw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';
+            $script  = 'var bmaw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';
 
             // add meeting formats
             $bmlt_integration = new BMLTIntegration;
