@@ -68,6 +68,7 @@ jQuery(document).ready(function ($) {
           $('.quickedit-input').removeClass("bmaw-changed");
           $('.quickedit-input').val("");
           // fill quickedit
+          console.log(bmaw_changedata[id].changes_requested);
           Object.keys(bmaw_changedata[id].changes_requested).forEach((element) => 
             {
               if($('#quickedit_'+element) instanceof jQuery){
