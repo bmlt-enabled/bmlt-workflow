@@ -49,6 +49,10 @@
   width: 90%;
 }
 
+.bmaw-sg input .changed{
+    background: #e7f478; 
+   }
+   
 .bmaw-sg label {
   width: 100%;
   display: block;
