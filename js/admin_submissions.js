@@ -276,9 +276,6 @@ jQuery(document).ready(function ($) {
   function bmaw_create_quickedit_modal(dialogid, title, width, maxwidth) {
     $("#" + dialogid).dialog({
       title: title,
-      _allowInteraction: function (event) {
-        return !!$(event.target).is(".select2-input") || this._super(event);
-      },    
       classes: { "ui-dialog-content": "quickedit" },
       autoOpen: false,
       draggable: false,
