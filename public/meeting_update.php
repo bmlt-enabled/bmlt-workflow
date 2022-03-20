@@ -60,6 +60,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <option value=7>Saturday</option>
                 </select>
             </div>
+            <br>
             <div>
                 <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
                 <input type="time" name="start_time" size="10" id="start_time" required>
