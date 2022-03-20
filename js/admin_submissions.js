@@ -16,58 +16,16 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  var formatdata = {};
-  var result = [];
+  var formatdata = [];
   Object.keys(bmaw_bmlt_formats).forEach((key) => {
-    result.push({ text: "(" + bmaw_bmlt_formats[key]["key_string"] + ")-" + bmaw_bmlt_formats[key]["name_string"], id: key });
+    formatdata.push({ text: "(" + bmaw_bmlt_formats[key]["key_string"] + ")-" + bmaw_bmlt_formats[key]["name_string"], id: key });
   });
-  formatdata['results'] = result;
-
-  formatdata = {
-    "results": [
-      {
-        "id": 1,
-        "text": "Option 1"
-      },
-      {
-        "id": 2,
-        "text": "Option 2",
-        "selected": true
-      },
-      {
-        "id": 3,
-        "text": "Option 3",
-        "disabled": true
-      }
-    ]
-  };
 
   $("#bmaw-formatlist").select2({
     placeholder: "Select a format",
     multiple: true,
     width: "100%",
-    data: [
-      {
-          id: 0,
-          text: 'enhancement'
-      },
-      {
-          id: 1,
-          text: 'bug'
-      },
-      {
-          id: 2,
-          text: 'duplicate'
-      },
-      {
-          id: 3,
-          text: 'invalid'
-      },
-      {
-          id: 4,
-          text: 'wontfix'
-      }
-  ],
+    data: formatdata,
   });
 
   $("#dt-submission").DataTable({
