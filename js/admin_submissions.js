@@ -41,7 +41,7 @@ jQuery(document).ready(function ($) {
         action: function (e, dt, button, config) {
           clear_notices();
           var id = dt.cell(".selected", 0).data();
-          $("#bmaw_submission_approve_dialog").data("id", id).dialog().dialog("open");
+          $("#bmaw_submission_approve_dialog").data("id", id).dialog("open");
         },
       },
       {
@@ -303,9 +303,10 @@ jQuery(document).ready(function ($) {
         },
       },
       open: function () {
+        var $this = $(this);
         // close dialog by clicking the overlay behind it
         $(".ui-widget-overlay").bind("click", function () {
-          $(this).dialog("close");
+          $this.dialog("close");
         });
       },
       create: function () {
