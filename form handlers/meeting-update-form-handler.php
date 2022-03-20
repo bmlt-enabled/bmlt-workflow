@@ -11,12 +11,12 @@ function vdump($object)
 
 function bmaw_rest_success($message)
 {
-    return new WP_Error( 'bmaw_success', __( $message ), array( 'status' => 200 ) );
+    return new WP_Error('bmaw_success', __($message), array('status' => 200));
 }
 
 function bmaw_rest_error($message, $code)
 {
-    return new WP_Error( 'bmaw_error', __( $message ), array( 'status' => $code ) );
+    return new WP_Error('bmaw_error', __($message), array('status' => $code));
 }
 
 function meeting_update_form_handler_rest($data)
@@ -31,12 +31,11 @@ function meeting_update_form_handler_rest($data)
 
     // strip blanks
     foreach ($data as $key => $value) {
-        if(($data[$key] === "")||($data[$key] === NULL))
-        {
+        if (($data[$key] === "") || ($data[$key] === NULL)) {
             unset($data[$key]);
         }
     }
-    
+
     if (isset($data['update_reason'])) {
         $reason_new_bool = ($data['update_reason'] === 'reason_new');
         $reason_other_bool = ($data['update_reason'] === 'reason_other');
@@ -45,7 +44,7 @@ function meeting_update_form_handler_rest($data)
     }
 
     if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_other_bool && !$reason_change_bool && !$reason_close_bool))) {
-        return bmaw_rest_error('No valid meeting update reason provided', 400 );
+        return bmaw_rest_error('No valid meeting update reason provided', 400);
     }
 
     // sanitize the input
@@ -83,42 +82,45 @@ function meeting_update_form_handler_rest($data)
 
         // if the form field is required, check if the submission is empty or non existent
         if ($validation[1] && (!isset($data[$field]) || (empty($data[$field])))) {
-            return bmaw_rest_error('Form field "'.$field.'" is required.', 400 );
+            return bmaw_rest_error('Form field "' . $field . '" is required.', 400);
         }
 
-        switch ($field_type) {
-            case ('text'):
-                $data[$field] = sanitize_text_field($data[$field]);
-                break;
-            case ('number'):
-            case ('bigint'):
-                $data[$field] = intval($data[$field]);
-                break;
-            case ('weekday'):
-                if (!(($data[$field] >= 1) && ($data[$field] <= 7))) {
-                    return bmaw_rest_error('Form field "'.$field.'" is invalid.', 400 );
-                }
-                break;
-            case ('url'):
-                $data[$field] = esc_url_raw($data[$field], array('http', 'https'));
-                break;
-            case ('email'):
-                $data[$field] = sanitize_email($data[$field]);
-                if (empty($data[$field])) {
-                    return bmaw_rest_error('Form field "'.$field.'" is invalid.', 400 );
-                }
-                break;
-            case ('textarea'):
-                $data[$field] = sanitize_textarea_field($data[$field]);
-                break;
-                //                 case ('time'):
-                //                     if(!preg_match('/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9][\s]{0,1}[aApP][mM]$/', '12:34 ZM'))
-                // {
-                //     $data[$field] = "(invalid time)"
-                // }
-                //                         break;
-            default:
-                $data[$field] = "UNSANITISED";
+        // sanitise only fields that have been provided
+        if (isset($field)) {
+            switch ($field_type) {
+                case ('text'):
+                    $data[$field] = sanitize_text_field($data[$field]);
+                    break;
+                case ('number'):
+                case ('bigint'):
+                    $data[$field] = intval($data[$field]);
+                    break;
+                case ('weekday'):
+                    if (!(($data[$field] >= 1) && ($data[$field] <= 7))) {
+                        return bmaw_rest_error('Form field "' . $field . '" is invalid.', 400);
+                    }
+                    break;
+                case ('url'):
+                    $data[$field] = esc_url_raw($data[$field], array('http', 'https'));
+                    break;
+                case ('email'):
+                    $data[$field] = sanitize_email($data[$field]);
+                    if (empty($data[$field])) {
+                        return bmaw_rest_error('Form field "' . $field . '" is invalid.', 400);
+                    }
+                    break;
+                case ('textarea'):
+                    $data[$field] = sanitize_textarea_field($data[$field]);
+                    break;
+                    //                 case ('time'):
+                    //                     if(!preg_match('/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9][\s]{0,1}[aApP][mM]$/', '12:34 ZM'))
+                    // {
+                    //     $data[$field] = "(invalid time)"
+                    // }
+                    //                         break;
+                default:
+                    $data[$field] = "UNSANITISED";
+            }
         }
     }
 
@@ -161,7 +163,7 @@ function meeting_update_form_handler_rest($data)
 
             if (isset($data['meeting_id'])) {
                 if (!is_numeric($data['meeting_id'])) {
-                    return bmaw_rest_error('Invalid meeting id.', 400 );
+                    return bmaw_rest_error('Invalid meeting id.', 400);
                 }
                 $meeting_id = $data['meeting_id'];
             }
@@ -184,7 +186,7 @@ function meeting_update_form_handler_rest($data)
 
             $resp = curl_exec($curl);
             if (!$resp) {
-                return bmaw_rest_error('Server error retrieving meeting list', 500 );
+                return bmaw_rest_error('Server error retrieving meeting list', 500);
             }
             curl_close($curl);
             $meeting = json_decode($resp, true)[0];
@@ -209,7 +211,7 @@ function meeting_update_form_handler_rest($data)
             wp_die('Not implemented');
             break;
         default:
-            return bmaw_rest_error('Invalid meeting change', 400 );
+            return bmaw_rest_error('Invalid meeting change', 400);
     }
 
     $cc_address = "";
@@ -310,5 +312,5 @@ function meeting_update_form_handler_rest($data)
     );
     $insert_id = $wpdb->insert_id;
     error_log("id = " . $insert_id);
-    bmaw_rest_success('Form submission successful, submission id '.$insert_id);
+    bmaw_rest_success('Form submission successful, submission id ' . $insert_id);
 }
