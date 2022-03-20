@@ -56,9 +56,6 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         <div class="bmaw-sg-col1-w1">
             <label for="meeting_name">Meeting Name</label>
             <input type="text" name="meeting_name" id="meeting_name">
-            <label for="bmaw-formatlist">Meeting Formats</label>
-            <select name="bmaw-formatlist" id="bmaw-formatlist" style="width: auto"></select>
-
         </div>
 
         <div class="bmaw-sg-col1-t1">
@@ -220,6 +217,9 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <div id="icon-users" class="icon32"></div>
     <h2>Meeting Submissions</h2>
     <hr class="wp-header-end">
+    <label for="bmaw-formatlist">Meeting Formats</label>
+            <select name="bmaw-formatlist" id="bmaw-formatlist" style="width: auto"></select>
+
     <div class="dt-container">
         <table id="dt-submission" class="display" style="width:90%">
             <thead>
