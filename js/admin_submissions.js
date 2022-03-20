@@ -1,4 +1,3 @@
-
 function dismiss_notice(element) {
   jQuery(element)
     .parent()
@@ -11,8 +10,53 @@ function dismiss_notice(element) {
 var bmaw_changedata = {};
 
 jQuery(document).ready(function ($) {
-  // console.log(bmaw_admin_submissions_rest_url);
 
+  function populate_quickedit(id) {
+    // clear quickedit
+    $(".quickedit-input").removeClass("bmaw-changed");
+    $(".quickedit-input").val("");
+    // fill quickedit
+
+    // if it's a meeting change, fill from bmlt first
+    if (bmaw_changedata[id].submission_type == "reason_change") {
+      var meeting_id = bmaw_changedata[id].changes_requested["meeting_id"];
+      var search_results_address =
+        bmaw_bmlt_server_address +
+        "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" +
+        meeting_id +
+        "&lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&&recursive=1&sort_keys=start_time";
+
+      fetchJsonp(search_results_address)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          // fill in all the bmlt stuff
+          Object.keys(data).forEach((element) => {
+            if ($("#quickedit_" + element) instanceof jQuery) {
+              $("#quickedit_" + element).val(data[element]);
+            }
+            // fill in and highlight the changes
+            console.log(bmaw_changedata[id].changes_requested);
+            Object.keys(bmaw_changedata[id].changes_requested).forEach((element) => {
+              if ($("#quickedit_" + element) instanceof jQuery) {
+                $("#quickedit_" + element).addClass("bmaw-changed");
+                $("#quickedit_" + element).val(bmaw_changedata[id].changes_requested[element]);
+              }
+            });
+          });
+        });
+    } else if (bmaw_changedata[id].submission_type == "reason_new") {
+      // fill from changes
+      console.log(bmaw_changedata[id].changes_requested);
+      Object.keys(bmaw_changedata[id].changes_requested).forEach((element) => {
+        if ($("#quickedit_" + element) instanceof jQuery) {
+          $("#quickedit_" + element).addClass("bmaw-changed");
+          $("#quickedit_" + element).val(bmaw_changedata[id].changes_requested[element]);
+        }
+      });
+    }
+  }
+  
   function clear_notices() {
     jQuery(".notice-dismiss").each(function (i, e) {
       dismiss_notice(e);
@@ -29,9 +73,8 @@ jQuery(document).ready(function ($) {
     multiple: true,
     width: "100%",
     data: formatdata,
-    dropdownParent: $('#bmaw_submission_quickedit_dialog'),
+    dropdownParent: $("#bmaw_submission_quickedit_dialog"),
   });
-
 
   $("#dt-submission").DataTable({
     dom: "Bfrtip",
@@ -42,7 +85,6 @@ jQuery(document).ready(function ($) {
         text: "Approve",
         enabled: false,
         action: function (e, dt, button, config) {
-          clear_notices();
           var id = dt.cell(".selected", 0).data();
           $("#bmaw_submission_approve_dialog").data("id", id).dialog("open");
         },
@@ -52,7 +94,6 @@ jQuery(document).ready(function ($) {
         text: "Reject",
         enabled: false,
         action: function (e, dt, button, config) {
-          clear_notices();
           var id = dt.cell(".selected", 0).data();
           $("#bmaw_submission_reject_dialog").data("id", id).dialog("open");
         },
@@ -62,21 +103,8 @@ jQuery(document).ready(function ($) {
         text: "QuickEdit",
         extend: "selected",
         action: function (e, dt, button, config) {
-          clear_notices();
           var id = dt.cell(".selected", 0).data();
-          // clear quickedit
-          $('.quickedit-input').removeClass("bmaw-changed");
-          $('.quickedit-input').val("");
-          // fill quickedit
-          console.log(bmaw_changedata[id].changes_requested);
-          Object.keys(bmaw_changedata[id].changes_requested).forEach((element) => 
-            {
-              if($('#quickedit_'+element) instanceof jQuery){
-                $('#quickedit_'+element).addClass("bmaw-changed");
-                $('#quickedit_'+element).val(bmaw_changedata[id].changes_requested[element]);  
-              }
-            });
-          $('#meeting_name').val(bmaw_changedata[id].changes_requested['meeting_name']);
+          populate_quickedit(id);
           $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
         },
       },
@@ -85,7 +113,6 @@ jQuery(document).ready(function ($) {
         text: "Delete",
         extend: "selected",
         action: function (e, dt, button, config) {
-          clear_notices();
           var id = dt.cell(".selected", 0).data();
           $("#bmaw_submission_delete_dialog").data("id", id).dialog("open");
         },
@@ -100,8 +127,8 @@ jQuery(document).ready(function ($) {
         bmaw_changedata = {};
         for (var i = 0, ien = json.length; i < ien; i++) {
           json[i]["changes_requested"]["submission_type"] = json[i]["submission_type"];
-        // store the json for us to use in quick editor
-        bmaw_changedata[json[i]['id']]=json[i];
+          // store the json for us to use in quick editor
+          bmaw_changedata[json[i]["id"]] = json[i];
         }
         return json;
       },
@@ -341,15 +368,19 @@ jQuery(document).ready(function ($) {
   bmaw_create_quickedit_modal("bmaw_submission_quickedit_dialog", "Submission QuickEdit", "60%", 768);
 
   bmaw_submission_approve_dialog_ok = function (id) {
+    clear_notices();
     generic_approve_handler(id, "POST", "/approve", "bmaw_submission_approve");
   };
   bmaw_submission_reject_dialog_ok = function (id) {
+    clear_notices();
     generic_approve_handler(id, "POST", "/reject", "bmaw_submission_reject");
   };
   bmaw_submission_delete_dialog_ok = function (id) {
+    clear_notices();
     generic_approve_handler(id, "DELETE", "", "bmaw_submission_delete");
   };
   bmaw_submission_quickedit_dialog_ok = function (id) {
+    clear_notices();
     generic_approve_handler(id, "AAAAA", "", "a");
   };
 
