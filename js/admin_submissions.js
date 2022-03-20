@@ -25,6 +25,7 @@ jQuery(document).ready(function ($) {
       Object.keys(bmaw_bmlt_formats).forEach((key) => {
         result.push({ text: '('+bmaw_bmlt_formats[key]["key_string"]+')-'+bmaw_bmlt_formats[key]["name_string"], id: key });
       });
+      return { results: result };
     },
   });
 
