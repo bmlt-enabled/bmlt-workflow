@@ -49,6 +49,14 @@
   width: 90%;
 }
 
+.bmaw-sg select {
+    line-height: 1.5;
+    font-size: 1.2em;
+    padding: 5px 10px;
+    display: block;
+    width: 90%;
+  }
+  
 .bmaw-sg .bmaw-changed {
     background: #e7f478; 
    }
