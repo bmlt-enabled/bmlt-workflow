@@ -151,7 +151,10 @@ function meeting_update_form_handler_rest($data)
 
             // new meeting - add all fields to the changes requested
             foreach ($change_subfields as $field) {
-                $changes[$field] = $data[$field];
+                // make sure its not a null entry, ie not entered on the frontend form
+                if (array_key_exists($field, $data)) {
+                    $changes[$field] = $data[$field];
+                }
             }
 
             $changes['meeting_id'] = 0;
