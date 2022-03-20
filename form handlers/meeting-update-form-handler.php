@@ -190,7 +190,7 @@ function meeting_update_form_handler_rest($data)
             }
             curl_close($curl);
             $meeting = json_decode($resp, true)[0];
-
+            error_log(vdump($meeting));
             foreach ($change_subfields as $field) {
                 if (array_key_exists($field, $meeting)) {
                     if ($meeting[$field] != $data[$field]) {
