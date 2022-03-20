@@ -88,7 +88,7 @@ jQuery(document).ready(function ($) {
         for (var i = 0, ien = json.length; i < ien; i++) {
           json[i]["changes_requested"]["submission_type"] = json[i]["submission_type"];
         // store the json for us to use in quick editor
-        bmaw_changedata[i]['id']=json[i];
+        bmaw_changedata[json[i]['id']]=json[i];
         }
         return json;
       },
