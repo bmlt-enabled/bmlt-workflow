@@ -6,31 +6,38 @@
   display: block;
 }
 
-.bmaw_submission_quickedit_dialog {
-  display: grid;
-  grid-template-columns: 1.3fr 1.2fr;
-  grid-template-rows: 1fr;
-  gap: 5px 11px;
-  grid-auto-flow: row;
-  grid-template-areas: "bmaw-grid-col1 bmaw-grid-col2";
-}
 
-.bmaw-grid-col1 {
-    display: grid; 
-    grid-template-columns: 1fr 1fr 1fr; 
-    grid-template-rows: 1fr 1fr 1fr; 
-    gap: 0px 0px; 
-    grid-template-areas: 
+.bmaw_submission_quickedit_dialog {  display: grid;
+    grid-template-columns: 1.3fr 1.2fr;
+    grid-template-rows: 1fr;
+    gap: 5px 11px;
+    grid-auto-flow: row;
+    grid-template-areas:
+      "bmaw-grid-col1 bmaw-grid-col2";
+    width: 80%;
+    height: 80%;
+  }
+  
+  .bmaw-grid-col2 { grid-area: bmaw-grid-col2; }
+  
+  .bmaw-grid-col1 {  display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
       ". . ."
       "bmaw-col1-t1 bmaw-col1-t2 bmaw-col1-t3"
-      ". . ."; 
-    grid-area: bmaw-grid-col1; 
+      ". . .";
+    grid-area: bmaw-grid-col1;
   }
+  
   .bmaw-col1-t1 { grid-area: bmaw-col1-t1; }
+  
   .bmaw-col1-t2 { grid-area: bmaw-col1-t2; }
+  
   .bmaw-col1-t3 { grid-area: bmaw-col1-t3; }
-  .bmaw-grid-col2 { grid-area: bmaw-grid-col2; }
-
+  
 .bmaw-bmaw_submission_quickedit_dialog input {
   line-height: 1.5;
   font-size: 1.2em;
