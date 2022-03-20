@@ -50,7 +50,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <br>
             <div>
                 <label for="day_of_the_week">The Day Of Your Meeting:<span class="bmaw-required-field"> *</span></label>
-                <select id="weekday_tinyint">
+                <select name="weekday_tinyint" id="weekday_tinyint">
                     <option value=1>Sunday</option>
                     <option value=2>Monday</option>
                     <option value=3>Tuesday</option>
