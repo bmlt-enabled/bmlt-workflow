@@ -71,7 +71,7 @@ jQuery(document).ready(function ($) {
             {
               if($('#quickedit_'+element) instanceof jQuery){
                 $('#quickedit_'+element).addClass("bmaw-changed");
-                $('#quickedit_'+element).value(bmaw_changedata[id].changes_requested[element]);  
+                $('#quickedit_'+element).val(bmaw_changedata[id].changes_requested[element]);  
               }
             });
           $('#meeting_name').val(bmaw_changedata[id].changes_requested['meeting_name']);
