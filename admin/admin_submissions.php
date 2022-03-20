@@ -52,7 +52,6 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
 <!-- Quickedit dialog -->
 <div id="bmaw_submission_quickedit_dialog" class="bmaw-sg hidden">
-
     <div class="bmaw-sg-col1">
         <div class="bmaw-sg-col1-w1">
             <label for="meeting_name">Meeting Name</label>
@@ -113,7 +112,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <input type="text" name="email_address" id="email_address" required>
             <label for="virtual_meeting_link">Virtual Meeting Link</label>
             <input type="text" name="virtual_meeting_link" id="virtual_meeting_link" required>
-            <select class="bmaw-formatlist" id="bmaw-formatlist" style="width: auto"></select>
+            <select id="bmaw-formatlist" style="width: auto"></select>
         </div>
     </div>
     <div class="bmaw-grid-col2">

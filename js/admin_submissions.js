@@ -43,6 +43,7 @@ jQuery(document).ready(function ($) {
   };
 
   $("#bmaw-formatlist").select2({
+    placeholder: "Select a format",
     multiple: true,
     width: "100%",
     data: formatdata,
