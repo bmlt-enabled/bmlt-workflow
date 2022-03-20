@@ -23,26 +23,26 @@ jQuery(document).ready(function ($) {
   });
   formatdata['results'] = result;
 
-  formatdata = {
-    "results": [
-      {
-        "id": 1,
-        "text": "Option 1"
-      },
-      {
-        "id": 2,
-        "text": "Option 2",
-        "selected": true
-      },
-      {
-        "id": 3,
-        "text": "Option 3",
-        "disabled": true
-      }
-    ]
-  };
-  
-  $(".bmaw-formatlist").select2({
+  // formatdata = {
+  //   "results": [
+  //     {
+  //       "id": 1,
+  //       "text": "Option 1"
+  //     },
+  //     {
+  //       "id": 2,
+  //       "text": "Option 2",
+  //       "selected": true
+  //     },
+  //     {
+  //       "id": 3,
+  //       "text": "Option 3",
+  //       "disabled": true
+  //     }
+  //   ]
+  // };
+
+  $("#bmaw-formatlist").select2({
     multiple: true,
     width: "100%",
     data: formatdata,
