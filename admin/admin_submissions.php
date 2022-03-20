@@ -51,7 +51,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         "other_reason" => array("textarea", $reason_other_bool) -->
 
 <!-- Quickedit dialog -->
-<div id="bmaw_submission_quickedit_dialog" class="bmaw-sg">
+<div id="bmaw_submission_quickedit_dialog" class="bmaw-sg hidden">
 
     <div class="bmaw-sg-col1">
         <div class="bmaw-sg-col1-w1">
