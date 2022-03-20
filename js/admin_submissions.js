@@ -32,45 +32,64 @@ jQuery(document).ready(function ($) {
           console.log(data);
           // fill in all the bmlt stuff
           var item = data[0];
+          // split up the duration so we can use it in the select
+          var durationarr = item[duration_time].split(":");
+          // hoping we got both hours, minutes and seconds here
+          if (durationarr.length == 3) {
+            $("#quickedit_duration_hours").val(durationarr[0]);
+            $("#quickedit_duration_minutes").val(durationarr[1]);
+          }
+
           // split up the format list so we can use it in the select
-          if ('format_shared_id_list' in item)
-          {
-            item['format_shared_id_list']=item['format_shared_id_list'].split(',');
+          if ("format_shared_id_list" in item) {
+            item["format_shared_id_list"] = item["format_shared_id_list"].split(",");
           }
 
           Object.keys(item).forEach((element) => {
             if ($("#quickedit_" + element) instanceof jQuery) {
-                $("#quickedit_" + element).val(item[element]).change();
+              $("#quickedit_" + element)
+                .val(item[element])
+                .change();
             }
           });
           // fill in and highlight the changes
-          changes_requested=bmaw_changedata[id].changes_requested;
+          changes_requested = bmaw_changedata[id].changes_requested;
 
-          if ('format_shared_id_list' in changes_requested)
-          {
-            changes_requested['format_shared_id_list']=changes_requested['format_shared_id_list'].split(',');
+          if ("format_shared_id_list" in changes_requested) {
+            changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
           }
 
           Object.keys(changes_requested).forEach((element) => {
             if ($("#quickedit_" + element) instanceof jQuery) {
               $("#quickedit_" + element).addClass("bmaw-changed");
-              $("#quickedit_" + element).val(changes_requested[element]).change();
+              $("#quickedit_" + element)
+                .val(changes_requested[element])
+                .change();
             }
           });
           $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
         });
     } else if (bmaw_changedata[id].submission_type == "reason_new") {
       // fill from changes
-      changes_requested=bmaw_changedata[id].changes_requested;
+      changes_requested = bmaw_changedata[id].changes_requested;
 
-      if ('format_shared_id_list' in changes_requested)
-      {
-        changes_requested['format_shared_id_list']=changes_requested['format_shared_id_list'].split(',');
+      // split up the duration so we can use it in the select
+      var durationarr = changes_requested[duration_time].split(":");
+      // hoping we got both hours, minutes and seconds here
+      if (durationarr.length == 3) {
+        $("#quickedit_duration_hours").val(durationarr[0]);
+        $("#quickedit_duration_minutes").val(durationarr[1]);
+      }
+
+      if ("format_shared_id_list" in changes_requested) {
+        changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
       }
       Object.keys(changes_requested).forEach((element) => {
         if ($("#quickedit_" + element) instanceof jQuery) {
           $("#quickedit_" + element).addClass("bmaw-changed");
-          $("#quickedit_" + element).val(changes_requested[element]).change();
+          $("#quickedit_" + element)
+            .val(changes_requested[element])
+            .change();
         }
       });
       $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
