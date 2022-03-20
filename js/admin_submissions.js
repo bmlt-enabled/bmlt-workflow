@@ -26,8 +26,7 @@ jQuery(document).ready(function ($) {
         "&lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&&recursive=1&sort_keys=start_time";
 
       fetchJsonp(search_results_address)
-        .then((response) => 
-          response.json())
+        .then((response) => response.json())
         .then((data) => {
           // var f = data;
           console.log(data);
@@ -37,18 +36,17 @@ jQuery(document).ready(function ($) {
             if ($("#quickedit_" + element) instanceof jQuery) {
               $("#quickedit_" + element).val(item[element]);
             }
-            // fill in and highlight the changes
-            console.log(bmaw_changedata[id].changes_requested);
-            Object.keys(bmaw_changedata[id].changes_requested).forEach((element) => {
-              if ($("#quickedit_" + element) instanceof jQuery) {
-                $("#quickedit_" + element).addClass("bmaw-changed");
-                $("#quickedit_" + element).val(bmaw_changedata[id].changes_requested[element]);
-              }
-            });
+          });
+          // fill in and highlight the changes
+          console.log(bmaw_changedata[id].changes_requested);
+          Object.keys(bmaw_changedata[id].changes_requested).forEach((element) => {
+            if ($("#quickedit_" + element) instanceof jQuery) {
+              $("#quickedit_" + element).addClass("bmaw-changed");
+              $("#quickedit_" + element).val(bmaw_changedata[id].changes_requested[element]);
+            }
           });
           $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
         });
-  
     } else if (bmaw_changedata[id].submission_type == "reason_new") {
       // fill from changes
       console.log(bmaw_changedata[id].changes_requested);
