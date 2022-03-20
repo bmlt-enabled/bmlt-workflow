@@ -59,6 +59,16 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <input type="time" name="start_time" id="start_time" class="bmaw_submission_input_half" >
             <label for="duration_time">Duration</label>
             <input type="text" name="duration_time" id="duration_time" class="bmaw_submission_input_half" >
+            <label for="weekday_tinyint">Weekday</label>
+                <select name="weekday_tinyint" id="weekday_tinyint">
+                    <option value="1">Sunday</option>
+                    <option value="2">Monday</option>
+                    <option value="3">Tuesday</option>
+                    <option value="4">Wednesday</option>
+                    <option value="5">Thursday</option>
+                    <option value="6">Friday</option>
+                    <option value="7">Saturday</option>
+                    </select>
             <label for="location_text">Location</label>
             <input type="text" name="location_text" id="location_text" required>
             <label for="location_street">Street</label>
@@ -67,12 +77,16 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <input type="text" name="location_info" id="location_info" required>
             <label for="location_municipality">Municipality</label>
             <input type="text" name="location_municipality" id="location_municipality" required>
+            <label for="location_province">Province</label>
+            <input type="text" name="location_province" id="location_province" required>
+            <label for="location_postal_code_1">Post Code</label>
+            <input type="text" name="location_postal_code_1" id="location_postal_code_1" required>
         </div>
         <div class="bmaw-grid-col2">
-            <label for="col2a">col2a</label>
-            <input type="text" name="col2a" id="col2a" required>
-            <label for="col2b">col2b</label>
-            <input type="text" name="col2b" id="col2b" required>
+            <label for="email_address">Email Address</label>
+            <input type="text" name="email_address" id="email_address" required>
+            <label for="virtual_meeting_link">Virtual Meeting Link</label>
+            <input type="text" name="virtual_meeting_link" id="virtual_meeting_link" required>
             <label for="col2c">col2c</label>
             <input type="text" name="col2c" id="col2c" required>
             <label for="col2d">col2d</label>
