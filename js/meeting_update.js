@@ -90,16 +90,23 @@ jQuery(document).ready(function ($) {
           // fill in the other fields from bmlt
           put_field("meeting_name", mdata[id].meeting_name);
           put_field("start_time", mdata[id].start_time);
-          put_field("duration_time", mdata[id].duration_time);
           put_field("location_street", mdata[id].location_street);
           put_field("location_text", mdata[id].location_text);
           put_field("location_info", mdata[id].location_info);
           put_field("location_municipality", mdata[id].location_municipality);
           put_field("location_province", mdata[id].location_province);
           put_field("location_postal_code_1", mdata[id].location_postal_code_1);
-          // put_field("comments", mdata[id].comments);
-          // put_field("time_zone", mdata[id].time_zone);
 
+          // handle duration in the select dropdowns
+          durationarr = mdata[id].duration_time.split(':');
+          // hoping we got both hours and minutes here
+          if(durationarr.length == 2)
+          {
+
+          $("#duration_hours").val(durationarr[0]);
+          $("#duration_minutes").val(durationarr[1]);
+        }
+          
           // store the selected meeting ID away
           put_field("meeting_id", mdata[id].id_bigint);
 
