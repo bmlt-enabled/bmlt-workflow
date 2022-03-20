@@ -2,10 +2,9 @@
 
 var mdata = [];
 var mtext = [];
-var weekdays = ["none","Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+var weekdays = ["none", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 jQuery(document).ready(function ($) {
-
   function update_meeting_list(bmaw_service_areas) {
     var search_results_address =
       bmaw_bmlt_server_address +
@@ -86,7 +85,7 @@ jQuery(document).ready(function ($) {
           var id = data.id;
           // set the weekday format
           $("#weekday_tinyint").val(mdata[id].weekday_tinyint);
-          
+
           // fill in the other fields from bmlt
           put_field("meeting_name", mdata[id].meeting_name);
           put_field("start_time", mdata[id].start_time);
@@ -98,15 +97,13 @@ jQuery(document).ready(function ($) {
           put_field("location_postal_code_1", mdata[id].location_postal_code_1);
 
           // handle duration in the select dropdowns
-          var durationarr = mdata[id].duration_time.split(':');
-          // hoping we got both hours and minutes here
-          if(durationarr.length == 2)
-          {
+          var durationarr = mdata[id].duration_time.split(":");
+          // hoping we got both hours, minutes and seconds here
+          if (durationarr.length == 3) {
+            $("#duration_hours").val(durationarr[0]);
+            $("#duration_minutes").val(durationarr[1]);
+          }
 
-          $("#duration_hours").val(durationarr[0]);
-          $("#duration_minutes").val(durationarr[1]);
-        }
-          
           // store the selected meeting ID away
           put_field("meeting_id", mdata[id].id_bigint);
 
@@ -164,17 +161,18 @@ jQuery(document).ready(function ($) {
   });
 
   $("#meeting_update_form").validate({
-    submitHandler: function(){real_submit_handler()}
+    submitHandler: function () {
+      real_submit_handler();
+    },
   });
 
   $("#starter_kit_required").on("change", function () {
     if (this.value == "yes") {
       $("#starter_kit_postal_address").show();
-      $("#starter_kit_postal_address").prop("required",true);
-
+      $("#starter_kit_postal_address").prop("required", true);
     } else {
       $("#starter_kit_postal_address").hide();
-      $("#starter_kit_postal_address").prop("required",false);
+      $("#starter_kit_postal_address").prop("required", false);
     }
   });
 
@@ -320,7 +318,7 @@ jQuery(document).ready(function ($) {
   $("#meeting_selector").hide();
   $("#meeting_content").hide();
   $("#other_reason_div").hide();
-  $("#other_reason").prop("required",false);
+  $("#other_reason").prop("required", false);
 
   $("#update_reason").change(function () {
     // hide all the optional items
@@ -334,7 +332,7 @@ jQuery(document).ready(function ($) {
     // enable the meeting form
     $("#meeting_content").hide();
     $("#other_reason_div").hide();
-    $("#other_reason").prop("required",false);
+    $("#other_reason").prop("required", false);
 
     enable_edits();
     // enable items as required
@@ -365,15 +363,15 @@ jQuery(document).ready(function ($) {
         $("#reason_other_text").show();
         // other reason has a textarea
         $("#other_reason_div").show();
-        $("#other_reason").prop("required",true);
+        $("#other_reason").prop("required", true);
         break;
     }
   });
 
-    // $("#meeting_update_form").submit(function (event) {
+  // $("#meeting_update_form").submit(function (event) {
 
   // form submit handler
-    function real_submit_handler(){
+  function real_submit_handler() {
     // event.preventDefault();
 
     // meeting formats
@@ -397,5 +395,5 @@ jQuery(document).ready(function ($) {
     $.post("/flop/wp-json/bmaw-submission/v1/submissions", $("#meeting_update_form").serialize(), function (response) {
       console.log("submitted");
     });
-  };
+  }
 });
