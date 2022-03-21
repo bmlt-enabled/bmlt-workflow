@@ -161,9 +161,9 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		global $bmaw_capability_manage_submissions;
 
 		error_log("reject submission current user " . get_current_user_id());
-		// if (!current_user_can($bmaw_capability_manage_submissions)) {
-		// 	return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot reject this submission.'), array('status' => $this->authorization_status_code()));
-		// }
+		if (!current_user_can($bmaw_capability_manage_submissions)) {
+			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot reject this submission.'), array('status' => $this->authorization_status_code()));
+		}
 		return true;
 	}
 
