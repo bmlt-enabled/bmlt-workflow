@@ -221,7 +221,7 @@ class bmaw_submissions_rest_handlers
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved')||($change_made === 'rejected')) {
-            return $this->bmaw_rest_error("Submission id ({$change_id}) is already $change_made", 400);
+            return $this->bmaw_rest_error("Submission id {$change_id} is already $change_made", 400);
         }
 
         $params = $request->get_json_params();
@@ -270,7 +270,7 @@ class bmaw_submissions_rest_handlers
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved')||($change_made === 'rejected')) {
-            return $this->bmaw_rest_error("Submission id ({$change_id}) is already $change_made", 400);
+            return $this->bmaw_rest_error("Submission id {$change_id} is already $change_made", 400);
         }
 
         $submission_type = $result['submission_type'];

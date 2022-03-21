@@ -5,11 +5,7 @@ if (!defined('ABSPATH')) exit; // die if being called directly
 
 class BMLTIntegration
 {
-
     protected $cookies = null; // our authentication cookies
-    protected $authfailure = 0; // authentication is failing - don't keep bashing the front door
-    protected const MAXFAILS = 2; // how many failures we'll retry
-
 
     public function getMeetingFormats()
     {
@@ -35,28 +31,16 @@ class BMLTIntegration
     // postargs is an array
     public function postConfiguredRootServerRequest($url, $postargs)
     {
-        if ($this->authfailure < self::MAXFAILS) {
             return $this->postRootServerRequest(get_option('bmaw_bmlt_server_address') . $url, $postargs);
-        } else {
-            return new WP_Error('bmaw', "Fatal BMLT Authentication Failure - check the credentials in BMAW settings");
-        }
     }
 
     public function postConfiguredRootServerRequestSemantic($url, $postargs)
     {
-        if ($this->authfailure < self::MAXFAILS) {
             return $this->postRootServerRequestSemantic(get_option('bmaw_bmlt_server_address') . $url, $postargs);
-        } else {
-            return new WP_Error('bmaw', "Fatal BMLT Authentication Failure - check the credentials in BMAW settings");
-        }
     }
     public function getConfiguredRootServerRequest($url)
     {
-        if ($this->authfailure < self::MAXFAILS) {
             return $this->getRootServerRequest(get_option('bmaw_bmlt_server_address') . $url);
-        } else {
-            return new WP_Error('bmaw', "Fatal BMLT Authentication Failure - check the credentials in BMAW settings");
-        }
     }
 
     private function vdump($object)
@@ -82,14 +66,13 @@ class BMLTIntegration
             $ret = $this->post($url, null, $postargs);
             if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $ret['body'])) // best way I could find to check for invalid login
             {
-                $this->authfailure++;
                 $this->cookies = null;
                 return new WP_Error('bmaw', 'authenticateRootServer: Authentication Failure');
             } else {
-                $this->authfailure = 0;
                 $this->cookies = wp_remote_retrieve_cookies($ret);
             }
         }
+        return true;
     }
 
     private function set_args($cookies, $body = null)
@@ -111,8 +94,6 @@ class BMLTIntegration
         $ret = wp_remote_get($url, $this->set_args($cookies));
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $ret['body'])) // best way I could find to check for invalid login
         {
-            $this->authfailure++;
-            $this->cookies = null;
             $ret =  $this->authenticateRootServer();
             if (is_wp_error($ret)) {
                 return $ret;
@@ -131,8 +112,6 @@ class BMLTIntegration
         $ret = wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $ret['body'])) // best way I could find to check for invalid login
         {
-            $this->authfailure++;
-            $this->cookies = null;
             $ret =  $this->authenticateRootServer();
             if (is_wp_error($ret)) {
                 return $ret;
