@@ -214,6 +214,7 @@ class bmaw_submissions_rest_handlers
         error_log(vdump($params));
         if(array_key_exists('message',$params))
         {
+            error_log("hi");
             $message=$params['message'];
             if (!empty($messge)) {
                 error_log('message is ' . $message);
