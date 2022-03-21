@@ -210,7 +210,7 @@ class bmaw_submissions_rest_handlers
     {
         $change_id = $request->get_param('id');
 
-        error_log("getting changes for id " . $change_id);
+        error_log("rejection request for id " . $change_id);
 
         global $wpdb;
         global $bmaw_submissions_table_name;
@@ -232,6 +232,10 @@ class bmaw_submissions_rest_handlers
             {
                 return $this->bmaw_rest_error('Reject message must be less than 1024 characters', 400);
             }
+        }
+        else
+        {
+            error_log("action message is null");
         }
 
         $current_user = wp_get_current_user();
@@ -342,6 +346,10 @@ class bmaw_submissions_rest_handlers
             {
                 return $this->bmaw_rest_error('Approve message must be less than 1024 characters', 400);
             }
+        }
+        else
+        {
+            error_log("action message is null");
         }
 
         $current_user = wp_get_current_user();
