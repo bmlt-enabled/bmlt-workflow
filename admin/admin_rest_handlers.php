@@ -208,17 +208,53 @@ class bmaw_submissions_rest_handlers
 
     public function reject_submission_handler($request)
     {
-        error_log("*** request is");
-        error_log(vdump($request));
-        $params = $request->get_json_params();
-        error_log(vdump($params));
-        if (!empty($params['message'])) {
-            error_log('message is ' . $params['message']);
-            return;
+        $change_id = $request->get_param('id');
+
+        error_log("getting changes for id " . $change_id);
+
+        global $wpdb;
+        global $bmaw_submissions_table_name;
+
+        $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
+        $result = $wpdb->get_row($sql, ARRAY_A);
+
+        $change_made = $result['change_made'];
+
+        if (($change_made === 'approved')||($change_made === 'rejected')) {
+            return $this->bmaw_rest_error("Submission id ({$change_id}) is already $change_made", 400);
         }
-        error_log('no message provided');
-        return;
+
+        $params = $request->get_json_params();
+        $message = '';
+        if (!empty($params['message'])) {
+            $message = $params['message'];
+            if(strlen($message)>1023)
+            {
+                return $this->bmaw_rest_error('Reject message must be less than 1024 characters', 400);
+            }
+        }
+
+        $current_user = wp_get_current_user();
+        $username = $current_user->user_login;
+
+        $sql = $wpdb->prepare(
+            'UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'rejected',
+            $username,
+            current_time('mysql', true),
+            $message,
+            $request['id']
+        );
+
+        $result = $wpdb->get_results($sql, ARRAY_A);
+
+        //
+        // send action email
+        //
+
+        return $this->bmaw_rest_success('Rejected submission id ' . $change_id);
     }
+
     public function approve_submission_handler($request)
     {
         $change_id = $request->get_param('id');
@@ -231,8 +267,10 @@ class bmaw_submissions_rest_handlers
         $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
         $result = $wpdb->get_row($sql, ARRAY_A);
 
-        if ($result['change_made'] === 'approved') {
-            return $this->bmaw_rest_error("Submission id ({$change_id}) is already approved", 400);
+        $change_made = $result['change_made'];
+
+        if (($change_made === 'approved')||($change_made === 'rejected')) {
+            return $this->bmaw_rest_error("Submission id ({$change_id}) is already $change_made", 400);
         }
 
         $submission_type = $result['submission_type'];
@@ -296,11 +334,33 @@ class bmaw_submissions_rest_handlers
             return $this->bmaw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
         }
 
+        $params = $request->get_json_params();
+        $message = '';
+        if (!empty($params['message'])) {
+            $message = $params['message'];
+            if(strlen($message)>1023)
+            {
+                return $this->bmaw_rest_error('Approve message must be less than 1024 characters', 400);
+            }
+        }
+
         $current_user = wp_get_current_user();
         $username = $current_user->user_login;
 
-        $sql = $wpdb->prepare('UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s" where id="%d" limit 1', 'approved', $username, current_time('mysql', true), $request['id']);
+        $sql = $wpdb->prepare(
+            'UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'approved',
+            $username,
+            current_time('mysql', true),
+            $message,
+            $request['id']
+        );
+
         $result = $wpdb->get_results($sql, ARRAY_A);
+
+        //
+        // send action email
+        //
 
         return $this->bmaw_rest_success('Approved submission id ' . $change_id);
     }

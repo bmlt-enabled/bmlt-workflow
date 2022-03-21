@@ -754,6 +754,7 @@ function bmaw_install()
         submitter_email varchar(320) NOT NULL,
         meeting_id bigint(20) unsigned,
         changes_requested varchar(1024),
+        action_message varchar(1024),
 		PRIMARY KEY (id)
 	) $charset_collate;";
 
