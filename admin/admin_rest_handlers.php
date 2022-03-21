@@ -212,7 +212,7 @@ class bmaw_submissions_rest_handlers
         error_log(vdump($request));
         $params = $request->get_json_params();
         error_log(vdump($params));
-        if(!isset($params['message']))
+        if(array_key_exists('message',$params))
         {
             $message=$params['message'];
             if (!empty($messge)) {
