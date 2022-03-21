@@ -428,12 +428,13 @@ jQuery(document).ready(function ($) {
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
     if ($.trim($("#" + slug + "_dialog_textarea").val())) {
-      parameters["custom_message"] = $("#" + slug + "_dialog_textarea");
+      parameters["action_message"] = $("#" + slug + "_dialog_textarea").val();
     }
     // url = "/approve"
     $.ajax({
       url: bmaw_admin_submissions_rest_url + id + url,
       type: action,
+      dataType: json,
       data: JSON.stringify(parameters),
       beforeSend: function (xhr) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
