@@ -68,6 +68,12 @@ class bmaw_submissions_rest extends WP_REST_Controller
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => array($this, 'approve_submission'),
 			'permission_callback' => array($this, 'approve_submission_action_permissions_check'),
+			'args'     => [
+				'action_message' => [
+					'required' => false,
+					'type'     => 'string',
+				],
+			],
 		));
 		// POST submissions/<id>/reject
 		register_rest_route($this->namespace, '/' . $this->submissions_rest_base . '/(?P<id>[\d]+)/reject', array(
