@@ -77,7 +77,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 			'args'     => [
 				'message' => [
 					'required' => false,
-					'type'     => 'text',
+					'type'     => 'string',
 				],
 			],
 		));
