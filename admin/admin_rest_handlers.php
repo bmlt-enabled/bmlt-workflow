@@ -14,12 +14,12 @@ class bmaw_submissions_rest_handlers
 
     private function bmaw_rest_success($message)
     {
-		return new WP_Error( 'bmaw_success', __( $message ), array( 'status' => 200 ) );
+        return new WP_Error('bmaw_success', __($message), array('status' => 200));
     }
 
     private function bmaw_rest_error($message, $code)
     {
-		return new WP_Error( 'bmaw_error', __( $message ), array( 'status' => $code ) );
+        return new WP_Error('bmaw_error', __($message), array('status' => $code));
     }
 
     public function get_submissions_handler()
@@ -52,7 +52,7 @@ class bmaw_submissions_rest_handlers
         // get an xml for a workaround
         $response = $bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
         if (is_wp_error($response)) {
-            return $this->bmaw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500 );
+            return $this->bmaw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
         }
 
         $xml = simplexml_load_string($response['body']);
@@ -182,7 +182,7 @@ class bmaw_submissions_rest_handlers
             }
         }
 
-        return $this->bmaw_rest_success( 'Updated Service Areas' );
+        return $this->bmaw_rest_success('Updated Service Areas');
     }
 
     public function delete_submission_handler($request)
@@ -193,8 +193,7 @@ class bmaw_submissions_rest_handlers
         $sql = $wpdb->prepare('DELETE FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
         $wpdb->query($sql, ARRAY_A);
 
-        return $this->bmaw_rest_success( 'Deleted submission id '.$request['id'] );
-
+        return $this->bmaw_rest_success('Deleted submission id ' . $request['id']);
     }
 
     public function get_submission_handler($request)
@@ -207,6 +206,17 @@ class bmaw_submissions_rest_handlers
         return $result;
     }
 
+    public function reject_submission_handler($request)
+    {
+        error_log("*** request is");
+        error_log(vdump($request));
+        $message = $request->get_param('message');
+        if (!empty($messge)) {
+            error_log('message is ' . $message);
+        } else {
+            error_log('no message provided');
+        }
+    }
     public function approve_submission_handler($request)
     {
         $change_id = $request->get_param('id');
@@ -220,7 +230,7 @@ class bmaw_submissions_rest_handlers
         $result = $wpdb->get_row($sql, ARRAY_A);
 
         if ($result['change_made'] === 'approved') {
-            return $this->bmaw_rest_error("Submission id ({$change_id}) is already approved", 400 );
+            return $this->bmaw_rest_error("Submission id ({$change_id}) is already approved", 400);
         }
 
         $submission_type = $result['submission_type'];
@@ -245,10 +255,8 @@ class bmaw_submissions_rest_handlers
             "format_shared_id_list"
         );
 
-        foreach ($change as $key => $value)
-        {
-            if (!in_array($key,$change_subfields))
-            {
+        foreach ($change as $key => $value) {
+            if (!in_array($key, $change_subfields)) {
                 unset($change[$key]);
             }
         }
@@ -279,12 +287,11 @@ class bmaw_submissions_rest_handlers
                 // $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
                 break;
             default:
-                return $this->bmaw_rest_error("This change type ({$submission_type}) cannot be approved", 400 );
-
+                return $this->bmaw_rest_error("This change type ({$submission_type}) cannot be approved", 400);
         }
 
-        if( is_wp_error( $response ) ) {
-            return $this->bmaw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500 );
+        if (is_wp_error($response)) {
+            return $this->bmaw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
         }
 
         $current_user = wp_get_current_user();
@@ -293,6 +300,6 @@ class bmaw_submissions_rest_handlers
         $sql = $wpdb->prepare('UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s" where id="%d" limit 1', 'approved', $username, current_time('mysql', true), $request['id']);
         $result = $wpdb->get_results($sql, ARRAY_A);
 
-        return $this->bmaw_rest_success( 'Approved submission id '.$change_id );
+        return $this->bmaw_rest_success('Approved submission id ' . $change_id);
     }
 }

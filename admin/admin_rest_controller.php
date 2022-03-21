@@ -74,6 +74,12 @@ class bmaw_submissions_rest extends WP_REST_Controller
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => array($this, 'reject_submission'),
 			'permission_callback' => array($this, 'reject_submission_action_permissions_check'),
+			'args'     => [
+				'message' => [
+					'required' => false,
+					'type'     => 'text',
+				],
+			],
 		));
 
 		// GET serviceareas
@@ -145,7 +151,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		error_log("approve submission current user " . get_current_user_id());
 		if (!current_user_can($bmaw_capability_manage_submissions)) {
-			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot accept this submission.'), array('status' => $this->authorization_status_code()));
+			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot approve this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -155,9 +161,9 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		global $bmaw_capability_manage_submissions;
 
 		error_log("reject submission current user " . get_current_user_id());
-		if (!current_user_can($bmaw_capability_manage_submissions)) {
-			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot reject this submission.'), array('status' => $this->authorization_status_code()));
-		}
+		// if (!current_user_can($bmaw_capability_manage_submissions)) {
+		// 	return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot reject this submission.'), array('status' => $this->authorization_status_code()));
+		// }
 		return true;
 	}
 
@@ -215,7 +221,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	{
 		error_log("post_service_areas_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
-			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area updates.'), array('status' => $this->authorization_status_code()));
+			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area detail updates.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -266,6 +272,12 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		return rest_ensure_response($result);
 	}
 
+	public function reject_submission($request)
+	{
+		$result = $this->handlers->reject_submission_handler($request);
+		return rest_ensure_response($result);
+	}
+
 	/**
 	 * Form post
 	 *
@@ -309,13 +321,10 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function authorization_status_code()
 	{
-
 		$status = 401;
-
 		if (is_user_logged_in()) {
 			$status = 403;
 		}
-
 		return $status;
 	}
 }

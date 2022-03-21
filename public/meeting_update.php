@@ -177,16 +177,6 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
             </div>
             <br>
-            <!-- <div>
-                <label for="comments">Comments</label>
-                <input type="text" name="comments" id="comments">
-            </div> -->
-            <br>
-            <div>
-                <label for="date_required">Date Change Required<span class="bmaw-required-field">*</span></label>
-                <input type="date" name="date_required" size="15" id="date_required" required>
-            </div>
-            <br>
             <div>
                 <label for="first_name">First Name<span class="bmaw-required-field">*</span></label>
                 <input type="text" name="first_name" size="20" id="first_name" required>
