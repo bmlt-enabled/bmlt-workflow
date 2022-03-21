@@ -210,7 +210,9 @@ class bmaw_submissions_rest_handlers
     {
         error_log("*** request is");
         error_log(vdump($request));
-        $message = $request->get_param('message');
+        $params = $request->get_json_params();
+        error_log(vdump($params));
+        $message='';
         if (!empty($messge)) {
             error_log('message is ' . $message);
         } else {
