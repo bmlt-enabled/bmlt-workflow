@@ -339,7 +339,7 @@ class bmaw_submissions_rest_handlers
         }
 
         $params = $request->get_json_params();
-        error_log($params);
+        // error_log($params);
         $message = '';
         if (!empty($params['action_message'])) {
             $message = $params['action_message'];
