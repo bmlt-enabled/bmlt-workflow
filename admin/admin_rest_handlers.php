@@ -216,13 +216,11 @@ class bmaw_submissions_rest_handlers
         {
             error_log("hi");
             $message=$params['message'];
-            if (!empty($messge)) {
-                error_log('message is ' . $message);
-                return;
-            }
+            error_log('message is ' . $message);
+            return;
         }
         error_log('no message provided');
-         return;
+        return;
         
     }
     public function approve_submission_handler($request)
