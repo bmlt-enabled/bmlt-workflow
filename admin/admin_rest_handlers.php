@@ -212,16 +212,12 @@ class bmaw_submissions_rest_handlers
         error_log(vdump($request));
         $params = $request->get_json_params();
         error_log(vdump($params));
-        if(array_key_exists('message',$params))
-        {
-            error_log("hi");
-            $message=$params['message'];
-            error_log('message is ' . $message);
+        if (!empty($params['message'])) {
+            error_log('message is ' . $params['message']);
             return;
         }
         error_log('no message provided');
         return;
-        
     }
     public function approve_submission_handler($request)
     {
