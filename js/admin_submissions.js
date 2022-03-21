@@ -430,11 +430,11 @@ jQuery(document).ready(function ($) {
     if ($.trim($("#" + slug + "_dialog_textarea").val())) {
       parameters["action_message"] = $("#" + slug + "_dialog_textarea").val();
     }
-    // url = "/approve"
     $.ajax({
       url: bmaw_admin_submissions_rest_url + id + url,
       type: action,
       dataType: 'json',
+      contentType: 'application/json',
       data: JSON.stringify(parameters),
       beforeSend: function (xhr) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
@@ -442,7 +442,6 @@ jQuery(document).ready(function ($) {
     })
       .done(function (response) {
         var msg = "";
-        // console.log(response);
         if (response.message == "")
           msg =
             '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"></button></div>';
