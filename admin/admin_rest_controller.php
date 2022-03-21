@@ -75,7 +75,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 			'callback'            => array($this, 'reject_submission'),
 			'permission_callback' => array($this, 'reject_submission_action_permissions_check'),
 			'args'     => [
-				'message' => [
+				'action_message' => [
 					'required' => false,
 					'type'     => 'string',
 				],

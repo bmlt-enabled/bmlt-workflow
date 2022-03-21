@@ -226,8 +226,8 @@ class bmaw_submissions_rest_handlers
 
         $params = $request->get_json_params();
         $message = '';
-        if (!empty($params['message'])) {
-            $message = $params['message'];
+        if (!empty($params['action_message'])) {
+            $message = $params['action_message'];
             if(strlen($message)>1023)
             {
                 return $this->bmaw_rest_error('Reject message must be less than 1024 characters', 400);
@@ -336,8 +336,8 @@ class bmaw_submissions_rest_handlers
 
         $params = $request->get_json_params();
         $message = '';
-        if (!empty($params['message'])) {
-            $message = $params['message'];
+        if (!empty($params['action_message'])) {
+            $message = $params['action_message'];
             if(strlen($message)>1023)
             {
                 return $this->bmaw_rest_error('Approve message must be less than 1024 characters', 400);
