@@ -4,7 +4,7 @@
  * Plugin Name: BMLT Meeting Admin Workflow
  * Plugin URI: https://github.com/nigel-bmlt/meeting-admin-workflow
  * Description: BMLT Meeting Admin Workflow
- * Version: 1.0
+ * Version: 0.2.0
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
@@ -204,7 +204,7 @@ function bmaw_menu_pages()
         'bmaw-settings',
         'BMAW Submissions',
         'BMAW Submissions',
-        'manage_options',
+        $bmaw_capability_manage_submissions,
         'bmaw-submissions',
         'display_bmaw_admin_submissions_page',
         2
