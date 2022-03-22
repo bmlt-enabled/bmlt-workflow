@@ -23,10 +23,10 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function __construct()
 	{
-
 		$this->namespace = 'bmaw-submission/v1';
 		$this->submissions_rest_base = 'submissions';
 		$this->service_areas_rest_base = 'serviceareas';
+		$this->server_rest_base = 'bmltserver';
 		$this->bmlt_integration = new BMLTIntegration;
 		$this->handlers = new bmaw_submissions_rest_handlers();
 	}
@@ -120,18 +120,29 @@ class bmaw_submissions_rest extends WP_REST_Controller
 				'permission_callback' => array($this, 'post_service_areas_permissions_check'),
 			),
 		);
-				// POST serviceareas
-				register_rest_route(
-					$this->namespace,
-					'/' . $this->service_areas_rest_base . '/detail',
-		
-					array(
-						'methods'             => WP_REST_Server::CREATABLE,
-						'callback'            => array($this, 'post_service_areas_detail'),
-						'permission_callback' => array($this, 'post_service_areas_detail_permissions_check'),
-					),
-				);
-		
+		// POST serviceareas detail
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->service_areas_rest_base . '/detail',
+
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array($this, 'post_service_areas_detail'),
+				'permission_callback' => array($this, 'post_service_areas_detail_permissions_check'),
+			),
+		);
+
+		// POST server
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->server_rest_base,
+
+			array(
+				'methods'             => WP_REST_Server::CREATABLE,
+				'callback'            => array($this, 'post_server'),
+				'permission_callback' => array($this, 'post_server_permissions_check'),
+			),
+		);
 	}
 	/**
 	 * Check permissions for submission management. These are general purpose checks for all submission editors, granular edit permission will be checked within the callback itself.
@@ -233,6 +244,22 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	}
 
 	/**
+	 * Check permissions for server configuration.
+	 *
+	 * @param WP_REST_Request $request get data from request.
+	 *
+	 * @return bool|WP_Error
+	 */
+	public function post_server_permissions_check($request)
+	{
+		error_log("post_server " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post server updates.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
+	/**
 	 * Check permissions for form post
 	 *
 	 * @param WP_REST_Request $request get data from request.
@@ -310,6 +337,12 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	public function post_service_areas_detail($request)
 	{
 		$result = $this->handlers->post_service_areas_detail($request);
+		return rest_ensure_response($result);
+	}
+
+	public function post_server($request)
+	{
+		$result = $this->handlers->post_server($request);
 		return rest_ensure_response($result);
 	}
 

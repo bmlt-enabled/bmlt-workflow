@@ -2,9 +2,9 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-if (!class_exists('BMLTIntegration')) {
-    require_once(BMAW_PLUGIN_DIR . 'admin/bmlt_integration.php');
-}
+// if (!class_exists('BMLTIntegration')) {
+//     require_once(BMAW_PLUGIN_DIR . 'admin/bmlt_integration.php');
+// }
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 

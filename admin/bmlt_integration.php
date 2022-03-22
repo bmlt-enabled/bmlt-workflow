@@ -7,21 +7,33 @@ class BMLTIntegration
 {
     protected $cookies = null; // our authentication cookies
 
-    public function testAuth()
+    public function testServerAndAuth($username, $password, $server)
     {
-        $ret = $this->authenticateRootServer();
-        if ($ret != true)
+        $postargs = array(
+            'admin_action' => 'login',
+            'c_comdef_admin_login' => $username,
+            'c_comdef_admin_password' => $password
+        );
+        $url = $server . "index.php";
+
+        $ret = wp_remote_post($url, null, http_build_query($postargs));
+
+        if (is_wp_error($ret))
         {
-            
+            return new WP_Error('bmaw', 'check BMLT server address');
         }
-        return $ret;
+        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $ret['body'])) // best way I could find to check for invalid login
+        {
+            return new WP_Error('bmaw', 'check username and password details');
+        }
+        return true;
     }
 
     public function getMeetingFormats()
     {
         $response = $this->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('admin_action' => 'get_format_info'));
         if (is_wp_error($response)) {
-            wp_die("BMLT Configuration Error - Unable to retrieve meeting formats");
+            return new WP_Error('bmaw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
         error_log($response['body']);  
         $formatarr = json_decode($response['body'], true)['row'];
@@ -59,13 +71,20 @@ class BMLTIntegration
 
             // error_log("AUTH URL = " . $url);
             $ret = $this->post($url, null, $postargs);
+
+            if (is_wp_error($ret))
+            {
+                return new WP_Error('bmaw', 'authenticateRootServer: Server Failure');
+            }  
+
             if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $ret['body'])) // best way I could find to check for invalid login
             {
                 $this->cookies = null;
                 return new WP_Error('bmaw', 'authenticateRootServer: Authentication Failure');
-            } else {
-                $this->cookies = wp_remote_retrieve_cookies($ret);
             }
+            
+            $this->cookies = wp_remote_retrieve_cookies($ret);
+
         }
         return true;
     }

@@ -373,4 +373,20 @@ class bmaw_submissions_rest_handlers
 
         return $this->bmaw_rest_success('Approved submission id ' . $change_id);
     }
+
+    public function post_server_handler($request)
+    {
+        $username = $request['bmaw_bmlt_username'];
+        $password = $request['bmaw_bmlt_password'];
+        $server = $request['bmaw_bmlt_server_address'];
+
+        if (is_wp_error($this->bmlt_integration->testServerAndAuth($username, $password, $server)))
+        {
+            return $this->bmaw_rest_error('Server and Authentication test failed.',500);
+        }
+        else
+        {
+            return $this->bmaw_rest_success('Server and Authentication test succeeded.');
+        }
+    }
 }

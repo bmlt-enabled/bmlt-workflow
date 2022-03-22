@@ -489,8 +489,8 @@ function bmaw_bmlt_server_address_html()
     echo <<<END
     <div class="bmaw_info_text">
     <br>Your BMLT server address, and a configured BMLT username and password.
-    <br>Server address is used to populate the meeting list for meeting changes and closures. For example: <code>https://na.org.au/main_server/</code>
-    <br>Username/Password is used to action meeting approvals/rejections as well as perform any BMLT related actions on the Wordpress users behalf. This user must be configured as a service body administrator and have access within BMLT to edit any service bodies that are used in BMAW form submissions.
+    <br><br>Server address is used to populate the meeting list for meeting changes and closures. For example: <code>https://na.org.au/main_server/</code>
+    <br><br>The BMLT Username and Password is used to action meeting approvals/rejections as well as perform any BMLT related actions on the Wordpress users behalf. This user must be configured as a service body administrator and have access within BMLT to edit any service bodies that are used in BMAW form submissions.
     <br><br>Ensure you have used the <b>Test Server</b> button and saved settings before using the shortcode form
     <br><br>
     </div>
@@ -499,7 +499,7 @@ function bmaw_bmlt_server_address_html()
     echo '<br><label for="bmaw_bmlt_server_address"><b>Server Address:</b></label><input type="url" size="50" id="bmaw_bmlt_server_address" name="bmaw_bmlt_server_address" value="' . $bmaw_bmlt_server_address . '"/>';
     echo '<br><label for="bmaw_bmlt_username"><b>BMLT Username:</b></label><input type="text" size="50" id="bmaw_bmlt_username" name="bmaw_bmlt_username" value="' . $bmaw_bmlt_username . '"/>';
     echo '<br><label for="bmaw_bmlt_password"><b>BMLT Password:</b></label><input type="password" size="50" id="bmaw_bmlt_password" name="bmaw_bmlt_password"/>';
-    echo '<button type="button" id="bmaw_test_bmlt_server">Test Server Address</button><span style="display: none;" id="bmaw_test_yes" class="dashicons dashicons-yes"></span><span style="display: none;" id="bmaw_test_no" class="dashicons dashicons-no"></span>';
+    echo '<button type="button" id="bmaw_test_bmlt_server">Test BMLT Configuration</button><span style="display: none;" id="bmaw_test_yes" class="dashicons dashicons-yes"></span><span style="display: none;" id="bmaw_test_no" class="dashicons dashicons-no"></span>';
     echo '<br><br>';
     echo '<input type="hidden" id="bmaw_bmlt_test_status" name="bmaw_bmlt_test_status" value="' . $bmaw_bmlt_test_status . '"></input>';
 }
