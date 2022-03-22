@@ -697,6 +697,8 @@ function bmaw_install()
         FOREIGN KEY (service_body_bigint) REFERENCES " . $bmaw_service_areas_table_name . "(service_body_bigint) 
 	) $charset_collate;";
 
+    error_log(vdump($sql));
+    
     dbDelta($sql);
 
     $sql = "CREATE TABLE " . $bmaw_service_areas_table_name . " (
