@@ -11,12 +11,9 @@ $bmaw_new_meeting_template_default = htmlentities(file_get_contents(BMAW_PLUGIN_
 $bmaw_existing_meeting_template_default = htmlentities(file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_existing_meeting_email_template.html'));
 $bmaw_fso_email_template_default = htmlentities(file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
 
-echo '<div class="wrap">';
+wp_nonce_field('wp_rest', '_wprestnonce');
 
-// FIX
-echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.10/clipboard.min.js"></script>';
-echo '<script>var clipboard = new ClipboardJS(".clipboard-button");</script>';
-// FIX
+echo '<div class="wrap">';
 
 echo '<script>var bmaw_service_form_array = '. $js_array . '</script>';
 echo '<script>var test_status = "'. $test_result .'"</script>';
