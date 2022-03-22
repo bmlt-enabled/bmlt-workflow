@@ -291,6 +291,7 @@ class bmaw_submissions_rest_handlers
         foreach ($quickedit_change as $key => $value) {
             error_log("checking ".$key);
             if (!in_array($key, $change_subfields)) {
+                error_log("removing ".$key);
                 unset($quickedit_change[$key]);
             }
         }
@@ -303,10 +304,19 @@ class bmaw_submissions_rest_handlers
         if (($change_made === 'approved')||($change_made === 'rejected')) {
             return $this->bmaw_rest_error("Submission id {$change_id} is already $change_made", 400);
         }
+        error_log("change made is ".$change_made);
         // get our saved changes from the db
         $saved_change = json_decode($result['changes_requested'], 1);
         // put the quickedit ones over the top
+        error_log("merge before - saved");
+        error_log(vdump($saved_change));
+        error_log("merge before - quickedit");
+        error_log(vdump($quickedit_change));
+
         array_merge($saved_change, $quickedit_change);
+
+        error_log("merge after - saved");
+        error_log(vdump($saved_change));
 
         $current_user = wp_get_current_user();
         $username = $current_user->user_login;
