@@ -676,62 +676,62 @@ function bmaw_install()
     global $bmaw_service_areas_table_name;
     global $bmaw_service_areas_access_table_name;
 
-    $charset_collate = $wpdb->get_charset_collate();
+    // $charset_collate = $wpdb->get_charset_collate();
 
-    // require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+    // // require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-    $sql = "CREATE TABLE " . $bmaw_service_areas_table_name . " (
-		service_body_bigint mediumint(9) NOT NULL,
-        service_area_name tinytext NOT NULL,
-        contact_email varchar(255) NOT NULL default '',
-        show_on_form bool,
-		PRIMARY KEY (service_body_bigint)
-	) $charset_collate;";
+    // $sql = "CREATE TABLE " . $bmaw_service_areas_table_name . " (
+	// 	service_body_bigint mediumint(9) NOT NULL,
+    //     service_area_name tinytext NOT NULL,
+    //     contact_email varchar(255) NOT NULL default '',
+    //     show_on_form bool,
+	// 	PRIMARY KEY (service_body_bigint)
+	// ) $charset_collate;";
 
-    // dbDelta($sql);
-    $wpdb->query($sql);
+    // // dbDelta($sql);
+    // $wpdb->query($sql);
 
-    $sql = "CREATE TABLE " . $bmaw_service_areas_access_table_name . " (
-		service_body_bigint mediumint(9) NOT NULL,
-        wp_uid bigint(20) unsigned  NOT NULL,
-		FOREIGN KEY (service_body_bigint) REFERENCES " . $bmaw_service_areas_table_name . "(service_body_bigint) 
-	) $charset_collate;";
+    // $sql = "CREATE TABLE " . $bmaw_service_areas_access_table_name . " (
+	// 	service_body_bigint mediumint(9) NOT NULL,
+    //     wp_uid bigint(20) unsigned  NOT NULL,
+	// 	FOREIGN KEY (service_body_bigint) REFERENCES " . $bmaw_service_areas_table_name . "(service_body_bigint) 
+	// ) $charset_collate;";
 
-    // dbDelta($sql);
-    $wpdb->query($sql);
+    // // dbDelta($sql);
+    // $wpdb->query($sql);
 
-    $sql = "CREATE TABLE " . $bmaw_submissions_table_name . " (
-		id mediumint(9) NOT NULL AUTO_INCREMENT,
-		submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-		change_time datetime DEFAULT '0000-00-00 00:00:00',
-        changed_by varchar(10),
-        change_made varchar(10),
-		submitter_name tinytext NOT NULL,
-		submission_type tinytext NOT NULL,
-        submitter_email varchar(320) NOT NULL,
-        meeting_id bigint(20) unsigned,
-        service_body_bigint mediumint(9) NOT NULL,
-        changes_requested varchar(1024),
-        action_message varchar(1024),
-		PRIMARY KEY (id),
-        FOREIGN KEY (service_body_bigint) REFERENCES " . $bmaw_service_areas_table_name . "(service_body_bigint) 
-	) $charset_collate;";
+    // $sql = "CREATE TABLE " . $bmaw_submissions_table_name . " (
+	// 	id mediumint(9) NOT NULL AUTO_INCREMENT,
+	// 	submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+	// 	change_time datetime DEFAULT '0000-00-00 00:00:00',
+    //     changed_by varchar(10),
+    //     change_made varchar(10),
+	// 	submitter_name tinytext NOT NULL,
+	// 	submission_type tinytext NOT NULL,
+    //     submitter_email varchar(320) NOT NULL,
+    //     meeting_id bigint(20) unsigned,
+    //     service_body_bigint mediumint(9) NOT NULL,
+    //     changes_requested varchar(1024),
+    //     action_message varchar(1024),
+	// 	PRIMARY KEY (id),
+    //     FOREIGN KEY (service_body_bigint) REFERENCES " . $bmaw_service_areas_table_name . "(service_body_bigint) 
+	// ) $charset_collate;";
 
-    // dbDelta($sql);
-    $wpdb->query($sql);
+    // // dbDelta($sql);
+    // $wpdb->query($sql);
 
-    // add_option('bmaw_db_version', $bmaw_db_version);
+    add_option('bmaw_db_version', $bmaw_db_version);
 
-    // // add custom capability to any editable role that contains read capability already
-    // global $bmaw_capability_manage_submissions;
-    // $roles = get_editable_roles();
-    // foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
-    //     if (isset($roles[$key]) && $role->has_cap('read')) {
-    //         $role->add_cap($bmaw_capability_manage_submissions, false);
-    //     }
-    // }
-    // // add a custom role just for trusted servants
-    // add_role('bmaw_trusted_servant', 'BMAW Trusted Servant', array($bmaw_capability_manage_submissions => true));
+    // add custom capability to any editable role that contains read capability already
+    global $bmaw_capability_manage_submissions;
+    $roles = get_editable_roles();
+    foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
+        if (isset($roles[$key]) && $role->has_cap('read')) {
+            $role->add_cap($bmaw_capability_manage_submissions, false);
+        }
+    }
+    // add a custom role just for trusted servants
+    add_role('bmaw_trusted_servant', 'BMAW Trusted Servant', array($bmaw_capability_manage_submissions => true));
 }
 
 function bmaw_uninstall()
