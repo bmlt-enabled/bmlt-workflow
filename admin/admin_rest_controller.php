@@ -55,16 +55,16 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		register_rest_route($this->namespace, '/' . $this->submissions_rest_base . '/(?P<id>[\d]+)', array(
 			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => array($this, 'get_submission'),
-			'permission_callback' => array($this, 'get_submissions_permissions_check'),
-		));
+			'permission_callback' => array($this, 'get_submission_permissions_check'),
+		
 		// DELETE submissions/<id>
-		register_rest_route($this->namespace, '/' . $this->submissions_rest_base . '/(?P<id>[\d]+)', array(
+		array(
 			'methods'             => WP_REST_Server::DELETABLE,
 			'callback'            => array($this, 'delete_submission'),
 			'permission_callback' => array($this, 'delete_submission_permissions_check'),
-		));
+		
 		// PUT submissions/<id>
-		register_rest_route($this->namespace, '/' . $this->submissions_rest_base . '/(?P<id>[\d]+)', array(
+		array(
 			'methods'             => WP_REST_Server::EDITABLE,
 			'callback'            => array($this, 'patch_submission'),
 			'permission_callback' => array($this, 'patch_submission_permissions_check'),
@@ -169,6 +169,17 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		return true;
 	}
 
+	public function get_submission_permissions_check($request)
+	{
+		global $bmaw_capability_manage_submissions;
+
+		error_log("get submissions current user " . get_current_user_id());
+		if (!current_user_can($bmaw_capability_manage_submissions)) {
+			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view a submission.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
 	public function approve_submission_action_permissions_check($request)
 	{
 		global $bmaw_capability_manage_submissions;
@@ -202,7 +213,7 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		return true;
 	}
 
-	public function patch_submission_action_permissions_check($request)
+	public function patch_submission_permissions_check($request)
 	{
 		global $bmaw_capability_manage_submissions;
 
