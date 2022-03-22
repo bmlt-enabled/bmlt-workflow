@@ -107,8 +107,14 @@ function bmaw_admin_scripts($hook)
 
         case ('toplevel_page_bmaw-settings'):
             // error_log('inside hook');
+
+            // clipboard
+            wp_register_script('clipboard', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
+            wp_enqueue_script('clipboard');
+
             prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
             $script  = 'var bmaw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';
+
             wp_add_inline_script('admin_options_js', $script, 'before');
             break;
         case ('bmaw_page_bmaw-submissions'):

@@ -1,4 +1,7 @@
+var clipboard = new ClipboardJS(".clipboard-button");
+  
 jQuery(document).ready(function ($) {
+  
   if (test_status == "success") {
     $("#bmaw_test_yes").show();
     $("#bmaw_test_no").hide();
