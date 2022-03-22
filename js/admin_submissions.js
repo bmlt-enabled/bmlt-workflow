@@ -100,9 +100,9 @@ jQuery(document).ready(function ($) {
       });
     }
     // trigger adding of highlights when input changes
-    $(".quickedit-input").change(function () {
-      $(this).addClass("bmaw-changed");
-    });
+    // $(".quickedit-input").change(function () {
+    //   $(this).addClass("bmaw-changed");
+    // });
     $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
   }
 
