@@ -678,8 +678,7 @@ function bmaw_install()
 
     $charset_collate = $wpdb->get_charset_collate();
 
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
+    // require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
     $sql = "CREATE TABLE " . $bmaw_service_areas_table_name . " (
 		service_body_bigint mediumint(9) NOT NULL,
@@ -716,7 +715,6 @@ function bmaw_install()
         FOREIGN KEY (service_body_bigint) REFERENCES " . $bmaw_service_areas_table_name . "(service_body_bigint) 
 	) $charset_collate;";
 
-    // error_log(vdump($sql));
 
     dbDelta($sql);
 
@@ -724,14 +722,9 @@ function bmaw_install()
 
     // add custom capability to any editable role that contains read capability already
     global $bmaw_capability_manage_submissions;
-    // error_log("adding capabilities");
     $roles = get_editable_roles();
-    // error_log(vdump($roles));
     foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
         if (isset($roles[$key]) && $role->has_cap('read')) {
-            // error_log("adding cap to role");
-            // error_log(vdump($role));
-            // add it but dont grant it yet
             $role->add_cap($bmaw_capability_manage_submissions, false);
         }
     }
