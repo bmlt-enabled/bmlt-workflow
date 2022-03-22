@@ -25,3 +25,4 @@ do_settings_sections( 'bmaw-settings' );
 submit_button();
 
 echo '</form></div>';
+?>
