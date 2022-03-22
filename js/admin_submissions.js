@@ -14,7 +14,7 @@ jQuery(document).ready(function ($) {
     // clear quickedit
 
     // remove our change handler
-    $(".quickedit-input").off('change');
+    $(".quickedit-input").off("change");
     // remove the highlighting
     $(".quickedit-input").removeClass("bmaw-changed");
     // remove any content from the input fields
@@ -101,10 +101,11 @@ jQuery(document).ready(function ($) {
         }
       });
     }
-        // trigger adding of highlights when input changes
-    $(".quickedit-input").change(function (){$(this).addClass("bmaw-changed")});
+    // trigger adding of highlights when input changes
+    $(".quickedit-input").change(function () {
+      $(this).addClass("bmaw-changed");
+    });
     $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
-
   }
 
   function clear_notices() {
@@ -121,7 +122,7 @@ jQuery(document).ready(function ($) {
   $("#quickedit_format_shared_id_list").select2({
     placeholder: "Select from available formats",
     multiple: true,
-    width: '90%',
+    width: "90%",
     data: formatdata,
     dropdownParent: $("#bmaw_submission_quickedit_dialog"),
   });
@@ -318,7 +319,7 @@ jQuery(document).ready(function ($) {
               return "Rejected";
             case "updated":
               return "Updated";
-            }
+          }
           return data;
         },
       },
@@ -331,7 +332,7 @@ jQuery(document).ready(function ($) {
       var actioned = true;
       if ($("#dt-submission").DataTable().row({ selected: true }).count()) {
         var change_made = $("#dt-submission").DataTable().row({ selected: true }).data()["change_made"];
-        var actioned = ((change_made === "approved") || (change_made === "rejected"));
+        var actioned = change_made === "approved" || change_made === "rejected";
       }
       $("#dt-submission").DataTable().button("approve:name").enable(!actioned);
       $("#dt-submission").DataTable().button("reject:name").enable(!actioned);
@@ -441,8 +442,8 @@ jQuery(document).ready(function ($) {
     $.ajax({
       url: bmaw_admin_submissions_rest_url + id + url,
       type: action,
-      dataType: 'json',
-      contentType: 'application/json',
+      dataType: "json",
+      contentType: "application/json",
       data: JSON.stringify(parameters),
       beforeSend: function (xhr) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
@@ -469,26 +470,23 @@ jQuery(document).ready(function ($) {
     clear_notices();
 
     // pull out all the changed elements
-    $(".bmaw-changed").each( function(){
-      var short_id = $(this).attr('id').replace('quickedit_','');
+    $(".bmaw-changed").each(function () {
+      var short_id = $(this).attr("id").replace("quickedit_", "");
       // turn the format list into a comma seperated array
-      if(short_id === 'format_shared_id_list')
-      {
-        quickedit_changes_requested[short_id]=$(this).val().join(',');
-      }
-      else
-      {
-        quickedit_changes_requested[short_id]=$(this).val();
+      if (short_id === "format_shared_id_list") {
+        quickedit_changes_requested[short_id] = $(this).val().join(",");
+      } else {
+        quickedit_changes_requested[short_id] = $(this).val();
       }
     });
     console.log(changes_requested);
-    parameters['changes_requested']=quickedit_changes_requested;
+    parameters["changes_requested"] = quickedit_changes_requested;
 
     $.ajax({
       url: bmaw_admin_submissions_rest_url + id,
-      type: 'PATCH',
-      dataType: 'json',
-      contentType: 'application/json',
+      type: "PATCH",
+      dataType: "json",
+      contentType: "application/json",
       data: JSON.stringify(parameters),
       beforeSend: function (xhr) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
@@ -508,8 +506,7 @@ jQuery(document).ready(function ($) {
     $("#bmaw_submission_quickedit_dialog").dialog("close");
   }
 
-  function notice_success(response)
-  {
+  function notice_success(response) {
     var msg = "";
     if (response.message == "")
       msg =
@@ -522,8 +519,7 @@ jQuery(document).ready(function ($) {
     $(".wp-header-end").after(msg);
   }
 
-  function notice_error(xhr)
-  {
+  function notice_error(xhr) {
     $(".wp-header-end").after(
       '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
         xhr.responseJSON.message +
