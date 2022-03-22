@@ -180,6 +180,8 @@ function bmaw_admin_scripts($hook)
 
 function bmaw_menu_pages()
 {
+    global $bmaw_capability_manage_submissions;
+    
     add_menu_page(
         'BMAW',
         'BMAW',
