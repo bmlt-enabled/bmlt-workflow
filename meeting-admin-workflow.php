@@ -110,7 +110,6 @@ function bmaw_admin_scripts($hook)
             $script  = 'var bmaw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';
             wp_add_inline_script('admin_options_js', $script, 'before');
             prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
-
             break;
         case ('bmaw_page_bmaw-submissions'):
             prevent_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
