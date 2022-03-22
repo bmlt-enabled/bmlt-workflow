@@ -720,18 +720,18 @@ function bmaw_install()
     // dbDelta($sql);
     $wpdb->query($sql);
 
-    add_option('bmaw_db_version', $bmaw_db_version);
+    // add_option('bmaw_db_version', $bmaw_db_version);
 
-    // add custom capability to any editable role that contains read capability already
-    global $bmaw_capability_manage_submissions;
-    $roles = get_editable_roles();
-    foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
-        if (isset($roles[$key]) && $role->has_cap('read')) {
-            $role->add_cap($bmaw_capability_manage_submissions, false);
-        }
-    }
-    // add a custom role just for trusted servants
-    add_role('bmaw_trusted_servant', 'BMAW Trusted Servant', array($bmaw_capability_manage_submissions => true));
+    // // add custom capability to any editable role that contains read capability already
+    // global $bmaw_capability_manage_submissions;
+    // $roles = get_editable_roles();
+    // foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
+    //     if (isset($roles[$key]) && $role->has_cap('read')) {
+    //         $role->add_cap($bmaw_capability_manage_submissions, false);
+    //     }
+    // }
+    // // add a custom role just for trusted servants
+    // add_role('bmaw_trusted_servant', 'BMAW Trusted Servant', array($bmaw_capability_manage_submissions => true));
 }
 
 function bmaw_uninstall()
