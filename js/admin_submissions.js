@@ -19,8 +19,6 @@ jQuery(document).ready(function ($) {
     $(".quickedit-input").removeClass("bmaw-changed");
     // remove any content from the input fields
     $(".quickedit-input").val("");
-    // trigger adding of highlights when input changes
-    // $(".quickedit-input").change(function (){$(this).addClass("bmaw-changed")});
 
     // fill quickedit
 
@@ -76,7 +74,6 @@ jQuery(document).ready(function ($) {
                 .change();
             }
           });
-          $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
         });
     } else if (bmaw_changedata[id].submission_type == "reason_new") {
       // fill from changes
@@ -103,8 +100,11 @@ jQuery(document).ready(function ($) {
             .change();
         }
       });
-      $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
     }
+        // trigger adding of highlights when input changes
+    $(".quickedit-input").change(function (){$(this).addClass("bmaw-changed")});
+    $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
+
   }
 
   function clear_notices() {
