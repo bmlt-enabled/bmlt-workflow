@@ -29,10 +29,10 @@ class bmaw_submissions_rest_handlers
         global $bmaw_submissions_table_name;
 
         $result = $wpdb->get_results('SELECT * FROM ' . $bmaw_submissions_table_name, ARRAY_A);
+        error_log(vdump($result));
         foreach ($result as $key => $value) {
             $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 2);
         }
-        // error_log(vdump($result));
         return $result;
     }
 
