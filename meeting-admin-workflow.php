@@ -688,7 +688,8 @@ function bmaw_install()
 		PRIMARY KEY (service_body_bigint)
 	) $charset_collate;";
 
-    dbDelta($sql);
+    // dbDelta($sql);
+    $wpdb->query($sql);
 
     $sql = "CREATE TABLE " . $bmaw_service_areas_access_table_name . " (
 		service_body_bigint mediumint(9) NOT NULL,
@@ -696,7 +697,8 @@ function bmaw_install()
 		FOREIGN KEY (service_body_bigint) REFERENCES " . $bmaw_service_areas_table_name . "(service_body_bigint) 
 	) $charset_collate;";
 
-    dbDelta($sql);
+    // dbDelta($sql);
+    $wpdb->query($sql);
 
     $sql = "CREATE TABLE " . $bmaw_submissions_table_name . " (
 		id mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -715,8 +717,8 @@ function bmaw_install()
         FOREIGN KEY (service_body_bigint) REFERENCES " . $bmaw_service_areas_table_name . "(service_body_bigint) 
 	) $charset_collate;";
 
-
-    dbDelta($sql);
+    // dbDelta($sql);
+    $wpdb->query($sql);
 
     add_option('bmaw_db_version', $bmaw_db_version);
 
