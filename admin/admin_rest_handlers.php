@@ -289,6 +289,7 @@ class bmaw_submissions_rest_handlers
         );
 
         foreach ($quickedit_change as $key => $value) {
+            error_log("checking ".$key);
             if (!in_array($key, $change_subfields)) {
                 unset($quickedit_change[$key]);
             }
