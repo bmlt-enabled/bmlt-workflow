@@ -304,14 +304,17 @@ class bmaw_submissions_rest_handlers
         if (($change_made === 'approved')||($change_made === 'rejected')) {
             return $this->bmaw_rest_error("Submission id {$change_id} is already $change_made", 400);
         }
-        error_log("change made is ".$change_made);
+        // error_log("change made is ".$change_made);
+
         // get our saved changes from the db
         $saved_change = json_decode($result['changes_requested'], 1);
+
         // put the quickedit ones over the top
-        error_log("merge before - saved");
-        error_log(vdump($saved_change));
-        error_log("merge before - quickedit");
-        error_log(vdump($quickedit_change));
+
+        // error_log("merge before - saved");
+        // error_log(vdump($saved_change));
+        // error_log("merge before - quickedit");
+        // error_log(vdump($quickedit_change));
 
         $merged_change = array_merge($saved_change, $quickedit_change);
 
@@ -330,14 +333,11 @@ class bmaw_submissions_rest_handlers
             NULL,
             $request['id']
         );
+        error_log(vdump($sql));
 
         $result = $wpdb->get_results($sql, ARRAY_A);
 
-        //
-        // send action email
-        //
-
-        return $this->bmaw_rest_success('Patched submission id ' . $change_id);
+        return $this->bmaw_rest_success('Updated submission id ' . $change_id);
     }
 
     public function approve_submission_handler($request)
