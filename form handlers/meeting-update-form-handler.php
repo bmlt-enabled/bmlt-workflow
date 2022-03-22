@@ -125,7 +125,11 @@ function meeting_update_form_handler_rest($data)
     }
 
     $reason = $data['update_reason'];
-
+    $service_body_bigint = CONST_OTHER_SERVICE_BODY;
+    if (!empty($data['service_body_bigint']))
+    {
+        $service_body_bigint = $data['service_body_bigint'];
+    }
     // these are the form fields we'll accept
     $changes = array();
 
@@ -242,18 +246,6 @@ function meeting_update_form_handler_rest($data)
 
     $cc_address = "";
     $to_address = "";
-    // $service_committees = get_option('bmaw_service_committee_option_array');
-    // foreach ($service_committees as $key => $value) {
-    //     if ($value['name'] == $data['service_area']) {
-    //         $cc_address = $value['e2'];
-    //         $to_address = $value['e1'];
-    //         break;
-    //     }
-    // }
-
-    // if (empty($to_address)) {
-    //     wp_die(("No valid service committee found."));
-    // }
 
     $from_address = get_option('bmaw_email_from_address');
 
@@ -326,7 +318,8 @@ function meeting_update_form_handler_rest($data)
             'submitter_name' => $submitter_name,
             'submission_type'  => $db_reason,
             'submitter_email' => $submitter_email,
-            'changes_requested' => wp_json_encode($changes, 0, 1)
+            'changes_requested' => wp_json_encode($changes, 0, 1),
+            'service_body_bigint' => $service_body_bigint
         ),
         array(
             '%s',

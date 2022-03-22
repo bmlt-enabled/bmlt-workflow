@@ -152,11 +152,11 @@ jQuery(document).ready(function ($) {
     var bmaw_service_areas = "";
     Object.keys(response).forEach((item) => {
       console.log(response);
-      var service_area_id = item;
+      var service_body_bigint = item;
       var service_area_name = response[item]["name"];
-      var opt = new Option(service_area_name, service_area_id, false, false);
+      var opt = new Option(service_area_name, service_body_bigint, false, false);
       $("#service_body_bigint").append(opt);
-      bmaw_service_areas += "services[]=" + service_area_id + "&";
+      bmaw_service_areas += "services[]=" + service_body_bigint + "&";
     });
     update_meeting_list(bmaw_service_areas);
   });
@@ -373,7 +373,7 @@ jQuery(document).ready(function ($) {
 
   // form submit handler
   function real_submit_handler() {
-    
+
     // in case we disabled this we want to send it now
     enable_field("service_body_bigint");
 

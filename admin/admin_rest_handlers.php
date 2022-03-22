@@ -81,7 +81,7 @@ class bmaw_submissions_rest_handlers
 
         // update our service area list in the database in case there have been some new ones added
         // error_log("get ids");
-        $sqlresult = $wpdb->get_col('SELECT service_area_id FROM ' . $bmaw_service_areas_table_name . ';', 0);
+        $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $bmaw_service_areas_table_name . ';', 0);
 
         // error_log(vdump($sqlresult));
         $missing = array_diff($idlist, $sqlresult);
@@ -89,13 +89,13 @@ class bmaw_submissions_rest_handlers
         // error_log(vdump($missing));
 
         foreach ($missing as $value) {
-            $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s", service_area_id="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+            $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
             $wpdb->query($sql);
         }
         // update any values that may have changed since last time we looked
 
         foreach ($idlist as $value) {
-            $sql = $wpdb->prepare('UPDATE ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s" where service_area_id="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+            $sql = $wpdb->prepare('UPDATE ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
             $wpdb->query($sql);
         }
 
@@ -105,17 +105,17 @@ class bmaw_submissions_rest_handlers
         // make our group membership lists
         foreach ($sblist as $key => $value) {
             error_log("getting memberships for " . $key);
-            $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $bmaw_service_areas_access_table_name . ' where service_area_id = "%d"', $key);
+            $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $bmaw_service_areas_access_table_name . ' where service_body_bigint = "%d"', $key);
             $result = $wpdb->get_col($sql, 0);
             // error_log(vdump($result));
             $sblist[$key]['membership'] = implode(',', $result);
         }
         // get the form display settings
-        $sqlresult = $wpdb->get_results('SELECT service_area_id,show_on_form FROM ' . $bmaw_service_areas_table_name, ARRAY_A);
+        $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $bmaw_service_areas_table_name, ARRAY_A);
 
         foreach ($sqlresult as $key => $value) {
             $bool = $value['show_on_form'] ? (true) : (false);
-            $sblist[$value['service_area_id']]['show_on_form'] = $bool;
+            $sblist[$value['service_body_bigint']]['show_on_form'] = $bool;
         }
 
         return $sblist;
@@ -134,7 +134,7 @@ class bmaw_submissions_rest_handlers
         // error_log(vdump($result));
         // create simple service area list (names of service areas that are enabled by admin with show_on_form)
         foreach ($result as $key => $value) {
-            $sblist[$value['service_area_id']]['name'] = $value['service_area_name'];
+            $sblist[$value['service_body_bigint']]['name'] = $value['service_area_name'];
         }
         // error_log(vdump($sblist));
 
@@ -157,12 +157,12 @@ class bmaw_submissions_rest_handlers
         foreach ($permissions as $sb => $arr) {
             $members = $arr['membership'];
             foreach ($members as $member) {
-                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_access_table_name . ' SET wp_uid = "%d", service_area_id="%d"', $member, $sb);
+                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_access_table_name . ' SET wp_uid = "%d", service_body_bigint="%d"', $member, $sb);
                 $wpdb->query($sql);
             }
             // update show/hide
             $show_on_form = $arr['show_on_form'];
-            $sql = $wpdb->prepare('UPDATE ' . $bmaw_service_areas_table_name . ' SET show_on_form = "%d" where service_area_id="%d"', $show_on_form, $sb);
+            $sql = $wpdb->prepare('UPDATE ' . $bmaw_service_areas_table_name . ' SET show_on_form = "%d" where service_body_bigint="%d"', $show_on_form, $sb);
             $wpdb->query($sql);
         }
 

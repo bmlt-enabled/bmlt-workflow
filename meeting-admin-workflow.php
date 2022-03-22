@@ -18,6 +18,8 @@ global $wpdb;
 global $bmaw_submissions_table_name;
 global $bmaw_service_areas_table_name;
 global $bmaw_service_areas_access_table_name;
+// placeholder for an 'other' service body
+define('CONST_OTHER_SERVICE_BODY','99999999999');
 
 $bmaw_submissions_table_name = $wpdb->prefix . 'bmaw_submissions';
 $bmaw_service_areas_table_name = $wpdb->prefix . 'bmaw_service_areas';
@@ -688,27 +690,29 @@ function bmaw_install()
 		submission_type tinytext NOT NULL,
         submitter_email varchar(320) NOT NULL,
         meeting_id bigint(20) unsigned,
+        service_body_bigint mediumint(9) NOT NULL,
         changes_requested varchar(1024),
         action_message varchar(1024),
-		PRIMARY KEY (id)
+		PRIMARY KEY (id),
+        FOREIGN KEY (service_body_bigint) REFERENCES " . $bmaw_service_areas_table_name . "(service_body_bigint) 
 	) $charset_collate;";
 
     dbDelta($sql);
 
     $sql = "CREATE TABLE " . $bmaw_service_areas_table_name . " (
-		service_area_id mediumint(9) NOT NULL,
+		service_body_bigint mediumint(9) NOT NULL,
         service_area_name tinytext NOT NULL,
         contact_email varchar(255) NOT NULL default '',
         show_on_form bool,
-		PRIMARY KEY (service_area_id)
+		PRIMARY KEY (service_body_bigint)
 	) $charset_collate;";
 
     dbDelta($sql);
 
     $sql = "CREATE TABLE " . $bmaw_service_areas_access_table_name . " (
-		service_area_id mediumint(9) NOT NULL ,
-        wp_uid bigint(20) unsigned  NOT NULL ,
-		FOREIGN KEY (service_area_id) REFERENCES " . $bmaw_service_areas_table_name . "(service_area_id) 
+		service_body_bigint mediumint(9) NOT NULL,
+        wp_uid bigint(20) unsigned  NOT NULL,
+		FOREIGN KEY (service_body_bigint) REFERENCES " . $bmaw_service_areas_table_name . "(service_body_bigint) 
 	) $charset_collate;";
 
     dbDelta($sql);
