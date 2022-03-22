@@ -464,7 +464,7 @@ jQuery(document).ready(function ($) {
     console.log("id = %d"+id);
 
     $(".bmaw-changed").each( function(){
-      var short_id = $(this).id.replace('quickedit-','');
+      var short_id = $(this).attr('id').replace('quickedit_','');
       quickedit_changes_requested[short_id]=$(this).val();
     });
     console.log(changes_requested);
@@ -501,7 +501,7 @@ jQuery(document).ready(function ($) {
     console.log("id = %d"+id);
 
     $(".bmaw-changed").each( function(){
-      var short_id = $(this).id.replace('quickedit-','');
+      var short_id = $(this).attr('id').replace('quickedit_','');
       quickedit_changes_requested[short_id]=$(this).val();
     });
     console.log(changes_requested);
