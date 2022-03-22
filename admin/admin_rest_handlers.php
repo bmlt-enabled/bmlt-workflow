@@ -141,7 +141,7 @@ class bmaw_submissions_rest_handlers
         return $sblist;
     }
 
-    public function post_service_areas_detail($request)
+    public function post_service_areas_detail_handler($request)
     {
         global $wpdb;
         global $bmaw_service_areas_access_table_name;
@@ -185,6 +185,7 @@ class bmaw_submissions_rest_handlers
         return $this->bmaw_rest_success('Updated Service Areas');
     }
 
+    
     public function delete_submission_handler($request)
     {
 
