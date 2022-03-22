@@ -137,6 +137,8 @@ jQuery(document).ready(function ($) {
         enabled: false,
         action: function (e, dt, button, config) {
           var id = dt.cell(".selected", 0).data();
+          // clear text area from before
+          $("#bmaw_submission_reject_dialog_textarea").val("");
           $("#bmaw_submission_reject_dialog").data("id", id).dialog("open");
         },
       },
@@ -155,6 +157,8 @@ jQuery(document).ready(function ($) {
         extend: "selected",
         action: function (e, dt, button, config) {
           var id = dt.cell(".selected", 0).data();
+          // clear text area from before
+          $("#bmaw_submission_approve_dialog_textarea").val("");
           $("#bmaw_submission_delete_dialog").data("id", id).dialog("open");
         },
       },
