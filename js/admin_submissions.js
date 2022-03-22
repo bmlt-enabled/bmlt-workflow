@@ -383,12 +383,12 @@ jQuery(document).ready(function ($) {
       },
       buttons: {
         "Save and Approve": function () {
-          fn = window[this.id + "_saveapprove"];
-          if (typeof fn === "function") fn($(this).data("id"));
+          save_approve_handler($(this).data("id"));
         },
         Save: function () {
-          fn = window[this.id + "_save"];
-          if (typeof fn === "function") fn($(this).data("id"));
+          save_handler($(this).data("id"));
+          // fn = window[this.id + "_save"];
+          // if (typeof fn === "function") fn($(this).data("id"));
         },
         Cancel: function () {
           $(this).dialog("close");
@@ -437,6 +437,102 @@ jQuery(document).ready(function ($) {
     $.ajax({
       url: bmaw_admin_submissions_rest_url + id + url,
       type: action,
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify(parameters),
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+      },
+    })
+      .done(function (response) {
+        var msg = "";
+        if (response.message == "")
+          msg =
+            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
+        else
+          msg =
+            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
+            response.message +
+            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
+        $(".wp-header-end").after(msg);
+        // reload the table to pick up any changes
+        $("#dt-submission").DataTable().ajax.reload();
+        // reset the buttons correctly
+        $("#dt-submission").DataTable().rows().deselect();
+      })
+      .fail(function (xhr) {
+        $(".wp-header-end").after(
+          '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
+            xhr.responseJSON.message +
+            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
+        );
+      });
+    $("#" + slug + "_dialog").dialog("close");
+  }
+
+  function save_approve_handler(id) {
+    parameters = {};
+    changes_requested = {};
+    quickedit_changes_requested = {};
+    console.log("id = %d"+id);
+
+    $(".bmaw-changed").each( function(){
+        quickedit_changes_requested[$(this).id]=$(this).val();
+    });
+    console.log(changes_requested);
+    parameters['changes_requested']=quickedit_changes_requested;
+
+    $.ajax({
+      url: bmaw_admin_submissions_rest_url + id,
+      type: 'PATCH',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify(parameters),
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+      },
+    })
+      .done(function (response) {
+        var msg = "";
+        if (response.message == "")
+          msg =
+            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
+        else
+          msg =
+            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
+            response.message +
+            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
+        $(".wp-header-end").after(msg);
+        // reload the table to pick up any changes
+        $("#dt-submission").DataTable().ajax.reload();
+        // reset the buttons correctly
+        $("#dt-submission").DataTable().rows().deselect();
+      })
+      .fail(function (xhr) {
+        $(".wp-header-end").after(
+          '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
+            xhr.responseJSON.message +
+            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
+        );
+      });
+    $("#" + slug + "_dialog").dialog("close");
+  }
+
+  function save_handler(id) {
+    parameters = {};
+    changes_requested = {};
+    quickedit_changes_requested = {};
+    console.log("id = %d"+id);
+
+    $(".bmaw-changed").each( function(){
+        quickedit_changes_requested[$(this).id]=$(this).val();
+    });
+    console.log(changes_requested);
+    parameters['changes_requested']=quickedit_changes_requested;
+
+    $.ajax({
+      url: bmaw_admin_submissions_rest_url + id,
+      type: 'PATCH',
       dataType: 'json',
       contentType: 'application/json',
       data: JSON.stringify(parameters),
