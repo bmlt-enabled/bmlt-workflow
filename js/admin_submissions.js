@@ -12,8 +12,16 @@ var bmaw_changedata = {};
 jQuery(document).ready(function ($) {
   function populate_and_open_quickedit(id) {
     // clear quickedit
+
+    // remove our change handler
+    $(".quickedit-input").off('change');
+    // remove the highlighting
     $(".quickedit-input").removeClass("bmaw-changed");
+    // remove any content from the input fields
     $(".quickedit-input").val("");
+    // trigger adding of highlights when input changes
+    $(".quickedit-input").change(function (){$(this).addClass("bmaw-changed")});
+
     // fill quickedit
 
     // if it's a meeting change, fill from bmlt first
