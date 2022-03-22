@@ -20,7 +20,7 @@ jQuery(document).ready(function ($) {
     // remove any content from the input fields
     $(".quickedit-input").val("");
     // trigger adding of highlights when input changes
-    $(".quickedit-input").change(function (){$(this).addClass("bmaw-changed")});
+    // $(".quickedit-input").change(function (){$(this).addClass("bmaw-changed")});
 
     // fill quickedit
 
