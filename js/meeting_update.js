@@ -373,7 +373,9 @@ jQuery(document).ready(function ($) {
 
   // form submit handler
   function real_submit_handler() {
-    // event.preventDefault();
+    
+    // in case we disabled this we want to send it now
+    enable_field("service_body_bigint");
 
     // meeting formats
     var str = "";
