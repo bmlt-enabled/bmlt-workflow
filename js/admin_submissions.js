@@ -445,27 +445,14 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        var msg = "";
-        if (response.message == "")
-          msg =
-            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-        else
-          msg =
-            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
-            response.message +
-            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-        $(".wp-header-end").after(msg);
+        notice_success(response);
         // reload the table to pick up any changes
         $("#dt-submission").DataTable().ajax.reload();
         // reset the buttons correctly
         $("#dt-submission").DataTable().rows().deselect();
       })
       .fail(function (xhr) {
-        $(".wp-header-end").after(
-          '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
-            xhr.responseJSON.message +
-            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
-        );
+        notice_error(xhr);
       });
     $("#" + slug + "_dialog").dialog("close");
   }
@@ -477,7 +464,8 @@ jQuery(document).ready(function ($) {
     console.log("id = %d"+id);
 
     $(".bmaw-changed").each( function(){
-        quickedit_changes_requested[$(this).id]=$(this).val();
+      var short_id = $(this).id.replace('quickedit-','');
+      quickedit_changes_requested[short_id]=$(this).val();
     });
     console.log(changes_requested);
     parameters['changes_requested']=quickedit_changes_requested;
@@ -493,29 +481,17 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        var msg = "";
-        if (response.message == "")
-          msg =
-            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-        else
-          msg =
-            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
-            response.message +
-            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-        $(".wp-header-end").after(msg);
+        notice_success(response);
+
         // reload the table to pick up any changes
         $("#dt-submission").DataTable().ajax.reload();
         // reset the buttons correctly
         $("#dt-submission").DataTable().rows().deselect();
       })
       .fail(function (xhr) {
-        $(".wp-header-end").after(
-          '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
-            xhr.responseJSON.message +
-            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
-        );
+        notice_error(xhr);
       });
-    $("#" + slug + "_dialog").dialog("close");
+    $("#bmaw_submission_quickedit_dialog").dialog("close");
   }
 
   function save_handler(id) {
@@ -525,7 +501,8 @@ jQuery(document).ready(function ($) {
     console.log("id = %d"+id);
 
     $(".bmaw-changed").each( function(){
-        quickedit_changes_requested[$(this).id]=$(this).val();
+      var short_id = $(this).id.replace('quickedit-','');
+      quickedit_changes_requested[short_id]=$(this).val();
     });
     console.log(changes_requested);
     parameters['changes_requested']=quickedit_changes_requested;
@@ -541,28 +518,38 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        var msg = "";
-        if (response.message == "")
-          msg =
-            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-        else
-          msg =
-            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
-            response.message +
-            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-        $(".wp-header-end").after(msg);
+        notice_success(response);
         // reload the table to pick up any changes
         $("#dt-submission").DataTable().ajax.reload();
         // reset the buttons correctly
         $("#dt-submission").DataTable().rows().deselect();
       })
       .fail(function (xhr) {
-        $(".wp-header-end").after(
-          '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
-            xhr.responseJSON.message +
-            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
-        );
+        notice_error(xhr);
       });
-    $("#" + slug + "_dialog").dialog("close");
+    $("#bmaw_submission_quickedit_dialog").dialog("close");
+  }
+
+  function notice_success(response)
+  {
+    var msg = "";
+    if (response.message == "")
+      msg =
+        '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
+    else
+      msg =
+        '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
+        response.message +
+        '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
+    $(".wp-header-end").after(msg);
+  }
+
+  function notice_error(xhr)
+  {
+    $(".wp-header-end").after(
+      '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
+        xhr.responseJSON.message +
+        '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
+    );
   }
 });
