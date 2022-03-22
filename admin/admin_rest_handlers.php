@@ -381,7 +381,9 @@ class bmaw_submissions_rest_handlers
         $password = $request['bmaw_bmlt_password'];
         $server = $request['bmaw_bmlt_server_address'];
 
-        if (is_wp_error($this->bmlt_integration->testServerAndAuth($username, $password, $server)))
+        $ret = $this->bmlt_integration->testServerAndAuth($username, $password, $server);
+        error_log($ret);
+        if (is_wp_error($ret))
         {
             return $this->bmaw_rest_error('Server and Authentication test failed.',500);
         }
