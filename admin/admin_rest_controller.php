@@ -63,6 +63,13 @@ class bmaw_submissions_rest extends WP_REST_Controller
 			'callback'            => array($this, 'delete_submission'),
 			'permission_callback' => array($this, 'delete_submission_permissions_check'),
 		));
+		// PUT submissions/<id>
+		register_rest_route($this->namespace, '/' . $this->submissions_rest_base . '/(?P<id>[\d]+)', array(
+			'methods'             => WP_REST_Server::EDITABLE,
+			'callback'            => array($this, 'patch_submission'),
+			'permission_callback' => array($this, 'patch_submission_permissions_check'),
+		));
+		
 		// POST submissions/<id>/approve
 		register_rest_route($this->namespace, '/' . $this->submissions_rest_base . '/(?P<id>[\d]+)/approve', array(
 			'methods'             => WP_REST_Server::CREATABLE,
@@ -195,6 +202,18 @@ class bmaw_submissions_rest extends WP_REST_Controller
 		return true;
 	}
 
+	public function patch_submission_action_permissions_check($request)
+	{
+		global $bmaw_capability_manage_submissions;
+
+		error_log("patch submission current user " . get_current_user_id());
+		if (!current_user_can($bmaw_capability_manage_submissions)) {
+			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot patch this submission.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
+
 	/**
 	 * Check permissions for user management.
 	 *
@@ -308,6 +327,12 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	public function reject_submission($request)
 	{
 		$result = $this->handlers->reject_submission_handler($request);
+		return rest_ensure_response($result);
+	}
+
+	public function patch_submission($request)
+	{
+		$result = $this->handlers->patch_submission_handler($request);
 		return rest_ensure_response($result);
 	}
 

@@ -191,6 +191,7 @@ class bmaw_submissions_rest_handlers
 
         global $wpdb;
         global $bmaw_submissions_table_name;
+        
         $sql = $wpdb->prepare('DELETE FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
         $wpdb->query($sql, ARRAY_A);
 
@@ -209,12 +210,12 @@ class bmaw_submissions_rest_handlers
 
     public function reject_submission_handler($request)
     {
+        global $wpdb;
+        global $bmaw_submissions_table_name;
+
         $change_id = $request->get_param('id');
 
         error_log("rejection request for id " . $change_id);
-
-        global $wpdb;
-        global $bmaw_submissions_table_name;
 
         $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
         $result = $wpdb->get_row($sql, ARRAY_A);
@@ -260,14 +261,81 @@ class bmaw_submissions_rest_handlers
         return $this->bmaw_rest_success('Rejected submission id ' . $change_id);
     }
 
+    public function patch_submission_handler($request)
+    {
+        global $wpdb;
+        global $bmaw_submissions_table_name;
+
+        $change_id = $request->get_param('id');
+
+        error_log("patch request for id " . $change_id);
+
+        // permitted change list from quickedit - notably no meeting id or service body
+        $quickedit_change = $request->get_param('changes_requested');
+
+        $change_subfields = array(
+            "meeting_name",
+            "start_time",
+            "duration_time",
+            "location_text",
+            "location_street",
+            "location_info",
+            "location_municipality",
+            "location_province",
+            "location_postal_code_1",
+            "weekday_tinyint",
+            "virtual_meeting_link",
+            "format_shared_id_list"
+        );
+
+        foreach ($quickedit_change as $key => $value) {
+            if (!in_array($key, $change_subfields)) {
+                unset($quickedit_change[$key]);
+            }
+        }
+
+        $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
+        $result = $wpdb->get_row($sql, ARRAY_A);
+
+        $change_made = $result['change_made'];
+
+        if (($change_made === 'approved')||($change_made === 'rejected')) {
+            return $this->bmaw_rest_error("Submission id {$change_id} is already $change_made", 400);
+        }
+        // get our saved changes from the db
+        $saved_change = json_decode($result['changes_requested'], 1);
+        // put the quickedit ones over the top
+        array_merge($saved_change, $quickedit_change);
+
+        $current_user = wp_get_current_user();
+        $username = $current_user->user_login;
+
+        $sql = $wpdb->prepare(
+            'UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'updated',
+            $username,
+            current_time('mysql', true),
+            NULL,
+            $request['id']
+        );
+
+        $result = $wpdb->get_results($sql, ARRAY_A);
+
+        //
+        // send action email
+        //
+
+        return $this->bmaw_rest_success('Patched submission id ' . $change_id);
+    }
+
     public function approve_submission_handler($request)
     {
+        global $wpdb;
+        global $bmaw_submissions_table_name;
+
         $change_id = $request->get_param('id');
 
         error_log("getting changes for id " . $change_id);
-
-        global $wpdb;
-        global $bmaw_submissions_table_name;
 
         $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
         $result = $wpdb->get_row($sql, ARRAY_A);
