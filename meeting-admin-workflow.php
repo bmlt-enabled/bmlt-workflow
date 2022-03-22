@@ -716,7 +716,7 @@ function bmaw_install()
         FOREIGN KEY (service_body_bigint) REFERENCES " . $bmaw_service_areas_table_name . "(service_body_bigint) 
 	) $charset_collate;";
 
-    error_log(vdump($sql));
+    // error_log(vdump($sql));
 
     dbDelta($sql);
 
@@ -741,6 +741,11 @@ function bmaw_install()
 
 function bmaw_uninstall()
 {
+    global $wpdb;
+    global $bmaw_submissions_table_name;
+    global $bmaw_service_areas_table_name;
+    global $bmaw_service_areas_access_table_name;
+
     // remove custom capability
     global $bmaw_capability_manage_submissions;
     error_log("deleting capabilities");
@@ -751,4 +756,13 @@ function bmaw_uninstall()
             $role->remove_cap($bmaw_capability_manage_submissions);
         }
     }
+    
+    // Fix for production usage
+    $sql = "DROP TABLE " . $bmaw_submissions_table_name . ";";
+    $wpdb->query($sql);
+    $sql = "DROP TABLE " . $bmaw_service_areas_access_table_name . ";";
+    $wpdb->query($sql);
+    $sql = "DROP TABLE " . $bmaw_submissions_table_name . ";";
+    $wpdb->query($sql);
+
 }
