@@ -88,8 +88,6 @@ function enqueue_form_deps()
     $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
     $script .= 'var bmaw_bmlt_server_address = "' . get_option('bmaw_bmlt_server_address') . '";';
     wp_add_inline_script('bmaw-meeting-update-js', $script, 'before');
-
-
 }
 
 function bmaw_admin_scripts($hook)
@@ -113,7 +111,14 @@ function bmaw_admin_scripts($hook)
             wp_enqueue_script('clipboard');
 
             prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
+            // inline scripts
             $script  = 'var bmaw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/bmltserver/') . '; ';
+
+            $arr = get_option('bmaw_service_committee_option_array');
+            $js_array = json_encode($arr);
+            $test_result = get_option('bmaw_bmlt_test_status', 'failure');
+            $script  .= 'var bmaw_service_form_array = ' . $js_array . '; ';
+            $script  .= 'var test_status = ' . $test_result . '; ';
 
             wp_add_inline_script('admin_options_js', $script, 'before');
             break;
@@ -134,7 +139,7 @@ function bmaw_admin_scripts($hook)
             wp_enqueue_style('select2css');
             wp_enqueue_script('select2');
 
-        
+
             // make sure our rest url is populated
             $script  = 'var bmaw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';
             // add our bmlt server for the submission lookups
@@ -143,13 +148,13 @@ function bmaw_admin_scripts($hook)
             // add meeting formats
             $bmlt_integration = new BMLTIntegration;
             $formatarr = $bmlt_integration->getMeetingFormats();
-            $script .= 'var bmaw_bmlt_formats = ' . json_encode($formatarr) .'; ';
+            $script .= 'var bmaw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our serviceareas
             $request  = new WP_REST_Request('GET', '/bmaw-submission/v1/serviceareas');
             $response = rest_do_request($request);
             $result     = rest_get_server()->response_to_data($response, true);
-    
+
             $script .= 'var bmaw_admin_bmaw_service_areas = ' . json_encode($result) . '; ';
 
             wp_add_inline_script('admin_submissions_js', $script, 'before');
