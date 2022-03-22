@@ -321,7 +321,7 @@ jQuery(document).ready(function ($) {
       var actioned = true;
       if ($("#dt-submission").DataTable().row({ selected: true }).count()) {
         var change_made = $("#dt-submission").DataTable().row({ selected: true }).data()["change_made"];
-        var actioned = change_made === "approved" || change_made === "rejected";
+        var actioned = ((change_made === "approved") || (change_made === "rejected"));
       }
       $("#dt-submission").DataTable().button("approve:name").enable(!actioned);
       $("#dt-submission").DataTable().button("reject:name").enable(!actioned);
@@ -424,10 +424,6 @@ jQuery(document).ready(function ($) {
     clear_notices();
     generic_approve_handler(id, "DELETE", "", "bmaw_submission_delete");
   };
-  bmaw_submission_quickedit_dialog_ok = function (id) {
-    clear_notices();
-    generic_approve_handler(id, "AAAAA", "", "a");
-  };
 
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
@@ -461,11 +457,21 @@ jQuery(document).ready(function ($) {
     parameters = {};
     changes_requested = {};
     quickedit_changes_requested = {};
-    console.log("id = %d"+id);
+    // console.log("id = %d"+id);
+    clear_notices();
 
+    // pull out all the changed elements
     $(".bmaw-changed").each( function(){
       var short_id = $(this).attr('id').replace('quickedit_','');
-      quickedit_changes_requested[short_id]=$(this).val();
+      // turn the format list into a comma seperated array
+      if(short_id === 'format_shared_id_list')
+      {
+        quickedit_changes_requested[short_id]=implode(',',$(this).val());
+      }
+      else
+      {
+        quickedit_changes_requested[short_id]=$(this).val();
+      }
     });
     console.log(changes_requested);
     parameters['changes_requested']=quickedit_changes_requested;
@@ -499,6 +505,8 @@ jQuery(document).ready(function ($) {
     changes_requested = {};
     quickedit_changes_requested = {};
     console.log("id = %d"+id);
+
+    clear_notices();
 
     $(".bmaw-changed").each( function(){
       var short_id = $(this).attr('id').replace('quickedit_','');
