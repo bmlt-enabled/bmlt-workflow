@@ -7,6 +7,16 @@ class BMLTIntegration
 {
     protected $cookies = null; // our authentication cookies
 
+    public function testAuth()
+    {
+        $ret = $this->authenticateRootServer();
+        if ($ret != true)
+        {
+            
+        }
+        return $ret;
+    }
+
     public function getMeetingFormats()
     {
         $response = $this->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('admin_action' => 'get_format_info'));
@@ -28,21 +38,6 @@ class BMLTIntegration
         return $newformat;
     }
 
-    // postargs is an array
-    public function postConfiguredRootServerRequest($url, $postargs)
-    {
-            return $this->postRootServerRequest(get_option('bmaw_bmlt_server_address') . $url, $postargs);
-    }
-
-    public function postConfiguredRootServerRequestSemantic($url, $postargs)
-    {
-            return $this->postRootServerRequestSemantic(get_option('bmaw_bmlt_server_address') . $url, $postargs);
-    }
-    public function getConfiguredRootServerRequest($url)
-    {
-            return $this->getRootServerRequest(get_option('bmaw_bmlt_server_address') . $url);
-    }
-
     private function vdump($object)
     {
         ob_start();
@@ -62,7 +57,7 @@ class BMLTIntegration
             );
             $url = get_option('bmaw_bmlt_server_address') . "index.php";
 
-            error_log("AUTH URL = " . $url);
+            // error_log("AUTH URL = " . $url);
             $ret = $this->post($url, null, $postargs);
             if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $ret['body'])) // best way I could find to check for invalid login
             {
@@ -99,7 +94,7 @@ class BMLTIntegration
                 return $ret;
             }
             // try once more in case it was a session timeout
-            $ret = wp_remote_post($url, $this->set_args($cookies));
+            $ret = wp_remote_get($url, $this->set_args($cookies));
         }
         return $ret;
     }
@@ -179,6 +174,22 @@ class BMLTIntegration
         }
         return $this->postsemantic($url, $this->cookies, $postargs);
     }
+
+    public function postConfiguredRootServerRequest($url, $postargs)
+    {
+            return $this->postRootServerRequest(get_option('bmaw_bmlt_server_address') . $url, $postargs);
+    }
+
+    public function postConfiguredRootServerRequestSemantic($url, $postargs)
+    {
+            return $this->postRootServerRequestSemantic(get_option('bmaw_bmlt_server_address') . $url, $postargs);
+    }
+
+    public function getConfiguredRootServerRequest($url)
+    {
+            return $this->getRootServerRequest(get_option('bmaw_bmlt_server_address') . $url);
+    }
+
 }
 
 ?>

@@ -255,21 +255,6 @@ function bmaw_register_setting()
         wp_die("This page cannot be accessed");
     }
 
-    // register_setting(
-    //     'bmaw-settings-group',
-    //     'bmaw_service_committee_option_array',
-    //     array(
-    //         'type' => 'array',
-    //         'description' => 'bmaw service committee array',
-    //         'sanitize_callback' => 'array_sanitize_callback',
-    //         'show_in_rest' => false,
-    //         'default' => array(
-    //             "0" => array("name" => "Committee1", "e1" => "email 1", "e2" => "email 1.1"),
-    //             "1" => array("name" => "Committee2", "e1" => "email 2", "e2" => "email 2.1"),
-    //         )
-    //     )
-    // );
-
     register_setting(
         'bmaw-settings-group',
         'bmaw_bmlt_server_address',
@@ -302,7 +287,7 @@ function bmaw_register_setting()
             'description' => 'bmlt automation password',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
-            'default' => 'https://na.org.au/main_server'
+            'default' => ''
         )
     );
 
@@ -419,13 +404,13 @@ function bmaw_register_setting()
         'bmaw-settings-section-id'
     );
 
-    add_settings_field(
-        'bmaw_bmlt_bot_login',
-        'BMLT Automation Login Details',
-        'bmaw_bmlt_bot_login_html',
-        'bmaw-settings',
-        'bmaw-settings-section-id'
-    );
+    // add_settings_field(
+    //     'bmaw_bmlt_bot_login',
+    //     'BMLT Automation Login Details',
+    //     'bmaw_bmlt_bot_login_html',
+    //     'bmaw-settings',
+    //     'bmaw-settings-section-id'
+    // );
 
     add_settings_field(
         'bmaw_shortcode',
@@ -435,13 +420,6 @@ function bmaw_register_setting()
         'bmaw-settings-section-id'
     );
 
-    // add_settings_field(
-    //     'bmaw_service_committee_table',
-    //     'Service Committee Configuration',
-    //     'bmaw_service_committee_table_html',
-    //     'bmaw-settings',
-    //     'bmaw-settings-section-id'
-    // );
 
     add_settings_field(
         'bmaw_email_from_address',
@@ -506,43 +484,31 @@ function bmaw_bmlt_server_address_html()
 {
     $bmaw_bmlt_server_address = get_option('bmaw_bmlt_server_address');
     $bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status', "failure");
+    $bmaw_bmlt_username = get_option('bmaw_bmlt_username');
+
     echo <<<END
     <div class="bmaw_info_text">
-    <br>Your BMLT server address, used to populate the meeting list for meeting changes and closures. For example: <code>https://na.org.au/main_server/</code>
+    <br>Your BMLT server address, username and password. This login is use to action meeting approvals/rejections. 
+    <br>The server address is used to populate the meeting list for meeting changes and closures. For example: <code>https://na.org.au/main_server/</code>
     <br>Ensure you have used the <b>Test Server</b> button and saved settings before using the shortcode form
     <br><br>
     </div>
     END;
 
     echo '<br><label for="bmaw_bmlt_server_address"><b>Server Address:</b></label><input type="url" size="50" id="bmaw_bmlt_server_address" name="bmaw_bmlt_server_address" value="' . $bmaw_bmlt_server_address . '"/>';
+    echo '<br><label for="bmaw_bmlt_username"><b>BMLT Username:</b></label><input type="text" size="10" id="bmaw_bmlt_username" name="bmaw_bmlt_username" value="' . $bmaw_bmlt_username . '"/>';
+    echo '<br><label for="bmaw_bmlt_password"><b>BMLT Password:</b></label><input type="password" size="10" id="bmaw_bmlt_password" name="bmaw_bmlt_password"/>';
     echo '<button type="button" id="bmaw_test_bmlt_server">Test Server Address</button><span style="display: none;" id="bmaw_test_yes" class="dashicons dashicons-yes"></span><span style="display: none;" id="bmaw_test_no" class="dashicons dashicons-no"></span>';
     echo '<br><br>';
     echo '<input type="hidden" id="bmaw_bmlt_test_status" name="bmaw_bmlt_test_status" value="' . $bmaw_bmlt_test_status . '"></input>';
 }
 
-function bmaw_bmlt_bot_login_html()
-{
-    $bmaw_bmlt_username = get_option('bmaw_bmlt_username');
-    $bmaw_bmlt_test_login_status = get_option('bmaw_bmlt_test_login_status', "failure");
-
-    echo <<<END
-    <div class="bmaw_info_text">
-    <br>Username and password for BMLT automation
-    <br><br>
-    </div>
-    END;
-    echo '<br><label for="bmaw_bmlt_server_address"><b>BMLT Username:</b></label><input type="text" size="10" id="bmaw_bmlt_username" name="bmaw_bmlt_username" value="' . $bmaw_bmlt_username . '"/>';
-    echo '<br><label for="bmaw_bmlt_server_address"><b>BMLT Password:</b></label><input type="password" size="10" id="bmaw_bmlt_password" name="bmaw_bmlt_password"/>';
-    echo '<button type="button" id="bmaw_test_bmlt_server_login">Test Login</button><span style="display: none;" id="bmaw_test_login_yes" class="dashicons dashicons-yes"></span><span style="display: none;" id="bmaw_test_login_no" class="dashicons dashicons-no"></span>';
-    echo '<br><br>';
-    echo '<input type="hidden" id="bmaw_bmlt_test_login_status" name="bmaw_bmlt_test_login_status" value="' . $bmaw_bmlt_test_login_status . '"></input>';
-}
 
 function bmaw_shortcode_html()
 {
     echo <<<END
     <div class="bmaw_info_text">
-    <br>You can use the shortcode <code>[bmaw-meeting-update-form service_areas=1,2,3,..]</code> to list the appropriate meetings and service areas in your update form.
+    <br>You can use the shortcode <code>[bmaw-meeting-update-form]</code> to list the appropriate meetings and service areas in your update form.
     <br><br>
     </div>
     END;
@@ -557,7 +523,6 @@ function bmaw_email_from_address_html()
     <br><br>
     </div>
     END;
-
 
     echo '<br><label for="bmaw_email_from_address"><b>From Address:</b></label><input type="text" size="50" name="bmaw_email_from_address" value="' . $from_address . '"/>';
     echo '<br><br>';
@@ -658,51 +623,6 @@ function bmaw_close_meeting_template_html()
     echo '<br><br>';
 }
 
-// function bmaw_service_committee_table_html()
-// {
-
-//     $arr = get_option('bmaw_service_committee_option_array');
-
-//     echo <<<END
-//     <div class="bmaw_info_text">
-//     <br>Configure your service committee contact details here.
-//     <br>
-//     <br><b>Service Area</b>: The name as appears in the service area listing on the meeting form.
-//     <br><b>To/CC Addresses</b>: A comma seperated list of addresses to send the meeting update notification. {field:email_address} can be used to contact the form submitter.
-//     <br><br>
-//     </div>
-//     <table class="committeetable" id="bmaw-service-committee-table">
-//         <thead>
-//             <tr>
-//                 <th>Service Area</th>
-//                 <th>To Address(es)</th>
-//                 <th>CC Address(es)</th>
-//                 <th></th>
-//             </tr>
-//         </thead>
-//     <tbody>
-//     END;
-//     $i = 0;
-//     foreach ($arr as $key => $value) {
-//         echo '<tr>';
-//         $j = 0;
-//         $required = 'required';
-//         foreach ($value as $k2 => $v2) {
-//             if ($j == 2) {
-//                 // just the first two fields are required
-//                 $required = "";
-//             }
-//             $j++;
-//             echo '<td><input type="text" name="bmaw_service_committee_option_array[' . $i . '][' . $k2 . ']" value="' . $v2 . '" ' . $required . '/></td>';
-//         }
-//         echo '<td><span class="dashicons dashicons-remove" id="bmaw-service-committee-' . $key . '-remove"></span></td></tr>';
-//         $i++;
-//     }
-//     echo '<tr><td></td><td></td><td></td><td><span id="bmaw-service-committee-new-row" class="dashicons dashicons-insert"></span></td></tr>';
-//     echo '</tbody></table>';
-//     // echo '<br><button type="button" id="bmaw_service_committee_option_array_reload">Reload saved</button>';
-//     echo '<br><br>';
-// }
 
 function display_bmaw_admin_options_page()
 {
