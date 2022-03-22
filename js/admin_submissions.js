@@ -444,7 +444,7 @@ jQuery(document).ready(function ($) {
         var msg = "";
         if (response.message == "")
           msg =
-            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"></button></div>';
+            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
         else
           msg =
             '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +

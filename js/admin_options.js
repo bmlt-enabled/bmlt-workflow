@@ -1,7 +1,22 @@
 var clipboard = new ClipboardJS(".clipboard-button");
-  
+
+function dismiss_notice(element) {
+  jQuery(element)
+    .parent()
+    .slideUp("normal", function () {
+      jQuery(this).remove();
+    });
+  return false;
+}
+
 jQuery(document).ready(function ($) {
   
+  function clear_notices() {
+    jQuery(".notice-dismiss").each(function (i, e) {
+      dismiss_notice(e);
+    });
+  }
+
   if (test_status == "success") {
     $("#bmaw_test_yes").show();
     $("#bmaw_test_no").hide();
@@ -25,7 +40,7 @@ jQuery(document).ready(function ($) {
     parameters['bmaw_bmlt_server_address'] = $("#bmaw_bmlt_server_address").val();
     parameters['bmaw_bmlt_username'] = $("#bmaw_bmlt_username").val();
     parameters['bmaw_bmlt_password'] = $("#bmaw_bmlt_password").val();
-    
+
     $.ajax({
       url: bmaw_admin_bmltserver_rest_url,
       type: 'POST',
@@ -33,6 +48,7 @@ jQuery(document).ready(function ($) {
       contentType: 'application/json',
       data: JSON.stringify(parameters),
       beforeSend: function (xhr) {
+        clear_notices();
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
     })
@@ -40,7 +56,7 @@ jQuery(document).ready(function ($) {
         var msg = "";
         if (response.message == "")
           msg =
-            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"></button></div>';
+            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
         else
           msg =
             '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
