@@ -18,11 +18,14 @@ class BMLTIntegration
 
         $ret = wp_safe_remote_post($url, array('body'=> http_build_query($postargs)));
         error_log(vdump($ret));
-        if (is_wp_error($ret))
+
+        $response_code = wp_remote_retrieve_response_code($ret);
+
+        if ($response_code != 200)
         {
             return new WP_Error('bmaw', 'check BMLT server address');
         }
-        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $ret['body'])) // best way I could find to check for invalid login
+        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
             return new WP_Error('bmaw', 'check username and password details');
         }
@@ -35,8 +38,8 @@ class BMLTIntegration
         if (is_wp_error($response)) {
             return new WP_Error('bmaw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        error_log($response['body']);  
-        $formatarr = json_decode($response['body'], true)['row'];
+        error_log(wp_remote_retrieve_body($response));  
+        $formatarr = json_decode(wp_remote_retrieve_body($response), true)['row'];
         $newformat = array();
         foreach ($formatarr as $key => $value) {
             foreach ($value as $key2 => $value2) {
@@ -77,7 +80,7 @@ class BMLTIntegration
                 return new WP_Error('bmaw', 'authenticateRootServer: Server Failure');
             }  
 
-            if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $ret['body'])) // best way I could find to check for invalid login
+            if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
             {
                 $this->cookies = null;
                 return new WP_Error('bmaw', 'authenticateRootServer: Authentication Failure');
@@ -105,15 +108,15 @@ class BMLTIntegration
 
     private function get($url, $cookies = null)
     {
-        $ret = wp_remote_get($url, $this->set_args($cookies));
-        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $ret['body'])) // best way I could find to check for invalid login
+        $ret = wp_safe_remote_get($url, $this->set_args($cookies));
+        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
             $ret =  $this->authenticateRootServer();
             if (is_wp_error($ret)) {
                 return $ret;
             }
             // try once more in case it was a session timeout
-            $ret = wp_remote_get($url, $this->set_args($cookies));
+            $ret = wp_safe_remote_get($url, $this->set_args($cookies));
         }
         return $ret;
     }
@@ -124,14 +127,14 @@ class BMLTIntegration
         error_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
         error_log("*********");
         $ret = wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
-        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $ret['body'])) // best way I could find to check for invalid login
+        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
             $ret =  $this->authenticateRootServer();
             if (is_wp_error($ret)) {
                 return $ret;
             }
             // try once more in case it was a session timeout
-            $ret = wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
+            $ret = wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
         }
         return $ret;
     }
@@ -158,7 +161,7 @@ class BMLTIntegration
             // chop trailing &
             $newargs = substr($newargs, 0, -1);
             error_log("our post body is " . $newargs);
-            $ret = wp_remote_post($url, $this->set_args($cookies, $newargs));
+            $ret = wp_safe_remote_post($url, $this->set_args($cookies, $newargs));
             error_log($this->vdump($ret));
             return $ret;
         }
