@@ -104,6 +104,10 @@ function bmaw_admin_scripts($hook)
 
     switch ($hook) {
 
+        case ('toplevel_page_bmaw-settings'):
+            $script  = 'var bmaw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';
+            wp_add_inline_script('admin_submissions_js', $script, 'before');
+            break;
         case ('bmaw_page_bmaw-submissions'):
             // wp_enqueue_style('thickbox');
             // wp_enqueue_script('plugin-install');
@@ -153,8 +157,8 @@ function bmaw_admin_scripts($hook)
             deny_cache_enqueue_style('bmaw-admin-submissions-css', false, 'css/admin_service_areas.css');
 
             // make sure our rest url is populated
-            $script  = 'bmaw_admin_bmaw_service_areas_rest_route = ' . json_encode('bmaw-submission/v1/serviceareas/detail') . '; ';
-            $script .= 'wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
+            $script  = 'var bmaw_admin_bmaw_service_areas_rest_route = ' . json_encode('bmaw-submission/v1/serviceareas/detail') . '; ';
+            $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
             wp_add_inline_script('admin_service_areas_js', $script, 'before');
             break;
         default:
