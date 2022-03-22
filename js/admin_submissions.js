@@ -70,8 +70,7 @@ jQuery(document).ready(function ($) {
             if ($("#quickedit_" + element) instanceof jQuery) {
               $("#quickedit_" + element).addClass("bmaw-changed");
               $("#quickedit_" + element)
-                .val(changes_requested[element])
-                .change();
+                .val(changes_requested[element]);
             }
           });
         });
@@ -96,15 +95,14 @@ jQuery(document).ready(function ($) {
         if ($("#quickedit_" + element) instanceof jQuery) {
           $("#quickedit_" + element).addClass("bmaw-changed");
           $("#quickedit_" + element)
-            .val(changes_requested[element])
-            .change();
+            .val(changes_requested[element]);
         }
       });
     }
     // trigger adding of highlights when input changes
-    // $(".quickedit-input").change(function () {
-    //   $(this).addClass("bmaw-changed");
-    // });
+    $(".quickedit-input").change(function () {
+      $(this).addClass("bmaw-changed");
+    });
     $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
   }
 
