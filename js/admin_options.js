@@ -17,26 +17,41 @@ jQuery(document).ready(function ($) {
   $("#bmaw_bmlt_test_status").val(test_status);
 
   $("#bmaw_test_bmlt_server").on("click", function (event) {
-    var format_results_address = $("#bmaw_bmlt_server_address").val() + "/client_interface/jsonp/?switcher=GetFormats";
-
-    fetchJsonp(format_results_address)
-      .then((response) => response.json())
-      .then((data) => {
-        $("#bmaw_bmlt_test_status").val("success");
-        $("#bmaw_test_yes").show();
-        $("#bmaw_test_no").hide();
+  
+    parameters['bmlt_server_address'] = $("#bmaw_bmlt_server_address").val();
+    parameters['bmaw_bmlt_username'] = $("#bmaw_bmlt_username").val();
+    parameters['bmaw_bmlt_password'] = $("#bmaw_bmlt_password").val();
+    
+    $.ajax({
+      url: bmaw_admin_submissions_rest_url + "bmltserver",
+      type: action,
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify(parameters),
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+      },
+    })
+      .done(function (response) {
+        var msg = "";
+        if (response.message == "")
+          msg =
+            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return px_dissmiss_notice(this);"></button></div>';
+        else
+          msg =
+            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
+            response.message +
+            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
+        $(".wp-header-end").after(msg);
       })
-      .catch((error) => {
-        $("#bmaw_bmlt_test_status").val("failure");
-        $("#bmaw_test_no").show();
-        $("#bmaw_test_yes").hide();
+      .fail(function (xhr) {
+        $(".wp-header-end").after(
+          '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
+            xhr.responseJSON.message +
+            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
+        );
       });
-  });
-
-  $("#bmaw_bmlt_server_address").on("change", function (event) {
-    $("#bmaw_test_yes").hide();
-    $("#bmaw_test_no").hide();
-  });
+    });
 
   $("#bmaw-service-committee-table tbody").on("click", "tr td:nth-child(4)", function (event) {
     var rowCount = $("#bmaw-service-committee-table tr").length - 2;
