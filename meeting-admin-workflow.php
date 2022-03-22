@@ -102,17 +102,17 @@ function bmaw_admin_scripts($hook)
     prevent_cache_enqueue_style('bmaw-admin-css', false, 'css/admin_page.css');
     prevent_cache_enqueue_script('bmawjs', array('jquery'), 'js/script_includes.js');
 
+    error_log($hook);
     switch ($hook) {
 
         case ('toplevel_page_bmaw-settings'):
+            error_log('inside hook');
             $script  = 'var bmaw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';
             wp_add_inline_script('admin_options_js', $script, 'before');
             prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
 
             break;
         case ('bmaw_page_bmaw-submissions'):
-            // wp_enqueue_style('thickbox');
-            // wp_enqueue_script('plugin-install');
             prevent_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
             prevent_cache_enqueue_style('bmaw-admin-submissions-css', false, 'css/admin_submissions.css');
             // jquery dialogs
