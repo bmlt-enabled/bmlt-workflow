@@ -308,7 +308,9 @@ jQuery(document).ready(function ($) {
               return "Approved";
             case "rejected":
               return "Rejected";
-          }
+            case "updated":
+              return "Updated";
+            }
           return data;
         },
       },
@@ -382,13 +384,11 @@ jQuery(document).ready(function ($) {
         of: window,
       },
       buttons: {
-        "Save and Approve": function () {
-          save_approve_handler($(this).data("id"));
-        },
+        // "Save and Approve": function () {
+        //   save_approve_handler($(this).data("id"));
+        // },
         Save: function () {
           save_handler($(this).data("id"));
-          // fn = window[this.id + "_save"];
-          // if (typeof fn === "function") fn($(this).data("id"));
         },
         Cancel: function () {
           $(this).dialog("close");
@@ -453,7 +453,7 @@ jQuery(document).ready(function ($) {
     $("#" + slug + "_dialog").dialog("close");
   }
 
-  function save_approve_handler(id) {
+  function save_handler(id) {
     parameters = {};
     changes_requested = {};
     quickedit_changes_requested = {};
@@ -489,44 +489,6 @@ jQuery(document).ready(function ($) {
       .done(function (response) {
         notice_success(response);
 
-        // reload the table to pick up any changes
-        $("#dt-submission").DataTable().ajax.reload();
-        // reset the buttons correctly
-        $("#dt-submission").DataTable().rows().deselect();
-      })
-      .fail(function (xhr) {
-        notice_error(xhr);
-      });
-    $("#bmaw_submission_quickedit_dialog").dialog("close");
-  }
-
-  function save_handler(id) {
-    parameters = {};
-    changes_requested = {};
-    quickedit_changes_requested = {};
-    console.log("id = %d"+id);
-
-    clear_notices();
-
-    $(".bmaw-changed").each( function(){
-      var short_id = $(this).attr('id').replace('quickedit_','');
-      quickedit_changes_requested[short_id]=$(this).val();
-    });
-    console.log(changes_requested);
-    parameters['changes_requested']=quickedit_changes_requested;
-
-    $.ajax({
-      url: bmaw_admin_submissions_rest_url + id,
-      type: 'PATCH',
-      dataType: 'json',
-      contentType: 'application/json',
-      data: JSON.stringify(parameters),
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
-      },
-    })
-      .done(function (response) {
-        notice_success(response);
         // reload the table to pick up any changes
         $("#dt-submission").DataTable().ajax.reload();
         // reset the buttons correctly
