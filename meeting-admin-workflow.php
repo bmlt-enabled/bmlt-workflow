@@ -680,7 +680,6 @@ function bmaw_install()
 
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-    dbDelta($sql);
 
     $sql = "CREATE TABLE " . $bmaw_service_areas_table_name . " (
 		service_body_bigint mediumint(9) NOT NULL,
@@ -718,7 +717,9 @@ function bmaw_install()
 	) $charset_collate;";
 
     error_log(vdump($sql));
-    
+
+    dbDelta($sql);
+
     add_option('bmaw_db_version', $bmaw_db_version);
 
     // add custom capability to any editable role that contains read capability already
