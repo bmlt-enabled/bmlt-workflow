@@ -52,24 +52,32 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 		));
 		// GET submissions/<id>
-		register_rest_route($this->namespace, '/' . $this->submissions_rest_base . '/(?P<id>[\d]+)', array(
-			'methods'             => WP_REST_Server::READABLE,
-			'callback'            => array($this, 'get_submission'),
-			'permission_callback' => array($this, 'get_submission_permissions_check')),
-		
-		// DELETE submissions/<id>
-		array(
-			'methods'             => WP_REST_Server::DELETABLE,
-			'callback'            => array($this, 'delete_submission'),
-			'permission_callback' => array($this, 'delete_submission_permissions_check')),
-		
-		// PUT submissions/<id>
-		array(
-			'methods'             => WP_REST_Server::EDITABLE,
-			'callback'            => array($this, 'patch_submission'),
-			'permission_callback' => array($this, 'patch_submission_permissions_check')),
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->submissions_rest_base . '/(?P<id>[\d]+)',
+			array(
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array($this, 'get_submission'),
+					'permission_callback' => array($this, 'get_submission_permissions_check')
+				),
+
+				// DELETE submissions/<id>
+				array(
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => array($this, 'delete_submission'),
+					'permission_callback' => array($this, 'delete_submission_permissions_check')
+				),
+
+				// PUT submissions/<id>
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array($this, 'patch_submission'),
+					'permission_callback' => array($this, 'patch_submission_permissions_check')
+				),
+			)
 		);
-		
+
 		// POST submissions/<id>/approve
 		register_rest_route($this->namespace, '/' . $this->submissions_rest_base . '/(?P<id>[\d]+)/approve', array(
 			'methods'             => WP_REST_Server::CREATABLE,
