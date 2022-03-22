@@ -27,7 +27,7 @@ jQuery(document).ready(function ($) {
     parameters['bmaw_bmlt_password'] = $("#bmaw_bmlt_password").val();
     
     $.ajax({
-      url: bmaw_admin_submissions_rest_url + "bmltserver",
+      url: bmaw_admin_bmltserver_rest_url,
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json',

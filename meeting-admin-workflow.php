@@ -113,7 +113,7 @@ function bmaw_admin_scripts($hook)
             wp_enqueue_script('clipboard');
 
             prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
-            $script  = 'var bmaw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/submissions/') . '; ';
+            $script  = 'var bmaw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/bmltserver/') . '; ';
 
             wp_add_inline_script('admin_options_js', $script, 'before');
             break;
