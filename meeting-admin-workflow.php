@@ -724,16 +724,10 @@ function bmaw_install()
 
     add_option('bmaw_db_version', $bmaw_db_version);
 
-    // add custom capability to any editable role that contains read capability already
     global $bmaw_capability_manage_submissions;
-    $roles = get_editable_roles();
-    foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
-        if (isset($roles[$key]) && $role->has_cap('read')) {
-            $role->add_cap($bmaw_capability_manage_submissions, false);
-        }
-    }
+
     // add a custom role just for trusted servants
-    add_role('bmaw_trusted_servant', 'BMAW Trusted Servant', array($bmaw_capability_manage_submissions => true));
+    add_role('bmaw_trusted_servant', 'BMAW Trusted Servant');
 }
 
 function bmaw_uninstall()
@@ -747,12 +741,12 @@ function bmaw_uninstall()
     global $bmaw_capability_manage_submissions;
     error_log("deleting capabilities");
 
-    $roles = get_editable_roles();
-    foreach ($GLOBALS['wp_roles']->role_objects as $key => $role) {
-        if (isset($roles[$key]) && $role->has_cap($bmaw_capability_manage_submissions)) {
-            $role->remove_cap($bmaw_capability_manage_submissions);
-        }
+    $users = get_users();
+    foreach ($users as $user) {
+        $user->remove_cap($bmaw_capability_manage_submissions);
     }
+
+    remove_role('bmaw_trusted_servant');
     
     // Fix for production usage
     $sql = "DROP TABLE " . $bmaw_service_areas_access_table_name . ";";
