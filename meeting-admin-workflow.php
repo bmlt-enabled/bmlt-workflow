@@ -120,7 +120,7 @@ function bmaw_admin_scripts($hook)
             $js_array = json_encode($arr);
             $test_result = get_option('bmaw_bmlt_test_status', 'failure');
             $script  .= 'var bmaw_service_form_array = ' . $js_array . '; ';
-            $script  .= 'var test_status = ' . $test_result . '; ';
+            $script  .= 'var test_status = "' . $test_result . '"; ';
 
             wp_add_inline_script('admin_options_js', $script, 'before');
             break;
@@ -181,7 +181,7 @@ function bmaw_admin_scripts($hook)
 function bmaw_menu_pages()
 {
     global $bmaw_capability_manage_submissions;
-    
+
     add_menu_page(
         'BMAW',
         'BMAW',
