@@ -112,7 +112,7 @@ function bmaw_admin_scripts($hook)
 
             prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
             // inline scripts
-            $script  = 'var bmaw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/bmltserver/') . '; ';
+            $script  = 'var bmaw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . 'bmaw-submission/v1/bmltserver') . '; ';
 
             $arr = get_option('bmaw_service_committee_option_array');
             $js_array = json_encode($arr);
