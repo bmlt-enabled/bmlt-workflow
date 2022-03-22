@@ -16,7 +16,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <div class="bmaw_info_text">
     <br>Service areas are retrieved from BMLT using the BMLT details configured on the option page. 
     <br><br>You can configure which service areas are visible to the end-users using the <code>Display on end-user Form</code> checkbox.
-    <br><br>You can select users from your Wordpress userlist and grant them access in the <code>Wordpress Users with Access</code> section. 
+    <br><br>You can select users from your Wordpress userlist and grant them access to your service areas in the <code>Wordpress Users with Access</code> column. 
     These users will only be given access to the submission admin page, and only submissions from their service areas will be visible to approve.
     <br><br>
     </div>
