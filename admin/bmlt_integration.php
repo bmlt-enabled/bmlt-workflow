@@ -16,7 +16,7 @@ class BMLTIntegration
         );
         $url = $server . "index.php";
 
-        $ret = wp_remote_post($url, null, http_build_query($postargs));
+        $ret = wp_safe_remote_post($url, array('body'=> http_build_query($postargs)));
         error_log(vdump($ret));
         if (is_wp_error($ret))
         {
