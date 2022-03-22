@@ -17,7 +17,7 @@ jQuery(document).ready(function ($) {
   $("#bmaw_bmlt_test_status").val(test_status);
 
   $("#bmaw_test_bmlt_server").on("click", function (event) {
-    
+
     var parameters={};
     parameters['bmlt_server_address'] = $("#bmaw_bmlt_server_address").val();
     parameters['bmaw_bmlt_username'] = $("#bmaw_bmlt_username").val();
@@ -25,7 +25,7 @@ jQuery(document).ready(function ($) {
     
     $.ajax({
       url: bmaw_admin_submissions_rest_url + "bmltserver",
-      type: action,
+      type: 'POST',
       dataType: 'json',
       contentType: 'application/json',
       data: JSON.stringify(parameters),
