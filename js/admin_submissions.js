@@ -466,7 +466,7 @@ jQuery(document).ready(function ($) {
       // turn the format list into a comma seperated array
       if(short_id === 'format_shared_id_list')
       {
-        quickedit_changes_requested[short_id]=implode(',',$(this).val());
+        quickedit_changes_requested[short_id]=$(this).val().join(',');
       }
       else
       {
