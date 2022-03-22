@@ -55,8 +55,7 @@ jQuery(document).ready(function ($) {
           Object.keys(item).forEach((element) => {
             if ($("#quickedit_" + element) instanceof jQuery) {
               $("#quickedit_" + element)
-                .val(item[element])
-                .change();
+                .val(item[element]);
             }
           });
           // fill in and highlight the changes
@@ -100,9 +99,9 @@ jQuery(document).ready(function ($) {
       });
     }
     // trigger adding of highlights when input changes
-    // $(".quickedit-input").change(function () {
-    //   $(this).addClass("bmaw-changed");
-    // });
+    $(".quickedit-input").change(function () {
+      $(this).addClass("bmaw-changed");
+    });
     $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
   }
 
