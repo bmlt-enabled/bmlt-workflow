@@ -34,8 +34,6 @@ jQuery(document).ready(function ($) {
       fetchJsonp(search_results_address)
         .then((response) => response.json())
         .then((data) => {
-          // var f = data;
-          console.log(data);
           // fill in all the bmlt stuff
           var item = data[0];
           // split up the duration so we can use it in the select
@@ -463,7 +461,7 @@ jQuery(document).ready(function ($) {
     parameters = {};
     changes_requested = {};
     quickedit_changes_requested = {};
-    // console.log("id = %d"+id);
+
     clear_notices();
 
     // pull out all the changed elements
@@ -476,7 +474,7 @@ jQuery(document).ready(function ($) {
         quickedit_changes_requested[short_id] = $(this).val();
       }
     });
-    console.log(changes_requested);
+
     parameters["changes_requested"] = quickedit_changes_requested;
 
     $.ajax({

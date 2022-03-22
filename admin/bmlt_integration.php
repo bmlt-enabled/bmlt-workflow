@@ -14,7 +14,7 @@ class BMLTIntegration
             'c_comdef_admin_login' => $username,
             'c_comdef_admin_password' => $password
         );
-        
+
         $url = $server . "index.php";
 
         $ret = wp_safe_remote_post($url, array('body'=> http_build_query($postargs)));
