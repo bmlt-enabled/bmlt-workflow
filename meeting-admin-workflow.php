@@ -680,25 +680,6 @@ function bmaw_install()
 
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-    $sql = "CREATE TABLE " . $bmaw_submissions_table_name . " (
-		id mediumint(9) NOT NULL AUTO_INCREMENT,
-		submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-		change_time datetime DEFAULT '0000-00-00 00:00:00',
-        changed_by varchar(10),
-        change_made varchar(10),
-		submitter_name tinytext NOT NULL,
-		submission_type tinytext NOT NULL,
-        submitter_email varchar(320) NOT NULL,
-        meeting_id bigint(20) unsigned,
-        service_body_bigint mediumint(9) NOT NULL,
-        changes_requested varchar(1024),
-        action_message varchar(1024),
-		PRIMARY KEY (id),
-        FOREIGN KEY (service_body_bigint) REFERENCES " . $bmaw_service_areas_table_name . "(service_body_bigint) 
-	) $charset_collate;";
-
-    error_log(vdump($sql));
-    
     dbDelta($sql);
 
     $sql = "CREATE TABLE " . $bmaw_service_areas_table_name . " (
@@ -719,6 +700,25 @@ function bmaw_install()
 
     dbDelta($sql);
 
+    $sql = "CREATE TABLE " . $bmaw_submissions_table_name . " (
+		id mediumint(9) NOT NULL AUTO_INCREMENT,
+		submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+		change_time datetime DEFAULT '0000-00-00 00:00:00',
+        changed_by varchar(10),
+        change_made varchar(10),
+		submitter_name tinytext NOT NULL,
+		submission_type tinytext NOT NULL,
+        submitter_email varchar(320) NOT NULL,
+        meeting_id bigint(20) unsigned,
+        service_body_bigint mediumint(9) NOT NULL,
+        changes_requested varchar(1024),
+        action_message varchar(1024),
+		PRIMARY KEY (id),
+        FOREIGN KEY (service_body_bigint) REFERENCES " . $bmaw_service_areas_table_name . "(service_body_bigint) 
+	) $charset_collate;";
+
+    error_log(vdump($sql));
+    
     add_option('bmaw_db_version', $bmaw_db_version);
 
     // add custom capability to any editable role that contains read capability already
