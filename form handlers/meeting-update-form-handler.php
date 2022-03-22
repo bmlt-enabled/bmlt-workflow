@@ -225,7 +225,7 @@ function meeting_update_form_handler_rest($data)
             }
 
             // store away the meeting name
-            $changes['original_meeting_name'] = $data['meeting_name'];
+            $changes['original_meeting_name'] = $meeting['meeting_name'];
 
             break;
         case ('reason_close'):
