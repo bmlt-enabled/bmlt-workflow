@@ -385,7 +385,7 @@ class bmaw_submissions_rest_handlers
         error_log(vdump($ret));
         if (is_wp_error($ret))
         {
-            return $this->bmaw_rest_error('Server and Authentication test failed.',500);
+            return $this->bmaw_rest_error('Server and Authentication test failed'.$ret['errors']['bmaw'][0],500);
         }
         else
         {
