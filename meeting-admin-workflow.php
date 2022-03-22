@@ -760,9 +760,9 @@ function bmaw_uninstall()
     // Fix for production usage
     $sql = "DROP TABLE " . $bmaw_service_areas_access_table_name . ";";
     $wpdb->query($sql);
-    $sql = "DROP TABLE " . $bmaw_service_areas_table_name . ";";
-    $wpdb->query($sql);
     $sql = "DROP TABLE " . $bmaw_submissions_table_name . ";";
+    $wpdb->query($sql);
+    $sql = "DROP TABLE " . $bmaw_service_areas_table_name . ";";
     $wpdb->query($sql);
 
 }
