@@ -313,16 +313,17 @@ class bmaw_submissions_rest_handlers
         error_log("merge before - quickedit");
         error_log(vdump($quickedit_change));
 
-        array_merge($saved_change, $quickedit_change);
+        $merged_change = array_merge($saved_change, $quickedit_change);
 
         error_log("merge after - saved");
-        error_log(vdump($saved_change));
+        error_log(vdump($merged_change));
 
         $current_user = wp_get_current_user();
         $username = $current_user->user_login;
 
         $sql = $wpdb->prepare(
-            'UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'UPDATE ' . $bmaw_submissions_table_name . ' set changes_requested = "%s",change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            json_encode($merged_change),
             'updated',
             $username,
             current_time('mysql', true),
