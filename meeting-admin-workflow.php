@@ -726,6 +726,10 @@ function bmaw_install()
 
     global $bmaw_capability_manage_submissions;
 
+    // give ourself the capability so we are able to see the submission menu
+    $user = wp_get_current_user();
+    $user->add_cap($bmaw_capability_manage_submissions);
+
     // add a custom role just for trusted servants
     add_role('bmaw_trusted_servant', 'BMAW Trusted Servant');
 }
