@@ -97,7 +97,7 @@ function bmaw_admin_scripts($hook)
 
         error_log($hook);
 
-    if (($hook != 'toplevel_page_bmaw-settings') && ($hook != 'bmaw_page_bmaw-submissions') && ($hook != 'bmaw_page_bmaw-service-areas')) {
+    if (($hook != 'toplevel_page_bmaw-settings') && ($hook != 'bmlt-workflow_page_bmaw-submissions') && ($hook != 'bmlt-workflow_page_bmaw-service-areas')) {
         return;
     }
 
