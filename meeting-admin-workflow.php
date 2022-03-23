@@ -171,7 +171,7 @@ function bmaw_admin_scripts($hook)
             prevent_cache_enqueue_style('bmaw-admin-submissions-css', false, 'css/admin_service_areas.css');
 
             // make sure our rest url is populated
-            $script  = 'var bmaw_admin_bmaw_service_areas_rest_route = ' . json_encode('bmaw-submission/v1/serviceareas/detail') . '; ';
+            $script  = 'var bmaw_admin_bmaw_service_areas_rest_route = ' . json_encode('bmaw-submission/v1/serviceareas') . '; ';
             $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
             wp_add_inline_script('admin_service_areas_js', $script, 'before');
             break;
