@@ -392,7 +392,7 @@ jQuery(document).ready(function ($) {
           break;
       }
     }
-    if ("action_message" in d) {
+    if (("action_message" in d) &&  (d["action_message"] != '')){
       table += "<tr><td>Message to submitter:</td><td>" + d["action_message"] + "</td></tr>";
     }
     table += "</table>";
