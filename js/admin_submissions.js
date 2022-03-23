@@ -318,12 +318,12 @@ jQuery(document).ready(function ($) {
           return data;
         },
       },
-      // {
-      //   "className":      'dt-control',
-      //   "orderable":      false,
-      //   "data":           null,
-      //   "defaultContent": ''
-      // },
+      {
+        "className":      'dt-control',
+        "orderable":      false,
+        "data":           null,
+        "defaultContent": ''
+      },
     ],
   });
 
