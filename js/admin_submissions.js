@@ -383,10 +383,10 @@ jQuery(document).ready(function ($) {
           });
           table += "<tr><td>Meeting Formats:</td><td>" + friendlydata + "</td></tr>";
           break;
-
       }
-      table += "</table>";
     }
+    table += "</table>";
+
     return table;
   }
 
