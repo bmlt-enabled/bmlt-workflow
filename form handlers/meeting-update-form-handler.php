@@ -12,8 +12,8 @@ function vdump($object)
 function wbw_rest_success($message)
 {
     $response = new WP_REST_Response($message);
-    $response->set_status( 200);
-    return new $response
+    $response->set_status(200);
+    return $response;
 }
 
 function wbw_rest_error($message, $code)
@@ -336,7 +336,7 @@ function meeting_update_form_handler_rest($data)
     $message = array(
         "message" => 'Form submission successful, submission id ' . $insert_id,
         "form_html" => '<h1>Form submission successful, submission id ' . $insert_id . '</h1>'
-    )
+    );
 
     return wbw_rest_success($message);
 }
