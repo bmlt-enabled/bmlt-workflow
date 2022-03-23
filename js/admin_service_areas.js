@@ -1,5 +1,4 @@
 jQuery(document).ready(function ($) {
-
   function notice_success(response) {
     var msg = "";
     if (response.message == "")
@@ -83,13 +82,18 @@ jQuery(document).ready(function ($) {
 
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
-    }).done(function (response) {
-      turn_off_spinner("#bmaw-submit-spinner");
-    });
+    })
+      .done(function (response) {
+        turn_off_spinner("#bmaw-submit-spinner");
+        notice_success(response);
+      })
+      .fail(function (xhr) {
+        notice_error(xhr);
+      });
   });
 
   // get the permissions, and the userlist from wordpress, and create our select lists
-  var parameters = { "detail":"true"};
+  var parameters = { detail: "true" };
 
   $.ajax({
     url: wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route,
@@ -136,9 +140,6 @@ jQuery(document).ready(function ($) {
         $("#bmaw-userlist-table").show();
         $("#bmaw_submit").show();
       });
-      notice_success(response);
-    }).fail(function (xhr) {
-      notice_error(xhr);
     });
   });
 });
