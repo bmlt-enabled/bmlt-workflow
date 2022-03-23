@@ -73,6 +73,7 @@ jQuery(document).ready(function ($) {
     url: wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route,
     dataType: "json",
     data: JSON.stringify(parameters),
+    processData: false,
     beforeSend: function (xhr) {
       turn_on_spinner("#bmaw-form-spinner");
       xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
