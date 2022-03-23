@@ -139,7 +139,7 @@ class bmaw_submissions_rest_handlers
         error_log(vdump($params));
         // error_log("params detail".$params['detail']);
         // only an admin can get the service areas detail (permissions) information
-        if ((!empty($params['detail'])) && ($params['detail']) && (current_user_can('modify_options'))) {
+        if ((!empty($params['detail'])) && ($params['detail'] == "true") && (current_user_can('modify_options'))) {
             // do detail lookup
 
             $sblist = array();
