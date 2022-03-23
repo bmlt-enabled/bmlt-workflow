@@ -151,7 +151,7 @@ jQuery(document).ready(function ($) {
   }).done(function (response) {
     var wbw_service_bodies = "";
     Object.keys(response).forEach((item) => {
-      console.log(response);
+      // console.log(response);
       var service_body_bigint = item;
       var service_area_name = response[item]["name"];
       var opt = new Option(service_area_name, service_body_bigint, false, false);
