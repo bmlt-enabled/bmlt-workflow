@@ -48,6 +48,7 @@ jQuery(document).ready(function ($) {
       select.data("show_on_form", checked);
     });
     post = create_service_area_permission_post();
+
     $.ajax({
       url: wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route,
       method: "POST",
@@ -66,9 +67,12 @@ jQuery(document).ready(function ($) {
   });
 
   // get the permissions, and the userlist from wordpress, and create our select lists
+  var parameters = { "detail":"true"};
+
   $.ajax({
     url: wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route,
     dataType: "json",
+    data: JSON.stringify(parameters),
     beforeSend: function (xhr) {
       turn_on_spinner("#bmaw-form-spinner");
       xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
