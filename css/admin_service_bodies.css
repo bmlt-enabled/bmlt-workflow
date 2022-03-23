@@ -1,0 +1,38 @@
+table tr:hover > td {
+  background: #fff;
+}
+table th {
+  padding-left: 15px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+  width: auto;
+}
+
+table td {
+  padding-bottom: 5px;
+  padding-top: 5px;
+}
+
+.wbw_info_text {
+  padding-left: 15px;
+  background: #fff;
+  border-left: 5px solid lightblue;
+}
+
+label {
+  display: inline-flex;
+  clear: left;
+  width: 150px;
+}
+input {
+  display: inline-flex;
+}
+
+.spinner {
+    float: left;
+}
+
+.wbw-center-checkbox {
+    text-align: center; 
+    vertical-align: middle;
+}
