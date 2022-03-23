@@ -215,6 +215,23 @@ class bmaw_submissions_rest_handlers
         return $result;
     }
 
+    private function get_submission_id_with_permission_check($change_id)
+    {
+        global $wpdb;
+        global $bmaw_submissions_table_name;
+        global $bmaw_service_areas_access_table_name;
+
+        $this_user = wp_get_current_user();
+        $current_uid = $this_user->get('ID');
+        $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' s inner join '. $bmaw_service_areas_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1',$current_uid, $change_id);
+        $result = $wpdb->get_row($sql, ARRAY_A);
+        if(!($result->num_rows))
+        {
+            return $this->bmaw_rest_error("Permission denied viewing submission id {$change_id}", 400); 
+        }
+        return $result;
+    }
+
     public function reject_submission_handler($request)
     {
         global $wpdb;
@@ -224,8 +241,13 @@ class bmaw_submissions_rest_handlers
 
         error_log("rejection request for id " . $change_id);
 
-        $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
-        $result = $wpdb->get_row($sql, ARRAY_A);
+        $result = $this->get_submission_id_with_permission_check($change_id);
+        if(is_wp_error($result))
+        {
+            return $result;
+        }
+        // $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
+        // $result = $wpdb->get_row($sql, ARRAY_A);
 
         $change_made = $result['change_made'];
 
@@ -303,8 +325,14 @@ class bmaw_submissions_rest_handlers
             }
         }
 
-        $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
-        $result = $wpdb->get_row($sql, ARRAY_A);
+        $result = $this->get_submission_id_with_permission_check($change_id);
+        if(is_wp_error($result))
+        {
+            return $result;
+        }
+
+        // $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
+        // $result = $wpdb->get_row($sql, ARRAY_A);
 
         $change_made = $result['change_made'];
 
