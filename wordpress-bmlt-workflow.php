@@ -40,7 +40,24 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
 {
     global $wbw_rest_namespace;
 
-    error_log(vdump($status));
+    $result = [];
+    $result['scripts'] = [];
+    $result['styles'] = [];
+
+    // Print all loaded Scripts
+    global $wp_scripts;
+    foreach( $wp_scripts->queue as $script ) :
+       $result['scripts'][] =  $wp_scripts->registered[$script]->src . ";";
+    endforeach;
+
+    // Print all loaded Styles (CSS)
+    global $wp_styles;
+    foreach( $wp_styles->queue as $style ) :
+       $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
+    endforeach;
+
+    error_log(vdump($result));
+
     ob_start();
     include('public/meeting_update.php');
     $content .= ob_get_clean();
@@ -92,7 +109,7 @@ function enqueue_form_deps()
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
     error_log("adding script ".$script);
     $status = wp_add_inline_script('wbw-meeting-update-js', $script, 'before');
-    
+
     error_log("scripts and styles registered");
 }
 
