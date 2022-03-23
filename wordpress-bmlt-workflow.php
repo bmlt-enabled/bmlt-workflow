@@ -155,6 +155,7 @@ function wbw_admin_scripts($hook)
 
             // do a one off lookup for our servicebodies
             $url = get_rest_url() . $wbw_rest_namespace . '/servicebodies';
+            $url = '/flop/wp-json/wbw/v1/servicebodies';
             error_log("url = ".$url);
             $request  = new WP_REST_Request('GET', $url);
             $response = rest_do_request($request);
