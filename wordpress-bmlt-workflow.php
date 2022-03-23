@@ -33,7 +33,6 @@ include_once 'admin/admin_rest_controller.php';
 
 function meeting_update_form($atts = [], $content = null, $tag = '')
 {
-    error_log("in meeting update shortcode");
     ob_start();
     include('public/meeting_update.php');
     $content .= ob_get_clean();
