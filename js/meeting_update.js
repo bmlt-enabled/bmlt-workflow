@@ -298,7 +298,7 @@ jQuery(document).ready(function ($) {
 
     clear_field("meeting_id");
     // reset email checkbox
-    put_field_checked_index("add_email", 0, true);
+   put_field_checked_index("add_email", 0, false);
 
     // clear all the formats
     $("#format-table tr").each(function () {
