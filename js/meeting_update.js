@@ -395,7 +395,8 @@ jQuery(document).ready(function ($) {
     str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
     put_field("duration_time", str);
 
-    $.post(wbw_form_submit, $("#meeting_update_form").serialize(), function (response) {
+    var url = wp_rest_base + wbw_form_submit;
+    $.post(url, $("#meeting_update_form").serialize(), function (response) {
       console.log("submitted");
       $("#form_replace").replaceWith(response.message.form_html);
     });
