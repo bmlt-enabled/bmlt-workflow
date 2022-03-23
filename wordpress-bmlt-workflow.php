@@ -39,19 +39,7 @@ include_once 'admin/admin_rest_controller.php';
 function meeting_update_form($atts = [], $content = null, $tag = '')
 {
     global $wbw_rest_namespace;
-    wp_enqueue_script('wbw-general-js');
-    wp_enqueue_style('wbw-meeting-update-css');
-    wp_enqueue_script('jquery-validate');
-    wp_enqueue_script('jquery-validate-additional');
-    wp_enqueue_style('select2css');
-    wp_enqueue_script('select2');
-    $script  = 'var wbw_form_submit = ' . json_encode($wbw_rest_namespace.'/submissions') . '; ';
-    $script .= 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace.'/servicebodies') . '; ';
-    $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
-    $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
-    error_log("adding script ".$script);
-    $status = wp_add_inline_script('wbw-meeting-update-js', $script, 'before');
-    wp_enqueue_script('wbw-meeting-update-js');
+
     error_log(vdump($status));
     ob_start();
     include('public/meeting_update.php');
@@ -90,6 +78,21 @@ function enqueue_form_deps()
     prevent_cache_register_style('wbw-meeting-update-css', array('jquery'), 'css/meeting-update-form.css');
     wp_register_script('jquery.validate', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
     wp_register_script('jquery.validate.additional', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jquery.validate'), '1.0', true);
+
+    wp_enqueue_script('wbw-meeting-update-js');
+    wp_enqueue_script('wbw-general-js');
+    wp_enqueue_style('wbw-meeting-update-css');
+    wp_enqueue_script('jquery-validate');
+    wp_enqueue_script('jquery-validate-additional');
+    wp_enqueue_style('select2css');
+    wp_enqueue_script('select2');
+    $script  = 'var wbw_form_submit = ' . json_encode($wbw_rest_namespace.'/submissions') . '; ';
+    $script .= 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace.'/servicebodies') . '; ';
+    $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
+    $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
+    error_log("adding script ".$script);
+    $status = wp_add_inline_script('wbw-meeting-update-js', $script, 'before');
+    
     error_log("scripts and styles registered");
 }
 
