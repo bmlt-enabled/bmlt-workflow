@@ -157,8 +157,8 @@ jQuery(document).ready(function ($) {
       var opt = new Option(service_area_name, service_body_bigint, false, false);
       $("#service_body_bigint").append(opt);
       bmaw_service_areas += "services[]=" + service_body_bigint + "&";
+      update_meeting_list(bmaw_service_areas);
     });
-    update_meeting_list(bmaw_service_areas);
   });
 
   $("#meeting_update_form").validate({
