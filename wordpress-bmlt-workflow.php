@@ -275,8 +275,8 @@ function wbw_register_setting()
     }
 
     global $wbw_capability_manage_submissions;
-    
-    if ((!current_user_can('activate_plugins'))||(!current_user_can($wbw_capability_manage_submissions))) {
+
+    if ((!current_user_can('activate_plugins'))&&(!current_user_can($wbw_capability_manage_submissions))) {
         wp_die("This page cannot be accessed");
     }
 
