@@ -1,4 +1,26 @@
 jQuery(document).ready(function ($) {
+
+  function notice_success(response) {
+    var msg = "";
+    if (response.message == "")
+      msg =
+        '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
+    else
+      msg =
+        '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
+        response.message +
+        '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
+    $(".wp-header-end").after(msg);
+  }
+
+  function notice_error(xhr) {
+    $(".wp-header-end").after(
+      '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
+        xhr.responseJSON.message +
+        '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
+    );
+  }
+
   function attach_select_options_for_sbid(sblist, userlist, sbid, selectid) {
     Object.keys(userlist).forEach((item) => {
       var wp_uid = userlist[item]["id"];
@@ -114,6 +136,9 @@ jQuery(document).ready(function ($) {
         $("#bmaw-userlist-table").show();
         $("#bmaw_submit").show();
       });
+      notice_success(response);
+    }).fail(function (xhr) {
+      notice_error(xhr);
     });
   });
 });
