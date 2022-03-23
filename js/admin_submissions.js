@@ -119,7 +119,7 @@ jQuery(document).ready(function ($) {
     dropdownParent: $("#bmaw_submission_quickedit_dialog"),
   });
 
-  $("#dt-submission").DataTable({
+  var datatable = $("#dt-submission").DataTable({
     dom: "Bfrtip",
     select: true,
     buttons: [
@@ -367,7 +367,7 @@ jQuery(document).ready(function ($) {
 
   $("#dt-submission tbody").on("click", "td.dt-control", function () {
     var tr = $(this).closest("tr");
-    var row = table.row(tr);
+    var row = datatable.row(tr);
 
     if (row.child.isShown()) {
       // This row is already open - close it
