@@ -190,7 +190,7 @@ function wbw_menu_pages()
     add_menu_page(
         'BMLT Workflow',
         'BMLT Workflow',
-        'manage_options',
+        $wbw_capability_manage_submissions,
         'wbw-settings',
         '',
         'dashicons-analytics',
