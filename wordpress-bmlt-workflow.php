@@ -156,10 +156,10 @@ function wbw_admin_scripts($hook)
             // do a one off lookup for our servicebodies
             $url = get_rest_url() . $wbw_rest_namespace . '/servicebodies';
             error_log("url = ".$url);
-            $request  = new WP_REST_Request('GET', get_rest_url() . $wbw_rest_namespace . '/servicebodies');
+            $request  = new WP_REST_Request('GET', $url);
             $response = rest_do_request($request);
             $result     = rest_get_server()->response_to_data($response, true);
-
+            error_log("result = ".vdump($result));
             $script .= 'var wbw_admin_wbw_service_bodies = ' . json_encode($result) . '; ';
 
             wp_add_inline_script('admin_submissions_js', $script, 'before');
