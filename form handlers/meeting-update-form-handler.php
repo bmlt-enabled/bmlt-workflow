@@ -338,5 +338,5 @@ function meeting_update_form_handler_rest($data)
         "form_html" => '<h1>Form submission successful, submission id ' . $insert_id . '</h1>'
     )
 
-    wbw_rest_success($message);
+    return wbw_rest_success($message);
 }
