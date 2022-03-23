@@ -157,6 +157,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <th>Change Time</th>
                     <th>Changed By</th>
                     <th>Change Made</th>
+                    <th>More Info</th>
                 </tr>
             </thead>
             <tfoot>
@@ -169,6 +170,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <th>Change Time</th>
                     <th>Changed By</th>
                     <th>Change Made</th>
+                    <th>More Info</th>
                 </tr>
             </tfoot>
         </table>
