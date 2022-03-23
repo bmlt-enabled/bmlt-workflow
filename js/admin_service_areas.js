@@ -1,4 +1,11 @@
 jQuery(document).ready(function ($) {
+
+  function clear_notices() {
+    jQuery(".notice-dismiss").each(function (i, e) {
+      dismiss_notice(e);
+    });
+  }
+
   function notice_success(response) {
     var msg = "";
     if (response.message == "")
@@ -69,6 +76,8 @@ jQuery(document).ready(function ($) {
       select.data("show_on_form", checked);
     });
     post = create_service_area_permission_post();
+
+    clear_notices();
 
     $.ajax({
       url: wp_rest_base + bmaw_admin_bmaw_service_areas_rest_route,
