@@ -51,8 +51,8 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
     error_log("adding script ".$script);
-    wp_add_inline_script('wbw-meeting-update-js', $script, 'before');
-
+    $status = wp_add_inline_script('wbw-meeting-update-js', $script, 'before');
+    error_log(vdump($status));
     ob_start();
     include('public/meeting_update.php');
     $content .= ob_get_clean();
