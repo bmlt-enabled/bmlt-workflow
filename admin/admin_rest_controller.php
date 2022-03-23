@@ -3,11 +3,11 @@
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 if (!class_exists('BMLTIntegration')) {
-	require_once(BMAW_PLUGIN_DIR . 'admin/bmlt_integration.php');
+	require_once(WBW_PLUGIN_DIR . 'admin/bmlt_integration.php');
 }
 
 if (!class_exists('wbw_submissions_rest_handlers')) {
-	require_once(BMAW_PLUGIN_DIR . 'admin/admin_rest_handlers.php');
+	require_once(WBW_PLUGIN_DIR . 'admin/admin_rest_handlers.php');
 }
 
 function wbw_submissions_controller()

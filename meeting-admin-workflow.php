@@ -11,7 +11,7 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-define('BMAW_PLUGIN_DIR', plugin_dir_path(__FILE__));
+define('WBW_PLUGIN_DIR', plugin_dir_path(__FILE__));
 global $wbw_db_version;
 $wbw_db_version = '1.0';
 global $wpdb;
@@ -330,7 +330,7 @@ function wbw_register_setting()
             'description' => 'wbw_new_meeting_template',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
-            'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_new_meeting_email_template.html')
+            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_new_meeting_email_template.html')
         )
     );
 
@@ -342,7 +342,7 @@ function wbw_register_setting()
             'description' => 'wbw_existing_meeting_template',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
-            'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_existing_meeting_email_template.html')
+            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_existing_meeting_email_template.html')
 
         )
     );
@@ -355,7 +355,7 @@ function wbw_register_setting()
             'description' => 'wbw_other_meeting_template',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
-            'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_other_meeting_email_template.html')
+            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_other_meeting_email_template.html')
         )
     );
 
@@ -367,7 +367,7 @@ function wbw_register_setting()
             'description' => 'wbw_close_meeting_template',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
-            'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_close_meeting_email_template.html')
+            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_close_meeting_email_template.html')
         )
     );
 
@@ -380,7 +380,7 @@ function wbw_register_setting()
             'description' => 'wbw_fso_email_template',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
-            'default' => file_get_contents(BMAW_PLUGIN_DIR . 'templates/default_fso_email_template.html')
+            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html')
         )
     );
 
@@ -509,7 +509,7 @@ function wbw_bmlt_server_address_html()
     <div class="wbw_info_text">
     <br>Your BMLT server address, and a configured BMLT username and password.
     <br><br>Server address is used to populate the meeting list for meeting changes and closures. For example: <code>https://na.test.zzz/main_server/</code>
-    <br><br>The BMLT Username and Password is used to action meeting approvals/rejections as well as perform any BMLT related actions on the Wordpress users behalf. This user must be configured as a service body administrator and have access within BMLT to edit any service bodies that are used in BMAW form submissions.
+    <br><br>The BMLT Username and Password is used to action meeting approvals/rejections as well as perform any BMLT related actions on the Wordpress users behalf. This user must be configured as a service body administrator and have access within BMLT to edit any service bodies that are used in WBW form submissions.
     <br><br>Ensure you have used the <b>Test Server</b> button and saved settings before using the shortcode form
     <br><br>
     </div>
@@ -732,7 +732,7 @@ function wbw_install()
     $user->add_cap($wbw_capability_manage_submissions);
 
     // add a custom role just for trusted servants
-    add_role('wbw_trusted_servant', 'BMAW Trusted Servant');
+    add_role('wbw_trusted_servant', 'BMLT Workflow Trusted Servant');
 }
 
 function wbw_uninstall()
