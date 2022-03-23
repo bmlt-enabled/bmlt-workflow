@@ -34,9 +34,9 @@ class wbw_submissions_rest_handlers
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
         $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' s inner join ' . $wbw_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
-        error_log($sql);
+        // error_log($sql);
         $result = $wpdb->get_results($sql, ARRAY_A);
-        error_log(vdump($result));
+        // error_log(vdump($result));
         foreach ($result as $key => $value) {
             $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 2);
         }
@@ -313,7 +313,7 @@ class wbw_submissions_rest_handlers
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
         $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' s inner join ' . $wbw_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
-        error_log($sql);
+        // error_log($sql);
         $result = $wpdb->get_row($sql, ARRAY_A);
         if (empty($result)) {
             return $this->wbw_rest_error("Permission denied viewing submission id {$change_id}", 400);
@@ -403,9 +403,9 @@ class wbw_submissions_rest_handlers
         );
 
         foreach ($quickedit_change as $key => $value) {
-            error_log("checking " . $key);
+            // error_log("checking " . $key);
             if ((!in_array($key, $change_subfields)) || (is_array($value))) {
-                error_log("removing " . $key);
+                // error_log("removing " . $key);
                 unset($quickedit_change[$key]);
             }
         }
@@ -437,8 +437,8 @@ class wbw_submissions_rest_handlers
 
         $merged_change = array_merge($saved_change, $quickedit_change);
 
-        error_log("merge after - saved");
-        error_log(vdump($merged_change));
+        // error_log("merge after - saved");
+        // error_log(vdump($merged_change));
 
         $current_user = wp_get_current_user();
         $username = $current_user->user_login;
@@ -452,7 +452,7 @@ class wbw_submissions_rest_handlers
             NULL,
             $request['id']
         );
-        error_log(vdump($sql));
+        // error_log(vdump($sql));
 
         $result = $wpdb->get_results($sql, ARRAY_A);
 
@@ -510,9 +510,9 @@ class wbw_submissions_rest_handlers
             }
         }
 
-        error_log("json decoded");
-        error_log(vdump($change));
-        error_log("change type = " . $submission_type);
+        // error_log("json decoded");
+        // error_log(vdump($change));
+        // error_log("change type = " . $submission_type);
         switch ($submission_type) {
             case 'reason_new':
                 // $change['admin_action'] = 'add_meeting';

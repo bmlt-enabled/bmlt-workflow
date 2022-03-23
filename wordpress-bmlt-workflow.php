@@ -50,7 +50,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $script .= 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace.'/servicebodies') . '; ';
     $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
-    error_log("adding script ".$script);
+    // error_log("adding script ".$script);
     wp_add_inline_script('wbw-meeting-update-js', $script, 'before');
 
     ob_start();
@@ -161,7 +161,7 @@ function wbw_admin_scripts($hook)
             $request  = new WP_REST_Request('GET', $url);
             $response = rest_do_request($request);
             $result     = rest_get_server()->response_to_data($response, true);
-            error_log("result = ".vdump($result));
+            // error_log("result = ".vdump($result));
             $script .= 'var wbw_admin_wbw_service_bodies = ' . json_encode($result) . '; ';
 
             wp_add_inline_script('admin_submissions_js', $script, 'before');
@@ -740,7 +740,7 @@ function wbw_uninstall()
 
     // remove custom capability
     global $wbw_capability_manage_submissions;
-    error_log("deleting capabilities");
+    // error_log("deleting capabilities");
 
     $users = get_users();
     foreach ($users as $user) {

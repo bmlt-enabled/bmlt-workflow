@@ -157,8 +157,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             $formatarr = $bmlt_integration->getMeetingFormats();
 
                             foreach ($formatarr as $key => $value) {
-                                error_log("key " . $key);
-                                error_log(vdump($value));
+                                // error_log("key " . $key);
+                                // error_log(vdump($value));
                                 $row = '<tr>';
                                 $row .= '<td><input type="checkbox" id="format-table-' . $key . '" value="' . $key . '"></input></td>';
                                 $row .= "<td>(" . $value['key_string'] . ")</td>";

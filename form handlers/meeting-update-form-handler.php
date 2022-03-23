@@ -11,11 +11,11 @@ function vdump($object)
 
 function wbw_rest_success($message)
 {
-    error_log("here");
+    // error_log("here");
     $response = new WP_REST_Response();
     $response->set_data($message);
     $response->set_status(200);
-    error_log(vdump($response));
+    // error_log(vdump($response));
     return $response;
 }
 
@@ -202,7 +202,7 @@ function meeting_update_form_handler_rest($data)
             }
             curl_close($curl);
             $meeting = json_decode($resp, true)[0];
-            error_log(vdump($meeting));
+            // error_log(vdump($meeting));
 
             // strip blanks
             foreach ($meeting as $key => $value) {
@@ -220,10 +220,10 @@ function meeting_update_form_handler_rest($data)
                 // if the field is in bmlt and its different to the submitted item, add it to the list
                 else if ((array_key_exists($field, $meeting)) && (array_key_exists($field, $data))) {
                     if ($meeting[$field] != $data[$field]) {
-                        error_log("*** meeting");
-                        error_log(vdump($meeting));
-                        error_log("*** data");
-                        error_log(vdump($data));
+                        // error_log("*** meeting");
+                        // error_log(vdump($meeting));
+                        // error_log("*** data");
+                        // error_log(vdump($data));
                         // don't allow someone to modify a meeting service body
                         if ($field === 'service_body_bigint') {
                                 return wbw_rest_error('Service body cannot be changed.', 400);
@@ -335,7 +335,7 @@ function meeting_update_form_handler_rest($data)
         )
     );
     $insert_id = $wpdb->insert_id;
-    error_log("id = " . $insert_id);
+    // error_log("id = " . $insert_id);
     $message = array(
         "message" => 'Form submission successful, submission id ' . $insert_id,
         "form_html" => '<h3>Form submission successful, your submission id  is #' . $insert_id . '. You will also receive an email confirmation of your submission.</h3>'

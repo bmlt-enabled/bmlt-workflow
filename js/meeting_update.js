@@ -397,7 +397,7 @@ jQuery(document).ready(function ($) {
 
     var url = wp_rest_base + wbw_form_submit;
     $.post(url, $("#meeting_update_form").serialize(), function (response) {
-      console.log("submitted");
+      // console.log("submitted");
       $("#form_replace").replaceWith(response.form_html);
     });
   }

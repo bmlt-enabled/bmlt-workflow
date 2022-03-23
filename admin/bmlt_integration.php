@@ -18,7 +18,7 @@ class BMLTIntegration
         $url = $server . "index.php";
 
         $ret = wp_safe_remote_post($url, array('body'=> http_build_query($postargs)));
-        error_log(vdump($ret));
+        // error_log(vdump($ret));
 
         $response_code = wp_remote_retrieve_response_code($ret);
 
@@ -39,7 +39,7 @@ class BMLTIntegration
         if (is_wp_error($response)) {
             return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        error_log(wp_remote_retrieve_body($response));  
+        // error_log(wp_remote_retrieve_body($response));  
         $formatarr = json_decode(wp_remote_retrieve_body($response), true)['row'];
         $newformat = array();
         foreach ($formatarr as $key => $value) {
@@ -125,8 +125,8 @@ class BMLTIntegration
     private function post($url, $cookies = null, $postargs)
     {
         error_log("POSTING URL = " . $url);
-        error_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
-        error_log("*********");
+        // error_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
+        // error_log("*********");
         $ret = wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
@@ -142,9 +142,9 @@ class BMLTIntegration
 
     private function postsemantic($url, $cookies = null, $postargs)
     {
-        error_log("POSTING SEMANTIC URL = " . $url);
-        error_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
-        error_log("*********");
+        ("POSTING SEMANTIC URL = " . $url);
+        // error_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
+        // error_log("*********");
         $newargs = '';
         foreach ($postargs as $key => $value) {
             switch ($key) {
@@ -171,7 +171,7 @@ class BMLTIntegration
     private function getRootServerRequest($url)
     {
         error_log("GETROOTSERVERREQUEST COOKIES");
-        error_log($this->vdump($this->cookies));
+        // error_log($this->vdump($this->cookies));
         error_log("*********");
         $ret =  $this->authenticateRootServer();
         if (is_wp_error($ret)) {
