@@ -274,9 +274,9 @@ function wbw_register_setting()
         return;
     }
 
-    if (!current_user_can('activate_plugins')) {
-        wp_die("This page cannot be accessed");
-    }
+    // if (!current_user_can('activate_plugins')) {
+    //     wp_die("This page cannot be accessed");
+    // }
 
     register_setting(
         'wbw-settings-group',
