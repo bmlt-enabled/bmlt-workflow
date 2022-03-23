@@ -196,12 +196,7 @@ jQuery(document).ready(function ($) {
         name: "service_body_bigint",
         data: "service_body_bigint",
         render: function (data, type, row) {
-          console.log(data);
-          if (data === null || "service_body_bigint" in data || "name" in data["service_body_bigint"]) {
-            return "";
-          } else {
-            return bmaw_admin_bmaw_service_areas[data["service_body_bigint"]]["name"];
-          }
+          return bmaw_admin_bmaw_service_areas[data]["name"];
         },
       },
       {
