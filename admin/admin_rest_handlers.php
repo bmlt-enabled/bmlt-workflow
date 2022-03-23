@@ -226,7 +226,7 @@ class bmaw_submissions_rest_handlers
         $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' s inner join '. $bmaw_service_areas_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1',$current_uid, $change_id);
         error_log($sql);
         $result = $wpdb->get_row($sql, ARRAY_A);
-        if(!($result->num_rows))
+        if(empty($result))
         {
             return $this->bmaw_rest_error("Permission denied viewing submission id {$change_id}", 400); 
         }
@@ -384,7 +384,7 @@ class bmaw_submissions_rest_handlers
         $change_id = $request->get_param('id');
 
         error_log("getting changes for id " . $change_id);
-        
+
         $result = $this->get_submission_id_with_permission_check($change_id);
         if(is_wp_error($result))
         {
