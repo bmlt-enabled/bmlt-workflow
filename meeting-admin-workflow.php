@@ -278,7 +278,7 @@ function wbw_register_setting()
         'wbw-settings-group',
         'wbw_bmlt_server_address',
         array(
-            'type' => 'array',
+            'type' => 'string',
             'description' => 'bmlt server address',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
@@ -290,7 +290,7 @@ function wbw_register_setting()
         'wbw-settings-group',
         'wbw_bmlt_username',
         array(
-            'type' => 'array',
+            'type' => 'string',
             'description' => 'bmlt automation username',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
@@ -302,7 +302,7 @@ function wbw_register_setting()
         'wbw-settings-group',
         'wbw_bmlt_password',
         array(
-            'type' => 'array',
+            'type' => 'string',
             'description' => 'bmlt automation password',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
@@ -422,14 +422,6 @@ function wbw_register_setting()
         'wbw-settings',
         'wbw-settings-section-id'
     );
-
-    // add_settings_field(
-    //     'wbw_bmlt_bot_login',
-    //     'BMLT Automation Login Details',
-    //     'wbw_bmlt_bot_login_html',
-    //     'wbw-settings',
-    //     'wbw-settings-section-id'
-    // );
 
     add_settings_field(
         'wbw_shortcode',

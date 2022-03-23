@@ -1,4 +1,4 @@
-# BMLT-meeting-admin-workflow (BMAW)
+# Wordpress-BMLT-workflow (WBW)
 
 ## Background
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.
@@ -21,7 +21,7 @@ This initial release is quite specific to the NA Australian Region use case (par
 Standard wordpress plugin installation procedure. Just copy the contents of this repo to your wp-content/plugins folder.
 
 ## Usage
-See the BMAW Settings in your Wordpress Admin page. You'll need to put in a valid BMLT server address and press the Test Server button. If you get a tick, then save settings.
+See the BMLT Workflow Settings in your Wordpress Admin page. You'll need to put in a valid BMLT server address and press the Test Server button. If you get a tick, then save settings.
 
 Update the 'From Address' to an address that your mailer is permitted to send from
 

@@ -17,8 +17,7 @@ echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" col
 wp_nonce_field('wp_rest', '_wprestnonce');
 echo '<hr class="wp-header-end">';
 echo '<div class="wrap">';
-echo '<form method="post" action="#">';
-
+echo '<form method="post" action="options.php">';
 settings_fields( 'wbw-settings-group' );
 do_settings_sections( 'wbw-settings' );
 
