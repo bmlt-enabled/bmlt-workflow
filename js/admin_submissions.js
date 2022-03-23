@@ -431,8 +431,10 @@ jQuery(document).ready(function ($) {
 
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
-    if ($.trim($("#" + slug + "_dialog_textarea").val())) {
-      parameters["action_message"] = $("#" + slug + "_dialog_textarea").val();
+    var action_message = String.prototype.trim($("#" + slug + "_dialog_textarea").val());
+    if (action_message === '')
+    {
+      parameters["action_message"] = action_message;
     }
     $.ajax({
       url: bmaw_admin_submissions_rest_url + id + url,
