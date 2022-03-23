@@ -319,7 +319,7 @@ jQuery(document).ready(function ($) {
         },
       },
       {
-        "className":      'dt-control',
+        "className":      'disabled',
         "orderable":      false,
         "data":           null,
         "defaultContent": ''
