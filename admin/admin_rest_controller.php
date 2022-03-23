@@ -23,9 +23,10 @@ class wbw_submissions_rest extends WP_REST_Controller
 
 	public function __construct()
 	{
-		$this->namespace = 'wbw-submission/v1';
+		global $wbw_rest_namespace;
+		$this->namespace = $wbw_rest_namespace;
 		$this->submissions_rest_base = 'submissions';
-		$this->service_areas_rest_base = 'servicebodies';
+		$this->service_bodies_rest_base = 'servicebodies';
 		$this->server_rest_base = 'bmltserver';
 		$this->bmlt_integration = new BMLTIntegration;
 		$this->handlers = new wbw_submissions_rest_handlers();
@@ -106,44 +107,44 @@ class wbw_submissions_rest extends WP_REST_Controller
 		// GET servicebodies
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->service_areas_rest_base,
+			'/' . $this->service_bodies_rest_base,
 			array(
 				'methods'             => WP_REST_Server::READABLE,
-				'callback'            => array($this, 'get_service_areas'),
-				'permission_callback' => array($this, 'get_service_areas_permissions_check'),
+				'callback'            => array($this, 'get_service_bodies'),
+				'permission_callback' => array($this, 'get_service_bodies_permissions_check'),
 			),
 		);
 		// // GET servicebodies/detail
 		// register_rest_route(
 		// 	$this->namespace,
-		// 	'/' . $this->service_areas_rest_base . '/detail',
+		// 	'/' . $this->service_bodies_rest_base . '/detail',
 		// 	array(
 		// 		'methods'             => WP_REST_Server::READABLE,
-		// 		'callback'            => array($this, 'get_service_areas_detail'),
-		// 		'permission_callback' => array($this, 'get_service_areas_detail_permissions_check'),
+		// 		'callback'            => array($this, 'get_service_bodies_detail'),
+		// 		'permission_callback' => array($this, 'get_service_bodies_detail_permissions_check'),
 		// 	),
 		// );
 
 		// POST servicebodies
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->service_areas_rest_base,
+			'/' . $this->service_bodies_rest_base,
 
 			array(
 				'methods'             => WP_REST_Server::CREATABLE,
-				'callback'            => array($this, 'post_service_areas'),
-				'permission_callback' => array($this, 'post_service_areas_permissions_check'),
+				'callback'            => array($this, 'post_service_bodies'),
+				'permission_callback' => array($this, 'post_service_bodies_permissions_check'),
 			),
 		);
 		// // POST servicebodies detail
 		// register_rest_route(
 		// 	$this->namespace,
-		// 	'/' . $this->service_areas_rest_base . '/detail',
+		// 	'/' . $this->service_bodies_rest_base . '/detail',
 
 		// 	array(
 		// 		'methods'             => WP_REST_Server::CREATABLE,
-		// 		'callback'            => array($this, 'post_service_areas_detail'),
-		// 		'permission_callback' => array($this, 'post_service_areas_detail_permissions_check'),
+		// 		'callback'            => array($this, 'post_service_bodies_detail'),
+		// 		'permission_callback' => array($this, 'post_service_bodies_detail_permissions_check'),
 		// 	),
 		// );
 
@@ -240,16 +241,16 @@ class wbw_submissions_rest extends WP_REST_Controller
 	 *
 	 * @return bool|WP_Error
 	 */
-	public function get_service_areas_permissions_check($request)
+	public function get_service_bodies_permissions_check($request)
 	{
 		// get service areas is unauthenticated as it is also used by the end-user form 
 
 		return true;
 	}
 
-	// public function get_service_areas_detail_permissions_check($request)
+	// public function get_service_bodies_detail_permissions_check($request)
 	// {
-	// 	error_log("get_service_areas_detail_permissions_check " . get_current_user_id());
+	// 	error_log("get_service_bodies_detail_permissions_check " . get_current_user_id());
 	// 	if (!current_user_can('manage_options')) {
 	// 		return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view service areas detail.'), array('status' => $this->authorization_status_code()));
 	// 	}
@@ -263,18 +264,18 @@ class wbw_submissions_rest extends WP_REST_Controller
 	 *
 	 * @return bool|WP_Error
 	 */
-	public function post_service_areas_permissions_check($request)
+	public function post_service_bodies_permissions_check($request)
 	{
-		error_log("post_service_areas_permissions_check " . get_current_user_id());
+		error_log("post_service_bodies_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area updates.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
 
-	// public function post_service_areas_detail_permissions_check($request)
+	// public function post_service_bodies_detail_permissions_check($request)
 	// {
-	// 	error_log("post_service_areas_permissions_check " . get_current_user_id());
+	// 	error_log("post_service_bodies_permissions_check " . get_current_user_id());
 	// 	if (!current_user_can('manage_options')) {
 	// 		return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area detail updates.'), array('status' => $this->authorization_status_code()));
 	// 	}
@@ -372,15 +373,15 @@ class wbw_submissions_rest extends WP_REST_Controller
 		return rest_ensure_response($resp);
 	}
 
-	public function post_service_areas($request)
+	public function post_service_bodies($request)
 	{
-		$result = $this->handlers->post_service_areas_handler($request);
+		$result = $this->handlers->post_service_bodies_handler($request);
 		return rest_ensure_response($result);
 	}
 
-	// public function post_service_areas_detail($request)
+	// public function post_service_bodies_detail($request)
 	// {
-	// 	$result = $this->handlers->post_service_areas_detail_handler($request);
+	// 	$result = $this->handlers->post_service_bodies_detail_handler($request);
 	// 	return rest_ensure_response($result);
 	// }
 
@@ -390,15 +391,15 @@ class wbw_submissions_rest extends WP_REST_Controller
 		return rest_ensure_response($result);
 	}
 
-	public function get_service_areas($request)
+	public function get_service_bodies($request)
 	{
-		$result = $this->handlers->get_service_areas_handler($request);
+		$result = $this->handlers->get_service_bodies_handler($request);
 		return rest_ensure_response($result);
 	}
 
-	// public function get_service_areas_detail($request)
+	// public function get_service_bodies_detail($request)
 	// {
-	// 	$result = $this->handlers->get_service_areas_detail_handler($request);
+	// 	$result = $this->handlers->get_service_bodies_detail_handler($request);
 	// 	return rest_ensure_response($result);
 	// }
 

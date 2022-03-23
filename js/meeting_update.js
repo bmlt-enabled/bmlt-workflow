@@ -5,7 +5,7 @@ var mtext = [];
 var weekdays = ["none", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 jQuery(document).ready(function ($) {
-  function update_meeting_list(wbw_service_areas) {
+  function update_meeting_list(wbw_service_bodies) {
     var search_results_address =
       wbw_bmlt_server_address +
       "client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&data_field_key=location_postal_code_1,duration_time," +
@@ -13,7 +13,7 @@ jQuery(document).ready(function ($) {
       "location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed," +
       "root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1," +
       "contact_email_1,contact_name_2,contact_phone_2,contact_email_2&" +
-      wbw_service_areas +
+      wbw_service_bodies +
       "recursive=1&sort_keys=meeting_name";
 
     fetchJsonp(search_results_address)
@@ -143,21 +143,21 @@ jQuery(document).ready(function ($) {
   }
 
   $.ajax({
-    url: wp_rest_base + wbw_admin_wbw_service_areas_rest_route,
+    url: wp_rest_base + wbw_admin_wbw_service_bodies_rest_route,
     dataType: "json",
     beforeSend: function (xhr) {
       xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
     },
   }).done(function (response) {
-    var wbw_service_areas = "";
+    var wbw_service_bodies = "";
     Object.keys(response).forEach((item) => {
       console.log(response);
       var service_body_bigint = item;
       var service_area_name = response[item]["name"];
       var opt = new Option(service_area_name, service_body_bigint, false, false);
       $("#service_body_bigint").append(opt);
-      wbw_service_areas += "services[]=" + service_body_bigint + "&";
-      update_meeting_list(wbw_service_areas);
+      wbw_service_bodies += "services[]=" + service_body_bigint + "&";
+      update_meeting_list(wbw_service_bodies);
     });
   });
 
@@ -395,7 +395,7 @@ jQuery(document).ready(function ($) {
     str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
     put_field("duration_time", str);
 
-    $.post("/flop/wp-json/wbw-submission/v1/submissions", $("#meeting_update_form").serialize(), function (response) {
+    $.post(wbw_form_submit, $("#meeting_update_form").serialize(), function (response) {
       console.log("submitted");
     });
   }

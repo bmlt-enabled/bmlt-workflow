@@ -16,14 +16,19 @@ global $wbw_db_version;
 $wbw_db_version = '1.0';
 global $wpdb;
 global $wbw_submissions_table_name;
-global $wbw_service_areas_table_name;
-global $wbw_service_areas_access_table_name;
+global $wbw_service_bodies_table_name;
+global $wbw_service_bodies_access_table_name;
+global $wbw_rest_namespace;
+
+// our rest namespace
+$wbw_rest_namespace = 'wbw/v1';
+
 // placeholder for an 'other' service body
 define('CONST_OTHER_SERVICE_BODY','99999999999');
 
 $wbw_submissions_table_name = $wpdb->prefix . 'wbw_submissions';
-$wbw_service_areas_table_name = $wpdb->prefix . 'wbw_service_areas';
-$wbw_service_areas_access_table_name = $wpdb->prefix . 'wbw_service_areas_access';
+$wbw_service_bodies_table_name = $wpdb->prefix . 'wbw_service_bodies';
+$wbw_service_bodies_access_table_name = $wpdb->prefix . 'wbw_service_bodies_access';
 
 global $wbw_capability_manage_submissions;
 $wbw_capability_manage_submissions = 'wbw_manage_submissions';
@@ -61,6 +66,8 @@ function prevent_cache_enqueue_style($handle, $deps, $name)
 
 function enqueue_form_deps()
 {
+    global $wbw_rest_namespace;
+
     wp_register_style('select2css', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
     wp_register_script('select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
     prevent_cache_register_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
@@ -76,8 +83,8 @@ function enqueue_form_deps()
     wp_enqueue_script('jquery-validate-additional');
     wp_enqueue_style('select2css');
     wp_enqueue_script('select2');
-
-    $script  = 'var wbw_admin_wbw_service_areas_rest_route = ' . json_encode('wbw-submission/v1/servicebodies') . '; ';
+    $script  = 'var wbw_form_submit = ' . json_encode($wbw_rest_namespace.'/submissions') . '; ';
+    $script  = 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace+'/servicebodies') . '; ';
     $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
     wp_add_inline_script('wbw-meeting-update-js', $script, 'before');
@@ -85,10 +92,11 @@ function enqueue_form_deps()
 
 function wbw_admin_scripts($hook)
 {
+    global $wbw_rest_namespace;
 
-        error_log($hook);
+        // error_log($hook);
 
-    if (($hook != 'toplevel_page_wbw-settings') && ($hook != 'bmlt-workflow_page_wbw-submissions') && ($hook != 'bmlt-workflow_page_wbw-service-areas')) {
+    if (($hook != 'toplevel_page_wbw-settings') && ($hook != 'bmlt-workflow_page_wbw-submissions') && ($hook != 'bmlt-workflow_page_wbw-service-bodies')) {
         return;
     }
 
@@ -106,7 +114,7 @@ function wbw_admin_scripts($hook)
 
             prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
             // inline scripts
-            $script  = 'var wbw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . 'wbw-submission/v1/bmltserver') . '; ';
+            $script  = 'var wbw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/bmltserver') . '; ';
 
             $arr = get_option('wbw_service_committee_option_array');
             $js_array = json_encode($arr);
@@ -135,7 +143,7 @@ function wbw_admin_scripts($hook)
 
 
             // make sure our rest url is populated
-            $script  = 'var wbw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . 'wbw-submission/v1/submissions/') . '; ';
+            $script  = 'var wbw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/submissions/') . '; ';
             // add our bmlt server for the submission lookups
             $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
 
@@ -145,27 +153,27 @@ function wbw_admin_scripts($hook)
             $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
-            $request  = new WP_REST_Request('GET', '/wbw-submission/v1/servicebodies');
+            $request  = new WP_REST_Request('GET', $wbw_rest_namespace.'/servicebodies');
             $response = rest_do_request($request);
             $result     = rest_get_server()->response_to_data($response, true);
 
-            $script .= 'var wbw_admin_wbw_service_areas = ' . json_encode($result) . '; ';
+            $script .= 'var wbw_admin_wbw_service_bodies = ' . json_encode($result) . '; ';
 
             wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;
-        case ('bmlt-workflow_page_wbw-service-areas'):
+        case ('bmlt-workflow_page_wbw-service-bodies'):
             wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
             wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
             wp_enqueue_style('select2css');
             wp_enqueue_script('select2');
 
-            prevent_cache_enqueue_script('admin_service_areas_js', array('jquery'), 'js/admin_service_areas.js');
-            prevent_cache_enqueue_style('wbw-admin-submissions-css', false, 'css/admin_service_areas.css');
+            prevent_cache_enqueue_script('admin_service_bodies_js', array('jquery'), 'js/admin_service_bodies.js');
+            prevent_cache_enqueue_style('wbw-admin-submissions-css', false, 'css/admin_service_bodies.css');
 
             // make sure our rest url is populated
-            $script  = 'var wbw_admin_wbw_service_areas_rest_route = ' . json_encode('wbw-submission/v1/servicebodies') . '; ';
+            $script  = 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace.'/servicebodies') . '; ';
             $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
-            wp_add_inline_script('admin_service_areas_js', $script, 'before');
+            wp_add_inline_script('admin_service_bodies_js', $script, 'before');
             break;
     }
 }
@@ -209,8 +217,8 @@ function wbw_menu_pages()
         'Service Bodies',
         'Service Bodies',
         'manage_options',
-        'wbw-service-areas',
-        'display_wbw_admin_service_areas_page',
+        'wbw-service-bodies',
+        'display_wbw_admin_service_bodies_page',
         2
     );
 }
@@ -645,11 +653,11 @@ function display_wbw_admin_submissions_page()
     echo $content;
 }
 
-function display_wbw_admin_service_areas_page()
+function display_wbw_admin_service_bodies_page()
 {
     $content = '';
     ob_start();
-    include('admin/admin_service_areas.php');
+    include('admin/admin_service_bodies.php');
     $content = ob_get_clean();
     echo $content;
 }
@@ -659,14 +667,14 @@ function wbw_install()
     global $wpdb;
     global $wbw_db_version;
     global $wbw_submissions_table_name;
-    global $wbw_service_areas_table_name;
-    global $wbw_service_areas_access_table_name;
+    global $wbw_service_bodies_table_name;
+    global $wbw_service_bodies_access_table_name;
 
     $charset_collate = $wpdb->get_charset_collate();
 
     // require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
-    $sql = "CREATE TABLE " . $wbw_service_areas_table_name . " (
+    $sql = "CREATE TABLE " . $wbw_service_bodies_table_name . " (
 		service_body_bigint mediumint(9) NOT NULL,
         service_area_name tinytext NOT NULL,
         contact_email varchar(255) NOT NULL default '',
@@ -677,10 +685,10 @@ function wbw_install()
     // dbDelta($sql);
     $wpdb->query($sql);
 
-    $sql = "CREATE TABLE " . $wbw_service_areas_access_table_name . " (
+    $sql = "CREATE TABLE " . $wbw_service_bodies_access_table_name . " (
 		service_body_bigint mediumint(9) NOT NULL,
         wp_uid bigint(20) unsigned  NOT NULL,
-		FOREIGN KEY (service_body_bigint) REFERENCES " . $wbw_service_areas_table_name . "(service_body_bigint) 
+		FOREIGN KEY (service_body_bigint) REFERENCES " . $wbw_service_bodies_table_name . "(service_body_bigint) 
 	) $charset_collate;";
 
     // dbDelta($sql);
@@ -700,7 +708,7 @@ function wbw_install()
         changes_requested varchar(1024),
         action_message varchar(1024),
 		PRIMARY KEY (id),
-        FOREIGN KEY (service_body_bigint) REFERENCES " . $wbw_service_areas_table_name . "(service_body_bigint) 
+        FOREIGN KEY (service_body_bigint) REFERENCES " . $wbw_service_bodies_table_name . "(service_body_bigint) 
 	) $charset_collate;";
 
     // dbDelta($sql);
@@ -722,8 +730,8 @@ function wbw_uninstall()
 {
     global $wpdb;
     global $wbw_submissions_table_name;
-    global $wbw_service_areas_table_name;
-    global $wbw_service_areas_access_table_name;
+    global $wbw_service_bodies_table_name;
+    global $wbw_service_bodies_access_table_name;
 
     // remove custom capability
     global $wbw_capability_manage_submissions;
@@ -737,11 +745,11 @@ function wbw_uninstall()
     remove_role('wbw_trusted_servant');
     
     // Fix for production usage
-    $sql = "DROP TABLE " . $wbw_service_areas_access_table_name . ";";
+    $sql = "DROP TABLE " . $wbw_service_bodies_access_table_name . ";";
     $wpdb->query($sql);
     $sql = "DROP TABLE " . $wbw_submissions_table_name . ";";
     $wpdb->query($sql);
-    $sql = "DROP TABLE " . $wbw_service_areas_table_name . ";";
+    $sql = "DROP TABLE " . $wbw_service_bodies_table_name . ";";
     $wpdb->query($sql);
 
 }

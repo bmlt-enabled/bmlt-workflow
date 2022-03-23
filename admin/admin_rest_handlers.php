@@ -27,13 +27,13 @@ class wbw_submissions_rest_handlers
 
         global $wpdb;
         global $wbw_submissions_table_name;
-        global $wbw_service_areas_access_table_name;
+        global $wbw_service_bodies_access_table_name;
 
         // only show submissions we have access to
-        // select * from wp_wbw_submissions s inner join wp_wbw_service_areas_access a on s.service_body_bigint = a.service_body_bigint where a.wp_uid = 1
+        // select * from wp_wbw_submissions s inner join wp_wbw_service_bodies_access a on s.service_body_bigint = a.service_body_bigint where a.wp_uid = 1
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
-        $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' s inner join ' . $wbw_service_areas_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
+        $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' s inner join ' . $wbw_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
         error_log($sql);
         $result = $wpdb->get_results($sql, ARRAY_A);
         error_log(vdump($result));
@@ -43,11 +43,11 @@ class wbw_submissions_rest_handlers
         return $result;
     }
 
-    // public function get_service_areas_detail_handler()
+    // public function get_service_bodies_detail_handler()
     // {
     //     global $wpdb;
-    //     global $wbw_service_areas_table_name;
-    //     global $wbw_service_areas_access_table_name;
+    //     global $wbw_service_bodies_table_name;
+    //     global $wbw_service_bodies_access_table_name;
 
     //     $sblist = array();
 
@@ -88,7 +88,7 @@ class wbw_submissions_rest_handlers
 
     //     // update our service area list in the database in case there have been some new ones added
     //     // error_log("get ids");
-    //     $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $wbw_service_areas_table_name . ';', 0);
+    //     $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $wbw_service_bodies_table_name . ';', 0);
 
     //     // error_log(vdump($sqlresult));
     //     $missing = array_diff($idlist, $sqlresult);
@@ -96,13 +96,13 @@ class wbw_submissions_rest_handlers
     //     // error_log(vdump($missing));
 
     //     foreach ($missing as $value) {
-    //         $sql = $wpdb->prepare('INSERT into ' . $wbw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+    //         $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
     //         $wpdb->query($sql);
     //     }
     //     // update any values that may have changed since last time we looked
 
     //     foreach ($idlist as $value) {
-    //         $sql = $wpdb->prepare('UPDATE ' . $wbw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+    //         $sql = $wpdb->prepare('UPDATE ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
     //         $wpdb->query($sql);
     //     }
 
@@ -112,13 +112,13 @@ class wbw_submissions_rest_handlers
     //     // make our group membership lists
     //     foreach ($sblist as $key => $value) {
     //         error_log("getting memberships for " . $key);
-    //         $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $wbw_service_areas_access_table_name . ' where service_body_bigint = "%d"', $key);
+    //         $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $wbw_service_bodies_access_table_name . ' where service_body_bigint = "%d"', $key);
     //         $result = $wpdb->get_col($sql, 0);
     //         // error_log(vdump($result));
     //         $sblist[$key]['membership'] = implode(',', $result);
     //     }
     //     // get the form display settings
-    //     $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $wbw_service_areas_table_name, ARRAY_A);
+    //     $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $wbw_service_bodies_table_name, ARRAY_A);
 
     //     foreach ($sqlresult as $key => $value) {
     //         $bool = $value['show_on_form'] ? (true) : (false);
@@ -128,12 +128,12 @@ class wbw_submissions_rest_handlers
     //     return $sblist;
     // }
 
-    public function get_service_areas_handler($request)
+    public function get_service_bodies_handler($request)
     {
 
         global $wpdb;
-        global $wbw_service_areas_table_name;
-        global $wbw_service_areas_access_table_name;
+        global $wbw_service_bodies_table_name;
+        global $wbw_service_bodies_access_table_name;
 
         $params = $request->get_params();
         error_log(vdump($params));
@@ -181,7 +181,7 @@ class wbw_submissions_rest_handlers
     
             // update our service area list in the database in case there have been some new ones added
             // error_log("get ids");
-            $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $wbw_service_areas_table_name . ';', 0);
+            $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $wbw_service_bodies_table_name . ';', 0);
     
             // error_log(vdump($sqlresult));
             $missing = array_diff($idlist, $sqlresult);
@@ -189,13 +189,13 @@ class wbw_submissions_rest_handlers
             // error_log(vdump($missing));
     
             foreach ($missing as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $wbw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+                $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
                 $wpdb->query($sql);
             }
             // update any values that may have changed since last time we looked
     
             foreach ($idlist as $value) {
-                $sql = $wpdb->prepare('UPDATE ' . $wbw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+                $sql = $wpdb->prepare('UPDATE ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
                 $wpdb->query($sql);
             }
     
@@ -205,13 +205,13 @@ class wbw_submissions_rest_handlers
             // make our group membership lists
             foreach ($sblist as $key => $value) {
                 error_log("getting memberships for " . $key);
-                $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $wbw_service_areas_access_table_name . ' where service_body_bigint = "%d"', $key);
+                $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $wbw_service_bodies_access_table_name . ' where service_body_bigint = "%d"', $key);
                 $result = $wpdb->get_col($sql, 0);
                 // error_log(vdump($result));
                 $sblist[$key]['membership'] = implode(',', $result);
             }
             // get the form display settings
-            $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $wbw_service_areas_table_name, ARRAY_A);
+            $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $wbw_service_bodies_table_name, ARRAY_A);
     
             foreach ($sqlresult as $key => $value) {
                 $bool = $value['show_on_form'] ? (true) : (false);
@@ -223,7 +223,7 @@ class wbw_submissions_rest_handlers
 
             $sblist = array();
             // error_log("simple list of service areas and names");
-            $result = $wpdb->get_results('SELECT * from ' . $wbw_service_areas_table_name . ' where show_on_form != "0"', ARRAY_A);
+            $result = $wpdb->get_results('SELECT * from ' . $wbw_service_bodies_table_name . ' where show_on_form != "0"', ARRAY_A);
             // error_log(vdump($result));
             // create simple service area list (names of service areas that are enabled by admin with show_on_form)
             foreach ($result as $key => $value) {
@@ -237,34 +237,34 @@ class wbw_submissions_rest_handlers
 
     }
 
-    public function post_service_areas_handler($request)
+    public function post_service_bodies_handler($request)
     {
         global $wpdb;
-        global $wbw_service_areas_access_table_name;
+        global $wbw_service_bodies_access_table_name;
         global $wbw_capability_manage_submissions;
-        global $wbw_service_areas_table_name;
+        global $wbw_service_bodies_table_name;
 
         // error_log("request body");
         // error_log(vdump($request->get_json_params()));
         $permissions = $request->get_json_params();
         // clear out our old permissions
-        $wpdb->query('DELETE from ' . $wbw_service_areas_access_table_name);
+        $wpdb->query('DELETE from ' . $wbw_service_bodies_access_table_name);
         // insert new permissions from form
         foreach ($permissions as $sb => $arr) {
             $members = $arr['membership'];
             foreach ($members as $member) {
-                $sql = $wpdb->prepare('INSERT into ' . $wbw_service_areas_access_table_name . ' SET wp_uid = "%d", service_body_bigint="%d"', $member, $sb);
+                $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_access_table_name . ' SET wp_uid = "%d", service_body_bigint="%d"', $member, $sb);
                 $wpdb->query($sql);
             }
             // update show/hide
             $show_on_form = $arr['show_on_form'];
-            $sql = $wpdb->prepare('UPDATE ' . $wbw_service_areas_table_name . ' SET show_on_form = "%d" where service_body_bigint="%d"', $show_on_form, $sb);
+            $sql = $wpdb->prepare('UPDATE ' . $wbw_service_bodies_table_name . ' SET show_on_form = "%d" where service_body_bigint="%d"', $show_on_form, $sb);
             $wpdb->query($sql);
         }
 
         // add / remove user capabilities
         $users = get_users();
-        $result = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $wbw_service_areas_access_table_name, 0);
+        $result = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $wbw_service_bodies_access_table_name, 0);
         // error_log(vdump($sql));
         // error_log(vdump($result));
         foreach ($users as $user) {
@@ -308,11 +308,11 @@ class wbw_submissions_rest_handlers
     {
         global $wpdb;
         global $wbw_submissions_table_name;
-        global $wbw_service_areas_access_table_name;
+        global $wbw_service_bodies_access_table_name;
 
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
-        $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' s inner join ' . $wbw_service_areas_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
+        $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' s inner join ' . $wbw_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
         error_log($sql);
         $result = $wpdb->get_row($sql, ARRAY_A);
         if (empty($result)) {

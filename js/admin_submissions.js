@@ -196,7 +196,7 @@ jQuery(document).ready(function ($) {
         name: "service_body_bigint",
         data: "service_body_bigint",
         render: function (data, type, row) {
-          return wbw_admin_wbw_service_areas[data]["name"];
+          return wbw_admin_wbw_service_bodies[data]["name"];
         },
       },
       {
@@ -270,7 +270,7 @@ jQuery(document).ready(function ($) {
           //   friendlyname = "Meeting Day";
           //   break;
           // case "service_body_bigint":
-          //   friendlydata = wbw_admin_wbw_service_areas[data["service_body_bigint"]]["name"];
+          //   friendlydata = wbw_admin_wbw_service_bodies[data["service_body_bigint"]]["name"];
           //   friendlyname = "Service Body";
           //   break;
           // case "format_shared_id_list":

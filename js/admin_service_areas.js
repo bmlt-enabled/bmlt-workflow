@@ -80,7 +80,7 @@ jQuery(document).ready(function ($) {
     clear_notices();
 
     $.ajax({
-      url: wp_rest_base + wbw_admin_wbw_service_areas_rest_route,
+      url: wp_rest_base + wbw_admin_wbw_service_bodies_rest_route,
       method: "POST",
       data: JSON.stringify(post),
       contentType: "application/json; charset=utf-8",
@@ -105,7 +105,7 @@ jQuery(document).ready(function ($) {
   var parameters = { detail: "true" };
 
   $.ajax({
-    url: wp_rest_base + wbw_admin_wbw_service_areas_rest_route,
+    url: wp_rest_base + wbw_admin_wbw_service_bodies_rest_route,
     dataType: "json",
     data: parameters,
     beforeSend: function (xhr) {
