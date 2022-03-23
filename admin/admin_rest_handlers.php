@@ -384,9 +384,15 @@ class bmaw_submissions_rest_handlers
         $change_id = $request->get_param('id');
 
         error_log("getting changes for id " . $change_id);
+        
+        $result = $this->get_submission_id_with_permission_check($change_id);
+        if(is_wp_error($result))
+        {
+            return $result;
+        }
 
-        $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
-        $result = $wpdb->get_row($sql, ARRAY_A);
+        // $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
+        // $result = $wpdb->get_row($sql, ARRAY_A);
 
         $change_made = $result['change_made'];
 
