@@ -225,20 +225,21 @@ jQuery(document).ready(function ($) {
               submission_type = data["submission_type"];
           }
           summary = "Submission Type: " + submission_type + namestr + "<br><br>";
-          for (var key in data) {
-            friendlyname = key;
-            friendlydata = data[key];
+          summary += "Meeting Name: " + data["meeting_name"] + "<br><br>";
+          // for (var key in data) {
+          //   friendlyname = key;
+          //   friendlydata = data[key];
 
-            switch (key) {
-              // skip these ones - we already used them above
-              case "meeting_id":
-              case "submission_type":
-              case "original_meeting_name":
-                friendlyname = "";
-                break;
-              case "meeting_name":
-                friendlyname = "Meeting Name";
-                break;
+          //   switch (key) {
+          //     // skip these ones - we already used them above
+          //     case "meeting_id":
+          //     case "submission_type":
+          //     case "original_meeting_name":
+          //       friendlyname = "";
+          //       break;
+          //     case "meeting_name":
+          //       friendlyname = "Meeting Name";
+                // break;
               // case "start_time":
               //   friendlyname = "Start Time";
               //   break;
@@ -281,13 +282,13 @@ jQuery(document).ready(function ($) {
               //     friendlydata += "(" + bmaw_bmlt_formats[element]["key_string"] + ")-" + bmaw_bmlt_formats[element]["name_string"] + " ";
               //   });
               //   break;
-              default:
-                break;
-            }
-            if (friendlyname != "" && friendlydata != "") {
-              summary += friendlyname + ' <span class="dashicons dashicons-arrow-right-alt"></span> ' + friendlydata + "<br>";
-            }
-          }
+            //   default:
+            //     break;
+            // }
+            // if (friendlyname != "" && friendlydata != "") {
+            //   summary += friendlyname + ' <span class="dashicons dashicons-arrow-right-alt"></span> ' + friendlydata + "<br>";
+            // }
+          // }
           return summary;
         },
       },
