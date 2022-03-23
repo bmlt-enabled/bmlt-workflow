@@ -152,6 +152,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <th>ID</th>
                     <th>Submitter Name</th>
                     <th>Submitter Email</th>
+                    <th>Service Body</th>
                     <th>Change Summary</th>
                     <th>Submission Time</th>
                     <th>Change Time</th>
@@ -165,6 +166,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <th>ID</th>
                     <th>Submitter Name</th>
                     <th>Submitter Email</th>
+                    <th>Service Body</th>
                     <th>Change Summary</th>
                     <th>Submission Time</th>
                     <th>Change Time</th>

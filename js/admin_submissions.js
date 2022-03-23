@@ -193,6 +193,19 @@ jQuery(document).ready(function ($) {
         data: "submitter_email",
       },
       {
+      name: "service_body_bigint",
+      data: "service_body_bigint",
+      render: function (data, type, row) {
+          if ((data === null) || ("service_body_bigint" in data) || ("name" in data["service_body_bigint"])) {
+            return "";
+          }
+          else
+          {
+            return bmaw_admin_bmaw_service_areas[data["service_body_bigint"]]["name"];
+          }
+        }
+      },
+      {
         name: "changes_requested",
         data: "changes_requested",
         render: function (data, type, row) {
@@ -232,48 +245,48 @@ jQuery(document).ready(function ($) {
               case "meeting_name":
                 friendlyname = "Meeting Name";
                 break;
-              case "start_time":
-                friendlyname = "Start Time";
-                break;
-              case "duration_time":
-                friendlyname = "Duration";
-                break;
-              case "location_text":
-                friendlyname = "Location";
-                break;
-              case "location_street":
-                friendlyname = "Street";
-                break;
-              case "location_info":
-                friendlyname = "Location Info";
-                break;
-              case "location_municipality":
-                friendlyname = "Municipality";
-                break;
-              case "location_province":
-                friendlyname = "Province/State";
-                break;
-              case "location_postal_code_1":
-                friendlyname = "Postcode";
-                break;
-              case "weekday_tinyint":
-                weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-                friendlydata = weekdays[data["weekday_tinyint"]];
-                friendlyname = "Meeting Day";
-                break;
-              case "service_body_bigint":
-                friendlydata = bmaw_admin_bmaw_service_areas[data["service_body_bigint"]]["name"];
-                friendlyname = "Service Body";
-                break;
-              case "format_shared_id_list":
-                friendlyname = "Meeting Formats";
-                // convert the meeting formats to human readable
-                friendlydata = "";
-                strarr = data["format_shared_id_list"].split(",");
-                strarr.forEach((element) => {
-                  friendlydata += "(" + bmaw_bmlt_formats[element]["key_string"] + ")-" + bmaw_bmlt_formats[element]["name_string"] + " ";
-                });
-                break;
+              // case "start_time":
+              //   friendlyname = "Start Time";
+              //   break;
+              // case "duration_time":
+              //   friendlyname = "Duration";
+              //   break;
+              // case "location_text":
+              //   friendlyname = "Location";
+              //   break;
+              // case "location_street":
+              //   friendlyname = "Street";
+              //   break;
+              // case "location_info":
+              //   friendlyname = "Location Info";
+              //   break;
+              // case "location_municipality":
+              //   friendlyname = "Municipality";
+              //   break;
+              // case "location_province":
+              //   friendlyname = "Province/State";
+              //   break;
+              // case "location_postal_code_1":
+              //   friendlyname = "Postcode";
+              //   break;
+              // case "weekday_tinyint":
+              //   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+              //   friendlydata = weekdays[data["weekday_tinyint"]];
+              //   friendlyname = "Meeting Day";
+              //   break;
+              // case "service_body_bigint":
+              //   friendlydata = bmaw_admin_bmaw_service_areas[data["service_body_bigint"]]["name"];
+              //   friendlyname = "Service Body";
+              //   break;
+              // case "format_shared_id_list":
+              //   friendlyname = "Meeting Formats";
+              //   // convert the meeting formats to human readable
+              //   friendlydata = "";
+              //   strarr = data["format_shared_id_list"].split(",");
+              //   strarr.forEach((element) => {
+              //     friendlydata += "(" + bmaw_bmlt_formats[element]["key_string"] + ")-" + bmaw_bmlt_formats[element]["name_string"] + " ";
+              //   });
+              //   break;
               default:
                 break;
             }
@@ -355,10 +368,10 @@ jQuery(document).ready(function ($) {
           table += "<tr><td>Location:</td><td>" + d["changes_requested"].location_text + "</td></tr>";
           break;
         case "location_street":
-          table += "<tr><td>Location:</td><td>" + d["changes_requested"].location_street + "</td></tr>";
+          table += "<tr><td>Street:</td><td>" + d["changes_requested"].location_street + "</td></tr>";
           break;
         case "location_info":
-          table += "<tr><td>Location:</td><td>" + d["changes_requested"].location_info + "</td></tr>";
+          table += "<tr><td>Location Info:</td><td>" + d["changes_requested"].location_info + "</td></tr>";
           break;
         case "location_municipality":
           table += "<tr><td>Municipality:</td><td>" + d["changes_requested"].location_municipality + "</td></tr>";
