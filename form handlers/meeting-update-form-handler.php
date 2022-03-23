@@ -11,17 +11,15 @@ function vdump($object)
 
 function wbw_rest_success($message)
 {
-    // error_log("here");
     $response = new WP_REST_Response();
     $response->set_data($message);
     $response->set_status(200);
-    // error_log(vdump($response));
     return $response;
 }
 
 function wbw_rest_error($message, $code)
 {
-    return new WP_Error('wbw_error', __($message), array('status' => $code));
+    return new WP_Error('wbw_error', $message, array('status' => $code));
 }
 
 function meeting_update_form_handler_rest($data)

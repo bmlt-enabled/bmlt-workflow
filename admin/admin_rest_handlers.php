@@ -12,14 +12,17 @@ class wbw_submissions_rest_handlers
         $this->bmlt_integration = new BMLTIntegration;
     }
 
-    private function wbw_rest_success($message)
+    function wbw_rest_success($message)
     {
-        return new WP_Error('wbw_success', __($message), array('status' => 200));
+        $response = new WP_REST_Response();
+        $response->set_data($message);
+        $response->set_status(200);
+        return $response;
     }
 
     private function wbw_rest_error($message, $code)
     {
-        return new WP_Error('wbw_error', __($message), array('status' => $code));
+        return new WP_Error('wbw_error', $message, array('status' => $code));
     }
 
     public function get_submissions_handler()

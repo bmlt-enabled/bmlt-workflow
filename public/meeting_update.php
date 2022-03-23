@@ -28,7 +28,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </div>
             <div id="other_reason_div">
                 <label for="other_reason">Other Reason</label>
-                <textarea name="other_reason" id="other_reason" rows="5" cols="50"></textarea>
+                <textarea name="other_reason" id="other_reason" rows="5" cols="50" placeholder="Provide as much detail about your meeting change request as you can and we'll endeavour to help"></textarea>
             </div>
             <div id="meeting_selector">
                 <br>
@@ -197,7 +197,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                         address for the group</label>
                     <div class="checkbox-group">
                         <div>
-                            <input name="add_email" id="add_email-0" value="yes" type="checkbox" checked="checked">
+                            <input name="add_email" id="add_email-0" value="yes" type="checkbox">
                             <label for="add_email-0">Yes</label>
                         </div>
                     </div>
@@ -221,7 +221,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <br>
                 <div>
                     <label for="additional_info">Additional Info</label>
-                    <textarea name="additional_info" id="additional_info" rows="5" cols="50"></textarea>
+                    <textarea name="additional_info" id="additional_info" rows="5" cols="50" placeholder="Provide any more detail that may help us action your meeting change request"></textarea>
                 </div>
                 <br>
                 <div id="starter_pack">
