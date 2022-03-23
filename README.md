@@ -12,22 +12,29 @@ This initial release is quite specific to the NA Australian Region use case (par
 - Form Sender - Form field population from BMLT
 - Form Recipient - Simple to understand changes, including deltas from the current BMLT entry
 - Admin - Configurable BMLT settings
-- Admin - Service Area email address management
 - Admin - Email template management for update, close, new, other request, with form fields inserted from the form submission
-- Admin - Configurable template and email for notifying the FSO of starter kit requests.
 - Admin - Shortcode configuration of the meeting form, including parameters for searchable service areas
-
+- Admin - Configurable BMLT service areas for use within the workflow submission page, including access control.
 ## Installation
 Standard wordpress plugin installation procedure. Just copy the contents of this repo to your wp-content/plugins folder.
 
 ## Usage
-See the BMLT Workflow Settings in your Wordpress Admin page. You'll need to put in a valid BMLT server address and press the Test Server button. If you get a tick, then save settings.
+Locate BMLT Workflow -> Configuration in your Wordpress Admin page. You'll need to put in a valid BMLT server address, username and password and press the Test Server button. If you get a tick, then save settings. Update the 'From Address' to an address that your mailer is permitted to send from
 
-Update the 'From Address' to an address that your mailer is permitted to send from
+You should now be able to see the service bodies menu option. Service bodies are retrieved from BMlT, without hierarchy. By default, none of them are available for meeting updates using the system. You can enable them using the checkboxes, then add yourself under 'Wordpress Users with Access' in any/all service areas.
 
+Create a new page, and add the shortcode `[wbw-meeting-update-form]`.  The form will be available, with searches from any areas that you've configured in the service body menu. 
+
+Use the form and submit a meeting change request. Following form submission, you should see the request in the submissions menu.
+
+Use approve, reject or quickedit to manage the form submission. Once approved, the submission will be committed directly to BMLT.
+
+### User configuration
+A role `BMLT Workflow Trusted Servant` is created as part of plugin installation. This role provides no access to wordpress features and acts as a blank placeholder for trusted servants.
+Create wordpress users for your trusted servants and assign them this role. Then within the service bodies page assign your wordpress users to the service bodies you would like them to manage.
 ### Shortcode
 
-Use a shortcode with the form `[wbw-meeting-update-form service_areas=1,2,3,..]` substituting your service areas from BMLT in the parameters
+Use a shortcode with the form `[wbw-meeting-update-form]` substituting your service areas from BMLT in the parameters
 
 ### Email field substitution
 
