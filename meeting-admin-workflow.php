@@ -282,7 +282,7 @@ function wbw_register_setting()
             'description' => 'bmlt server address',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
-            'default' => 'https://na.org.au/main_server'
+            'default' => ''
         )
     );
 
