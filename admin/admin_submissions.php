@@ -6,23 +6,23 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
 ?>
 <!-- Approve dialog -->
-<div id="bmaw_submission_approve_dialog" class="hidden" style="max-width:800px">
-    <label class='dialog_label' for="bmaw_submission_approve_dialog_textarea">Approval note:</label>
-    <textarea class='dialog_textarea' id="bmaw_submission_approve_dialog_textarea" rows=5 cols=60 placeholder='Add a note to this approval for the submitter'></textarea>
+<div id="wbw_submission_approve_dialog" class="hidden" style="max-width:800px">
+    <label class='dialog_label' for="wbw_submission_approve_dialog_textarea">Approval note:</label>
+    <textarea class='dialog_textarea' id="wbw_submission_approve_dialog_textarea" rows=5 cols=60 placeholder='Add a note to this approval for the submitter'></textarea>
     <p>You can use the quickedit function to make any extra changes before approval.</p>
     <p>Are you sure you would like to approve the submission?</p>
 </div>
 
 <!-- Delete dialog -->
-<div id="bmaw_submission_delete_dialog" class="hidden" style="max-width:800px">
+<div id="wbw_submission_delete_dialog" class="hidden" style="max-width:800px">
     <p>This change cannot be undone. Use this to remove an entirely unwanted submission from the list.</p>
     <p>Are you sure you would like to delete the submission completely?</p>
 </div>
 
 <!-- Reject dialog -->
-<div id="bmaw_submission_reject_dialog" class="hidden" style="max-width:800px">
-    <label class='dialog_label' for="bmaw_submission_reject_dialog_textarea">Rejection note:</label>
-    <textarea class='dialog_textarea' id="bmaw_submission_reject_dialog_textarea" rows=5 cols=60 placeholder='Add a note to this rejection for the submitter'></textarea>
+<div id="wbw_submission_reject_dialog" class="hidden" style="max-width:800px">
+    <label class='dialog_label' for="wbw_submission_reject_dialog_textarea">Rejection note:</label>
+    <textarea class='dialog_textarea' id="wbw_submission_reject_dialog_textarea" rows=5 cols=60 placeholder='Add a note to this rejection for the submitter'></textarea>
     <p>Are you sure you would like to reject this submission?</p>
 </div>
 
@@ -51,14 +51,14 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         "other_reason" => array("textarea", $reason_other_bool) -->
 
 <!-- Quickedit dialog -->
-<div id="bmaw_submission_quickedit_dialog" class="hidden">
-    <div class="bmaw_info_text">
+<div id="wbw_submission_quickedit_dialog" class="hidden">
+    <div class="wbw_info_text">
     <br>Highlighted fields are from the user submission and will be used if the QuickEdit is saved or approved.
     <br><br>
     </div>
-    <div class="bmaw-sg">
-    <div class="bmaw-sg-col1">
-        <div class="bmaw-sg-col1-w1">
+    <div class="wbw-sg">
+    <div class="wbw-sg-col1">
+        <div class="wbw-sg-col1-w1">
             <label for="quickedit_meeting_name">Meeting Name</label>
             <input type="text" name="quickedit_meeting_name" id="quickedit_meeting_name" class="quickedit-input">
             <label for="quickedit_format_shared_id_list">Meeting Formats</label>
@@ -66,12 +66,12 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
         </div>
 
-        <div class="bmaw-sg-col1-t1">
+        <div class="wbw-sg-col1-t1">
             <label for="quickedit_start_time">Start Time</label>
             <input type="time" name="quickedit_start_time" id="quickedit_start_time" class="quickedit-input">
 
         </div>
-        <div class="bmaw-sg-col1-t2">
+        <div class="wbw-sg-col1-t2">
             <label for="quickedit_weekday_tinyint">Weekday</label>
             <select name="quickedit_weekday_tinyint" id="quickedit_weekday_tinyint">
                 <option value="1">Sunday</option>
@@ -83,7 +83,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <option value="7">Saturday</option>
             </select>
         </div>
-        <div class="bmaw-sg-col1-t3">
+        <div class="wbw-sg-col1-t3">
             <label for="quickedit_duration_hours">Duration</label>
             <select id="quickedit_duration_hours">
                     <option value="00">0</option>
@@ -115,14 +115,14 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <option value="55">55</option>
                 </select> m
         </div>
-        <div class="bmaw-sg-col1-w2">
+        <div class="wbw-sg-col1-w2">
             <label for="quickedit_email_address">Email Address</label>
             <input type="text" name="quickedit_email_address" id="quickedit_email_address" class="quickedit-input">
             <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
             <input type="text" name="quickedit_virtual_meeting_link" id="quickedit_virtual_meeting_link" class="quickedit-input">
         </div>
     </div>
-    <div class="bmaw-grid-col2">
+    <div class="wbw-grid-col2">
         <label for="quickedit_location_text">Location</label>
         <input type="text" name="quickedit_quickedit_location_text" id="quickedit_location_text" class="quickedit-input">
         <label for="quickedit_location_street">Street</label>

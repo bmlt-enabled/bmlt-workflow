@@ -14,7 +14,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <div id="icon-users" class="icon32"></div>
     <h2>Service Area Configuration</h2>
     <hr class="wp-header-end">
-    <div class="bmaw_info_text">
+    <div class="wbw_info_text">
     <br>Service areas are retrieved from BMLT using the BMLT details configured on the option page. 
     <br><br>You can configure which service areas are visible to the end-users using the <code>Display on end-user Form</code> checkbox.
     <br><br>You can select users from your Wordpress userlist and grant them access to your service areas in the <code>Wordpress Users with Access</code> column. 
@@ -22,17 +22,17 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <br><br>
     </div>
     <br>
-    <span class="spinner" id="bmaw-form-spinner"></span>
-                <table class="bmaw-userlist-table" id="bmaw-userlist-table" style="display: none;">
+    <span class="spinner" id="wbw-form-spinner"></span>
+                <table class="wbw-userlist-table" id="wbw-userlist-table" style="display: none;">
                 <thead>
                     <tr>
-                        <th class="bmaw-userlist-header">Service Area</th>
-                        <th class="bmaw-userlist-header">Wordpress Users with Access</th>
-                        <th class="bmaw-userlist-header">Display on end-user Form</th>
+                        <th class="wbw-userlist-header">Service Area</th>
+                        <th class="wbw-userlist-header">Wordpress Users with Access</th>
+                        <th class="wbw-userlist-header">Display on end-user Form</th>
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
             </table>
-            <button id="bmaw_submit" style="display: none;">Save Settings</button><span class="spinner" id="bmaw-submit-spinner"></span>
+            <button id="wbw_submit" style="display: none;">Save Settings</button><span class="spinner" id="wbw-submit-spinner"></span>
         </div>

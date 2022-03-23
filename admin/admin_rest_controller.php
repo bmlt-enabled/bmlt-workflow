@@ -6,16 +6,16 @@ if (!class_exists('BMLTIntegration')) {
 	require_once(BMAW_PLUGIN_DIR . 'admin/bmlt_integration.php');
 }
 
-if (!class_exists('bmaw_submissions_rest_handlers')) {
+if (!class_exists('wbw_submissions_rest_handlers')) {
 	require_once(BMAW_PLUGIN_DIR . 'admin/admin_rest_handlers.php');
 }
 
-function bmaw_submissions_controller()
+function wbw_submissions_controller()
 {
-	$controller = new bmaw_submissions_rest();
+	$controller = new wbw_submissions_rest();
 	$controller->register_routes();
 }
-class bmaw_submissions_rest extends WP_REST_Controller
+class wbw_submissions_rest extends WP_REST_Controller
 {
 
 	protected $namespace;
@@ -23,12 +23,12 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function __construct()
 	{
-		$this->namespace = 'bmaw-submission/v1';
+		$this->namespace = 'wbw-submission/v1';
 		$this->submissions_rest_base = 'submissions';
 		$this->service_areas_rest_base = 'serviceareas';
 		$this->server_rest_base = 'bmltserver';
 		$this->bmlt_integration = new BMLTIntegration;
-		$this->handlers = new bmaw_submissions_rest_handlers();
+		$this->handlers = new wbw_submissions_rest_handlers();
 	}
 
 	public function register_routes()
@@ -168,10 +168,10 @@ class bmaw_submissions_rest extends WP_REST_Controller
 	 */
 	public function get_submissions_permissions_check($request)
 	{
-		global $bmaw_capability_manage_submissions;
+		global $wbw_capability_manage_submissions;
 
 		error_log("get submissions current user " . get_current_user_id());
-		if (!current_user_can($bmaw_capability_manage_submissions)) {
+		if (!current_user_can($wbw_capability_manage_submissions)) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view submissions.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -179,10 +179,10 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function get_submission_permissions_check($request)
 	{
-		global $bmaw_capability_manage_submissions;
+		global $wbw_capability_manage_submissions;
 
 		error_log("get submissions current user " . get_current_user_id());
-		if (!current_user_can($bmaw_capability_manage_submissions)) {
+		if (!current_user_can($wbw_capability_manage_submissions)) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view a submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -190,10 +190,10 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function approve_submission_action_permissions_check($request)
 	{
-		global $bmaw_capability_manage_submissions;
+		global $wbw_capability_manage_submissions;
 
 		error_log("approve submission current user " . get_current_user_id());
-		if (!current_user_can($bmaw_capability_manage_submissions)) {
+		if (!current_user_can($wbw_capability_manage_submissions)) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot approve this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -201,10 +201,10 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function reject_submission_action_permissions_check($request)
 	{
-		global $bmaw_capability_manage_submissions;
+		global $wbw_capability_manage_submissions;
 
 		error_log("reject submission current user " . get_current_user_id());
-		if (!current_user_can($bmaw_capability_manage_submissions)) {
+		if (!current_user_can($wbw_capability_manage_submissions)) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot reject this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -223,10 +223,10 @@ class bmaw_submissions_rest extends WP_REST_Controller
 
 	public function patch_submission_permissions_check($request)
 	{
-		global $bmaw_capability_manage_submissions;
+		global $wbw_capability_manage_submissions;
 
 		error_log("patch submission current user " . get_current_user_id());
-		if (!current_user_can($bmaw_capability_manage_submissions)) {
+		if (!current_user_can($wbw_capability_manage_submissions)) {
 			return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot patch this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;

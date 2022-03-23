@@ -6,42 +6,42 @@
   display: block;
 }
 
-.bmaw-sg {  display: grid;
+.wbw-sg {  display: grid;
     grid-template-columns: 1.3fr 1.2fr;
     grid-template-rows: 1fr;
     gap: 5px 11px;
     grid-auto-flow: row;
     grid-template-areas:
-      "bmaw-sg-col1 bmaw-grid-col2";
+      "wbw-sg-col1 wbw-grid-col2";
     width: 80%;
     height: 80%;
   }
   
-  .bmaw-grid-col2 { grid-area: bmaw-grid-col2; }
+  .wbw-grid-col2 { grid-area: wbw-grid-col2; }
   
-  .bmaw-sg-col1 {  display: grid;
+  .wbw-sg-col1 {  display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
     gap: 0px 0px;
     grid-auto-flow: row;
     grid-template-areas:
-      "bmaw-sg-col1-w1 bmaw-sg-col1-w1 bmaw-sg-col1-w1"
-      "bmaw-sg-col1-t1 bmaw-sg-col1-t2 bmaw-sg-col1-t3"
-      "bmaw-sg-col1-w2 bmaw-sg-col1-w2 bmaw-sg-col1-w2";
-    grid-area: bmaw-sg-col1;
+      "wbw-sg-col1-w1 wbw-sg-col1-w1 wbw-sg-col1-w1"
+      "wbw-sg-col1-t1 wbw-sg-col1-t2 wbw-sg-col1-t3"
+      "wbw-sg-col1-w2 wbw-sg-col1-w2 wbw-sg-col1-w2";
+    grid-area: wbw-sg-col1;
   }
   
-  .bmaw-sg-col1-t1 { grid-area: bmaw-sg-col1-t1; }
+  .wbw-sg-col1-t1 { grid-area: wbw-sg-col1-t1; }
   
-  .bmaw-sg-col1-t2 { grid-area: bmaw-sg-col1-t2; }
+  .wbw-sg-col1-t2 { grid-area: wbw-sg-col1-t2; }
   
-  .bmaw-sg-col1-t3 { grid-area: bmaw-sg-col1-t3; }
+  .wbw-sg-col1-t3 { grid-area: wbw-sg-col1-t3; }
   
-  .bmaw-sg-col1-w1 { grid-area: bmaw-sg-col1-w1; }
+  .wbw-sg-col1-w1 { grid-area: wbw-sg-col1-w1; }
   
-  .bmaw-sg-col1-w2 { grid-area: bmaw-sg-col1-w2; }
+  .wbw-sg-col1-w2 { grid-area: wbw-sg-col1-w2; }
   
-.bmaw-sg input {
+.wbw-sg input {
   line-height: 1.5;
   font-size: 1.2em;
   padding: 5px 10px;
@@ -49,7 +49,7 @@
   width: 90%;
 }
 
-.bmaw-sg select {
+.wbw-sg select {
     line-height: 1.5;
     font-size: 1.2em;
     padding: 5px 10px;
@@ -57,7 +57,7 @@
     width: 90%;
   }
   
-.bmaw-sg-col1-t3 select {
+.wbw-sg-col1-t3 select {
     line-height: 1.5;
     font-size: 1.2em;
     padding: 5px 10px;
@@ -65,11 +65,11 @@
     width: 30%;
   }
   
-.bmaw-sg .bmaw-changed {
+.wbw-sg .wbw-changed {
     background: #e7f478; 
    }
    
-.bmaw-sg label {
+.wbw-sg label {
   width: 100%;
   display: block;
   padding: 10px 5px 5px 2px;

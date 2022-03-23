@@ -4,7 +4,7 @@ use Crell\ApiProblem\ApiProblem;
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-class bmaw_submissions_rest_handlers
+class wbw_submissions_rest_handlers
 {
 
     public function __construct()
@@ -12,28 +12,28 @@ class bmaw_submissions_rest_handlers
         $this->bmlt_integration = new BMLTIntegration;
     }
 
-    private function bmaw_rest_success($message)
+    private function wbw_rest_success($message)
     {
-        return new WP_Error('bmaw_success', __($message), array('status' => 200));
+        return new WP_Error('wbw_success', __($message), array('status' => 200));
     }
 
-    private function bmaw_rest_error($message, $code)
+    private function wbw_rest_error($message, $code)
     {
-        return new WP_Error('bmaw_error', __($message), array('status' => $code));
+        return new WP_Error('wbw_error', __($message), array('status' => $code));
     }
 
     public function get_submissions_handler()
     {
 
         global $wpdb;
-        global $bmaw_submissions_table_name;
-        global $bmaw_service_areas_access_table_name;
+        global $wbw_submissions_table_name;
+        global $wbw_service_areas_access_table_name;
 
         // only show submissions we have access to
-        // select * from wp_bmaw_submissions s inner join wp_bmaw_service_areas_access a on s.service_body_bigint = a.service_body_bigint where a.wp_uid = 1
+        // select * from wp_wbw_submissions s inner join wp_wbw_service_areas_access a on s.service_body_bigint = a.service_body_bigint where a.wp_uid = 1
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
-        $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' s inner join ' . $bmaw_service_areas_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
+        $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' s inner join ' . $wbw_service_areas_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
         error_log($sql);
         $result = $wpdb->get_results($sql, ARRAY_A);
         error_log(vdump($result));
@@ -46,8 +46,8 @@ class bmaw_submissions_rest_handlers
     // public function get_service_areas_detail_handler()
     // {
     //     global $wpdb;
-    //     global $bmaw_service_areas_table_name;
-    //     global $bmaw_service_areas_access_table_name;
+    //     global $wbw_service_areas_table_name;
+    //     global $wbw_service_areas_access_table_name;
 
     //     $sblist = array();
 
@@ -59,7 +59,7 @@ class bmaw_submissions_rest_handlers
     //     // get an xml for a workaround
     //     $response = $bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
     //     if (is_wp_error($response)) {
-    //         return $this->bmaw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+    //         return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
     //     }
 
     //     $xml = simplexml_load_string($response['body']);
@@ -88,7 +88,7 @@ class bmaw_submissions_rest_handlers
 
     //     // update our service area list in the database in case there have been some new ones added
     //     // error_log("get ids");
-    //     $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $bmaw_service_areas_table_name . ';', 0);
+    //     $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $wbw_service_areas_table_name . ';', 0);
 
     //     // error_log(vdump($sqlresult));
     //     $missing = array_diff($idlist, $sqlresult);
@@ -96,13 +96,13 @@ class bmaw_submissions_rest_handlers
     //     // error_log(vdump($missing));
 
     //     foreach ($missing as $value) {
-    //         $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+    //         $sql = $wpdb->prepare('INSERT into ' . $wbw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
     //         $wpdb->query($sql);
     //     }
     //     // update any values that may have changed since last time we looked
 
     //     foreach ($idlist as $value) {
-    //         $sql = $wpdb->prepare('UPDATE ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+    //         $sql = $wpdb->prepare('UPDATE ' . $wbw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
     //         $wpdb->query($sql);
     //     }
 
@@ -112,13 +112,13 @@ class bmaw_submissions_rest_handlers
     //     // make our group membership lists
     //     foreach ($sblist as $key => $value) {
     //         error_log("getting memberships for " . $key);
-    //         $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $bmaw_service_areas_access_table_name . ' where service_body_bigint = "%d"', $key);
+    //         $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $wbw_service_areas_access_table_name . ' where service_body_bigint = "%d"', $key);
     //         $result = $wpdb->get_col($sql, 0);
     //         // error_log(vdump($result));
     //         $sblist[$key]['membership'] = implode(',', $result);
     //     }
     //     // get the form display settings
-    //     $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $bmaw_service_areas_table_name, ARRAY_A);
+    //     $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $wbw_service_areas_table_name, ARRAY_A);
 
     //     foreach ($sqlresult as $key => $value) {
     //         $bool = $value['show_on_form'] ? (true) : (false);
@@ -132,8 +132,8 @@ class bmaw_submissions_rest_handlers
     {
 
         global $wpdb;
-        global $bmaw_service_areas_table_name;
-        global $bmaw_service_areas_access_table_name;
+        global $wbw_service_areas_table_name;
+        global $wbw_service_areas_access_table_name;
 
         $params = $request->get_params();
         error_log(vdump($params));
@@ -152,7 +152,7 @@ class bmaw_submissions_rest_handlers
             // get an xml for a workaround
             $response = $bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
             if (is_wp_error($response)) {
-                return $this->bmaw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+                return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
             }
     
             $xml = simplexml_load_string($response['body']);
@@ -181,7 +181,7 @@ class bmaw_submissions_rest_handlers
     
             // update our service area list in the database in case there have been some new ones added
             // error_log("get ids");
-            $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $bmaw_service_areas_table_name . ';', 0);
+            $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $wbw_service_areas_table_name . ';', 0);
     
             // error_log(vdump($sqlresult));
             $missing = array_diff($idlist, $sqlresult);
@@ -189,13 +189,13 @@ class bmaw_submissions_rest_handlers
             // error_log(vdump($missing));
     
             foreach ($missing as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+                $sql = $wpdb->prepare('INSERT into ' . $wbw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
                 $wpdb->query($sql);
             }
             // update any values that may have changed since last time we looked
     
             foreach ($idlist as $value) {
-                $sql = $wpdb->prepare('UPDATE ' . $bmaw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+                $sql = $wpdb->prepare('UPDATE ' . $wbw_service_areas_table_name . ' set contact_email="%s", service_area_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
                 $wpdb->query($sql);
             }
     
@@ -205,13 +205,13 @@ class bmaw_submissions_rest_handlers
             // make our group membership lists
             foreach ($sblist as $key => $value) {
                 error_log("getting memberships for " . $key);
-                $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $bmaw_service_areas_access_table_name . ' where service_body_bigint = "%d"', $key);
+                $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $wbw_service_areas_access_table_name . ' where service_body_bigint = "%d"', $key);
                 $result = $wpdb->get_col($sql, 0);
                 // error_log(vdump($result));
                 $sblist[$key]['membership'] = implode(',', $result);
             }
             // get the form display settings
-            $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $bmaw_service_areas_table_name, ARRAY_A);
+            $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $wbw_service_areas_table_name, ARRAY_A);
     
             foreach ($sqlresult as $key => $value) {
                 $bool = $value['show_on_form'] ? (true) : (false);
@@ -223,7 +223,7 @@ class bmaw_submissions_rest_handlers
 
             $sblist = array();
             // error_log("simple list of service areas and names");
-            $result = $wpdb->get_results('SELECT * from ' . $bmaw_service_areas_table_name . ' where show_on_form != "0"', ARRAY_A);
+            $result = $wpdb->get_results('SELECT * from ' . $wbw_service_areas_table_name . ' where show_on_form != "0"', ARRAY_A);
             // error_log(vdump($result));
             // create simple service area list (names of service areas that are enabled by admin with show_on_form)
             foreach ($result as $key => $value) {
@@ -240,45 +240,45 @@ class bmaw_submissions_rest_handlers
     public function post_service_areas_handler($request)
     {
         global $wpdb;
-        global $bmaw_service_areas_access_table_name;
-        global $bmaw_capability_manage_submissions;
-        global $bmaw_service_areas_table_name;
+        global $wbw_service_areas_access_table_name;
+        global $wbw_capability_manage_submissions;
+        global $wbw_service_areas_table_name;
 
         // error_log("request body");
         // error_log(vdump($request->get_json_params()));
         $permissions = $request->get_json_params();
         // clear out our old permissions
-        $wpdb->query('DELETE from ' . $bmaw_service_areas_access_table_name);
+        $wpdb->query('DELETE from ' . $wbw_service_areas_access_table_name);
         // insert new permissions from form
         foreach ($permissions as $sb => $arr) {
             $members = $arr['membership'];
             foreach ($members as $member) {
-                $sql = $wpdb->prepare('INSERT into ' . $bmaw_service_areas_access_table_name . ' SET wp_uid = "%d", service_body_bigint="%d"', $member, $sb);
+                $sql = $wpdb->prepare('INSERT into ' . $wbw_service_areas_access_table_name . ' SET wp_uid = "%d", service_body_bigint="%d"', $member, $sb);
                 $wpdb->query($sql);
             }
             // update show/hide
             $show_on_form = $arr['show_on_form'];
-            $sql = $wpdb->prepare('UPDATE ' . $bmaw_service_areas_table_name . ' SET show_on_form = "%d" where service_body_bigint="%d"', $show_on_form, $sb);
+            $sql = $wpdb->prepare('UPDATE ' . $wbw_service_areas_table_name . ' SET show_on_form = "%d" where service_body_bigint="%d"', $show_on_form, $sb);
             $wpdb->query($sql);
         }
 
         // add / remove user capabilities
         $users = get_users();
-        $result = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $bmaw_service_areas_access_table_name, 0);
+        $result = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $wbw_service_areas_access_table_name, 0);
         // error_log(vdump($sql));
         // error_log(vdump($result));
         foreach ($users as $user) {
             error_log("checking user id " . $user->get('ID'));
             if (in_array($user->get('ID'), $result)) {
-                $user->add_cap($bmaw_capability_manage_submissions);
+                $user->add_cap($wbw_capability_manage_submissions);
                 // error_log("adding cap");
             } else {
-                $user->remove_cap($bmaw_capability_manage_submissions);
+                $user->remove_cap($wbw_capability_manage_submissions);
                 // error_log("removing cap");
             }
         }
 
-        return $this->bmaw_rest_success('Updated Service Areas');
+        return $this->wbw_rest_success('Updated Service Areas');
     }
 
 
@@ -286,19 +286,19 @@ class bmaw_submissions_rest_handlers
     {
 
         global $wpdb;
-        global $bmaw_submissions_table_name;
+        global $wbw_submissions_table_name;
 
-        $sql = $wpdb->prepare('DELETE FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+        $sql = $wpdb->prepare('DELETE FROM ' . $wbw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
         $wpdb->query($sql, ARRAY_A);
 
-        return $this->bmaw_rest_success('Deleted submission id ' . $request['id']);
+        return $this->wbw_rest_success('Deleted submission id ' . $request['id']);
     }
 
     public function get_submission_handler($request)
     {
         global $wpdb;
-        global $bmaw_submissions_table_name;
-        $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+        global $wbw_submissions_table_name;
+        $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
         $result = $wpdb->get_results($sql, ARRAY_A);
 
         return $result;
@@ -307,16 +307,16 @@ class bmaw_submissions_rest_handlers
     private function get_submission_id_with_permission_check($change_id)
     {
         global $wpdb;
-        global $bmaw_submissions_table_name;
-        global $bmaw_service_areas_access_table_name;
+        global $wbw_submissions_table_name;
+        global $wbw_service_areas_access_table_name;
 
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
-        $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' s inner join ' . $bmaw_service_areas_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
+        $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' s inner join ' . $wbw_service_areas_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
         error_log($sql);
         $result = $wpdb->get_row($sql, ARRAY_A);
         if (empty($result)) {
-            return $this->bmaw_rest_error("Permission denied viewing submission id {$change_id}", 400);
+            return $this->wbw_rest_error("Permission denied viewing submission id {$change_id}", 400);
         }
         return $result;
     }
@@ -324,7 +324,7 @@ class bmaw_submissions_rest_handlers
     public function reject_submission_handler($request)
     {
         global $wpdb;
-        global $bmaw_submissions_table_name;
+        global $wbw_submissions_table_name;
 
         $change_id = $request->get_param('id');
 
@@ -334,13 +334,13 @@ class bmaw_submissions_rest_handlers
         if (is_wp_error($result)) {
             return $result;
         }
-        // $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
+        // $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' where id="%d" limit 1', $change_id);
         // $result = $wpdb->get_row($sql, ARRAY_A);
 
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->bmaw_rest_error("Submission id {$change_id} is already $change_made", 400);
+            return $this->wbw_rest_error("Submission id {$change_id} is already $change_made", 400);
         }
 
         $params = $request->get_json_params();
@@ -348,7 +348,7 @@ class bmaw_submissions_rest_handlers
         if (!empty($params['action_message'])) {
             $message = $params['action_message'];
             if (strlen($message) > 1023) {
-                return $this->bmaw_rest_error('Reject message must be less than 1024 characters', 400);
+                return $this->wbw_rest_error('Reject message must be less than 1024 characters', 400);
             }
         } else {
             error_log("action message is null");
@@ -358,7 +358,7 @@ class bmaw_submissions_rest_handlers
         $username = $current_user->user_login;
 
         $sql = $wpdb->prepare(
-            'UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'UPDATE ' . $wbw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
             'rejected',
             $username,
             current_time('mysql', true),
@@ -372,13 +372,13 @@ class bmaw_submissions_rest_handlers
         // send action email
         //
 
-        return $this->bmaw_rest_success('Rejected submission id ' . $change_id);
+        return $this->wbw_rest_success('Rejected submission id ' . $change_id);
     }
 
     public function patch_submission_handler($request)
     {
         global $wpdb;
-        global $bmaw_submissions_table_name;
+        global $wbw_submissions_table_name;
 
         $change_id = $request->get_param('id');
 
@@ -415,13 +415,13 @@ class bmaw_submissions_rest_handlers
             return $result;
         }
 
-        // $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
+        // $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' where id="%d" limit 1', $change_id);
         // $result = $wpdb->get_row($sql, ARRAY_A);
 
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->bmaw_rest_error("Submission id {$change_id} is already $change_made", 400);
+            return $this->wbw_rest_error("Submission id {$change_id} is already $change_made", 400);
         }
         // error_log("change made is ".$change_made);
 
@@ -444,7 +444,7 @@ class bmaw_submissions_rest_handlers
         $username = $current_user->user_login;
 
         $sql = $wpdb->prepare(
-            'UPDATE ' . $bmaw_submissions_table_name . ' set changes_requested = "%s",change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'UPDATE ' . $wbw_submissions_table_name . ' set changes_requested = "%s",change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
             json_encode($merged_change),
             'updated',
             $username,
@@ -456,13 +456,13 @@ class bmaw_submissions_rest_handlers
 
         $result = $wpdb->get_results($sql, ARRAY_A);
 
-        return $this->bmaw_rest_success('Updated submission id ' . $change_id);
+        return $this->wbw_rest_success('Updated submission id ' . $change_id);
     }
 
     public function approve_submission_handler($request)
     {
         global $wpdb;
-        global $bmaw_submissions_table_name;
+        global $wbw_submissions_table_name;
 
         $change_id = $request->get_param('id');
 
@@ -473,13 +473,13 @@ class bmaw_submissions_rest_handlers
             return $result;
         }
 
-        // $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' where id="%d" limit 1', $change_id);
+        // $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' where id="%d" limit 1', $change_id);
         // $result = $wpdb->get_row($sql, ARRAY_A);
 
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->bmaw_rest_error("Submission id {$change_id} is already $change_made", 400);
+            return $this->wbw_rest_error("Submission id {$change_id} is already $change_made", 400);
         }
 
         $submission_type = $result['submission_type'];
@@ -536,11 +536,11 @@ class bmaw_submissions_rest_handlers
                 // $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
                 break;
             default:
-                return $this->bmaw_rest_error("This change type ({$submission_type}) cannot be approved", 400);
+                return $this->wbw_rest_error("This change type ({$submission_type}) cannot be approved", 400);
         }
 
         if (is_wp_error($response)) {
-            return $this->bmaw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+            return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
         }
 
         $params = $request->get_json_params();
@@ -549,7 +549,7 @@ class bmaw_submissions_rest_handlers
         if (!empty($params['action_message'])) {
             $message = $params['action_message'];
             if (strlen($message) > 1023) {
-                return $this->bmaw_rest_error('Approve message must be less than 1024 characters', 400);
+                return $this->wbw_rest_error('Approve message must be less than 1024 characters', 400);
             }
         } else {
             error_log("action message is null");
@@ -559,7 +559,7 @@ class bmaw_submissions_rest_handlers
         $username = $current_user->user_login;
 
         $sql = $wpdb->prepare(
-            'UPDATE ' . $bmaw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'UPDATE ' . $wbw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
             'approved',
             $username,
             current_time('mysql', true),
@@ -573,21 +573,21 @@ class bmaw_submissions_rest_handlers
         // send action email
         //
 
-        return $this->bmaw_rest_success('Approved submission id ' . $change_id);
+        return $this->wbw_rest_success('Approved submission id ' . $change_id);
     }
 
     public function post_server_handler($request)
     {
-        $username = $request['bmaw_bmlt_username'];
-        $password = $request['bmaw_bmlt_password'];
-        $server = $request['bmaw_bmlt_server_address'];
+        $username = $request['wbw_bmlt_username'];
+        $password = $request['wbw_bmlt_password'];
+        $server = $request['wbw_bmlt_server_address'];
 
         $ret = $this->bmlt_integration->testServerAndAuth($username, $password, $server);
         error_log(vdump($ret));
         if (is_wp_error($ret)) {
-            return $this->bmaw_rest_error('Server and Authentication test failed - ' . $ret->get_error_message(), 500);
+            return $this->wbw_rest_error('Server and Authentication test failed - ' . $ret->get_error_message(), 500);
         } else {
-            return $this->bmaw_rest_success('Server and Authentication test succeeded.');
+            return $this->wbw_rest_success('Server and Authentication test succeeded.');
         }
     }
 }

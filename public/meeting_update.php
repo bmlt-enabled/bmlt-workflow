@@ -4,8 +4,8 @@ if (!class_exists('BMLTIntegration')) {
     require_once(BMAW_PLUGIN_DIR . 'admin/bmlt_integration.php');
 }
 
-$bmaw_bmlt_test_status = get_option('bmaw_bmlt_test_status', "failure");
-if ($bmaw_bmlt_test_status != "success") {
+$wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
+if ($wbw_bmlt_test_status != "success") {
     wp_die("<h4>BMAW Plugin Error: BMLT Server not configured and tested.</h4>");
 }
 
@@ -44,12 +44,12 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <p id="reason_new_text" style="display: none;">Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet.
             <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
             <div>
-                <label for="meeting_name">Group Name<span class="bmaw-required-field"> *</span></label>
+                <label for="meeting_name">Group Name<span class="wbw-required-field"> *</span></label>
                 <input type="text" name="meeting_name" size="50" id="meeting_name" required>
             </div>
             <br>
             <div>
-                <label for="weekday_tinyintk">Meeting Day:<span class="bmaw-required-field"> *</span></label>
+                <label for="weekday_tinyintk">Meeting Day:<span class="wbw-required-field"> *</span></label>
                 <select name="weekday_tinyint" id="weekday_tinyint">
                     <option value=1>Sunday</option>
                     <option value=2>Monday</option>
@@ -62,12 +62,12 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </div>
             <br>
             <div>
-                <label for="start_time">Start Time<span class="bmaw-required-field"> *</span></label>
+                <label for="start_time">Start Time<span class="wbw-required-field"> *</span></label>
                 <input type="time" name="start_time" size="10" id="start_time" required>
             </div>
             <br>
             <div>
-                <label for="duration_hours">Duration<span class="bmaw-required-field"> *</span></label>
+                <label for="duration_hours">Duration<span class="wbw-required-field"> *</span></label>
                 <select id="duration_hours">
                     <option value="00">0</option>
                     <option value="01" selected="selected">1</option>
@@ -119,12 +119,12 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </div>
             <br>
             <div>
-                <label for="location_text">Location (eg: a building name)<span class="bmaw-required-field"> *</span></label>
+                <label for="location_text">Location (eg: a building name)<span class="wbw-required-field"> *</span></label>
                 <input type="text" name="location_text" size="50" id="location_text" required>
             </div>
             <br>
             <div>
-                <label for="location_street">Street Address<span class="bmaw-required-field"> *</span></label>
+                <label for="location_street">Street Address<span class="wbw-required-field"> *</span></label>
                 <input type="text" name="location_street" size="50" id="location_street" required>
             </div>
             <br>
@@ -134,17 +134,17 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </div>
             <br>
             <div>
-                <label for="location_municipality">City/Town/Suburb<span class="bmaw-required-field"> *</span></label>
+                <label for="location_municipality">City/Town/Suburb<span class="wbw-required-field"> *</span></label>
                 <input type="text" name="location_municipality" size="50" id="location_municipality" required>
             </div>
             <br>
             <div>
-                <label for="location_province">State<span class="bmaw-required-field"> *</span></label>
+                <label for="location_province">State<span class="wbw-required-field"> *</span></label>
                 <input type="text" name="location_province" size="50" id="location_province" required>
             </div>
             <br>
             <div>
-                <label for="location_postal_code_1">Postcode<span class="bmaw-required-field"> *</span></label>
+                <label for="location_postal_code_1">Postcode<span class="wbw-required-field"> *</span></label>
                 <input type="number" name="location_postal_code_1" size="5" max="9999" id="location_postal_code_1" required>
             </div>
             <br>
@@ -178,17 +178,17 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </div>
             <br>
             <div>
-                <label for="first_name">First Name<span class="bmaw-required-field">*</span></label>
+                <label for="first_name">First Name<span class="wbw-required-field">*</span></label>
                 <input type="text" name="first_name" size="20" id="first_name" required>
             </div>
             <br>
             <div>
-                <label for="last_name">Last Name<span class="bmaw-required-field">*</span></label>
+                <label for="last_name">Last Name<span class="wbw-required-field">*</span></label>
                 <input type="text" name="last_name" size="20" id="last_name" required>
             </div>
             <br>
             <div>
-                <label for="email_address">Email Address<span class="bmaw-required-field">*</span></label>
+                <label for="email_address">Email Address<span class="wbw-required-field">*</span></label>
                 <input type="email" name="email_address" id="email_address" size="50" required>
             </div>
             <br>
@@ -234,7 +234,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 </div>
                 <br>
                 <div>
-                    <label for="starter_kit_postal_address">Starter Kit Postal Address<span class="bmaw-required-field"> *</span></label>
+                    <label for="starter_kit_postal_address">Starter Kit Postal Address<span class="wbw-required-field"> *</span></label>
                     <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" rows="5" cols="50"></textarea>
                 </div>
             </div>

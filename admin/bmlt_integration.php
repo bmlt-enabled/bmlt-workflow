@@ -24,11 +24,11 @@ class BMLTIntegration
 
         if ($response_code != 200)
         {
-            return new WP_Error('bmaw', 'check BMLT server address');
+            return new WP_Error('wbw', 'check BMLT server address');
         }
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
-            return new WP_Error('bmaw', 'check username and password details');
+            return new WP_Error('wbw', 'check username and password details');
         }
         return true;
     }
@@ -37,7 +37,7 @@ class BMLTIntegration
     {
         $response = $this->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('admin_action' => 'get_format_info'));
         if (is_wp_error($response)) {
-            return new WP_Error('bmaw','BMLT Configuration Error - Unable to retrieve meeting formats');
+            return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
         error_log(wp_remote_retrieve_body($response));  
         $formatarr = json_decode(wp_remote_retrieve_body($response), true)['row'];
@@ -68,23 +68,23 @@ class BMLTIntegration
         if ($this->cookies == null) {
             $postargs = array(
                 'admin_action' => 'login',
-                'c_comdef_admin_login' => get_option('bmaw_bmlt_username'),
-                'c_comdef_admin_password' => get_option('bmaw_bmlt_password')
+                'c_comdef_admin_login' => get_option('wbw_bmlt_username'),
+                'c_comdef_admin_password' => get_option('wbw_bmlt_password')
             );
-            $url = get_option('bmaw_bmlt_server_address') . "index.php";
+            $url = get_option('wbw_bmlt_server_address') . "index.php";
 
             // error_log("AUTH URL = " . $url);
             $ret = $this->post($url, null, $postargs);
 
             if (is_wp_error($ret))
             {
-                return new WP_Error('bmaw', 'authenticateRootServer: Server Failure');
+                return new WP_Error('wbw', 'authenticateRootServer: Server Failure');
             }  
 
             if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
             {
                 $this->cookies = null;
-                return new WP_Error('bmaw', 'authenticateRootServer: Authentication Failure');
+                return new WP_Error('wbw', 'authenticateRootServer: Authentication Failure');
             }
             
             $this->cookies = wp_remote_retrieve_cookies($ret);
@@ -200,17 +200,17 @@ class BMLTIntegration
 
     public function postConfiguredRootServerRequest($url, $postargs)
     {
-            return $this->postRootServerRequest(get_option('bmaw_bmlt_server_address') . $url, $postargs);
+            return $this->postRootServerRequest(get_option('wbw_bmlt_server_address') . $url, $postargs);
     }
 
     public function postConfiguredRootServerRequestSemantic($url, $postargs)
     {
-            return $this->postRootServerRequestSemantic(get_option('bmaw_bmlt_server_address') . $url, $postargs);
+            return $this->postRootServerRequestSemantic(get_option('wbw_bmlt_server_address') . $url, $postargs);
     }
 
     public function getConfiguredRootServerRequest($url)
     {
-            return $this->getRootServerRequest(get_option('bmaw_bmlt_server_address') . $url);
+            return $this->getRootServerRequest(get_option('wbw_bmlt_server_address') . $url);
     }
 
 }

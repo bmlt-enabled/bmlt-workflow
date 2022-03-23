@@ -9,14 +9,14 @@ function vdump($object)
     return $contents;
 }
 
-function bmaw_rest_success($message)
+function wbw_rest_success($message)
 {
-    return new WP_Error('bmaw_success', __($message), array('status' => 200));
+    return new WP_Error('wbw_success', __($message), array('status' => 200));
 }
 
-function bmaw_rest_error($message, $code)
+function wbw_rest_error($message, $code)
 {
-    return new WP_Error('bmaw_error', __($message), array('status' => $code));
+    return new WP_Error('wbw_error', __($message), array('status' => $code));
 }
 
 function meeting_update_form_handler_rest($data)
@@ -44,7 +44,7 @@ function meeting_update_form_handler_rest($data)
     }
 
     if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_other_bool && !$reason_change_bool && !$reason_close_bool))) {
-        return bmaw_rest_error('No valid meeting update reason provided', 400);
+        return wbw_rest_error('No valid meeting update reason provided', 400);
     }
 
     // sanitize the input
@@ -82,7 +82,7 @@ function meeting_update_form_handler_rest($data)
 
         // if the form field is required, check if the submission is empty or non existent
         if ($validation[1] && (!isset($data[$field]) || (empty($data[$field])))) {
-            return bmaw_rest_error('Form field "' . $field . '" is required.', 400);
+            return wbw_rest_error('Form field "' . $field . '" is required.', 400);
         }
 
         // sanitise only fields that have been provided
@@ -97,7 +97,7 @@ function meeting_update_form_handler_rest($data)
                     break;
                 case ('weekday'):
                     if (!(($data[$field] >= 1) && ($data[$field] <= 7))) {
-                        return bmaw_rest_error('Form field "' . $field . '" is invalid.', 400);
+                        return wbw_rest_error('Form field "' . $field . '" is invalid.', 400);
                     }
                     break;
                 case ('url'):
@@ -106,7 +106,7 @@ function meeting_update_form_handler_rest($data)
                 case ('email'):
                     $data[$field] = sanitize_email($data[$field]);
                     if (empty($data[$field])) {
-                        return bmaw_rest_error('Form field "' . $field . '" is invalid.', 400);
+                        return wbw_rest_error('Form field "' . $field . '" is invalid.', 400);
                     }
                     break;
                 case ('textarea'):
@@ -170,7 +170,7 @@ function meeting_update_form_handler_rest($data)
 
             if (isset($data['meeting_id'])) {
                 if (!is_numeric($data['meeting_id'])) {
-                    return bmaw_rest_error('Invalid meeting id.', 400);
+                    return wbw_rest_error('Invalid meeting id.', 400);
                 }
                 $meeting_id = $data['meeting_id'];
             }
@@ -179,8 +179,8 @@ function meeting_update_form_handler_rest($data)
             $changes['meeting_id'] = $meeting_id;
 
             // get the meeting details from BMLT so we can compare them
-            $bmaw_bmlt_server_address = get_option('bmaw_bmlt_server_address');
-            $url = $bmaw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" . $meeting_id . "&lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&&recursive=1&sort_keys=start_time";
+            $wbw_bmlt_server_address = get_option('wbw_bmlt_server_address');
+            $url = $wbw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" . $meeting_id . "&lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&&recursive=1&sort_keys=start_time";
 
             $curl = curl_init($url);
             curl_setopt($curl, CURLOPT_URL, $url);
@@ -193,7 +193,7 @@ function meeting_update_form_handler_rest($data)
 
             $resp = curl_exec($curl);
             if (!$resp) {
-                return bmaw_rest_error('Server error retrieving meeting list', 500);
+                return wbw_rest_error('Server error retrieving meeting list', 500);
             }
             curl_close($curl);
             $meeting = json_decode($resp, true)[0];
@@ -221,7 +221,7 @@ function meeting_update_form_handler_rest($data)
                         error_log(vdump($data));
                         // don't allow someone to modify a meeting service body
                         if ($field === 'service_body_bigint') {
-                                return bmaw_rest_error('Service body cannot be changed.', 400);
+                                return wbw_rest_error('Service body cannot be changed.', 400);
                         }
                         $changes[$field] = $data[$field];
                     }
@@ -241,13 +241,13 @@ function meeting_update_form_handler_rest($data)
             wp_die('Not implemented');
             break;
         default:
-            return bmaw_rest_error('Invalid meeting change', 400);
+            return wbw_rest_error('Invalid meeting change', 400);
     }
 
     $cc_address = "";
     $to_address = "";
 
-    $from_address = get_option('bmaw_email_from_address');
+    $from_address = get_option('wbw_email_from_address');
 
     // Do field replacement in to: and cc: address
     $subfield = '{field:email_address}';
@@ -265,9 +265,9 @@ function meeting_update_form_handler_rest($data)
     // Handle the FSO emails
     if ($reason == "reason_new") {
         if (($data['starter_kit_required'] === 'yes') && (!empty($data['starter_kit_postal_address']))) {
-            $template = get_option('bmaw_fso_email_template');
+            $template = get_option('wbw_fso_email_template');
             $subject = 'Starter Kit Request';
-            $to_address = get_option('bmaw_fso_email_address');
+            $to_address = get_option('wbw_fso_email_address');
             foreach ($subfields as $field => $formattype) {
                 $subfield = '{field:' . $field . '}';
                 if ((isset($data[$field])) && (!empty($data[$field]))) {
@@ -294,7 +294,7 @@ function meeting_update_form_handler_rest($data)
 
     // insert into submissions db
     global $wpdb;
-    global $bmaw_submissions_table_name;
+    global $wbw_submissions_table_name;
 
     $submitter_name = $data['first_name'] . " " . $data['last_name'];
     $db_reason = '';
@@ -312,7 +312,7 @@ function meeting_update_form_handler_rest($data)
     $submitter_email = $data['email_address'];
 
     $wpdb->insert(
-        $bmaw_submissions_table_name,
+        $wbw_submissions_table_name,
         array(
             'submission_time'   => current_time('mysql', true),
             'submitter_name' => $submitter_name,
@@ -331,5 +331,5 @@ function meeting_update_form_handler_rest($data)
     );
     $insert_id = $wpdb->insert_id;
     error_log("id = " . $insert_id);
-    bmaw_rest_success('Form submission successful, submission id ' . $insert_id);
+    wbw_rest_success('Form submission successful, submission id ' . $insert_id);
 }

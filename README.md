@@ -27,7 +27,7 @@ Update the 'From Address' to an address that your mailer is permitted to send fr
 
 ### Shortcode
 
-Use a shortcode with the form `[bmaw-meeting-update-form service_areas=1,2,3,..]` substituting your service areas from BMLT in the parameters
+Use a shortcode with the form `[wbw-meeting-update-form service_areas=1,2,3,..]` substituting your service areas from BMLT in the parameters
 
 ### Email field substitution
 
