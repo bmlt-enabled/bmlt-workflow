@@ -52,8 +52,7 @@ jQuery(document).ready(function ($) {
 
           Object.keys(item).forEach((element) => {
             if ($("#quickedit_" + element) instanceof jQuery) {
-              $("#quickedit_" + element)
-                .val(item[element]);
+              $("#quickedit_" + element).val(item[element]);
             }
           });
           // fill in and highlight the changes
@@ -66,8 +65,7 @@ jQuery(document).ready(function ($) {
           Object.keys(changes_requested).forEach((element) => {
             if ($("#quickedit_" + element) instanceof jQuery) {
               $("#quickedit_" + element).addClass("bmaw-changed");
-              $("#quickedit_" + element)
-                .val(changes_requested[element]);
+              $("#quickedit_" + element).val(changes_requested[element]);
             }
           });
         });
@@ -91,13 +89,12 @@ jQuery(document).ready(function ($) {
       Object.keys(changes_requested).forEach((element) => {
         if ($("#quickedit_" + element) instanceof jQuery) {
           $("#quickedit_" + element).addClass("bmaw-changed");
-          $("#quickedit_" + element)
-            .val(changes_requested[element]);
+          $("#quickedit_" + element).val(changes_requested[element]);
         }
       });
     }
     // trigger adding of highlights when input changes
-    $(".quickedit-input").on('input',function () {
+    $(".quickedit-input").on("input", function () {
       $(this).addClass("bmaw-changed");
     });
     $("#bmaw_submission_quickedit_dialog").data("id", id).dialog("open");
@@ -319,10 +316,10 @@ jQuery(document).ready(function ($) {
         },
       },
       {
-        "className":      'disabled',
-        "orderable":      false,
-        "data":           null,
-        "defaultContent": ''
+        className: "dt-control",
+        orderable: false,
+        data: null,
+        defaultContent: "",
       },
     ],
   });
@@ -340,41 +337,48 @@ jQuery(document).ready(function ($) {
       $("#dt-submission").DataTable().button("quickedit:name").enable(!actioned);
     });
 
-    // child rows
-    function format ( d ) {
-      console.log(d);
-      // `d` is the original data object for the row
-      return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
-          '<tr>'+
-              '<td>Change Made:</td>'+
-              '<td>'+d.change_made+'</td>'+
-          '</tr>'+
-          '<tr>'+
-              '<td>Submission Time:</td>'+
-              '<td>'+d.submission_time+'</td>'+
-          '</tr>'+
-          '<tr>'+
-              '<td>Change Time:</td>'+
-              '<td>'+d.change_time+'</td>'+
-          '</tr>'+
-      '</table>';
+  // child rows
+  function format(d) {
+    console.log(d);
+    // `d` is the original data object for the row
+    return (
+      '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+      "<tr>" +
+      "<td>Change Made:</td>" +
+      "<td>" +
+      d.change_made +
+      "</td>" +
+      "</tr>" +
+      "<tr>" +
+      "<td>Submission Time:</td>" +
+      "<td>" +
+      d.submission_time +
+      "</td>" +
+      "</tr>" +
+      "<tr>" +
+      "<td>Change Time:</td>" +
+      "<td>" +
+      d.change_time +
+      "</td>" +
+      "</tr>" +
+      "</table>"
+    );
   }
-  
-    $('#dt-submission tbody').on('click', 'td.dt-control', function () {
-      var tr = $(this).closest('tr');
-      var row = table.row( tr );
 
-      if ( row.child.isShown() ) {
-          // This row is already open - close it
-          row.child.hide();
-          tr.removeClass('shown');
-      }
-      else {
-          // Open this row
-          row.child( format(row.data()) ).show();
-          tr.addClass('shown');
-      }
-  } );
+  $("#dt-submission tbody").on("click", "td.dt-control", function () {
+    var tr = $(this).closest("tr");
+    var row = table.row(tr);
+
+    if (row.child.isShown()) {
+      // This row is already open - close it
+      row.child.hide();
+      tr.removeClass("shown");
+    } else {
+      // Open this row
+      row.child(format(row.data())).show();
+      tr.addClass("shown");
+    }
+  });
 
   function bmaw_create_generic_modal(dialogid, title, width, maxwidth) {
     $("#" + dialogid).dialog({
@@ -474,8 +478,7 @@ jQuery(document).ready(function ($) {
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
     var action_message = String.prototype.trim($("#" + slug + "_dialog_textarea").val());
-    if (action_message === '')
-    {
+    if (action_message === "") {
       parameters["action_message"] = action_message;
     }
     $.ajax({
