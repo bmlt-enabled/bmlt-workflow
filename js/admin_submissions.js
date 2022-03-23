@@ -193,17 +193,16 @@ jQuery(document).ready(function ($) {
         data: "submitter_email",
       },
       {
-      name: "service_body_bigint",
-      data: "service_body_bigint",
-      render: function (data, type, row) {
-          if ((data === null) || ("service_body_bigint" in data) || ("name" in data["service_body_bigint"])) {
+        name: "service_body_bigint",
+        data: "service_body_bigint",
+        render: function (data, type, row) {
+          console.log(data);
+          if (data === null || "service_body_bigint" in data || "name" in data["service_body_bigint"]) {
             return "";
-          }
-          else
-          {
+          } else {
             return bmaw_admin_bmaw_service_areas[data["service_body_bigint"]]["name"];
           }
-        }
+        },
       },
       {
         name: "changes_requested",
@@ -350,7 +349,6 @@ jQuery(document).ready(function ($) {
       $("#dt-submission").DataTable().button("quickedit:name").enable(!actioned);
     });
 
-
   // child rows
   function format(d) {
     console.log(d);
@@ -384,7 +382,7 @@ jQuery(document).ready(function ($) {
           break;
         case "weekday_tinyint":
           weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-          table += "<tr><td>Meeting Day:</td><td>" + weekdays[d["changes_requested"].weekday_tinyint]+ "</td></tr>";
+          table += "<tr><td>Meeting Day:</td><td>" + weekdays[d["changes_requested"].weekday_tinyint] + "</td></tr>";
           break;
         case "format_shared_id_list":
           friendlyname = "Meeting Formats";
