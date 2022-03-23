@@ -135,7 +135,7 @@ class bmaw_submissions_rest_handlers
         global $bmaw_service_areas_table_name;
         global $bmaw_service_areas_access_table_name;
 
-        $params = $request->get_json_params();
+        $params = $request->get_params();
         error_log(vdump($params));
         // error_log("params detail".$params['detail']);
         // only an admin can get the service areas detail (permissions) information
