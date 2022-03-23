@@ -86,7 +86,7 @@ function enqueue_form_deps()
     wp_enqueue_style('select2css');
     wp_enqueue_script('select2');
 
-    $script  = 'var wbw_admin_wbw_service_areas_rest_route = ' . json_encode('wbw-submission/v1/serviceareas') . '; ';
+    $script  = 'var wbw_admin_wbw_service_areas_rest_route = ' . json_encode('wbw-submission/v1/servicebodies') . '; ';
     $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
     wp_add_inline_script('wbw-meeting-update-js', $script, 'before');
@@ -153,8 +153,8 @@ function wbw_admin_scripts($hook)
             $formatarr = $bmlt_integration->getMeetingFormats();
             $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
-            // do a one off lookup for our serviceareas
-            $request  = new WP_REST_Request('GET', '/wbw-submission/v1/serviceareas');
+            // do a one off lookup for our servicebodies
+            $request  = new WP_REST_Request('GET', '/wbw-submission/v1/servicebodies');
             $response = rest_do_request($request);
             $result     = rest_get_server()->response_to_data($response, true);
 
@@ -172,7 +172,7 @@ function wbw_admin_scripts($hook)
             prevent_cache_enqueue_style('wbw-admin-submissions-css', false, 'css/admin_service_areas.css');
 
             // make sure our rest url is populated
-            $script  = 'var wbw_admin_wbw_service_areas_rest_route = ' . json_encode('wbw-submission/v1/serviceareas') . '; ';
+            $script  = 'var wbw_admin_wbw_service_areas_rest_route = ' . json_encode('wbw-submission/v1/servicebodies') . '; ';
             $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
             wp_add_inline_script('admin_service_areas_js', $script, 'before');
             break;

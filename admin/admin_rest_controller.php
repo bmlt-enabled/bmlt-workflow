@@ -25,7 +25,7 @@ class wbw_submissions_rest extends WP_REST_Controller
 	{
 		$this->namespace = 'wbw-submission/v1';
 		$this->submissions_rest_base = 'submissions';
-		$this->service_areas_rest_base = 'serviceareas';
+		$this->service_areas_rest_base = 'servicebodies';
 		$this->server_rest_base = 'bmltserver';
 		$this->bmlt_integration = new BMLTIntegration;
 		$this->handlers = new wbw_submissions_rest_handlers();
@@ -103,7 +103,7 @@ class wbw_submissions_rest extends WP_REST_Controller
 			],
 		));
 
-		// GET serviceareas
+		// GET servicebodies
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->service_areas_rest_base,
@@ -113,7 +113,7 @@ class wbw_submissions_rest extends WP_REST_Controller
 				'permission_callback' => array($this, 'get_service_areas_permissions_check'),
 			),
 		);
-		// // GET serviceareas/detail
+		// // GET servicebodies/detail
 		// register_rest_route(
 		// 	$this->namespace,
 		// 	'/' . $this->service_areas_rest_base . '/detail',
@@ -124,7 +124,7 @@ class wbw_submissions_rest extends WP_REST_Controller
 		// 	),
 		// );
 
-		// POST serviceareas
+		// POST servicebodies
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->service_areas_rest_base,
@@ -135,7 +135,7 @@ class wbw_submissions_rest extends WP_REST_Controller
 				'permission_callback' => array($this, 'post_service_areas_permissions_check'),
 			),
 		);
-		// // POST serviceareas detail
+		// // POST servicebodies detail
 		// register_rest_route(
 		// 	$this->namespace,
 		// 	'/' . $this->service_areas_rest_base . '/detail',
