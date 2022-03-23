@@ -337,32 +337,57 @@ jQuery(document).ready(function ($) {
       $("#dt-submission").DataTable().button("quickedit:name").enable(!actioned);
     });
 
+
   // child rows
   function format(d) {
     console.log(d);
-    // `d` is the original data object for the row
-    return (
-      '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
-      "<tr>" +
-      "<td>Change Made:</td>" +
-      "<td>" +
-      d.change_made +
-      "</td>" +
-      "</tr>" +
-      "<tr>" +
-      "<td>Submission Time:</td>" +
-      "<td>" +
-      d.submission_time +
-      "</td>" +
-      "</tr>" +
-      "<tr>" +
-      "<td>Change Time:</td>" +
-      "<td>" +
-      d.change_time +
-      "</td>" +
-      "</tr>" +
-      "</table>"
-    );
+    table = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+
+    for (var key in d["changes_requested"]) {
+      switch (key) {
+        case "start_time":
+          table += "<tr><td>Start Time:</td><td>" + d["changes_requested"].start_time + "</td></tr>";
+          break;
+        case "duration":
+          table += "<tr><td>Duration:</td><td>" + d["changes_requested"].duration + "</td></tr>";
+          break;
+        case "location_text":
+          table += "<tr><td>Location:</td><td>" + d["changes_requested"].location_text + "</td></tr>";
+          break;
+        case "location_street":
+          table += "<tr><td>Location:</td><td>" + d["changes_requested"].location_street + "</td></tr>";
+          break;
+        case "location_info":
+          table += "<tr><td>Location:</td><td>" + d["changes_requested"].location_info + "</td></tr>";
+          break;
+        case "location_municipality":
+          table += "<tr><td>Municipality:</td><td>" + d["changes_requested"].location_municipality + "</td></tr>";
+          break;
+        case "location_province":
+          table += "<tr><td>Province/State:</td><td>" + d["changes_requested"].location_province + "</td></tr>";
+          break;
+        case "location_postal_code_1":
+          table += "<tr><td>PostCode:</td><td>" + d["changes_requested"].location_postal_code_1 + "</td></tr>";
+          break;
+        case "weekday_tinyint":
+          weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+          table += "<tr><td>Meeting Day:</td><td>" + weekdays[d["changes_requested"].weekday_tinyint]+ "</td></tr>";
+          break;
+        case "format_shared_id_list":
+          friendlyname = "Meeting Formats";
+          // convert the meeting formats to human readable
+          friendlydata = "";
+          strarr = d["format_shared_id_list"].split(",");
+          strarr.forEach((element) => {
+            friendlydata += "(" + bmaw_bmlt_formats[element]["key_string"] + ")-" + bmaw_bmlt_formats[element]["name_string"] + " ";
+          });
+          table += "<tr><td>Meeting Formats:</td><td>" + friendlydata + "</td></tr>";
+          break;
+
+      }
+      table += "</table>";
+    }
+    return table;
   }
 
   $("#dt-submission tbody").on("click", "td.dt-control", function () {
