@@ -194,8 +194,8 @@ function bmaw_menu_pages()
 
     add_submenu_page(
         'bmaw-settings',
-        'BMLT Workflow Configuration',
-        'BMLT Workflow Configuration',
+        'Configuration',
+        'Configuration',
         'manage_options',
         'bmaw-settings',
         'display_bmaw_admin_options_page',
