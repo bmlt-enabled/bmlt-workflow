@@ -33,15 +33,7 @@ include_once 'admin/admin_rest_controller.php';
 
 function meeting_update_form($atts = [], $content = null, $tag = '')
 {
-    $parsed_atts = shortcode_atts(
-        array(
-            'service-areas' => '1',
-        ),
-        $atts,
-        $tag
-    );
-    $wbw_service_areas_string = preg_replace("/[^0-9,]/", "", $parsed_atts['service-areas']);
-
+    error_log("in meeting update shortcode");
     ob_start();
     include('public/meeting_update.php');
     $content .= ob_get_clean();
