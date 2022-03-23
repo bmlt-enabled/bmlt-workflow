@@ -34,8 +34,8 @@ class bmaw_submissions_rest_handlers
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
         $sql = $wpdb->prepare('SELECT * FROM ' . $bmaw_submissions_table_name . ' s inner join '. $bmaw_service_areas_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d',$current_uid, ARRAY_A);
+        error_log($sql);
         $result = $wpdb->get_results($sql);
-        // $result = $wpdb->get_results('SELECT * FROM ' . $bmaw_submissions_table_name . ' s inner join wp_bmaw_service_areas_access a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', ARRAY_A);
         error_log(vdump($result));
         foreach ($result as $key => $value) {
             $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 2);
