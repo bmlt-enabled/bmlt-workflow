@@ -125,7 +125,7 @@ function bmaw_admin_scripts($hook)
 
             wp_add_inline_script('admin_options_js', $script, 'before');
             break;
-        case ('bmaw_page_bmaw-submissions'):
+        case ('bmlt-workflow_page_bmaw-submissions'):
             prevent_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
             prevent_cache_enqueue_style('bmaw-admin-submissions-css', false, 'css/admin_submissions.css');
             // jquery dialogs
@@ -162,7 +162,7 @@ function bmaw_admin_scripts($hook)
 
             wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;
-        case ('bmaw_page_bmaw-service-areas'):
+        case ('bmlt-workflow_page_bmaw-service-areas'):
             wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
             wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
             wp_enqueue_style('select2css');
