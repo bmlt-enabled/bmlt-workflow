@@ -128,13 +128,16 @@ class bmaw_submissions_rest_handlers
     //     return $sblist;
     // }
 
-    public function get_service_areas_handler()
+    public function get_service_areas_handler($request)
     {
 
         global $wpdb;
         global $bmaw_service_areas_table_name;
         global $bmaw_service_areas_access_table_name;
 
+        $params = $request->get_json_params();
+
+        error_log("params detail".$params['detail']);
         // only an admin can get the service areas detail (permissions) information
         if ((!empty($params['detail'])) && ($params['detail']) && (current_user_can('modify_options'))) {
             // do detail lookup
