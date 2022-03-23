@@ -183,8 +183,8 @@ function bmaw_menu_pages()
     global $bmaw_capability_manage_submissions;
 
     add_menu_page(
-        'BMAW',
-        'BMAW',
+        'BMLT Workflow',
+        'BMLT Workflow',
         'manage_options',
         'bmaw-settings',
         '',
@@ -194,8 +194,8 @@ function bmaw_menu_pages()
 
     add_submenu_page(
         'bmaw-settings',
-        'BMAW Settings',
-        'BMAW Settings',
+        'BMLT Workflow Configuration',
+        'BMLT Workflow Configuration',
         'manage_options',
         'bmaw-settings',
         'display_bmaw_admin_options_page',
@@ -204,8 +204,8 @@ function bmaw_menu_pages()
 
     add_submenu_page(
         'bmaw-settings',
-        'BMAW Submissions',
-        'BMAW Submissions',
+        'Workflow Submissions',
+        'Workflow Submissions',
         $bmaw_capability_manage_submissions,
         'bmaw-submissions',
         'display_bmaw_admin_submissions_page',
@@ -214,8 +214,8 @@ function bmaw_menu_pages()
 
     add_submenu_page(
         'bmaw-settings',
-        'BMAW Service Areas',
-        'BMAW Service Areas',
+        'Service Bodies',
+        'Service Bodiess',
         'manage_options',
         'bmaw-service-areas',
         'display_bmaw_admin_service_areas_page',
