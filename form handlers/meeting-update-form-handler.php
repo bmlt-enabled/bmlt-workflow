@@ -11,6 +11,7 @@ function vdump($object)
 
 function wbw_rest_success($message)
 {
+    error_log("here");
     $response = new WP_REST_Response();
     $response->set_data($message);
     $response->set_status(200);
