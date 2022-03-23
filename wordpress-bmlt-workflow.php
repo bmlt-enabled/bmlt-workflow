@@ -154,7 +154,7 @@ function wbw_admin_scripts($hook)
             $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
-            $request  = new WP_REST_Request('GET', $wbw_rest_namespace.'/servicebodies');
+            $request  = new WP_REST_Request('GET', get_rest_url() . $wbw_rest_namespace . '/servicebodies');
             $response = rest_do_request($request);
             $result     = rest_get_server()->response_to_data($response, true);
 
