@@ -225,7 +225,6 @@ jQuery(document).ready(function ($) {
               submission_type = data["submission_type"];
           }
           summary = "Submission Type: " + submission_type + namestr + "<br><br>";
-          summary += "Meeting Name: " + data["meeting_name"] + "<br><br>";
           // for (var key in data) {
           //   friendlyname = key;
           //   friendlydata = data[key];
