@@ -19,13 +19,13 @@ This initial release is quite specific to the NA Australian Region use case (par
 Standard wordpress plugin installation procedure. Just copy the contents of this repo to your wp-content/plugins folder.
 
 ## Usage
-Locate BMLT Workflow -> Configuration in your Wordpress Admin page. You'll need to put in a valid BMLT server address, username and password and press the Test Server button. If you get a tick, then save settings. Update the 'From Address' to an address that your mailer is permitted to send from
+Locate *BMLT Workflow -> Configuration* in your Wordpress Admin page. You'll need to put in a valid BMLT server address, username and password and press the Test Server button. If you get a tick, then save settings. Update the 'From Address' to an address that your mailer is permitted to send from
 
-You should now be able to see the service bodies menu option. Service bodies are retrieved from BMlT, without hierarchy. By default, none of them are available for meeting updates using the system. You can enable them using the checkboxes, then add yourself under 'Wordpress Users with Access' in any/all service areas.
+You should now be able to see the *BMLT Workflow->Service Bodies* menu option. Service bodies are retrieved from BMlT, without hierarchy. By default, none of them are available for meeting updates using the system. You can enable them using the checkboxes, then add yourself under 'Wordpress Users with Access' in any/all service areas.
 
 Create a new page, and add the shortcode `[wbw-meeting-update-form]`.  The form will be available, with searches from any areas that you've configured in the service body menu. 
 
-Use the form and submit a meeting change request. Following form submission, you should see the request in the submissions menu.
+Use the form and submit a meeting change request. Following form submission, you should see the request in the *BMLT Workflow->Workflow Submissions* menu.
 
 Use approve, reject or quickedit to manage the form submission. Once approved, the submission will be committed directly to BMLT.
 
