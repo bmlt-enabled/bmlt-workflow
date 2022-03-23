@@ -318,6 +318,12 @@ jQuery(document).ready(function ($) {
           return data;
         },
       },
+      {
+        "className":      'dt-control',
+        "orderable":      false,
+        "data":           null,
+        "defaultContent": ''
+      },
     ],
   });
 
@@ -333,6 +339,42 @@ jQuery(document).ready(function ($) {
       $("#dt-submission").DataTable().button("reject:name").enable(!actioned);
       $("#dt-submission").DataTable().button("quickedit:name").enable(!actioned);
     });
+
+    // child rows
+    function format ( d ) {
+      console.log(d);
+      // `d` is the original data object for the row
+      return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">'+
+          '<tr>'+
+              '<td>Change Made:</td>'+
+              '<td>'+d.change_made+'</td>'+
+          '</tr>'+
+          '<tr>'+
+              '<td>Submission Time:</td>'+
+              '<td>'+d.submission_time+'</td>'+
+          '</tr>'+
+          '<tr>'+
+              '<td>Change Time:</td>'+
+              '<td>'+d.change_time+'</td>'+
+          '</tr>'+
+      '</table>';
+  }
+  
+    $('#dt-submission tbody').on('click', 'td.dt-control', function () {
+      var tr = $(this).closest('tr');
+      var row = table.row( tr );
+
+      if ( row.child.isShown() ) {
+          // This row is already open - close it
+          row.child.hide();
+          tr.removeClass('shown');
+      }
+      else {
+          // Open this row
+          row.child( format(row.data()) ).show();
+          tr.addClass('shown');
+      }
+  } );
 
   function bmaw_create_generic_modal(dialogid, title, width, maxwidth) {
     $("#" + dialogid).dialog({
