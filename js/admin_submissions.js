@@ -377,7 +377,7 @@ jQuery(document).ready(function ($) {
           friendlyname = "Meeting Formats";
           // convert the meeting formats to human readable
           friendlydata = "";
-          strarr = d["format_shared_id_list"].split(",");
+          strarr = d["changes_requested"]["format_shared_id_list"].split(",");
           strarr.forEach((element) => {
             friendlydata += "(" + bmaw_bmlt_formats[element]["key_string"] + ")-" + bmaw_bmlt_formats[element]["name_string"] + " ";
           });
