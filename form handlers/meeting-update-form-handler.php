@@ -338,7 +338,7 @@ function meeting_update_form_handler_rest($data)
     error_log("id = " . $insert_id);
     $message = array(
         "message" => 'Form submission successful, submission id ' . $insert_id,
-        "form_html" => '<h1>Form submission successful, submission id ' . $insert_id . '</h1>'
+        "form_html" => '<h3>Form submission successful, your submission id  is ' . $insert_id . '</h3>'
     );
 
     return wbw_rest_success($message);

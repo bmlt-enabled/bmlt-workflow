@@ -397,6 +397,7 @@ jQuery(document).ready(function ($) {
 
     $.post(wbw_form_submit, $("#meeting_update_form").serialize(), function (response) {
       console.log("submitted");
+      $("#form_replace").replaceWith(response.message.form_html);
     });
   }
 });
