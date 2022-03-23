@@ -391,6 +391,10 @@ jQuery(document).ready(function ($) {
           table += "<tr><td>Meeting Formats:</td><td>" + friendlydata + "</td></tr>";
           break;
       }
+      if ("action_message" in d)
+      {
+        table += "<tr><td>Message to submitter:</td><td>" + d["action_message"] + "</td></tr>";
+      }
     }
     table += "</table>";
 
