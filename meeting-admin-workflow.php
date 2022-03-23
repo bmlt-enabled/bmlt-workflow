@@ -95,6 +95,8 @@ function enqueue_form_deps()
 function bmaw_admin_scripts($hook)
 {
 
+        error_log($hook);
+
     if (($hook != 'toplevel_page_bmaw-settings') && ($hook != 'bmaw_page_bmaw-submissions') && ($hook != 'bmaw_page_bmaw-service-areas')) {
         return;
     }
@@ -102,7 +104,6 @@ function bmaw_admin_scripts($hook)
     prevent_cache_enqueue_style('bmaw-admin-css', false, 'css/admin_page.css');
     prevent_cache_enqueue_script('bmawjs', array('jquery'), 'js/script_includes.js');
 
-    // error_log($hook);
     switch ($hook) {
 
         case ('toplevel_page_bmaw-settings'):
