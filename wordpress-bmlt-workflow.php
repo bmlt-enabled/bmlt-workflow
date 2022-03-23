@@ -84,7 +84,7 @@ function enqueue_form_deps()
     wp_enqueue_style('select2css');
     wp_enqueue_script('select2');
     $script  = 'var wbw_form_submit = ' . json_encode($wbw_rest_namespace.'/submissions') . '; ';
-    $script  = 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace.'/servicebodies') . '; ';
+    $script .= 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace.'/servicebodies') . '; ';
     $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
     wp_add_inline_script('wbw-meeting-update-js', $script, 'before');
