@@ -31,3 +31,27 @@
   .form-grid-div1 { grid-area: 1 / 1 / 2 / 2; }
   .form-grid-div2 { grid-area: 1 / 2 / 2 / 3; }
   .form-grid-div3 { grid-area: 2 / 1 / 3 / 3; }
+
+  .form-grid input {
+    line-height: 1.5;
+    font-size: 1.2em;
+    padding: 5px 10px;
+    display: block;
+    width: 90%;
+  }
+  
+  .form-grid select {
+      line-height: 1.5;
+      font-size: 1.2em;
+      padding: 5px 10px;
+      display: block;
+      width: 90%;
+    }
+    
+    .form-grid label {
+    width: 100%;
+    display: block;
+    padding: 10px 5px 5px 2px;
+    letter-spacing: 1px;
+    cursor: pointer;
+  }

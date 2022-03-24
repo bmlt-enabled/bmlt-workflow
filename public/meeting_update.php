@@ -70,7 +70,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     </div>
                 </div>
                 <!-- meeting details -->
-                <div class="form-grid-div3">
+                <div class="form-grid-div2">
                     <label for="meeting_name">Group Name<span class="wbw-required-field"> *</span></label>
                     <input type="text" name="meeting_name" size="50" id="meeting_name" required>
                     <label for="weekday_tinyintk">Meeting Day:<span class="wbw-required-field"> *</span></label>
@@ -158,7 +158,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
                 </div>
                 <!-- other details -->
-                <div class="form-grid-div2">
+                <div class="form-grid-div3">
 
                     <label for="additional_info">Additional Info</label>
                     <textarea name="additional_info" id="additional_info" rows="5" cols="50" placeholder="Provide any more detail that may help us action your meeting change request"></textarea>
