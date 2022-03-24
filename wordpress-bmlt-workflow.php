@@ -40,10 +40,10 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
 {
     global $wbw_rest_namespace;
 
-
     prevent_cache_enqueue_script('wbw-meeting-update-form-js',array('jquery'), 'js/meeting_update_form.js');
     prevent_cache_enqueue_script('wbw-general-js',array('jquery'), 'js/script_includes.js');
-    prevent_cache_enqueue_style('wbw-meeting-update-form-css',array('jquery', 'jquery.validate'), 'js/meeting_update_form.js');
+    // prevent_cache_enqueue_style('wbw-meeting-update-form-css',array('jquery', 'jquery.validate'), 'js/meeting_update_form.js');
+    wp_enqueue_style('wbw-meeting-update-form-css');
     wp_enqueue_script('jquery-validate');
     wp_enqueue_script('jquery-validate-additional');
     wp_enqueue_style('select2css');
