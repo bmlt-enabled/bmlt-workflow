@@ -1,0 +1,12 @@
+{
+    "autoload": {
+        "classmap": [
+            "admin/"
+        ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9",
+        "brain/monkey": "2.*",
+        "mockery/mockery": "dev-master"
+    }
+}

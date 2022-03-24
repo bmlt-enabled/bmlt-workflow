@@ -24,8 +24,8 @@ function wbw_rest_error($message, $code)
 
 function meeting_update_form_handler_rest($data)
 {
-    // error_log("in rest handler");
-    // error_log(vdump($data));
+    error_log("in rest handler");
+    error_log(vdump($data));
 
     $reason_new_bool = false;
     $reason_other_bool = false;
