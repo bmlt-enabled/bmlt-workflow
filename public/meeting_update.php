@@ -38,14 +38,14 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <br><br>
                 <input type="hidden" name="meeting_id" id="meeting_id" value="">
             </div>
-            <div id="meeting_content" class=".form-grid">
+            <div id="meeting_content" class="form-grid">
                 <p id="reason_change_text" style="display: none;">We've retrieved the details below from our system. Please make any changes and then submit your update.
                 <p id="reason_other_text" style="display: none;">Please let us know the details about your meeting change.
                 <p id="reason_new_text" style="display: none;">Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet.
                 <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
 
                     <!-- personal details -->
-                <div class=".form-grid-div1">
+                <div class="form-grid-div1">
                     <label for="first_name">First Name<span class="wbw-required-field">*</span></label>
                     <input type="text" name="first_name" size="20" id="first_name" required>
                     <label for="last_name">Last Name<span class="wbw-required-field">*</span></label>
@@ -70,7 +70,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     </div>
                 </div>
                 <!-- meeting details -->
-                <div class=".form-grid-div3">
+                <div class="form-grid-div3">
                     <label for="meeting_name">Group Name<span class="wbw-required-field"> *</span></label>
                     <input type="text" name="meeting_name" size="50" id="meeting_name" required>
                     <label for="weekday_tinyintk">Meeting Day:<span class="wbw-required-field"> *</span></label>
@@ -158,7 +158,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
                 </div>
                 <!-- other details -->
-                <div class=".form-grid-div2">
+                <div class="form-grid-div2">
 
                     <label for="additional_info">Additional Info</label>
                     <textarea name="additional_info" id="additional_info" rows="5" cols="50" placeholder="Provide any more detail that may help us action your meeting change request"></textarea>
