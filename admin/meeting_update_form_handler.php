@@ -40,6 +40,7 @@ function meeting_update_form_handler_rest($data)
     }
 
     if (isset($data['update_reason'])) {
+        // we use these to enforce required parameters in the next section
         $reason_new_bool = ($data['update_reason'] === 'reason_new');
         $reason_other_bool = ($data['update_reason'] === 'reason_other');
         $reason_change_bool = ($data['update_reason'] === 'reason_change');
@@ -58,24 +59,24 @@ function meeting_update_form_handler_rest($data)
         "meeting_id" => array("number", $reason_change_bool | $reason_close_bool),
         "first_name" => array("text", true),
         "last_name" => array("text", true),
-        "meeting_name" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "start_time" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "duration_time" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "location_text" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "location_street" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "meeting_name" => array("text", $reason_new_bool),
+        "start_time" => array("text", $reason_new_bool),
+        "duration_time" => array("text", $reason_new_bool),
+        "location_text" => array("text", $reason_new_bool),
+        "location_street" => array("text", $reason_new_bool),
         "location_info" => array("text", false),
-        "location_municipality" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "location_province" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "location_postal_code_1" => array("number", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "weekday_tinyint" => array("weekday", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "service_body_bigint" => array("bigint", $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "location_municipality" => array("text", $reason_new_bool),
+        "location_province" => array("text", $reason_new_bool),
+        "location_postal_code_1" => array("number", $reason_new_bool),
+        "weekday_tinyint" => array("weekday", $reason_new_bool),
+        "service_body_bigint" => array("bigint", $reason_new_bool),
         "virtual_meeting_link" => array("url", false),
         "email_address" => array("email", true),
         "contact_number_confidential" => array("text", false),
-        "format_shared_id_list" => array("text",  $reason_new_bool | $reason_change_bool | $reason_close_bool),
+        "format_shared_id_list" => array("text",  $reason_new_bool),
         "additional_info" => array("textarea", false),
         "starter_kit_postal_address" => array("textarea", false),
-        "starter_kit_required" => array("text", false),
+        "starter_kit_required" => array("text", $reason_new_bool),
         "other_reason" => array("textarea", $reason_other_bool),
 
     );
@@ -308,7 +309,7 @@ function meeting_update_form_handler_rest($data)
 
     // Handle the FSO emails
     if ($reason == "reason_new") {
-        if (($sanitised_fields['starter_kit_required'] === 'yes') && (!empty($sanitised_fields['starter_kit_postal_address']))) {
+        if ((!empty($sanitised_fields['starter_kit_required'])) && ($sanitised_fields['starter_kit_required'] === 'yes') && (!empty($sanitised_fields['starter_kit_postal_address']))) {
             $template = get_option('wbw_fso_email_template');
             $subject = 'Starter Kit Request';
             $to_address = get_option('wbw_fso_email_address');

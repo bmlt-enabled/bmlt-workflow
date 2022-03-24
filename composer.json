@@ -5,6 +5,7 @@
         ]
     },
     "require-dev": {
+        "cyruscollier/wordpress-develop": "dev-master",
         "phpunit/phpunit": "^9",
         "brain/monkey": "2.*",
         "mockery/mockery": "dev-master"

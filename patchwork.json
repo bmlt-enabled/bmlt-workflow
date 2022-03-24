@@ -1,0 +1,5 @@
+{
+    "redefinable-internals": [
+        "curl_exec","time"
+    ]
+}
