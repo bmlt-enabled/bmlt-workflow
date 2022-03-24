@@ -46,7 +46,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     wp_enqueue_style('wbw-meeting-update-form-css');
     wp_enqueue_script('jquery-validate');
     wp_enqueue_script('jquery-validate-additional');
-    wp_enqueue_style('select2css');
+    // wp_enqueue_style('select2css');
     wp_enqueue_script('select2');
     $script  = 'var wbw_form_submit = ' . json_encode($wbw_rest_namespace.'/submissions') . '; ';
     $script .= 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace.'/servicebodies') . '; ';
