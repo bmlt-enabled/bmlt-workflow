@@ -43,9 +43,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
 
     prevent_cache_enqueue_script('wbw-meeting-update-form-js',array('jquery'), 'js/meeting_update_form.js');
     prevent_cache_enqueue_script('wbw-general-js',array('jquery'), 'js/script_includes.js');
-    $ret = prevent_cache_enqueue_style('wbw-meeting-update-form-css',array('jquery', 'jquery.validate'), 'js/meeting_update_form.js');
-    error_log("enqueue style");
-    error_log(vdump($ret));
+    prevent_cache_enqueue_style('wbw-meeting-update-form-css',array('jquery', 'jquery.validate'), 'js/meeting_update_form.js');
     wp_enqueue_script('jquery-validate');
     wp_enqueue_script('jquery-validate-additional');
     wp_enqueue_style('select2css');
@@ -96,12 +94,17 @@ function prevent_cache_register_style($handle, $deps, $name)
 
 function prevent_cache_enqueue_script($handle, $deps, $name)
 {
-    wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
+    $ret = wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
+    error_log("enqueue style ".$handle);
+    error_log(vdump($ret));
 }
 
 function prevent_cache_enqueue_style($handle, $deps, $name)
 {
-    wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
+    $ret = wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
+    error_log("enqueue style ".$handle);
+    error_log(vdump($ret));
+
 }
 
 function enqueue_form_deps()
