@@ -76,7 +76,7 @@ final class meeting_update_form_handlerTest extends TestCase
         $this->assertEquals(200, $response->get_status());
     }
 
-    public function testCanChangeMeetingName():void {
+    public function testChangeMeetingCanChangeMeetingName():void {
 
         $form_post = array(
             "action" => "meeting_update_form_response",
@@ -102,7 +102,7 @@ final class meeting_update_form_handlerTest extends TestCase
         $this->assertEquals(200, $response->get_status());
     }
 
-    public function testCanCreateNewMeetingWithNoStarterKit():void {
+    public function testNewMeetingCanCreateWithNoStarterKit():void {
 
         $form_post = array(
             "action" => "meeting_update_form_response",
@@ -136,7 +136,7 @@ final class meeting_update_form_handlerTest extends TestCase
         $this->assertEquals(200, $response->get_status());
     }
 
-    public function testCantCreateNewMeetingIfStarterKitMissing():void {
+    public function testNewMeetingCantCreateIfStarterKitMissing():void {
 
         $form_post = array(
             "action" => "meeting_update_form_response",
