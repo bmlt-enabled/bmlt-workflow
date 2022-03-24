@@ -55,6 +55,7 @@ function meeting_update_form_handler_rest($data)
 
     $subfields = array(
         "update_reason" => array("text", true),
+        "meeting_id" => array("number", $reason_change_bool | $reason_close_bool),
         "first_name" => array("text", true),
         "last_name" => array("text", true),
         "meeting_name" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
@@ -71,20 +72,22 @@ function meeting_update_form_handler_rest($data)
         "virtual_meeting_link" => array("url", false),
         "email_address" => array("email", true),
         "contact_number_confidential" => array("text", false),
-        // "time_zone",
         "format_shared_id_list" => array("text",  $reason_new_bool | $reason_change_bool | $reason_close_bool),
         "additional_info" => array("textarea", false),
         "starter_kit_postal_address" => array("textarea", false),
         "starter_kit_required" => array("text", false),
-        "other_reason" => array("textarea", $reason_other_bool)
-        // "comments"
+        "other_reason" => array("textarea", $reason_other_bool),
+
     );
 
+    $sanitised_fields = array();
+
+    // sanitise all provided fields and drop all others
     foreach ($subfields as $field => $validation) {
         $field_type = $validation[0];
-
+        $field_is_required = $validation[1];
         // if the form field is required, check if the submission is empty or non existent
-        if ($validation[1] && (!isset($data[$field]) || (empty($data[$field])))) {
+        if ($field_is_required && empty($data[$field])) {
             return wbw_rest_error('Form field "' . $field . '" is required.', 400);
         }
 
@@ -122,64 +125,83 @@ function meeting_update_form_handler_rest($data)
                     // }
                     //                         break;
                 default:
-                    $data[$field] = "UNSANITISED";
+                    wp_die("Form processing error");
+                    break;
             }
+            $sanitised_fields[$field] = $data[$field];
         }
     }
 
-    $reason = $data['update_reason'];
-    $service_body_bigint = CONST_OTHER_SERVICE_BODY;
-    if (!empty($data['service_body_bigint']))
-    {
-        $service_body_bigint = $data['service_body_bigint'];
-    }
-    // these are the form fields we'll accept
-    $changes = array();
+    // drop out everything that isnt in our approved list
+    $data = array();
 
-    $change_subfields = array(
-        "meeting_name",
-        "start_time",
-        "duration_time",
-        "location_text",
-        "location_street",
-        "location_info",
-        "location_municipality",
-        "location_province",
-        "location_postal_code_1",
-        "weekday_tinyint",
-        "service_body_bigint",
-        "virtual_meeting_link",
-        "format_shared_id_list"
-    );
+    $reason = $sanitised_fields['update_reason'];
+
+    $service_body_bigint = CONST_OTHER_SERVICE_BODY;
+    if (!empty($sanitised_fields['service_body_bigint'])) {
+        $service_body_bigint = $sanitised_fields['service_body_bigint'];
+    }
 
     switch ($reason) {
         case ('reason_new'):
             $subject = 'New meeting notification';
 
+            // these are the form fields we'll accept
+            $submission = array();
+
+            $allowed_fields = array(
+                "meeting_name",
+                "start_time",
+                "duration_time",
+                "location_text",
+                "location_street",
+                "location_info",
+                "location_municipality",
+                "location_province",
+                "location_postal_code_1",
+                "weekday_tinyint",
+                "service_body_bigint",
+                "virtual_meeting_link",
+                "format_shared_id_list"
+            );
+
             // new meeting - add all fields to the changes requested
-            foreach ($change_subfields as $field) {
+            foreach ($allowed_fields as $field) {
                 // make sure its not a null entry, ie not entered on the frontend form
-                if (array_key_exists($field, $data)) {
-                    $changes[$field] = $data[$field];
+                if (array_key_exists($field, $sanitised_fields)) {
+                    $submission[$field] = $sanitised_fields[$field];
                 }
             }
 
-            $changes['meeting_id'] = 0;
+            $submission['meeting_id'] = 0;
 
             break;
         case ('reason_change'):
             $subject = 'Change meeting notification';
             // change meeting - just add the deltas. no real reason to do this as bmlt result would be the same, but safe to filter it regardless
 
-            if (isset($data['meeting_id'])) {
-                if (!is_numeric($data['meeting_id'])) {
-                    return wbw_rest_error('Invalid meeting id.', 400);
-                }
-                $meeting_id = $data['meeting_id'];
-            }
+            // these are the form fields we'll accept
+            $submission = array();
+
+            $change_subfields = array(
+                "meeting_name",
+                "start_time",
+                "duration_time",
+                "location_text",
+                "location_street",
+                "location_info",
+                "location_municipality",
+                "location_province",
+                "location_postal_code_1",
+                "weekday_tinyint",
+                "service_body_bigint",
+                "virtual_meeting_link",
+                "format_shared_id_list"
+            );
 
             // add in the meeting id
-            $changes['meeting_id'] = $meeting_id;
+            $meeting_id = $sanitised_fields['meeting_id'];
+            $submission['meeting_id'] = $meeting_id;
 
             // get the meeting details from BMLT so we can compare them
             $wbw_bmlt_server_address = get_option('wbw_bmlt_server_address');
@@ -202,7 +224,7 @@ function meeting_update_form_handler_rest($data)
             $meeting = json_decode($resp, true)[0];
             // error_log(vdump($meeting));
 
-            // strip blanks
+            // strip blanks from BMLT
             foreach ($meeting as $key => $value) {
                 if (($meeting[$key] === "") || ($meeting[$key] === NULL)) {
                     unset($meeting[$key]);
@@ -212,36 +234,55 @@ function meeting_update_form_handler_rest($data)
             // if the user submitted something different to what is in bmlt, save it in changes
             foreach ($change_subfields as $field) {
                 // if the field is blank in bmlt, but they submitted a change, add it to the list
-                if ((!array_key_exists($field, $meeting)) && (array_key_exists($field, $data))) {
-                    $changes[$field] = $data[$field];
+                if ((!array_key_exists($field, $meeting)) && (array_key_exists($field, $sanitised_fields))) {
+                    $submission[$field] = $sanitised_fields[$field];
                 }
                 // if the field is in bmlt and its different to the submitted item, add it to the list
-                else if ((array_key_exists($field, $meeting)) && (array_key_exists($field, $data))) {
-                    if ($meeting[$field] != $data[$field]) {
+                else if ((array_key_exists($field, $meeting)) && (array_key_exists($field, $sanitised_fields))) {
+                    if ($meeting[$field] != $sanitised_fields[$field]) {
                         // error_log("*** meeting");
                         // error_log(vdump($meeting));
                         // error_log("*** data");
-                        // error_log(vdump($data));
+                        // error_log(vdump($sanitised_fields));
                         // don't allow someone to modify a meeting service body
                         if ($field === 'service_body_bigint') {
-                                return wbw_rest_error('Service body cannot be changed.', 400);
+                            return wbw_rest_error('Service body cannot be changed.', 400);
                         }
-                        $changes[$field] = $data[$field];
+                        $submission[$field] = $sanitised_fields[$field];
                     }
                 }
             }
 
             // store away the meeting name
-            $changes['original_meeting_name'] = $meeting['meeting_name'];
+            $submission['original_meeting_name'] = $meeting['meeting_name'];
 
             break;
         case ('reason_close'):
             $subject = 'Close meeting notification';
-            wp_die('Not implemented');
+
+            $submission = array();
+
+            $allowed_fields = array("meeting_id", "update_reason", "first_name", "last_name", "email_address", "contact_number_confidential");
+
+            foreach ($allowed_fields as $item) {
+                if (isset($sanitised_fields[$item])) {
+                    $submission[$item] = $sanitised_fields[$item];
+                }
+            }
+
             break;
         case ('reason_other'):
-            $subject = 'Meeting notification - Other';
-            wp_die('Not implemented');
+            $submission = array();
+
+            $subject = 'Other notification';
+            $allowed_fields = array("update_reason", "first_name", "last_name", "email_address", "contact_number_confidential", "other_reason");
+
+            foreach ($allowed_fields as $item) {
+                if (isset($sanitised_fields[$item])) {
+                    $submission[$item] = $sanitised_fields[$item];
+                }
+            }
+            
             break;
         default:
             return wbw_rest_error('Invalid meeting change', 400);
@@ -254,7 +295,7 @@ function meeting_update_form_handler_rest($data)
 
     // Do field replacement in to: and cc: address
     $subfield = '{field:email_address}';
-    $subwith = $data['email_address'];
+    $subwith = $sanitised_fields['email_address'];
     $to_address = str_replace($subfield, $subwith, $to_address);
     if (!empty($cc_address)) {
         $cc_address = str_replace($subfield, $subwith, $cc_address);
@@ -267,14 +308,14 @@ function meeting_update_form_handler_rest($data)
 
     // Handle the FSO emails
     if ($reason == "reason_new") {
-        if (($data['starter_kit_required'] === 'yes') && (!empty($data['starter_kit_postal_address']))) {
+        if (($sanitised_fields['starter_kit_required'] === 'yes') && (!empty($sanitised_fields['starter_kit_postal_address']))) {
             $template = get_option('wbw_fso_email_template');
             $subject = 'Starter Kit Request';
             $to_address = get_option('wbw_fso_email_address');
             foreach ($subfields as $field => $formattype) {
                 $subfield = '{field:' . $field . '}';
-                if ((isset($data[$field])) && (!empty($data[$field]))) {
-                    $subwith = $data[$field];
+                if ((isset($sanitised_fields[$field])) && (!empty($sanitised_fields[$field]))) {
+                    $subwith = $sanitised_fields[$field];
                 } else {
                     $subwith = '(blank)';
                 }
@@ -299,7 +340,7 @@ function meeting_update_form_handler_rest($data)
     global $wpdb;
     global $wbw_submissions_table_name;
 
-    $submitter_name = $data['first_name'] . " " . $data['last_name'];
+    $submitter_name = $sanitised_fields['first_name'] . " " . $sanitised_fields['last_name'];
     $db_reason = '';
     switch ($reason) {
         case 'reason_new':
@@ -312,7 +353,7 @@ function meeting_update_form_handler_rest($data)
             return '{"response":"invalid change type"}';
     }
 
-    $submitter_email = $data['email_address'];
+    $submitter_email = $sanitised_fields['email_address'];
 
     $wpdb->insert(
         $wbw_submissions_table_name,
@@ -321,7 +362,7 @@ function meeting_update_form_handler_rest($data)
             'submitter_name' => $submitter_name,
             'submission_type'  => $db_reason,
             'submitter_email' => $submitter_email,
-            'changes_requested' => wp_json_encode($changes, 0, 1),
+            'changes_requested' => wp_json_encode($submission, 0, 1),
             'service_body_bigint' => $service_body_bigint
         ),
         array(
