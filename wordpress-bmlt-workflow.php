@@ -86,7 +86,9 @@ function prevent_cache_register_script($handle, $deps, $name)
 
 function prevent_cache_register_style($handle, $deps, $name)
 {
-    wp_register_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
+    $ret = wp_register_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
+    error_log("register style");
+    error_log(vdump($ret));
 }
 
 function prevent_cache_enqueue_script($handle, $deps, $name)
