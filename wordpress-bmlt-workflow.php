@@ -40,9 +40,9 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
 {
     global $wbw_rest_namespace;
 
-    wp_enqueue_script('wbw-meeting-update-js');
-    wp_enqueue_script('wbw-general-js');
-    wp_enqueue_style('wbw-meeting-update-css');
+    prevent_cache_enqueue_script('wbw-meeting-update-form-js');
+    prevent_cache_enqueue_script('wbw-general-js');
+    prevent_cache_enqueue_style('wbw-meeting-update-form-css');
     wp_enqueue_script('jquery-validate');
     wp_enqueue_script('jquery-validate-additional');
     wp_enqueue_style('select2css');
@@ -52,7 +52,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
     error_log("adding script ".$script);
-    $status = wp_add_inline_script('wbw-meeting-update-js', $script, 'before');
+    $status = wp_add_inline_script('wbw-meeting-update-form-js', $script, 'before');
 
 
     $result = [];
@@ -108,8 +108,8 @@ function enqueue_form_deps()
     wp_register_style('select2css', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
     wp_register_script('select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
     prevent_cache_register_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
-    prevent_cache_register_script('wbw-meeting-update-js', array('jquery', 'jquery.validate'), 'js/meeting_update_form.js');
-    prevent_cache_register_style('wbw-meeting-update-css', array('jquery'), 'css/meeting_update_form.css');
+    prevent_cache_register_script('wbw-meeting-update-form-js', array('jquery', 'jquery.validate'), 'js/meeting_update_form.js');
+    prevent_cache_register_style('wbw-meeting-update-form-css', array('jquery'), 'css/meeting_update_form.css');
     wp_register_script('jquery.validate', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
     wp_register_script('jquery.validate.additional', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jquery.validate'), '1.0', true);
 
