@@ -208,15 +208,13 @@ jQuery(document).ready(function ($) {
           var namestr = "";
           switch (data["submission_type"]) {
             case "reason_new":
-              submission_type = "New Meeting";
-              break;
             case "reason_close":
-              submission_type = "Close Meeting";
+                submission_type = "New Meeting";
+              namestr = data["meeting_name"];
               break;
             case "reason_change":
               submission_type = "Modify Meeting";
-              meeting_name = data["original_meeting_name"];
-              namestr = "<br>Meeting: " + meeting_name;
+              namestr = data["original_meeting_name"];
               break;
             case "reason_other":
               submission_type = "Other Request";
@@ -224,70 +222,9 @@ jQuery(document).ready(function ($) {
             default:
               submission_type = data["submission_type"];
           }
-          summary = "Submission Type: " + submission_type + namestr + "<br><br>";
-          // for (var key in data) {
-          //   friendlyname = key;
-          //   friendlydata = data[key];
+          summary = "Submission Type: " + submission_type "<br>";
+          summary += "Meeting Name: " + namestr + "<br><br>";
 
-          //   switch (key) {
-          //     // skip these ones - we already used them above
-          //     case "meeting_id":
-          //     case "submission_type":
-          //     case "original_meeting_name":
-          //       friendlyname = "";
-          //       break;
-          //     case "meeting_name":
-          //       friendlyname = "Meeting Name";
-          // break;
-          // case "start_time":
-          //   friendlyname = "Start Time";
-          //   break;
-          // case "duration_time":
-          //   friendlyname = "Duration";
-          //   break;
-          // case "location_text":
-          //   friendlyname = "Location";
-          //   break;
-          // case "location_street":
-          //   friendlyname = "Street";
-          //   break;
-          // case "location_info":
-          //   friendlyname = "Location Info";
-          //   break;
-          // case "location_municipality":
-          //   friendlyname = "Municipality";
-          //   break;
-          // case "location_province":
-          //   friendlyname = "Province/State";
-          //   break;
-          // case "location_postal_code_1":
-          //   friendlyname = "Postcode";
-          //   break;
-          // case "weekday_tinyint":
-          //   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-          //   friendlydata = weekdays[data["weekday_tinyint"]];
-          //   friendlyname = "Meeting Day";
-          //   break;
-          // case "service_body_bigint":
-          //   friendlydata = wbw_admin_wbw_service_bodies[data["service_body_bigint"]]["name"];
-          //   friendlyname = "Service Body";
-          //   break;
-          // case "format_shared_id_list":
-          //   friendlyname = "Meeting Formats";
-          //   // convert the meeting formats to human readable
-          //   friendlydata = "";
-          //   strarr = data["format_shared_id_list"].split(",");
-          //   strarr.forEach((element) => {
-          //     friendlydata += "(" + wbw_bmlt_formats[element]["key_string"] + ")-" + wbw_bmlt_formats[element]["name_string"] + " ";
-          //   });
-          //   break;
-          //   default:
-          //     break;
-          // }
-          // if (friendlyname != "" && friendlydata != "") {
-          //   summary += friendlyname + ' <span class="dashicons dashicons-arrow-right-alt"></span> ' + friendlydata + "<br>";
-          // }
-          // }
           return summary;
         },
       },
