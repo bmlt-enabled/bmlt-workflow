@@ -79,7 +79,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                         <div class="form-grid-col1">
                             <label for="meeting_name">Group Name<span class="wbw-required-field"> *</span></label>
                             <input type="text" name="meeting_name" size="50" id="meeting_name" required>
-                                <label for="weekday_tinyintk">Meeting Day:<span class="wbw-required-field"> *</span></label>
+                                <label for="weekday_tinyint">Meeting Day:<span class="wbw-required-field"> *</span></label>
                                 <select name="weekday_tinyint" id="weekday_tinyint">
                                     <option value=1>Sunday</option>
                                     <option value=2>Monday</option>
@@ -89,6 +89,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                     <option value=6>Friday</option>
                                     <option value=7>Saturday</option>
                                 </select>
+                                <div class="grid-flow-input">
                                 <label for="start_time">Start Time<span class="wbw-required-field"> *</span></label>
                                 <input type="time" name="start_time" size="10" id="start_time" required>
                                 <label for="duration_hours">Duration<span class="wbw-required-field"> *</span></label>
@@ -121,6 +122,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                     <option value="50">50</option>
                                     <option value="55">55</option>
                                 </select> m
+</div>
                                 <input type="hidden" name="duration_time" size="10" id="duration_time" required>
                             <label for="service_body_bigint">Service Committee (or Other if not known)</label>
                             <select name="service_body_bigint" id="service_body_bigint">
