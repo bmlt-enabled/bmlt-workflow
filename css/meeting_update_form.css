@@ -52,7 +52,7 @@ body {
   font-size: 1.2em;
   padding: 5px 10px;
   display: block;
-  width: 90%;
+  width: 100%;
 }
 
 .form-grid select {
@@ -60,15 +60,7 @@ body {
   font-size: 1.2em;
   padding: 5px 10px;
   display: block;
-  width: 90%;
-}
-
-.form-grid-col1-s3 select {
-  line-height: 1.5;
-  font-size: 1.2em;
-  padding: 5px 10px;
-  display: inline;
-  width: 30%;
+  width: 100%;
 }
 
 .form-grid label {

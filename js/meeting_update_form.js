@@ -5,6 +5,18 @@ var mtext = [];
 var weekdays = ["none", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 jQuery(document).ready(function ($) {
+
+  var formatdata = [];
+  Object.keys(wbw_bmlt_formats).forEach((key) => {
+    formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
+  });
+
+  $("#meeting_update_form_format_shared_id_list").select2({
+    placeholder: "Select from available formats",
+    multiple: true,
+    data: formatdata,
+  });
+
   function update_meeting_list(wbw_service_bodies) {
     var search_results_address =
       wbw_bmlt_server_address +
@@ -135,7 +147,7 @@ jQuery(document).ready(function ($) {
               break;
             case "reason_close":
               // display form instructions
-              $("#instructions").text("Verify you have the correct meeting, then add details to support the meeting close request in the Additional Information box");
+              $("#instructions").text("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box");
               $("#meeting_content").show();
               disable_edits();
               break;

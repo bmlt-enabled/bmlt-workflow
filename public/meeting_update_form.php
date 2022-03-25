@@ -139,29 +139,10 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             <input type="text" name="location_province" size="50" id="location_province" required>
                             <label for="location_postal_code_1">Postcode<span class="wbw-required-field"> *</span></label>
                             <input type="number" name="location_postal_code_1" size="5" max="9999" id="location_postal_code_1" required>
-                            <div>
-                                <label for="format-table">Meeting Format</label>
-                                <table id="format-table">
-                                    <tbody>
-                                        <?php
-                                        $bmlt_integration = new BMLTIntegration;
-                                        $formatarr = $bmlt_integration->getMeetingFormats();
+                            
+                            <label for="meeting_update_form_format_shared_id_list">Meeting Formats</label>
+                            <select name="meeting_update_form_format_shared_id_list" id="meeting_update_form_format_shared_id_list" style="width: auto"></select>
 
-                                        foreach ($formatarr as $key => $value) {
-                                            // error_log("key " . $key);
-                                            // error_log(vdump($value));
-                                            $row = '<tr>';
-                                            $row .= '<td><input type="checkbox" id="format-table-' . $key . '" value="' . $key . '"></input></td>';
-                                            $row .= "<td>(" . $value['key_string'] . ")</td>";
-                                            $row .= "<td>" . $value['name_string'] . "</td><td>" . $value['description_string'] . "</td>";
-                                            $row .= '</tr>';
-                                            echo $row;
-                                        }
-                                        ?>
-                                    </tbody>
-                                </table>
-                                <input type="hidden" name="format_shared_id_list" id="format_shared_id_list" value="">
-                            </div>
                             <label for=" virtual_meeting_link">Online Meeting Link</label>
                             <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
                         </div>
@@ -170,8 +151,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <!-- other details -->
                 <div class="form-grid-bottom">
                     <fieldset>
-                        <legend>Additional Details</legend>
-                        <label for="additional_info">Additional Info</label>
+                        <legend>Additional Information</legend>
                         <textarea name="additional_info" id="additional_info" rows="5" cols="50" placeholder="Provide any more detail that may help us action your meeting change request"></textarea>
                         <div id="starter_pack">
                             <label for="starter_kit_required">Starter Kit Required</label>
