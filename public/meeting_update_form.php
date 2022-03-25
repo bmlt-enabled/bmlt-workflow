@@ -40,8 +40,9 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <input type="hidden" name="meeting_id" id="meeting_id" value="">
             </div>
             <div id="meeting_content" class="form-grid">
-                <p id="instructions"></p>
-
+                <div class="form-grid-top">
+                    <p id="instructions"></p>
+                </div>
                     <!-- personal details -->
                 <div id="personal_details" class="form-grid-col2">
                     <fieldset>
@@ -191,8 +192,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" rows="5" cols="50"></textarea>
                         </div>
                     </fieldset>
+                    <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
                 </div>
-                <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
             </div>
         </div>
     </form>
