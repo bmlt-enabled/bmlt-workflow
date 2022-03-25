@@ -32,6 +32,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </div>
             <div id="meeting_selector">
                 <br>
+                <label for="update_reason"">Search For Meeting</label>
                 <select class="meeting-searcher" id="meeting-searcher">
                     <option></option>
                 </select>
