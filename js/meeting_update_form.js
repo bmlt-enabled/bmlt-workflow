@@ -128,12 +128,14 @@ jQuery(document).ready(function ($) {
           var reason = $("#update_reason").val();
           switch (reason) {
             case "reason_change":
-              $("#reason_change_text").show();
+              // display form instructions
+              $("#instructions").text("We've retrieved the details below from our system. Please make any changes and then submit your update.");
               $("#meeting_content").show();
               disable_field("service_body_bigint");
               break;
             case "reason_close":
-              $("#reason_close_text").show();
+              // display form instructions
+              $("#instructions").text("Verify you have the correct meeting, then add details to support the meeting close request in the Additional Information box");
               $("#meeting_content").show();
               disable_edits();
               break;
@@ -359,8 +361,6 @@ jQuery(document).ready(function ($) {
         $("#meeting_details").show();
         // change meeting has a search bar
         $("#meeting_selector").show();
-        // display form instructions
-        $("#instructions").text("We've retrieved the details below from our system. Please make any changes and then submit your update.");
 
         break;
       case "reason_close":
@@ -372,8 +372,6 @@ jQuery(document).ready(function ($) {
         // close meeting has a search bar
         $("#meeting_selector").show();
         $("#additional_info").prop('required',true);
-        // display form instructions
-        $("#instructions").text("We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.");
 
         break;
       case "reason_other":
