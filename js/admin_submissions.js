@@ -227,7 +227,7 @@ jQuery(document).ready(function ($) {
               submission_type = data["submission_type"];
           }
           summary = "Submission Type: " + submission_type + "<br>";
-          summary += "Meeting Name: " + namestr + "<br><br>";
+          summary += "Meeting Name: " + namestr;
 
           return summary;
         },
