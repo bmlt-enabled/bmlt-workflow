@@ -78,3 +78,8 @@ body {
   letter-spacing: 1px;
   cursor: pointer;
 }
+
+.grid-flow-input {
+  width: 30%;
+  display: inline;
+}
