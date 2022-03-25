@@ -202,7 +202,6 @@ function meeting_update_form_handler_rest($data)
 
             // add in the meeting id
             $meeting_id = $sanitised_fields['meeting_id'];
-            $submission['meeting_id'] = $meeting_id;
 
             // get the meeting details from BMLT so we can compare them
             $wbw_bmlt_server_address = get_option('wbw_bmlt_server_address');
@@ -254,11 +253,16 @@ function meeting_update_form_handler_rest($data)
                 }
             }
 
-            // store away the meeting name
-            $submission['original_meeting_name'] = $meeting['meeting_name'];
-            error_log("changes at the end of parsing");
-            error_log(vdump($submission));
+            if (!count($submission))
+            {
+                return wbw_rest_error('Nothing was changed.', 400);
+            }
             
+            // store away the original meeting name so we know what changed
+            $submission['original_meeting_name'] = $meeting['meeting_name'];
+            // store away the meeting id
+            $submission['meeting_id'] = $meeting_id;
+
             break;
         case ('reason_close'):
             $subject = 'Close meeting notification';
