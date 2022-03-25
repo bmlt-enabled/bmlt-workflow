@@ -45,7 +45,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
 
                     <!-- personal details -->
-                <div class="form-grid-div1">
+                <div class="form-grid-col2">
                     <fieldset>
                         <legend>Personal Details</legend>
                         <label for="first_name">First Name<span class="wbw-required-field">*</span></label>
@@ -73,54 +73,69 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     </fieldset>
                 </div>
                 <!-- meeting details -->
-                <div class="form-grid-div2">
+                <div class="form-grid-col1">
                     <fieldset>
-                        <legend>Meeting Details</legend>
-                        <label for="meeting_name">Group Name<span class="wbw-required-field"> *</span></label>
-                        <input type="text" name="meeting_name" size="50" id="meeting_name" required>
-                        <label for="weekday_tinyintk">Meeting Day:<span class="wbw-required-field"> *</span></label>
-                        <select name="weekday_tinyint" id="weekday_tinyint">
-                            <option value=1>Sunday</option>
-                            <option value=2>Monday</option>
-                            <option value=3>Tuesday</option>
-                            <option value=4>Wednesday</option>
-                            <option value=5>Thursday</option>
-                            <option value=6>Friday</option>
-                            <option value=7>Saturday</option>
-                        </select>
-                        <label for="start_time">Start Time<span class="wbw-required-field"> *</span></label>
-                        <input type="time" name="start_time" size="10" id="start_time" required>
-                        <label for="duration_hours">Duration<span class="wbw-required-field"> *</span></label>
-                        <select id="duration_hours">
-                            <option value="00">0</option>
-                            <option value="01" selected="selected">1</option>
-                            <option value="02">2</option>
-                            <option value="03">3</option>
-                            <option value="04">4</option>
-                            <option value="05">5</option>
-                            <option value="06">6</option>
-                            <option value="07">7</option>
-                            <option value="08">8</option>
-                            <option value="09">9</option>
-                            <option value="10">10</option>
-                            <option value="11">11</option>
-                            <option value="12">12</option>
-                        </select> h
-                        <select id="duration_minutes">
-                            <option value="00" selected="selected">0</option>
-                            <option value="05">5</option>
-                            <option value="10">10</option>
-                            <option value="15">15</option>
-                            <option value="20">20</option>
-                            <option value="25">25</option>
-                            <option value="30">30</option>
-                            <option value="35">35</option>
-                            <option value="40">40</option>
-                            <option value="45">45</option>
-                            <option value="50">50</option>
-                            <option value="55">55</option>
-                        </select> m
-                        <input type="hidden" name="duration_time" size="10" id="duration_time" required>
+                    <legend>Meeting Details</legend>
+
+                    <div class="form-grid-col1-top">
+                            <label for="meeting_name">Group Name<span class="wbw-required-field"> *</span></label>
+                            <input type="text" name="meeting_name" size="50" id="meeting_name" required>
+                    </div>
+
+                    <div class="form-grid-col1-middle">
+                        <div class="form-grid-col1-s1">
+                            <label for="weekday_tinyintk">Meeting Day:<span class="wbw-required-field"> *</span></label>
+                            <select name="weekday_tinyint" id="weekday_tinyint">
+                                <option value=1>Sunday</option>
+                                <option value=2>Monday</option>
+                                <option value=3>Tuesday</option>
+                                <option value=4>Wednesday</option>
+                                <option value=5>Thursday</option>
+                                <option value=6>Friday</option>
+                                <option value=7>Saturday</option>
+                            </select>
+                        </div>
+                        <div class="form-grid-col1-s2">
+                            <label for="start_time">Start Time<span class="wbw-required-field"> *</span></label>
+                            <input type="time" name="start_time" size="10" id="start_time" required>
+                        </div>
+                        <div class="form-grid-col1-s3">
+                            <label for="duration_hours">Duration<span class="wbw-required-field"> *</span></label>
+                            <select id="duration_hours">
+                                <option value="00">0</option>
+                                <option value="01" selected="selected">1</option>
+                                <option value="02">2</option>
+                                <option value="03">3</option>
+                                <option value="04">4</option>
+                                <option value="05">5</option>
+                                <option value="06">6</option>
+                                <option value="07">7</option>
+                                <option value="08">8</option>
+                                <option value="09">9</option>
+                                <option value="10">10</option>
+                                <option value="11">11</option>
+                                <option value="12">12</option>
+                            </select> h
+                            <select id="duration_minutes">
+                                <option value="00" selected="selected">0</option>
+                                <option value="05">5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="25">25</option>
+                                <option value="30">30</option>
+                                <option value="35">35</option>
+                                <option value="40">40</option>
+                                <option value="45">45</option>
+                                <option value="50">50</option>
+                                <option value="55">55</option>
+                            </select> m
+                            <input type="hidden" name="duration_time" size="10" id="duration_time" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-grid-col1-bottom">
                         <label for="service_body_bigint">Service Committee (or Other if not known)</label>
                         <select name="service_body_bigint" id="service_body_bigint">
                         </select>
@@ -161,10 +176,13 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                         </div>
                         <label for=" virtual_meeting_link">Online Meeting Link</label>
                         <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
-                    </fieldset>
+                                </div>
+                            
+                        </fieldset>
+                    </div>
                 </div>
-                <!-- other details -->
-                <div class="form-grid-div3">
+                    <!-- other details -->
+                <div class="form-grid-bottom">
                     <fieldset>
                         <legend>Additional Details</legend>
                         <label for="additional_info">Additional Info</label>

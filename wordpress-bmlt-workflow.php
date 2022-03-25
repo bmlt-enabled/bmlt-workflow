@@ -75,7 +75,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     error_log(vdump($result));
 
     ob_start();
-    include('public/meeting_update.php');
+    include('public/meeting_update_form.php');
     $content .= ob_get_clean();
     return $content;
 }
