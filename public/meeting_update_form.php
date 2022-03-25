@@ -40,13 +40,10 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <input type="hidden" name="meeting_id" id="meeting_id" value="">
             </div>
             <div id="meeting_content" class="form-grid">
-                <p id="reason_change_text" style="display: none;">We've retrieved the details below from our system. Please make any changes and then submit your update.
-                <p id="reason_other_text" style="display: none;">Please let us know the details about your meeting change.
-                <p id="reason_new_text" style="display: none;">Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet.
-                <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
+                <p id="instructions" style="display: none;"></p>
 
                     <!-- personal details -->
-                <div class="form-grid-col2">
+                <div id="personal_details" class="form-grid-col2">
                     <fieldset>
                         <legend>Personal Details</legend>
                         <label for="first_name">First Name<span class="wbw-required-field">*</span></label>
@@ -74,7 +71,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     </fieldset>
                 </div>
                 <!-- meeting details -->
-                <div class="form-grid-col1">
+                <div id="meeting_details" class="form-grid-col1">
                     <fieldset>
                         <legend>Meeting Details</legend>
 

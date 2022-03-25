@@ -338,32 +338,53 @@ jQuery(document).ready(function ($) {
     enable_edits();
     // enable items as required
     var reason = $(this).val();
+    // <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
+
+
     switch (reason) {
       case "reason_new":
         clear_form();
         $("#meeting_content").show();
+        $("#personal_details").show();
+        $("#meeting_details").show();
         // display form instructions
-        $("#reason_new_text").show();
+        $("#instructions").text("Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet.");
         // new meeting has a starter pack
         $("#starter_pack").show();
         break;
       case "reason_change":
         clear_form();
+        $("#meeting_content").show();
+        $("#personal_details").show();
+        $("#meeting_details").show();
         // change meeting has a search bar
         $("#meeting_selector").show();
+        // display form instructions
+        $("#instructions").text("We've retrieved the details below from our system. Please make any changes and then submit your update.");
+
         break;
       case "reason_close":
         clear_form();
+        $("#meeting_content").show();
+        $("#personal_details").show();
+        $("#meeting_details").show();
+
         // close meeting has a search bar
         $("#meeting_selector").show();
         $("#additional_info").prop('required',true);
+        // display form instructions
+        $("#instructions").text("We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.");
+
         break;
       case "reason_other":
         clear_form();
         // display form instructions
-        $("#reason_other_text").show();
+        $("#instructions").text("Please let us know the details about your meeting change.");
         // other reason has a textarea
         $("#other_reason_div").show();
+        $("#meeting_content").show();
+        $("#personal_details").show();
+        $("#meeting_details").hide();
         $("#other_reason").prop("required", true);
         break;
     }
