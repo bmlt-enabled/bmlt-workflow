@@ -256,7 +256,9 @@ function meeting_update_form_handler_rest($data)
 
             // store away the meeting name
             $submission['original_meeting_name'] = $meeting['meeting_name'];
-
+            error_log("changes at the end of parsing");
+            error_log(vdump($submission));
+            
             break;
         case ('reason_close'):
             $subject = 'Close meeting notification';
