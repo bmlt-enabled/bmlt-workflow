@@ -9,10 +9,19 @@ function vdump($object)
     return $contents;
 }
 
+// accepts raw string or array
 function wbw_rest_success($message)
 {
+    if(is_array($message))
+    {
+        $data = $message;
+    }
+    else
+    {
+        $data = array('message'=> $message);
+    }
     $response = new WP_REST_Response();
-    $response->set_data(array('message' => $message));
+    $response->set_data($data);
     $response->set_status(200);
     return $response;
 }
