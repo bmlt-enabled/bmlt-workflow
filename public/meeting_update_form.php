@@ -40,7 +40,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <input type="hidden" name="meeting_id" id="meeting_id" value="">
             </div>
             <div id="meeting_content" class="form-grid">
-                <p id="instructions" style="display: none;"></p>
+                <p id="instructions"></p>
 
                     <!-- personal details -->
                 <div id="personal_details" class="form-grid-col2">
@@ -192,8 +192,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                         </div>
                     </fieldset>
                 </div>
+                <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
             </div>
-            <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
         </div>
     </form>
 </div>
