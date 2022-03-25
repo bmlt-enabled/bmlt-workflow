@@ -15,6 +15,7 @@ jQuery(document).ready(function ($) {
     placeholder: "Select from available formats",
     multiple: true,
     data: formatdata,
+    width: 100%
   });
 
   function update_meeting_list(wbw_service_bodies) {
