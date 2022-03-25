@@ -22,6 +22,28 @@ function wbw_rest_error($message, $code)
     return new WP_Error('wbw_error', $message, array('status' => $code));
 }
 
+function bmlt_retrieve_single_meeting($meeting_id)
+{
+    $wbw_bmlt_server_address = get_option('wbw_bmlt_server_address');
+    $url = $wbw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" . $meeting_id . "&lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&&recursive=1&sort_keys=start_time";
+
+    $curl = curl_init($url);
+    curl_setopt($curl, CURLOPT_URL, $url);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+    $headers = array(
+        "Accept: */*",
+    );
+    curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+    $resp = curl_exec($curl);
+    if (!$resp) {
+        return wbw_rest_error('Server error retrieving meeting list', 500);
+    }
+    curl_close($curl);
+    return json_decode($resp, true)[0];
+}
+
 function meeting_update_form_handler_rest($data)
 {
     error_log("in rest handler");
@@ -203,25 +225,7 @@ function meeting_update_form_handler_rest($data)
             // add in the meeting id
             $meeting_id = $sanitised_fields['meeting_id'];
 
-            // get the meeting details from BMLT so we can compare them
-            $wbw_bmlt_server_address = get_option('wbw_bmlt_server_address');
-            $url = $wbw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" . $meeting_id . "&lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&&recursive=1&sort_keys=start_time";
-
-            $curl = curl_init($url);
-            curl_setopt($curl, CURLOPT_URL, $url);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-            $headers = array(
-                "Accept: */*",
-            );
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
-            $resp = curl_exec($curl);
-            if (!$resp) {
-                return wbw_rest_error('Server error retrieving meeting list', 500);
-            }
-            curl_close($curl);
-            $meeting = json_decode($resp, true)[0];
+            $meeting = bmlt_retrieve_single_meeting($meeting_id);
             // error_log(vdump($meeting));
 
             // strip blanks from BMLT
@@ -257,7 +261,7 @@ function meeting_update_form_handler_rest($data)
             {
                 return wbw_rest_error('Nothing was changed.', 400);
             }
-            
+
             // store away the original meeting name so we know what changed
             $submission['original_meeting_name'] = $meeting['meeting_name'];
             // store away the meeting id
@@ -276,6 +280,9 @@ function meeting_update_form_handler_rest($data)
                     $submission[$item] = $sanitised_fields[$item];
                 }
             }
+            // populate the meeting name so we dont need to do it again on the submission page
+            $meeting = bmlt_retrieve_single_meeting($submission['meeting_id']);
+            $submission['meeting_name'] = $meeting['meeting_name'];
 
             break;
         case ('reason_other'):
