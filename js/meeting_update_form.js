@@ -355,8 +355,9 @@ jQuery(document).ready(function ($) {
         $("#starter_pack").show();
         break;
       case "reason_change":
-        clear_form();
-        $("#meeting_content").show();
+        clear_form(); 
+        // hide this until they've selected a meeting       
+        $("#meeting_content").hide();
         $("#personal_details").show();
         $("#meeting_details").show();
         // change meeting has a search bar
@@ -365,7 +366,8 @@ jQuery(document).ready(function ($) {
         break;
       case "reason_close":
         clear_form();
-        $("#meeting_content").show();
+        // hide this until they've selected a meeting
+        $("#meeting_content").hide();
         $("#personal_details").show();
         $("#meeting_details").show();
 
