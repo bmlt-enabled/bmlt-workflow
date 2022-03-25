@@ -76,13 +76,9 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <fieldset>
                         <legend>Meeting Details</legend>
 
-                        <div class="form-grid-col1-top">
+                        <div class="form-grid-col1">
                             <label for="meeting_name">Group Name<span class="wbw-required-field"> *</span></label>
                             <input type="text" name="meeting_name" size="50" id="meeting_name" required>
-                        </div>
-
-                        <div class="form-grid-col1-middle">
-                            <div class="form-grid-col1-s1">
                                 <label for="weekday_tinyintk">Meeting Day:<span class="wbw-required-field"> *</span></label>
                                 <select name="weekday_tinyint" id="weekday_tinyint">
                                     <option value=1>Sunday</option>
@@ -93,12 +89,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                     <option value=6>Friday</option>
                                     <option value=7>Saturday</option>
                                 </select>
-                            </div>
-                            <div class="form-grid-col1-s2">
                                 <label for="start_time">Start Time<span class="wbw-required-field"> *</span></label>
                                 <input type="time" name="start_time" size="10" id="start_time" required>
-                            </div>
-                            <div class="form-grid-col1-s3">
                                 <label for="duration_hours">Duration<span class="wbw-required-field"> *</span></label>
                                 <select id="duration_hours">
                                     <option value="00">0</option>
@@ -130,9 +122,6 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                     <option value="55">55</option>
                                 </select> m
                                 <input type="hidden" name="duration_time" size="10" id="duration_time" required>
-                            </div>
-                        </div>
-                        <div class="form-grid-col1-bottom">
                             <label for="service_body_bigint">Service Committee (or Other if not known)</label>
                             <select name="service_body_bigint" id="service_body_bigint">
                             </select>
