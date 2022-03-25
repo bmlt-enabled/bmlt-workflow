@@ -208,8 +208,12 @@ jQuery(document).ready(function ($) {
           var namestr = "";
           switch (data["submission_type"]) {
             case "reason_new":
+              submission_type = "New Meeting";
+              namestr = data["meeting_name"];
+              break;
             case "reason_close":
-                submission_type = "New Meeting";
+              submission_type = "Close Meeting";
+              console.log(data);
               namestr = data["meeting_name"];
               break;
             case "reason_change":
