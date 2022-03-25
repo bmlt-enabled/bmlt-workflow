@@ -321,10 +321,10 @@ jQuery(document).ready(function ($) {
           table += "<tr><td>Meeting Day:</td><td>" + weekdays[d["changes_requested"].weekday_tinyint] + "</td></tr>";
           break;
         case "additional_info":
-          table += "<tr><td>Additional Info:</td><td><textarea disabled>"+ d["additional_info"]+"</textarea></td></tr>";
+          table += '<tr><td>Additional Info:</td><td><textarea rows="5" columns="50" disabled>'+ d["additional_info"]+'</textarea></td></tr>';
           break;
         case "other_reason":
-          table += "<tr><td>Other Reason:</td><td><textarea disabled>"+ d["other_reason"]+"</textarea></td></tr>";
+          table += '<tr><td>Other Reason:</td><td><textarea rows="5" columns="50" disabled>'+ d["other_reason"]+'</textarea></td></tr>';
           break;
           case "format_shared_id_list":
           friendlyname = "Meeting Formats";
