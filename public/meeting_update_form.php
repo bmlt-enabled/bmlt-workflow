@@ -17,7 +17,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         <input type="hidden" name="action" value="meeting_update_form_response">
         <div class="rendered-form">
             <div>
-                <label for="update_reason"">Reason For Update</label>
+                <label for="update_reason"">Reason For Update:</label>
                 <select name=" update_reason" id="update_reason">
                     <option disabled="null" selected="null">Select Reason...</option>
                     <option value="reason_new">New Meeting</option>
@@ -32,7 +32,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </div>
             <div id="meeting_selector">
                 <br>
-                <label for="update_reason"">Search For Meeting</label>
+                <label for="update_reason"">Search For Meeting:</label>
                 <select class="meeting-searcher" id="meeting-searcher">
                     <option></option>
                 </select>
