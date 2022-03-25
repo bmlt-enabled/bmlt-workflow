@@ -96,7 +96,7 @@ function meeting_update_form_handler_rest($data)
         "email_address" => array("email", true),
         "contact_number_confidential" => array("text", false),
         "format_shared_id_list" => array("text",  $reason_new_bool),
-        "additional_info" => array("textarea", false),
+        "additional_info" => array("textarea", $reason_close_bool),
         "starter_kit_postal_address" => array("textarea", false),
         "starter_kit_required" => array("text", $reason_new_bool),
         "other_reason" => array("textarea", $reason_other_bool),
@@ -257,8 +257,7 @@ function meeting_update_form_handler_rest($data)
                 }
             }
 
-            if (!count($submission))
-            {
+            if (!count($submission)) {
                 return wbw_rest_error('Nothing was changed.', 400);
             }
 
@@ -273,7 +272,15 @@ function meeting_update_form_handler_rest($data)
 
             $submission = array();
 
-            $allowed_fields = array("meeting_id", "update_reason", "first_name", "last_name", "email_address", "contact_number_confidential");
+            $allowed_fields = array(
+                "meeting_id",
+                "update_reason",
+                "first_name",
+                "last_name",
+                "email_address",
+                "contact_number_confidential",
+                "additional_info"
+            );
 
             foreach ($allowed_fields as $item) {
                 if (isset($sanitised_fields[$item])) {
@@ -289,14 +296,20 @@ function meeting_update_form_handler_rest($data)
             $submission = array();
 
             $subject = 'Other notification';
-            $allowed_fields = array("update_reason", "first_name", "last_name", "email_address", "contact_number_confidential", "other_reason");
+            $allowed_fields = array(
+                "update_reason", 
+                "first_name", 
+                "last_name", 
+                "email_address", 
+                "contact_number_confidential", 
+                "other_reason");
 
             foreach ($allowed_fields as $item) {
                 if (isset($sanitised_fields[$item])) {
                     $submission[$item] = $sanitised_fields[$item];
                 }
             }
-            
+
             break;
         default:
             return wbw_rest_error('Invalid meeting change', 400);
