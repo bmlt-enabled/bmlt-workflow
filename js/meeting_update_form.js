@@ -328,12 +328,12 @@ jQuery(document).ready(function ($) {
     $("#reason_close_text").hide();
     $("#reason_other_text").hide();
     $("#starter_pack").hide();
-
     $("#meeting_selector").hide();
     // enable the meeting form
     $("#meeting_content").hide();
     $("#other_reason_div").hide();
     $("#other_reason").prop("required", false);
+    $("#additional_info").prop('required',false);
 
     enable_edits();
     // enable items as required
@@ -351,12 +351,12 @@ jQuery(document).ready(function ($) {
         clear_form();
         // change meeting has a search bar
         $("#meeting_selector").show();
-
         break;
       case "reason_close":
         clear_form();
         // close meeting has a search bar
         $("#meeting_selector").show();
+        $("#additional_info").prop('required',true);
         break;
       case "reason_other":
         clear_form();
