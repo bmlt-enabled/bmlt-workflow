@@ -320,7 +320,13 @@ jQuery(document).ready(function ($) {
           weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
           table += "<tr><td>Meeting Day:</td><td>" + weekdays[d["changes_requested"].weekday_tinyint] + "</td></tr>";
           break;
-        case "format_shared_id_list":
+        case "additional_info":
+          table += "<tr><td>Additional Info:</td><td><textarea>"+ d["additional_info"]+"</td></tr>";
+          break;
+        case "other_reason":
+          table += "<tr><td>Other Reason:</td><td><textarea>"+ d["other_reason"]+"</td></tr>";
+          break;
+          case "format_shared_id_list":
           friendlyname = "Meeting Formats";
           // convert the meeting formats to human readable
           friendlydata = "";
