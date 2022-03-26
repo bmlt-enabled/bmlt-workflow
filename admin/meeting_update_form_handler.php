@@ -12,13 +12,10 @@ function vdump($object)
 // accepts raw string or array
 function wbw_rest_success($message)
 {
-    if(is_array($message))
-    {
+    if (is_array($message)) {
         $data = $message;
-    }
-    else
-    {
-        $data = array('message'=> $message);
+    } else {
+        $data = array('message' => $message);
     }
     $response = new WP_REST_Response();
     $response->set_data($data);
@@ -29,6 +26,11 @@ function wbw_rest_success($message)
 function wbw_rest_error($message, $code)
 {
     return new WP_Error('wbw_error', $message, array('status' => $code));
+}
+
+function invalid_form_field($field)
+{
+    return wbw_rest_error('Form field "' . $field . '" is invalid.', 400);
 }
 
 function bmlt_retrieve_single_meeting($meeting_id)
@@ -50,7 +52,14 @@ function bmlt_retrieve_single_meeting($meeting_id)
         return wbw_rest_error('Server error retrieving meeting list', 500);
     }
     curl_close($curl);
-    return json_decode($resp, true)[0];
+    $meeting = json_decode($resp, true)[0];
+
+    // how possibly can we get a meeting that is not the same as we asked for
+    if($meeting['meeting_id_bigint']!=$meeting_id)
+    {
+        return wbw_rest_error('Server error retrieving meeting list', 500);
+    }
+    return $meeting;
 }
 
 function meeting_update_form_handler_rest($data)
@@ -131,8 +140,10 @@ function meeting_update_form_handler_rest($data)
                     $data[$field] = sanitize_text_field($data[$field]);
                     break;
                 case ('commaseperatednumbers'):
-                    $f = preg_replace("/[^0-9,]/","",$data[$field]);
-                    $data[$field] = trim($f,',');
+                    if (preg_match("/[^0-9,]/", $data[$field])) {
+                        return invalid_form_field($field);
+                    }
+                    $data[$field] = trim($data[$field], ',');
                     break;
                 case ('number'):
                 case ('bigint'):
@@ -140,7 +151,7 @@ function meeting_update_form_handler_rest($data)
                     break;
                 case ('weekday'):
                     if (!(($data[$field] >= 1) && ($data[$field] <= 7))) {
-                        return wbw_rest_error('Form field "' . $field . '" is invalid.', 400);
+                        return invalid_form_field($field);
                     }
                     break;
                 case ('url'):
@@ -149,7 +160,7 @@ function meeting_update_form_handler_rest($data)
                 case ('email'):
                     $data[$field] = sanitize_email($data[$field]);
                     if (empty($data[$field])) {
-                        return wbw_rest_error('Form field "' . $field . '" is invalid.', 400);
+                        return invalid_form_field($field);
                     }
                     break;
                 case ('textarea'):
@@ -256,7 +267,7 @@ function meeting_update_form_handler_rest($data)
             foreach ($change_subfields as $field) {
                 // if the field is blank in bmlt, but they submitted a change, add it to the list
                 if ((empty($bmlt_meeting[$field])) && (!empty($sanitised_fields[$field]))) {
-                    error_log("found a blank bmlt entry ".$field);
+                    error_log("found a blank bmlt entry " . $field);
                     $submission[$field] = $sanitised_fields[$field];
                 }
                 // if the field is in bmlt and its different to the submitted item, add it to the list
@@ -316,12 +327,13 @@ function meeting_update_form_handler_rest($data)
 
             $subject = 'Other notification';
             $allowed_fields = array(
-                "update_reason", 
-                "first_name", 
-                "last_name", 
-                "email_address", 
-                "contact_number_confidential", 
-                "other_reason");
+                "update_reason",
+                "first_name",
+                "last_name",
+                "email_address",
+                "contact_number_confidential",
+                "other_reason"
+            );
 
             foreach ($allowed_fields as $item) {
                 if (isset($sanitised_fields[$item])) {
