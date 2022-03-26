@@ -186,16 +186,19 @@ jQuery(document).ready(function ($) {
   function clear_field(fieldname, value) {
     var field = "#" + fieldname;
     $(field).val("");
+    $(field).change();
   }
 
   function enable_field(fieldname) {
     var field = "#" + fieldname;
     $(field).prop("disabled", false);
+    $(field).change();
   }
 
   function disable_field(fieldname) {
     var field = "#" + fieldname;
     $(field).prop("disabled", true);
+    $(field).change();
   }
 
   function enable_edits() {
