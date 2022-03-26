@@ -337,7 +337,7 @@ jQuery(document).ready(function ($) {
     enable_field("service_body_bigint");
 
     // prevent displayable list from being submitted
-    $("#display_format_shared_id_list").hide();
+    $("#display_format_shared_id_list").attr('disabled','disabled')
     // turn the format list into a single string and move it into the submitted format_shared_id_list
     $("#format_shared_id_list").val($("#display_format_shared_id_list").val().join(","));
     
