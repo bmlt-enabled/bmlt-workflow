@@ -1,8 +1,8 @@
 # Wordpress-BMLT-workflow (WBW)
 
-## 0.2 Beta Known Issues
+## 0.3 Beta Known Issues
 - Email notifications are currently non functional in this beta release
-- No support for Close Meeting and 'Other' requests
+- No support for approving 'Other' requests
 - Support for 'Other' service body (for a user to select when they are unsure) is currently unavailable
 - Quickedit/approve does not update the BMLT email address if the user selects 'set my email to the contact email'
 - Not tested on wordpress multisite 
@@ -72,3 +72,11 @@ Within email template body only:
 - `{field:weekday}`
 - `{field:additional_info}`
 - `{field:starter_kit_postal_address}`
+
+
+### Changes from 0.2 Release
+- Improved front end form layout
+- Close meeting will unpublish an existing meeting
+- Submissions now contain full information from front end form
+- Additional front end fields added (nation and subprovince)
+- PHPUnit test cases built
