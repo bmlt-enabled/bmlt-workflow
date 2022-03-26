@@ -53,7 +53,7 @@ function bmlt_retrieve_single_meeting($meeting_id)
     }
     curl_close($curl);
     $meeting = json_decode($resp, true)[0];
-
+    error_log(vdump($meeting));
     // how possibly can we get a meeting that is not the same as we asked for
     if($meeting['meeting_id_bigint']!=$meeting_id)
     {
