@@ -257,7 +257,7 @@ function meeting_update_form_handler_rest($data)
                 }
                 // if the field is in bmlt and its different to the submitted item, add it to the list
                 else if ((!empty($bmlt_meeting[$field])) && (!empty($sanitised_fields[$field]))) {
-                    if ($bmlt_meeting[$field] !== $sanitised_fields[$field]) {
+                    if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
                         error_log("{$field} is different");
                         error_log("*** bmlt meeting");
                         error_log(vdump($bmlt_meeting));
