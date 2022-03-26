@@ -26,8 +26,6 @@ body {
 		display: grid;
     grid-gap: 10px;
 		grid-template-columns: repeat(auto-fill, 200px ) ;
-		background-color: #fff;
-		color: #444;
 	}
 
 	.form-grid-top {
