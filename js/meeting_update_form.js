@@ -5,7 +5,6 @@ var mtext = [];
 var weekdays = ["none", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 jQuery(document).ready(function ($) {
-
   var formatdata = [];
   Object.keys(wbw_bmlt_formats).forEach((key) => {
     formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
@@ -15,7 +14,7 @@ jQuery(document).ready(function ($) {
     placeholder: "Select from available formats",
     multiple: true,
     data: formatdata,
-    width: '100%'
+    width: "100%",
   });
 
   function update_meeting_list(wbw_service_bodies) {
@@ -108,8 +107,7 @@ jQuery(document).ready(function ($) {
           put_field("location_municipality", mdata[id].location_municipality);
           put_field("location_province", mdata[id].location_province);
           put_field("location_postal_code_1", mdata[id].location_postal_code_1);
-          put_field("format_shared_id_list", mdata[id].format_shared_id_list.split(','));
-
+          put_field("format_shared_id_list", mdata[id].format_shared_id_list.split(","));
 
           // handle duration in the select dropdowns
           var durationarr = mdata[id].duration_time.split(":");
@@ -195,21 +193,10 @@ jQuery(document).ready(function ($) {
     $(field).prop("disabled", false);
   }
 
-  function enable_field_index(fieldname, index) {
-    var field = "#" + fieldname + "-" + index;
-    $(field).prop("disabled", false);
-  }
-
   function disable_field(fieldname) {
     var field = "#" + fieldname;
     $(field).prop("disabled", true);
   }
-
-  function disable_field_index(fieldname, index) {
-    var field = "#" + fieldname + "-" + index;
-    $(field).prop("disabled", true);
-  }
-
 
   function enable_edits() {
     enable_field("meeting_name");
@@ -222,10 +209,8 @@ jQuery(document).ready(function ($) {
     enable_field("location_municipality");
     enable_field("location_province");
     enable_field("location_postal_code_1");
-    for (var i = 0; i < $("#format-table tr").length; i++) {
-      enable_field_index("format-table", i);
-    }
-    enable_field("weekday_tinyint");    
+    enable_field("format_shared_id_list");
+    enable_field("weekday_tinyint");
     enable_field("service_body_bigint");
   }
 
@@ -240,11 +225,9 @@ jQuery(document).ready(function ($) {
     disable_field("location_municipality");
     disable_field("location_province");
     disable_field("location_postal_code_1");
-    for (var i = 0; i < $("#format-table tr").length; i++) {
-      disable_field_index("format-table", i);
-    }
+    disable_field("format_shared_id_list");
     disable_field("weekday_tinyint");
-    disable_field("service_body_bigint");      
+    disable_field("service_body_bigint");
   }
 
   function clear_form() {
@@ -261,10 +244,7 @@ jQuery(document).ready(function ($) {
     clear_field("last_name");
     clear_field("contact_number_confidential");
     clear_field("email_address");
-
-    // clear_field("comments", mdata[id].comments);
-    // clear_field("time_zone", mdata[id].time_zone);
-
+    clear_field("format_shared_id_list");
     clear_field("meeting_id");
 
     // reset selector
@@ -289,13 +269,12 @@ jQuery(document).ready(function ($) {
     $("#meeting_content").hide();
     $("#other_reason_div").hide();
     $("#other_reason").prop("required", false);
-    $("#additional_info").prop('required',false);
+    $("#additional_info").prop("required", false);
 
     enable_edits();
     // enable items as required
     var reason = $(this).val();
     // <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
-
 
     switch (reason) {
       case "reason_new":
@@ -304,13 +283,15 @@ jQuery(document).ready(function ($) {
         $("#personal_details").show();
         $("#meeting_details").show();
         // display form instructions
-        $("#instructions").text("Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet.");
+        $("#instructions").text(
+          "Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
+        );
         // new meeting has a starter pack
         $("#starter_pack").show();
         break;
       case "reason_change":
-        clear_form(); 
-        // hide this until they've selected a meeting       
+        clear_form();
+        // hide this until they've selected a meeting
         $("#meeting_content").hide();
         $("#personal_details").show();
         $("#meeting_details").show();
@@ -327,7 +308,7 @@ jQuery(document).ready(function ($) {
 
         // close meeting has a search bar
         $("#meeting_selector").show();
-        $("#additional_info").prop('required',true);
+        $("#additional_info").prop("required", true);
 
         break;
       case "reason_other":
@@ -348,12 +329,11 @@ jQuery(document).ready(function ($) {
 
   // form submit handler
   function real_submit_handler() {
-
     // in case we disabled this we want to send it now
     enable_field("service_body_bigint");
 
     // turn the format list into a single string
-    $('#format_shared_id_list').val( $('#format_shared_id_list').val().join(",") );
+    $("#format_shared_id_list").val($("#format_shared_id_list").val().join(","));
 
     // construct our duration
     str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
