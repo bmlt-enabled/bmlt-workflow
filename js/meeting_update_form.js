@@ -336,7 +336,9 @@ jQuery(document).ready(function ($) {
     // in case we disabled this we want to send it now
     enable_field("service_body_bigint");
 
-    // turn the format list into a single string
+    // prevent displayable list from being submitted
+    $("#display_format_shared_id_list").hide();
+    // turn the format list into a single string and move it into the submitted format_shared_id_list
     $("#format_shared_id_list").val($("#display_format_shared_id_list").val().join(","));
     
     // construct our duration
