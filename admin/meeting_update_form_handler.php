@@ -258,11 +258,11 @@ function meeting_update_form_handler_rest($data)
                 // if the field is in bmlt and its different to the submitted item, add it to the list
                 else if ((!empty($bmlt_meeting[$field])) && (!empty($sanitised_fields[$field]))) {
                     if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
-                        error_log("{$field} is different");
-                        error_log("*** bmlt meeting");
-                        error_log(vdump($bmlt_meeting));
-                        error_log("*** sanitised fields");
-                        error_log(vdump($sanitised_fields));
+                        // error_log("{$field} is different");
+                        // error_log("*** bmlt meeting");
+                        // error_log(vdump($bmlt_meeting));
+                        // error_log("*** sanitised fields");
+                        // error_log(vdump($sanitised_fields));
                         // don't allow someone to modify a meeting service body
                         if ($field === 'service_body_bigint') {
                             return wbw_rest_error('Service body cannot be changed.', 400);
@@ -329,6 +329,9 @@ function meeting_update_form_handler_rest($data)
         default:
             return wbw_rest_error('Invalid meeting change', 400);
     }
+
+    error_log("SUBMISSION");
+    error_log(vdump($submission));
 
     $cc_address = "";
     $to_address = "";
