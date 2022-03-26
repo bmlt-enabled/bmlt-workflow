@@ -144,8 +144,9 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             <label for="location_nation">Nation</label>
                             <input type="text" name="location_nation" size="50" id="location_nation">
 
-                            <label for="format_shared_id_list">Meeting Formats</label>
-                            <select name="format_shared_id_list" id="format_shared_id_list"></select>
+                            <label for="display_format_shared_id_list">Meeting Formats</label>
+                            <select name="display_format_shared_id_list" id="display_format_shared_id_list"></select>
+                            <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
 
                             <label for=" virtual_meeting_link">Online Meeting Link</label>
                             <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
