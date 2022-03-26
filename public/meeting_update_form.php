@@ -92,9 +92,9 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             <div class="grid-flex-container">
                                 <div class="grid-flex-item">
                                     <label for="start_time">Start Time<span class="wbw-required-field"> *</span></label>
+                                    <input type="time" name="start_time" size="10" id="start_time" required>
                                 </div>
                                 <div class="grid-flex-item">
-                                    <input type="time" name="start_time" size="10" id="start_time" required>
                                     <div class="inline">
                                         <span>
                                             <select id="duration_hours">
