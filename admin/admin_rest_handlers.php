@@ -444,6 +444,8 @@ class wbw_submissions_rest_handlers
                 // $change['admin_action'] = 'add_meeting';
                 // workaround for new meeting bug
                 $change['id_bigint'] = 0;
+                // handle publish/unpublish here
+                $change['published'] = 1;
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;
                 $changearr['set_meeting_change'] = json_encode($change);
@@ -461,6 +463,19 @@ class wbw_submissions_rest_handlers
                 // $change['admin_action'] = 'modify_meeting';
                 // $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
                 break;
+            case 'reason_close':
+                // needs an id_bigint not a meeting_id
+                $change['id_bigint'] = $change['meeting_id'];
+                unset($change['meeting_id']);
+                // handle publish/unpublish here
+                $change['published'] = 0;
+
+                $changearr = array();
+                $changearr['bmlt_ajax_callback'] = 1;
+                $changearr['set_meeting_change'] = json_encode($change);
+                $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
+                break;
+    
             default:
                 return $this->wbw_rest_error("This change type ({$submission_type}) cannot be approved", 400);
         }
