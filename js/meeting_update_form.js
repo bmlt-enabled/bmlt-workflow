@@ -11,7 +11,7 @@ jQuery(document).ready(function ($) {
     formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
   });
 
-  $("#meeting_update_form_format_shared_id_list").select2({
+  $("#format_shared_id_list").select2({
     placeholder: "Select from available formats",
     multiple: true,
     data: formatdata,
@@ -109,6 +109,12 @@ jQuery(document).ready(function ($) {
           put_field("location_province", mdata[id].location_province);
           put_field("location_postal_code_1", mdata[id].location_postal_code_1);
 
+          Object.keys(mdata[id].format_shared_id_list.split(",")).forEach((element) => {
+            if ($("#quickedit_" + element) instanceof jQuery) {
+              $("#quickedit_" + element).val(item[element]);
+            }
+          });
+
           // handle duration in the select dropdowns
           var durationarr = mdata[id].duration_time.split(":");
           // hoping we got both hours, minutes and seconds here
@@ -122,21 +128,6 @@ jQuery(document).ready(function ($) {
           // store the selected meeting ID away
           put_field("meeting_id", mdata[id].id_bigint);
 
-          // clear all the formats
-          $("#format-table tr").each(function () {
-            let inpid = $(this).find("td input").attr("id").replace("format-table-", "");
-            put_field_checked_index("format-table", inpid, false);
-          });
-
-          // set the new formats
-
-          // check formats aren't empty
-          if (mdata[id].format_shared_id_list !== undefined && mdata[id].format_shared_id_list !== "") {
-            var fmtspl = mdata[id].format_shared_id_list.split(",");
-            for (var i = 0; i < fmtspl.length; i++) {
-              put_field_checked_index("format-table", fmtspl[i], true);
-            }
-          }
           // tweak form instructions
           var reason = $("#update_reason").val();
           switch (reason) {
@@ -192,11 +183,6 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  function get_field_checked_index(fieldname, index) {
-    var field = "#" + fieldname + "-" + index;
-    return $(field).prop("checked");
-  }
-
   function put_field(fieldname, value) {
     var field = "#" + fieldname;
     $(field).val(value);
@@ -227,35 +213,6 @@ jQuery(document).ready(function ($) {
     $(field).prop("disabled", true);
   }
 
-  function put_field_checked_index(fieldname, index, value) {
-    var field = "#" + fieldname + "-" + index;
-    $(field).prop("checked", value);
-  }
-
-  function add_checkbox_row_to_table(formatcode, id, name, description, container_id) {
-    let container = $("#" + container_id);
-    let row = "<tr><td>";
-    $("#" + container_id + " > tbody:last-child").append(
-      "<tr>" +
-        '<td><input type="checkbox" id="' +
-        container_id +
-        "-" +
-        id +
-        '" value="' +
-        formatcode +
-        '"></input></td>' +
-        "<td>(" +
-        formatcode +
-        ")</td>" +
-        "<td>" +
-        name +
-        "</td>" +
-        "<td>" +
-        description +
-        "</td>" +
-        "</tr>"
-    );
-  }
 
   function enable_edits() {
     enable_field("meeting_name");
@@ -312,19 +269,6 @@ jQuery(document).ready(function ($) {
     // clear_field("time_zone", mdata[id].time_zone);
 
     clear_field("meeting_id");
-    // reset email checkbox
-   put_field_checked_index("add_email", 0, false);
-
-    // clear all the formats
-    $("#format-table tr").each(function () {
-      let inpid = $(this).find("td input").attr("id").replace("format-table-", "");
-      put_field_checked_index("format-table", inpid, false);
-    });
-
-    // clear weekdays
-    for (var i = 0; i < 7; i++) {
-      put_field_checked_index("weekday", i, false);
-    }
 
     // reset selector
     $("#meeting-searcher").val("").trigger("change");
@@ -413,7 +357,6 @@ jQuery(document).ready(function ($) {
 
     // turn the format list into a single string
     $('#format_shared_id_list').val( $('#format_shared_id_list').val().join(",") );
-
 
     // construct our duration
     str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
