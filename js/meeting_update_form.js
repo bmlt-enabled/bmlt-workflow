@@ -108,13 +108,8 @@ jQuery(document).ready(function ($) {
           put_field("location_municipality", mdata[id].location_municipality);
           put_field("location_province", mdata[id].location_province);
           put_field("location_postal_code_1", mdata[id].location_postal_code_1);
-
-          Object.keys(mdata[id].format_shared_id_list.split(",")).forEach((element) => {
-            if ($("#quickedit_" + element) instanceof jQuery) {
-              $("#quickedit_" + element).val(item[element]);
-            }
-          });
-
+          put_field("format_shared_id_list", mdata[id].format_shared_id_list.split(','));
+          
           // handle duration in the select dropdowns
           var durationarr = mdata[id].duration_time.split(":");
           // hoping we got both hours, minutes and seconds here
