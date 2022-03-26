@@ -238,29 +238,30 @@ function meeting_update_form_handler_rest($data)
             // add in the meeting id
             $meeting_id = $sanitised_fields['meeting_id'];
 
-            $meeting = bmlt_retrieve_single_meeting($meeting_id);
+            $bmlt_meeting = bmlt_retrieve_single_meeting($meeting_id);
             // error_log(vdump($meeting));
 
             // strip blanks from BMLT
-            foreach ($meeting as $key => $value) {
-                if (($meeting[$key] === "") || ($meeting[$key] === NULL)) {
-                    unset($meeting[$key]);
+            foreach ($bmlt_meeting as $key => $value) {
+                if (($bmlt_meeting[$key] === "") || ($bmlt_meeting[$key] === NULL)) {
+                    unset($bmlt_meeting[$key]);
                 }
             }
 
             // if the user submitted something different to what is in bmlt, save it in changes
             foreach ($change_subfields as $field) {
                 // if the field is blank in bmlt, but they submitted a change, add it to the list
-                if ((!array_key_exists($field, $meeting)) && (array_key_exists($field, $sanitised_fields))) {
+                if ((empty($bmlt_meeting[$field])) && (!empty($sanitised_fields[$field]))) {
+                    error_log("found a blank bmlt entry ".$field);
                     $submission[$field] = $sanitised_fields[$field];
                 }
                 // if the field is in bmlt and its different to the submitted item, add it to the list
-                else if ((array_key_exists($field, $meeting)) && (array_key_exists($field, $sanitised_fields))) {
-                    if ($meeting[$field] != $sanitised_fields[$field]) {
-                        // error_log("*** meeting");
-                        // error_log(vdump($meeting));
-                        // error_log("*** data");
-                        // error_log(vdump($sanitised_fields));
+                else if ((!empty($bmlt_meeting[$field])) && (!empty($sanitised_fields[$field]))) {
+                    if ($bmlt_meeting[$field] !== $sanitised_fields[$field]) {
+                        error_log("*** meeting");
+                        error_log(vdump($bmlt_meeting));
+                        error_log("*** data");
+                        error_log(vdump($sanitised_fields));
                         // don't allow someone to modify a meeting service body
                         if ($field === 'service_body_bigint') {
                             return wbw_rest_error('Service body cannot be changed.', 400);
@@ -275,7 +276,7 @@ function meeting_update_form_handler_rest($data)
             }
 
             // store away the original meeting name so we know what changed
-            $submission['original_meeting_name'] = $meeting['meeting_name'];
+            $submission['original_meeting_name'] = $bmlt_meeting['meeting_name'];
             // store away the meeting id
             $submission['meeting_id'] = $meeting_id;
 
