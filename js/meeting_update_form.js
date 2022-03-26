@@ -109,7 +109,8 @@ jQuery(document).ready(function ($) {
           put_field("location_province", mdata[id].location_province);
           put_field("location_postal_code_1", mdata[id].location_postal_code_1);
           put_field("format_shared_id_list", mdata[id].format_shared_id_list.split(','));
-          
+
+
           // handle duration in the select dropdowns
           var durationarr = mdata[id].duration_time.split(":");
           // hoping we got both hours, minutes and seconds here
@@ -181,6 +182,7 @@ jQuery(document).ready(function ($) {
   function put_field(fieldname, value) {
     var field = "#" + fieldname;
     $(field).val(value);
+    $(field).change();
   }
 
   function clear_field(fieldname, value) {
