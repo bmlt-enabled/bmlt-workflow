@@ -109,7 +109,8 @@ function meeting_update_form_handler_rest($data)
         "starter_kit_postal_address" => array("textarea", false),
         "starter_kit_required" => array("text", $reason_new_bool),
         "other_reason" => array("textarea", $reason_other_bool),
-
+        "location_sub_province" => array("text", $reason_new_bool),
+        "location_nation" => array("text", $reason_new_bool),
     );
 
     $sanitised_fields = array();
