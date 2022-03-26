@@ -428,7 +428,9 @@ class wbw_submissions_rest_handlers
             "weekday_tinyint",
             "service_body_bigint",
             "virtual_meeting_link",
-            "format_shared_id_list"
+            "format_shared_id_list",
+            "location_sub_province",
+            "location_nation",
         );
 
         foreach ($change as $key => $value) {
