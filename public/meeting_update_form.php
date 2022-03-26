@@ -89,39 +89,51 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                 <option value=6>Friday</option>
                                 <option value=7>Saturday</option>
                             </select>
-                            <div class="grid-flow-input">
-                                <label for="start_time">Start Time<span class="wbw-required-field"> *</span></label>
-                                <input type="time" name="start_time" size="10" id="start_time" required>
-                                <label for="duration_hours">Duration<span class="wbw-required-field"> *</span></label>
-                                <select id="duration_hours">
-                                    <option value="00">0</option>
-                                    <option value="01" selected="selected">1</option>
-                                    <option value="02">2</option>
-                                    <option value="03">3</option>
-                                    <option value="04">4</option>
-                                    <option value="05">5</option>
-                                    <option value="06">6</option>
-                                    <option value="07">7</option>
-                                    <option value="08">8</option>
-                                    <option value="09">9</option>
-                                    <option value="10">10</option>
-                                    <option value="11">11</option>
-                                    <option value="12">12</option>
-                                </select> h
-                                <select id="duration_minutes">
-                                    <option value="00" selected="selected">0</option>
-                                    <option value="05">5</option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
-                                    <option value="20">20</option>
-                                    <option value="25">25</option>
-                                    <option value="30">30</option>
-                                    <option value="35">35</option>
-                                    <option value="40">40</option>
-                                    <option value="45">45</option>
-                                    <option value="50">50</option>
-                                    <option value="55">55</option>
-                                </select> m
+                            <div class="grid-flex-container">
+                                <div class="grid-flex-item">
+                                    <label for="start_time">Start Time<span class="wbw-required-field"> *</span></label>
+                                </div>
+                                <div class="grid-flex-item">
+                                    <input type="time" name="start_time" size="10" id="start_time" required>
+                                    <div class="inline">
+                                        <span>
+                                            <select id="duration_hours">
+                                                <option value="00">0</option>
+                                                <option value="01" selected="selected">1</option>
+                                                <option value="02">2</option>
+                                                <option value="03">3</option>
+                                                <option value="04">4</option>
+                                                <option value="05">5</option>
+                                                <option value="06">6</option>
+                                                <option value="07">7</option>
+                                                <option value="08">8</option>
+                                                <option value="09">9</option>
+                                                <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                            </select>
+                                            <label for="duration_hours">H</label>
+                                        </span>
+                                        <span>
+                                            <select id="duration_minutes">
+                                                <option value="00" selected="selected">0</option>
+                                                <option value="05">5</option>
+                                                <option value="10">10</option>
+                                                <option value="15">15</option>
+                                                <option value="20">20</option>
+                                                <option value="25">25</option>
+                                                <option value="30">30</option>
+                                                <option value="35">35</option>
+                                                <option value="40">40</option>
+                                                <option value="45">45</option>
+                                                <option value="50">50</option>
+                                                <option value="55">55</option>
+                                            </select>
+                                            <label for="duration_minutes">M</label>
+                                        </span>
+                                    </div>
+                                </div>
+
                             </div>
                             <input type="hidden" name="duration_time" size="10" id="duration_time" required>
                             <label for="service_body_bigint">Service Committee (or Other if not known)</label>

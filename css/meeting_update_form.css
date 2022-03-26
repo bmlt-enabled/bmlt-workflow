@@ -68,8 +68,26 @@ body {
   letter-spacing: 1px;
   cursor: pointer;
 }
-
-.grid-flow-input {
-  width: 30%;
+.form-grid .inline label {
+  width: 100%;
   display: inline;
+  padding: 10px 5px 5px 2px;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
+
+.form-grid .inline select {
+  line-height: 1.5;
+  font-size: 1.2em;
+  padding: 5px 10px;
+  display: inline;
+  width: 35%;
+}
+.grid-flex-container {
+  display: flex;
+}
+
+.grid-flex-item {
+  flex-grow: 1;
+  height: 100px;
 }
