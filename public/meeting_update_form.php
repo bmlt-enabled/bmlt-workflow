@@ -136,13 +136,13 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             <label for="location_municipality">City/Town/Suburb<span class="wbw-required-field"> *</span></label>
                             <input type="text" name="location_municipality" size="50" id="location_municipality" required>
                             <label for="location_sub_province">Sub Province</label>
-                            <input type="number" name="location_sub_province" size="50" id="location_sub_province">
+                            <input type="text" name="location_sub_province" size="50" id="location_sub_province">
                             <label for="location_province">State<span class="wbw-required-field"> *</span></label>
                             <input type="text" name="location_province" size="50" id="location_province" required>
                             <label for="location_postal_code_1">Postcode<span class="wbw-required-field"> *</span></label>
                             <input type="number" name="location_postal_code_1" size="5" max="99999" id="location_postal_code_1" required>
                             <label for="location_nation">Nation</label>
-                            <input type="number" name="location_nation" size="50" id="location_nation">
+                            <input type="text" name="location_nation" size="50" id="location_nation">
 
                             <label for="format_shared_id_list">Meeting Formats</label>
                             <select name="format_shared_id_list" id="format_shared_id_list"></select>
