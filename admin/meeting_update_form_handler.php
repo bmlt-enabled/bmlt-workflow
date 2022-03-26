@@ -55,8 +55,7 @@ function bmlt_retrieve_single_meeting($meeting_id)
     $meeting = json_decode($resp, true)[0];
     error_log(vdump($meeting));
     // how possibly can we get a meeting that is not the same as we asked for
-    if($meeting['id_bigint']!=$meeting_id)
-    {
+    if ($meeting['id_bigint'] != $meeting_id) {
         return wbw_rest_error('Server error retrieving meeting list', 500);
     }
     return $meeting;
@@ -91,7 +90,7 @@ function meeting_update_form_handler_rest($data)
         return wbw_rest_error('No valid meeting update reason provided', 400);
     }
 
-    // sanitize the input
+    // sanitize any input
     // array value [0] is 'input type', [1] is boolean (true if required)
 
     $subfields = array(
@@ -120,6 +119,7 @@ function meeting_update_form_handler_rest($data)
         "other_reason" => array("textarea", $reason_other_bool),
         "location_sub_province" => array("text", false),
         "location_nation" => array("text", false),
+        "group_relationship" => array("text", true)
     );
 
     $sanitised_fields = array();
@@ -183,20 +183,22 @@ function meeting_update_form_handler_rest($data)
     // drop out everything that isnt in our approved list
     $data = array();
 
+    // fields used throughout the rest of the form processing
     $reason = $sanitised_fields['update_reason'];
-
     $service_body_bigint = CONST_OTHER_SERVICE_BODY;
     if (!empty($sanitised_fields['service_body_bigint'])) {
         $service_body_bigint = $sanitised_fields['service_body_bigint'];
     }
+    $submitter_name = $sanitised_fields['first_name'] . " " . $sanitised_fields['last_name'];
+    $submitter_email = $sanitised_fields['email_address'];
+    $submission = array();
 
+    // create our submission for the database changes_requested field
     switch ($reason) {
         case ('reason_new'):
             $subject = 'New meeting notification';
 
-            // these are the form fields we'll accept
-            $submission = array();
-
+            // form fields allowed in changes_requested for this change type
             $allowed_fields = array(
                 "meeting_name",
                 "start_time",
@@ -210,13 +212,16 @@ function meeting_update_form_handler_rest($data)
                 "weekday_tinyint",
                 "service_body_bigint",
                 "virtual_meeting_link",
-                "format_shared_id_list"
+                "format_shared_id_list",
+                "contact_number_confidential",
+                "additional_info",
+                "group_relationship"
             );
 
             // new meeting - add all fields to the changes requested
             foreach ($allowed_fields as $field) {
                 // make sure its not a null entry, ie not entered on the frontend form
-                if (array_key_exists($field, $sanitised_fields)) {
+                if (!empty($sanitised_fields[$field])) {
                     $submission[$field] = $sanitised_fields[$field];
                 }
             }
@@ -225,13 +230,11 @@ function meeting_update_form_handler_rest($data)
 
             break;
         case ('reason_change'):
-            $subject = 'Change meeting notification';
             // change meeting - just add the deltas. no real reason to do this as bmlt result would be the same, but safe to filter it regardless
+            $subject = 'Change meeting notification';
 
-            // these are the form fields we'll accept
-            $submission = array();
-
-            $change_subfields = array(
+            // form fields allowed in changes_requested for this change type
+            $allowed_fields = array(
                 "meeting_name",
                 "start_time",
                 "duration_time",
@@ -243,11 +246,14 @@ function meeting_update_form_handler_rest($data)
                 "location_postal_code_1",
                 "location_nation",
                 "location_sub_province",
-                "additional_info",
                 "weekday_tinyint",
                 "service_body_bigint",
                 "virtual_meeting_link",
-                "format_shared_id_list"
+                "format_shared_id_list",
+                "contact_number_confidential",
+                "additional_info",
+                "group_relationship"
+
             );
 
             // add in the meeting id
@@ -264,7 +270,7 @@ function meeting_update_form_handler_rest($data)
             }
 
             // if the user submitted something different to what is in bmlt, save it in changes
-            foreach ($change_subfields as $field) {
+            foreach ($allowed_fields as $field) {
                 // if the field is blank in bmlt, but they submitted a change, add it to the list
                 if ((empty($bmlt_meeting[$field])) && (!empty($sanitised_fields[$field]))) {
                     error_log("found a blank bmlt entry " . $field);
@@ -300,16 +306,16 @@ function meeting_update_form_handler_rest($data)
         case ('reason_close'):
             $subject = 'Close meeting notification';
 
-            $submission = array();
-
+            // form fields allowed in changes_requested for this change type
             $allowed_fields = array(
                 "meeting_id",
-                "update_reason",
-                "first_name",
-                "last_name",
-                "email_address",
+                // "update_reason",
+                // "first_name",
+                // "last_name",
+                // "email_address",
                 "contact_number_confidential",
-                "additional_info"
+                "additional_info",
+                "group_relationship"
             );
 
             foreach ($allowed_fields as $item) {
@@ -323,16 +329,17 @@ function meeting_update_form_handler_rest($data)
 
             break;
         case ('reason_other'):
-            $submission = array();
-
             $subject = 'Other notification';
+
+            // form fields allowed in changes_requested for this change type
             $allowed_fields = array(
-                "update_reason",
-                "first_name",
-                "last_name",
-                "email_address",
+                // "update_reason",
+                // "first_name",
+                // "last_name",
+                // "email_address",
                 "contact_number_confidential",
-                "other_reason"
+                "other_reason",
+                "group_relationship"
             );
 
             foreach ($allowed_fields as $item) {
@@ -401,27 +408,12 @@ function meeting_update_form_handler_rest($data)
     global $wpdb;
     global $wbw_submissions_table_name;
 
-    $submitter_name = $sanitised_fields['first_name'] . " " . $sanitised_fields['last_name'];
-    $db_reason = '';
-    switch ($reason) {
-        case 'reason_new':
-        case 'reason_change':
-        case 'reason_close':
-        case 'reason_other':
-            $db_reason = $reason;
-            break;
-        default:
-            return '{"response":"invalid change type"}';
-    }
-
-    $submitter_email = $sanitised_fields['email_address'];
-
     $wpdb->insert(
         $wbw_submissions_table_name,
         array(
             'submission_time'   => current_time('mysql', true),
             'submitter_name' => $submitter_name,
-            'submission_type'  => $db_reason,
+            'submission_type'  => $reason,
             'submitter_email' => $submitter_email,
             'changes_requested' => wp_json_encode($submission, 0, 1),
             'service_body_bigint' => $service_body_bigint

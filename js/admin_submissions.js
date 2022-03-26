@@ -322,6 +322,9 @@ jQuery(document).ready(function ($) {
         case "location_postal_code_1":
           table += "<tr><td>PostCode:</td><td>" + d["changes_requested"].location_postal_code_1 + "</td></tr>";
           break;
+        case "group_relationship":
+          table += "<tr><td>Relationship to Group:</td><td>" + d["changes_requested"].group_relationship + "</td></tr>";
+          break;
         case "weekday_tinyint":
           weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
           table += "<tr><td>Meeting Day:</td><td>" + weekdays[d["changes_requested"].weekday_tinyint] + "</td></tr>";
