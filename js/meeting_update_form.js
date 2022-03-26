@@ -5,6 +5,18 @@ var mtext = [];
 var weekdays = ["none", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 jQuery(document).ready(function ($) {
+  var formatdata = [];
+  Object.keys(wbw_bmlt_formats).forEach((key) => {
+    formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
+  });
+
+  $("#display_format_shared_id_list").select2({
+    placeholder: "Select from available formats",
+    multiple: true,
+    data: formatdata,
+    width: "100%",
+  });
+
   function update_meeting_list(wbw_service_bodies) {
     var search_results_address =
       wbw_bmlt_server_address +
@@ -95,6 +107,7 @@ jQuery(document).ready(function ($) {
           put_field("location_municipality", mdata[id].location_municipality);
           put_field("location_province", mdata[id].location_province);
           put_field("location_postal_code_1", mdata[id].location_postal_code_1);
+          put_field("display_format_shared_id_list", mdata[id].format_shared_id_list.split(","));
 
           // handle duration in the select dropdowns
           var durationarr = mdata[id].duration_time.split(":");
@@ -109,31 +122,18 @@ jQuery(document).ready(function ($) {
           // store the selected meeting ID away
           put_field("meeting_id", mdata[id].id_bigint);
 
-          // clear all the formats
-          $("#format-table tr").each(function () {
-            let inpid = $(this).find("td input").attr("id").replace("format-table-", "");
-            put_field_checked_index("format-table", inpid, false);
-          });
-
-          // set the new formats
-
-          // check formats aren't empty
-          if (mdata[id].format_shared_id_list !== undefined && mdata[id].format_shared_id_list !== "") {
-            var fmtspl = mdata[id].format_shared_id_list.split(",");
-            for (var i = 0; i < fmtspl.length; i++) {
-              put_field_checked_index("format-table", fmtspl[i], true);
-            }
-          }
           // tweak form instructions
           var reason = $("#update_reason").val();
           switch (reason) {
             case "reason_change":
-              $("#reason_change_text").show();
+              // display form instructions
+              $("#instructions").text("We've retrieved the details below from our system. Please make any changes and then submit your update.");
               $("#meeting_content").show();
               disable_field("service_body_bigint");
               break;
             case "reason_close":
-              $("#reason_close_text").show();
+              // display form instructions
+              $("#instructions").text("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box");
               $("#meeting_content").show();
               disable_edits();
               break;
@@ -177,69 +177,28 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  function get_field_checked_index(fieldname, index) {
-    var field = "#" + fieldname + "-" + index;
-    return $(field).prop("checked");
-  }
-
   function put_field(fieldname, value) {
     var field = "#" + fieldname;
     $(field).val(value);
+    $(field).change();
   }
 
   function clear_field(fieldname, value) {
     var field = "#" + fieldname;
     $(field).val("");
+    $(field).change();
   }
 
   function enable_field(fieldname) {
     var field = "#" + fieldname;
     $(field).prop("disabled", false);
-  }
-
-  function enable_field_index(fieldname, index) {
-    var field = "#" + fieldname + "-" + index;
-    $(field).prop("disabled", false);
+    $(field).change();
   }
 
   function disable_field(fieldname) {
     var field = "#" + fieldname;
     $(field).prop("disabled", true);
-  }
-
-  function disable_field_index(fieldname, index) {
-    var field = "#" + fieldname + "-" + index;
-    $(field).prop("disabled", true);
-  }
-
-  function put_field_checked_index(fieldname, index, value) {
-    var field = "#" + fieldname + "-" + index;
-    $(field).prop("checked", value);
-  }
-
-  function add_checkbox_row_to_table(formatcode, id, name, description, container_id) {
-    let container = $("#" + container_id);
-    let row = "<tr><td>";
-    $("#" + container_id + " > tbody:last-child").append(
-      "<tr>" +
-        '<td><input type="checkbox" id="' +
-        container_id +
-        "-" +
-        id +
-        '" value="' +
-        formatcode +
-        '"></input></td>' +
-        "<td>(" +
-        formatcode +
-        ")</td>" +
-        "<td>" +
-        name +
-        "</td>" +
-        "<td>" +
-        description +
-        "</td>" +
-        "</tr>"
-    );
+    $(field).change();
   }
 
   function enable_edits() {
@@ -253,10 +212,8 @@ jQuery(document).ready(function ($) {
     enable_field("location_municipality");
     enable_field("location_province");
     enable_field("location_postal_code_1");
-    for (var i = 0; i < $("#format-table tr").length; i++) {
-      enable_field_index("format-table", i);
-    }
-    enable_field("weekday_tinyint");    
+    enable_field("display_format_shared_id_list");
+    enable_field("weekday_tinyint");
     enable_field("service_body_bigint");
   }
 
@@ -271,11 +228,9 @@ jQuery(document).ready(function ($) {
     disable_field("location_municipality");
     disable_field("location_province");
     disable_field("location_postal_code_1");
-    for (var i = 0; i < $("#format-table tr").length; i++) {
-      disable_field_index("format-table", i);
-    }
+    disable_field("display_format_shared_id_list");
     disable_field("weekday_tinyint");
-    disable_field("service_body_bigint");      
+    disable_field("service_body_bigint");
   }
 
   function clear_form() {
@@ -292,27 +247,12 @@ jQuery(document).ready(function ($) {
     clear_field("last_name");
     clear_field("contact_number_confidential");
     clear_field("email_address");
-
-    // clear_field("comments", mdata[id].comments);
-    // clear_field("time_zone", mdata[id].time_zone);
-
+    clear_field("display_format_shared_id_list");
     clear_field("meeting_id");
-    // reset email checkbox
-    put_field_checked_index("add_email", 0, true);
+    clear_field("meeting_searcher");
+    // set email selector to no
+    $("#add-email").val('no');
 
-    // clear all the formats
-    $("#format-table tr").each(function () {
-      let inpid = $(this).find("td input").attr("id").replace("format-table-", "");
-      put_field_checked_index("format-table", inpid, false);
-    });
-
-    // clear weekdays
-    for (var i = 0; i < 7; i++) {
-      put_field_checked_index("weekday", i, false);
-    }
-
-    // reset selector
-    $("#meeting-searcher").val("").trigger("change");
   }
 
   // meeting logic before selection is made
@@ -328,42 +268,62 @@ jQuery(document).ready(function ($) {
     $("#reason_close_text").hide();
     $("#reason_other_text").hide();
     $("#starter_pack").hide();
-
     $("#meeting_selector").hide();
     // enable the meeting form
     $("#meeting_content").hide();
     $("#other_reason_div").hide();
     $("#other_reason").prop("required", false);
+    $("#additional_info").prop("required", false);
 
     enable_edits();
     // enable items as required
     var reason = $(this).val();
+    // <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
+
     switch (reason) {
       case "reason_new":
         clear_form();
         $("#meeting_content").show();
+        $("#personal_details").show();
+        $("#meeting_details").show();
         // display form instructions
-        $("#reason_new_text").show();
+        $("#instructions").text(
+          "Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
+        );
         // new meeting has a starter pack
         $("#starter_pack").show();
         break;
       case "reason_change":
         clear_form();
+        // hide this until they've selected a meeting
+        $("#meeting_content").hide();
+        $("#personal_details").show();
+        $("#meeting_details").show();
         // change meeting has a search bar
         $("#meeting_selector").show();
 
         break;
       case "reason_close":
         clear_form();
+        // hide this until they've selected a meeting
+        $("#meeting_content").hide();
+        $("#personal_details").show();
+        $("#meeting_details").show();
+
         // close meeting has a search bar
         $("#meeting_selector").show();
+        $("#additional_info").prop("required", true);
+
         break;
       case "reason_other":
         clear_form();
         // display form instructions
-        $("#reason_other_text").show();
+        $("#instructions").text("Please let us know the details about your meeting change.");
         // other reason has a textarea
         $("#other_reason_div").show();
+        $("#meeting_content").show();
+        $("#personal_details").show();
+        $("#meeting_details").hide();
         $("#other_reason").prop("required", true);
         break;
     }
@@ -373,26 +333,16 @@ jQuery(document).ready(function ($) {
 
   // form submit handler
   function real_submit_handler() {
-
     // in case we disabled this we want to send it now
     enable_field("service_body_bigint");
 
-    // meeting formats
-    var str = "";
-    $("#format-table tr").each(function () {
-      if ($(this).find("td input").prop("checked")) {
-        let inpid = $(this).find("td input").attr("id").replace("format-table-", "");
-        str = str + inpid + ",";
-      }
-    });
-
-    if (str != "") {
-      str = str.slice(0, -1);
-      put_field("format_shared_id_list", str);
-    }
-
+    // prevent displayable list from being submitted
+    $("#display_format_shared_id_list").attr('disabled','disabled')
+    // turn the format list into a single string and move it into the submitted format_shared_id_list
+    $("#format_shared_id_list").val($("#display_format_shared_id_list").val().join(","));
+    
     // construct our duration
-    str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
+    var str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
     put_field("duration_time", str);
 
     var url = wp_rest_base + wbw_form_submit;

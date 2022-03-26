@@ -12,14 +12,26 @@ class wbw_submissions_rest_handlers
         $this->bmlt_integration = new BMLTIntegration;
     }
 
-    private function wbw_rest_success($message)
+    // accepts raw string or array
+    function wbw_rest_success($message)
     {
-        return new WP_Error('wbw_success', __($message), array('status' => 200));
+        if(is_array($message))
+        {
+            $data = $message;
+        }
+        else
+        {
+            $data = array('message'=> $message);
+        }
+        $response = new WP_REST_Response();
+        $response->set_data($data);
+        $response->set_status(200);
+        return $response;
     }
 
     private function wbw_rest_error($message, $code)
     {
-        return new WP_Error('wbw_error', __($message), array('status' => $code));
+        return new WP_Error('wbw_error', $message, array('status' => $code));
     }
 
     public function get_submissions_handler()
@@ -42,91 +54,6 @@ class wbw_submissions_rest_handlers
         }
         return $result;
     }
-
-    // public function get_service_bodies_detail_handler()
-    // {
-    //     global $wpdb;
-    //     global $wbw_service_bodies_table_name;
-    //     global $wbw_service_bodies_access_table_name;
-
-    //     $sblist = array();
-
-    //     $req = array();
-    //     $req['admin_action'] = 'get_service_body_info';
-    //     $req['flat'] = '';
-    //     $bmlt_integration = new BMLTIntegration;
-
-    //     // get an xml for a workaround
-    //     $response = $bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
-    //     if (is_wp_error($response)) {
-    //         return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
-    //     }
-
-    //     $xml = simplexml_load_string($response['body']);
-    //     $arr = json_decode(json_encode($xml), 1);
-
-    //     // error_log(vdump($arr));
-
-    //     $idlist = array();
-
-    //     // make our list of service bodies
-    //     foreach ($arr['service_body'] as $key => $value) {
-    //         // error_log("looping key = " . $key);
-    //         if (array_key_exists('@attributes', $value)) {
-    //             $sbid = $value['@attributes']['id'];
-    //             $idlist[] = $sbid;
-    //             $sblist[$sbid] = array('name' => $value['@attributes']['name']);
-    //         } else {
-    //             // we need a name at minimum
-    //             break;
-    //         }
-    //         $sblist[$sbid]['contact_email'] = '';
-    //         if (array_key_exists('contact_email', $value)) {
-    //             $sblist[$sbid]['contact_email'] = $value['contact_email'];
-    //         }
-    //     }
-
-    //     // update our service area list in the database in case there have been some new ones added
-    //     // error_log("get ids");
-    //     $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $wbw_service_bodies_table_name . ';', 0);
-
-    //     // error_log(vdump($sqlresult));
-    //     $missing = array_diff($idlist, $sqlresult);
-    //     // error_log("missing ids");
-    //     // error_log(vdump($missing));
-
-    //     foreach ($missing as $value) {
-    //         $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
-    //         $wpdb->query($sql);
-    //     }
-    //     // update any values that may have changed since last time we looked
-
-    //     foreach ($idlist as $value) {
-    //         $sql = $wpdb->prepare('UPDATE ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
-    //         $wpdb->query($sql);
-    //     }
-
-    //     // error_log("our sblist");
-    //     // error_log(vdump($sblist));
-
-    //     // make our group membership lists
-    //     foreach ($sblist as $key => $value) {
-    //         error_log("getting memberships for " . $key);
-    //         $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $wbw_service_bodies_access_table_name . ' where service_body_bigint = "%d"', $key);
-    //         $result = $wpdb->get_col($sql, 0);
-    //         // error_log(vdump($result));
-    //         $sblist[$key]['membership'] = implode(',', $result);
-    //     }
-    //     // get the form display settings
-    //     $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $wbw_service_bodies_table_name, ARRAY_A);
-
-    //     foreach ($sqlresult as $key => $value) {
-    //         $bool = $value['show_on_form'] ? (true) : (false);
-    //         $sblist[$value['service_body_bigint']]['show_on_form'] = $bool;
-    //     }
-
-    //     return $sblist;
-    // }
 
     public function get_service_bodies_handler($request)
     {
@@ -473,13 +400,10 @@ class wbw_submissions_rest_handlers
             return $result;
         }
 
-        // $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' where id="%d" limit 1', $change_id);
-        // $result = $wpdb->get_row($sql, ARRAY_A);
-
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->wbw_rest_error("Submission id {$change_id} is already $change_made", 400);
+            return $this->wbw_rest_error("Submission id {$change_id} is already {$change_made}", 400);
         }
 
         $submission_type = $result['submission_type'];
@@ -501,7 +425,9 @@ class wbw_submissions_rest_handlers
             "weekday_tinyint",
             "service_body_bigint",
             "virtual_meeting_link",
-            "format_shared_id_list"
+            "format_shared_id_list",
+            "location_sub_province",
+            "location_nation",
         );
 
         foreach ($change as $key => $value) {
@@ -518,6 +444,8 @@ class wbw_submissions_rest_handlers
                 // $change['admin_action'] = 'add_meeting';
                 // workaround for new meeting bug
                 $change['id_bigint'] = 0;
+                // handle publish/unpublish here
+                $change['published'] = 1;
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;
                 $changearr['set_meeting_change'] = json_encode($change);
@@ -535,6 +463,19 @@ class wbw_submissions_rest_handlers
                 // $change['admin_action'] = 'modify_meeting';
                 // $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
                 break;
+            case 'reason_close':
+                // needs an id_bigint not a meeting_id
+                $change['id_bigint'] = $change['meeting_id'];
+                unset($change['meeting_id']);
+                // handle publish/unpublish here
+                $change['published'] = 0;
+
+                $changearr = array();
+                $changearr['bmlt_ajax_callback'] = 1;
+                $changearr['set_meeting_change'] = json_encode($change);
+                $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
+                break;
+    
             default:
                 return $this->wbw_rest_error("This change type ({$submission_type}) cannot be approved", 400);
         }

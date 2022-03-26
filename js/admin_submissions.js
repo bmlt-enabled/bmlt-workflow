@@ -209,14 +209,16 @@ jQuery(document).ready(function ($) {
           switch (data["submission_type"]) {
             case "reason_new":
               submission_type = "New Meeting";
+              namestr = data["meeting_name"];
               break;
             case "reason_close":
               submission_type = "Close Meeting";
+              console.log(data);
+              namestr = data["meeting_name"];
               break;
             case "reason_change":
               submission_type = "Modify Meeting";
-              meeting_name = data["original_meeting_name"];
-              namestr = "<br>Meeting: " + meeting_name;
+              namestr = data["original_meeting_name"];
               break;
             case "reason_other":
               submission_type = "Other Request";
@@ -224,70 +226,9 @@ jQuery(document).ready(function ($) {
             default:
               submission_type = data["submission_type"];
           }
-          summary = "Submission Type: " + submission_type + namestr + "<br><br>";
-          // for (var key in data) {
-          //   friendlyname = key;
-          //   friendlydata = data[key];
+          summary = "Submission Type: " + submission_type + "<br>";
+          summary += "Meeting Name: " + namestr;
 
-          //   switch (key) {
-          //     // skip these ones - we already used them above
-          //     case "meeting_id":
-          //     case "submission_type":
-          //     case "original_meeting_name":
-          //       friendlyname = "";
-          //       break;
-          //     case "meeting_name":
-          //       friendlyname = "Meeting Name";
-          // break;
-          // case "start_time":
-          //   friendlyname = "Start Time";
-          //   break;
-          // case "duration_time":
-          //   friendlyname = "Duration";
-          //   break;
-          // case "location_text":
-          //   friendlyname = "Location";
-          //   break;
-          // case "location_street":
-          //   friendlyname = "Street";
-          //   break;
-          // case "location_info":
-          //   friendlyname = "Location Info";
-          //   break;
-          // case "location_municipality":
-          //   friendlyname = "Municipality";
-          //   break;
-          // case "location_province":
-          //   friendlyname = "Province/State";
-          //   break;
-          // case "location_postal_code_1":
-          //   friendlyname = "Postcode";
-          //   break;
-          // case "weekday_tinyint":
-          //   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-          //   friendlydata = weekdays[data["weekday_tinyint"]];
-          //   friendlyname = "Meeting Day";
-          //   break;
-          // case "service_body_bigint":
-          //   friendlydata = wbw_admin_wbw_service_bodies[data["service_body_bigint"]]["name"];
-          //   friendlyname = "Service Body";
-          //   break;
-          // case "format_shared_id_list":
-          //   friendlyname = "Meeting Formats";
-          //   // convert the meeting formats to human readable
-          //   friendlydata = "";
-          //   strarr = data["format_shared_id_list"].split(",");
-          //   strarr.forEach((element) => {
-          //     friendlydata += "(" + wbw_bmlt_formats[element]["key_string"] + ")-" + wbw_bmlt_formats[element]["name_string"] + " ";
-          //   });
-          //   break;
-          //   default:
-          //     break;
-          // }
-          // if (friendlyname != "" && friendlydata != "") {
-          //   summary += friendlyname + ' <span class="dashicons dashicons-arrow-right-alt"></span> ' + friendlydata + "<br>";
-          // }
-          // }
           return summary;
         },
       },
@@ -346,7 +287,7 @@ jQuery(document).ready(function ($) {
 
   // child rows
   function format(d) {
-    // console.log(d);
+    console.log(d);
     table = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
 
     for (var key in d["changes_requested"]) {
@@ -372,12 +313,27 @@ jQuery(document).ready(function ($) {
         case "location_province":
           table += "<tr><td>Province/State:</td><td>" + d["changes_requested"].location_province + "</td></tr>";
           break;
+        case "location_sub_province":
+          table += "<tr><td>SubProvince:</td><td>" + d["changes_requested"].location_sub_province + "</td></tr>";
+          break;
+        case "location_nation":
+          table += "<tr><td>Nation:</td><td>" + d["changes_requested"].location_nation + "</td></tr>";
+          break;
         case "location_postal_code_1":
           table += "<tr><td>PostCode:</td><td>" + d["changes_requested"].location_postal_code_1 + "</td></tr>";
+          break;
+        case "group_relationship":
+          table += "<tr><td>Relationship to Group:</td><td>" + d["changes_requested"].group_relationship + "</td></tr>";
           break;
         case "weekday_tinyint":
           weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
           table += "<tr><td>Meeting Day:</td><td>" + weekdays[d["changes_requested"].weekday_tinyint] + "</td></tr>";
+          break;
+        case "additional_info":
+          table += '<tr><td>Additional Info:</td><td><textarea rows="5" columns="50" disabled>' + d["changes_requested"].additional_info + "</textarea></td></tr>";
+          break;
+        case "other_reason":
+          table += '<tr><td>Other Reason:</td><td><textarea rows="5" columns="50" disabled>' + d["changes_requested"].other_reason + "</textarea></td></tr>";
           break;
         case "format_shared_id_list":
           friendlyname = "Meeting Formats";
@@ -391,7 +347,7 @@ jQuery(document).ready(function ($) {
           break;
       }
     }
-    if (("action_message" in d) &&  (d["action_message"] != '') &&  (d["action_message"] != null)){
+    if ("action_message" in d && d["action_message"] != "" && d["action_message"] != null) {
       table += "<tr><td>Message to submitter:</td><td>" + d["action_message"] + "</td></tr>";
     }
     table += "</table>";

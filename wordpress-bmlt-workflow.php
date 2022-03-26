@@ -4,7 +4,7 @@
  * Plugin Name: Wordpress BMLT Workflow
  * Plugin URI: https://github.com/nigel-bmlt/meeting-admin-workflow
  * Description: Wordpress BMLT Workflow
- * Version: 0.2.0
+ * Version: 0.3.0
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
@@ -33,15 +33,17 @@ $wbw_service_bodies_access_table_name = $wpdb->prefix . 'wbw_service_bodies_acce
 global $wbw_capability_manage_submissions;
 $wbw_capability_manage_submissions = 'wbw_manage_submissions';
 
-include_once 'form handlers/meeting-update-form-handler.php';
+include_once 'admin/meeting_update_form_handler.php';
 include_once 'admin/admin_rest_controller.php';
 
 function meeting_update_form($atts = [], $content = null, $tag = '')
 {
     global $wbw_rest_namespace;
-    wp_enqueue_script('wbw-general-js');
-    wp_enqueue_script('wbw-meeting-update-js');
-    wp_enqueue_style('wbw-meeting-update-css');
+
+    prevent_cache_enqueue_script('wbw-meeting-update-form-js',array('jquery'), 'js/meeting_update_form.js');
+    prevent_cache_enqueue_script('wbw-general-js',array('jquery'), 'js/script_includes.js');
+    prevent_cache_enqueue_style('wbw-meeting-update-form-css',false, 'js/meeting_update_form.js');
+    wp_enqueue_style('wbw-meeting-update-form-css');
     wp_enqueue_script('jquery-validate');
     wp_enqueue_script('jquery-validate-additional');
     wp_enqueue_style('select2css');
@@ -50,11 +52,36 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $script .= 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace.'/servicebodies') . '; ';
     $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
-    // error_log("adding script ".$script);
-    wp_add_inline_script('wbw-meeting-update-js', $script, 'before');
+    
+    // add meeting formats
+    $bmlt_integration = new BMLTIntegration;
+    $formatarr = $bmlt_integration->getMeetingFormats();
+    $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
+    
+    error_log("adding script ".$script);
+    $status = wp_add_inline_script('wbw-meeting-update-form-js', $script, 'before');
+
+
+    $result = [];
+    $result['scripts'] = [];
+    $result['styles'] = [];
+
+    // Print all loaded Scripts
+    global $wp_scripts;
+    foreach( $wp_scripts->queue as $script ) :
+       $result['scripts'][] =  $wp_scripts->registered[$script]->src . ";";
+    endforeach;
+
+    // Print all loaded Styles (CSS)
+    global $wp_styles;
+    foreach( $wp_styles->queue as $style ) :
+       $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
+    endforeach;
+
+    error_log(vdump($result));
 
     ob_start();
-    include('public/meeting_update.php');
+    include('public/meeting_update_form.php');
     $content .= ob_get_clean();
     return $content;
 }
@@ -66,17 +93,24 @@ function prevent_cache_register_script($handle, $deps, $name)
 
 function prevent_cache_register_style($handle, $deps, $name)
 {
-    wp_register_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
+    $ret = wp_register_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
+    error_log("register style");
+    error_log(vdump($ret));
 }
 
 function prevent_cache_enqueue_script($handle, $deps, $name)
 {
-    wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
+    $ret = wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
+    error_log("enqueue style ".$handle);
+    error_log(vdump($ret));
 }
 
 function prevent_cache_enqueue_style($handle, $deps, $name)
 {
-    wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
+    $ret = wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
+    error_log("enqueue style ".$handle);
+    error_log(vdump($ret));
+
 }
 
 function enqueue_form_deps()
@@ -86,11 +120,12 @@ function enqueue_form_deps()
     wp_register_style('select2css', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
     wp_register_script('select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
     prevent_cache_register_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
-    prevent_cache_register_script('wbw-meeting-update-js', array('jquery', 'jquery.validate'), 'js/meeting_update.js');
-    prevent_cache_register_style('wbw-meeting-update-css', array('jquery'), 'css/meeting-update-form.css');
+    prevent_cache_register_script('wbw-meeting-update-form-js', array('jquery', 'jquery.validate'), 'js/meeting_update_form.js');
+    prevent_cache_register_style('wbw-meeting-update-form-css', false, 'css/meeting_update_form.css');
     wp_register_script('jquery.validate', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
     wp_register_script('jquery.validate.additional', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jquery.validate'), '1.0', true);
 
+    error_log("scripts and styles registered");
 }
 
 function wbw_admin_scripts($hook)
@@ -232,8 +267,8 @@ function add_plugin_link($plugin_actions, $plugin_file)
 {
 
     $new_actions = array();
-    if (basename(plugin_dir_path(__FILE__)) . '/meeting-admin-workflow.php' === $plugin_file) {
-        $new_actions['cl_settings'] = sprintf(__('<a href="%s">Settings</a>', 'comment-limiter'), esc_url(admin_url('options-general.php?page=wbw-settings')));
+    if (basename(plugin_dir_path(__FILE__)) . '/wordpress-bmlt-workflow.php' === $plugin_file) {
+        $new_actions['cl_settings'] = sprintf(__('<a href="%s">Settings</a>', 'comment-limiter'), esc_url(admin_url('admin.php?page=wbw-settings')));
     }
 
     return array_merge($new_actions, $plugin_actions);
