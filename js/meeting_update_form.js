@@ -249,9 +249,10 @@ jQuery(document).ready(function ($) {
     clear_field("email_address");
     clear_field("format_shared_id_list");
     clear_field("meeting_id");
+    clear_field("meeting_searcher");
+    // set email selector to no
+    $("#add-email").val('no');
 
-    // reset selector
-    $("#meeting-searcher").val("").trigger("change");
   }
 
   // meeting logic before selection is made
