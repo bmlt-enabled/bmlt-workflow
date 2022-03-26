@@ -104,7 +104,7 @@ function meeting_update_form_handler_rest($data)
         "virtual_meeting_link" => array("url", false),
         "email_address" => array("email", true),
         "contact_number_confidential" => array("text", false),
-        "format_shared_id_list" => array("text",  $reason_new_bool),
+        "format_shared_id_list" => array("commaseperatednumbers",  $reason_new_bool),
         "additional_info" => array("textarea", $reason_close_bool),
         "starter_kit_postal_address" => array("textarea", false),
         "starter_kit_required" => array("text", $reason_new_bool),
@@ -129,6 +129,10 @@ function meeting_update_form_handler_rest($data)
             switch ($field_type) {
                 case ('text'):
                     $data[$field] = sanitize_text_field($data[$field]);
+                    break;
+                case ('commaseperatednumbers'):
+                    $f = preg_replace("/[^0-9,]/","",$data[$field]);
+                    $data[$field] = trim($f,',');
                     break;
                 case ('number'):
                 case ('bigint'):
