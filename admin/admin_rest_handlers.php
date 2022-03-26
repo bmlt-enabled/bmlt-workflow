@@ -400,13 +400,10 @@ class wbw_submissions_rest_handlers
             return $result;
         }
 
-        // $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' where id="%d" limit 1', $change_id);
-        // $result = $wpdb->get_row($sql, ARRAY_A);
-
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->wbw_rest_error("Submission id {$change_id} is already $change_made", 400);
+            return $this->wbw_rest_error("Submission id {$change_id} is already {$change_made}", 400);
         }
 
         $submission_type = $result['submission_type'];
