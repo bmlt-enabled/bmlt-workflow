@@ -313,6 +313,12 @@ jQuery(document).ready(function ($) {
         case "location_province":
           table += "<tr><td>Province/State:</td><td>" + d["changes_requested"].location_province + "</td></tr>";
           break;
+        case "location_sub_province":
+          table += "<tr><td>SubProvince:</td><td>" + d["changes_requested"].location_sub_province + "</td></tr>";
+          break;
+        case "location_nation":
+          table += "<tr><td>Nation:</td><td>" + d["changes_requested"].location_nation + "</td></tr>";
+          break;
         case "location_postal_code_1":
           table += "<tr><td>PostCode:</td><td>" + d["changes_requested"].location_postal_code_1 + "</td></tr>";
           break;
@@ -321,12 +327,12 @@ jQuery(document).ready(function ($) {
           table += "<tr><td>Meeting Day:</td><td>" + weekdays[d["changes_requested"].weekday_tinyint] + "</td></tr>";
           break;
         case "additional_info":
-          table += '<tr><td>Additional Info:</td><td><textarea rows="5" columns="50" disabled>'+ d["changes_requested"].additional_info+'</textarea></td></tr>';
+          table += '<tr><td>Additional Info:</td><td><textarea rows="5" columns="50" disabled>' + d["changes_requested"].additional_info + "</textarea></td></tr>";
           break;
         case "other_reason":
-          table += '<tr><td>Other Reason:</td><td><textarea rows="5" columns="50" disabled>'+ d["changes_requested"].other_reason+'</textarea></td></tr>';
+          table += '<tr><td>Other Reason:</td><td><textarea rows="5" columns="50" disabled>' + d["changes_requested"].other_reason + "</textarea></td></tr>";
           break;
-          case "format_shared_id_list":
+        case "format_shared_id_list":
           friendlyname = "Meeting Formats";
           // convert the meeting formats to human readable
           friendlydata = "";
@@ -338,7 +344,7 @@ jQuery(document).ready(function ($) {
           break;
       }
     }
-    if (("action_message" in d) &&  (d["action_message"] != '') &&  (d["action_message"] != null)){
+    if ("action_message" in d && d["action_message"] != "" && d["action_message"] != null) {
       table += "<tr><td>Message to submitter:</td><td>" + d["action_message"] + "</td></tr>";
     }
     table += "</table>";
