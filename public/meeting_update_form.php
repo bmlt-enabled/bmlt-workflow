@@ -61,7 +61,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                         </select>
                         <label for="contact_number_confidential" class="formbuilder-number-label">Contact Number (Confidential)</label>
                         <input type="number" name="contact_number_confidential" id="contact_number_confidential">
-                        <label for="group_relationship">Are you a?</label>
+                        <label for="group_relationship">Relationship to group</label>
                         <select name="group_relationship" id="group_relationship">
                             <option value="Group Member">Group Member</option>
                             <option value="Area Trusted Servant">Area Trusted Servant</option>
@@ -140,8 +140,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             <label for="location_postal_code_1">Postcode<span class="wbw-required-field"> *</span></label>
                             <input type="number" name="location_postal_code_1" size="5" max="9999" id="location_postal_code_1" required>
 
-                            <label for="meeting_update_form_format_shared_id_list">Meeting Formats</label>
-                            <select name="format_shared_id_list" id="meeting_update_form_format_shared_id_list"></select>
+                            <label for="format_shared_id_list">Meeting Formats</label>
+                            <select name="format_shared_id_list" id="format_shared_id_list"></select>
 
                             <label for=" virtual_meeting_link">Online Meeting Link</label>
                             <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">

@@ -411,19 +411,9 @@ jQuery(document).ready(function ($) {
     // in case we disabled this we want to send it now
     enable_field("service_body_bigint");
 
-    // meeting formats
-    var str = "";
-    $("#format-table tr").each(function () {
-      if ($(this).find("td input").prop("checked")) {
-        let inpid = $(this).find("td input").attr("id").replace("format-table-", "");
-        str = str + inpid + ",";
-      }
-    });
+    // turn the format list into a single string
+    $('#format_shared_id_list').val( $('#format_shared_id_list').val().join(",") );
 
-    if (str != "") {
-      str = str.slice(0, -1);
-      put_field("format_shared_id_list", str);
-    }
 
     // construct our duration
     str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
