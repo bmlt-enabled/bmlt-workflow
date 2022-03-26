@@ -96,7 +96,5 @@ body {
 }
 
 .grid-flex-item input{
-  flex-grow: 1;
-  height: 100px;
   width: 90%;
 }
