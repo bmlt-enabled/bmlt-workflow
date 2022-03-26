@@ -338,9 +338,9 @@ jQuery(document).ready(function ($) {
 
     // turn the format list into a single string
     $("#format_shared_id_list").val($("#format_shared_id_list").val().join(","));
-
+    
     // construct our duration
-    str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
+    var str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
     put_field("duration_time", str);
 
     var url = wp_rest_base + wbw_form_submit;
