@@ -95,6 +95,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                     <input type="time" name="start_time" size="10" id="start_time" required>
                                 </div>
                                 <div class="grid-flex-item">
+                                <label>Duration</label>
                                     <div class="inline">
                                         <span>
                                             <select id="duration_hours">
