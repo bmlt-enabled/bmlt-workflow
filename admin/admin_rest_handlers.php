@@ -1,7 +1,5 @@
 <?php
 
-use Crell\ApiProblem\ApiProblem;
-
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 class wbw_submissions_rest_handlers
@@ -390,7 +388,7 @@ class wbw_submissions_rest_handlers
     {
         global $wpdb;
         global $wbw_submissions_table_name;
-
+        error_log(vdump($request));
         $change_id = $request->get_param('id');
 
         error_log("getting changes for id " . $change_id);
@@ -404,6 +402,18 @@ class wbw_submissions_rest_handlers
 
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
             return $this->wbw_rest_error("Submission id {$change_id} is already {$change_made}", 400);
+        }
+
+        $params = $request->get_json_params();
+        // error_log($params);
+        $message = '';
+        if (!empty($params['action_message'])) {
+            $message = $params['action_message'];
+            if (strlen($message) > 1023) {
+                return $this->wbw_rest_error('Approve message must be less than 1024 characters', 400);
+            }
+        } else {
+            error_log("action message is null");
         }
 
         $submission_type = $result['submission_type'];
@@ -450,6 +460,11 @@ class wbw_submissions_rest_handlers
                 $changearr['bmlt_ajax_callback'] = 1;
                 $changearr['set_meeting_change'] = json_encode($change);
                 $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
+
+                if (is_wp_error($response)) {
+                    return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+                }
+        
                 break;
             case 'reason_change':
                 // needs an id_bigint not a meeting_id
@@ -460,6 +475,11 @@ class wbw_submissions_rest_handlers
                 $changearr['set_meeting_change'] = json_encode($change);
                 $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
 
+                if (is_wp_error($response)) {
+                    return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+                }
+        
+
                 // $change['admin_action'] = 'modify_meeting';
                 // $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
                 break;
@@ -467,33 +487,57 @@ class wbw_submissions_rest_handlers
                 // needs an id_bigint not a meeting_id
                 $change['id_bigint'] = $change['meeting_id'];
                 unset($change['meeting_id']);
-                // handle publish/unpublish here
-                $change['published'] = 0;
 
-                $changearr = array();
-                $changearr['bmlt_ajax_callback'] = 1;
-                $changearr['set_meeting_change'] = json_encode($change);
-                $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
+                error_log(vdump($params));
+                // error_log("params detail".$params['detail']);
+                // only an admin can get the service areas detail (permissions) information
+                if ((!empty($params['delete'])) && ($params['delete'] == "true")) {
+                    $changearr = array();
+                    $changearr['bmlt_ajax_callback'] = 1;
+                    $changearr['meeting_id'] = $change['id_bigint'];
+                    // {'success':true,'report':'3557'}
+                    $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
+
+                    if (is_wp_error($response)) {
+                        return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+                    }
+            
+                    $arr = json_decode(wp_remote_retrieve_body($response));
+                    if((!empty($arr['report'])) && ($arr['report'] != $change['id_bigint']))
+                    {
+                        return $this->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
+                    }
+                }
+                else
+                {
+                    // unpublish by default
+                    $change['published'] = 0;
+
+                    $changearr = array();
+                    $changearr['bmlt_ajax_callback'] = 1;
+                    $changearr['set_meeting_change'] = json_encode($change);
+                    $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
+
+                    if (is_wp_error($response)) {
+                        return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+                    }
+
+                    $arr = json_decode(wp_remote_retrieve_body($response));
+
+                    if((!empty($arr['published'])) && ($arr['published'] != 0))
+                    {
+                        return $this->wbw_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
+                    }
+                }
+
                 break;
+                case 'reason_other':
+                {
+                    
+                }
     
             default:
                 return $this->wbw_rest_error("This change type ({$submission_type}) cannot be approved", 400);
-        }
-
-        if (is_wp_error($response)) {
-            return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
-        }
-
-        $params = $request->get_json_params();
-        // error_log($params);
-        $message = '';
-        if (!empty($params['action_message'])) {
-            $message = $params['action_message'];
-            if (strlen($message) > 1023) {
-                return $this->wbw_rest_error('Approve message must be less than 1024 characters', 400);
-            }
-        } else {
-            error_log("action message is null");
         }
 
         $current_user = wp_get_current_user();
