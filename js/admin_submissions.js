@@ -130,7 +130,7 @@ jQuery(document).ready(function ($) {
         action: function (e, dt, button, config) {
           var id = dt.row(".selected").data()["id"];
           var reason = dt.row(".selected").data()["submission_type"];
-          if ($reason === "reason_close") {
+          if (reason === "reason_close") {
             // clear text area from before
             $("#wbw_submission_approve_close_dialog_textarea").val("");
             $("#wbw_submission_approve_close_dialog").data("id", id).dialog("open");
