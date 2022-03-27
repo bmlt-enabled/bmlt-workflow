@@ -388,6 +388,7 @@ class wbw_submissions_rest_handlers
     {
         global $wpdb;
         global $wbw_submissions_table_name;
+        error_log("REQUEST");
         error_log(vdump($request));
         $change_id = $request->get_param('id');
 
