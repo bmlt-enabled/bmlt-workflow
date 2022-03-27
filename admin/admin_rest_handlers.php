@@ -72,10 +72,9 @@ class wbw_submissions_rest_handlers
             $req = array();
             $req['admin_action'] = 'get_service_body_info';
             $req['flat'] = '';
-            $bmlt_integration = new BMLTIntegration;
     
             // get an xml for a workaround
-            $response = $bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
+            $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
             if (is_wp_error($response)) {
                 return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
             }
@@ -240,6 +239,8 @@ class wbw_submissions_rest_handlers
         $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' s inner join ' . $wbw_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
         // error_log($sql);
         $result = $wpdb->get_row($sql, ARRAY_A);
+        error_log("RESULT");
+        error_log(vdump($result));
         if (empty($result)) {
             return $this->wbw_rest_error("Permission denied viewing submission id {$change_id}", 400);
         }
@@ -449,7 +450,7 @@ class wbw_submissions_rest_handlers
 
         // error_log("json decoded");
         // error_log(vdump($change));
-        // error_log("change type = " . $submission_type);
+        error_log("change type = " . $submission_type);
         switch ($submission_type) {
             case 'reason_new':
                 // $change['admin_action'] = 'add_meeting';
@@ -471,6 +472,8 @@ class wbw_submissions_rest_handlers
                 // needs an id_bigint not a meeting_id
                 $change['id_bigint'] = $change['meeting_id'];
                 unset($change['meeting_id']);
+                error_log("CHANGE");
+                error_log(vdump($change));
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;
                 $changearr['set_meeting_change'] = json_encode($change);
@@ -479,7 +482,18 @@ class wbw_submissions_rest_handlers
                 if (is_wp_error($response)) {
                     return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                 }
-        
+                error_log("response");
+                error_log(vdump($response));
+                $arr = json_decode(wp_remote_retrieve_body($response),true)[0];
+                error_log("arr");
+                error_log(vdump($arr));
+                error_log("change");
+                error_log(vdump($change));
+                // the response back from BMLT doesnt even match what we are trying to change
+                if((!empty($arr['id_bigint'])) && ($arr['id_bigint'] != $change['id_bigint']))
+                {
+                    return $this->wbw_rest_error('BMLT Communication Error - Meeting change failed', 500);
+                }
 
                 // $change['admin_action'] = 'modify_meeting';
                 // $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
@@ -495,7 +509,7 @@ class wbw_submissions_rest_handlers
                 if ((!empty($params['delete'])) && ($params['delete'] == "true")) {
                     $changearr = array();
                     $changearr['bmlt_ajax_callback'] = 1;
-                    $changearr['meeting_id'] = $change['id_bigint'];
+                    $changearr['delete_meeting'] = $change['id_bigint'];
                     // {'success':true,'report':'3557'}
                     $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
 
@@ -503,7 +517,7 @@ class wbw_submissions_rest_handlers
                         return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                     }
             
-                    $arr = json_decode(wp_remote_retrieve_body($response));
+                    $arr = json_decode(wp_remote_retrieve_body($response),true)[0];
                     if((!empty($arr['report'])) && ($arr['report'] != $change['id_bigint']))
                     {
                         return $this->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
@@ -523,7 +537,7 @@ class wbw_submissions_rest_handlers
                         return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                     }
 
-                    $arr = json_decode(wp_remote_retrieve_body($response));
+                    $arr = json_decode(wp_remote_retrieve_body($response),true)[0];
 
                     if((!empty($arr['published'])) && ($arr['published'] != 0))
                     {
