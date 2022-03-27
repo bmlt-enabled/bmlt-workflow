@@ -128,10 +128,17 @@ jQuery(document).ready(function ($) {
         text: "Approve",
         enabled: false,
         action: function (e, dt, button, config) {
-          var id = dt.cell(".selected", 0).data();
-          // clear text area from before
-          $("#wbw_submission_approve_dialog_textarea").val("");
-          $("#wbw_submission_approve_dialog").data("id", id).dialog("open");
+          var id = dt.row(".selected").data()["id"];
+          var reason = dt.row(".selected").data()["submission_type"];
+          if ($reason === "reason_close") {
+            // clear text area from before
+            $("#wbw_submission_approve_close_dialog_textarea").val("");
+            $("#wbw_submission_approve_close_dialog").data("id", id).dialog("open");
+          } else {
+            // clear text area from before
+            $("#wbw_submission_approve_dialog_textarea").val("");
+            $("#wbw_submission_approve_dialog").data("id", id).dialog("open");
+          }
         },
       },
       {
@@ -139,7 +146,7 @@ jQuery(document).ready(function ($) {
         text: "Reject",
         enabled: false,
         action: function (e, dt, button, config) {
-          var id = dt.cell(".selected", 0).data();
+          var id = dt.row(".selected").data()["id"];
           // clear text area from before
           $("#wbw_submission_reject_dialog_textarea").val("");
           $("#wbw_submission_reject_dialog").data("id", id).dialog("open");
@@ -150,7 +157,7 @@ jQuery(document).ready(function ($) {
         text: "QuickEdit",
         extend: "selected",
         action: function (e, dt, button, config) {
-          var id = dt.cell(".selected", 0).data();
+          var id = dt.row(".selected").data()["id"];
           populate_and_open_quickedit(id);
         },
       },
@@ -159,7 +166,7 @@ jQuery(document).ready(function ($) {
         text: "Delete",
         extend: "selected",
         action: function (e, dt, button, config) {
-          var id = dt.cell(".selected", 0).data();
+          var id = dt.row(".selected").data()["id"];
           $("#wbw_submission_delete_dialog").data("id", id).dialog("open");
         },
       },
