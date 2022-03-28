@@ -22,24 +22,6 @@
 body {
   margin: 40px;
 }
-
-.inline label {
-  width: 100%;
-  display: inline;
-  padding: 10px 5px 5px 2px;
-  letter-spacing: 1px;
-  cursor: pointer;
-}
-
-.inline select {
-  line-height: 1.5;
-  font-size: 1.2em;
-  padding: 5px 10px;
-  display: inline;
-  width: 35%;
-  height: 2.1em;
-}
-
 .form-grid {
 		display: grid;
     grid-gap: 10px;
@@ -63,43 +45,47 @@ body {
 	}
 
 
-  .form-grid input {
-  line-height: 1.5;
-  font-size: 1.2em;
-  padding: 5px 10px;
-  display: block;
-  height: 2.1em;
-}
-
-.form-grid select {
-  line-height: 1.5;
-  font-size: 1.2em;
-  padding: 5px 10px;
-  display: block;
-  height: 2.1em;
-}
-
 .form-grid input {
+  line-height: 1.5;
+  font-size: 1.2em;
+  padding: 5px 10px;
+  display: block;
   width: 100%;
+  height: 2.1em;
 }
 
 .form-grid select {
+  line-height: 1.5;
+  font-size: 1.2em;
+  padding: 5px 10px;
+  display: block;
   width: 100%;
+  height: 2.1em;
 }
 
 .form-grid label {
-  width: 100%;
-}
-
-#form_replace label {
   width: 100%;
   display: block;
   padding: 10px 5px 5px 2px;
   letter-spacing: 1px;
   cursor: pointer;
 }
+.form-grid .inline label {
+  width: 100%;
+  display: inline;
+  padding: 10px 5px 5px 2px;
+  letter-spacing: 1px;
+  cursor: pointer;
+}
 
-
+.form-grid .inline select {
+  line-height: 1.5;
+  font-size: 1.2em;
+  padding: 5px 10px;
+  display: inline;
+  width: 35%;
+  height: 2.1em;
+}
 .grid-flex-container {
   display: flex;
 }
