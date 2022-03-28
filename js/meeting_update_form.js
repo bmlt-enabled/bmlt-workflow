@@ -288,6 +288,7 @@ jQuery(document).ready(function ($) {
         $("#meeting_content").show();
         $("#personal_details").show();
         $("#meeting_details").show();
+        $("#additional_info_div").show();
         // display form instructions
         $("#instructions").text(
           "Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
@@ -301,6 +302,8 @@ jQuery(document).ready(function ($) {
         $("#meeting_content").hide();
         $("#personal_details").show();
         $("#meeting_details").show();
+        $("#additional_info_div").show();
+
         // change meeting has a search bar
         $("#meeting_selector").show();
 
@@ -311,6 +314,7 @@ jQuery(document).ready(function ($) {
         $("#meeting_content").hide();
         $("#personal_details").show();
         $("#meeting_details").show();
+        $("#additional_info_div").show();
 
         // close meeting has a search bar
         $("#meeting_selector").show();
@@ -328,6 +332,7 @@ jQuery(document).ready(function ($) {
         $("#personal_details").show();
         $("#meeting_details").hide();
         $("#other_reason").prop("required", true);
+        $("#additional_info_div").hide();
         break;
     }
   });

@@ -168,6 +168,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 </div>
                 <!-- other details -->
                 <div class="form-grid-bottom">
+                    <div id="additional_info_div">
                     <fieldset>
                         <legend>Additional Information</legend>
                         <textarea name="additional_info" id="additional_info" rows="5" cols="50" placeholder="Provide any more detail that may help us action your meeting change request"></textarea>
@@ -181,6 +182,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" rows="5" cols="50"></textarea>
                         </div>
                     </fieldset>
+                    </div>
                     <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
                 </div>
             </div>
