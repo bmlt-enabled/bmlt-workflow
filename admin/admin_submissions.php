@@ -8,21 +8,36 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 <!-- Approve dialog -->
 <div id="wbw_submission_approve_dialog" class="hidden" style="max-width:800px">
     <label class='dialog_label' for="wbw_submission_approve_dialog_textarea">Approval note:</label>
-    <textarea class='dialog_textarea' id="wbw_submission_approve_dialog_textarea" rows=5 cols=60 placeholder='Add a note to this approval for the submitter'></textarea>
+    <div class="grow-wrap">
+    <textarea class='dialog_textarea' id="wbw_submission_approve_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
+    </div>
     <p>You can use the quickedit function to make any extra changes before approval.</p>
     <p>Are you sure you would like to approve the submission?</p>
+</div>
+
+<!-- Approve dialog -->
+<div id="wbw_submission_approve_close_dialog" class="hidden" style="max-width:800px">
+    <label class='dialog_label' for="wbw_submission_approve_close_dialog_textarea">Approval note:</label>
+    <div class="grow-wrap">
+    <textarea class='dialog_textarea' id="wbw_submission_approve_close_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
+    </div>
+    <p>Choose whether you'd like the meeting to be deleted from BMLT, or marked as unpublished.</p>
+    <input type='radio' name='close_action' id='close_unpublish'><label for='close_unpublish'>Unpublish</label>
+    <input type='radio' name='close_action' id='close_delete'><label for='close_delete'>Delete</label>
 </div>
 
 <!-- Delete dialog -->
 <div id="wbw_submission_delete_dialog" class="hidden" style="max-width:800px">
     <p>This change cannot be undone. Use this to remove an entirely unwanted submission from the list.</p>
-    <p>Are you sure you would like to delete the submission completely?</p>
+    <p>Are you sure you would like to delete this submission completely?</p>
 </div>
 
 <!-- Reject dialog -->
 <div id="wbw_submission_reject_dialog" class="hidden" style="max-width:800px">
     <label class='dialog_label' for="wbw_submission_reject_dialog_textarea">Rejection note:</label>
-    <textarea class='dialog_textarea' id="wbw_submission_reject_dialog_textarea" rows=5 cols=60 placeholder='Add a note to this rejection for the submitter'></textarea>
+    <div class="grow-wrap">
+    <textarea class='dialog_textarea' id="wbw_submission_reject_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this reject for the submitter'></textarea>
+    </div>
     <p>Are you sure you would like to reject this submission?</p>
 </div>
 

@@ -53,7 +53,7 @@ jQuery(document).ready(function ($) {
 
         function matchCustom(params, data) {
           // If there are no search terms, return all of the data
-          if (String.prototype.trim(params.term) === "") {
+          if ((typeof params.term === "undefined") || (params.term.trim() === "")) {
             return data;
           }
 
@@ -260,6 +260,8 @@ jQuery(document).ready(function ($) {
   $("#meeting_content").hide();
   $("#other_reason_div").hide();
   $("#other_reason").prop("required", false);
+  $("#personal_details").attr("class","form-grid-col2");
+
 
   $("#update_reason").change(function () {
     // hide all the optional items
@@ -274,6 +276,7 @@ jQuery(document).ready(function ($) {
     $("#other_reason_div").hide();
     $("#other_reason").prop("required", false);
     $("#additional_info").prop("required", false);
+    $("#personal_details").attr("class","form-grid-col2");
 
     enable_edits();
     // enable items as required
@@ -286,6 +289,7 @@ jQuery(document).ready(function ($) {
         $("#meeting_content").show();
         $("#personal_details").show();
         $("#meeting_details").show();
+        $("#additional_info_div").show();
         // display form instructions
         $("#instructions").text(
           "Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
@@ -299,6 +303,8 @@ jQuery(document).ready(function ($) {
         $("#meeting_content").hide();
         $("#personal_details").show();
         $("#meeting_details").show();
+        $("#additional_info_div").show();
+
         // change meeting has a search bar
         $("#meeting_selector").show();
 
@@ -309,6 +315,7 @@ jQuery(document).ready(function ($) {
         $("#meeting_content").hide();
         $("#personal_details").show();
         $("#meeting_details").show();
+        $("#additional_info_div").show();
 
         // close meeting has a search bar
         $("#meeting_selector").show();
@@ -318,13 +325,15 @@ jQuery(document).ready(function ($) {
       case "reason_other":
         clear_form();
         // display form instructions
-        $("#instructions").text("Please let us know the details about your meeting change.");
+        $("#instructions").text("");
         // other reason has a textarea
         $("#other_reason_div").show();
         $("#meeting_content").show();
+        $("#personal_details").attr("class","form-grid-col1");
         $("#personal_details").show();
         $("#meeting_details").hide();
         $("#other_reason").prop("required", true);
+        $("#additional_info_div").hide();
         break;
     }
   });

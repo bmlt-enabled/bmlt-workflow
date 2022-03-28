@@ -2,9 +2,9 @@
 
 /**
  * Plugin Name: Wordpress BMLT Workflow
- * Plugin URI: https://github.com/nigel-bmlt/meeting-admin-workflow
+ * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
  * Description: Wordpress BMLT Workflow
- * Version: 0.3.0
+ * Version: 0.3.1
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
@@ -199,6 +199,11 @@ function wbw_admin_scripts($hook)
             // error_log("result = ".vdump($result));
             $script .= 'var wbw_admin_wbw_service_bodies = ' . json_encode($result) . '; ';
 
+            // defaults for approve close form
+            $wbw_default_closed_meetings = get_option('wbw_delete_closed_meetings');
+            $script .= 'var wbw_default_closed_meetings = "' . $wbw_default_closed_meetings . '"; ';
+
+
             wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;
         case ('bmlt-workflow_page_wbw-service-bodies'):
@@ -365,6 +370,18 @@ function wbw_register_setting()
 
     register_setting(
         'wbw-settings-group',
+        'wbw_delete_closed_meetings',
+        array(
+            'type' => 'string',
+            'description' => 'Default for close meeting submission',
+            'sanitize_callback' => 'string_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => 'unpublish'
+        )
+    );
+
+    register_setting(
+        'wbw-settings-group',
         'wbw_new_meeting_template',
         array(
             'type' => 'string',
@@ -481,6 +498,15 @@ function wbw_register_setting()
         'wbw-settings-section-id'
     );
 
+    add_settings_field(
+        'wbw_delete_closed_meetings',
+        'Default for close meeting submission',
+        'wbw_delete_closed_meetings_html',
+        'wbw-settings',
+        'wbw-settings-section-id'
+    );
+
+    
 
     add_settings_field(
         'wbw_fso_email_address',
@@ -578,6 +604,31 @@ function wbw_email_from_address_html()
     END;
 
     echo '<br><label for="wbw_email_from_address"><b>From Address:</b></label><input type="text" size="50" name="wbw_email_from_address" value="' . $from_address . '"/>';
+    echo '<br><br>';
+}
+
+function wbw_delete_closed_meetings_html()
+{
+    $selection = get_option('wbw_delete_closed_meetings');
+    $delete = '';
+    $unpublish = '';
+    if($selection === 'delete')
+    {
+        $delete = 'selected';
+    }
+    else
+    {
+        $unpublish = 'selected';
+    }
+
+    echo <<<END
+    <div class="wbw_info_text">
+    <br>Trusted servants approving a 'Close Meeting' request can choose to either Delete or Unpublish. This option selects the default for all trusted servants.
+    <br><br>
+    </div>
+    END;
+
+    echo '<br><label for="wbw_delete_closed_meetings"><b>Close meeting default:</b></label><select name="wbw_delete_closed_meetings"><option name="unpublish" value="unpublish" '.$unpublish.'>Unpublish</option><option name="delete" value="delete" '.$delete.'>Delete</option>';
     echo '<br><br>';
 }
 

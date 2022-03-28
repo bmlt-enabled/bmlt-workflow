@@ -10,6 +10,7 @@ function dismiss_notice(element) {
 var wbw_changedata = {};
 
 jQuery(document).ready(function ($) {
+
   function populate_and_open_quickedit(id) {
     // clear quickedit
 
@@ -36,38 +37,50 @@ jQuery(document).ready(function ($) {
         .then((data) => {
           // fill in all the bmlt stuff
           var item = data[0];
-          // split up the duration so we can use it in the select
-          if ("duration_time" in item) {
-            var durationarr = item["duration_time"].split(":");
-            // hoping we got both hours, minutes and seconds here
-            if (durationarr.length == 3) {
-              $("#quickedit_duration_hours").val(durationarr[0]);
-              $("#quickedit_duration_minutes").val(durationarr[1]);
+          if (!Object.keys(data).length) {
+            var a = {};
+            a["responseJSON"] = {};
+            a["responseJSON"]["message"] = "Error retrieving BMLT data";
+            notice_error(a);
+          } else {
+            // split up the duration so we can use it in the select
+            if ("duration_time" in item) {
+              var durationarr = item["duration_time"].split(":");
+              // hoping we got both hours, minutes and seconds here
+              if (durationarr.length == 3) {
+                $("#quickedit_duration_hours").val(durationarr[0]);
+                $("#quickedit_duration_minutes").val(durationarr[1]);
+              }
             }
-          }
-          // split up the format list so we can use it in the select
-          if ("format_shared_id_list" in item) {
-            item["format_shared_id_list"] = item["format_shared_id_list"].split(",");
-          }
-
-          Object.keys(item).forEach((element) => {
-            if ($("#quickedit_" + element) instanceof jQuery) {
-              $("#quickedit_" + element).val(item[element]);
+            // split up the format list so we can use it in the select
+            if ("format_shared_id_list" in item) {
+              item["format_shared_id_list"] = item["format_shared_id_list"].split(",");
             }
-          });
-          // fill in and highlight the changes
-          changes_requested = wbw_changedata[id].changes_requested;
 
-          if ("format_shared_id_list" in changes_requested) {
-            changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
-          }
+            Object.keys(item).forEach((element) => {
+              if ($("#quickedit_" + element) instanceof jQuery) {
+                $("#quickedit_" + element).val(item[element]);
+              }
+            });
+            // fill in and highlight the changes
+            changes_requested = wbw_changedata[id].changes_requested;
 
-          Object.keys(changes_requested).forEach((element) => {
-            if ($("#quickedit_" + element) instanceof jQuery) {
-              $("#quickedit_" + element).addClass("wbw-changed");
-              $("#quickedit_" + element).val(changes_requested[element]);
+            if ("format_shared_id_list" in changes_requested) {
+              changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
             }
-          });
+
+            Object.keys(changes_requested).forEach((element) => {
+              if ($("#quickedit_" + element) instanceof jQuery) {
+                $("#quickedit_" + element).addClass("wbw-changed");
+                $("#quickedit_" + element).val(changes_requested[element]);
+              }
+            });
+            // trigger adding of highlights when input changes
+            $(".quickedit-input").on("input", function () {
+              $(this).addClass("wbw-changed");
+            });
+            $("#wbw_submission_quickedit_dialog").data("id", id).dialog("open");
+          }
         });
     } else if (wbw_changedata[id].submission_type == "reason_new") {
       // fill from changes
@@ -92,18 +105,29 @@ jQuery(document).ready(function ($) {
           $("#quickedit_" + element).val(changes_requested[element]);
         }
       });
+
+      // trigger adding of highlights when input changes
+      $(".quickedit-input").on("input", function () {
+        $(this).addClass("wbw-changed");
+      });
+      $("#wbw_submission_quickedit_dialog").data("id", id).dialog("open");
     }
-    // trigger adding of highlights when input changes
-    $(".quickedit-input").on("input", function () {
-      $(this).addClass("wbw-changed");
-    });
-    $("#wbw_submission_quickedit_dialog").data("id", id).dialog("open");
   }
 
   function clear_notices() {
     jQuery(".notice-dismiss").each(function (i, e) {
       dismiss_notice(e);
     });
+  }
+
+  // default close meeting radio button
+  if (wbw_default_closed_meetings==='delete')
+  {
+    $("#close_delete").prop("checked", true);
+  }
+  else
+  {
+    $("#close_unpublish").prop("checked", true);
   }
 
   var formatdata = [];
@@ -128,10 +152,17 @@ jQuery(document).ready(function ($) {
         text: "Approve",
         enabled: false,
         action: function (e, dt, button, config) {
-          var id = dt.cell(".selected", 0).data();
-          // clear text area from before
-          $("#wbw_submission_approve_dialog_textarea").val("");
-          $("#wbw_submission_approve_dialog").data("id", id).dialog("open");
+          var id = dt.row(".selected").data()["id"];
+          var reason = dt.row(".selected").data()["submission_type"];
+          if (reason === "reason_close") {
+            // clear text area from before
+            $("#wbw_submission_approve_close_dialog_textarea").val("");
+            $("#wbw_submission_approve_close_dialog").data("id", id).dialog("open");
+          } else {
+            // clear text area from before
+            $("#wbw_submission_approve_dialog_textarea").val("");
+            $("#wbw_submission_approve_dialog").data("id", id).dialog("open");
+          }
         },
       },
       {
@@ -139,7 +170,7 @@ jQuery(document).ready(function ($) {
         text: "Reject",
         enabled: false,
         action: function (e, dt, button, config) {
-          var id = dt.cell(".selected", 0).data();
+          var id = dt.row(".selected").data()["id"];
           // clear text area from before
           $("#wbw_submission_reject_dialog_textarea").val("");
           $("#wbw_submission_reject_dialog").data("id", id).dialog("open");
@@ -150,7 +181,7 @@ jQuery(document).ready(function ($) {
         text: "QuickEdit",
         extend: "selected",
         action: function (e, dt, button, config) {
-          var id = dt.cell(".selected", 0).data();
+          var id = dt.row(".selected").data()["id"];
           populate_and_open_quickedit(id);
         },
       },
@@ -159,7 +190,7 @@ jQuery(document).ready(function ($) {
         text: "Delete",
         extend: "selected",
         action: function (e, dt, button, config) {
-          var id = dt.cell(".selected", 0).data();
+          var id = dt.row(".selected").data()["id"];
           $("#wbw_submission_delete_dialog").data("id", id).dialog("open");
         },
       },
@@ -449,6 +480,7 @@ jQuery(document).ready(function ($) {
 
   wbw_create_generic_modal("wbw_submission_delete_dialog", "Delete Submission", "auto", "auto");
   wbw_create_generic_modal("wbw_submission_approve_dialog", "Approve Submission", "auto", "auto");
+  wbw_create_generic_modal("wbw_submission_approve_close_dialog", "Approve Submission", "auto", "auto");
   wbw_create_generic_modal("wbw_submission_reject_dialog", "Reject Submission", "auto", "auto");
   wbw_create_quickedit_modal("wbw_submission_quickedit_dialog", "Submission QuickEdit", "60%", 768);
 
@@ -456,6 +488,12 @@ jQuery(document).ready(function ($) {
     clear_notices();
     generic_approve_handler(id, "POST", "/approve", "wbw_submission_approve");
   };
+
+  wbw_submission_approve_close_dialog_ok = function (id) {
+    clear_notices();
+    generic_approve_handler(id, "POST", "/approve", "wbw_submission_approve_close");
+  };
+
   wbw_submission_reject_dialog_ok = function (id) {
     clear_notices();
     generic_approve_handler(id, "POST", "/reject", "wbw_submission_reject");
@@ -467,10 +505,23 @@ jQuery(document).ready(function ($) {
 
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
-    var action_message = String.prototype.trim($("#" + slug + "_dialog_textarea").val());
-    if (action_message === "") {
+    var action_message = $("#" + slug + "_dialog_textarea")
+      .val()
+      .trim();
+    if (action_message !== "") {
       parameters["action_message"] = action_message;
     }
+
+    // delete/unpublish handling on the approve+close dialog
+    if (slug === "wbw_submission_approve_close") {
+      option = $("#" + slug + '_dialog input[name="close_action"]:checked').attr("id");
+      if (option === "close_delete") {
+        parameters["delete"] = true;
+      } else {
+        parameters["delete"] = false;
+      }
+    }
+
     $.ajax({
       url: wbw_admin_submissions_rest_url + id + url,
       type: action,

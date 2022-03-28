@@ -1,14 +1,15 @@
 <?php
 
-function vdump($object)
-{
-    ob_start();
-    var_dump($object);
-    $contents = ob_get_contents();
-    ob_end_clean();
-    return $contents;
+if (!(function_exists('vdump'))) {
+    function vdump($object)
+    {
+        ob_start();
+        var_dump($object);
+        $contents = ob_get_contents();
+        ob_end_clean();
+        return $contents;
+    }
 }
-
 // accepts raw string or array
 function wbw_rest_success($message)
 {
