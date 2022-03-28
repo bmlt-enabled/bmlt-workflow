@@ -201,7 +201,7 @@ function wbw_admin_scripts($hook)
 
             // defaults for approve close form
             $wbw_default_closed_meetings = get_option('wbw_delete_closed_meetings');
-            $script .= 'var wbw_default_closed_meetings = ' . $wbw_default_closed_meetings . '; ';
+            $script .= 'var wbw_default_closed_meetings = "' . $wbw_default_closed_meetings . '"; ';
 
 
             wp_add_inline_script('admin_submissions_js', $script, 'before');
