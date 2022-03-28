@@ -476,9 +476,24 @@ jQuery(document).ready(function ($) {
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
     var action_message = String.prototype.trim($("#" + slug + "_dialog_textarea").val());
-    if (action_message === "") {
+    if (action_message !== "") {
       parameters["action_message"] = action_message;
     }
+
+    // delete/unpublish handling on the approve+close dialog
+    if (slug === 'wbw_submission_approve_close')
+    {
+      option = $('#'+slug+'_dialog input[name="close_action"]:checked').attr('id');
+      if(option === 'close_delete')
+      {
+        parameters["delete"] = true;
+      }
+      else
+      {
+        parameters["delete"] = false;
+      }
+    }
+
     $.ajax({
       url: wbw_admin_submissions_rest_url + id + url,
       type: action,
