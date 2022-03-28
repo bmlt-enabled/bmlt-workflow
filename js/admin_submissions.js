@@ -10,7 +10,6 @@ function dismiss_notice(element) {
 var wbw_changedata = {};
 
 jQuery(document).ready(function ($) {
-
   function populate_and_open_quickedit(id) {
     // clear quickedit
 
@@ -121,12 +120,9 @@ jQuery(document).ready(function ($) {
   }
 
   // default close meeting radio button
-  if (wbw_default_closed_meetings==='delete')
-  {
+  if (wbw_default_closed_meetings === "delete") {
     $("#close_delete").prop("checked", true);
-  }
-  else
-  {
+  } else {
     $("#close_unpublish").prop("checked", true);
   }
 
@@ -505,11 +501,13 @@ jQuery(document).ready(function ($) {
 
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
-    var action_message = $("#" + slug + "_dialog_textarea")
-      .val()
-      .trim();
-    if (action_message !== "") {
-      parameters["action_message"] = action_message;
+    if ($("#" + slug + "_dialog_textarea") instanceof jQuery) {
+      var action_message = $("#" + slug + "_dialog_textarea")
+        .val()
+        .trim();
+      if (action_message !== "") {
+        parameters["action_message"] = action_message;
+      }
     }
 
     // delete/unpublish handling on the approve+close dialog
