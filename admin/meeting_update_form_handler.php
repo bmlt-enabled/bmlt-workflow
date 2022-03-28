@@ -127,6 +127,9 @@ function meeting_update_form_handler_rest($data)
 
     $sanitised_fields = array();
 
+    // blank meeting id if not provided
+    $sanitised_fields['meeting_id'] = 0;
+
     // sanitise all provided fields and drop all others
     foreach ($subfields as $field => $validation) {
         $field_type = $validation[0];
@@ -147,6 +150,7 @@ function meeting_update_form_handler_rest($data)
                     {
                         return invalid_form_field($field);
                     }
+                    break;
                 case ('commaseperatednumbers'):
                     if (preg_match("/[^0-9,]/", $data[$field])) {
                         return invalid_form_field($field);
@@ -331,7 +335,7 @@ function meeting_update_form_handler_rest($data)
                 }
             }
             // populate the meeting name so we dont need to do it again on the submission page
-            $meeting = bmlt_retrieve_single_meeting($submission['meeting_id']);
+            $meeting = bmlt_retrieve_single_meeting($sanitised_fields['meeting_id']);
             $submission['meeting_name'] = $meeting['meeting_name'];
 
             break;
