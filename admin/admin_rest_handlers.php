@@ -516,9 +516,11 @@ class wbw_submissions_rest_handlers
                     if (is_wp_error($response)) {
                         return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                     }
-                    error_log("response");
-                    error_log(vdump($response));
-                    $arr = json_decode(wp_remote_retrieve_body($response),true)[0];
+                    $arr = json_decode(wp_remote_retrieve_body($response),true);
+                    if((!empty($arr['success'])) && ($arr['success'] != 'true'))
+                    {
+                        return $this->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
+                    }
                     if((!empty($arr['report'])) && ($arr['report'] != $change['id_bigint']))
                     {
                         return $this->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
