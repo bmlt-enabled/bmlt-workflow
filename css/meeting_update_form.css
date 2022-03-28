@@ -63,7 +63,7 @@ body {
 	}
 
 
-#form_replace input {
+  .form-grid input {
   line-height: 1.5;
   font-size: 1.2em;
   padding: 5px 10px;
@@ -71,7 +71,7 @@ body {
   height: 2.1em;
 }
 
-#form_replace select {
+.form-grid select {
   line-height: 1.5;
   font-size: 1.2em;
   padding: 5px 10px;
