@@ -53,7 +53,7 @@ jQuery(document).ready(function ($) {
 
         function matchCustom(params, data) {
           // If there are no search terms, return all of the data
-          if (params.term.trim() === "") {
+          if ((typeof params.term !== "undefined")&& (params.term.trim() === "")) {
             return data;
           }
 
