@@ -199,6 +199,11 @@ function wbw_admin_scripts($hook)
             // error_log("result = ".vdump($result));
             $script .= 'var wbw_admin_wbw_service_bodies = ' . json_encode($result) . '; ';
 
+            // defaults for approve close form
+            $wbw_default_closed_meetings = get_option('wbw_delete_closed_meetings');
+            $script .= 'var wbw_default_closed_meetings = ' . $wbw_default_closed_meetings . '; ';
+
+
             wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;
         case ('bmlt-workflow_page_wbw-service-bodies'):

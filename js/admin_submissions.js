@@ -10,6 +10,7 @@ function dismiss_notice(element) {
 var wbw_changedata = {};
 
 jQuery(document).ready(function ($) {
+
   function populate_and_open_quickedit(id) {
     // clear quickedit
 
@@ -117,6 +118,16 @@ jQuery(document).ready(function ($) {
     jQuery(".notice-dismiss").each(function (i, e) {
       dismiss_notice(e);
     });
+  }
+
+  // default close meeting radio button
+  if (wbw_default_closed_meetings==='delete')
+  {
+    $("#close_delete").prop("checked", true);
+  }
+  else
+  {
+    $("#close_unpublish").prop("checked", true);
   }
 
   var formatdata = [];
