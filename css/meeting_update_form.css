@@ -45,7 +45,7 @@ body {
 	}
 
 
-.form-grid input {
+.form_replace input {
   line-height: 1.5;
   font-size: 1.2em;
   padding: 5px 10px;
@@ -54,7 +54,7 @@ body {
   height: 2.1em;
 }
 
-.form-grid select {
+.form_replace select {
   line-height: 1.5;
   font-size: 1.2em;
   padding: 5px 10px;
@@ -63,7 +63,7 @@ body {
   height: 2.1em;
 }
 
-.form-grid label {
+.form_replace label {
   width: 100%;
   display: block;
   padding: 10px 5px 5px 2px;
