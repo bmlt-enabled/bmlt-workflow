@@ -261,6 +261,8 @@ jQuery(document).ready(function ($) {
   $("#other_reason_div").hide();
   $("#other_reason").prop("required", false);
 
+  $("#personal_details").attr("class","form-grid-col2");
+
   $("#update_reason").change(function () {
     // hide all the optional items
     $("#reason_new_text").hide();
@@ -318,10 +320,11 @@ jQuery(document).ready(function ($) {
       case "reason_other":
         clear_form();
         // display form instructions
-        $("#instructions").text("Please let us know the details about your meeting change.");
+        $("#instructions").text("Please let us know any details about your meeting change request, including how we can get back to you.");
         // other reason has a textarea
         $("#other_reason_div").show();
         $("#meeting_content").show();
+        $("#personal_details").attr("class","form-grid-col1");
         $("#personal_details").show();
         $("#meeting_details").hide();
         $("#other_reason").prop("required", true);
