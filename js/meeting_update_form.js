@@ -260,8 +260,8 @@ jQuery(document).ready(function ($) {
   $("#meeting_content").hide();
   $("#other_reason_div").hide();
   $("#other_reason").prop("required", false);
-
   $("#personal_details").attr("class","form-grid-col2");
+
 
   $("#update_reason").change(function () {
     // hide all the optional items
@@ -276,6 +276,7 @@ jQuery(document).ready(function ($) {
     $("#other_reason_div").hide();
     $("#other_reason").prop("required", false);
     $("#additional_info").prop("required", false);
+    $("#personal_details").attr("class","form-grid-col2");
 
     enable_edits();
     // enable items as required
