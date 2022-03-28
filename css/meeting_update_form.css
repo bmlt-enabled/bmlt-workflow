@@ -80,7 +80,7 @@ body {
   letter-spacing: 1px;
   cursor: pointer;
 }
-.form-grid .inline label {
+.inline label {
   width: 100%;
   display: inline;
   padding: 10px 5px 5px 2px;
@@ -88,7 +88,7 @@ body {
   cursor: pointer;
 }
 
-.form-grid .inline select {
+.inline select {
   line-height: 1.5;
   font-size: 1.2em;
   padding: 5px 10px;
