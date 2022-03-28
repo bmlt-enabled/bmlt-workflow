@@ -38,6 +38,7 @@ jQuery(document).ready(function ($) {
           var item = data[0];
           if (!Object.keys(data).length) {
             var a = {};
+            a["responseJSON"] = {};
             a["responseJSON"]["message"] = "Error retrieving BMLT data";
             notice_error(a);
           } else {
