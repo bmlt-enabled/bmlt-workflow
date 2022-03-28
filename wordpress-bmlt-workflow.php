@@ -623,7 +623,7 @@ function wbw_delete_closed_meetings_html()
     </div>
     END;
 
-    echo '<br><label for="wbw_delete_closed_meetings"><b>Close meeting default:</b></label><select><option name="unpublish" value="unpublish" '.$unpublish.'>Unpublish</option><option name="delete" value="delete" '.$delete.'>Delete</option>';
+    echo '<br><label for="wbw_delete_closed_meetings"><b>Close meeting default:</b></label><select name="wbw_delete_closed_meetings"><option name="unpublish" value="unpublish" '.$unpublish.'>Unpublish</option><option name="delete" value="delete" '.$delete.'>Delete</option>';
     echo '<br><br>';
 }
 
