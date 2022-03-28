@@ -20,6 +20,7 @@ jQuery(document).ready(function ($) {
     // remove any content from the input fields
     $(".quickedit-input").val("");
 
+    var bmlt_error = false;
     // fill quickedit
 
     // if it's a meeting change, fill from bmlt first
@@ -41,6 +42,7 @@ jQuery(document).ready(function ($) {
             a["responseJSON"] = {};
             a["responseJSON"]["message"] = "Error retrieving BMLT data";
             notice_error(a);
+            bmlt_error = true;
           } else {
             // split up the duration so we can use it in the select
             if ("duration_time" in item) {
@@ -104,7 +106,10 @@ jQuery(document).ready(function ($) {
     $(".quickedit-input").on("input", function () {
       $(this).addClass("wbw-changed");
     });
-    $("#wbw_submission_quickedit_dialog").data("id", id).dialog("open");
+    if(!bmlt_error)
+    {
+      $("#wbw_submission_quickedit_dialog").data("id", id).dialog("open");
+    }
   }
 
   function clear_notices() {
