@@ -464,6 +464,12 @@ jQuery(document).ready(function ($) {
     clear_notices();
     generic_approve_handler(id, "POST", "/approve", "wbw_submission_approve");
   };
+
+  wbw_submission_approve_close_dialog_ok = function (id) {
+    clear_notices();
+    generic_approve_handler(id, "POST", "/approve", "wbw_submission_approve");
+  };
+
   wbw_submission_reject_dialog_ok = function (id) {
     clear_notices();
     generic_approve_handler(id, "POST", "/reject", "wbw_submission_reject");
