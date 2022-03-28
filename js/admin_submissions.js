@@ -25,7 +25,7 @@ jQuery(document).ready(function ($) {
 
     // if it's a meeting change, fill from bmlt first
     if (wbw_changedata[id].submission_type == "reason_change") {
-      var meeting_id = wbw_changedata[id].changes_requested["meeting_id"];
+      var meeting_id = wbw_changedata[id]["meeting_id"];
       var search_results_address =
         wbw_bmlt_server_address +
         "client_interface/jsonp/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" +
