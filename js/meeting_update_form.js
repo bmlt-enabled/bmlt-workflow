@@ -325,7 +325,7 @@ jQuery(document).ready(function ($) {
       case "reason_other":
         clear_form();
         // display form instructions
-        // $("#instructions").text("Please let us know any details about your meeting change request, including how we can get back to you.");
+        $("#instructions").text("");
         // other reason has a textarea
         $("#other_reason_div").show();
         $("#meeting_content").show();
