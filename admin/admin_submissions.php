@@ -9,7 +9,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 <div id="wbw_submission_approve_dialog" class="hidden" style="max-width:800px">
     <label class='dialog_label' for="wbw_submission_approve_dialog_textarea">Approval note:</label>
     <div class="grow-wrap">
-    <textarea class='dialog_textarea' id="wbw_submission_approve_close_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
+    <textarea class='dialog_textarea' id="wbw_submission_approve_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
     </div>
     <p>You can use the quickedit function to make any extra changes before approval.</p>
     <p>Are you sure you would like to approve the submission?</p>
