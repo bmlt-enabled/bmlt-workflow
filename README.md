@@ -1,5 +1,4 @@
-# Wordpress-BMLT-workflow (WBW)
-
+# Wordpress-BMLT-workflow (WBW) v0.3.1
 
 ## Background
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.
@@ -71,14 +70,18 @@ Requires composer. From the root of the repository:
 ```./vendor/bin/phpunit```
 
 
-## 0.3 Beta Known Issues
+## 0.3.1 Beta Known Issues
 - Email notifications are currently non functional in this beta release
-- No support for approving 'Other' requests
-- Support for 'Other' service body (for a user to select when they are unsure) is currently unavailable
+- Support for 'Other' service body (for a user to select when they are unsure) is not implemented
 - Quickedit/approve does not update the BMLT email address if the user selects 'set my email to the contact email'
 - Not tested on wordpress multisite 
 
-For any other issues you find - please raise an issue here: https://github.com/nigel-bmlt/wordpress-bmlt-workflow/issues and/or ping me on BMLT slack
+For any other issues you find - please raise an issue here: https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues and/or ping me on BMLT slack #wordpress-BMLT-workflow
+
+## Changes from 0.3 Release
+- Hosting repo on BMLT-Enabled! https://github.com/bmlt-enabled/wordpress-bmlt-workflow
+- Support for 'Other' and 'Close' meeting management, including publish or delete of closed meetings
+- Additional PHPUnit test cases for approval rest interface
 
 ## Changes from 0.2 Release
 - Improved front end form layout

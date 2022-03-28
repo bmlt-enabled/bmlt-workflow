@@ -2,9 +2,9 @@
 
 /**
  * Plugin Name: Wordpress BMLT Workflow
- * Plugin URI: https://github.com/nigel-bmlt/meeting-admin-workflow
+ * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
  * Description: Wordpress BMLT Workflow
- * Version: 0.3.0
+ * Version: 0.3.1
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
