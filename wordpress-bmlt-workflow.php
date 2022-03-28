@@ -604,7 +604,18 @@ function wbw_email_from_address_html()
 
 function wbw_delete_closed_meetings_html()
 {
-    $from_address = get_option('wbw_delete_closed_meetings');
+    $selection = get_option('wbw_delete_closed_meetings');
+    $delete = '';
+    $unpublish = '';
+    if($selection === 'delete')
+    {
+        $delete = 'selected';
+    }
+    else
+    {
+        $unpublish = 'selected';
+    }
+
     echo <<<END
     <div class="wbw_info_text">
     <br>Trusted servants approving a 'Close Meeting' request can choose to either Delete or Unpublish. This option selects the default for all trusted servants.
@@ -612,7 +623,7 @@ function wbw_delete_closed_meetings_html()
     </div>
     END;
 
-    echo '<br><label for="wbw_delete_closed_meetings"><b>Close meeting default:</b></label><select><option name="unpublish" value="unpublish" selected>Unpublish</option><option name="delete" value="delete">Delete</option>';
+    echo '<br><label for="wbw_delete_closed_meetings"><b>Close meeting default:</b></label><select><option name="unpublish" value="unpublish" '.$unpublish.'>Unpublish</option><option name="delete" value="delete" '.$delete.'>Delete</option>';
     echo '<br><br>';
 }
 
