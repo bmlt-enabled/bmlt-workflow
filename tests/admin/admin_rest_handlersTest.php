@@ -12,18 +12,20 @@ define('ABSPATH', '99999999999');
 // require 'admin/admin_rest_handlers.php';
 require 'admin/admin_rest_handlers.php';
 
-function vdump($object)
-{
-    ob_start();
-    var_dump($object);
-    $contents = ob_get_contents();
-    ob_end_clean();
-    return $contents;
+if (!(function_exists('vdump'))) {
+    function vdump($object)
+    {
+        ob_start();
+        var_dump($object);
+        $contents = ob_get_contents();
+        ob_end_clean();
+        return $contents;
+    }
 }
 
 class my_wp_user
 {
-    public function __construct($id,$name)
+    public function __construct($id, $name)
     {
         $this->ID = $id;
         $this->user_login = $name;
@@ -45,18 +47,18 @@ class my_wp_user
 final class admin_rest_handlersTest extends TestCase
 {
 
-    protected function setVerboseErrorHandler() 
-{
-    $handler = function($errorNumber, $errorString, $errorFile, $errorLine) {
-        echo "
+    protected function setVerboseErrorHandler()
+    {
+        $handler = function ($errorNumber, $errorString, $errorFile, $errorLine) {
+            echo "
 ERROR INFO
 Message: $errorString
 File: $errorFile
 Line: $errorLine
 ";
-    };
-    set_error_handler($handler);        
-}
+        };
+        set_error_handler($handler);
+    }
 
     protected function setUp(): void
     {
@@ -68,7 +70,7 @@ Line: $errorLine
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-response.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-request.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/wp-db.php');
-        
+
         Functions\when('wp_json_encode')->returnArg();
         Functions\when('apply_filters')->returnArg(2);
         Functions\when('current_time')->justReturn('2022-03-23 09:22:44');
@@ -80,10 +82,9 @@ Line: $errorLine
         if (!defined('ABSPATH')) {
             define('ABSPATH', '99999999999');
         }
-
     }
-  
-    private function generate_approve_request($test_submission_id,$body)
+
+    private function generate_approve_request($test_submission_id, $body)
     {
         $json_post = json_encode($body);
 
@@ -91,7 +92,7 @@ Line: $errorLine
         $request   = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/wbw/v1/submissions/{$test_submission_id}/approve");
         $request->set_header('content-type', 'application/json');
         $request->set_body($json_post);
-        $request->set_url_params(array('id'=>$test_submission_id));
+        $request->set_url_params(array('id' => $test_submission_id));
         $request->set_route("/wbw/v1/submissions/{$test_submission_id}/approve");
         $request->set_method('POST');
 
@@ -102,7 +103,7 @@ Line: $errorLine
     {
         $test_submission_id = '14';
 
-        $body = array( "action_message" => "hello there" );
+        $body = array("action_message" => "hello there");
 
         $request = $this->generate_approve_request($test_submission_id, $body);
 
@@ -125,18 +126,20 @@ Line: $errorLine
         $bmlt = Mockery::mock('overload:BMLTIntegration');
 
         /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postConfiguredRootServerRequest'=>$resp]);
+        $bmlt->shouldReceive(['postConfiguredRootServerRequest' => $resp]);
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive(
-            ['prepare'=>'nothing',        
-            'get_row'=>$row,
-            'get_results'=>'nothing']
+            [
+                'prepare' => 'nothing',
+                'get_row' => $row,
+                'get_results' => 'nothing'
+            ]
         );
 
-        $user = new my_wp_user(1,'username');
+        $user = new my_wp_user(1, 'username');
         Functions\when('wp_get_current_user')->justReturn($user);
         Functions\when('is_wp_error')->justReturn(false);
         Functions\when('wp_remote_retrieve_body')->justReturn($resp);
@@ -157,7 +160,7 @@ Line: $errorLine
     {
         $test_submission_id = '14';
 
-        $body = array( "action_message" => "hello there" );
+        $body = array("action_message" => "hello there");
 
         $request = $this->generate_approve_request($test_submission_id, $body);
 
@@ -179,18 +182,20 @@ Line: $errorLine
         $bmlt = Mockery::mock('overload:BMLTIntegration');
 
         /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postConfiguredRootServerRequest'=>$resp]);
+        $bmlt->shouldReceive(['postConfiguredRootServerRequest' => $resp]);
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive(
-            ['prepare'=>'nothing',        
-            'get_row'=>$row,
-            'get_results'=>'nothing']
+            [
+                'prepare' => 'nothing',
+                'get_row' => $row,
+                'get_results' => 'nothing'
+            ]
         );
 
-        $user = new my_wp_user(1,'username');
+        $user = new my_wp_user(1, 'username');
         Functions\when('wp_get_current_user')->justReturn($user);
         Functions\when('is_wp_error')->justReturn(false);
         Functions\when('wp_remote_retrieve_body')->justReturn($resp);
@@ -211,7 +216,7 @@ Line: $errorLine
     {
         $test_submission_id = '14';
 
-        $body = array( "action_message" => "hello there", "delete" => "true" );
+        $body = array("action_message" => "hello there", "delete" => "true");
 
         $request = $this->generate_approve_request($test_submission_id, $body);
 
@@ -233,18 +238,20 @@ Line: $errorLine
         $bmlt = Mockery::mock('overload:BMLTIntegration');
 
         /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postConfiguredRootServerRequest'=>$resp]);
+        $bmlt->shouldReceive(['postConfiguredRootServerRequest' => $resp]);
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive(
-            ['prepare'=>'nothing',        
-            'get_row'=>$row,
-            'get_results'=>'nothing']
+            [
+                'prepare' => 'nothing',
+                'get_row' => $row,
+                'get_results' => 'nothing'
+            ]
         );
 
-        $user = new my_wp_user(1,'username');
+        $user = new my_wp_user(1, 'username');
         Functions\when('wp_get_current_user')->justReturn($user);
         Functions\when('is_wp_error')->justReturn(false);
         Functions\when('wp_remote_retrieve_body')->justReturn($resp);

@@ -36,38 +36,44 @@ jQuery(document).ready(function ($) {
         .then((data) => {
           // fill in all the bmlt stuff
           var item = data[0];
-          // split up the duration so we can use it in the select
-          if ("duration_time" in item) {
-            var durationarr = item["duration_time"].split(":");
-            // hoping we got both hours, minutes and seconds here
-            if (durationarr.length == 3) {
-              $("#quickedit_duration_hours").val(durationarr[0]);
-              $("#quickedit_duration_minutes").val(durationarr[1]);
+          if (!Object.keys(data).length) {
+            var a = {};
+            a["responseJSON"]["message"] = "Error retrieving BMLT data";
+            notice_error(a);
+          } else {
+            // split up the duration so we can use it in the select
+            if ("duration_time" in item) {
+              var durationarr = item["duration_time"].split(":");
+              // hoping we got both hours, minutes and seconds here
+              if (durationarr.length == 3) {
+                $("#quickedit_duration_hours").val(durationarr[0]);
+                $("#quickedit_duration_minutes").val(durationarr[1]);
+              }
             }
-          }
-          // split up the format list so we can use it in the select
-          if ("format_shared_id_list" in item) {
-            item["format_shared_id_list"] = item["format_shared_id_list"].split(",");
-          }
-
-          Object.keys(item).forEach((element) => {
-            if ($("#quickedit_" + element) instanceof jQuery) {
-              $("#quickedit_" + element).val(item[element]);
+            // split up the format list so we can use it in the select
+            if ("format_shared_id_list" in item) {
+              item["format_shared_id_list"] = item["format_shared_id_list"].split(",");
             }
-          });
-          // fill in and highlight the changes
-          changes_requested = wbw_changedata[id].changes_requested;
 
-          if ("format_shared_id_list" in changes_requested) {
-            changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
-          }
+            Object.keys(item).forEach((element) => {
+              if ($("#quickedit_" + element) instanceof jQuery) {
+                $("#quickedit_" + element).val(item[element]);
+              }
+            });
+            // fill in and highlight the changes
+            changes_requested = wbw_changedata[id].changes_requested;
 
-          Object.keys(changes_requested).forEach((element) => {
-            if ($("#quickedit_" + element) instanceof jQuery) {
-              $("#quickedit_" + element).addClass("wbw-changed");
-              $("#quickedit_" + element).val(changes_requested[element]);
+            if ("format_shared_id_list" in changes_requested) {
+              changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
             }
-          });
+
+            Object.keys(changes_requested).forEach((element) => {
+              if ($("#quickedit_" + element) instanceof jQuery) {
+                $("#quickedit_" + element).addClass("wbw-changed");
+                $("#quickedit_" + element).val(changes_requested[element]);
+              }
+            });
+          }
         });
     } else if (wbw_changedata[id].submission_type == "reason_new") {
       // fill from changes
@@ -481,21 +487,19 @@ jQuery(document).ready(function ($) {
 
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
-    var action_message = $("#" + slug + "_dialog_textarea").val().trim();
+    var action_message = $("#" + slug + "_dialog_textarea")
+      .val()
+      .trim();
     if (action_message !== "") {
       parameters["action_message"] = action_message;
     }
 
     // delete/unpublish handling on the approve+close dialog
-    if (slug === 'wbw_submission_approve_close')
-    {
-      option = $('#'+slug+'_dialog input[name="close_action"]:checked').attr('id');
-      if(option === 'close_delete')
-      {
+    if (slug === "wbw_submission_approve_close") {
+      option = $("#" + slug + '_dialog input[name="close_action"]:checked').attr("id");
+      if (option === "close_delete") {
         parameters["delete"] = true;
-      }
-      else
-      {
+      } else {
         parameters["delete"] = false;
       }
     }

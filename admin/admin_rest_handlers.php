@@ -551,7 +551,7 @@ class wbw_submissions_rest_handlers
                 break;
                 case 'reason_other':
                 {
-                    
+                    break;
                 }
     
             default:
