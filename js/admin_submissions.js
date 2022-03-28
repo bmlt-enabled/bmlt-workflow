@@ -481,7 +481,7 @@ jQuery(document).ready(function ($) {
 
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
-    var action_message = String.prototype.trim($("#" + slug + "_dialog_textarea").val());
+    var action_message = $("#" + slug + "_dialog_textarea").val().trim();
     if (action_message !== "") {
       parameters["action_message"] = action_message;
     }
