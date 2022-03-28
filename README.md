@@ -80,7 +80,7 @@ For any other issues you find - please raise an issue here: https://github.com/b
 
 ## Changes from 0.3 Release
 - Hosting repo on BMLT-Enabled! https://github.com/bmlt-enabled/wordpress-bmlt-workflow
-- Support for 'Other' and 'Close' meeting management, including publish or delete of closed meetings
+- Support for 'Other' and 'Close' meeting management, including publish or delete of closed meetings. This includes a new settings option for the admin to choose which default for Trusted servants.
 - Additional PHPUnit test cases for approval rest interface
 
 ## Changes from 0.2 Release
