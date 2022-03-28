@@ -365,6 +365,18 @@ function wbw_register_setting()
 
     register_setting(
         'wbw-settings-group',
+        'wbw_delete_closed_meetings',
+        array(
+            'type' => 'string',
+            'description' => 'Default for close meeting submission',
+            'sanitize_callback' => 'string_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => 'unpublish'
+        )
+    );
+
+    register_setting(
+        'wbw-settings-group',
         'wbw_new_meeting_template',
         array(
             'type' => 'string',
@@ -481,6 +493,15 @@ function wbw_register_setting()
         'wbw-settings-section-id'
     );
 
+    add_settings_field(
+        'wbw_delete_closed_meetings',
+        'Default for close meeting submission',
+        'wbw_delete_closed_meetings_html',
+        'wbw-settings',
+        'wbw-settings-section-id'
+    );
+
+    
 
     add_settings_field(
         'wbw_fso_email_address',
@@ -578,6 +599,20 @@ function wbw_email_from_address_html()
     END;
 
     echo '<br><label for="wbw_email_from_address"><b>From Address:</b></label><input type="text" size="50" name="wbw_email_from_address" value="' . $from_address . '"/>';
+    echo '<br><br>';
+}
+
+function wbw_delete_closed_meetings_html()
+{
+    $from_address = get_option('wbw_delete_closed_meetings');
+    echo <<<END
+    <div class="wbw_info_text">
+    <br>Trusted servants approving a 'Close Meeting' request can choose to either Delete or Unpublish. This option selects the default for all trusted servants.
+    <br><br>
+    </div>
+    END;
+
+    echo '<br><label for="wbw_delete_closed_meetings"><b>Close meeting default:</b></label><select><option name="unpublish" value="unpublish" selected>Unpublish</option><option name="delete" value="delete">Delete</option>';
     echo '<br><br>';
 }
 
