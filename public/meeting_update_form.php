@@ -189,8 +189,9 @@ EOD;
                             <input class="meeting-input" type="text" name="location_info" size="50" id="location_info">
                             <label for="location_municipality">City/Town/Suburb<span class="wbw-required-field"> *</span></label>
                             <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
-                            <label for="location_sub_province">Sub Province</label>
-                            <input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">
+                            <?php echo $counties ?>
+                            <!-- <label for="location_sub_province">Sub Province</label>
+                            <input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province"> -->
                             <label for="location_province">State<span class="wbw-required-field"> *</span></label>
                             <input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>
                             <label for="location_postal_code_1">Postcode<span class="wbw-required-field"> *</span></label>
