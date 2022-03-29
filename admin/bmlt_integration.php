@@ -56,7 +56,7 @@ class BMLTIntegration
 
     public function getMeetingStates()
     {
-        $response = $this->postConfiguredRootServerRequest('client_interface/json/?switcher=GetServerInfo', '');
+        $response = $this->postConfiguredRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         if (is_wp_error($response)) {
             return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
@@ -72,7 +72,7 @@ class BMLTIntegration
 
     public function getMeetingCounties()
     {
-        $response = $this->postConfiguredRootServerRequest('client_interface/json/?switcher=GetServerInfo', '');
+        $response = $this->postConfiguredRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         if (is_wp_error($response)) {
             return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
