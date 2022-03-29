@@ -59,10 +59,12 @@ jQuery(document).ready(function ($) {
             Object.keys(item).forEach((element) => {
               if ($("#quickedit_" + element).length) {
                 $("#quickedit_" + element).val(item[element]);
+                $("#quickedit_" + element).change();
               }
             });
-            // fill in and highlight the changes
-            changes_requested = wbw_changedata[id].changes_requested;
+
+            // fill in and highlight the changes - use extend to clone
+            changes_requested = $.extend(true,{},wbw_changedata[id].changes_requested);
 
             if ("format_shared_id_list" in changes_requested) {
               changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
@@ -72,6 +74,8 @@ jQuery(document).ready(function ($) {
               if ($("#quickedit_" + element).length) {
                 $("#quickedit_" + element).addClass("wbw-changed");
                 $("#quickedit_" + element).val(changes_requested[element]);
+                $("#quickedit_" + element).change();
+
               }
             });
             // trigger adding of highlights when input changes
