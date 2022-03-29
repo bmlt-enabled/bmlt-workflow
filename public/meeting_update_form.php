@@ -21,7 +21,7 @@ $counties = array( "Androscoggin","Aroostook","Barnstable","Belknap","Bristol","
 if($counties)
 {
     $counties = '<select class="meeting-input" name="location_sub_province">';
-    foreach ($key as $counties)
+    foreach ($counties as $key)
     {
         $counties .= '<option value="'.$key.'">'.$key.'</option>';
     }
