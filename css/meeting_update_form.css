@@ -98,3 +98,7 @@ body {
 .grid-flex-item input{
   width: 90%;
 }
+
+.wbw-changed {
+  background: #e7f478; 
+ }

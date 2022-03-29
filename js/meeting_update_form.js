@@ -14,6 +14,7 @@ jQuery(document).ready(function ($) {
     placeholder: "Select from available formats",
     multiple: true,
     data: formatdata,
+    // selectionCssClass: ":all:",
     width: "100%",
   });
 
@@ -127,9 +128,13 @@ jQuery(document).ready(function ($) {
           switch (reason) {
             case "reason_change":
               // display form instructions
-              $("#instructions").text("We've retrieved the details below from our system. Please make any changes and then submit your update.");
+              $("#instructions").text("We've retrieved the details below from our system. Please make any changes and then submit your update. Any changes you make to the content will be highlighted below and submitted for approval.");
               $("#meeting_content").show();
               disable_field("service_body_bigint");
+              $(".meeting-input").on("input", function () {
+                $(this).addClass("wbw-changed");
+              });
+  
               break;
             case "reason_close":
               // display form instructions
@@ -169,10 +174,10 @@ jQuery(document).ready(function ($) {
 
   $("#starter_kit_required").on("change", function () {
     if (this.value == "yes") {
-      $("#starter_kit_postal_address").show();
+      $("#starter_kit_postal_address_div").show();
       $("#starter_kit_postal_address").prop("required", true);
     } else {
-      $("#starter_kit_postal_address").hide();
+      $("#starter_kit_postal_address_div").hide();
       $("#starter_kit_postal_address").prop("required", false);
     }
   });
@@ -180,25 +185,25 @@ jQuery(document).ready(function ($) {
   function put_field(fieldname, value) {
     var field = "#" + fieldname;
     $(field).val(value);
-    $(field).change();
+    $(field).trigger('change');
   }
 
   function clear_field(fieldname, value) {
     var field = "#" + fieldname;
     $(field).val("");
-    $(field).change();
+    $(field).trigger('change');
   }
 
   function enable_field(fieldname) {
     var field = "#" + fieldname;
     $(field).prop("disabled", false);
-    $(field).change();
+    $(field).trigger('change');
   }
 
   function disable_field(fieldname) {
     var field = "#" + fieldname;
     $(field).prop("disabled", true);
-    $(field).change();
+    $(field).trigger('change');
   }
 
   function enable_edits() {
@@ -263,7 +268,7 @@ jQuery(document).ready(function ($) {
   $("#personal_details").attr("class","form-grid-col2");
 
 
-  $("#update_reason").change(function () {
+  $("#update_reason").on('change',function () {
     // hide all the optional items
     $("#reason_new_text").hide();
     $("#reason_change_text").hide();
@@ -277,6 +282,10 @@ jQuery(document).ready(function ($) {
     $("#other_reason").prop("required", false);
     $("#additional_info").prop("required", false);
     $("#personal_details").attr("class","form-grid-col2");
+    // disable the highlighting
+    $(".meeting-input").off("input");
+    // remove the highlighting
+    $(".meeting-input").removeClass("wbw-changed");
 
     enable_edits();
     // enable items as required

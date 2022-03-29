@@ -54,6 +54,39 @@ class BMLTIntegration
         return $newformat;
     }
 
+    public function getMeetingStates()
+    {
+        $response = $this->postConfiguredRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
+        if (is_wp_error($response)) {
+            return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
+        }
+        // error_log(wp_remote_retrieve_body($response));  
+        $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
+        if(!empty($arr['meeting_states_and_provinces']))
+        {
+            $states = explode(',',$arr['meeting_states_and_provinces']);
+            return $states;
+        }
+        return false;
+    }
+
+    public function getMeetingCounties()
+    {
+        $response = $this->postConfiguredRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
+        if (is_wp_error($response)) {
+            return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
+        }
+        // error_log(wp_remote_retrieve_body($response));  
+        $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
+        if(!empty($arr['meeting_counties_and_sub_provinces']))
+        {
+            $counties = explode(',',$arr['meeting_counties_and_sub_provinces']);
+            return $counties;
+        }
+        return false;
+
+    }
+
     private function vdump($object)
     {
         ob_start();

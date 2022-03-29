@@ -10,12 +10,11 @@ function dismiss_notice(element) {
 var wbw_changedata = {};
 
 jQuery(document).ready(function ($) {
-
   function populate_and_open_quickedit(id) {
     // clear quickedit
 
     // remove our change handler
-    $(".quickedit-input").off("change");
+    $(".quickedit-input").off("input");
     // remove the highlighting
     $(".quickedit-input").removeClass("wbw-changed");
     // remove any content from the input fields
@@ -25,7 +24,7 @@ jQuery(document).ready(function ($) {
 
     // if it's a meeting change, fill from bmlt first
     if (wbw_changedata[id].submission_type == "reason_change") {
-      var meeting_id = wbw_changedata[id].changes_requested["meeting_id"];
+      var meeting_id = wbw_changedata[id]["meeting_id"];
       var search_results_address =
         wbw_bmlt_server_address +
         "client_interface/jsonp/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" +
@@ -58,21 +57,25 @@ jQuery(document).ready(function ($) {
             }
 
             Object.keys(item).forEach((element) => {
-              if ($("#quickedit_" + element) instanceof jQuery) {
+              if ($("#quickedit_" + element).length) {
                 $("#quickedit_" + element).val(item[element]);
+                $("#quickedit_" + element).trigger('change');
               }
             });
-            // fill in and highlight the changes
-            changes_requested = wbw_changedata[id].changes_requested;
+
+            // fill in and highlight the changes - use extend to clone
+            changes_requested = $.extend(true,{},wbw_changedata[id].changes_requested);
 
             if ("format_shared_id_list" in changes_requested) {
               changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
             }
 
             Object.keys(changes_requested).forEach((element) => {
-              if ($("#quickedit_" + element) instanceof jQuery) {
+              if ($("#quickedit_" + element).length) {
                 $("#quickedit_" + element).addClass("wbw-changed");
                 $("#quickedit_" + element).val(changes_requested[element]);
+                $("#quickedit_" + element).trigger('change');
+
               }
             });
             // trigger adding of highlights when input changes
@@ -100,7 +103,7 @@ jQuery(document).ready(function ($) {
         changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
       }
       Object.keys(changes_requested).forEach((element) => {
-        if ($("#quickedit_" + element) instanceof jQuery) {
+        if ($("#quickedit_" + element).length) {
           $("#quickedit_" + element).addClass("wbw-changed");
           $("#quickedit_" + element).val(changes_requested[element]);
         }
@@ -121,12 +124,9 @@ jQuery(document).ready(function ($) {
   }
 
   // default close meeting radio button
-  if (wbw_default_closed_meetings==='delete')
-  {
+  if (wbw_default_closed_meetings === "delete") {
     $("#close_delete").prop("checked", true);
-  }
-  else
-  {
+  } else {
     $("#close_unpublish").prop("checked", true);
   }
 
@@ -142,6 +142,7 @@ jQuery(document).ready(function ($) {
     data: formatdata,
     dropdownParent: $("#wbw_submission_quickedit_dialog"),
   });
+  $("#quickedit_format_shared_id_list").trigger('change');
 
   var datatable = $("#dt-submission").DataTable({
     dom: "Bfrtip",
@@ -366,6 +367,13 @@ jQuery(document).ready(function ($) {
         case "other_reason":
           table += '<tr><td>Other Reason:</td><td><textarea rows="5" columns="50" disabled>' + d["changes_requested"].other_reason + "</textarea></td></tr>";
           break;
+        case "contact_number_confidential":
+          table += "<tr><td>Contact number (confidential):</td><td>" + d["changes_requested"].contact_number_confidential + "</td></tr>";
+          break;
+        case "add_email":
+          table += "<tr><td>Add email to meeting:</td><td>" + ((d["changes_requested"].add_email === "yes") ? "Yes" : "No") + "</td></tr>";
+          break;
+
         case "format_shared_id_list":
           friendlyname = "Meeting Formats";
           // convert the meeting formats to human readable
@@ -428,7 +436,7 @@ jQuery(document).ready(function ($) {
       open: function () {
         var $this = $(this);
         // close dialog by clicking the overlay behind it
-        $(".ui-widget-overlay").bind("click", function () {
+        $(".ui-widget-overlay").on("click", function () {
           $this.dialog("close");
         });
       },
@@ -468,7 +476,7 @@ jQuery(document).ready(function ($) {
       open: function () {
         var $this = $(this);
         // close dialog by clicking the overlay behind it
-        $(".ui-widget-overlay").bind("click", function () {
+        $(".ui-widget-overlay").on("click", function () {
           $this.dialog("close");
         });
       },
@@ -505,11 +513,13 @@ jQuery(document).ready(function ($) {
 
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
-    var action_message = $("#" + slug + "_dialog_textarea")
-      .val()
-      .trim();
-    if (action_message !== "") {
-      parameters["action_message"] = action_message;
+    if ($("#" + slug + "_dialog_textarea").length) {
+      var action_message = $("#" + slug + "_dialog_textarea")
+        .val()
+        .trim();
+      if (action_message !== "") {
+        parameters["action_message"] = action_message;
+      }
     }
 
     // delete/unpublish handling on the approve+close dialog

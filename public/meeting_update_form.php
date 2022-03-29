@@ -11,6 +11,45 @@ if ($wbw_bmlt_test_status != "success") {
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
+$bmlt_integration = new BMLTIntegration;
+$formatarr = $bmlt_integration->getMeetingFormats();
+$script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
+
+$meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
+
+if($meeting_counties_and_sub_provinces)
+{
+    $counties = '<select class="meeting-input" name="location_sub_province">';
+    foreach ($meeting_counties_and_sub_provinces as $key)
+    {
+        $counties .= '<option value="'.$key.'">'.$key.'</option>';
+    }
+    $counties .= '</select>';
+}
+else
+{
+    $counties =<<<EOD
+    <input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">
+EOD;
+}
+
+$meeting_states_and_provinces = $bmlt_integration->getMeetingStates();
+
+if($meeting_states_and_provinces)
+{
+    $states = '<select class="meeting-input" name="location_province">';
+    foreach ($meeting_states_and_provinces as $key)
+    {
+        $states .= '<option value="'.$key.'">'.$key.'</option>';
+    }
+    $states .= '</select>';
+}
+else
+{
+    $states =<<<EOD
+    <input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>
+EOD;
+}
 ?>
 <div id="form_replace">
     <form action="#" method="post" id="meeting_update_form">
@@ -78,9 +117,9 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
                         <div class="form-grid-col1">
                             <label for="meeting_name">Group Name<span class="wbw-required-field"> *</span></label>
-                            <input type="text" name="meeting_name" size="50" id="meeting_name" required>
+                            <input class="meeting-input" type="text" name="meeting_name" size="50" id="meeting_name" required>
                             <label for="weekday_tinyint">Meeting Day:<span class="wbw-required-field"> *</span></label>
-                            <select name="weekday_tinyint" id="weekday_tinyint">
+                            <select class="meeting-input" name="weekday_tinyint" id="weekday_tinyint">
                                 <option value=1>Sunday</option>
                                 <option value=2>Monday</option>
                                 <option value=3>Tuesday</option>
@@ -92,13 +131,13 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             <div class="grid-flex-container">
                                 <div class="grid-flex-item">
                                     <label for="start_time">Start Time<span class="wbw-required-field"> *</span></label>
-                                    <input type="time" name="start_time" size="10" id="start_time" required>
+                                    <input class="meeting-input" type="time" name="start_time" size="10" id="start_time" required>
                                 </div>
                                 <div class="grid-flex-item">
                                 <label>Duration</label>
                                     <div class="inline">
                                         <span>
-                                            <select id="duration_hours">
+                                            <select class="meeting-input" id="duration_hours">
                                                 <option value="00">0</option>
                                                 <option value="01" selected="selected">1</option>
                                                 <option value="02">2</option>
@@ -116,7 +155,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                             <label for="duration_hours">H</label>
                                         </span>
                                         <span>
-                                            <select id="duration_minutes">
+                                            <select class="meeting-input" id="duration_minutes">
                                                 <option value="00" selected="selected">0</option>
                                                 <option value="05">5</option>
                                                 <option value="10">10</option>
@@ -138,31 +177,31 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             </div>
                             <input type="hidden" name="duration_time" size="10" id="duration_time" required>
                             <label for="service_body_bigint">Service Committee (or Other if not known)</label>
-                            <select name="service_body_bigint" id="service_body_bigint">
+                            <select class="meeting-input" name="service_body_bigint" id="service_body_bigint">
                             </select>
                             <label for="location_text">Location (eg: a building name)<span class="wbw-required-field"> *</span></label>
-                            <input type="text" name="location_text" size="50" id="location_text" required>
+                            <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
                             <label for="location_street">Street Address<span class="wbw-required-field"> *</span></label>
-                            <input type="text" name="location_street" size="50" id="location_street" required>
+                            <input class="meeting-input" type="text" name="location_street" size="50" id="location_street" required>
                             <label for="location_info">Extra Location Info (eg: Near the park)</label>
-                            <input type="text" name="location_info" size="50" id="location_info">
+                            <input class="meeting-input" type="text" name="location_info" size="50" id="location_info">
                             <label for="location_municipality">City/Town/Suburb<span class="wbw-required-field"> *</span></label>
-                            <input type="text" name="location_municipality" size="50" id="location_municipality" required>
+                            <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
                             <label for="location_sub_province">Sub Province</label>
-                            <input type="text" name="location_sub_province" size="50" id="location_sub_province">
+                            <?php echo $counties ?>
                             <label for="location_province">State<span class="wbw-required-field"> *</span></label>
-                            <input type="text" name="location_province" size="50" id="location_province" required>
+                            <?php echo $states ?>
                             <label for="location_postal_code_1">Postcode<span class="wbw-required-field"> *</span></label>
-                            <input type="number" name="location_postal_code_1" size="5" max="99999" id="location_postal_code_1" required>
+                            <input class="meeting-input" type="number" name="location_postal_code_1" size="5" max="99999" id="location_postal_code_1" required>
                             <label for="location_nation">Nation</label>
-                            <input type="text" name="location_nation" size="50" id="location_nation">
+                            <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
 
-                            <label for="display_format_shared_id_list">Meeting Formats</label>
-                            <select name="display_format_shared_id_list" id="display_format_shared_id_list"></select>
+                            <label for="display_format_shared_id_list">Meeting Formats<span class="wbw-required-field"> *</span></label>
+                            <select class="meeting-input" name="display_format_shared_id_list" id="display_format_shared_id_list" required></select>
                             <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
 
                             <label for=" virtual_meeting_link">Online Meeting Link</label>
-                            <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
+                            <input class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
                         </div>
                     </fieldset>
                 </div>
@@ -178,8 +217,10 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                 <option value="yes" selected="true" id="starter_kit_required_yes">Yes</option>
                                 <option value="no" id="starter_kit_required_no">No</option>
                             </select>
-                            <label for="starter_kit_postal_address">Starter Kit Postal Address<span class="wbw-required-field"> *</span></label>
-                            <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" rows="5" cols="50"></textarea>
+                            <div id="starter_kit_postal_address_div">
+                                <label for="starter_kit_postal_address">Starter Kit Postal Address<span class="wbw-required-field"> *</span></label>
+                                <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" rows="5" cols="50"></textarea>
+                            </div>
                         </div>
                     </fieldset>
                     </div>

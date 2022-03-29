@@ -120,10 +120,15 @@ function meeting_update_form_handler_rest($data)
         "other_reason" => array("textarea", $reason_other_bool),
         "location_sub_province" => array("text", false),
         "location_nation" => array("text", false),
-        "group_relationship" => array("text", true)
+        "group_relationship" => array("text", true),
+        "add_email" => array("yesno", true),
+
     );
 
     $sanitised_fields = array();
+
+    // blank meeting id if not provided
+    $sanitised_fields['meeting_id'] = 0;
 
     // sanitise all provided fields and drop all others
     foreach ($subfields as $field => $validation) {
@@ -139,6 +144,11 @@ function meeting_update_form_handler_rest($data)
             switch ($field_type) {
                 case ('text'):
                     $data[$field] = sanitize_text_field($data[$field]);
+                    break;
+                case ('yesno'):
+                    if (($data[$field] !== 'yes') && ($data[$field] !== 'no')) {
+                        return invalid_form_field($field);
+                    }
                     break;
                 case ('commaseperatednumbers'):
                     if (preg_match("/[^0-9,]/", $data[$field])) {
@@ -194,6 +204,7 @@ function meeting_update_form_handler_rest($data)
     $submitter_email = $sanitised_fields['email_address'];
     $submission = array();
 
+
     // create our submission for the database changes_requested field
     switch ($reason) {
         case ('reason_new'):
@@ -210,13 +221,16 @@ function meeting_update_form_handler_rest($data)
                 "location_municipality",
                 "location_province",
                 "location_postal_code_1",
+                "location_nation",
+                "location_sub_province",
                 "weekday_tinyint",
                 "service_body_bigint",
                 "virtual_meeting_link",
                 "format_shared_id_list",
                 "contact_number_confidential",
+                "group_relationship",
+                "add_email",
                 "additional_info",
-                "group_relationship"
             );
 
             // new meeting - add all fields to the changes requested
@@ -226,8 +240,6 @@ function meeting_update_form_handler_rest($data)
                     $submission[$field] = $sanitised_fields[$field];
                 }
             }
-
-            $submission['meeting_id'] = 0;
 
             break;
         case ('reason_change'):
@@ -251,16 +263,16 @@ function meeting_update_form_handler_rest($data)
                 "service_body_bigint",
                 "virtual_meeting_link",
                 "format_shared_id_list",
-                "contact_number_confidential",
-                "additional_info",
-                "group_relationship"
-
             );
 
-            // add in the meeting id
-            $meeting_id = $sanitised_fields['meeting_id'];
+            $allowed_fields_extra = array(
+                "contact_number_confidential",
+                "group_relationship",
+                "add_email",
+                "additional_info",
+            );
 
-            $bmlt_meeting = bmlt_retrieve_single_meeting($meeting_id);
+            $bmlt_meeting = bmlt_retrieve_single_meeting($sanitised_fields['meeting_id']);
             // error_log(vdump($meeting));
 
             // strip blanks from BMLT
@@ -298,10 +310,18 @@ function meeting_update_form_handler_rest($data)
                 return wbw_rest_error('Nothing was changed.', 400);
             }
 
+            // add in extra form fields (non BMLT fields) to the submission
+            foreach ($allowed_fields_extra as $field) {
+                if(!empty($sanitised_fields[$field]))
+                {
+                    $submission[$field] = $sanitised_fields[$field];
+                }
+            }
+
+            error_log("SUBMISSION");
+            error_log(vdump($submission));
             // store away the original meeting name so we know what changed
             $submission['original_meeting_name'] = $bmlt_meeting['meeting_name'];
-            // store away the meeting id
-            $submission['meeting_id'] = $meeting_id;
 
             break;
         case ('reason_close'):
@@ -309,14 +329,10 @@ function meeting_update_form_handler_rest($data)
 
             // form fields allowed in changes_requested for this change type
             $allowed_fields = array(
-                "meeting_id",
-                // "update_reason",
-                // "first_name",
-                // "last_name",
-                // "email_address",
                 "contact_number_confidential",
+                "group_relationship",
+                "add_email",
                 "additional_info",
-                "group_relationship"
             );
 
             foreach ($allowed_fields as $item) {
@@ -325,7 +341,7 @@ function meeting_update_form_handler_rest($data)
                 }
             }
             // populate the meeting name so we dont need to do it again on the submission page
-            $meeting = bmlt_retrieve_single_meeting($submission['meeting_id']);
+            $meeting = bmlt_retrieve_single_meeting($sanitised_fields['meeting_id']);
             $submission['meeting_name'] = $meeting['meeting_name'];
 
             break;
@@ -334,13 +350,10 @@ function meeting_update_form_handler_rest($data)
 
             // form fields allowed in changes_requested for this change type
             $allowed_fields = array(
-                // "update_reason",
-                // "first_name",
-                // "last_name",
-                // "email_address",
                 "contact_number_confidential",
+                "group_relationship",
+                "add_email",
                 "other_reason",
-                "group_relationship"
             );
 
             foreach ($allowed_fields as $item) {
@@ -413,6 +426,7 @@ function meeting_update_form_handler_rest($data)
         $wbw_submissions_table_name,
         array(
             'submission_time'   => current_time('mysql', true),
+            'meeting_id' => $sanitised_fields['meeting_id'],
             'submitter_name' => $submitter_name,
             'submission_type'  => $reason,
             'submitter_email' => $submitter_email,

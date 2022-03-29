@@ -4,6 +4,44 @@ if (!defined('ABSPATH')) exit; // die if being called directly
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
+$bmlt_integration = new BMLTIntegration;
+
+$meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
+
+if($meeting_counties_and_sub_provinces)
+{
+    $counties = '<select class="meeting-input" name="quickedit_location_sub_province">';
+    foreach ($meeting_counties_and_sub_provinces as $key)
+    {
+        $counties .= '<option value="'.$key.'">'.$key.'</option>';
+    }
+    $counties .= '</select>';
+}
+else
+{
+    $counties =<<<EOD
+    <input class="meeting-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">
+EOD;
+}
+
+$meeting_states_and_provinces = $bmlt_integration->getMeetingStates();
+
+if($meeting_states_and_provinces)
+{
+    $states = '<select class="meeting-input" name="quickedit_location_province">';
+    foreach ($meeting_states_and_provinces as $key)
+    {
+        $states .= '<option value="'.$key.'">'.$key.'</option>';
+    }
+    $states .= '</select>';
+}
+else
+{
+    $states =<<<EOD
+    <input class="meeting-input" type="text" name="quickedit_location_province" size="50" id="quickedit_location_province" required>
+EOD;
+}
+
 ?>
 <!-- Approve dialog -->
 <div id="wbw_submission_approve_dialog" class="hidden" style="max-width:800px">
@@ -77,7 +115,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <label for="quickedit_meeting_name">Meeting Name</label>
             <input type="text" name="quickedit_meeting_name" id="quickedit_meeting_name" class="quickedit-input">
             <label for="quickedit_format_shared_id_list">Meeting Formats</label>
-            <select name="quickedit_format_shared_id_list" id="quickedit_format_shared_id_list" style="width: auto"></select>
+            <select class="quickedit-input" name="quickedit_format_shared_id_list" id="quickedit_format_shared_id_list" style="width: auto"></select>
 
         </div>
 
@@ -88,7 +126,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         </div>
         <div class="wbw-sg-col1-t2">
             <label for="quickedit_weekday_tinyint">Weekday</label>
-            <select name="quickedit_weekday_tinyint" id="quickedit_weekday_tinyint">
+            <select class="quickedit-input" name="quickedit_weekday_tinyint" id="quickedit_weekday_tinyint">
                 <option value="1">Sunday</option>
                 <option value="2">Monday</option>
                 <option value="3">Tuesday</option>
@@ -100,7 +138,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         </div>
         <div class="wbw-sg-col1-t3">
             <label for="quickedit_duration_hours">Duration</label>
-            <select id="quickedit_duration_hours">
+            <select class="quickedit-input" id="quickedit_duration_hours">
                     <option value="00">0</option>
                     <option value="01" selected="selected">1</option>
                     <option value="02">2</option>
@@ -115,7 +153,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <option value="11">11</option>
                     <option value="12">12</option>
                 </select> h
-                <select id="quickedit_duration_minutes">
+                <select class="quickedit-input" id="quickedit_duration_minutes">
                     <option value="00" selected="selected">0</option>
                     <option value="05">5</option>
                     <option value="10">10</option>
@@ -146,10 +184,14 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         <input type="text" name="quickedit_location_info" id="quickedit_location_info" class="quickedit-input">
         <label for="quickedit_location_municipality">Municipality</label>
         <input type="text" name="quickedit_location_municipality" id="quickedit_location_municipality" class="quickedit-input">
-        <label for="quickedit_location_province">Province</label>
-        <input type="text" name="quickedit_location_province" id="quickedit_location_province" class="quickedit-input">
-        <label for="quickedit_location_postal_code_1">Post Code</label>
-        <input type="text" name="quickedit_location_postal_code_1" id="quickedit_location_postal_code_1" class="quickedit-input">
+        <label for="quickedit_location_sub_province">Sub Province</label>
+        <?php echo $counties ?>
+        <label for="quickedit_location_province">State<span class="wbw-required-field"> *</span></label>
+        <?php echo $states ?>
+        <label for="quickedit_location_postal_code_1">Postcode<span class="wbw-required-field"> *</span></label>
+        <input class="meeting-input" type="number" name="quickedit_location_postal_code_1" size="5" max="99999" id="quickedit_location_postal_code_1" required>
+        <label for="quickedit_location_nation">Nation</label>
+        <input class="meeting-input" type="text" name="quickedit_location_nation" size="50" id="quickedit_location_nation">
     </div>
     </div>
 </div>

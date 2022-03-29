@@ -45,7 +45,8 @@ final class meeting_update_form_handlerTest extends TestCase
             "meeting_id" => "3277",
             "submit" => "Submit Form",
             "additional_info" => "I'd like to close the meeting please",
-            "group_relationship" => "Group Member"
+            "group_relationship" => "Group Member",
+            "add_email" => "yes",
         );
 
         global $wpdb;
@@ -56,6 +57,8 @@ final class meeting_update_form_handlerTest extends TestCase
         Functions\when('curl_exec')->justReturn($json);
 
         $response = meeting_update_form_handler_rest($form_post);
+        error_log("TEST RESPONSE");
+        error_log(vdump($response));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         // this is for wp_error
@@ -73,7 +76,9 @@ final class meeting_update_form_handlerTest extends TestCase
             "last_name" => "joe",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
-            "group_relationship" => "Group Member"
+            "group_relationship" => "Group Member",
+            "add_email" => "yes",
+
         );
 
         global $wpdb;
@@ -97,7 +102,9 @@ final class meeting_update_form_handlerTest extends TestCase
             "last_name" => "joe",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
-            "group_relationship" => "Group Member"
+            "group_relationship" => "Group Member",
+            "add_email" => "yes",
+
         );
 
         $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
@@ -124,7 +131,9 @@ final class meeting_update_form_handlerTest extends TestCase
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
             "format_shared_id_list" => "2,7,8,33,54,55",
-            "group_relationship" => "Group Member"
+            "group_relationship" => "Group Member",
+            "add_email" => "yes",
+
         );
 
         $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
@@ -152,6 +161,8 @@ final class meeting_update_form_handlerTest extends TestCase
             "submit" => "Submit Form",
             "format_shared_id_list" => ",,2,7,8,33,54,55,,,,,",
             "group_relationship" => "Group Member",
+            "add_email" => "yes",
+
         );
 
         $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
@@ -178,7 +189,9 @@ final class meeting_update_form_handlerTest extends TestCase
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
             "format_shared_id_list" => "aeeaetalkj2,7,8,33,54,55",
-            "group_relationship" => "Group Member"
+            "group_relationship" => "Group Member",
+            "add_email" => "yes",
+
         );
 
         $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
@@ -204,7 +217,9 @@ final class meeting_update_form_handlerTest extends TestCase
             "last_name" => "joe",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
-            "group_relationship" => "Group Member"
+            "group_relationship" => "Group Member",
+            "add_email" => "yes",
+
         );
 
         $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
@@ -230,7 +245,9 @@ final class meeting_update_form_handlerTest extends TestCase
             "last_name" => "joe",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
-            "group_relationship" => "Group Member"
+            "group_relationship" => "Group Member",
+            "add_email" => "yes",
+
         );
 
         $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
@@ -256,7 +273,9 @@ final class meeting_update_form_handlerTest extends TestCase
             "last_name" => "joe",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
-            "group_relationship" => "Group Member"
+            "group_relationship" => "Group Member",
+            "add_email" => "yes",
+
         );
 
         $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
@@ -292,7 +311,9 @@ final class meeting_update_form_handlerTest extends TestCase
             "last_name" => "joe",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
-            "group_relationship" => "Group Member"
+            "group_relationship" => "Group Member",
+            "add_email" => "yes",
+
         );
 
         $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
@@ -328,7 +349,9 @@ final class meeting_update_form_handlerTest extends TestCase
             "last_name" => "joe",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
-            "group_relationship" => "Group Member"
+            "group_relationship" => "Group Member",
+            "add_email" => "yes",
+
         );
 
         $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
