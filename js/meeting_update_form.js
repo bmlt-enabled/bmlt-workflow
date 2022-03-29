@@ -14,6 +14,7 @@ jQuery(document).ready(function ($) {
     placeholder: "Select from available formats",
     multiple: true,
     data: formatdata,
+    selectionCssClass: ":all:",
     width: "100%",
   });
 
