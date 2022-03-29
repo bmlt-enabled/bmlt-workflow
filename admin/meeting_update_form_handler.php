@@ -221,6 +221,8 @@ function meeting_update_form_handler_rest($data)
                 "location_municipality",
                 "location_province",
                 "location_postal_code_1",
+                "location_nation",
+                "location_sub_province",
                 "weekday_tinyint",
                 "service_body_bigint",
                 "virtual_meeting_link",
