@@ -185,25 +185,25 @@ jQuery(document).ready(function ($) {
   function put_field(fieldname, value) {
     var field = "#" + fieldname;
     $(field).val(value);
-    $(field).change();
+    $(field).trigger('change');
   }
 
   function clear_field(fieldname, value) {
     var field = "#" + fieldname;
     $(field).val("");
-    $(field).change();
+    $(field).trigger('change');
   }
 
   function enable_field(fieldname) {
     var field = "#" + fieldname;
     $(field).prop("disabled", false);
-    $(field).change();
+    $(field).trigger('change');
   }
 
   function disable_field(fieldname) {
     var field = "#" + fieldname;
     $(field).prop("disabled", true);
-    $(field).change();
+    $(field).trigger('change');
   }
 
   function enable_edits() {
