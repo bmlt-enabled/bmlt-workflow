@@ -420,6 +420,14 @@ class wbw_submissions_rest_handlers
 
         $change = json_decode($result['changes_requested'], 1);
 
+        // handle request to add email
+        $submitter_email = $result['submitter_email'];
+        $add_email = false;
+        if((!empty($change['add_email']))&&($change['add_email']==='yes'))
+        {
+            $add_email = true;
+        }
+        
         // strip out anything that somehow made it this far, before we send it to bmlt
         $change_subfields = array(
             "meeting_name",
@@ -445,10 +453,7 @@ class wbw_submissions_rest_handlers
                 unset($change[$key]);
             }
         }
-
-        // handle request to add email
-        $submitter_email = $result['submitter_email'];
-        if((!empty($change['add_email']))&&($change['add_email']==='yes'))
+        if ($add_email === true)
         {
             $change['contact_email_1']=$submitter_email;
         }
