@@ -30,16 +30,17 @@ if($meeting_counties_and_sub_provinces)
 else
 {
     $counties =<<<EOD
-    <label for="location_sub_province">Sub Province</label>
     <input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">
 EOD;
 }
 
-$states = $bmlt_integration->getMeetingStates();
-if($states)
+$meeting_states_and_provinces = $bmlt_integration->getMeetingStates();
+$meeting_states_and_provinces = array ("MA","ME","NH","RI","VT");
+
+if($meeting_states_and_provinces)
 {
     $states = '<select class="meeting-input" name="location_province">';
-    foreach ($key as $states)
+    foreach ($meeting_states_and_provinces as $key)
     {
         $states .= '<option value="'.$key.'">'.$key.'</option>';
     }
@@ -48,7 +49,6 @@ if($states)
 else
 {
     $states =<<<EOD
-    <label for="location_province">State<span class="wbw-required-field"> *</span></label>
     <input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>
 EOD;
 }
@@ -189,11 +189,10 @@ EOD;
                             <input class="meeting-input" type="text" name="location_info" size="50" id="location_info">
                             <label for="location_municipality">City/Town/Suburb<span class="wbw-required-field"> *</span></label>
                             <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
+                            <label for="location_sub_province">Sub Province</label>
                             <?php echo $counties ?>
-                            <!-- <label for="location_sub_province">Sub Province</label>
-                            <input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province"> -->
                             <label for="location_province">State<span class="wbw-required-field"> *</span></label>
-                            <input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>
+                            <?php echo $state ?>
                             <label for="location_postal_code_1">Postcode<span class="wbw-required-field"> *</span></label>
                             <input class="meeting-input" type="number" name="location_postal_code_1" size="5" max="99999" id="location_postal_code_1" required>
                             <label for="location_nation">Nation</label>
