@@ -138,6 +138,7 @@ jQuery(document).ready(function ($) {
     data: formatdata,
     dropdownParent: $("#wbw_submission_quickedit_dialog"),
   });
+  $("#quickedit_format_shared_id_list").change();
 
   var datatable = $("#dt-submission").DataTable({
     dom: "Bfrtip",
