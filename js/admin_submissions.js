@@ -57,7 +57,7 @@ jQuery(document).ready(function ($) {
             }
 
             Object.keys(item).forEach((element) => {
-              if ($("#quickedit_" + element) instanceof jQuery) {
+              if ($("#quickedit_" + element).length) {
                 $("#quickedit_" + element).val(item[element]);
               }
             });
@@ -69,7 +69,7 @@ jQuery(document).ready(function ($) {
             }
 
             Object.keys(changes_requested).forEach((element) => {
-              if ($("#quickedit_" + element) instanceof jQuery) {
+              if ($("#quickedit_" + element).length) {
                 $("#quickedit_" + element).addClass("wbw-changed");
                 $("#quickedit_" + element).val(changes_requested[element]);
               }
@@ -99,7 +99,7 @@ jQuery(document).ready(function ($) {
         changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
       }
       Object.keys(changes_requested).forEach((element) => {
-        if ($("#quickedit_" + element) instanceof jQuery) {
+        if ($("#quickedit_" + element).length) {
           $("#quickedit_" + element).addClass("wbw-changed");
           $("#quickedit_" + element).val(changes_requested[element]);
         }
@@ -501,7 +501,7 @@ jQuery(document).ready(function ($) {
 
   function generic_approve_handler(id, action, url, slug) {
     parameters = {};
-    if ($("#" + slug + "_dialog_textarea") instanceof jQuery) {
+    if ($("#" + slug + "_dialog_textarea").length) {
       var action_message = $("#" + slug + "_dialog_textarea")
         .val()
         .trim();
