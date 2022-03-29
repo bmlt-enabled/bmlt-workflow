@@ -362,6 +362,10 @@ jQuery(document).ready(function ($) {
         case "other_reason":
           table += '<tr><td>Other Reason:</td><td><textarea rows="5" columns="50" disabled>' + d["changes_requested"].other_reason + "</textarea></td></tr>";
           break;
+        case "add_email":
+            table += '<tr><td>Add email to meeting:</td><td>' + (d["changes_requested"].add_email==="yes")?"Yes":"No" + '</textarea></td></tr>';
+            break;
+  
         case "format_shared_id_list":
           friendlyname = "Meeting Formats";
           // convert the meeting formats to human readable
