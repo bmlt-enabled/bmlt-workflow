@@ -70,10 +70,9 @@ Requires composer. From the root of the repository:
 ```./vendor/bin/phpunit```
 
 
-## 0.3.1 Beta Known Issues
+## 0.3.2 Beta Known Issues
 - Email notifications are currently non functional in this beta release
 - Support for 'Other' service body (for a user to select when they are unsure) is not implemented
-- Quickedit/approve does not update the BMLT email address if the user selects 'set my email to the contact email'
 - Not tested on wordpress multisite 
 
 For any other issues you find - please raise an issue here: https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues and/or ping me on BMLT slack #wordpress-BMLT-workflow
