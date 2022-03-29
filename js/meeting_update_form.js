@@ -128,7 +128,7 @@ jQuery(document).ready(function ($) {
           switch (reason) {
             case "reason_change":
               // display form instructions
-              $("#instructions").text("We've retrieved the details below from our system. Please make any changes and then submit your update.");
+              $("#instructions").text("We've retrieved the details below from our system. Please make any changes and then submit your update. Any changes you make to the content will be highlighted below and submitted for approval.");
               $("#meeting_content").show();
               disable_field("service_body_bigint");
               $(".meeting-input").on("input", function () {
