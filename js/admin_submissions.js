@@ -14,7 +14,7 @@ jQuery(document).ready(function ($) {
     // clear quickedit
 
     // remove our change handler
-    $(".quickedit-input").off("change");
+    $(".quickedit-input").off("input");
     // remove the highlighting
     $(".quickedit-input").removeClass("wbw-changed");
     // remove any content from the input fields
