@@ -4,6 +4,48 @@ if (!defined('ABSPATH')) exit; // die if being called directly
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
+$bmlt_integration = new BMLTIntegration;
+$formatarr = $bmlt_integration->getMeetingFormats();
+$script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
+
+$meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
+$meeting_counties_and_sub_provinces = array( "Androscoggin","Aroostook","Barnstable","Belknap","Bristol","Caledonia","Carroll","Chittenden","Coos","Cumberland","Dukes","Essex","Franklin","Grafton","Hampden","Hampshire","Hancock","Hillsborough","Kent","Kennebec","Knox","Lamoille","Merrimack","Middlesex","Nantucket","Newport","Norfolk","Oxford","Penobscot","Piscataquis","Plymouth","Providence","Rockingham","Sagadahoc","Somerset","Strafford","Suffolk","Waldo","Washington","Worcester","York");
+
+if($meeting_counties_and_sub_provinces)
+{
+    $counties = '<select class="meeting-input" name="quickedit_location_sub_province">';
+    foreach ($meeting_counties_and_sub_provinces as $key)
+    {
+        $counties .= '<option value="'.$key.'">'.$key.'</option>';
+    }
+    $counties .= '</select>';
+}
+else
+{
+    $counties =<<<EOD
+    <input class="meeting-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">
+EOD;
+}
+
+$meeting_states_and_provinces = $bmlt_integration->getMeetingStates();
+$meeting_states_and_provinces = array ("MA","ME","NH","RI","VT");
+
+if($meeting_states_and_provinces)
+{
+    $states = '<select class="meeting-input" name="quickedit_location_province">';
+    foreach ($meeting_states_and_provinces as $key)
+    {
+        $states .= '<option value="'.$key.'">'.$key.'</option>';
+    }
+    $states .= '</select>';
+}
+else
+{
+    $states =<<<EOD
+    <input class="meeting-input" type="text" name="quickedit_location_province" size="50" id="quickedit_location_province" required>
+EOD;
+}
+
 ?>
 <!-- Approve dialog -->
 <div id="wbw_submission_approve_dialog" class="hidden" style="max-width:800px">
@@ -146,10 +188,14 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         <input type="text" name="quickedit_location_info" id="quickedit_location_info" class="quickedit-input">
         <label for="quickedit_location_municipality">Municipality</label>
         <input type="text" name="quickedit_location_municipality" id="quickedit_location_municipality" class="quickedit-input">
-        <label for="quickedit_location_province">Province</label>
-        <input type="text" name="quickedit_location_province" id="quickedit_location_province" class="quickedit-input">
-        <label for="quickedit_location_postal_code_1">Post Code</label>
-        <input type="text" name="quickedit_location_postal_code_1" id="quickedit_location_postal_code_1" class="quickedit-input">
+        <label for="quickedit_location_sub_province">Sub Province</label>
+        <?php echo $counties ?>
+        <label for="quickedit_location_province">State<span class="wbw-required-field"> *</span></label>
+        <?php echo $states ?>
+        <label for="quickedit_location_postal_code_1">Postcode<span class="wbw-required-field"> *</span></label>
+        <input class="meeting-input" type="number" name="quickedit_location_postal_code_1" size="5" max="99999" id="quickedit_location_postal_code_1" required>
+        <label for="quickedit_location_nation">Nation</label>
+        <input class="meeting-input" type="text" name="quickedit_location_nation" size="50" id="quickedit_location_nation">
     </div>
     </div>
 </div>
