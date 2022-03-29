@@ -192,7 +192,7 @@ EOD;
                             <label for="location_sub_province">Sub Province</label>
                             <?php echo $counties ?>
                             <label for="location_province">State<span class="wbw-required-field"> *</span></label>
-                            <?php echo $state ?>
+                            <?php echo $states ?>
                             <label for="location_postal_code_1">Postcode<span class="wbw-required-field"> *</span></label>
                             <input class="meeting-input" type="number" name="location_postal_code_1" size="5" max="99999" id="location_postal_code_1" required>
                             <label for="location_nation">Nation</label>
