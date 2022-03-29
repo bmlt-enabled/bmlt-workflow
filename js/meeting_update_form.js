@@ -282,10 +282,9 @@ jQuery(document).ready(function ($) {
     $("#additional_info").prop("required", false);
     $("#personal_details").attr("class","form-grid-col2");
     // disable the highlighting
-    $(".meeting-input").off("change");
+    $(".meeting-input").off("input");
     // remove the highlighting
     $(".meeting-input").removeClass("wbw-changed");
-    // remove any content from the input fields
 
     enable_edits();
     // enable items as required
