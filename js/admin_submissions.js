@@ -366,7 +366,7 @@ jQuery(document).ready(function ($) {
           table += "<tr><td>Contact number (confidential):</td><td>" + d["changes_requested"].contact_number_confidential + "</td></tr>";
           break;
         case "add_email":
-          table += "<tr><td>Add email to meeting:</td><td>" + (d["changes_requested"].add_email === "yes") ? "Yes" : "No" + "</td></tr>";
+          table += "<tr><td>Add email to meeting:</td><td>" + ((d["changes_requested"].add_email === "yes") ? "Yes" : "No") + "</td></tr>";
           break;
 
         case "format_shared_id_list":
