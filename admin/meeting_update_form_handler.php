@@ -310,7 +310,10 @@ function meeting_update_form_handler_rest($data)
 
             // add in extra form fields (non BMLT fields) to the submission
             foreach ($allowed_fields_extra as $field) {
-                $submission[$field] = $sanitised_fields[$field];
+                if(!empty($sanitised_fields[$field]))
+                {
+                    $submission[$field] = $sanitised_fields[$field];
+                }
             }
 
             error_log("SUBMISSION");
