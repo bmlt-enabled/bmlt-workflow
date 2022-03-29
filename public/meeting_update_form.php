@@ -16,6 +16,8 @@ $formatarr = $bmlt_integration->getMeetingFormats();
 $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
 $counties = $bmlt_integration->getMeetingCounties();
+$counties = array( "Androscoggin","Aroostook","Barnstable","Belknap","Bristol","Caledonia","Carroll","Chittenden","Coos","Cumberland","Dukes","Essex","Franklin","Grafton","Hampden","Hampshire","Hancock","Hillsborough","Kent","Kennebec","Knox","Lamoille","Merrimack","Middlesex","Nantucket","Newport","Norfolk","Oxford","Penobscot","Piscataquis","Plymouth","Providence","Rockingham","Sagadahoc","Somerset","Strafford","Suffolk","Waldo","Washington","Worcester","York");
+
 if($counties)
 {
     $counties = '<select class="meeting-input" name="location_sub_province">';
