@@ -477,12 +477,11 @@ class wbw_submissions_rest_handlers
                 break;
             case 'reason_change':
                 // needs an id_bigint not a meeting_id
-                $change['id_bigint'] = $change['meeting_id'];
-                unset($change['meeting_id']);
+                $change['id_bigint'] = $result['meeting_id'];
 
                 error_log("CHANGE");
                 error_log(vdump($change));
-                
+
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;
                 $changearr['set_meeting_change'] = json_encode($change);
@@ -506,10 +505,6 @@ class wbw_submissions_rest_handlers
 
                 break;
             case 'reason_close':
-                // needs an id_bigint not a meeting_id. no other fields required for close
-                $change = array('id_bigint' => $change['meeting_id']);
-                // $change['id_bigint'] = $change['meeting_id'];
-                // unset($change['meeting_id']);
 
                 error_log(vdump($params));
 
@@ -517,7 +512,7 @@ class wbw_submissions_rest_handlers
                 if ((!empty($params['delete'])) && ($params['delete'] == "true")) {
                     $changearr = array();
                     $changearr['bmlt_ajax_callback'] = 1;
-                    $changearr['delete_meeting'] = $change['id_bigint'];
+                    $changearr['delete_meeting'] = $result['meeting_id'];
                     // response message {'success':true,'report':'3557'}
                     $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
 
