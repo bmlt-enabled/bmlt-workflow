@@ -313,6 +313,8 @@ function meeting_update_form_handler_rest($data)
                 $submission[$field] = $sanitised_fields[$field];
             }
 
+            error_log("SUBMISSION");
+            error_log(vdump($submission));
             // store away the original meeting name so we know what changed
             $submission['original_meeting_name'] = $bmlt_meeting['meeting_name'];
 
