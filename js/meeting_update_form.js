@@ -174,10 +174,10 @@ jQuery(document).ready(function ($) {
 
   $("#starter_kit_required").on("change", function () {
     if (this.value == "yes") {
-      $("#starter_kit_postal_address").show();
+      $("#starter_kit_postal_address_div").show();
       $("#starter_kit_postal_address").prop("required", true);
     } else {
-      $("#starter_kit_postal_address").hide();
+      $("#starter_kit_postal_address_div").hide();
       $("#starter_kit_postal_address").prop("required", false);
     }
   });
