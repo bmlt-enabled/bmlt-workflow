@@ -268,7 +268,7 @@ jQuery(document).ready(function ($) {
   $("#personal_details").attr("class","form-grid-col2");
 
 
-  $("#update_reason").change(function () {
+  $("#update_reason").on('change',function () {
     // hide all the optional items
     $("#reason_new_text").hide();
     $("#reason_change_text").hide();
