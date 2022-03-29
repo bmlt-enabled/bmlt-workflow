@@ -115,7 +115,7 @@ Line: $errorLine
             'change_made' => 'NULL',
             'submitter_name' => 'test submitter',
             'submission_type' => 'reason_change',
-            'submission_email' => 'a@a.com',
+            'submitter_email' => 'a@a.com',
             'meeting_id' => NULL,
             'service_body_bigint' => '4',
             'changes_requested' => '{"meeting_id":"3563","weekday_tinyint":"6","format_shared_id_list":"32,56","original_meeting_name":"Annandale Thur - Spiritual Principle a Day"}',
@@ -172,7 +172,7 @@ Line: $errorLine
             'change_made' => 'NULL',
             'submitter_name' => 'test submitter',
             'submission_type' => 'reason_close',
-            'submission_email' => 'a@a.com',
+            'submitter_email' => 'a@a.com',
             'meeting_id' => NULL,
             'service_body_bigint' => '4',
             'changes_requested' => '{"meeting_id":3563,"additional_info":"please close this is shut","group_relationship":"Area Trusted Servant","meeting_name":"90 in 90 (Burwood) update"}'
@@ -228,7 +228,7 @@ Line: $errorLine
             'change_made' => 'NULL',
             'submitter_name' => 'test submitter',
             'submission_type' => 'reason_close',
-            'submission_email' => 'a@a.com',
+            'submitter_email' => 'a@a.com',
             'meeting_id' => NULL,
             'service_body_bigint' => '4',
             'changes_requested' => '{"meeting_id":3563,"additional_info":"please close this is shut","group_relationship":"Area Trusted Servant","meeting_name":"90 in 90 (Burwood) update"}'

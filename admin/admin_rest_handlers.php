@@ -391,34 +391,32 @@ class wbw_submissions_rest_handlers
         global $wbw_submissions_table_name;
         error_log("REQUEST");
         error_log(vdump($request));
+        // body parameters
+        $params = $request->get_json_params();
+        // url parameters from parsed route
         $change_id = $request->get_param('id');
 
-        error_log("getting changes for id " . $change_id);
-
-        $result = $this->get_submission_id_with_permission_check($change_id);
-        if (is_wp_error($result)) {
-            return $result;
-        }
-
-        $change_made = $result['change_made'];
-
-        if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->wbw_rest_error("Submission id {$change_id} is already {$change_made}", 400);
-        }
-
-        $params = $request->get_json_params();
-        // error_log($params);
+        // clean/validate supplied approval message
         $message = '';
         if (!empty($params['action_message'])) {
             $message = $params['action_message'];
             if (strlen($message) > 1023) {
                 return $this->wbw_rest_error('Approve message must be less than 1024 characters', 400);
             }
-        } else {
-            error_log("action message is null");
         }
 
-        $submission_type = $result['submission_type'];
+        // retrieve our submission id from the one specified in the route
+        error_log("getting changes for id " . $change_id);
+        $result = $this->get_submission_id_with_permission_check($change_id);
+        if (is_wp_error($result)) {
+            return $result;
+        }
+
+        // can't approve an already actioned submission
+        $change_made = $result['change_made'];
+        if (($change_made === 'approved') || ($change_made === 'rejected')) {
+            return $this->wbw_rest_error("Submission id {$change_id} is already {$change_made}", 400);
+        }
 
         $change = json_decode($result['changes_requested'], 1);
 
@@ -448,13 +446,22 @@ class wbw_submissions_rest_handlers
             }
         }
 
+        // handle request to add email
+        $submitter_email = $result['submitter_email'];
+        if((!empty($change['add_email']))&&($change['add_email']==='yes'))
+        {
+            $change['contact_email_1']=$submitter_email;
+        }
+
         // error_log("json decoded");
         // error_log(vdump($change));
+
+        // approve based on different change types
+        $submission_type = $result['submission_type'];
         error_log("change type = " . $submission_type);
         switch ($submission_type) {
             case 'reason_new':
-                // $change['admin_action'] = 'add_meeting';
-                // workaround for new meeting bug
+                // workaround for semantic new meeting bug
                 $change['id_bigint'] = 0;
                 // handle publish/unpublish here
                 $change['published'] = 1;
@@ -472,8 +479,10 @@ class wbw_submissions_rest_handlers
                 // needs an id_bigint not a meeting_id
                 $change['id_bigint'] = $change['meeting_id'];
                 unset($change['meeting_id']);
+
                 error_log("CHANGE");
                 error_log(vdump($change));
+                
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;
                 $changearr['set_meeting_change'] = json_encode($change);
@@ -495,28 +504,29 @@ class wbw_submissions_rest_handlers
                     return $this->wbw_rest_error('BMLT Communication Error - Meeting change failed', 500);
                 }
 
-                // $change['admin_action'] = 'modify_meeting';
-                // $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/json.php', $change);
                 break;
             case 'reason_close':
-                // needs an id_bigint not a meeting_id
-                $change['id_bigint'] = $change['meeting_id'];
-                unset($change['meeting_id']);
+                // needs an id_bigint not a meeting_id. no other fields required for close
+                $change = array('id_bigint' => $change['meeting_id']);
+                // $change['id_bigint'] = $change['meeting_id'];
+                // unset($change['meeting_id']);
 
                 error_log(vdump($params));
-                // error_log("params detail".$params['detail']);
-                // only an admin can get the service areas detail (permissions) information
+
+                // are we doing a delete or an unpublish on close?
                 if ((!empty($params['delete'])) && ($params['delete'] == "true")) {
                     $changearr = array();
                     $changearr['bmlt_ajax_callback'] = 1;
                     $changearr['delete_meeting'] = $change['id_bigint'];
-                    // {'success':true,'report':'3557'}
+                    // response message {'success':true,'report':'3557'}
                     $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
 
                     if (is_wp_error($response)) {
                         return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                     }
+
                     $arr = json_decode(wp_remote_retrieve_body($response),true);
+
                     if((!empty($arr['success'])) && ($arr['success'] != 'true'))
                     {
                         return $this->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
