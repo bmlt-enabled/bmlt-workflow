@@ -146,8 +146,7 @@ function meeting_update_form_handler_rest($data)
                     $data[$field] = sanitize_text_field($data[$field]);
                     break;
                 case ('yesno'):
-                    if (($data[$field] !== 'yes')&&($data[$field] !== 'no'))
-                    {
+                    if (($data[$field] !== 'yes') && ($data[$field] !== 'no')) {
                         return invalid_form_field($field);
                     }
                     break;
@@ -205,7 +204,7 @@ function meeting_update_form_handler_rest($data)
     $submitter_email = $sanitised_fields['email_address'];
     $submission = array();
 
-    
+
     // create our submission for the database changes_requested field
     switch ($reason) {
         case ('reason_new'):
@@ -240,8 +239,6 @@ function meeting_update_form_handler_rest($data)
                 }
             }
 
-            // $submission['meeting_id'] = 0;
-
             break;
         case ('reason_change'):
             // change meeting - just add the deltas. no real reason to do this as bmlt result would be the same, but safe to filter it regardless
@@ -264,14 +261,14 @@ function meeting_update_form_handler_rest($data)
                 "service_body_bigint",
                 "virtual_meeting_link",
                 "format_shared_id_list",
+            );
+
+            $allowed_fields_extra = array(
                 "contact_number_confidential",
                 "group_relationship",
                 "add_email",
                 "additional_info",
             );
-
-            // add in the meeting id
-            // $meeting_id = $sanitised_fields['meeting_id'];
 
             $bmlt_meeting = bmlt_retrieve_single_meeting($sanitised_fields['meeting_id']);
             // error_log(vdump($meeting));
@@ -311,10 +308,13 @@ function meeting_update_form_handler_rest($data)
                 return wbw_rest_error('Nothing was changed.', 400);
             }
 
+            // add in extra form fields (non BMLT fields) to the submission
+            foreach ($allowed_fields_extra as $field) {
+                $submission[$field] = $sanitised_fields[$field];
+            }
+
             // store away the original meeting name so we know what changed
             $submission['original_meeting_name'] = $bmlt_meeting['meeting_name'];
-            // store away the meeting id
-            // $submission['meeting_id'] = $meeting_id;
 
             break;
         case ('reason_close'):
@@ -322,7 +322,6 @@ function meeting_update_form_handler_rest($data)
 
             // form fields allowed in changes_requested for this change type
             $allowed_fields = array(
-                // "meeting_id",
                 "contact_number_confidential",
                 "group_relationship",
                 "add_email",
