@@ -15,13 +15,13 @@ $bmlt_integration = new BMLTIntegration;
 $formatarr = $bmlt_integration->getMeetingFormats();
 $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
-$counties = $bmlt_integration->getMeetingCounties();
-$counties = array( "Androscoggin","Aroostook","Barnstable","Belknap","Bristol","Caledonia","Carroll","Chittenden","Coos","Cumberland","Dukes","Essex","Franklin","Grafton","Hampden","Hampshire","Hancock","Hillsborough","Kent","Kennebec","Knox","Lamoille","Merrimack","Middlesex","Nantucket","Newport","Norfolk","Oxford","Penobscot","Piscataquis","Plymouth","Providence","Rockingham","Sagadahoc","Somerset","Strafford","Suffolk","Waldo","Washington","Worcester","York");
+$meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
+$meeting_counties_and_sub_provinces = array( "Androscoggin","Aroostook","Barnstable","Belknap","Bristol","Caledonia","Carroll","Chittenden","Coos","Cumberland","Dukes","Essex","Franklin","Grafton","Hampden","Hampshire","Hancock","Hillsborough","Kent","Kennebec","Knox","Lamoille","Merrimack","Middlesex","Nantucket","Newport","Norfolk","Oxford","Penobscot","Piscataquis","Plymouth","Providence","Rockingham","Sagadahoc","Somerset","Strafford","Suffolk","Waldo","Washington","Worcester","York");
 
-if($counties)
+if($meeting_counties_and_sub_provinces)
 {
     $counties = '<select class="meeting-input" name="location_sub_province">';
-    foreach ($counties as $key)
+    foreach ($meeting_counties_and_sub_provinces as $key)
     {
         $counties .= '<option value="'.$key.'">'.$key.'</option>';
     }
