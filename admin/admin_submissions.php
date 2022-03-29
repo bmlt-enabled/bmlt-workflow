@@ -77,7 +77,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <label for="quickedit_meeting_name">Meeting Name</label>
             <input type="text" name="quickedit_meeting_name" id="quickedit_meeting_name" class="quickedit-input">
             <label for="quickedit_format_shared_id_list">Meeting Formats</label>
-            <select name="quickedit_format_shared_id_list" id="quickedit_format_shared_id_list" style="width: auto"></select>
+            <select class="quickedit-input" name="quickedit_format_shared_id_list" id="quickedit_format_shared_id_list" style="width: auto"></select>
 
         </div>
 
@@ -88,7 +88,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         </div>
         <div class="wbw-sg-col1-t2">
             <label for="quickedit_weekday_tinyint">Weekday</label>
-            <select name="quickedit_weekday_tinyint" id="quickedit_weekday_tinyint">
+            <select class="quickedit-input" name="quickedit_weekday_tinyint" id="quickedit_weekday_tinyint">
                 <option value="1">Sunday</option>
                 <option value="2">Monday</option>
                 <option value="3">Tuesday</option>
@@ -100,7 +100,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         </div>
         <div class="wbw-sg-col1-t3">
             <label for="quickedit_duration_hours">Duration</label>
-            <select id="quickedit_duration_hours">
+            <select class="quickedit-input" id="quickedit_duration_hours">
                     <option value="00">0</option>
                     <option value="01" selected="selected">1</option>
                     <option value="02">2</option>
@@ -115,7 +115,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <option value="11">11</option>
                     <option value="12">12</option>
                 </select> h
-                <select id="quickedit_duration_minutes">
+                <select class="quickedit-input" id="quickedit_duration_minutes">
                     <option value="00" selected="selected">0</option>
                     <option value="05">5</option>
                     <option value="10">10</option>

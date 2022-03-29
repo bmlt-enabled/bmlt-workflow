@@ -11,6 +11,45 @@ if ($wbw_bmlt_test_status != "success") {
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
+$bmlt_integration = new BMLTIntegration;
+$formatarr = $bmlt_integration->getMeetingFormats();
+$script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
+
+$counties = $bmlt_integration->getMeetingCounties();
+if($counties)
+{
+    $counties = '<select class="meeting-input" name="location_sub_province">';
+    foreach ($key as $counties)
+    {
+        $counties .= '<option value="'.$key.'">'.$key.'</option>';
+    }
+    $counties .= '</select>';
+}
+else
+{
+    $counties =<<<EOD
+    <label for="location_sub_province">Sub Province</label>
+    <input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">
+EOD;
+}
+
+$states = $bmlt_integration->getMeetingStates();
+if($states)
+{
+    $states = '<select class="meeting-input" name="location_province">';
+    foreach ($key as $states)
+    {
+        $states .= '<option value="'.$key.'">'.$key.'</option>';
+    }
+    $states .= '</select>';
+}
+else
+{
+    $states =<<<EOD
+    <label for="location_province">State<span class="wbw-required-field"> *</span></label>
+    <input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>
+EOD;
+}
 ?>
 <div id="form_replace">
     <form action="#" method="post" id="meeting_update_form">
