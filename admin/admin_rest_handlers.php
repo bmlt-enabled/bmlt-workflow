@@ -74,7 +74,7 @@ class wbw_submissions_rest_handlers
             $req['flat'] = '';
     
             // get an xml for a workaround
-            $response = $this->bmlt_integration->postConfiguredRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
+            $response = $this->bmlt_integration->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
             if (is_wp_error($response)) {
                 return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
             }
@@ -473,7 +473,7 @@ class wbw_submissions_rest_handlers
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;
                 $changearr['set_meeting_change'] = json_encode($change);
-                $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
+                $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                 if (is_wp_error($response)) {
                     return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
@@ -490,7 +490,7 @@ class wbw_submissions_rest_handlers
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;
                 $changearr['set_meeting_change'] = json_encode($change);
-                $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
+                $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                 if (is_wp_error($response)) {
                     return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
@@ -519,7 +519,7 @@ class wbw_submissions_rest_handlers
                     $changearr['bmlt_ajax_callback'] = 1;
                     $changearr['delete_meeting'] = $result['meeting_id'];
                     // response message {'success':true,'report':'3557'}
-                    $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
+                    $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                     if (is_wp_error($response)) {
                         return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
@@ -544,7 +544,7 @@ class wbw_submissions_rest_handlers
                     $changearr = array();
                     $changearr['bmlt_ajax_callback'] = 1;
                     $changearr['set_meeting_change'] = json_encode($change);
-                    $response = $this->bmlt_integration->postConfiguredRootServerRequest('', $changearr);
+                    $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                     if (is_wp_error($response)) {
                         return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);

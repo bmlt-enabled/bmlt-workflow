@@ -126,7 +126,7 @@ Line: $errorLine
         $bmlt = Mockery::mock('overload:BMLTIntegration');
 
         /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postConfiguredRootServerRequest' => $resp]);
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp]);
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -183,7 +183,7 @@ Line: $errorLine
         $bmlt = Mockery::mock('overload:BMLTIntegration');
 
         /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postConfiguredRootServerRequest' => $resp]);
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp]);
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -240,7 +240,7 @@ Line: $errorLine
         $bmlt = Mockery::mock('overload:BMLTIntegration');
 
         /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postConfiguredRootServerRequest' => $resp]);
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp]);
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -297,7 +297,7 @@ Line: $errorLine
         $bmlt = Mockery::mock('overload:BMLTIntegration');
 
         /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postConfiguredRootServerRequest' => $resp])->with('',\Mockery::capture($bmlt_input));
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('',\Mockery::capture($bmlt_input));
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');

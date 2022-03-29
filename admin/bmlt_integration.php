@@ -35,7 +35,7 @@ class BMLTIntegration
 
     public function getMeetingFormats()
     {
-        $response = $this->postConfiguredRootServerRequest('local_server/server_admin/json.php', array('admin_action' => 'get_format_info'));
+        $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetFormats', array());
         if (is_wp_error($response)) {
             return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
@@ -56,7 +56,7 @@ class BMLTIntegration
 
     public function getMeetingStates()
     {
-        $response = $this->postConfiguredRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
+        $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         if (is_wp_error($response)) {
             return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
@@ -72,7 +72,7 @@ class BMLTIntegration
 
     public function getMeetingCounties()
     {
-        $response = $this->postConfiguredRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
+        $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         if (is_wp_error($response)) {
             return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
@@ -201,49 +201,27 @@ class BMLTIntegration
         }
     }
 
-    private function getRootServerRequest($url)
-    {
-        error_log("GETROOTSERVERREQUEST COOKIES");
-        // error_log($this->vdump($this->cookies));
-        error_log("*********");
-        $ret =  $this->authenticateRootServer();
-        if (is_wp_error($ret)) {
-            return $ret;
-        }
-        return $this->get($url, $this->cookies);
-    }
-
-    private function postRootServerRequest($url, $postargs)
+    private function postAuthenticatedRootServerRequest($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
         if (is_wp_error($ret)) {
             return $ret;
         }
-        return $this->post($url, $this->cookies, $postargs);
+        return $this->post(get_option('wbw_bmlt_server_address') . $url, $this->cookies, $postargs);
     }
 
-    private function postRootServerRequestSemantic($url, $postargs)
+    private function postUnauthenticatedRootServerRequest($url, $postargs)
+    {
+        return $this->post(get_option('wbw_bmlt_server_address') . $url, null, $postargs);
+    }
+
+    private function postAuthenticatedRootServerRequestSemantic($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
         if (is_wp_error($ret)) {
             return $ret;
         }
-        return $this->postsemantic($url, $this->cookies, $postargs);
-    }
-
-    public function postConfiguredRootServerRequest($url, $postargs)
-    {
-            return $this->postRootServerRequest(get_option('wbw_bmlt_server_address') . $url, $postargs);
-    }
-
-    public function postConfiguredRootServerRequestSemantic($url, $postargs)
-    {
-            return $this->postRootServerRequestSemantic(get_option('wbw_bmlt_server_address') . $url, $postargs);
-    }
-
-    public function getConfiguredRootServerRequest($url)
-    {
-            return $this->getRootServerRequest(get_option('wbw_bmlt_server_address') . $url);
+        return $this->postsemantic(get_option('wbw_bmlt_server_address') . $url, $this->cookies, $postargs);
     }
 
 }
