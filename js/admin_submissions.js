@@ -59,7 +59,7 @@ jQuery(document).ready(function ($) {
             Object.keys(item).forEach((element) => {
               if ($("#quickedit_" + element).length) {
                 $("#quickedit_" + element).val(item[element]);
-                $("#quickedit_" + element).change();
+                $("#quickedit_" + element).trigger('change');
               }
             });
 
@@ -74,7 +74,7 @@ jQuery(document).ready(function ($) {
               if ($("#quickedit_" + element).length) {
                 $("#quickedit_" + element).addClass("wbw-changed");
                 $("#quickedit_" + element).val(changes_requested[element]);
-                $("#quickedit_" + element).change();
+                $("#quickedit_" + element).trigger('change');
 
               }
             });
@@ -142,7 +142,7 @@ jQuery(document).ready(function ($) {
     data: formatdata,
     dropdownParent: $("#wbw_submission_quickedit_dialog"),
   });
-  $("#quickedit_format_shared_id_list").change();
+  $("#quickedit_format_shared_id_list").trigger('change');
 
   var datatable = $("#dt-submission").DataTable({
     dom: "Bfrtip",
