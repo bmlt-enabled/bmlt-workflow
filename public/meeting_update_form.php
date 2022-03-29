@@ -78,9 +78,9 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
                         <div class="form-grid-col1">
                             <label for="meeting_name">Group Name<span class="wbw-required-field"> *</span></label>
-                            <input type="text" name="meeting_name" size="50" id="meeting_name" required>
+                            <input class="meeting-input" type="text" name="meeting_name" size="50" id="meeting_name" required>
                             <label for="weekday_tinyint">Meeting Day:<span class="wbw-required-field"> *</span></label>
-                            <select name="weekday_tinyint" id="weekday_tinyint">
+                            <select class="meeting-input" name="weekday_tinyint" id="weekday_tinyint">
                                 <option value=1>Sunday</option>
                                 <option value=2>Monday</option>
                                 <option value=3>Tuesday</option>
@@ -92,13 +92,13 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             <div class="grid-flex-container">
                                 <div class="grid-flex-item">
                                     <label for="start_time">Start Time<span class="wbw-required-field"> *</span></label>
-                                    <input type="time" name="start_time" size="10" id="start_time" required>
+                                    <input class="meeting-input" type="time" name="start_time" size="10" id="start_time" required>
                                 </div>
                                 <div class="grid-flex-item">
                                 <label>Duration</label>
                                     <div class="inline">
                                         <span>
-                                            <select id="duration_hours">
+                                            <select class="meeting-input" id="duration_hours">
                                                 <option value="00">0</option>
                                                 <option value="01" selected="selected">1</option>
                                                 <option value="02">2</option>
@@ -116,7 +116,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                             <label for="duration_hours">H</label>
                                         </span>
                                         <span>
-                                            <select id="duration_minutes">
+                                            <select class="meeting-input" id="duration_minutes">
                                                 <option value="00" selected="selected">0</option>
                                                 <option value="05">5</option>
                                                 <option value="10">10</option>
@@ -138,31 +138,31 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             </div>
                             <input type="hidden" name="duration_time" size="10" id="duration_time" required>
                             <label for="service_body_bigint">Service Committee (or Other if not known)</label>
-                            <select name="service_body_bigint" id="service_body_bigint">
+                            <select class="meeting-input" name="service_body_bigint" id="service_body_bigint">
                             </select>
                             <label for="location_text">Location (eg: a building name)<span class="wbw-required-field"> *</span></label>
-                            <input type="text" name="location_text" size="50" id="location_text" required>
+                            <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
                             <label for="location_street">Street Address<span class="wbw-required-field"> *</span></label>
-                            <input type="text" name="location_street" size="50" id="location_street" required>
+                            <input class="meeting-input" type="text" name="location_street" size="50" id="location_street" required>
                             <label for="location_info">Extra Location Info (eg: Near the park)</label>
-                            <input type="text" name="location_info" size="50" id="location_info">
+                            <input class="meeting-input" type="text" name="location_info" size="50" id="location_info">
                             <label for="location_municipality">City/Town/Suburb<span class="wbw-required-field"> *</span></label>
-                            <input type="text" name="location_municipality" size="50" id="location_municipality" required>
+                            <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
                             <label for="location_sub_province">Sub Province</label>
-                            <input type="text" name="location_sub_province" size="50" id="location_sub_province">
+                            <input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">
                             <label for="location_province">State<span class="wbw-required-field"> *</span></label>
-                            <input type="text" name="location_province" size="50" id="location_province" required>
+                            <input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>
                             <label for="location_postal_code_1">Postcode<span class="wbw-required-field"> *</span></label>
-                            <input type="number" name="location_postal_code_1" size="5" max="99999" id="location_postal_code_1" required>
+                            <input class="meeting-input" type="number" name="location_postal_code_1" size="5" max="99999" id="location_postal_code_1" required>
                             <label for="location_nation">Nation</label>
-                            <input type="text" name="location_nation" size="50" id="location_nation">
+                            <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
 
                             <label for="display_format_shared_id_list">Meeting Formats</label>
                             <select name="display_format_shared_id_list" id="display_format_shared_id_list"></select>
                             <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
 
                             <label for=" virtual_meeting_link">Online Meeting Link</label>
-                            <input type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
+                            <input class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
                         </div>
                     </fieldset>
                 </div>

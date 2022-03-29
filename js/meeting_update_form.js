@@ -130,6 +130,10 @@ jQuery(document).ready(function ($) {
               $("#instructions").text("We've retrieved the details below from our system. Please make any changes and then submit your update.");
               $("#meeting_content").show();
               disable_field("service_body_bigint");
+              $(".meeting-input").on("input", function () {
+                $(this).addClass("wbw-changed");
+              });
+  
               break;
             case "reason_close":
               // display form instructions
@@ -277,6 +281,11 @@ jQuery(document).ready(function ($) {
     $("#other_reason").prop("required", false);
     $("#additional_info").prop("required", false);
     $("#personal_details").attr("class","form-grid-col2");
+    // disable the highlighting
+    $(".meeting-input").off("change");
+    // remove the highlighting
+    $(".meeting-input").removeClass("wbw-changed");
+    // remove any content from the input fields
 
     enable_edits();
     // enable items as required
