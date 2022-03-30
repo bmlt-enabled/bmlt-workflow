@@ -28,7 +28,6 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <thead>
                     <tr>
                         <th class="wbw-userlist-header">Service Body</th>
-                        <th class="wbw-userlist-header">Service Body Email</th>
                         <th class="wbw-userlist-header">Wordpress Users with Access</th>
                         <th class="wbw-userlist-header">Display on end-user Form</th>
                     </tr>
