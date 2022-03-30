@@ -407,7 +407,7 @@ function meeting_update_form_handler_rest($data)
     // $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address, 'Cc: ' . $cc_address);
     $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
     // Send the email
-    error_log("to:".$to_address." subject:".$subject." body:".$body." headers:".$headers);
+    error_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
     wp_mail($to_address, $subject, $body, $headers);
 
     // Handle the FSO emails
