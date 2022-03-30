@@ -387,47 +387,7 @@ function meeting_update_form_handler_rest($data)
     error_log("SUBMISSION");
     error_log(vdump($submission));
 
-    // $cc_address = "";
-    $to_address = "";
 
-    $from_address = get_option('wbw_email_from_address');
-
-    // Do field replacement in to: and cc: address
-    // $subfield = '{field:email_address}';
-    // $subwith = $sanitised_fields['email_address'];
-    // $to_address = str_replace($subfield, $subwith, $to_address);
-    // if (!empty($cc_address)) {
-    //     $cc_address = str_replace($subfield, $subwith, $cc_address);
-    // }
-    $to_address = $submitter_email;
-
-    $body = "mesage";
-    // $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address, 'Cc: ' . $cc_address);
-    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-    // Send the email
-    error_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
-    wp_mail($to_address, $subject, $body, $headers);
-
-    // Handle the FSO emails
-    if ($reason == "reason_new") {
-        if ((!empty($sanitised_fields['starter_kit_required'])) && ($sanitised_fields['starter_kit_required'] === 'yes') && (!empty($sanitised_fields['starter_kit_postal_address']))) {
-            $template = get_option('wbw_fso_email_template');
-            $subject = 'Starter Kit Request';
-            $to_address = get_option('wbw_fso_email_address');
-            foreach ($subfields as $field => $formattype) {
-                $subfield = '{field:' . $field . '}';
-                if ((isset($sanitised_fields[$field])) && (!empty($sanitised_fields[$field]))) {
-                    $subwith = $sanitised_fields[$field];
-                } else {
-                    $subwith = '(blank)';
-                }
-                $template = str_replace($subfield, $subwith, $template);
-            }
-            $body = $template;
-            $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-            wp_mail($to_address, $subject, $body, $headers);
-        }
-    }
 
     // id mediumint(9) NOT NULL AUTO_INCREMENT,
     // submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
@@ -468,6 +428,13 @@ function meeting_update_form_handler_rest($data)
         "form_html" => '<h3>Form submission successful, your submission id  is #' . $insert_id . '. You will also receive an email confirmation of your submission.</h3>'
     );
 
+    // Send our emails out
+
+    // Common email fields
+    $from_address = get_option('wbw_email_from_address');
+    $to_address = $submitter_email;
+
+
     // Send a notification to the trusted servants
     switch ($reason) {
         case "reason_new":
@@ -488,10 +455,46 @@ function meeting_update_form_handler_rest($data)
     // error_log("notification email to:");
     // error_log($to_address);
 
-    $subject="[bmlt-workflow] Submission ".$insert_id." received - ".$submission_type;
+    $subject="[bmlt-workflow] Submission ID ".$insert_id." received - ".$submission_type;
     $body='Log in to <a href="'.get_site_url().'/wp-admin/admin.php?page=wbw-submissions">WBW Submissions Page</a> to review.';
     $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
     wp_mail($to_address, $subject, $body, $headers);
+
+
+    // Send email to the submitter
+
+    $subject = "NA Meeting Change Request Acknowledgement - Submission ID ".$insert_id;
+    $body = "thanks for contacting us";
+    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+    error_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
+    wp_mail($to_address, $subject, $body, $headers);
+
+    // Send email to the FSO if required
+
+    if ($reason == "reason_new") {
+        if ((!empty($sanitised_fields['starter_kit_required'])) && ($sanitised_fields['starter_kit_required'] === 'yes') && (!empty($sanitised_fields['starter_kit_postal_address']))) {
+            error_log("ok were sending a starter kit");
+            $template = get_option('wbw_fso_email_template');
+            $subject = 'Starter Kit Request';
+            $to_address = get_option('wbw_fso_email_address');
+            $fso_subfields = array('first_name','last_name','meeting_name','starter_kit_postal_address');
+
+            foreach ($fso_subfields as $field => $formattype) {
+                $subfield = '{field:' . $field . '}';
+                if ((isset($sanitised_fields[$field])) && (!empty($sanitised_fields[$field]))) {
+                    $subwith = $sanitised_fields[$field];
+                } else {
+                    $subwith = '(blank)';
+                }
+                $template = str_replace($subfield, $subwith, $template);
+            }
+            $body = $template;
+            $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+            wp_mail($to_address, $subject, $body, $headers);
+        }
+    }
+
+
     // return wbw_rest_success($message);
     return;
 }
