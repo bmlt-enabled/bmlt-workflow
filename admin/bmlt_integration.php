@@ -40,7 +40,7 @@ class BMLTIntegration
             return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
         error_log(wp_remote_retrieve_body($response));  
-        $formatarr = json_decode(wp_remote_retrieve_body($response), true)[0];
+        $formatarr = json_decode(wp_remote_retrieve_body($response), true);
         error_log(vdump($formatarr));
         $newformat = array();
         foreach ($formatarr as $key => $value) {
