@@ -197,7 +197,7 @@ EOD;
                             <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
 
                             <label for="format_shared_id_list">Meeting Formats<span class="wbw-required-field"> *</span></label>
-                            <select class="meeting-input" name="format_shared_id_list" id="format_shared_id_list" required></select>
+                            <select class="meeting-input" name="format_shared_id_list[]" id="format_shared_id_list" required></select>
                             <!-- <input type="hidden" name="format_shared_id_list" id="format_shared_id_list"> -->
 
                             <label for=" virtual_meeting_link">Online Meeting Link</label>
