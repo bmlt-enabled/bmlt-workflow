@@ -19,8 +19,6 @@ function get_emails_by_servicebody_id($id)
     $emails = array();
     $sql = $wpdb->prepare('SELECT wp_uid from '.$wbw_service_bodies_access_table_name.' where service_body_bigint="%d"',$id);
     $result = $wpdb->get_col($sql);
-    error_log("DB LOOKUP");
-    error_log(vdump($result));
     foreach ($result as $key => $value)
     {
         $user = get_user_by('ID',$value);
