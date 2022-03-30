@@ -490,6 +490,8 @@ function meeting_update_form_handler_rest($data)
             }
             $body = $template;
             $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+            error_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
+
             wp_mail($to_address, $subject, $body, $headers);
         }
     }
