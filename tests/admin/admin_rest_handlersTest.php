@@ -84,6 +84,12 @@ Line: $errorLine
         }
     }
 
+    protected function tearDown():void
+    {
+        Brain\Monkey\tearDown();
+        parent::tearDown();
+    }
+
     private function generate_approve_request($test_submission_id, $body)
     {
         $json_post = json_encode($body);

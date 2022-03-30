@@ -19,6 +19,8 @@ function get_emails_by_servicebody_id($id)
     $emails = array();
     $sql = $wpdb->prepare('SELECT wp_uid from '.$wbw_service_bodies_access_table_name.' where service_body_bigint="%d"',$id);
     $result = $wpdb->get_col($sql);
+    error_log("DB LOOKUP");
+    error_log(vdump($result));
     foreach ($result as $key => $value)
     {
         $user = get_user_by('ID',$value);
@@ -387,23 +389,26 @@ function meeting_update_form_handler_rest($data)
     error_log("SUBMISSION");
     error_log(vdump($submission));
 
-    $cc_address = "";
+    // $cc_address = "";
     $to_address = "";
 
     $from_address = get_option('wbw_email_from_address');
 
     // Do field replacement in to: and cc: address
-    $subfield = '{field:email_address}';
-    $subwith = $sanitised_fields['email_address'];
-    $to_address = str_replace($subfield, $subwith, $to_address);
-    if (!empty($cc_address)) {
-        $cc_address = str_replace($subfield, $subwith, $cc_address);
-    }
-    
+    // $subfield = '{field:email_address}';
+    // $subwith = $sanitised_fields['email_address'];
+    // $to_address = str_replace($subfield, $subwith, $to_address);
+    // if (!empty($cc_address)) {
+    //     $cc_address = str_replace($subfield, $subwith, $cc_address);
+    // }
+    $to_address = $submitter_email;
+
     $body = "mesage";
-    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address, 'Cc: ' . $cc_address);
+    // $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address, 'Cc: ' . $cc_address);
+    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
     // Send the email
-    // wp_mail($to_address, $subject, $body, $headers);
+    error_log("to:".$to_address." subject:".$subject." body:".$body." headers:".$headers);
+    wp_mail($to_address, $subject, $body, $headers);
 
     // Handle the FSO emails
     if ($reason == "reason_new") {
@@ -482,8 +487,8 @@ function meeting_update_form_handler_rest($data)
         }
 
     $to_address = get_emails_by_servicebody_id($service_body_bigint);
-    error_log("notification email to:");
-    error_log($to_address);
+    // error_log("notification email to:");
+    // error_log($to_address);
 
     $subject="[bmlt-workflow] Submission ".$insert_id." received - ".$submission_type;
     $body='Log in to <a href="'.get_site_url().'/wp-admin/admin.php?page=wbw-submissions">WBW Submissions Page</a> to review.';
