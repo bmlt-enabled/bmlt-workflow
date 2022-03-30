@@ -202,7 +202,7 @@ class BMLTIntegration
         }
     }
 
-    private function postAuthenticatedRootServerRequest($url, $postargs)
+    public function postAuthenticatedRootServerRequest($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
         if (is_wp_error($ret)) {
@@ -216,7 +216,7 @@ class BMLTIntegration
         return $this->post(get_option('wbw_bmlt_server_address') . $url, null, $postargs);
     }
 
-    private function postAuthenticatedRootServerRequestSemantic($url, $postargs)
+    public function postAuthenticatedRootServerRequestSemantic($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
         if (is_wp_error($ret)) {
