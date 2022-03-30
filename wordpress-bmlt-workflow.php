@@ -183,6 +183,8 @@ function wbw_admin_scripts($hook)
             // add meeting formats
             $bmlt_integration = new BMLTIntegration;
             $formatarr = $bmlt_integration->getMeetingFormats();
+            error_log("FORMATS");
+            error_log(vdump($formatarr));
             $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
