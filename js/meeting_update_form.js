@@ -357,7 +357,8 @@ jQuery(document).ready(function ($) {
     // prevent displayable list from being submitted
     $("#display_format_shared_id_list").attr('disabled','disabled')
     // turn the format list into a single string and move it into the submitted format_shared_id_list
-    $("#format_shared_id_list").val($("#display_format_shared_id_list").val().join(","));
+    // $("#format_shared_id_list").val($("#display_format_shared_id_list").val().join(","));
+    $("#format_shared_id_list").val($("#display_format_shared_id_list").val());
     
     // construct our duration
     var str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
