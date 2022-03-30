@@ -405,10 +405,6 @@ function meeting_update_form_handler_rest($data)
     // Send the email
     // wp_mail($to_address, $subject, $body, $headers);
 
-    $to_address = get_emails_by_servicebody_id($service_body_bigint);
-    error_log("notification email to:");
-    error_log($to_address);
-
     // Handle the FSO emails
     if ($reason == "reason_new") {
         if ((!empty($sanitised_fields['starter_kit_required'])) && ($sanitised_fields['starter_kit_required'] === 'yes') && (!empty($sanitised_fields['starter_kit_postal_address']))) {
@@ -469,5 +465,30 @@ function meeting_update_form_handler_rest($data)
         "form_html" => '<h3>Form submission successful, your submission id  is #' . $insert_id . '. You will also receive an email confirmation of your submission.</h3>'
     );
 
-    return wbw_rest_success($message);
+    // Send a notification to the trusted servants
+    switch ($reason) {
+        case "reason_new":
+          $submission_type = "New Meeting";
+          break;
+        case "reason_close":
+          $submission_type = "Close Meeting";
+          break;
+        case "reason_change":
+          $submission_type = "Modify Meeting";
+          break;
+        case "reason_other":
+          $submission_type = "Other Request";
+          break;
+        }
+
+    $to_address = get_emails_by_servicebody_id($service_body_bigint);
+    error_log("notification email to:");
+    error_log($to_address);
+
+    $subject="[bmlt-workflow] Submission ".$insert_id." received - ".$submission_type;
+    $body='Log in to <a href="'.get_site_url().'/wp-admin/admin.php?page=wbw-submissions">WBW Submissions Page</a> to review.';
+    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+    wp_mail($to_address, $subject, $body, $headers);
+    // return wbw_rest_success($message);
+    return;
 }
