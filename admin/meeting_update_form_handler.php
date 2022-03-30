@@ -22,9 +22,9 @@ function get_emails_by_servicebody_id($id)
     foreach ($result as $key => $value)
     {
         $user = get_user_by('ID',$value);
-        $array[] = $user->user_email;
+        $emails[] = $user->user_email;
     }
-    return implode(',', $array);
+    return implode(',', $emails);
 }
 
 // accepts raw string or array
@@ -408,7 +408,7 @@ function meeting_update_form_handler_rest($data)
     $to_address = get_emails_by_servicebody_id($service_body_bigint);
     error_log("notification email to:");
     error_log($to_address);
-    
+
     // Handle the FSO emails
     if ($reason == "reason_new") {
         if ((!empty($sanitised_fields['starter_kit_required'])) && ($sanitised_fields['starter_kit_required'] === 'yes') && (!empty($sanitised_fields['starter_kit_postal_address']))) {
