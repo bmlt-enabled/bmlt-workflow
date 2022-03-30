@@ -497,6 +497,6 @@ function meeting_update_form_handler_rest($data)
     }
 
 
-    // return wbw_rest_success($message);
-    return;
+    return wbw_rest_success($message);
+    // return;
 }

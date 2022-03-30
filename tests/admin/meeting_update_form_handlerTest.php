@@ -253,7 +253,7 @@ final class meeting_update_form_handlerTest extends TestCase
         // handle db insert of submission
         $wpdb->shouldNotReceive('insert');
         Functions\expect('wp_mail')->never();
-        
+
         $response = meeting_update_form_handler_rest($form_post);
         $this->assertInstanceOf(WP_Error::class, $response);
     }
@@ -390,6 +390,7 @@ final class meeting_update_form_handlerTest extends TestCase
         $wpdb->shouldReceive('get_col')->andReturn(array("0"=>"1","1"=>"2"));
         Functions\expect('get_user_by')->with(Mockery::any(),Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
         Functions\expect('wp_mail')->once()->with("a@a.com,a@a.com",Mockery::any(),Mockery::any(),Mockery::any());
+        Functions\expect('wp_mail')->once()->with("joe@joe.com",Mockery::any(),Mockery::any(),Mockery::any());
 
         $response = meeting_update_form_handler_rest($form_post);
         error_log(vdump($response));
