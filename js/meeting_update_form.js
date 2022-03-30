@@ -10,7 +10,7 @@ jQuery(document).ready(function ($) {
     formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
   });
 
-  $("#display_format_shared_id_list").select2({
+  $("#format_shared_id_list").select2({
     placeholder: "Select from available formats",
     multiple: true,
     data: formatdata,
@@ -108,7 +108,7 @@ jQuery(document).ready(function ($) {
           put_field("location_municipality", mdata[id].location_municipality);
           put_field("location_province", mdata[id].location_province);
           put_field("location_postal_code_1", mdata[id].location_postal_code_1);
-          put_field("display_format_shared_id_list", mdata[id].format_shared_id_list.split(","));
+          put_field("format_shared_id_list", mdata[id].format_shared_id_list.split(","));
 
           // handle duration in the select dropdowns
           var durationarr = mdata[id].duration_time.split(":");
@@ -217,7 +217,7 @@ jQuery(document).ready(function ($) {
     enable_field("location_municipality");
     enable_field("location_province");
     enable_field("location_postal_code_1");
-    enable_field("display_format_shared_id_list");
+    enable_field("format_shared_id_list");
     enable_field("weekday_tinyint");
     enable_field("service_body_bigint");
   }
@@ -233,7 +233,7 @@ jQuery(document).ready(function ($) {
     disable_field("location_municipality");
     disable_field("location_province");
     disable_field("location_postal_code_1");
-    disable_field("display_format_shared_id_list");
+    disable_field("format_shared_id_list");
     disable_field("weekday_tinyint");
     disable_field("service_body_bigint");
   }
@@ -252,7 +252,7 @@ jQuery(document).ready(function ($) {
     clear_field("last_name");
     clear_field("contact_number_confidential");
     clear_field("email_address");
-    clear_field("display_format_shared_id_list");
+    clear_field("format_shared_id_list");
     clear_field("meeting_id");
     clear_field("meeting_searcher");
     // set email selector to no
@@ -354,11 +354,11 @@ jQuery(document).ready(function ($) {
     // in case we disabled this we want to send it now
     enable_field("service_body_bigint");
 
-    // prevent displayable list from being submitted
-    $("#display_format_shared_id_list").attr('disabled','disabled')
-    // turn the format list into a single string and move it into the submitted format_shared_id_list
-    // $("#format_shared_id_list").val($("#display_format_shared_id_list").val().join(","));
-    $("#format_shared_id_list").val($("#display_format_shared_id_list").val());
+    // // prevent displayable list from being submitted
+    // $("#display_format_shared_id_list").attr('disabled','disabled')
+    // // turn the format list into a single string and move it into the submitted format_shared_id_list
+    // // $("#format_shared_id_list").val($("#display_format_shared_id_list").val().join(","));
+    // $("#format_shared_id_list").val($("#display_format_shared_id_list").val());
     
     // construct our duration
     var str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
