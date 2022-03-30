@@ -86,8 +86,8 @@ jQuery(document).ready(function ($) {
           }
         });
     } else if (wbw_changedata[id].submission_type == "reason_new") {
-      // fill from changes
-      changes_requested = wbw_changedata[id].changes_requested;
+      // fill in and highlight the changes - use extend to clone
+      changes_requested = $.extend(true,{},wbw_changedata[id].changes_requested);
 
       // split up the duration so we can use it in the select
       if ("duration_time" in changes_requested) {
