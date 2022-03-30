@@ -41,6 +41,7 @@ class BMLTIntegration
         }
         error_log(wp_remote_retrieve_body($response));  
         $formatarr = json_decode(wp_remote_retrieve_body($response), true)[0];
+        error_log(vdump($formatarr));
         $newformat = array();
         foreach ($formatarr as $key => $value) {
             foreach ($value as $key2 => $value2) {
