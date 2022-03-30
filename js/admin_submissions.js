@@ -147,6 +147,7 @@ jQuery(document).ready(function ($) {
   var datatable = $("#dt-submission").DataTable({
     dom: "Bfrtip",
     select: true,
+    searching: false,
     buttons: [
       {
         name: "approve",
