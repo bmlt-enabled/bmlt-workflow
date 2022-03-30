@@ -479,9 +479,9 @@ function meeting_update_form_handler_rest($data)
             $to_address = get_option('wbw_fso_email_address');
             $fso_subfields = array('first_name','last_name','meeting_name','starter_kit_postal_address');
 
-            foreach ($fso_subfields as $field => $formattype) {
+            foreach ($fso_subfields as $field) {
                 $subfield = '{field:' . $field . '}';
-                if ((isset($sanitised_fields[$field])) && (!empty($sanitised_fields[$field]))) {
+                if (!empty($sanitised_fields[$field])) {
                     $subwith = $sanitised_fields[$field];
                 } else {
                     $subwith = '(blank)';
