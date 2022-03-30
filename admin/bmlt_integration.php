@@ -42,15 +42,12 @@ class BMLTIntegration
         error_log(wp_remote_retrieve_body($response));  
         $formatarr = json_decode(wp_remote_retrieve_body($response), true);
         error_log(vdump($formatarr));
+
         $newformat = array();
         foreach ($formatarr as $key => $value) {
-            foreach ($value as $key2 => $value2) {
-                // handle blank values
-                if (is_array($value2)) {
-                    $value[$key2] = '';
-                }
-            }
-            $newformat[$formatarr[$key]['id']] = $value;
+            $formatid = $value['id'];
+            unset($value['id']);
+            $newformat[$formatid] = $value;            
         }
         error_log("NEWFORMAT");
         error_log(vdump($newformat));
