@@ -52,6 +52,8 @@ class BMLTIntegration
             }
             $newformat[$formatarr[$key]['id']] = $value;
         }
+        error_log(vdump($newformat));
+
         return $newformat;
     }
 
