@@ -477,8 +477,8 @@ function meeting_update_form_handler_rest($data)
     error_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . vdump($headers));
     wp_mail($to_address, $subject, $body, $headers);
 
-    // return wbw_rest_success($message);
-    return;
+    return wbw_rest_success($message);
+    // return;
 }
 
 function submission_format($submission)

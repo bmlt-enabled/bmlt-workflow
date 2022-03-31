@@ -36,6 +36,10 @@ final class meeting_update_form_handlerTest extends TestCase
         Functions\when('current_time')->justReturn('2022-03-23 09:22:44');
         Functions\when('wp_json_encode')->returnArg();
         Functions\when('get_site_url')->justReturn('http://127.0.0.1/wordpress');
+        Functions\when('wp_remote_post')->returnArg();
+        Functions\when('wp_remote_retrieve_body')->justReturn('{"0":{"id":"1","key_string":"0","name_string":"0"},"1":{"id":"2","key_string":"0","name_string":"0"},"2":{"id":"3","key_string":"0","name_string":"0"}}');
+        Functions\when('is_wp_error')->justReturn(false);
+
         if (!defined('CONST_OTHER_SERVICE_BODY')) {
             define('CONST_OTHER_SERVICE_BODY', '99999999999');
         }
@@ -167,7 +171,7 @@ final class meeting_update_form_handlerTest extends TestCase
             "last_name" => "joe",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
-            "format_shared_id_list" => "2,7,8,33,54,55",
+            "format_shared_id_list" => "1",
             "group_relationship" => "Group Member",
             "add_email" => "yes",
 
@@ -203,7 +207,7 @@ final class meeting_update_form_handlerTest extends TestCase
             "last_name" => "joe",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
-            "format_shared_id_list" => ",,2,7,8,33,54,55,,,,,",
+            "format_shared_id_list" => ",,1,2,,,,",
             "group_relationship" => "Group Member",
             "add_email" => "yes",
 
