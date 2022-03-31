@@ -128,7 +128,7 @@ jQuery(document).ready(function ($) {
           switch (reason) {
             case "reason_change":
               // display form instructions
-              $("#instructions").text("We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval.");
+              $("#instructions").html("We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval.");
               $("#meeting_content").show();
               disable_field("service_body_bigint");
               $(".meeting-input").on("input", function () {
@@ -138,7 +138,7 @@ jQuery(document).ready(function ($) {
               break;
             case "reason_close":
               // display form instructions
-              $("#instructions").text("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box");
+              $("#instructions").html("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box");
               $("#meeting_content").show();
               disable_edits();
               break;
@@ -306,7 +306,7 @@ jQuery(document).ready(function ($) {
         $("#meeting_details").show();
         $("#additional_info_div").show();
         // display form instructions
-        $("#instructions").text(
+        $("#instructions").html(
           "Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
         );
         // new meeting has a starter pack
@@ -340,7 +340,7 @@ jQuery(document).ready(function ($) {
       case "reason_other":
         clear_form();
         // display form instructions
-        $("#instructions").text("");
+        $("#instructions").html("");
         // other reason has a textarea
         $("#other_reason_div").show();
         $("#meeting_content").show();
