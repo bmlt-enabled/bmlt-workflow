@@ -460,7 +460,20 @@ function meeting_update_form_handler_rest($data)
     // Send email to the submitter
     $to_address = $submitter_email;
     $subject = "NA Meeting Change Request Acknowledgement - Submission ID ".$insert_id;
-    $body = "thanks for contacting us";
+
+    $template = get_option('wbw_submitter_email_template');
+
+    foreach ($subfields as $field => $value) {
+        $subfield = '{field:' . $field . '}';
+        if (!empty($sanitised_fields[$field])) {
+            $subwith = $sanitised_fields[$field];
+        } else {
+            $subwith = '(blank)';
+        }
+        $template = str_replace($subfield, $subwith, $template);
+    }
+    $body = $template;
+
     $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
     error_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
     wp_mail($to_address, $subject, $body, $headers);
