@@ -40,7 +40,7 @@
     width: 100%;
   }
   
-.wbw-sg-col1-t3 select {
+.grid-flex-item select {
     line-height: 1.5;
     font-size: 1.2em;
     padding: 5px 10px;
@@ -71,6 +71,22 @@
 
 .grid-flex-item input{
   width: 90%;
+}
+
+.grid-flex-item select {
+  line-height: 1.5;
+  font-size: 1.2em;
+  padding: 5px 10px;
+  display: inline;
+  width: 90%;
+}
+
+.grid-flex-item .grid-flex-double select {
+  line-height: 1.5;
+  font-size: 1.2em;
+  padding: 5px 10px;
+  display: inline;
+  width: 30%;
 }
 
 .grow-wrap {
