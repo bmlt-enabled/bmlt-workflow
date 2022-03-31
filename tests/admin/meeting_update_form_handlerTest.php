@@ -15,12 +15,11 @@ class meeting_update_form_handlerTest_my_wp_user
     {
         $this->user_email = "a@a.com";
     }
-
 }
 final class meeting_update_form_handlerTest extends TestCase
 {
 
-    
+
     protected function setUp(): void
     {
         $basedir = dirname(dirname(dirname(__FILE__)));
@@ -42,10 +41,11 @@ final class meeting_update_form_handlerTest extends TestCase
         }
     }
 
-    protected function tearDown():void
+    protected function tearDown(): void
     {
         Brain\Monkey\tearDown();
         parent::tearDown();
+        Mockery::close();
     }
 
     public function test_can_close(): void
@@ -72,9 +72,9 @@ final class meeting_update_form_handlerTest extends TestCase
         $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
-        $wpdb->shouldReceive('get_col')->andReturn(array("0"=>"1","1"=>"2"));
-        Functions\expect('get_user_by')->with(Mockery::any(),Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
-        Functions\expect('wp_mail')->once()->with("a@a.com,a@a.com",Mockery::any(),Mockery::any(),Mockery::any());
+        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+        Functions\when('wp_mail')->justReturn('true');
 
         $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
         Functions\when('curl_exec')->justReturn($json);
@@ -111,9 +111,9 @@ final class meeting_update_form_handlerTest extends TestCase
         $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
-        $wpdb->shouldReceive('get_col')->andReturn(array("0"=>"1","1"=>"2"));
-        Functions\expect('get_user_by')->with(Mockery::any(),Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
-        Functions\expect('wp_mail')->once()->with("a@a.com,a@a.com",Mockery::any(),Mockery::any(),Mockery::any());
+        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+        Functions\when('wp_mail')->justReturn('true');
 
         $response = meeting_update_form_handler_rest($form_post);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -146,10 +146,10 @@ final class meeting_update_form_handlerTest extends TestCase
         $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
-        $wpdb->shouldReceive('get_col')->andReturn(array("0"=>"1","1"=>"2"));
-        Functions\expect('get_user_by')->with(Mockery::any(),Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
-        Functions\expect('wp_mail')->once()->with("a@a.com,a@a.com",Mockery::any(),Mockery::any(),Mockery::any());
-        
+        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+        Functions\when('wp_mail')->justReturn('true');
+
         $response = meeting_update_form_handler_rest($form_post);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
@@ -182,9 +182,9 @@ final class meeting_update_form_handlerTest extends TestCase
         $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
-        $wpdb->shouldReceive('get_col')->andReturn(array("0"=>"1","1"=>"2"));
-        Functions\expect('get_user_by')->with(Mockery::any(),Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
-        Functions\expect('wp_mail')->once()->with("a@a.com,a@a.com",Mockery::any(),Mockery::any(),Mockery::any());
+        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+        Functions\when('wp_mail')->justReturn('true');
 
         $response = meeting_update_form_handler_rest($form_post);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -218,13 +218,259 @@ final class meeting_update_form_handlerTest extends TestCase
         $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
-        $wpdb->shouldReceive('get_col')->andReturn(array("0"=>"1","1"=>"2"));
-        Functions\expect('get_user_by')->with(Mockery::any(),Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
-        Functions\expect('wp_mail')->once()->with("a@a.com,a@a.com",Mockery::any(),Mockery::any(),Mockery::any());
+        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+        Functions\when('wp_mail')->justReturn('true');
 
         $response = meeting_update_form_handler_rest($form_post);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
+    }
+
+
+    public function test_can_create_new_with_no_starter_kit_requested(): void
+    {
+
+        $form_post = array(
+            "action" => "meeting_update_form_response",
+            "update_reason" => "reason_new",
+            "meeting_name" => "testing name change",
+            "meeting_id" => "3277",
+            "start_time" => "10:00:00",
+            "duration_time" => "01:00:00",
+            "location_text" => "test location",
+            "location_street" => "test street",
+            "location_municipality" => "test municipality",
+            "location_province" => "test province",
+            "location_postal_code_1" => "12345",
+            "weekday_tinyint" => "1",
+            "service_body_bigint" => "99",
+            "format_shared_id_list" => "1",
+            "starter_kit_required" => "no",
+            "first_name" => "joe",
+            "last_name" => "joe",
+            "email_address" => "joe@joe.com",
+            "submit" => "Submit Form",
+            "group_relationship" => "Group Member",
+            "add_email" => "yes",
+
+        );
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        // handle db insert of submission
+        $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
+        // handle email to service body
+        $wpdb->shouldReceive('prepare')->andReturn(true);
+        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+        Functions\when('wp_mail')->justReturn('true');
+
+        $response = meeting_update_form_handler_rest($form_post);
+        error_log(vdump($response));
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+    }
+
+    public function test_can_create_new_with_starter_kit_requested(): void
+    {
+
+        $form_post = array(
+            "action" => "meeting_update_form_response",
+            "update_reason" => "reason_new",
+            "meeting_name" => "testing name change",
+            "meeting_id" => "3277",
+            "start_time" => "10:00:00",
+            "duration_time" => "01:00:00",
+            "location_text" => "test location",
+            "location_street" => "test street",
+            "location_municipality" => "test municipality",
+            "location_province" => "test province",
+            "location_postal_code_1" => "12345",
+            "weekday_tinyint" => "1",
+            "service_body_bigint" => "99",
+            "format_shared_id_list" => "1",
+            "starter_kit_required" => "yes",
+            "starter_kit_postal_address" => "my house",
+            "first_name" => "joe",
+            "last_name" => "joe",
+            "email_address" => "joe@joe.com",
+            "submit" => "Submit Form",
+            "group_relationship" => "Group Member",
+            "add_email" => "yes",
+
+        );
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        // handle db insert of submission
+        $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
+        // handle email to service body
+        $wpdb->shouldReceive('prepare')->andReturn(true);
+        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+        Functions\when('wp_mail')->justReturn('true');
+
+        $response = meeting_update_form_handler_rest($form_post);
+        error_log(vdump($response));
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+    }
+
+    //
+    // EMAIL TESTING
+    //
+
+    // public function test_email_send_for_starter_kit_requested(): void
+    // {
+
+    //     $form_post = array(
+    //         "action" => "meeting_update_form_response",
+    //         "update_reason" => "reason_new",
+    //         "meeting_name" => "testing name change",
+    //         "meeting_id" => "3277",
+    //         "start_time" => "10:00:00",
+    //         "duration_time" => "01:00:00",
+    //         "location_text" => "test location",
+    //         "location_street" => "test street",
+    //         "location_municipality" => "test municipality",
+    //         "location_province" => "test province",
+    //         "location_postal_code_1" => "12345",
+    //         "weekday_tinyint" => "1",
+    //         "service_body_bigint" => "99",
+    //         "format_shared_id_list" => "1",
+    //         "starter_kit_required" => "yes",
+    //         "starter_kit_postal_address" => "my house",
+    //         "first_name" => "joe",
+    //         "last_name" => "joe",
+    //         "email_address" => "joe@joe.com",
+    //         "submit" => "Submit Form",
+    //         "group_relationship" => "Group Member",
+    //         "add_email" => "yes",
+
+    //     );
+
+    //     global $wpdb;
+    //     $wpdb = Mockery::mock('wpdb');
+    //     /** @var Mockery::mock $wpdb test */
+    //     // handle db insert of submission
+    //     $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
+    //     // handle email to service body
+    //     $wpdb->shouldReceive('prepare')->andReturn(true);
+    //     $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+    //     Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+
+    //     // we should generate 3 mails - one to the trusted servants  one to the form submitter and one to the fso
+
+    //     // service body users
+    //     Functions\expect('wp_mail')->times(1)->with("a@a.com,a@a.com", Mockery::any(), Mockery::any(), Mockery::any());
+    //     // submitter
+    //     Functions\expect('wp_mail')->times(1)->with("joe@joe.com", Mockery::any(), Mockery::any(), Mockery::any());
+    //     // fso
+    //     Functions\expect('wp_mail')->times(1)->with("wbw_fso_email_address", Mockery::any(), Mockery::any(), Mockery::any());
+
+    //     $response = meeting_update_form_handler_rest($form_post);
+    //     error_log(vdump($response));
+    //     $this->assertInstanceOf(WP_REST_Response::class, $response);
+    //     $this->assertEquals(200, $response->get_status());
+    // }
+
+    // public function test_email_send_for_no_starter_kit_requested(): void
+    // {
+
+    //     $form_post = array(
+    //         "action" => "meeting_update_form_response",
+    //         "update_reason" => "reason_new",
+    //         "meeting_name" => "testing name change",
+    //         "meeting_id" => "3277",
+    //         "start_time" => "10:00:00",
+    //         "duration_time" => "01:00:00",
+    //         "location_text" => "test location",
+    //         "location_street" => "test street",
+    //         "location_municipality" => "test municipality",
+    //         "location_province" => "test province",
+    //         "location_postal_code_1" => "12345",
+    //         "weekday_tinyint" => "1",
+    //         "service_body_bigint" => "99",
+    //         "format_shared_id_list" => "1",
+    //         "starter_kit_required" => "no",
+    //         "first_name" => "joe",
+    //         "last_name" => "joe",
+    //         "email_address" => "joe@joe.com",
+    //         "submit" => "Submit Form",
+    //         "group_relationship" => "Group Member",
+    //         "add_email" => "yes",
+
+    //     );
+
+    //     global $wpdb;
+    //     $wpdb = Mockery::mock('wpdb');
+    //     /** @var Mockery::mock $wpdb test */
+    //     // handle db insert of submission
+    //     $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
+    //     // handle email to service body
+    //     $wpdb->shouldReceive('prepare')->andReturn(true);
+    //     $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+    //     Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+
+    //     // we should generate 3 mails - one to the trusted servants  one to the form submitter and one to the fso
+
+    //     // service body users
+    //     Functions\expect('wp_mail')->times(1)->with("a@a.com,a@a.com", Mockery::any(), Mockery::any(), Mockery::any());
+    //     // submitter
+    //     Functions\expect('wp_mail')->times(1)->with("joe@joe.com", Mockery::any(), Mockery::any(), Mockery::any());
+
+    //     $response = meeting_update_form_handler_rest($form_post);
+    //     error_log(vdump($response));
+    //     $this->assertInstanceOf(WP_REST_Response::class, $response);
+    //     $this->assertEquals(200, $response->get_status());
+    // }
+
+
+
+    //
+    // FAILURE TESTING
+    //
+
+    public function test_cant_create_new_if_starter_kit_answer_missing(): void
+    {
+
+        $form_post = array(
+            "action" => "meeting_update_form_response",
+            "update_reason" => "reason_new",
+            "meeting_name" => "testing name change",
+            "meeting_id" => "3277",
+            "start_time" => "10:00:00",
+            "duration_time" => "01:00:00",
+            "location_text" => "test location",
+            "location_street" => "test street",
+            "location_municipality" => "test municipality",
+            "location_province" => "test province",
+            "location_postal_code_1" => "12345",
+            "weekday_tinyint" => "1",
+            "service_body_bigint" => "99",
+            "format_shared_id_list" => "1",
+            "first_name" => "joe",
+            "last_name" => "joe",
+            "email_address" => "joe@joe.com",
+            "submit" => "Submit Form",
+            "group_relationship" => "Group Member",
+            "add_email" => "yes",
+
+        );
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+
+        // handle db insert of submission
+        $wpdb->shouldNotReceive('insert');
+        Functions\expect('wp_mail')->never();
+
+        $response = meeting_update_form_handler_rest($form_post);
+        $this->assertInstanceOf(WP_Error::class, $response);
     }
 
     public function test_cant_change_if_format_list_has_garbage(): void
@@ -351,90 +597,4 @@ final class meeting_update_form_handlerTest extends TestCase
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
-    public function test_can_create_new_with_no_starter_kit_requested(): void
-    {
-
-        $form_post = array(
-            "action" => "meeting_update_form_response",
-            "update_reason" => "reason_new",
-            "meeting_name" => "testing name change",
-            "meeting_id" => "3277",
-            "start_time" => "10:00:00",
-            "duration_time" => "01:00:00",
-            "location_text" => "test location",
-            "location_street" => "test street",
-            "location_municipality" => "test municipality",
-            "location_province" => "test province",
-            "location_postal_code_1" => "12345",
-            "weekday_tinyint" => "1",
-            "service_body_bigint" => "99",
-            "format_shared_id_list" => "1",
-            "starter_kit_required" => "no",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_email" => "yes",
-
-        );
-
-        $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
-        global $wpdb;
-        $wpdb = Mockery::mock('wpdb');
-        /** @var Mockery::mock $wpdb test */
-        // handle db insert of submission
-        $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
-        // handle email to service body
-        $wpdb->shouldReceive('prepare')->andReturn(true);
-        $wpdb->shouldReceive('get_col')->andReturn(array("0"=>"1","1"=>"2"));
-        Functions\expect('get_user_by')->with(Mockery::any(),Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
-        Functions\expect('wp_mail')->once()->with("a@a.com,a@a.com",Mockery::any(),Mockery::any(),Mockery::any());
-        Functions\expect('wp_mail')->once()->with("joe@joe.com",Mockery::any(),Mockery::any(),Mockery::any());
-
-        $response = meeting_update_form_handler_rest($form_post);
-        error_log(vdump($response));
-        $this->assertInstanceOf(WP_REST_Response::class, $response);
-        $this->assertEquals(200, $response->get_status());
-    }
-
-    public function test_cant_create_new_if_starter_kit_answer_missing(): void
-    {
-
-        $form_post = array(
-            "action" => "meeting_update_form_response",
-            "update_reason" => "reason_new",
-            "meeting_name" => "testing name change",
-            "meeting_id" => "3277",
-            "start_time" => "10:00:00",
-            "duration_time" => "01:00:00",
-            "location_text" => "test location",
-            "location_street" => "test street",
-            "location_municipality" => "test municipality",
-            "location_province" => "test province",
-            "location_postal_code_1" => "12345",
-            "weekday_tinyint" => "1",
-            "service_body_bigint" => "99",
-            "format_shared_id_list" => "1",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_email" => "yes",
-
-        );
-
-        $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
-        global $wpdb;
-        $wpdb = Mockery::mock('wpdb');
-        /** @var Mockery::mock $wpdb test */
-
-        // handle db insert of submission
-        $wpdb->shouldNotReceive('insert');
-        Functions\expect('wp_mail')->never();
-
-        $response = meeting_update_form_handler_rest($form_post);
-        $this->assertInstanceOf(WP_Error::class, $response);
-    }
 }

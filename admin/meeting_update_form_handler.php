@@ -432,7 +432,6 @@ function meeting_update_form_handler_rest($data)
 
     // Common email fields
     $from_address = get_option('wbw_email_from_address');
-    $to_address = $submitter_email;
 
 
     // Send a notification to the trusted servants
@@ -452,9 +451,6 @@ function meeting_update_form_handler_rest($data)
         }
 
     $to_address = get_emails_by_servicebody_id($service_body_bigint);
-    // error_log("notification email to:");
-    // error_log($to_address);
-
     $subject="[bmlt-workflow] Submission ID ".$insert_id." received - ".$submission_type;
     $body='Log in to <a href="'.get_site_url().'/wp-admin/admin.php?page=wbw-submissions">WBW Submissions Page</a> to review.';
     $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
@@ -462,39 +458,39 @@ function meeting_update_form_handler_rest($data)
 
 
     // Send email to the submitter
-
+    $to_address = $submitter_email;
     $subject = "NA Meeting Change Request Acknowledgement - Submission ID ".$insert_id;
     $body = "thanks for contacting us";
     $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
     error_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
     wp_mail($to_address, $subject, $body, $headers);
 
-    // Send email to the FSO if required
+    // // Send email to the FSO if required
 
-    if ($reason == "reason_new") {
-        if ((!empty($sanitised_fields['starter_kit_required'])) && ($sanitised_fields['starter_kit_required'] === 'yes') && (!empty($sanitised_fields['starter_kit_postal_address']))) {
-            error_log("ok were sending a starter kit");
-            $template = get_option('wbw_fso_email_template');
-            $subject = 'Starter Kit Request';
-            $to_address = get_option('wbw_fso_email_address');
-            $fso_subfields = array('first_name','last_name','meeting_name','starter_kit_postal_address');
+    // if ($reason == "reason_new") {
+    //     if ((!empty($sanitised_fields['starter_kit_required'])) && ($sanitised_fields['starter_kit_required'] === 'yes') && (!empty($sanitised_fields['starter_kit_postal_address']))) {
+    //         error_log("ok were sending a starter kit");
+    //         $template = get_option('wbw_fso_email_template');
+    //         $subject = 'Starter Kit Request';
+    //         $to_address = get_option('wbw_fso_email_address');
+    //         $fso_subfields = array('first_name','last_name','meeting_name','starter_kit_postal_address');
 
-            foreach ($fso_subfields as $field) {
-                $subfield = '{field:' . $field . '}';
-                if (!empty($sanitised_fields[$field])) {
-                    $subwith = $sanitised_fields[$field];
-                } else {
-                    $subwith = '(blank)';
-                }
-                $template = str_replace($subfield, $subwith, $template);
-            }
-            $body = $template;
-            $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-            error_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
+    //         foreach ($fso_subfields as $field) {
+    //             $subfield = '{field:' . $field . '}';
+    //             if (!empty($sanitised_fields[$field])) {
+    //                 $subwith = $sanitised_fields[$field];
+    //             } else {
+    //                 $subwith = '(blank)';
+    //             }
+    //             $template = str_replace($subfield, $subwith, $template);
+    //         }
+    //         $body = $template;
+    //         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+    //         error_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
 
-            wp_mail($to_address, $subject, $body, $headers);
-        }
-    }
+    //         wp_mail($to_address, $subject, $body, $headers);
+    //     }
+    // }
 
 
     return wbw_rest_success($message);

@@ -173,6 +173,8 @@ EOD;
             <input type="text" name="quickedit_email_address" id="quickedit_email_address" class="quickedit-input">
             <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
             <input type="text" name="quickedit_virtual_meeting_link" id="quickedit_virtual_meeting_link" class="quickedit-input">
+            <label for="quickedit_additional_info">Additional Information</label>
+            <textarea name="quickedit_additional_info" rows="5" columns="50" disabled></textarea>;
         </div>
     </div>
     <div class="wbw-grid-col2">

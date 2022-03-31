@@ -75,6 +75,7 @@ Line: $errorLine
         Functions\when('apply_filters')->returnArg(2);
         Functions\when('current_time')->justReturn('2022-03-23 09:22:44');
         Functions\when('absint')->returnArg();
+        Functions\when('get_option')->returnArg();
 
         if (!defined('CONST_OTHER_SERVICE_BODY')) {
             define('CONST_OTHER_SERVICE_BODY', '99999999999');
@@ -94,7 +95,6 @@ Line: $errorLine
     {
         $json_post = json_encode($body);
 
-
         $request   = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/wbw/v1/submissions/{$test_submission_id}/approve");
         $request->set_header('content-type', 'application/json');
         $request->set_body($json_post);
@@ -109,15 +109,15 @@ Line: $errorLine
     {
         $test_submission_id = '14';
 
-        $body = array("action_message" => "hello there");
+        $body = '';
 
         $request = $this->generate_approve_request($test_submission_id, $body);
 
         $row = array(
             'id' => $test_submission_id,
             'submission_time' => '2022-03-23 09:25:53',
-            'change_time' => '2022-03-25 11:37:51',
-            'changed_by' => 'test',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
             'change_made' => 'NULL',
             'submitter_name' => 'test submitter',
             'submission_type' => 'reason_change',
@@ -125,7 +125,6 @@ Line: $errorLine
             'meeting_id' => 3563,
             'service_body_bigint' => '4',
             'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_meeting_name":"Ashfield"}',
-            'action_message' => 'hi'
         );
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
@@ -149,6 +148,7 @@ Line: $errorLine
         Functions\when('wp_get_current_user')->justReturn($user);
         Functions\when('is_wp_error')->justReturn(false);
         Functions\when('wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('wp_mail')->justReturn('true');
 
         $rest = new wbw_submissions_rest_handlers();
 
@@ -166,30 +166,30 @@ Line: $errorLine
     {
         $test_submission_id = '14';
 
-        $body = array("action_message" => "hello there");
+        // no delete in body for unpublish
+        $body = '';
 
         $request = $this->generate_approve_request($test_submission_id, $body);
 
         $row = array(
             'id' => $test_submission_id,
             'submission_time' => '2022-03-23 09:25:53',
-            'change_time' => '2022-03-25 11:37:51',
-            'changed_by' => 'test',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
             'change_made' => 'NULL',
             'submitter_name' => 'test submitter',
-            'submission_type' => 'reason_change',
+            'submission_type' => 'reason_close',
             'submitter_email' => 'a@a.com',
             'meeting_id' => 3563,
             'service_body_bigint' => '4',
-            'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_meeting_name":"Ashfield"}',
-            'action_message' => 'hi'
+            'changes_requested' => '{"group_relationship":"Group Member","add_email":"no","additional_info":"please close this meeting","meeting_name":"Ashfield Exodus NA"}'
         );
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
         $bmlt = Mockery::mock('overload:BMLTIntegration');
 
         /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp]);
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('',\Mockery::capture($bmlt_input));
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -206,6 +206,7 @@ Line: $errorLine
         Functions\when('wp_get_current_user')->justReturn($user);
         Functions\when('is_wp_error')->justReturn(false);
         Functions\when('wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('wp_mail')->justReturn('true');
 
         $rest = new wbw_submissions_rest_handlers();
 
@@ -215,6 +216,9 @@ Line: $errorLine
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
+
+        $this->assertArrayHasKey("set_meeting_change",$bmlt_input);
+        $this->assertArrayNotHasKey("delete_meeting",$bmlt_input);
 
         // error_log(vdump($response));
     }
@@ -223,30 +227,29 @@ Line: $errorLine
     {
         $test_submission_id = '14';
 
-        $body = array("action_message" => "hello there", "delete" => "true");
+        $body = array("delete" => "true");
 
         $request = $this->generate_approve_request($test_submission_id, $body);
 
         $row = array(
             'id' => $test_submission_id,
             'submission_time' => '2022-03-23 09:25:53',
-            'change_time' => '2022-03-25 11:37:51',
-            'changed_by' => 'test',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
             'change_made' => 'NULL',
             'submitter_name' => 'test submitter',
-            'submission_type' => 'reason_change',
+            'submission_type' => 'reason_close',
             'submitter_email' => 'a@a.com',
             'meeting_id' => 3563,
             'service_body_bigint' => '4',
-            'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_meeting_name":"Ashfield"}',
-            'action_message' => 'hi'
+            'changes_requested' => '{"group_relationship":"Group Member","add_email":"no","additional_info":"please close this meeting","meeting_name":"Ashfield Exodus NA"}'
         );
         
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
         $bmlt = Mockery::mock('overload:BMLTIntegration');
 
         /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp]);
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('',\Mockery::capture($bmlt_input));
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -263,6 +266,7 @@ Line: $errorLine
         Functions\when('wp_get_current_user')->justReturn($user);
         Functions\when('is_wp_error')->justReturn(false);
         Functions\when('wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('wp_mail')->justReturn('true');
 
         $rest = new wbw_submissions_rest_handlers();
 
@@ -273,22 +277,29 @@ Line: $errorLine
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
 
+        $this->assertArrayHasKey("delete_meeting",$bmlt_input);
+        $this->assertArrayNotHasKey("set_meeting_change",$bmlt_input);
+
         // error_log(vdump($response));
     }
 
-    public function test_can_approve_change_meeting_with_update_email(): void
+    //
+    // EMAIL TESTING
+    //
+
+    public function test_approve_change_meeting_sends_email_to_submitter(): void
     {
         $test_submission_id = '14';
 
-        $body = array("action_message" => "hello there");
+        $body = '';
 
         $request = $this->generate_approve_request($test_submission_id, $body);
 
         $row = array(
             'id' => $test_submission_id,
             'submission_time' => '2022-03-23 09:25:53',
-            'change_time' => '2022-03-25 11:37:51',
-            'changed_by' => 'test',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
             'change_made' => 'NULL',
             'submitter_name' => 'test submitter',
             'submission_type' => 'reason_change',
@@ -296,7 +307,6 @@ Line: $errorLine
             'meeting_id' => 3563,
             'service_body_bigint' => '4',
             'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","add_email":"yes","additional_info":"pls approve","original_meeting_name":"Ashfield"}',
-            'action_message' => 'hi'
         );
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
@@ -323,19 +333,183 @@ Line: $errorLine
 
         $rest = new wbw_submissions_rest_handlers();
 
+        Functions\expect('wp_mail')->times(1)->with('a@a.com',Mockery::any(),Mockery::any(),Mockery::any());
+
+        $response = $rest->approve_submission_handler($request);
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+        $this->assertEquals('Approved submission id 14', $response->data['message']);
+    }
+
+
+    public function test_approve_change_meeting_sends_email_to_submitter_with_action_message(): void
+    {
+        $test_submission_id = '14';
+
+        $body = array("action_message" => "hello there");
+
+        $request = $this->generate_approve_request($test_submission_id, $body);
+
+        $row = array(
+            'id' => $test_submission_id,
+            'submission_time' => '2022-03-23 09:25:53',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
+            'change_made' => 'NULL',
+            'submitter_name' => 'test submitter',
+            'submission_type' => 'reason_change',
+            'submitter_email' => 'a@a.com',
+            'meeting_id' => 3563,
+            'service_body_bigint' => '4',
+            'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","add_email":"yes","additional_info":"pls approve","original_meeting_name":"Ashfield"}',
+        );
+
+        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $bmlt = Mockery::mock('overload:BMLTIntegration');
+
+        /** @var Mockery::mock $bmlt test */
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('',\Mockery::capture($bmlt_input));
+
+        global $wpdb;
+        $wpdb =  Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->shouldReceive(
+            [
+                'prepare' => 'nothing',
+                'get_row' => $row,
+                'get_results' => 'nothing'
+            ]
+        );
+
+        $user = new my_wp_user(1, 'username');
+        Functions\when('wp_get_current_user')->justReturn($user);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_body')->justReturn($resp);
+
+        $rest = new wbw_submissions_rest_handlers();
+
+        Functions\expect('wp_mail')->times(1)->with('a@a.com',Mockery::any(),Mockery::any(),Mockery::any());
+
+        $response = $rest->approve_submission_handler($request);
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+        $this->assertEquals('Approved submission id 14', $response->data['message']);
+    }
+
+    public function test_approve_close_meeting_sends_email_to_submitter_with_delete(): void
+    {
+        $test_submission_id = '14';
+
+        $body = array("delete" => "true","action_message"=>"your meeting is now deleted");
+
+        $request = $this->generate_approve_request($test_submission_id, $body);
+
+        $row = array(
+            'id' => $test_submission_id,
+            'submission_time' => '2022-03-23 09:25:53',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
+            'change_made' => 'NULL',
+            'submitter_name' => 'test submitter',
+            'submission_type' => 'reason_close',
+            'submitter_email' => 'a@a.com',
+            'meeting_id' => 3563,
+            'service_body_bigint' => '4',
+            'changes_requested' => '{"group_relationship":"Group Member","add_email":"no","additional_info":"please close this meeting","meeting_name":"Ashfield Exodus NA"}'
+        );
+        
+        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $bmlt = Mockery::mock('overload:BMLTIntegration');
+
+        /** @var Mockery::mock $bmlt test */
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('',\Mockery::capture($bmlt_input));
+
+        global $wpdb;
+        $wpdb =  Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->shouldReceive(
+            [
+                'prepare' => 'nothing',
+                'get_row' => $row,
+                'get_results' => 'nothing'
+            ]
+        );
+
+        $user = new my_wp_user(1, 'username');
+        Functions\when('wp_get_current_user')->justReturn($user);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('wp_mail')->justReturn('true');
+
+        $rest = new wbw_submissions_rest_handlers();
+
         // error_log(vdump($request));
 
         $response = $rest->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
-        error_log("bmlt input");
-        error_log(vdump($bmlt_input));
-        $this->assertArrayHasKey('set_meeting_change', $bmlt_input);
-        $set_meeting_change = json_decode($bmlt_input['set_meeting_change'],true);
-        $this->assertEquals($set_meeting_change['contact_email_1'], 'a@a.com');
-
+        $this->assertEquals($bmlt_input, array("bmlt_ajax_callback"=>1,"delete_meeting"=>3563));
         // error_log(vdump($response));
     }
 
+    public function test_approve_close_meeting_sends_email_to_submitter_with_unpublish(): void
+    {
+        $test_submission_id = '14';
+
+        $body = array("action_message"=>"your meeting is now unpublished");
+
+        $request = $this->generate_approve_request($test_submission_id, $body);
+
+        $row = array(
+            'id' => $test_submission_id,
+            'submission_time' => '2022-03-23 09:25:53',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
+            'change_made' => 'NULL',
+            'submitter_name' => 'test submitter',
+            'submission_type' => 'reason_close',
+            'submitter_email' => 'a@a.com',
+            'meeting_id' => 3563,
+            'service_body_bigint' => '4',
+            'changes_requested' => '{"group_relationship":"Group Member","add_email":"no","additional_info":"please close this meeting","meeting_name":"Ashfield Exodus NA"}'
+        );
+        
+        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $bmlt = Mockery::mock('overload:BMLTIntegration');
+
+        /** @var Mockery::mock $bmlt test */
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('',\Mockery::capture($bmlt_input));
+
+        global $wpdb;
+        $wpdb =  Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->shouldReceive(
+            [
+                'prepare' => 'nothing',
+                'get_row' => $row,
+                'get_results' => 'nothing'
+            ]
+        );
+
+        $user = new my_wp_user(1, 'username');
+        Functions\when('wp_get_current_user')->justReturn($user);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('wp_mail')->justReturn('true');
+
+        $rest = new wbw_submissions_rest_handlers();
+
+        // error_log(vdump($request));
+
+        $response = $rest->approve_submission_handler($request);
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+        $this->assertEquals('Approved submission id 14', $response->data['message']);
+        
+        $this->assertArrayHasKey("set_meeting_change",$bmlt_input);
+        $this->assertArrayNotHasKey("delete_meeting",$bmlt_input);
+
+        // error_log(vdump($response));
+    }
 }
