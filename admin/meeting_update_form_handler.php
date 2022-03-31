@@ -467,15 +467,8 @@ function meeting_update_form_handler_rest($data)
 
     $template = get_option('wbw_submitter_email_template');
 
-    error_log("MAIL SUBMISSION");
-    error_log(submission_format($submission));
-
     $subfield = '{field:submission}';
-    if (!empty($sanitised_fields[$field])) {
-        $subwith = $sanitised_fields[$field];
-    } else {
-        $subwith = '(blank)';
-    }
+    $subwith = submission_format($submission);
     $template = str_replace($subfield, $subwith, $template);
 
     $body = $template;
@@ -494,7 +487,7 @@ function submission_format($submission)
     $bmlt = new BMLTIntegration;
     $formats = $bmlt->getMeetingFormats();
 
-    $table = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+    $table = '';
 
     foreach ($submission as $key => $value) {
         switch ($key) {
@@ -560,8 +553,6 @@ function submission_format($submission)
                 break;
         }
     }
-
-    $table .= "</table>";
 
     return $table;
 }
