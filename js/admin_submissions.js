@@ -491,7 +491,7 @@ jQuery(document).ready(function ($) {
   wbw_create_generic_modal("wbw_submission_approve_dialog", "Approve Submission", "auto", "auto");
   wbw_create_generic_modal("wbw_submission_approve_close_dialog", "Approve Submission", "auto", "auto");
   wbw_create_generic_modal("wbw_submission_reject_dialog", "Reject Submission", "auto", "auto");
-  wbw_create_quickedit_modal("wbw_submission_quickedit_dialog", "Submission QuickEdit", "80%", "auto");
+  wbw_create_quickedit_modal("wbw_submission_quickedit_dialog", "Submission QuickEdit", "65%", "auto");
 
   wbw_submission_approve_dialog_ok = function (id) {
     clear_notices();

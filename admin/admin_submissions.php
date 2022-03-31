@@ -71,30 +71,6 @@ EOD;
     <p>Are you sure you would like to reject this submission?</p>
 </div>
 
-<!-- "update_reason" => array("text", true),
-        "first_name" => array("text", true),
-        "last_name" => array("text", true),
-        "meeting_name" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "start_time" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "duration_time" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "location_text" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "location_street" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "location_info" => array("text", false),
-        "location_municipality" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "location_province" => array("text", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "location_postal_code_1" => array("number", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "weekday_tinyint" => array("weekday", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "service_body_bigint" => array("bigint", $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "virtual_meeting_link" => array("url", false),
-        "email_address" => array("email", true),
-        "contact_number_confidential" => array("text", false),
-        // "time_zone",
-        "format_shared_id_list" => array("text",  $reason_new_bool | $reason_change_bool | $reason_close_bool),
-        "additional_info" => array("textarea", false),
-        "starter_kit_postal_address" => array("textarea", false),
-        "starter_kit_required" => array("text", false),
-        "other_reason" => array("textarea", $reason_other_bool) -->
-
 <!-- Quickedit dialog -->
 <div id="wbw_submission_quickedit_dialog" class="hidden">
     <div class="form-grid">
@@ -164,8 +140,10 @@ EOD;
             <input type="text" name="quickedit_email_address" id="quickedit_email_address" class="quickedit-input">
             <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
             <input type="text" name="quickedit_virtual_meeting_link" id="quickedit_virtual_meeting_link" class="quickedit-input">
-            <label for="quickedit_additional_info">Additional Information</label>
-            <textarea name="quickedit_additional_info" rows="5" columns="50" disabled></textarea>;
+            <div class="grow-wrap">
+                <label for="quickedit_additional_info">Additional Information</label>
+                <textarea class="dialog_textarea" id="quickedit_additional_info" name="quickedit_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value" disabled></textarea>;
+            </div>
         </div>
         <div class="form-grid-col2">
             <label for="quickedit_location_text">Location</label>
