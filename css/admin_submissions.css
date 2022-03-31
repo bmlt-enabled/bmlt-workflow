@@ -73,6 +73,19 @@
   width: 90%;
 }
 
+.grid-flex-item select {
+  line-height: 1.5;
+  font-size: 1.2em;
+  padding: 5px 10px;
+  display: inline;
+  width: 90%;
+}
+
+.grid-flex-double {
+  flex-grow: 1;
+  height: 100px;
+}
+
 .grid-flex-double select {
   line-height: 1.5;
   font-size: 1.2em;
@@ -81,13 +94,6 @@
   width: 30%;
 }
 
-.grid-flex-item select {
-  line-height: 1.5;
-  font-size: 1.2em;
-  padding: 5px 10px;
-  display: inline;
-  width: 90%;
-}
 
 .grow-wrap {
   display: grid;
