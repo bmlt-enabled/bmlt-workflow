@@ -12,6 +12,10 @@
   grid-template-columns: repeat(auto-fill, 200px ) ;
 }
 
+.form-grid-top {
+  grid-column: 1 / 7;
+}
+
 .form-grid-col1 {
   grid-column: 1 / 4 ;
 

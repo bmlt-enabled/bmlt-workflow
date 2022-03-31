@@ -97,16 +97,18 @@ EOD;
 
 <!-- Quickedit dialog -->
 <div id="wbw_submission_quickedit_dialog" class="hidden">
-    <div class="wbw_info_text">
-        <br>Highlighted fields are from the user submission and will be used if the QuickEdit is saved or approved.
-        <br><br>
-    </div>
     <div class="form-grid">
+        <div class="form-grid-top">
+            <div class="wbw_info_text">
+                <br>Highlighted fields are from the user submission and will be used if the QuickEdit is saved or approved.
+                <br><br>
+            </div>
+        </div>
         <div class="form-grid-col1">
-                <label for="quickedit_meeting_name">Meeting Name</label>
-                <input type="text" name="quickedit_meeting_name" id="quickedit_meeting_name" class="quickedit-input">
-                <label for="quickedit_format_shared_id_list">Meeting Formats</label>
-                <select class="quickedit-input" name="quickedit_format_shared_id_list" id="quickedit_format_shared_id_list" style="width: auto"></select>
+            <label for="quickedit_meeting_name">Meeting Name</label>
+            <input type="text" name="quickedit_meeting_name" id="quickedit_meeting_name" class="quickedit-input">
+            <label for="quickedit_format_shared_id_list">Meeting Formats</label>
+            <select class="quickedit-input" name="quickedit_format_shared_id_list" id="quickedit_format_shared_id_list" style="width: auto"></select>
             <div class="grid-flex-container">
                 <div class="grid-flex-item">
                     <label for="quickedit_start_time">Start Time</label>
@@ -158,12 +160,12 @@ EOD;
                     </select> m
                 </div>
             </div>
-                <label for="quickedit_email_address">Email Address</label>
-                <input type="text" name="quickedit_email_address" id="quickedit_email_address" class="quickedit-input">
-                <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
-                <input type="text" name="quickedit_virtual_meeting_link" id="quickedit_virtual_meeting_link" class="quickedit-input">
-                <label for="quickedit_additional_info">Additional Information</label>
-                <textarea name="quickedit_additional_info" rows="5" columns="50" disabled></textarea>;
+            <label for="quickedit_email_address">Email Address</label>
+            <input type="text" name="quickedit_email_address" id="quickedit_email_address" class="quickedit-input">
+            <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
+            <input type="text" name="quickedit_virtual_meeting_link" id="quickedit_virtual_meeting_link" class="quickedit-input">
+            <label for="quickedit_additional_info">Additional Information</label>
+            <textarea name="quickedit_additional_info" rows="5" columns="50" disabled></textarea>;
         </div>
         <div class="form-grid-col2">
             <label for="quickedit_location_text">Location</label>
