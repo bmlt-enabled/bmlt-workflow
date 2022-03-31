@@ -103,9 +103,9 @@ EOD;
                         <option value="7">Saturday</option>
                     </select>
                 </div>
-                <div class="grid-flex-item grid-flex-double">
+                <div class="grid-flex-item">
                     <label for="quickedit_duration_hours">Duration</label>
-                    <select class="quickedit-input" id="quickedit_duration_hours">
+                    <select class="quickedit-input grid-flex-double" id="quickedit_duration_hours">
                         <option value="00">0</option>
                         <option value="01" selected="selected">1</option>
                         <option value="02">2</option>
@@ -120,7 +120,7 @@ EOD;
                         <option value="11">11</option>
                         <option value="12">12</option>
                     </select> h
-                    <select class="quickedit-input" id="quickedit_duration_minutes">
+                    <select class="quickedit-input grid-flex-double" id="quickedit_duration_minutes">
                         <option value="00" selected="selected">0</option>
                         <option value="05">5</option>
                         <option value="10">10</option>
