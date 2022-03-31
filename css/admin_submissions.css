@@ -1,3 +1,9 @@
+.wbw_info_text {
+  padding-left: 15px;
+  background: lightgray;
+  border-left: 5px solid lightblue;
+}
+
 .dialog_label {
   display: block;
 }
