@@ -52,7 +52,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $script .= 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace.'/servicebodies') . '; ';
     $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
-    
+
     // add meeting formats
     $bmlt_integration = new BMLTIntegration;
     $formatarr = $bmlt_integration->getMeetingFormats();
@@ -141,12 +141,13 @@ function wbw_admin_scripts($hook)
         return;
     }
 
-    prevent_cache_enqueue_style('wbw-admin-css', false, 'css/admin_page.css');
     prevent_cache_enqueue_script('wbwjs', array('jquery'), 'js/script_includes.js');
 
     switch ($hook) {
 
         case ('toplevel_page_wbw-settings'):
+            prevent_cache_enqueue_style('wbw-admin-css', false, 'css/admin_page.css');
+
             // error_log('inside hook');
 
             // clipboard

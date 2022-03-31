@@ -76,7 +76,7 @@ EOD;
     <div class="form-grid">
         <div class="form-grid-top">
             <div class="wbw_info_text">
-                <br>Highlighted fields are from the user submission and will be used if the QuickEdit is saved or approved.
+                <br>Highlighted fields are from the user submission and your changes and will be stored when the QuickEdit is saved.
                 <br><br>
             </div>
         </div>
