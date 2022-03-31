@@ -4,7 +4,7 @@
  * Plugin Name: Wordpress BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
  * Description: Wordpress BMLT Workflow
- * Version: 0.3.2
+ * Version: 0.3.3
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
@@ -52,10 +52,13 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $script .= 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace.'/servicebodies') . '; ';
     $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
-    
+
     // add meeting formats
     $bmlt_integration = new BMLTIntegration;
     $formatarr = $bmlt_integration->getMeetingFormats();
+    error_log("FORMATS");
+    error_log(vdump($formatarr));
+    error_log(json_encode($formatarr));
     $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
     
     error_log("adding script ".$script);
@@ -138,12 +141,13 @@ function wbw_admin_scripts($hook)
         return;
     }
 
-    prevent_cache_enqueue_style('wbw-admin-css', false, 'css/admin_page.css');
     prevent_cache_enqueue_script('wbwjs', array('jquery'), 'js/script_includes.js');
 
     switch ($hook) {
 
         case ('toplevel_page_wbw-settings'):
+            prevent_cache_enqueue_style('wbw-admin-css', false, 'css/admin_page.css');
+
             // error_log('inside hook');
 
             // clipboard
@@ -188,6 +192,9 @@ function wbw_admin_scripts($hook)
             // add meeting formats
             $bmlt_integration = new BMLTIntegration;
             $formatarr = $bmlt_integration->getMeetingFormats();
+            error_log("FORMATS");
+            error_log(vdump($formatarr));
+            error_log(json_encode($formatarr));
             $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
@@ -382,53 +389,15 @@ function wbw_register_setting()
 
     register_setting(
         'wbw-settings-group',
-        'wbw_new_meeting_template',
+        'wbw_submitter_email_template',
         array(
             'type' => 'string',
-            'description' => 'wbw_new_meeting_template',
+            'description' => 'wbw_submitter_email_template',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
-            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_new_meeting_email_template.html')
+            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html')
         )
     );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_existing_meeting_template',
-        array(
-            'type' => 'string',
-            'description' => 'wbw_existing_meeting_template',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_existing_meeting_email_template.html')
-
-        )
-    );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_other_meeting_template',
-        array(
-            'type' => 'string',
-            'description' => 'wbw_other_meeting_template',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_other_meeting_email_template.html')
-        )
-    );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_close_meeting_template',
-        array(
-            'type' => 'string',
-            'description' => 'wbw_close_meeting_template',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_close_meeting_email_template.html')
-        )
-    );
-
 
     register_setting(
         'wbw-settings-group',
@@ -489,7 +458,6 @@ function wbw_register_setting()
         'wbw-settings-section-id'
     );
 
-
     add_settings_field(
         'wbw_email_from_address',
         'Email From Address',
@@ -505,8 +473,6 @@ function wbw_register_setting()
         'wbw-settings',
         'wbw-settings-section-id'
     );
-
-    
 
     add_settings_field(
         'wbw_fso_email_address',
@@ -526,36 +492,13 @@ function wbw_register_setting()
     );
 
     add_settings_field(
-        'wbw_new_meeting_template',
+        'wbw_submitter_email_template',
         'Email Template for New Meeting',
-        'wbw_new_meeting_template_html',
+        'wbw_submitter_email_template_html',
         'wbw-settings',
         'wbw-settings-section-id'
     );
 
-    add_settings_field(
-        'wbw_existing_meeting_template',
-        'Email Template for Existing Meeting',
-        'wbw_existing_meeting_template_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
-
-    add_settings_field(
-        'wbw_other_meeting_template',
-        'Email Template for Other Meeting Update',
-        'wbw_other_meeting_template_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
-
-    add_settings_field(
-        'wbw_close_meeting_template',
-        'Email Template for Close Meeting',
-        'wbw_close_meeting_template_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
 }
 
 function wbw_bmlt_server_address_html()
@@ -662,67 +605,18 @@ function wbw_fso_email_template_html()
     echo '<br><br>';
 }
 
-function wbw_new_meeting_template_html()
+function wbw_submitter_email_template_html()
 {
     echo <<<END
     <div class="wbw_info_text">
-    <br>This template will be used when emailing meeting admins about request to create a new meeting.
+    <br>This template will be used when emailing a submitter about the meeting change they've requested.
     <br><br>
     </div>
     END;
-    $content = get_option('wbw_new_meeting_template');
-    $editor_id = 'wbw_new_meeting_template';
+    $content = get_option('wbw_submitter_email_template');
+    $editor_id = 'wbw_submitter_email_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
-    echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
-    echo '<br><br>';
-}
-
-function wbw_existing_meeting_template_html()
-{
-    echo <<<END
-    <div class="wbw_info_text">
-    <br>This template will be used when emailing meeting admins about a change to an existing meeting.
-    <br><br>
-    </div>
-    END;
-    $content = get_option('wbw_existing_meeting_template');
-    $editor_id = 'wbw_existing_meeting_template';
-
-    wp_editor($content, $editor_id, array('media_buttons' => false));
-    echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
-    echo '<br><br>';
-}
-
-function wbw_other_meeting_template_html()
-{
-    echo <<<END
-    <div class="wbw_info_text">
-    <br>This template will be used when emailing meeting admins about an 'other' change type.
-    <br><br>
-    </div>
-    END;
-    $content = get_option('wbw_other_meeting_template');
-    $editor_id = 'wbw_other_meeting_template';
-
-    wp_editor($content, $editor_id, array('media_buttons' => false));
-    echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
-    echo '<br><br>';
-}
-
-function wbw_close_meeting_template_html()
-{
-    echo <<<END
-    <div class="wbw_info_text">
-    <br>This template will be used when emailing meeting admins about closing a meeting.
-    <br><br>
-    </div>
-    END;
-    $content = get_option('wbw_close_meeting_template');
-    $editor_id = 'wbw_close_meeting_template';
-
-    wp_editor($content, $editor_id, array('media_buttons' => false));
-    // echo '<br><button type="button" id="wbw_close_meeting_template_reload">Copy default template to clipboard</button>';
     echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
     echo '<br><br>';
 }

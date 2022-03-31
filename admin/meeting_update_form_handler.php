@@ -1,5 +1,11 @@
 <?php
 
+if (!defined('ABSPATH')) exit; // die if being called directly
+
+if (!class_exists('BMLTIntegration')) {
+	require_once(WBW_PLUGIN_DIR . 'admin/bmlt_integration.php');
+}
+
 if (!(function_exists('vdump'))) {
     function vdump($object)
     {
@@ -10,6 +16,22 @@ if (!(function_exists('vdump'))) {
         return $contents;
     }
 }
+
+function get_emails_by_servicebody_id($id)
+{
+    global $wpdb;
+    global $wbw_service_bodies_access_table_name;
+
+    $emails = array();
+    $sql = $wpdb->prepare('SELECT wp_uid from ' . $wbw_service_bodies_access_table_name . ' where service_body_bigint="%d"', $id);
+    $result = $wpdb->get_col($sql);
+    foreach ($result as $key => $value) {
+        $user = get_user_by('ID', $value);
+        $emails[] = $user->user_email;
+    }
+    return implode(',', $emails);
+}
+
 // accepts raw string or array
 function wbw_rest_success($message)
 {
@@ -312,8 +334,7 @@ function meeting_update_form_handler_rest($data)
 
             // add in extra form fields (non BMLT fields) to the submission
             foreach ($allowed_fields_extra as $field) {
-                if(!empty($sanitised_fields[$field]))
-                {
+                if (!empty($sanitised_fields[$field])) {
                     $submission[$field] = $sanitised_fields[$field];
                 }
             }
@@ -370,44 +391,7 @@ function meeting_update_form_handler_rest($data)
     error_log("SUBMISSION");
     error_log(vdump($submission));
 
-    $cc_address = "";
-    $to_address = "";
 
-    $from_address = get_option('wbw_email_from_address');
-
-    // Do field replacement in to: and cc: address
-    $subfield = '{field:email_address}';
-    $subwith = $sanitised_fields['email_address'];
-    $to_address = str_replace($subfield, $subwith, $to_address);
-    if (!empty($cc_address)) {
-        $cc_address = str_replace($subfield, $subwith, $cc_address);
-    }
-
-    $body = "mesage";
-    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address, 'Cc: ' . $cc_address);
-    // Send the email
-    // wp_mail($to_address, $subject, $body, $headers);
-
-    // Handle the FSO emails
-    if ($reason == "reason_new") {
-        if ((!empty($sanitised_fields['starter_kit_required'])) && ($sanitised_fields['starter_kit_required'] === 'yes') && (!empty($sanitised_fields['starter_kit_postal_address']))) {
-            $template = get_option('wbw_fso_email_template');
-            $subject = 'Starter Kit Request';
-            $to_address = get_option('wbw_fso_email_address');
-            foreach ($subfields as $field => $formattype) {
-                $subfield = '{field:' . $field . '}';
-                if ((isset($sanitised_fields[$field])) && (!empty($sanitised_fields[$field]))) {
-                    $subwith = $sanitised_fields[$field];
-                } else {
-                    $subwith = '(blank)';
-                }
-                $template = str_replace($subfield, $subwith, $template);
-            }
-            $body = $template;
-            $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-            wp_mail($to_address, $subject, $body, $headers);
-        }
-    }
 
     // id mediumint(9) NOT NULL AUTO_INCREMENT,
     // submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
@@ -448,5 +432,128 @@ function meeting_update_form_handler_rest($data)
         "form_html" => '<h3>Form submission successful, your submission id  is #' . $insert_id . '. You will also receive an email confirmation of your submission.</h3>'
     );
 
+    // Send our emails out
+
+    // Common email fields
+    $from_address = get_option('wbw_email_from_address');
+
+
+    // Send a notification to the trusted servants
+    switch ($reason) {
+        case "reason_new":
+            $submission_type = "New Meeting";
+            break;
+        case "reason_close":
+            $submission_type = "Close Meeting";
+            break;
+        case "reason_change":
+            $submission_type = "Modify Meeting";
+            break;
+        case "reason_other":
+            $submission_type = "Other Request";
+            break;
+    }
+
+    $to_address = get_emails_by_servicebody_id($service_body_bigint);
+    $subject = '[bmlt-workflow] ' . $submission_type . 'request received - ID ' . $insert_id;
+    $body = 'Log in to <a href="' . get_site_url() . '/wp-admin/admin.php?page=wbw-submissions">WBW Submissions Page</a> to review.';
+    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+    wp_mail($to_address, $subject, $body, $headers);
+
+
+    // Send email to the submitter
+    $to_address = $submitter_email;
+    $subject = "NA Meeting Change Request Acknowledgement - Submission ID " . $insert_id;
+
+    $template = get_option('wbw_submitter_email_template');
+
+    $subfield = '{field:submission}';
+    $subwith = submission_format($submission);
+    $template = str_replace($subfield, $subwith, $template);
+
+    $body = $template;
+
+    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+    error_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . vdump($headers));
+    wp_mail($to_address, $subject, $body, $headers);
+
     return wbw_rest_success($message);
+    // return;
+}
+
+function submission_format($submission)
+{
+
+    $bmlt = new BMLTIntegration;
+    $formats = $bmlt->getMeetingFormats();
+
+    $table = '';
+
+    foreach ($submission as $key => $value) {
+        switch ($key) {
+            case "start_time":
+                $table .= '<tr><td>Start Time:</td><td>' . $value . '</td></tr>';
+                break;
+            case "duration":
+                $table .= '<tr><td>Duration:</td><td>' . $value . '</td></tr>';
+                break;
+            case "location_text":
+                $table .= '<tr><td>Location:</td><td>' . $value . '</td></tr>';
+                break;
+            case "location_street":
+                $table .= '<tr><td>Street:</td><td>' . $value . '</td></tr>';
+                break;
+            case "location_info":
+                $table .= '<tr><td>Location Info:</td><td>' . $value . '</td></tr>';
+                break;
+            case "location_municipality":
+                $table .= '<tr><td>Municipality:</td><td>' . $value . '</td></tr>';
+                break;
+            case "location_province":
+                $table .= '<tr><td>Province/State:</td><td>' . $value . '</td></tr>';
+                break;
+            case "location_sub_province":
+                $table .= '<tr><td>SubProvince:</td><td>' . $value . '</td></tr>';
+                break;
+            case "location_nation":
+                $table .= '<tr><td>Nation:</td><td>' . $value . '</td></tr>';
+                break;
+            case "location_postal_code_1":
+                $table .= '<tr><td>PostCode:</td><td>' . $value . '</td></tr>';
+                break;
+            case "group_relationship":
+                $table .= '<tr><td>Relationship to Group:</td><td>' . $value . '</td></tr>';
+                break;
+            case "weekday_tinyint":
+                $weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+                $table .= "<tr><td>Meeting Day:</td><td>" . $weekdays[$value] . '</td></tr>';
+                break;
+            case "additional_info":
+                $table .= '<tr><td>Additional Info:</td><td>' . $value . '</td></tr>';
+                break;
+            case "other_reason":
+                $table .= '<tr><td>Other Reason:</td><td>' . $value . '</td></tr>';
+                break;
+            case "contact_number_confidential":
+                $table .= "<tr><td>Contact number (confidential):</td><td>" . $value . '</td></tr>';
+                break;
+            case "add_email":
+                $result = ($value === 'yes' ? 'Yes' : 'No');
+                $table .= '<tr><td>Add email to meeting:</td><td>' . $result . '</td></tr>';
+                break;
+
+            case "format_shared_id_list":
+                $friendlyname = "Meeting Formats";
+                // convert the meeting formats to human readable
+                $friendlydata = "";
+                $strarr = explode(',', $value);
+                foreach ($strarr as $key) {
+                    $friendlydata .= "(" . $formats[$key]["key_string"] . ")-" . $formats[$key]["name_string"] . " ";
+                }
+                $table .= "<tr><td>Meeting Formats:</td><td>" . $friendlydata . '</td></tr>';
+                break;
+        }
+    }
+
+    return $table;
 }

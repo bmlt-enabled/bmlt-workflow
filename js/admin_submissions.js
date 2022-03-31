@@ -86,8 +86,8 @@ jQuery(document).ready(function ($) {
           }
         });
     } else if (wbw_changedata[id].submission_type == "reason_new") {
-      // fill from changes
-      changes_requested = wbw_changedata[id].changes_requested;
+      // fill in and highlight the changes - use extend to clone
+      changes_requested = $.extend(true,{},wbw_changedata[id].changes_requested);
 
       // split up the duration so we can use it in the select
       if ("duration_time" in changes_requested) {
@@ -138,7 +138,7 @@ jQuery(document).ready(function ($) {
   $("#quickedit_format_shared_id_list").select2({
     placeholder: "Select from available formats",
     multiple: true,
-    width: "90%",
+    width: "100%",
     data: formatdata,
     dropdownParent: $("#wbw_submission_quickedit_dialog"),
   });
@@ -147,6 +147,7 @@ jQuery(document).ready(function ($) {
   var datatable = $("#dt-submission").DataTable({
     dom: "Bfrtip",
     select: true,
+    searching: false,
     buttons: [
       {
         name: "approve",
@@ -490,7 +491,7 @@ jQuery(document).ready(function ($) {
   wbw_create_generic_modal("wbw_submission_approve_dialog", "Approve Submission", "auto", "auto");
   wbw_create_generic_modal("wbw_submission_approve_close_dialog", "Approve Submission", "auto", "auto");
   wbw_create_generic_modal("wbw_submission_reject_dialog", "Reject Submission", "auto", "auto");
-  wbw_create_quickedit_modal("wbw_submission_quickedit_dialog", "Submission QuickEdit", "60%", 768);
+  wbw_create_quickedit_modal("wbw_submission_quickedit_dialog", "Submission QuickEdit", "50%", "auto");
 
   wbw_submission_approve_dialog_ok = function (id) {
     clear_notices();

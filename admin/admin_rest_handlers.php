@@ -260,9 +260,8 @@ class wbw_submissions_rest_handlers
         if (is_wp_error($result)) {
             return $result;
         }
-        // $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' where id="%d" limit 1', $change_id);
-        // $result = $wpdb->get_row($sql, ARRAY_A);
 
+        $submitter_email = $result['submitter_email'];
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
@@ -298,6 +297,25 @@ class wbw_submissions_rest_handlers
         // send action email
         //
 
+        $from_address = get_option('wbw_email_from_address');
+
+        //
+        // send action email
+        //
+
+        $to_address = $submitter_email;
+        $subject = "NA Meeting Change Request Rejection - Submission ID ".$request['id'];
+        $body = "Your meeting change (ID ".$request['id'].") has been rejected.";
+        if (!empty($message))
+        {
+            $body .= "<br><br>Message from trusted servant:<br><br>".$message;
+        }
+
+        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+        error_log("Rejection email");
+        error_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
+        wp_mail($to_address, $subject, $body, $headers);
+    
         return $this->wbw_rest_success('Rejected submission id ' . $change_id);
     }
 
@@ -453,6 +471,7 @@ class wbw_submissions_rest_handlers
                 unset($change[$key]);
             }
         }
+
         if ($add_email === true)
         {
             $change['contact_email_1']=$submitter_email;
@@ -582,9 +601,61 @@ class wbw_submissions_rest_handlers
 
         $result = $wpdb->get_results($sql, ARRAY_A);
 
+        $from_address = get_option('wbw_email_from_address');
+
         //
         // send action email
         //
+
+        $to_address = $submitter_email;
+        $subject = "NA Meeting Change Request Approval - Submission ID ".$request['id'];
+        $body = "Your meeting change (ID ".$request['id'].") has been approved.";
+        if (!empty($message))
+        {
+            $body .= "<br><br>Message from trusted servant:<br><br>".$message;
+        }
+
+        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+        error_log("Approval email");
+        error_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
+        wp_mail($to_address, $subject, $body, $headers);
+    
+        //
+        // send fso email
+        //
+
+        if ($submission_type == "reason_new") {
+            if ((!empty($change['starter_kit_required'])) && ($change['starter_kit_required'] === 'yes') && (!empty($change['starter_kit_postal_address']))) {
+                error_log("We're sending a starter kit");
+                $template = get_option('wbw_fso_email_template');
+                if(!empty($template))
+                {
+                    $subject = 'Starter Kit Request';
+                    $to_address = get_option('wbw_fso_email_address');
+                    $fso_subfields = array('first_name','last_name','meeting_name','starter_kit_postal_address');
+    
+                    foreach ($fso_subfields as $field) {
+                        $subfield = '{field:' . $field . '}';
+                        if (!empty($change[$field])) {
+                            $subwith = $change[$field];
+                        } else {
+                            $subwith = '(blank)';
+                        }
+                        $template = str_replace($subfield, $subwith, $template);
+                    }
+                    $body = $template;
+                    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+                    error_log("FSO email");
+                    error_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
+    
+                    wp_mail($to_address, $subject, $body, $headers);
+                }
+                else
+                {
+                    error_log("FSO email is empty");
+                }
+            }
+        }
 
         return $this->wbw_rest_success('Approved submission id ' . $change_id);
     }

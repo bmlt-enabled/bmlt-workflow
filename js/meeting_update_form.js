@@ -128,7 +128,7 @@ jQuery(document).ready(function ($) {
           switch (reason) {
             case "reason_change":
               // display form instructions
-              $("#instructions").text("We've retrieved the details below from our system. Please make any changes and then submit your update. Any changes you make to the content will be highlighted below and submitted for approval.");
+              $("#instructions").text("We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval.");
               $("#meeting_content").show();
               disable_field("service_body_bigint");
               $(".meeting-input").on("input", function () {
@@ -217,6 +217,8 @@ jQuery(document).ready(function ($) {
     enable_field("location_municipality");
     enable_field("location_province");
     enable_field("location_postal_code_1");
+    enable_field("location_sub_province");
+    enable_field("location_nation");
     enable_field("display_format_shared_id_list");
     enable_field("weekday_tinyint");
     enable_field("service_body_bigint");
@@ -233,7 +235,9 @@ jQuery(document).ready(function ($) {
     disable_field("location_municipality");
     disable_field("location_province");
     disable_field("location_postal_code_1");
-    disable_field("display_format_shared_id_list");
+    disable_field("location_sub_province");
+    disable_field("location_nation");
+    disable_field("format_shared_id_list");
     disable_field("weekday_tinyint");
     disable_field("service_body_bigint");
   }
@@ -248,6 +252,8 @@ jQuery(document).ready(function ($) {
     clear_field("location_municipality");
     clear_field("location_province");
     clear_field("location_postal_code_1");
+    clear_field("location_sub_province");
+    clear_field("location_nation");
     clear_field("first_name");
     clear_field("last_name");
     clear_field("contact_number_confidential");
@@ -358,6 +364,7 @@ jQuery(document).ready(function ($) {
     $("#display_format_shared_id_list").attr('disabled','disabled')
     // turn the format list into a single string and move it into the submitted format_shared_id_list
     $("#format_shared_id_list").val($("#display_format_shared_id_list").val().join(","));
+    // $("#format_shared_id_list").val($("#display_format_shared_id_list").val());
     
     // construct our duration
     var str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";

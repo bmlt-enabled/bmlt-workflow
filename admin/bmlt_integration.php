@@ -39,18 +39,19 @@ class BMLTIntegration
         if (is_wp_error($response)) {
             return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        // error_log(wp_remote_retrieve_body($response));  
-        $formatarr = json_decode(wp_remote_retrieve_body($response), true)['row'];
+        error_log(wp_remote_retrieve_body($response));  
+        $formatarr = json_decode(wp_remote_retrieve_body($response), true);
+        error_log(vdump($formatarr));
+
         $newformat = array();
         foreach ($formatarr as $key => $value) {
-            foreach ($value as $key2 => $value2) {
-                // handle blank values
-                if (is_array($value2)) {
-                    $value[$key2] = '';
-                }
-            }
-            $newformat[$formatarr[$key]['id']] = $value;
+            $formatid = $value['id'];
+            unset($value['id']);
+            $newformat[$formatid] = $value;            
         }
+        error_log("NEWFORMAT");
+        error_log(vdump($newformat));
+
         return $newformat;
     }
 
@@ -201,7 +202,7 @@ class BMLTIntegration
         }
     }
 
-    private function postAuthenticatedRootServerRequest($url, $postargs)
+    public function postAuthenticatedRootServerRequest($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
         if (is_wp_error($ret)) {
@@ -215,7 +216,7 @@ class BMLTIntegration
         return $this->post(get_option('wbw_bmlt_server_address') . $url, null, $postargs);
     }
 
-    private function postAuthenticatedRootServerRequestSemantic($url, $postargs)
+    public function postAuthenticatedRootServerRequestSemantic($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
         if (is_wp_error($ret)) {
