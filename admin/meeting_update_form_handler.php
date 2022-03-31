@@ -538,7 +538,8 @@ function submission_format($submission)
                 $table .= "<tr><td>Contact number (confidential):</td><td>" . $value . '</td></tr>';
                 break;
             case "add_email":
-                $table .= '<tr><td>Add email to meeting:</td><td>' . ($value === 'yes') ? ('Yes') : ('No') . '</td></tr>';
+                $result = ($value === 'yes' ? 'Yes' : 'No');
+                $table .= '<tr><td>Add email to meeting:</td><td>' . $result . '</td></tr>';
                 break;
 
             case "format_shared_id_list":
