@@ -496,7 +496,6 @@ function wbw_register_setting()
         'wbw-settings-section-id'
     );
 
-
     add_settings_field(
         'wbw_email_from_address',
         'Email From Address',
@@ -512,8 +511,6 @@ function wbw_register_setting()
         'wbw-settings',
         'wbw-settings-section-id'
     );
-
-    
 
     add_settings_field(
         'wbw_fso_email_address',
@@ -533,36 +530,13 @@ function wbw_register_setting()
     );
 
     add_settings_field(
-        'wbw_new_meeting_template',
+        'wbw_submitter_email_template',
         'Email Template for New Meeting',
-        'wbw_new_meeting_template_html',
+        'wbw_submitter_email_template_html',
         'wbw-settings',
         'wbw-settings-section-id'
     );
 
-    add_settings_field(
-        'wbw_existing_meeting_template',
-        'Email Template for Existing Meeting',
-        'wbw_existing_meeting_template_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
-
-    add_settings_field(
-        'wbw_other_meeting_template',
-        'Email Template for Other Meeting Update',
-        'wbw_other_meeting_template_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
-
-    add_settings_field(
-        'wbw_close_meeting_template',
-        'Email Template for Close Meeting',
-        'wbw_close_meeting_template_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
 }
 
 function wbw_bmlt_server_address_html()
@@ -669,67 +643,18 @@ function wbw_fso_email_template_html()
     echo '<br><br>';
 }
 
-function wbw_new_meeting_template_html()
+function wbw_submitter_email_template_html()
 {
     echo <<<END
     <div class="wbw_info_text">
-    <br>This template will be used when emailing meeting admins about request to create a new meeting.
+    <br>This template will be used when emailing a submitter about the meeting change they've requested.
     <br><br>
     </div>
     END;
-    $content = get_option('wbw_new_meeting_template');
-    $editor_id = 'wbw_new_meeting_template';
+    $content = get_option('wbw_submitter_email_template');
+    $editor_id = 'wbw_submitter_email_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
-    echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
-    echo '<br><br>';
-}
-
-function wbw_existing_meeting_template_html()
-{
-    echo <<<END
-    <div class="wbw_info_text">
-    <br>This template will be used when emailing meeting admins about a change to an existing meeting.
-    <br><br>
-    </div>
-    END;
-    $content = get_option('wbw_existing_meeting_template');
-    $editor_id = 'wbw_existing_meeting_template';
-
-    wp_editor($content, $editor_id, array('media_buttons' => false));
-    echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
-    echo '<br><br>';
-}
-
-function wbw_other_meeting_template_html()
-{
-    echo <<<END
-    <div class="wbw_info_text">
-    <br>This template will be used when emailing meeting admins about an 'other' change type.
-    <br><br>
-    </div>
-    END;
-    $content = get_option('wbw_other_meeting_template');
-    $editor_id = 'wbw_other_meeting_template';
-
-    wp_editor($content, $editor_id, array('media_buttons' => false));
-    echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
-    echo '<br><br>';
-}
-
-function wbw_close_meeting_template_html()
-{
-    echo <<<END
-    <div class="wbw_info_text">
-    <br>This template will be used when emailing meeting admins about closing a meeting.
-    <br><br>
-    </div>
-    END;
-    $content = get_option('wbw_close_meeting_template');
-    $editor_id = 'wbw_close_meeting_template';
-
-    wp_editor($content, $editor_id, array('media_buttons' => false));
-    // echo '<br><button type="button" id="wbw_close_meeting_template_reload">Copy default template to clipboard</button>';
     echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
     echo '<br><br>';
 }
