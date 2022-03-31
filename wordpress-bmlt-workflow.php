@@ -389,53 +389,15 @@ function wbw_register_setting()
 
     register_setting(
         'wbw-settings-group',
-        'wbw_new_meeting_template',
+        'wbw_submitter_email_template',
         array(
             'type' => 'string',
-            'description' => 'wbw_new_meeting_template',
+            'description' => 'wbw_submitter_email_template',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
-            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_new_meeting_email_template.html')
+            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html')
         )
     );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_existing_meeting_template',
-        array(
-            'type' => 'string',
-            'description' => 'wbw_existing_meeting_template',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_existing_meeting_email_template.html')
-
-        )
-    );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_other_meeting_template',
-        array(
-            'type' => 'string',
-            'description' => 'wbw_other_meeting_template',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_other_meeting_email_template.html')
-        )
-    );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_close_meeting_template',
-        array(
-            'type' => 'string',
-            'description' => 'wbw_close_meeting_template',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_close_meeting_email_template.html')
-        )
-    );
-
 
     register_setting(
         'wbw-settings-group',
