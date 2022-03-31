@@ -136,8 +136,6 @@ EOD;
                     </select> m
                 </div>
             </div>
-            <label for="quickedit_email_address">Email Address</label>
-            <input type="text" name="quickedit_email_address" id="quickedit_email_address" class="quickedit-input">
             <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
             <input type="text" name="quickedit_virtual_meeting_link" id="quickedit_virtual_meeting_link" class="quickedit-input">
             <label for="quickedit_additional_info">Additional Information</label>
