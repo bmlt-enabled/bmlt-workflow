@@ -260,9 +260,8 @@ class wbw_submissions_rest_handlers
         if (is_wp_error($result)) {
             return $result;
         }
-        // $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' where id="%d" limit 1', $change_id);
-        // $result = $wpdb->get_row($sql, ARRAY_A);
 
+        $submitter_email = $result['submitter_email'];
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
@@ -298,6 +297,25 @@ class wbw_submissions_rest_handlers
         // send action email
         //
 
+        $from_address = get_option('wbw_email_from_address');
+
+        //
+        // send action email
+        //
+
+        $to_address = $submitter_email;
+        $subject = "NA Meeting Change Request Rejection - Submission ID ".$request['id'];
+        $body = "Your meeting change (ID ".$request['id'].") has been rejected.";
+        if (!empty($message))
+        {
+            $body .= "<br><br>Message from trusted servant:<br><br>".$message;
+        }
+
+        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+        error_log("Rejection email");
+        error_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
+        wp_mail($to_address, $subject, $body, $headers);
+    
         return $this->wbw_rest_success('Rejected submission id ' . $change_id);
     }
 
@@ -591,10 +609,10 @@ class wbw_submissions_rest_handlers
 
         $to_address = $submitter_email;
         $subject = "NA Meeting Change Request Approval - Submission ID ".$request['id'];
-        $body = "Your meeting change (ID ".$request['id'].") has been approved";
+        $body = "Your meeting change (ID ".$request['id'].") has been approved.";
         if (!empty($message))
         {
-            $body .= "<br><br>Message from approver:<br><br>".$message;
+            $body .= "<br><br>Message from trusted servant:<br><br>".$message;
         }
 
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
