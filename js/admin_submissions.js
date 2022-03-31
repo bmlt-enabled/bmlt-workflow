@@ -138,7 +138,7 @@ jQuery(document).ready(function ($) {
   $("#quickedit_format_shared_id_list").select2({
     placeholder: "Select from available formats",
     multiple: true,
-    width: "90%",
+    width: "100%",
     data: formatdata,
     dropdownParent: $("#wbw_submission_quickedit_dialog"),
   });
