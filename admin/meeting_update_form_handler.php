@@ -75,7 +75,13 @@ function bmlt_retrieve_single_meeting($meeting_id)
         return wbw_rest_error('Server error retrieving meeting list', 500);
     }
     curl_close($curl);
-    $meeting = json_decode($resp, true)[0];
+    $meetingarr = json_decode($resp,true);
+    if (empty($meetingarr[0]))
+    {
+        return wbw_rest_error('Server error retrieving meeting list', 500);
+
+    }
+    $meeting = $meetingarr[0];
     error_log(vdump($meeting));
     // how possibly can we get a meeting that is not the same as we asked for
     if ($meeting['id_bigint'] != $meeting_id) {
