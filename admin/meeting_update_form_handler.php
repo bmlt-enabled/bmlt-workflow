@@ -3,7 +3,7 @@
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 if (!class_exists('BMLTIntegration')) {
-	require_once(WBW_PLUGIN_DIR . 'admin/bmlt_integration.php');
+    require_once(WBW_PLUGIN_DIR . 'admin/bmlt_integration.php');
 }
 
 if (!(function_exists('vdump'))) {
@@ -122,8 +122,8 @@ function meeting_update_form_handler_rest($data)
         "first_name" => array("text", true),
         "last_name" => array("text", true),
         "meeting_name" => array("text", $reason_new_bool),
-        "start_time" => array("text", $reason_new_bool),
-        "duration_time" => array("text", $reason_new_bool),
+        "start_time" => array("time", $reason_new_bool),
+        "duration_time" => array("time", $reason_new_bool),
         "location_text" => array("text", $reason_new_bool),
         "location_street" => array("text", $reason_new_bool),
         "location_info" => array("text", false),
@@ -198,15 +198,13 @@ function meeting_update_form_handler_rest($data)
                     break;
                 case ('textarea'):
                     $data[$field] = sanitize_textarea_field($data[$field]);
+                case ('time'):
+                    if (!preg_match('/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:00$/', $data[$field])) {
+                        return invalid_form_field($field);
+                    }
                     break;
-                    //                 case ('time'):
-                    //                     if(!preg_match('/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9][\s]{0,1}[aApP][mM]$/', '12:34 ZM'))
-                    // {
-                    //     $data[$field] = "(invalid time)"
-                    // }
-                    //                         break;
                 default:
-                    wp_die("Form processing error");
+                    return wbw_rest_error('Form processing error', 500);
                     break;
             }
             $sanitised_fields[$field] = $data[$field];

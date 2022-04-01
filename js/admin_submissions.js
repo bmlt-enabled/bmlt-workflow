@@ -322,7 +322,7 @@ jQuery(document).ready(function ($) {
 
   // child rows
   function format(d) {
-    console.log(d);
+    // console.log(d);
     table = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
 
     for (var key in d["changes_requested"]) {
