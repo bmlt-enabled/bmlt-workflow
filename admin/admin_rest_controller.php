@@ -248,15 +248,6 @@ class wbw_submissions_rest extends WP_REST_Controller
 		return true;
 	}
 
-	// public function get_service_bodies_detail_permissions_check($request)
-	// {
-	// 	error_log("get_service_bodies_detail_permissions_check " . get_current_user_id());
-	// 	if (!current_user_can('manage_options')) {
-	// 		return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view service areas detail.'), array('status' => $this->authorization_status_code()));
-	// 	}
-	// 	return true;
-	// }
-
 	/**
 	 * Check permissions for user management.
 	 *
@@ -272,15 +263,6 @@ class wbw_submissions_rest extends WP_REST_Controller
 		}
 		return true;
 	}
-
-	// public function post_service_bodies_detail_permissions_check($request)
-	// {
-	// 	error_log("post_service_bodies_permissions_check " . get_current_user_id());
-	// 	if (!current_user_can('manage_options')) {
-	// 		return new WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area detail updates.'), array('status' => $this->authorization_status_code()));
-	// 	}
-	// 	return true;
-	// }
 
 	/**
 	 * Check permissions for server configuration.
