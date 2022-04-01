@@ -311,11 +311,13 @@ jQuery(document).ready(function ($) {
       var actioned = true;
       if ($("#dt-submission").DataTable().row({ selected: true }).count()) {
         var change_made = $("#dt-submission").DataTable().row({ selected: true }).data()["change_made"];
-        var actioned = change_made === "approved" || change_made === "rejected";
+        var submission_type = $("#dt-submission").DataTable().row({ selected: true }).data()["submission_type"];
+        var actioned = (change_made === "approved" || change_made === "rejected")
+        var cantquickedit = (change_made === "approved" || change_made === "rejected" || submission_type === 'reason_close' || submission_type === 'reason_other');
       }
       $("#dt-submission").DataTable().button("approve:name").enable(!actioned);
       $("#dt-submission").DataTable().button("reject:name").enable(!actioned);
-      $("#dt-submission").DataTable().button("quickedit:name").enable(!actioned);
+      $("#dt-submission").DataTable().button("quickedit:name").enable(!cantquickedit);
     });
 
   // child rows

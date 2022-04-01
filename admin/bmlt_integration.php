@@ -16,9 +16,9 @@ class BMLTIntegration
         );
 
         $url = $server . "index.php";
-
+        error_log($url);
         $ret = wp_safe_remote_post($url, array('body'=> http_build_query($postargs)));
-        // error_log(vdump($ret));
+        error_log(vdump($ret));
 
         $response_code = wp_remote_retrieve_response_code($ret);
 
@@ -176,7 +176,7 @@ class BMLTIntegration
 
     private function postsemantic($url, $cookies = null, $postargs)
     {
-        ("POSTING SEMANTIC URL = " . $url);
+        error_log("POSTING SEMANTIC URL = " . $url);
         // error_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
         // error_log("*********");
         $newargs = '';
