@@ -198,6 +198,7 @@ function meeting_update_form_handler_rest($data)
                     break;
                 case ('textarea'):
                     $data[$field] = sanitize_textarea_field($data[$field]);
+                    break;
                 case ('time'):
                     if (!preg_match('/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:00$/', $data[$field])) {
                         return invalid_form_field($field);
