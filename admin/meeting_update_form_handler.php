@@ -301,7 +301,10 @@ function meeting_update_form_handler_rest($data)
 
             $bmlt_meeting = bmlt_retrieve_single_meeting($sanitised_fields['meeting_id']);
             // error_log(vdump($meeting));
-
+            if (is_wp_error($bmlt_meeting))
+            {
+                return $bmlt_meeting;
+            }
             // strip blanks from BMLT
             foreach ($bmlt_meeting as $key => $value) {
                 if (($bmlt_meeting[$key] === "") || ($bmlt_meeting[$key] === NULL)) {
