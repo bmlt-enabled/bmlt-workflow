@@ -134,7 +134,7 @@ jQuery(document).ready(function ($) {
               $(".meeting-input").on("input", function () {
                 $(this).addClass("wbw-changed");
               });
-              $("#display_format_shared_id_list").on("change", function () {
+              $("#display_format_shared_id_list").on("change.select2", function () {
                 $(".display_format_shared_id_list-select2").addClass("wbw-changed");
               });
 
