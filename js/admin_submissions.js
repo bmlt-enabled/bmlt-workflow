@@ -15,8 +15,10 @@ jQuery(document).ready(function ($) {
 
     // remove our change handler
     $(".quickedit-input").off("input");
+    $("#quickedit_format_shared_id_list").off("change.select2");
     // remove the highlighting
     $(".quickedit-input").removeClass("wbw-changed");
+    $(".quickedit_format_shared_id_list-select2").removeClass("wbw-changed");
     // remove any content from the input fields
     $(".quickedit-input").val("");
 
@@ -72,16 +74,26 @@ jQuery(document).ready(function ($) {
 
             Object.keys(changes_requested).forEach((element) => {
               if ($("#quickedit_" + element).length) {
-                $("#quickedit_" + element).addClass("wbw-changed");
+                if(element === "format_shared_id_list")
+                {
+                  $(".quickedit_format_shared_id_list-select2").addClass("wbw-changed");
+                }
+                else
+                {
+                  $("#quickedit_" + element).addClass("wbw-changed");                
+                }
                 $("#quickedit_" + element).val(changes_requested[element]);
                 $("#quickedit_" + element).trigger('change');
-
               }
             });
             // trigger adding of highlights when input changes
             $(".quickedit-input").on("input", function () {
               $(this).addClass("wbw-changed");
             });
+            $("#quickedit_format_shared_id_list").on("change.select2", function () {
+              $(".quickedit_format_shared_id_list-select2").addClass("wbw-changed");
+            });
+
             $("#wbw_submission_quickedit_dialog").data("id", id).dialog("open");
           }
         });
@@ -140,6 +152,7 @@ jQuery(document).ready(function ($) {
     multiple: true,
     width: "100%",
     data: formatdata,
+    selectionCssClass: ':all:',
     dropdownParent: $("#wbw_submission_quickedit_dialog"),
   });
   $("#quickedit_format_shared_id_list").trigger('change');

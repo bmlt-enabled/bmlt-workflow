@@ -135,8 +135,7 @@ jQuery(document).ready(function ($) {
               $(".meeting-input").on("input", function () {
                 $(this).addClass("wbw-changed");
               });
-              $("#display_format_shared_id_list").on("change.select2", function (obj) {
-                console.log(obj);
+              $("#display_format_shared_id_list").on("change.select2", function () {
                 $(".display_format_shared_id_list-select2").addClass("wbw-changed");
               });
 
@@ -169,7 +168,6 @@ jQuery(document).ready(function ($) {
       wbw_service_bodies += "services[]=" + service_body_bigint + "&";
     });
     update_meeting_list(wbw_service_bodies);
-
   });
 
   $("#meeting_update_form").validate({
@@ -296,8 +294,10 @@ jQuery(document).ready(function ($) {
     $("#personal_details").attr("class","form-grid-col2");
     // disable the highlighting
     $(".meeting-input").off("input");
+    $("#display_format_shared_id_list").off("change.select2");
     // remove the highlighting
     $(".meeting-input").removeClass("wbw-changed");
+    $(".display_format_shared_id_list-select2").removeClass("wbw-changed");
 
     enable_edits();
     // enable items as required
