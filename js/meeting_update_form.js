@@ -167,8 +167,9 @@ jQuery(document).ready(function ($) {
       var opt = new Option(service_area_name, service_body_bigint, false, false);
       $("#service_body_bigint").append(opt);
       wbw_service_bodies += "services[]=" + service_body_bigint + "&";
-      update_meeting_list(wbw_service_bodies);
     });
+    update_meeting_list(wbw_service_bodies);
+
   });
 
   $("#meeting_update_form").validate({
