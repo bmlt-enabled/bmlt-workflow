@@ -136,10 +136,10 @@ jQuery(document).ready(function ($) {
               $("#instructions").html("We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval.");
               $("#meeting_content").show();
               disable_field("service_body_bigint");
-              $(".meeting-input").on("input", function () {
+              $(".meeting-input").on("input.wbw-highlight", function () {
                 $(this).addClass("wbw-changed");
               });
-              $("#display_format_shared_id_list").on("change", function () {
+              $("#display_format_shared_id_list").on("change.wbw-highlight", function () {
                 $(".display_format_shared_id_list-select2").addClass("wbw-changed");
               });
 
@@ -297,8 +297,8 @@ jQuery(document).ready(function ($) {
     $("#additional_info").prop("required", false);
     $("#personal_details").attr("class","form-grid-col2");
     // disable the highlighting
-    $(".meeting-input").off("input");
-    // $("#display_format_shared_id_list").off("change"); 
+    $(".meeting-input").off("input.wbw-highlight");
+    $("#display_format_shared_id_list").off("change.wbw-highlight"); 
 
     enable_edits();
     // enable items as required
