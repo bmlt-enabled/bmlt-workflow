@@ -14,7 +14,7 @@ jQuery(document).ready(function ($) {
     placeholder: "Select from available formats",
     multiple: true,
     data: formatdata,
-    // selectionCssClass: ":all:",
+    selectionCssClass: 'meeting-input',
     width: "100%",
   });
 
@@ -86,8 +86,6 @@ jQuery(document).ready(function ($) {
           placeholder: "Select a meeting",
           allowClear: true,
           dropdownAutoWidth: true,
-          containerCssClass: 'meeting-input',
-          selectionCssClass: 'meeting-input',
           matcher: matchCustom,
         });
 
