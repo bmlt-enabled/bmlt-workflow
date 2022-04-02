@@ -14,7 +14,7 @@ jQuery(document).ready(function ($) {
     placeholder: "Select from available formats",
     multiple: true,
     data: formatdata,
-    selectionCssClass: 'meeting-input',
+    // selectionCssClass: 'meeting-input',
     width: "100%",
   });
 
