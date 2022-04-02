@@ -128,6 +128,10 @@ jQuery(document).ready(function ($) {
           var reason = $("#update_reason").val();
           switch (reason) {
             case "reason_change":
+              // remove the highlighting
+              $(".meeting-input").removeClass("wbw-changed");
+              $(".display_format_shared_id_list-select2").removeClass("wbw-changed");
+
               // display form instructions
               $("#instructions").html("We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval.");
               $("#meeting_content").show();
@@ -294,10 +298,7 @@ jQuery(document).ready(function ($) {
     $("#personal_details").attr("class","form-grid-col2");
     // disable the highlighting
     $(".meeting-input").off("input");
-    // $("#display_format_shared_id_list").off("change.select2");
-    // remove the highlighting
-    $(".meeting-input").removeClass("wbw-changed");
-    $(".display_format_shared_id_list-select2").removeClass("wbw-changed");
+    $("#display_format_shared_id_list").off("change"); 
 
     enable_edits();
     // enable items as required
