@@ -94,6 +94,7 @@ jQuery(document).ready(function ($) {
         });
 
         $("#meeting-searcher").on("select2:select", function (e) {
+          console.log("select");
           var data = e.params.data;
           var id = data.id;
           // set the weekday format
