@@ -50,10 +50,6 @@ EOD;
 }
 ?>
 
-<label for="display_format_shared_id_list">Meeting Formats<span class="wbw-required-field"> *</span></label>
-                            <select class="meeting-input" name="display_format_shared_id_list" id="display_format_shared_id_list" required></select>
-                            <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
-
 <div id="form_replace">
     <form action="#" method="post" id="meeting_update_form">
         <input type="hidden" name="action" value="meeting_update_form_response">
@@ -199,9 +195,9 @@ EOD;
                             <label for="location_nation">Nation</label>
                             <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
 
-                            <!-- <label for="display_format_shared_id_list">Meeting Formats<span class="wbw-required-field"> *</span></label>
+                            <label for="display_format_shared_id_list">Meeting Formats<span class="wbw-required-field"> *</span></label>
                             <select class="meeting-input" name="display_format_shared_id_list" id="display_format_shared_id_list" required></select>
-                            <input type="hidden" name="format_shared_id_list" id="format_shared_id_list"> -->
+                            <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
 
                             <label for=" virtual_meeting_link">Online Meeting Link</label>
                             <input class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
