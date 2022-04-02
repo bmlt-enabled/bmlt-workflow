@@ -71,8 +71,8 @@ EOD;
             </div>
             <div id="meeting_selector">
                 <br>
-                <label for="update_reason"">Search For Meeting:</label>
-                <select class=" meeting-searcher" id="meeting-searcher">
+                <label for="meeting-searcher"">Search For Meeting:</label>
+                <select name="meeting-searcher" class=" meeting-searcher" id="meeting-searcher">
                     <option></option>
                     </select>
                     <br><br>
