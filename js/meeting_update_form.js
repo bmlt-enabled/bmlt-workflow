@@ -298,7 +298,7 @@ jQuery(document).ready(function ($) {
     $("#personal_details").attr("class","form-grid-col2");
     // disable the highlighting
     $(".meeting-input").off("input");
-    $("#display_format_shared_id_list").off("change"); 
+    // $("#display_format_shared_id_list").off("change"); 
 
     enable_edits();
     // enable items as required
