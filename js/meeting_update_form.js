@@ -135,7 +135,7 @@ jQuery(document).ready(function ($) {
                 $(this).addClass("wbw-changed");
               });
               $("#display_format_shared_id_list").on("change", function () {
-                $(this).addClass("wbw-changed");
+                $(".display_format_shared_id_list-select2").addClass("wbw-changed");
               });
 
               break;
