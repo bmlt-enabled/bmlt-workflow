@@ -14,7 +14,7 @@ jQuery(document).ready(function ($) {
     placeholder: "Select from available formats",
     multiple: true,
     data: formatdata,
-    selectionCssClass: 'meeting-input',
+    // selectionCssClass: 'meeting-input',
     width: "100%",
   });
 
@@ -134,7 +134,10 @@ jQuery(document).ready(function ($) {
               $(".meeting-input").on("input", function () {
                 $(this).addClass("wbw-changed");
               });
-  
+              $("#display_format_shared_id_list").on("change", function () {
+                $(this).addClass("wbw-changed");
+              });
+
               break;
             case "reason_close":
               // display form instructions
