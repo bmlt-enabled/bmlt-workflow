@@ -86,6 +86,7 @@ jQuery(document).ready(function ($) {
           placeholder: "Select a meeting",
           allowClear: true,
           dropdownAutoWidth: true,
+          containerCssClass: 'meeting-input',
           matcher: matchCustom,
         });
 
