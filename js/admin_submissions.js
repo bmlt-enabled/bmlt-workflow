@@ -14,11 +14,12 @@ jQuery(document).ready(function ($) {
     // clear quickedit
 
     // remove our change handler
-    $(".quickedit-input").off("input");
-    $("#quickedit_format_shared_id_list").off("change.select2");
+    $(".quickedit-input").off("input.wbw-highlight");
+    $("#quickedit_format_shared_id_list").off("change.wbw-highlight");
     // remove the highlighting
     $(".quickedit-input").removeClass("wbw-changed");
     $(".quickedit_format_shared_id_list-select2").removeClass("wbw-changed");
+
     // remove any content from the input fields
     $(".quickedit-input").val("");
 
@@ -87,10 +88,10 @@ jQuery(document).ready(function ($) {
               }
             });
             // trigger adding of highlights when input changes
-            $(".quickedit-input").on("input", function () {
+            $(".quickedit-input").on("input.wbw-highlight", function () {
               $(this).addClass("wbw-changed");
             });
-            $("#quickedit_format_shared_id_list").on("change.select2", function () {
+            $("#quickedit_format_shared_id_list").on("change.wbw-highlight", function () {
               $(".quickedit_format_shared_id_list-select2").addClass("wbw-changed");
             });
 
