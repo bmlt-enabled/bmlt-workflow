@@ -17,14 +17,6 @@ jQuery(document).ready(function ($) {
     selectionCssClass: ':all:',
     width: "100%",
   });
-
-  $( "#select2-multiple" ).select2({
-    placeholder: "Select a State",
-    maximumSelectionSize: 6,
-    multiple: true,
-    selectionCssClass: 'trash',
-    width: "100%",
-  });
   
   function update_meeting_list(wbw_service_bodies) {
     var search_results_address =
