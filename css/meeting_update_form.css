@@ -102,3 +102,8 @@ body {
 .wbw-changed {
   background: #e7f478; 
  }
+
+ .select2-selection--multiple.meeting-input.wbw-changed
+ {
+  background: #e7f478; 
+ }
