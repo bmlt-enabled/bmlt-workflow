@@ -188,7 +188,7 @@ jQuery(document).ready(function ($) {
   function put_field(fieldname, value) {
     var field = "#" + fieldname;
     $(field).val(value);
-    $(field).trigger('change');
+    // $(field).trigger('change');
   }
 
   function clear_field(fieldname, value) {
