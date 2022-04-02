@@ -87,6 +87,7 @@ jQuery(document).ready(function ($) {
           allowClear: true,
           dropdownAutoWidth: true,
           containerCssClass: 'meeting-input',
+          selectionCssClass: 'meeting-input',
           matcher: matchCustom,
         });
 
