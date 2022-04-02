@@ -12,8 +12,6 @@ if ($wbw_bmlt_test_status != "success") {
 wp_nonce_field('wp_rest', '_wprestnonce');
 
 $bmlt_integration = new BMLTIntegration;
-$formatarr = $bmlt_integration->getMeetingFormats();
-$script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
 $meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
 
@@ -51,6 +49,15 @@ else
 EOD;
 }
 ?>
+
+<label for="meeting-searcher"">Search For Meeting:</label>
+                <select name="meeting-searcher" class=" meeting-searcher" id="meeting-searcher">
+                    <option></option>
+                    </select>
+                    <br><br>
+                    <input type="hidden" name="meeting_id" id="meeting_id" value="">
+
+
 <div id="form_replace">
     <form action="#" method="post" id="meeting_update_form">
         <input type="hidden" name="action" value="meeting_update_form_response">
@@ -71,12 +78,12 @@ EOD;
             </div>
             <div id="meeting_selector">
                 <br>
-                <label for="meeting-searcher"">Search For Meeting:</label>
+                <!-- <label for="meeting-searcher"">Search For Meeting:</label>
                 <select name="meeting-searcher" class=" meeting-searcher" id="meeting-searcher">
                     <option></option>
                     </select>
                     <br><br>
-                    <input type="hidden" name="meeting_id" id="meeting_id" value="">
+                    <input type="hidden" name="meeting_id" id="meeting_id" value=""> -->
             </div>
             <div id="meeting_content" class="form-grid">
                 <div class="form-grid-top">
