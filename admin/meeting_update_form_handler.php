@@ -82,7 +82,7 @@ function bmlt_retrieve_single_meeting($meeting_id)
 
     }
     $meeting = $meetingarr[0];
-    error_log(vdump($meeting));
+    Debug\debug_log(vdump($meeting));
     // how possibly can we get a meeting that is not the same as we asked for
     if ($meeting['id_bigint'] != $meeting_id) {
         return wbw_rest_error('Server error retrieving meeting list', 500);
@@ -92,8 +92,8 @@ function bmlt_retrieve_single_meeting($meeting_id)
 
 function meeting_update_form_handler_rest($data)
 {
-    error_log("in rest handler");
-    error_log(vdump($data));
+    Debug\debug_log("in rest handler");
+    Debug\debug_log(vdump($data));
 
     $reason_new_bool = false;
     $reason_other_bool = false;
@@ -300,7 +300,7 @@ function meeting_update_form_handler_rest($data)
             );
 
             $bmlt_meeting = bmlt_retrieve_single_meeting($sanitised_fields['meeting_id']);
-            // error_log(vdump($meeting));
+            // Debug\debug_log(vdump($meeting));
             if (is_wp_error($bmlt_meeting))
             {
                 return $bmlt_meeting;
@@ -316,17 +316,17 @@ function meeting_update_form_handler_rest($data)
             foreach ($allowed_fields as $field) {
                 // if the field is blank in bmlt, but they submitted a change, add it to the list
                 if ((empty($bmlt_meeting[$field])) && (!empty($sanitised_fields[$field]))) {
-                    error_log("found a blank bmlt entry " . $field);
+                    Debug\debug_log("found a blank bmlt entry " . $field);
                     $submission[$field] = $sanitised_fields[$field];
                 }
                 // if the field is in bmlt and its different to the submitted item, add it to the list
                 else if ((!empty($bmlt_meeting[$field])) && (!empty($sanitised_fields[$field]))) {
                     if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
-                        // error_log("{$field} is different");
-                        // error_log("*** bmlt meeting");
-                        // error_log(vdump($bmlt_meeting));
-                        // error_log("*** sanitised fields");
-                        // error_log(vdump($sanitised_fields));
+                        // Debug\debug_log("{$field} is different");
+                        // Debug\debug_log("*** bmlt meeting");
+                        // Debug\debug_log(vdump($bmlt_meeting));
+                        // Debug\debug_log("*** sanitised fields");
+                        // Debug\debug_log(vdump($sanitised_fields));
                         // don't allow someone to modify a meeting service body
                         if ($field === 'service_body_bigint') {
                             return wbw_rest_error('Service body cannot be changed.', 400);
@@ -347,8 +347,8 @@ function meeting_update_form_handler_rest($data)
                 }
             }
 
-            error_log("SUBMISSION");
-            error_log(vdump($submission));
+            Debug\debug_log("SUBMISSION");
+            Debug\debug_log(vdump($submission));
             // store away the original meeting name so we know what changed
             $submission['original_meeting_name'] = $bmlt_meeting['meeting_name'];
 
@@ -396,8 +396,8 @@ function meeting_update_form_handler_rest($data)
             return wbw_rest_error('Invalid meeting change', 400);
     }
 
-    error_log("SUBMISSION");
-    error_log(vdump($submission));
+    Debug\debug_log("SUBMISSION");
+    Debug\debug_log(vdump($submission));
 
 
 
@@ -434,7 +434,7 @@ function meeting_update_form_handler_rest($data)
         )
     );
     $insert_id = $wpdb->insert_id;
-    // error_log("id = " . $insert_id);
+    // Debug\debug_log("id = " . $insert_id);
     $message = array(
         "message" => 'Form submission successful, submission id ' . $insert_id,
         "form_html" => '<h3>Form submission successful, your submission id  is #' . $insert_id . '. You will also receive an email confirmation of your submission.</h3>'
@@ -482,7 +482,7 @@ function meeting_update_form_handler_rest($data)
     $body = $template;
 
     $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-    error_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . vdump($headers));
+    Debug\debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . vdump($headers));
     wp_mail($to_address, $subject, $body, $headers);
 
     return wbw_rest_success($message);

@@ -1,5 +1,7 @@
 <?php
 
+use wbw\Debug;
+
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
@@ -84,11 +86,11 @@ final class meeting_update_form_handlerTest extends TestCase
         Functions\when('curl_exec')->justReturn($json);
 
         $response = meeting_update_form_handler_rest($form_post);
-        error_log("TEST RESPONSE");
-        error_log(vdump($response));
+        Debug\debug_log("TEST RESPONSE");
+        Debug\debug_log(vdump($response));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
-        // error_log($email_addresses);
+        // Debug\debug_log($email_addresses);
         // $this->assertEquals($email_addresses,'a@a.com,a@a.com');
     }
 
@@ -272,7 +274,7 @@ final class meeting_update_form_handlerTest extends TestCase
         Functions\when('wp_mail')->justReturn('true');
 
         $response = meeting_update_form_handler_rest($form_post);
-        error_log(vdump($response));
+        Debug\debug_log(vdump($response));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
     }
@@ -318,7 +320,7 @@ final class meeting_update_form_handlerTest extends TestCase
         Functions\when('wp_mail')->justReturn('true');
 
         $response = meeting_update_form_handler_rest($form_post);
-        error_log(vdump($response));
+        Debug\debug_log(vdump($response));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
     }
@@ -376,7 +378,7 @@ final class meeting_update_form_handlerTest extends TestCase
     //     Functions\expect('wp_mail')->times(1)->with("wbw_fso_email_address", Mockery::any(), Mockery::any(), Mockery::any());
 
     //     $response = meeting_update_form_handler_rest($form_post);
-    //     error_log(vdump($response));
+    //     Debug\debug_log(vdump($response));
     //     $this->assertInstanceOf(WP_REST_Response::class, $response);
     //     $this->assertEquals(200, $response->get_status());
     // }
@@ -427,7 +429,7 @@ final class meeting_update_form_handlerTest extends TestCase
     //     Functions\expect('wp_mail')->times(1)->with("joe@joe.com", Mockery::any(), Mockery::any(), Mockery::any());
 
     //     $response = meeting_update_form_handler_rest($form_post);
-    //     error_log(vdump($response));
+    //     Debug\debug_log(vdump($response));
     //     $this->assertInstanceOf(WP_REST_Response::class, $response);
     //     $this->assertEquals(200, $response->get_status());
     // }

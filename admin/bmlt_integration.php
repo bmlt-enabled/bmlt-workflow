@@ -16,9 +16,9 @@ class BMLTIntegration
         );
 
         $url = $server . "index.php";
-        error_log($url);
+        Debug\debug_log($url);
         $ret = wp_safe_remote_post($url, array('body'=> http_build_query($postargs)));
-        error_log(vdump($ret));
+        Debug\debug_log(vdump($ret));
 
         $response_code = wp_remote_retrieve_response_code($ret);
 
@@ -39,9 +39,9 @@ class BMLTIntegration
         if (is_wp_error($response)) {
             return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        error_log(wp_remote_retrieve_body($response));  
+        Debug\debug_log(wp_remote_retrieve_body($response));  
         $formatarr = json_decode(wp_remote_retrieve_body($response), true);
-        error_log(vdump($formatarr));
+        Debug\debug_log(vdump($formatarr));
 
         $newformat = array();
         foreach ($formatarr as $key => $value) {
@@ -49,8 +49,8 @@ class BMLTIntegration
             unset($value['id']);
             $newformat[$formatid] = $value;            
         }
-        error_log("NEWFORMAT");
-        error_log(vdump($newformat));
+        Debug\debug_log("NEWFORMAT");
+        Debug\debug_log(vdump($newformat));
 
         return $newformat;
     }
@@ -61,7 +61,7 @@ class BMLTIntegration
         if (is_wp_error($response)) {
             return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        // error_log(wp_remote_retrieve_body($response));  
+        // Debug\debug_log(wp_remote_retrieve_body($response));  
         $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
         if(!empty($arr['meeting_states_and_provinces']))
         {
@@ -77,7 +77,7 @@ class BMLTIntegration
         if (is_wp_error($response)) {
             return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        // error_log(wp_remote_retrieve_body($response));  
+        // Debug\debug_log(wp_remote_retrieve_body($response));  
         $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
         if(!empty($arr['meeting_counties_and_sub_provinces']))
         {
@@ -107,7 +107,7 @@ class BMLTIntegration
             );
             $url = get_option('wbw_bmlt_server_address') . "index.php";
 
-            // error_log("AUTH URL = " . $url);
+            // Debug\debug_log("AUTH URL = " . $url);
             $ret = $this->post($url, null, $postargs);
 
             if (is_wp_error($ret))
@@ -158,9 +158,9 @@ class BMLTIntegration
 
     private function post($url, $cookies = null, $postargs)
     {
-        error_log("POSTING URL = " . $url);
-        // error_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
-        // error_log("*********");
+        Debug\debug_log("POSTING URL = " . $url);
+        // Debug\debug_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
+        // Debug\debug_log("*********");
         $ret = wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
@@ -176,9 +176,9 @@ class BMLTIntegration
 
     private function postsemantic($url, $cookies = null, $postargs)
     {
-        error_log("POSTING SEMANTIC URL = " . $url);
-        // error_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
-        // error_log("*********");
+        Debug\debug_log("POSTING SEMANTIC URL = " . $url);
+        // Debug\debug_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
+        // Debug\debug_log("*********");
         $newargs = '';
         foreach ($postargs as $key => $value) {
             switch ($key) {
@@ -195,9 +195,9 @@ class BMLTIntegration
         if ($newargs != '') {
             // chop trailing &
             $newargs = substr($newargs, 0, -1);
-            error_log("our post body is " . $newargs);
+            Debug\debug_log("our post body is " . $newargs);
             $ret = wp_safe_remote_post($url, $this->set_args($cookies, $newargs));
-            error_log($this->vdump($ret));
+            Debug\debug_log($this->vdump($ret));
             return $ret;
         }
     }

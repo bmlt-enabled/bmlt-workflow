@@ -11,6 +11,10 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
+use wbw\Debug;
+
+define('WBW_DEBUG',false);
+
 define('WBW_PLUGIN_DIR', plugin_dir_path(__FILE__));
 global $wbw_db_version;
 $wbw_db_version = '1.0';
@@ -56,12 +60,12 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     // add meeting formats
     $bmlt_integration = new BMLTIntegration;
     $formatarr = $bmlt_integration->getMeetingFormats();
-    error_log("FORMATS");
-    error_log(vdump($formatarr));
-    error_log(json_encode($formatarr));
+    Debug\debug_log("FORMATS");
+    Debug\debug_log(vdump($formatarr));
+    Debug\debug_log(json_encode($formatarr));
     $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
     
-    error_log("adding script ".$script);
+    Debug\debug_log("adding script ".$script);
     $status = wp_add_inline_script('wbw-meeting-update-form-js', $script, 'before');
 
 
@@ -81,7 +85,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
        $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
     endforeach;
 
-    error_log(vdump($result));
+    Debug\debug_log(vdump($result));
 
     ob_start();
     include('public/meeting_update_form.php');
@@ -97,22 +101,22 @@ function prevent_cache_register_script($handle, $deps, $name)
 function prevent_cache_register_style($handle, $deps, $name)
 {
     $ret = wp_register_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
-    error_log("register style");
-    error_log(vdump($ret));
+    Debug\debug_log("register style");
+    Debug\debug_log(vdump($ret));
 }
 
 function prevent_cache_enqueue_script($handle, $deps, $name)
 {
     $ret = wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
-    error_log("enqueue style ".$handle);
-    error_log(vdump($ret));
+    Debug\debug_log("enqueue style ".$handle);
+    Debug\debug_log(vdump($ret));
 }
 
 function prevent_cache_enqueue_style($handle, $deps, $name)
 {
     $ret = wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
-    error_log("enqueue style ".$handle);
-    error_log(vdump($ret));
+    Debug\debug_log("enqueue style ".$handle);
+    Debug\debug_log(vdump($ret));
 
 }
 
@@ -132,14 +136,14 @@ function enqueue_form_deps()
     wp_register_script('jquery.validate', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
     wp_register_script('jquery.validate.additional', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jquery.validate'), '1.0', true);
 
-    error_log("scripts and styles registered");
+    Debug\debug_log("scripts and styles registered");
 }
 
 function wbw_admin_scripts($hook)
 {
     global $wbw_rest_namespace;
 
-        // error_log($hook);
+        // Debug\debug_log($hook);
 
     if (($hook != 'toplevel_page_wbw-settings') && ($hook != 'bmlt-workflow_page_wbw-submissions') && ($hook != 'bmlt-workflow_page_wbw-service-bodies')) {
         return;
@@ -152,7 +156,7 @@ function wbw_admin_scripts($hook)
         case ('toplevel_page_wbw-settings'):
             prevent_cache_enqueue_style('wbw-admin-css', false, 'css/admin_page.css');
 
-            // error_log('inside hook');
+            // Debug\debug_log('inside hook');
 
             // clipboard
             wp_register_script('clipboard', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
@@ -198,9 +202,9 @@ function wbw_admin_scripts($hook)
             // add meeting formats
             $bmlt_integration = new BMLTIntegration;
             $formatarr = $bmlt_integration->getMeetingFormats();
-            error_log("FORMATS");
-            error_log(vdump($formatarr));
-            error_log(json_encode($formatarr));
+            Debug\debug_log("FORMATS");
+            Debug\debug_log(vdump($formatarr));
+            Debug\debug_log(json_encode($formatarr));
             $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
@@ -209,7 +213,7 @@ function wbw_admin_scripts($hook)
             $request  = new WP_REST_Request('GET', $url);
             $response = rest_do_request($request);
             $result     = rest_get_server()->response_to_data($response, true);
-            // error_log("result = ".vdump($result));
+            // Debug\debug_log("result = ".vdump($result));
             $script .= 'var wbw_admin_wbw_service_bodies = ' . json_encode($result) . '; ';
 
             // defaults for approve close form
@@ -730,7 +734,7 @@ function wbw_uninstall()
 
     // remove custom capability
     global $wbw_capability_manage_submissions;
-    // error_log("deleting capabilities");
+    // Debug\debug_log("deleting capabilities");
 
     $users = get_users();
     foreach ($users as $user) {
