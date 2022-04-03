@@ -210,6 +210,7 @@ EOD;
                     <div id="additional_info_div">
                     <fieldset>
                         <legend>Additional Information</legend>
+                        <label for="additional_info">Any Other Comments</label>
                         <textarea name="additional_info" id="additional_info" rows="5" cols="50" placeholder="Provide any more detail that may help us action your meeting change request"></textarea>
                         <div id="starter_pack">
                             <label for="starter_kit_required">Starter Kit Required</label>
