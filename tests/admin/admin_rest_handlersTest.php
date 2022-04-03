@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use wbw\Debug;
-if (!(function_exists('wbw\Debug\debug_log')))
+if (!(function_exists('\wbw\Debug\debug_log')))
 {
     require_once('../../Debug/debug_log.php');
 }
