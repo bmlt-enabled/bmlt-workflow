@@ -12,6 +12,7 @@
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 use wbw\Debug;
+
 if (!(function_exists('\wbw\Debug\debug_log')))
 {
     require_once('Debug/debug_log.php');
@@ -20,7 +21,6 @@ if (!(function_exists('\wbw\Debug\debug_log')))
 define('WBW_DEBUG',false);
 
 define('WBW_PLUGIN_DIR', plugin_dir_path(__FILE__));
-require (WBW_PLUGIN_DIR.'Debug/debug_log.php');
 
 global $wbw_db_version;
 $wbw_db_version = '1.0';
