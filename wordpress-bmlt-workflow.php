@@ -41,9 +41,6 @@ $wbw_service_bodies_access_table_name = $wpdb->prefix . 'wbw_service_bodies_acce
 global $wbw_capability_manage_submissions;
 $wbw_capability_manage_submissions = 'wbw_manage_submissions';
 
-include_once 'admin/meeting_update_form_handler.php';
-include_once 'admin/admin_rest_controller.php';
-
 function meeting_update_form($atts = [], $content = null, $tag = '')
 {
     global $wbw_rest_namespace;
