@@ -3,14 +3,7 @@
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 use wbw\Debug;
-if (!(function_exists('\wbw\Debug\debug_log')))
-{
-    require_once('../Debug/debug_log.php');
-}
-
-if (!class_exists('BMLTIntegration')) {
-    require_once(WBW_PLUGIN_DIR . 'admin/bmlt_integration.php');
-}
+use wbw\BMLT\Integration;
 
 function get_emails_by_servicebody_id($id)
 {
@@ -487,7 +480,7 @@ function meeting_update_form_handler_rest($data)
 function submission_format($submission)
 {
 
-    $bmlt = new BMLTIntegration;
+    $bmlt = new Integration\BMLTIntegration;
     $formats = $bmlt->getMeetingFormats();
 
     $table = '';

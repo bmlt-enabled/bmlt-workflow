@@ -1,13 +1,9 @@
-
 <?php
+namespace wbw\BMLT\Integration;
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 use wbw\Debug;
-if (!(function_exists('\wbw\Debug\debug_log')))
-{
-    require_once('../Debug/debug_log.php');
-}
 
 class BMLTIntegration
 {
@@ -30,11 +26,11 @@ class BMLTIntegration
 
         if ($response_code != 200)
         {
-            return new WP_Error('wbw', 'check BMLT server address');
+            return new \WP_Error('wbw', 'check BMLT server address');
         }
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
-            return new WP_Error('wbw', 'check username and password details');
+            return new \WP_Error('wbw', 'check username and password details');
         }
         return true;
     }
@@ -43,7 +39,7 @@ class BMLTIntegration
     {
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetFormats', array());
         if (is_wp_error($response)) {
-            return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
+            return new \WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
         Debug\debug_log(wp_remote_retrieve_body($response));  
         $formatarr = json_decode(wp_remote_retrieve_body($response), true);
@@ -65,7 +61,7 @@ class BMLTIntegration
     {
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         if (is_wp_error($response)) {
-            return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
+            return new \WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
         // Debug\debug_log(wp_remote_retrieve_body($response));  
         $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
@@ -81,7 +77,7 @@ class BMLTIntegration
     {
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         if (is_wp_error($response)) {
-            return new WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
+            return new \WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
         // Debug\debug_log(wp_remote_retrieve_body($response));  
         $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
@@ -118,13 +114,13 @@ class BMLTIntegration
 
             if (is_wp_error($ret))
             {
-                return new WP_Error('wbw', 'authenticateRootServer: Server Failure');
+                return new \WP_Error('wbw', 'authenticateRootServer: Server Failure');
             }  
 
             if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
             {
                 $this->cookies = null;
-                return new WP_Error('wbw', 'authenticateRootServer: Authentication Failure');
+                return new \WP_Error('wbw', 'authenticateRootServer: Authentication Failure');
             }
             
             $this->cookies = wp_remote_retrieve_cookies($ret);

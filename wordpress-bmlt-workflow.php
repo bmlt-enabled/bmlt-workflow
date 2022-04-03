@@ -11,12 +11,10 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-use wbw\Debug;
+require 'vendor/autoload.php';
 
-if (!(function_exists('\wbw\Debug\debug_log')))
-{
-    require_once('Debug/debug_log.php');
-}
+use wbw\Debug;
+use wbw\BMLT\Integration;
 
 define('WBW_DEBUG',false);
 
@@ -64,7 +62,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
 
     // add meeting formats
-    $bmlt_integration = new BMLTIntegration;
+    $bmlt_integration = new Integration\BMLTIntegration;
     $formatarr = $bmlt_integration->getMeetingFormats();
     Debug\debug_log("FORMATS");
     Debug\debug_log(Debug\vdump($formatarr));
@@ -206,7 +204,7 @@ function wbw_admin_scripts($hook)
             $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
 
             // add meeting formats
-            $bmlt_integration = new BMLTIntegration;
+            $bmlt_integration = new Integration\BMLTIntegration;
             $formatarr = $bmlt_integration->getMeetingFormats();
             Debug\debug_log("FORMATS");
             Debug\debug_log(Debug\vdump($formatarr));

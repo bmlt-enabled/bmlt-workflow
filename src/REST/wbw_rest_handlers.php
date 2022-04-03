@@ -1,19 +1,17 @@
 <?php
+namespace wbw\REST\Handlers;
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 use wbw\Debug;
-if (!(function_exists('\wbw\Debug\debug_log')))
-{
-    require_once('../Debug/debug_log.php');
-}
+use wbw\BMLT\Integration;
 
-class wbw_submissions_rest_handlers
+class wbw_rest_handlers
 {
 
     public function __construct()
     {
-        $this->bmlt_integration = new BMLTIntegration;
+        $this->bmlt_integration = new Integration\BMLTIntegration;
     }
 
     // accepts raw string or array
@@ -27,7 +25,7 @@ class wbw_submissions_rest_handlers
         {
             $data = array('message'=> $message);
         }
-        $response = new WP_REST_Response();
+        $response = new \WP_REST_Response();
         $response->set_data($data);
         $response->set_status(200);
         return $response;
@@ -35,7 +33,7 @@ class wbw_submissions_rest_handlers
 
     private function wbw_rest_error($message, $code)
     {
-        return new WP_Error('wbw_error', $message, array('status' => $code));
+        return new \WP_Error('wbw_error', $message, array('status' => $code));
     }
 
     public function get_submissions_handler()

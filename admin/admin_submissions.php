@@ -3,14 +3,11 @@
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 use wbw\Debug;
-if (!(function_exists('\wbw\Debug\debug_log')))
-{
-    require_once('../Debug/debug_log.php');
-}
+use wbw\BMLT\Integration;
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
-$bmlt_integration = new BMLTIntegration;
+$bmlt_integration = new Integration\BMLTIntegration;
 
 $meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
 
