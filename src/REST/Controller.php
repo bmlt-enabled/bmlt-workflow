@@ -1,5 +1,5 @@
 <?php
-namespace wbw\REST\Controller;
+namespace wbw\REST;
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
@@ -9,11 +9,11 @@ use wbw\REST\Handlers;
 
 function wbw_submissions_controller()
 {
-	$controller = new wbw_submissions_rest();
+	$controller = new Controller();
 	$controller->register_routes();
 }
 
-class wbw_submissions_rest extends \WP_REST_Controller
+class Controller extends \WP_REST_Controller
 {
 
 	protected $namespace;
@@ -26,8 +26,8 @@ class wbw_submissions_rest extends \WP_REST_Controller
 		$this->submissions_rest_base = 'submissions';
 		$this->service_bodies_rest_base = 'servicebodies';
 		$this->server_rest_base = 'bmltserver';
-		$this->bmlt_integration = new Integration\BMLTIntegration;
-		$this->handlers = new Handlers\wbw_rest_handlers();
+		$this->bmlt_integration = new Integration;
+		$this->handlers = new Handlers();
 	}
 
 	public function register_routes()

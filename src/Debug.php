@@ -1,6 +1,6 @@
 <?php
 
-namespace wbw\Debug;
+namespace wbw;
 
 class Debug 
 {

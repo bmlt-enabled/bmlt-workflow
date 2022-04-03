@@ -1,17 +1,17 @@
 <?php
-namespace wbw\REST\Handlers;
+namespace wbw\REST;
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 use wbw\Debug;
 use wbw\BMLT\Integration;
 
-class wbw_rest_handlers
+class Handlers
 {
 
     public function __construct()
     {
-        $this->bmlt_integration = new Integration\BMLTIntegration;
+        $this->bmlt_integration = new Integration;
     }
 
     // accepts raw string or array

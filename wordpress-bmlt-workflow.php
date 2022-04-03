@@ -28,7 +28,7 @@ global $wbw_service_bodies_table_name;
 global $wbw_service_bodies_access_table_name;
 global $wbw_rest_namespace;
 global $wbw_dbg;
-$wbw_dbg = new Debug\Debug;
+$wbw_dbg = new Debug;
 
 // our rest namespace
 $wbw_rest_namespace = 'wbw/v1';
@@ -62,7 +62,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
 
     // add meeting formats
-    $bmlt_integration = new Integration\BMLTIntegration;
+    $bmlt_integration = new Integration;
     $formatarr = $bmlt_integration->getMeetingFormats();
     $wbw_dbg->debug_log("FORMATS");
     $wbw_dbg->debug_log($wbw_dbg->vdump($formatarr));
@@ -212,7 +212,7 @@ function wbw_admin_scripts($hook)
             $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
 
             // add meeting formats
-            $bmlt_integration = new Integration\BMLTIntegration;
+            $bmlt_integration = new Integration;
             $formatarr = $bmlt_integration->getMeetingFormats();
             $wbw_dbg->debug_log("FORMATS");
             $wbw_dbg->debug_log($wbw_dbg->vdump($formatarr));

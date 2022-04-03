@@ -1,11 +1,11 @@
 <?php
-namespace wbw\BMLT\Integration;
+namespace wbw\BMLT;
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 use wbw\Debug;
 
-class BMLTIntegration
+class Integration
 {
     protected $cookies = null; // our authentication cookies
     
