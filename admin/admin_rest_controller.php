@@ -12,7 +12,7 @@ if (!class_exists('wbw_submissions_rest_handlers')) {
 	require_once(WBW_PLUGIN_DIR . 'admin/admin_rest_handlers.php');
 }
 
-require('Debug/debug_log.php');
+// require('Debug/debug_log.php');
 
 function wbw_submissions_controller()
 {
