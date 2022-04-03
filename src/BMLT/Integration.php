@@ -8,9 +8,10 @@ use wbw\Debug;
 class BMLTIntegration
 {
     protected $cookies = null; // our authentication cookies
-
+    
     public function testServerAndAuth($username, $password, $server)
     {
+        global $wbw_dbg;
         $postargs = array(
             'admin_action' => 'login',
             'c_comdef_admin_login' => $username,
@@ -18,9 +19,9 @@ class BMLTIntegration
         );
 
         $url = $server . "index.php";
-        Debug\debug_log($url);
+        $this->dbg->debug_log($url);
         $ret = wp_safe_remote_post($url, array('body'=> http_build_query($postargs)));
-        Debug\debug_log(Debug\vdump($ret));
+        $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 
         $response_code = wp_remote_retrieve_response_code($ret);
 
@@ -37,13 +38,15 @@ class BMLTIntegration
 
     public function getMeetingFormats()
     {
+        global $wbw_dbg;
+
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetFormats', array());
         if (is_wp_error($response)) {
             return new \WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        Debug\debug_log(wp_remote_retrieve_body($response));  
+        $wbw_dbg->debug_log(wp_remote_retrieve_body($response));  
         $formatarr = json_decode(wp_remote_retrieve_body($response), true);
-        Debug\debug_log(Debug\vdump($formatarr));
+        $wbw_dbg->debug_log($wbw_dbg->vdump($formatarr));
 
         $newformat = array();
         foreach ($formatarr as $key => $value) {
@@ -51,8 +54,8 @@ class BMLTIntegration
             unset($value['id']);
             $newformat[$formatid] = $value;            
         }
-        Debug\debug_log("NEWFORMAT");
-        Debug\debug_log(Debug\vdump($newformat));
+        $wbw_dbg->debug_log("NEWFORMAT");
+        $wbw_dbg->debug_log($wbw_dbg->vdump($newformat));
 
         return $newformat;
     }
@@ -63,7 +66,7 @@ class BMLTIntegration
         if (is_wp_error($response)) {
             return new \WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        // Debug\debug_log(wp_remote_retrieve_body($response));  
+        // $wbw_dbg->debug_log(wp_remote_retrieve_body($response));  
         $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
         if(!empty($arr['meeting_states_and_provinces']))
         {
@@ -79,7 +82,7 @@ class BMLTIntegration
         if (is_wp_error($response)) {
             return new \WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        // Debug\debug_log(wp_remote_retrieve_body($response));  
+        // $wbw_dbg->debug_log(wp_remote_retrieve_body($response));  
         $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
         if(!empty($arr['meeting_counties_and_sub_provinces']))
         {
@@ -109,7 +112,7 @@ class BMLTIntegration
             );
             $url = get_option('wbw_bmlt_server_address') . "index.php";
 
-            // Debug\debug_log("AUTH URL = " . $url);
+            // $wbw_dbg->debug_log("AUTH URL = " . $url);
             $ret = $this->post($url, null, $postargs);
 
             if (is_wp_error($ret))
@@ -160,9 +163,11 @@ class BMLTIntegration
 
     private function post($url, $cookies = null, $postargs)
     {
-        Debug\debug_log("POSTING URL = " . $url);
-        // Debug\debug_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
-        // Debug\debug_log("*********");
+        global $wbw_dbg;
+
+        $wbw_dbg->debug_log("POSTING URL = " . $url);
+        // $wbw_dbg->debug_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
+        // $wbw_dbg->debug_log("*********");
         $ret = wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
@@ -178,9 +183,11 @@ class BMLTIntegration
 
     private function postsemantic($url, $cookies = null, $postargs)
     {
-        Debug\debug_log("POSTING SEMANTIC URL = " . $url);
-        // Debug\debug_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
-        // Debug\debug_log("*********");
+        global $wbw_dbg;
+
+        $wbw_dbg->debug_log("POSTING SEMANTIC URL = " . $url);
+        // $wbw_dbg->debug_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
+        // $wbw_dbg->debug_log("*********");
         $newargs = '';
         foreach ($postargs as $key => $value) {
             switch ($key) {
@@ -197,9 +204,9 @@ class BMLTIntegration
         if ($newargs != '') {
             // chop trailing &
             $newargs = substr($newargs, 0, -1);
-            Debug\debug_log("our post body is " . $newargs);
+            $wbw_dbg->debug_log("our post body is " . $newargs);
             $ret = wp_safe_remote_post($url, $this->set_args($cookies, $newargs));
-            Debug\debug_log($this->vdump($ret));
+            $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
             return $ret;
         }
     }

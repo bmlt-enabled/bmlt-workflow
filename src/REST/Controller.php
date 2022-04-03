@@ -147,8 +147,9 @@ class wbw_submissions_rest extends \WP_REST_Controller
 	public function get_submissions_permissions_check($request)
 	{
 		global $wbw_capability_manage_submissions;
+		global $wbw_dbg;
 
-		Debug\debug_log("get submissions current user " . get_current_user_id());
+		$wbw_dbg->debug_log("get submissions current user " . get_current_user_id());
 		if (!current_user_can($wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view submissions.'), array('status' => $this->authorization_status_code()));
 		}
@@ -158,8 +159,8 @@ class wbw_submissions_rest extends \WP_REST_Controller
 	public function get_submission_permissions_check($request)
 	{
 		global $wbw_capability_manage_submissions;
-
-		Debug\debug_log("get submissions current user " . get_current_user_id());
+		global $wbw_dbg;
+		$wbw_dbg->debug_log("get submissions current user " . get_current_user_id());
 		if (!current_user_can($wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view a submission.'), array('status' => $this->authorization_status_code()));
 		}
@@ -169,8 +170,9 @@ class wbw_submissions_rest extends \WP_REST_Controller
 	public function approve_submission_action_permissions_check($request)
 	{
 		global $wbw_capability_manage_submissions;
+		global $wbw_dbg;
 
-		Debug\debug_log("approve submission current user " . get_current_user_id());
+		$wbw_dbg->debug_log("approve submission current user " . get_current_user_id());
 		if (!current_user_can($wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot approve this submission.'), array('status' => $this->authorization_status_code()));
 		}
@@ -180,8 +182,9 @@ class wbw_submissions_rest extends \WP_REST_Controller
 	public function reject_submission_action_permissions_check($request)
 	{
 		global $wbw_capability_manage_submissions;
+		global $wbw_dbg;
 
-		Debug\debug_log("reject submission current user " . get_current_user_id());
+		$wbw_dbg->debug_log("reject submission current user " . get_current_user_id());
 		if (!current_user_can($wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot reject this submission.'), array('status' => $this->authorization_status_code()));
 		}
@@ -191,8 +194,9 @@ class wbw_submissions_rest extends \WP_REST_Controller
 	public function delete_submission_permissions_check($request)
 	{
 		// delete submissions is limited to admin
+		global $wbw_dbg;
 
-		Debug\debug_log("delete submission current user " . get_current_user_id());
+		$wbw_dbg->debug_log("delete submission current user " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot delete this submission.'), array('status' => $this->authorization_status_code()));
 		}
@@ -202,8 +206,9 @@ class wbw_submissions_rest extends \WP_REST_Controller
 	public function patch_submission_permissions_check($request)
 	{
 		global $wbw_capability_manage_submissions;
+		global $wbw_dbg;
 
-		Debug\debug_log("patch submission current user " . get_current_user_id());
+		$wbw_dbg->debug_log("patch submission current user " . get_current_user_id());
 		if (!current_user_can($wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot patch this submission.'), array('status' => $this->authorization_status_code()));
 		}
@@ -234,7 +239,9 @@ class wbw_submissions_rest extends \WP_REST_Controller
 	 */
 	public function post_service_bodies_permissions_check($request)
 	{
-		Debug\debug_log("post_service_bodies_permissions_check " . get_current_user_id());
+		global $wbw_dbg;
+
+		$wbw_dbg->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area updates.'), array('status' => $this->authorization_status_code()));
 		}
@@ -250,7 +257,9 @@ class wbw_submissions_rest extends \WP_REST_Controller
 	 */
 	public function post_server_permissions_check($request)
 	{
-		Debug\debug_log("post_server " . get_current_user_id());
+		global $wbw_dbg;
+
+		$wbw_dbg->debug_log("post_server " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post server updates.'), array('status' => $this->authorization_status_code()));
 		}
@@ -325,7 +334,8 @@ class wbw_submissions_rest extends \WP_REST_Controller
 
 	public function post_submissions($request)
 	{
-		Debug\debug_log($this->vdump($request->get_body_params()));
+		global $wbw_dbg;
+		$wbw_dbg->debug_log($this->vdump($request->get_body_params()));
 
 		$resp = meeting_update_form_handler_rest($request->get_body_params());
 

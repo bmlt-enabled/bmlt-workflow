@@ -27,6 +27,8 @@ global $wbw_submissions_table_name;
 global $wbw_service_bodies_table_name;
 global $wbw_service_bodies_access_table_name;
 global $wbw_rest_namespace;
+global $wbw_dbg;
+$wbw_dbg = new Debug\Debug;
 
 // our rest namespace
 $wbw_rest_namespace = 'wbw/v1';
@@ -44,6 +46,7 @@ $wbw_capability_manage_submissions = 'wbw_manage_submissions';
 function meeting_update_form($atts = [], $content = null, $tag = '')
 {
     global $wbw_rest_namespace;
+    global $wbw_dbg;
 
     prevent_cache_enqueue_script('wbw-meeting-update-form-js',array('jquery'), 'js/meeting_update_form.js');
     prevent_cache_enqueue_script('wbw-general-js',array('jquery'), 'js/script_includes.js');
@@ -61,12 +64,12 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     // add meeting formats
     $bmlt_integration = new Integration\BMLTIntegration;
     $formatarr = $bmlt_integration->getMeetingFormats();
-    Debug\debug_log("FORMATS");
-    Debug\debug_log(Debug\vdump($formatarr));
-    Debug\debug_log(json_encode($formatarr));
+    $wbw_dbg->debug_log("FORMATS");
+    $wbw_dbg->debug_log($wbw_dbg->vdump($formatarr));
+    $wbw_dbg->debug_log(json_encode($formatarr));
     $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
     
-    Debug\debug_log("adding script ".$script);
+    $wbw_dbg->debug_log("adding script ".$script);
     $status = wp_add_inline_script('wbw-meeting-update-form-js', $script, 'before');
 
 
@@ -86,7 +89,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
        $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
     endforeach;
 
-    Debug\debug_log(Debug\vdump($result));
+    $wbw_dbg->debug_log($wbw_dbg->vdump($result));
 
     ob_start();
     include('public/meeting_update_form.php');
@@ -101,29 +104,36 @@ function prevent_cache_register_script($handle, $deps, $name)
 
 function prevent_cache_register_style($handle, $deps, $name)
 {
+    global $wbw_dbg;
+
     $ret = wp_register_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
-    Debug\debug_log("register style");
-    Debug\debug_log(Debug\vdump($ret));
+    $wbw_dbg->debug_log("register style");
+    $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 }
 
 function prevent_cache_enqueue_script($handle, $deps, $name)
 {
+    global $wbw_dbg;
+
     $ret = wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
-    Debug\debug_log("enqueue style ".$handle);
-    Debug\debug_log(Debug\vdump($ret));
+    $wbw_dbg->debug_log("enqueue style ".$handle);
+    $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 }
 
 function prevent_cache_enqueue_style($handle, $deps, $name)
 {
+    global $wbw_dbg;
+
     $ret = wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
-    Debug\debug_log("enqueue style ".$handle);
-    Debug\debug_log(Debug\vdump($ret));
+    $wbw_dbg->debug_log("enqueue style ".$handle);
+    $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 
 }
 
 function enqueue_form_deps()
 {
     global $wbw_rest_namespace;
+    global $wbw_dbg;
 
     // wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
     // wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
@@ -137,14 +147,15 @@ function enqueue_form_deps()
     wp_register_script('jquery.validate', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
     wp_register_script('jquery.validate.additional', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jquery.validate'), '1.0', true);
 
-    Debug\debug_log("scripts and styles registered");
+    $wbw_dbg->debug_log("scripts and styles registered");
 }
 
 function wbw_admin_scripts($hook)
 {
     global $wbw_rest_namespace;
+    global $wbw_dbg;
 
-        // Debug\debug_log($hook);
+        // $wbw_dbg->debug_log($hook);
 
     if (($hook != 'toplevel_page_wbw-settings') && ($hook != 'bmlt-workflow_page_wbw-submissions') && ($hook != 'bmlt-workflow_page_wbw-service-bodies')) {
         return;
@@ -157,7 +168,7 @@ function wbw_admin_scripts($hook)
         case ('toplevel_page_wbw-settings'):
             prevent_cache_enqueue_style('wbw-admin-css', false, 'css/admin_page.css');
 
-            // Debug\debug_log('inside hook');
+            // $wbw_dbg->debug_log('inside hook');
 
             // clipboard
             wp_register_script('clipboard', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
@@ -203,9 +214,9 @@ function wbw_admin_scripts($hook)
             // add meeting formats
             $bmlt_integration = new Integration\BMLTIntegration;
             $formatarr = $bmlt_integration->getMeetingFormats();
-            Debug\debug_log("FORMATS");
-            Debug\debug_log(Debug\vdump($formatarr));
-            Debug\debug_log(json_encode($formatarr));
+            $wbw_dbg->debug_log("FORMATS");
+            $wbw_dbg->debug_log($wbw_dbg->vdump($formatarr));
+            $wbw_dbg->debug_log(json_encode($formatarr));
             $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
@@ -214,7 +225,7 @@ function wbw_admin_scripts($hook)
             $request  = new WP_REST_Request('GET', $url);
             $response = rest_do_request($request);
             $result     = rest_get_server()->response_to_data($response, true);
-            // Debug\debug_log("result = ".vdump($result));
+            // $wbw_dbg->debug_log("result = ".vdump($result));
             $script .= 'var wbw_admin_wbw_service_bodies = ' . json_encode($result) . '; ';
 
             // defaults for approve close form
@@ -735,7 +746,7 @@ function wbw_uninstall()
 
     // remove custom capability
     global $wbw_capability_manage_submissions;
-    // Debug\debug_log("deleting capabilities");
+    // $wbw_dbg->debug_log("deleting capabilities");
 
     $users = get_users();
     foreach ($users as $user) {
