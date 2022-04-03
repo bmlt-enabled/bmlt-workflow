@@ -107,8 +107,8 @@ body {
  {
   background: #e7f478; 
  }
-
- button.select2-selection__choice__remove
+/* accessibility for close button */
+ ul li button.select2-selection__choice__remove
  {
    color: #fff;
  }
