@@ -143,7 +143,7 @@ Line: $errorLine
         Functions\when('wp_remote_retrieve_body')->justReturn($resp);
         Functions\when('wp_mail')->justReturn('true');
 
-        $rest = new Handlers\wbw_rest_handlers();
+        $rest = new Handlers();
 
         // $wbw_dbg->debug_log($wbw_dbg->vdump($request));
 
@@ -201,7 +201,7 @@ Line: $errorLine
         Functions\when('wp_remote_retrieve_body')->justReturn($resp);
         Functions\when('wp_mail')->justReturn('true');
 
-        $rest = new Handlers\wbw_rest_handlers();
+        $rest = new Handlers();
 
         // $wbw_dbg->debug_log($wbw_dbg->vdump($request));
 
@@ -261,7 +261,7 @@ Line: $errorLine
         Functions\when('wp_remote_retrieve_body')->justReturn($resp);
         Functions\when('wp_mail')->justReturn('true');
 
-        $rest = new Handlers\wbw_rest_handlers();
+        $rest = new Handlers();
 
         // $wbw_dbg->debug_log($wbw_dbg->vdump($request));
 
@@ -324,7 +324,7 @@ Line: $errorLine
         Functions\when('is_wp_error')->justReturn(false);
         Functions\when('wp_remote_retrieve_body')->justReturn($resp);
 
-        $rest = new Handlers\wbw_rest_handlers();
+        $rest = new Handlers();
 
         Functions\expect('wp_mail')->times(1)->with('a@a.com',Mockery::any(),Mockery::any(),Mockery::any());
 
@@ -379,7 +379,7 @@ Line: $errorLine
         Functions\when('is_wp_error')->justReturn(false);
         Functions\when('wp_remote_retrieve_body')->justReturn($resp);
 
-        $rest = new Handlers\wbw_rest_handlers();
+        $rest = new Handlers();
 
         Functions\expect('wp_mail')->times(1)->with('a@a.com',Mockery::any(),Mockery::any(),Mockery::any());
 
@@ -434,7 +434,7 @@ Line: $errorLine
         Functions\when('wp_remote_retrieve_body')->justReturn($resp);
         Functions\when('wp_mail')->justReturn('true');
 
-        $rest = new Handlers\wbw_rest_handlers();
+        $rest = new Handlers();
 
         // $wbw_dbg->debug_log($wbw_dbg->vdump($request));
 
@@ -491,7 +491,7 @@ Line: $errorLine
         Functions\when('wp_remote_retrieve_body')->justReturn($resp);
         Functions\when('wp_mail')->justReturn('true');
 
-        $rest = new Handlers\wbw_rest_handlers();
+        $rest = new Handlers();
 
         // $wbw_dbg->debug_log($wbw_dbg->vdump($request));
 
