@@ -2,7 +2,8 @@
 
 namespace wbw\Debug;
 
-class Debug {
+class Debug 
+{
     function debug_log($message)
     {
         if (WBW_DEBUG)
