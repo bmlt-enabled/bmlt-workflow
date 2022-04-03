@@ -7,12 +7,6 @@ use wbw\Debug;
 use wbw\BMLT\Integration;
 use wbw\REST\Handlers;
 
-function wbw_submissions_controller()
-{
-	$controller = new Controller();
-	$controller->register_routes();
-}
-
 class Controller extends \WP_REST_Controller
 {
 

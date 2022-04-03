@@ -15,6 +15,7 @@ require 'vendor/autoload.php';
 
 use wbw\Debug;
 use wbw\BMLT\Integration;
+use wbw\REST\Controller;
 
 define('WBW_DEBUG',false);
 
@@ -310,6 +311,12 @@ function add_plugin_link($plugin_actions, $plugin_file)
     return array_merge($new_actions, $plugin_actions);
 }
 
+function wbw_rest_controller()
+{
+	$controller = new Controller();
+	$controller->register_routes();
+}
+
 // actions, shortcodes, menus and filters
 add_action('admin_post_nopriv_meeting_update_form_response', 'meeting_update_form_handler');
 add_action('admin_post_meeting_update_form_response', 'meeting_update_form_handler');
@@ -317,7 +324,7 @@ add_action('wp_enqueue_scripts', 'enqueue_form_deps');
 add_action('admin_menu', 'wbw_menu_pages');
 add_action('admin_enqueue_scripts', 'wbw_admin_scripts');
 add_action('admin_init',  'wbw_register_setting');
-add_action('rest_api_init', 'wbw_submissions_controller');
+add_action('rest_api_init', 'wbw_rest_controller');
 add_shortcode('wbw-meeting-update-form', 'meeting_update_form');
 add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
 
