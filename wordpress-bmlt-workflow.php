@@ -12,10 +12,11 @@
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 use wbw\Debug;
-
 define('WBW_DEBUG',false);
 
 define('WBW_PLUGIN_DIR', plugin_dir_path(__FILE__));
+require (WBW_PLUGIN_DIR.'Debug/debug_log.php');
+
 global $wbw_db_version;
 $wbw_db_version = '1.0';
 global $wpdb;

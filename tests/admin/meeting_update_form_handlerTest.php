@@ -1,9 +1,9 @@
 <?php
 
-use wbw\Debug;
 
 declare(strict_types=1);
 
+use wbw\Debug;
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
 use function Patchwork\{redefine, getFunction, always};
