@@ -2,19 +2,14 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-if (!class_exists('BMLTIntegration')) {
-    require_once(WBW_PLUGIN_DIR . 'admin/bmlt_integration.php');
+use wbw\Debug;
+if (!(function_exists('wbw\Debug\debug_log')))
+{
+    require_once('../Debug/debug_log.php');
 }
 
-if (!(function_exists('vdump'))) {
-    function vdump($object)
-    {
-        ob_start();
-        var_dump($object);
-        $contents = ob_get_contents();
-        ob_end_clean();
-        return $contents;
-    }
+if (!class_exists('BMLTIntegration')) {
+    require_once(WBW_PLUGIN_DIR . 'admin/bmlt_integration.php');
 }
 
 function get_emails_by_servicebody_id($id)
@@ -82,7 +77,7 @@ function bmlt_retrieve_single_meeting($meeting_id)
 
     }
     $meeting = $meetingarr[0];
-    Debug\debug_log(vdump($meeting));
+    Debug\debug_log(Debug\vdump($meeting));
     // how possibly can we get a meeting that is not the same as we asked for
     if ($meeting['id_bigint'] != $meeting_id) {
         return wbw_rest_error('Server error retrieving meeting list', 500);
@@ -93,7 +88,7 @@ function bmlt_retrieve_single_meeting($meeting_id)
 function meeting_update_form_handler_rest($data)
 {
     Debug\debug_log("in rest handler");
-    Debug\debug_log(vdump($data));
+    Debug\debug_log(Debug\vdump($data));
 
     $reason_new_bool = false;
     $reason_other_bool = false;
@@ -300,7 +295,7 @@ function meeting_update_form_handler_rest($data)
             );
 
             $bmlt_meeting = bmlt_retrieve_single_meeting($sanitised_fields['meeting_id']);
-            // Debug\debug_log(vdump($meeting));
+            // Debug\debug_log(Debug\vdump($meeting));
             if (is_wp_error($bmlt_meeting))
             {
                 return $bmlt_meeting;
@@ -324,9 +319,9 @@ function meeting_update_form_handler_rest($data)
                     if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
                         // Debug\debug_log("{$field} is different");
                         // Debug\debug_log("*** bmlt meeting");
-                        // Debug\debug_log(vdump($bmlt_meeting));
+                        // Debug\debug_log(Debug\vdump($bmlt_meeting));
                         // Debug\debug_log("*** sanitised fields");
-                        // Debug\debug_log(vdump($sanitised_fields));
+                        // Debug\debug_log(Debug\vdump($sanitised_fields));
                         // don't allow someone to modify a meeting service body
                         if ($field === 'service_body_bigint') {
                             return wbw_rest_error('Service body cannot be changed.', 400);
@@ -348,7 +343,7 @@ function meeting_update_form_handler_rest($data)
             }
 
             Debug\debug_log("SUBMISSION");
-            Debug\debug_log(vdump($submission));
+            Debug\debug_log(Debug\vdump($submission));
             // store away the original meeting name so we know what changed
             $submission['original_meeting_name'] = $bmlt_meeting['meeting_name'];
 
@@ -397,7 +392,7 @@ function meeting_update_form_handler_rest($data)
     }
 
     Debug\debug_log("SUBMISSION");
-    Debug\debug_log(vdump($submission));
+    Debug\debug_log(Debug\vdump($submission));
 
 
 
@@ -482,7 +477,7 @@ function meeting_update_form_handler_rest($data)
     $body = $template;
 
     $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-    Debug\debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . vdump($headers));
+    Debug\debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . Debug\vdump($headers));
     wp_mail($to_address, $subject, $body, $headers);
 
     return wbw_rest_success($message);

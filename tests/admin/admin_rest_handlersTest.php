@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+use wbw\Debug;
+if (!(function_exists('wbw\Debug\debug_log')))
+{
+    require_once('../../Debug/debug_log.php');
+}
+
+
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
 use function Patchwork\{redefine, getFunction, always};
@@ -12,16 +19,6 @@ define('ABSPATH', '99999999999');
 // require 'admin/admin_rest_handlers.php';
 require 'admin/admin_rest_handlers.php';
 
-if (!(function_exists('vdump'))) {
-    function vdump($object)
-    {
-        ob_start();
-        var_dump($object);
-        $contents = ob_get_contents();
-        ob_end_clean();
-        return $contents;
-    }
-}
 
 class my_wp_user
 {
@@ -152,14 +149,14 @@ Line: $errorLine
 
         $rest = new wbw_submissions_rest_handlers();
 
-        // Debug\debug_log(vdump($request));
+        // Debug\debug_log(Debug\vdump($request));
 
         $response = $rest->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
 
-        // Debug\debug_log(vdump($response));
+        // Debug\debug_log(Debug\vdump($response));
     }
 
     public function test_can_approve_close_meeting_with_unpublish(): void
@@ -210,7 +207,7 @@ Line: $errorLine
 
         $rest = new wbw_submissions_rest_handlers();
 
-        // Debug\debug_log(vdump($request));
+        // Debug\debug_log(Debug\vdump($request));
 
         $response = $rest->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -220,7 +217,7 @@ Line: $errorLine
         $this->assertArrayHasKey("set_meeting_change",$bmlt_input);
         $this->assertArrayNotHasKey("delete_meeting",$bmlt_input);
 
-        // Debug\debug_log(vdump($response));
+        // Debug\debug_log(Debug\vdump($response));
     }
 
     public function test_can_approve_close_meeting_with_delete(): void
@@ -270,7 +267,7 @@ Line: $errorLine
 
         $rest = new wbw_submissions_rest_handlers();
 
-        // Debug\debug_log(vdump($request));
+        // Debug\debug_log(Debug\vdump($request));
 
         $response = $rest->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -280,7 +277,7 @@ Line: $errorLine
         $this->assertArrayHasKey("delete_meeting",$bmlt_input);
         $this->assertArrayNotHasKey("set_meeting_change",$bmlt_input);
 
-        // Debug\debug_log(vdump($response));
+        // Debug\debug_log(Debug\vdump($response));
     }
 
     //
@@ -443,14 +440,14 @@ Line: $errorLine
 
         $rest = new wbw_submissions_rest_handlers();
 
-        // Debug\debug_log(vdump($request));
+        // Debug\debug_log(Debug\vdump($request));
 
         $response = $rest->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
         $this->assertEquals($bmlt_input, array("bmlt_ajax_callback"=>1,"delete_meeting"=>3563));
-        // Debug\debug_log(vdump($response));
+        // Debug\debug_log(Debug\vdump($response));
     }
 
     public function test_approve_close_meeting_sends_email_to_submitter_with_unpublish(): void
@@ -500,7 +497,7 @@ Line: $errorLine
 
         $rest = new wbw_submissions_rest_handlers();
 
-        // Debug\debug_log(vdump($request));
+        // Debug\debug_log(Debug\vdump($request));
 
         $response = $rest->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -510,6 +507,6 @@ Line: $errorLine
         $this->assertArrayHasKey("set_meeting_change",$bmlt_input);
         $this->assertArrayNotHasKey("delete_meeting",$bmlt_input);
 
-        // Debug\debug_log(vdump($response));
+        // Debug\debug_log(Debug\vdump($response));
     }
 }

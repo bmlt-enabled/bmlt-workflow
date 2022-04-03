@@ -3,6 +3,12 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
+use wbw\Debug;
+if (!(function_exists('wbw\Debug\debug_log')))
+{
+    require_once('../Debug/debug_log.php');
+}
+
 class BMLTIntegration
 {
     protected $cookies = null; // our authentication cookies
@@ -18,7 +24,7 @@ class BMLTIntegration
         $url = $server . "index.php";
         Debug\debug_log($url);
         $ret = wp_safe_remote_post($url, array('body'=> http_build_query($postargs)));
-        Debug\debug_log(vdump($ret));
+        Debug\debug_log(Debug\vdump($ret));
 
         $response_code = wp_remote_retrieve_response_code($ret);
 
@@ -41,7 +47,7 @@ class BMLTIntegration
         }
         Debug\debug_log(wp_remote_retrieve_body($response));  
         $formatarr = json_decode(wp_remote_retrieve_body($response), true);
-        Debug\debug_log(vdump($formatarr));
+        Debug\debug_log(Debug\vdump($formatarr));
 
         $newformat = array();
         foreach ($formatarr as $key => $value) {
@@ -50,7 +56,7 @@ class BMLTIntegration
             $newformat[$formatid] = $value;            
         }
         Debug\debug_log("NEWFORMAT");
-        Debug\debug_log(vdump($newformat));
+        Debug\debug_log(Debug\vdump($newformat));
 
         return $newformat;
     }

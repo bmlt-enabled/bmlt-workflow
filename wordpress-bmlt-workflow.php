@@ -12,6 +12,11 @@
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 use wbw\Debug;
+if (!(function_exists('wbw\Debug\debug_log')))
+{
+    require_once('Debug/debug_log.php');
+}
+
 define('WBW_DEBUG',false);
 
 define('WBW_PLUGIN_DIR', plugin_dir_path(__FILE__));
@@ -62,7 +67,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $bmlt_integration = new BMLTIntegration;
     $formatarr = $bmlt_integration->getMeetingFormats();
     Debug\debug_log("FORMATS");
-    Debug\debug_log(vdump($formatarr));
+    Debug\debug_log(Debug\vdump($formatarr));
     Debug\debug_log(json_encode($formatarr));
     $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
     
@@ -86,7 +91,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
        $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
     endforeach;
 
-    Debug\debug_log(vdump($result));
+    Debug\debug_log(Debug\vdump($result));
 
     ob_start();
     include('public/meeting_update_form.php');
@@ -103,21 +108,21 @@ function prevent_cache_register_style($handle, $deps, $name)
 {
     $ret = wp_register_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
     Debug\debug_log("register style");
-    Debug\debug_log(vdump($ret));
+    Debug\debug_log(Debug\vdump($ret));
 }
 
 function prevent_cache_enqueue_script($handle, $deps, $name)
 {
     $ret = wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
     Debug\debug_log("enqueue style ".$handle);
-    Debug\debug_log(vdump($ret));
+    Debug\debug_log(Debug\vdump($ret));
 }
 
 function prevent_cache_enqueue_style($handle, $deps, $name)
 {
     $ret = wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
     Debug\debug_log("enqueue style ".$handle);
-    Debug\debug_log(vdump($ret));
+    Debug\debug_log(Debug\vdump($ret));
 
 }
 
@@ -204,7 +209,7 @@ function wbw_admin_scripts($hook)
             $bmlt_integration = new BMLTIntegration;
             $formatarr = $bmlt_integration->getMeetingFormats();
             Debug\debug_log("FORMATS");
-            Debug\debug_log(vdump($formatarr));
+            Debug\debug_log(Debug\vdump($formatarr));
             Debug\debug_log(json_encode($formatarr));
             $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 

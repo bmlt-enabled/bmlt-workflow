@@ -2,6 +2,12 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
+use wbw\Debug;
+if (!(function_exists('wbw\Debug\debug_log')))
+{
+    require_once('../Debug/debug_log.php');
+}
+
 $wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
 if ($wbw_bmlt_test_status != "success") {
     wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");

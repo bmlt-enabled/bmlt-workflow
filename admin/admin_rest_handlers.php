@@ -2,6 +2,12 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
+use wbw\Debug;
+if (!(function_exists('wbw\Debug\debug_log')))
+{
+    require_once('../Debug/debug_log.php');
+}
+
 class wbw_submissions_rest_handlers
 {
 
@@ -46,7 +52,7 @@ class wbw_submissions_rest_handlers
         $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' s inner join ' . $wbw_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
         // Debug\debug_log($sql);
         $result = $wpdb->get_results($sql, ARRAY_A);
-        // Debug\debug_log(vdump($result));
+        // Debug\debug_log(Debug\vdump($result));
         foreach ($result as $key => $value) {
             $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 2);
         }
@@ -61,7 +67,7 @@ class wbw_submissions_rest_handlers
         global $wbw_service_bodies_access_table_name;
 
         $params = $request->get_params();
-        Debug\debug_log(vdump($params));
+        Debug\debug_log(Debug\vdump($params));
         // Debug\debug_log("params detail".$params['detail']);
         // only an admin can get the service areas detail (permissions) information
         if ((!empty($params['detail'])) && ($params['detail'] == "true") && (current_user_can('manage_options'))) {
@@ -82,7 +88,7 @@ class wbw_submissions_rest_handlers
             $xml = simplexml_load_string($response['body']);
             $arr = json_decode(json_encode($xml), 1);
     
-            // Debug\debug_log(vdump($arr));
+            // Debug\debug_log(Debug\vdump($arr));
     
             $idlist = array();
     
@@ -107,10 +113,10 @@ class wbw_submissions_rest_handlers
             // Debug\debug_log("get ids");
             $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $wbw_service_bodies_table_name . ';', 0);
     
-            // Debug\debug_log(vdump($sqlresult));
+            // Debug\debug_log(Debug\vdump($sqlresult));
             $missing = array_diff($idlist, $sqlresult);
             // Debug\debug_log("missing ids");
-            // Debug\debug_log(vdump($missing));
+            // Debug\debug_log(Debug\vdump($missing));
     
             foreach ($missing as $value) {
                 $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
@@ -124,14 +130,14 @@ class wbw_submissions_rest_handlers
             }
     
             // Debug\debug_log("our sblist");
-            // Debug\debug_log(vdump($sblist));
+            // Debug\debug_log(Debug\vdump($sblist));
     
             // make our group membership lists
             foreach ($sblist as $key => $value) {
                 Debug\debug_log("getting memberships for " . $key);
                 $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $wbw_service_bodies_access_table_name . ' where service_body_bigint = "%d"', $key);
                 $result = $wpdb->get_col($sql, 0);
-                // Debug\debug_log(vdump($result));
+                // Debug\debug_log(Debug\vdump($result));
                 $sblist[$key]['membership'] = implode(',', $result);
             }
             // get the form display settings
@@ -148,12 +154,12 @@ class wbw_submissions_rest_handlers
             $sblist = array();
             // Debug\debug_log("simple list of service areas and names");
             $result = $wpdb->get_results('SELECT * from ' . $wbw_service_bodies_table_name . ' where show_on_form != "0"', ARRAY_A);
-            // Debug\debug_log(vdump($result));
+            // Debug\debug_log(Debug\vdump($result));
             // create simple service area list (names of service areas that are enabled by admin with show_on_form)
             foreach ($result as $key => $value) {
                 $sblist[$value['service_body_bigint']]['name'] = $value['service_area_name'];
             }
-            // Debug\debug_log(vdump($sblist));
+            // Debug\debug_log(Debug\vdump($sblist));
 
         }
 
@@ -169,7 +175,7 @@ class wbw_submissions_rest_handlers
         global $wbw_service_bodies_table_name;
 
         // Debug\debug_log("request body");
-        // Debug\debug_log(vdump($request->get_json_params()));
+        // Debug\debug_log(Debug\vdump($request->get_json_params()));
         $permissions = $request->get_json_params();
         // clear out our old permissions
         $wpdb->query('DELETE from ' . $wbw_service_bodies_access_table_name);
@@ -189,8 +195,8 @@ class wbw_submissions_rest_handlers
         // add / remove user capabilities
         $users = get_users();
         $result = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $wbw_service_bodies_access_table_name, 0);
-        // Debug\debug_log(vdump($sql));
-        // Debug\debug_log(vdump($result));
+        // Debug\debug_log(Debug\vdump($sql));
+        // Debug\debug_log(Debug\vdump($result));
         foreach ($users as $user) {
             Debug\debug_log("checking user id " . $user->get('ID'));
             if (in_array($user->get('ID'), $result)) {
@@ -240,7 +246,7 @@ class wbw_submissions_rest_handlers
         // Debug\debug_log($sql);
         $result = $wpdb->get_row($sql, ARRAY_A);
         Debug\debug_log("RESULT");
-        Debug\debug_log(vdump($result));
+        Debug\debug_log(Debug\vdump($result));
         if (empty($result)) {
             return $this->wbw_rest_error("Permission denied viewing submission id {$change_id}", 400);
         }
@@ -313,7 +319,7 @@ class wbw_submissions_rest_handlers
 
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         Debug\debug_log("Rejection email");
-        Debug\debug_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
+        Debug\debug_log("to:".$to_address." subject:".$subject." body:".$body." headers:".Debug\vdump($headers));
         wp_mail($to_address, $subject, $body, $headers);
     
         return $this->wbw_rest_success('Rejected submission id ' . $change_id);
@@ -375,14 +381,14 @@ class wbw_submissions_rest_handlers
         // put the quickedit ones over the top
 
         // Debug\debug_log("merge before - saved");
-        // Debug\debug_log(vdump($saved_change));
+        // Debug\debug_log(Debug\vdump($saved_change));
         // Debug\debug_log("merge before - quickedit");
-        // Debug\debug_log(vdump($quickedit_change));
+        // Debug\debug_log(Debug\vdump($quickedit_change));
 
         $merged_change = array_merge($saved_change, $quickedit_change);
 
         // Debug\debug_log("merge after - saved");
-        // Debug\debug_log(vdump($merged_change));
+        // Debug\debug_log(Debug\vdump($merged_change));
 
         $current_user = wp_get_current_user();
         $username = $current_user->user_login;
@@ -396,7 +402,7 @@ class wbw_submissions_rest_handlers
             NULL,
             $request['id']
         );
-        // Debug\debug_log(vdump($sql));
+        // Debug\debug_log(Debug\vdump($sql));
 
         $result = $wpdb->get_results($sql, ARRAY_A);
 
@@ -408,7 +414,7 @@ class wbw_submissions_rest_handlers
         global $wpdb;
         global $wbw_submissions_table_name;
         Debug\debug_log("REQUEST");
-        Debug\debug_log(vdump($request));
+        Debug\debug_log(Debug\vdump($request));
         // body parameters
         $params = $request->get_json_params();
         // url parameters from parsed route
@@ -478,7 +484,7 @@ class wbw_submissions_rest_handlers
         }
 
         // Debug\debug_log("json decoded");
-        // Debug\debug_log(vdump($change));
+        // Debug\debug_log(Debug\vdump($change));
 
         // approve based on different change types
         $submission_type = $result['submission_type'];
@@ -504,7 +510,7 @@ class wbw_submissions_rest_handlers
                 $change['id_bigint'] = $result['meeting_id'];
 
                 Debug\debug_log("CHANGE");
-                Debug\debug_log(vdump($change));
+                Debug\debug_log(Debug\vdump($change));
 
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;
@@ -515,12 +521,12 @@ class wbw_submissions_rest_handlers
                     return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                 }
                 Debug\debug_log("response");
-                Debug\debug_log(vdump($response));
+                Debug\debug_log(Debug\vdump($response));
                 $arr = json_decode(wp_remote_retrieve_body($response),true)[0];
                 Debug\debug_log("arr");
-                Debug\debug_log(vdump($arr));
+                Debug\debug_log(Debug\vdump($arr));
                 Debug\debug_log("change");
-                Debug\debug_log(vdump($change));
+                Debug\debug_log(Debug\vdump($change));
                 // the response back from BMLT doesnt even match what we are trying to change
                 if((!empty($arr['id_bigint'])) && ($arr['id_bigint'] != $change['id_bigint']))
                 {
@@ -530,7 +536,7 @@ class wbw_submissions_rest_handlers
                 break;
             case 'reason_close':
 
-                Debug\debug_log(vdump($params));
+                Debug\debug_log(Debug\vdump($params));
 
                 // are we doing a delete or an unpublish on close?
                 if ((!empty($params['delete'])) && ($params['delete'] == "true")) {
@@ -617,7 +623,7 @@ class wbw_submissions_rest_handlers
 
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         Debug\debug_log("Approval email");
-        Debug\debug_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
+        Debug\debug_log("to:".$to_address." subject:".$subject." body:".$body." headers:".Debug\vdump($headers));
         wp_mail($to_address, $subject, $body, $headers);
     
         //
@@ -646,7 +652,7 @@ class wbw_submissions_rest_handlers
                     $body = $template;
                     $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
                     Debug\debug_log("FSO email");
-                    Debug\debug_log("to:".$to_address." subject:".$subject." body:".$body." headers:".vdump($headers));
+                    Debug\debug_log("to:".$to_address." subject:".$subject." body:".$body." headers:".Debug\vdump($headers));
     
                     wp_mail($to_address, $subject, $body, $headers);
                 }
@@ -667,7 +673,7 @@ class wbw_submissions_rest_handlers
         $server = $request['wbw_bmlt_server_address'];
 
         $ret = $this->bmlt_integration->testServerAndAuth($username, $password, $server);
-        Debug\debug_log(vdump($ret));
+        Debug\debug_log(Debug\vdump($ret));
         if (is_wp_error($ret)) {
             return $this->wbw_rest_error('Server and Authentication test failed - ' . $ret->get_error_message(), 500);
         } else {
