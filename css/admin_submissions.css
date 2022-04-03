@@ -63,6 +63,12 @@
   background: #e7f478;
 }
 
+/* accessibility for close button */
+.select2-container--default .select2-selection--multiple button.select2-selection__choice__remove
+ {
+   color: #000;
+ }
+ 
 .form-grid label {
   width: 100%;
   display: block;
