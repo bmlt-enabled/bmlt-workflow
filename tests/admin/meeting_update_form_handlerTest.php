@@ -4,10 +4,6 @@
 declare(strict_types=1);
 
 use wbw\Debug;
-if (!(function_exists('\wbw\$wbw_dbg->debug_log')))
-{
-    require_once('../../Debug/debug_log.php');
-}
 
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;

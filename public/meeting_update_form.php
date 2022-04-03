@@ -1,8 +1,5 @@
 <?php
-
-if (!class_exists('BMLTIntegration')) {
-    require_once(WBW_PLUGIN_DIR . 'admin/bmlt_integration.php');
-}
+use wbw\BMLT\Integration;
 
 $wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
 if ($wbw_bmlt_test_status != "success") {
@@ -11,7 +8,7 @@ if ($wbw_bmlt_test_status != "success") {
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
-$bmlt_integration = new BMLTIntegration;
+$bmlt_integration = new Integration;
 
 $meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
 
