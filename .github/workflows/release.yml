@@ -36,7 +36,9 @@ jobs:
 
       - name: PHP Unit Test
         id: php-unit-test
-        run: vendor/bin/phpunit
+        uses: php-actions/phpunit@v3
+        with:
+          php_version: 7.4
 
       - uses: act10ns/slack@v1
         with:
