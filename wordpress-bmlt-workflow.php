@@ -653,7 +653,8 @@ function wbw_optional_form_fields_html()
 function do_optional_field($option, $friendlyname)
 {
     $value = get_option($option);
-
+    global $wbw_dbg;
+    $wbw_dbg->debug_log($wbw_dbg->vdump($value));
     $hidden = '';
     $displayrequired = '';
     $display = '';
