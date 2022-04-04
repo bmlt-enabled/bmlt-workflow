@@ -197,7 +197,7 @@ EOD;
                             <select class="display_format_shared_id_list-select2" name="display_format_shared_id_list" id="display_format_shared_id_list" required></select>
                             <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
 
-                            <label for=" virtual_meeting_link">Online Meeting Link</label>
+                            <label for="virtual_meeting_link">Online Meeting Link</label>
                             <input class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
                         </div>
                     </fieldset>
