@@ -30,7 +30,7 @@ jobs:
         id: install-dependencies
         uses: php-actions/composer@v5
         with:
-          php_version: 8.1
+          php_version: 7.4 
           args: --prefer-dist --no-progress --no-suggest
 
       - name: PHP Unit Test
