@@ -20,7 +20,7 @@ class Integration
 
         $url = $server . "index.php";
         $this->dbg->debug_log($url);
-        $ret = wp_safe_remote_post($url, array('body'=> http_build_query($postargs)));
+        $ret = \wp_safe_remote_post($url, array('body'=> http_build_query($postargs)));
         $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 
         $response_code = wp_remote_retrieve_response_code($ret);
@@ -148,8 +148,8 @@ class Integration
 
     private function get($url, $cookies = null)
     {
-        $ret = wp_safe_remote_get($url, $this->set_args($cookies));
-        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
+        $ret = \wp_safe_remote_get($url, $this->set_args($cookies));
+        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
             $ret =  $this->authenticateRootServer();
             if (is_wp_error($ret)) {
@@ -168,15 +168,15 @@ class Integration
         $wbw_dbg->debug_log("POSTING URL = " . $url);
         // $wbw_dbg->debug_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
         // $wbw_dbg->debug_log("*********");
-        $ret = wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
-        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
+        $ret = \wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
+        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
             $ret =  $this->authenticateRootServer();
             if (is_wp_error($ret)) {
                 return $ret;
             }
             // try once more in case it was a session timeout
-            $ret = wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
+            $ret = \wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
         }
         return $ret;
     }
@@ -205,7 +205,7 @@ class Integration
             // chop trailing &
             $newargs = substr($newargs, 0, -1);
             $wbw_dbg->debug_log("our post body is " . $newargs);
-            $ret = wp_safe_remote_post($url, $this->set_args($cookies, $newargs));
+            $ret = \wp_safe_remote_post($url, $this->set_args($cookies, $newargs));
             $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
             return $ret;
         }

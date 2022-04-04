@@ -3,14 +3,23 @@
 
 declare(strict_types=1);
 
+// debug settings
 use wbw\Debug;
+define('WBW_DEBUG', true);
+global $wbw_dbg;
+$wbw_dbg = new Debug;
+
+// get us through the header
+define('ABSPATH', '99999999999');
+
+use wbw\REST\Handlers;
 
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
 use function Patchwork\{redefine, getFunction, always};
 
 // We require the file we need to test.
-require 'admin/meeting_update_form_handler.php';
+// require 'admin/meeting_update_form_handler.php';
 
 class meeting_update_form_handlerTest_my_wp_user
 {
@@ -22,10 +31,23 @@ class meeting_update_form_handlerTest_my_wp_user
 final class meeting_update_form_handlerTest extends TestCase
 {
 
+    protected function setVerboseErrorHandler()
+    {
+        $handler = function ($errorNumber, $errorString, $errorFile, $errorLine) {
+            echo "
+ERROR INFO
+Message: $errorString
+File: $errorFile
+Line: $errorLine
+";
+        };
+        set_error_handler($handler);
+    }
 
     protected function setUp(): void
     {
-        $basedir = dirname(dirname(dirname(__FILE__)));
+        $this->setVerboseErrorHandler();
+        $basedir = dirname(dirname(dirname(dirname(__FILE__))));
         // echo $basedir;
         require($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-error.php');
@@ -40,12 +62,14 @@ final class meeting_update_form_handlerTest extends TestCase
         Functions\when('wp_json_encode')->returnArg();
         Functions\when('get_site_url')->justReturn('http://127.0.0.1/wordpress');
         Functions\when('wp_remote_post')->returnArg();
+        Functions\when('wp_safe_remote_post')->returnArg();
         Functions\when('wp_remote_retrieve_body')->justReturn('{"0":{"id":"1","key_string":"0","name_string":"0"},"1":{"id":"2","key_string":"0","name_string":"0"},"2":{"id":"3","key_string":"0","name_string":"0"}}');
         Functions\when('is_wp_error')->justReturn(false);
 
         if (!defined('CONST_OTHER_SERVICE_BODY')) {
             define('CONST_OTHER_SERVICE_BODY', '99999999999');
         }
+        
     }
 
     protected function tearDown(): void
@@ -87,7 +111,9 @@ final class meeting_update_form_handlerTest extends TestCase
         $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
         Functions\when('curl_exec')->justReturn($json);
 
-        $response = meeting_update_form_handler_rest($form_post);
+        $handlers = new Handlers;
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
         $wbw_dbg->debug_log("TEST RESPONSE");
         $wbw_dbg->debug_log($wbw_dbg->vdump($response));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -123,7 +149,9 @@ final class meeting_update_form_handlerTest extends TestCase
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
         Functions\when('wp_mail')->justReturn('true');
 
-        $response = meeting_update_form_handler_rest($form_post);
+        $handlers = new Handlers;
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
     }
@@ -158,7 +186,9 @@ final class meeting_update_form_handlerTest extends TestCase
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
         Functions\when('wp_mail')->justReturn('true');
 
-        $response = meeting_update_form_handler_rest($form_post);
+        $handlers = new Handlers;
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
     }
@@ -194,7 +224,9 @@ final class meeting_update_form_handlerTest extends TestCase
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
         Functions\when('wp_mail')->justReturn('true');
 
-        $response = meeting_update_form_handler_rest($form_post);
+        $handlers = new Handlers;
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
     }
@@ -230,7 +262,9 @@ final class meeting_update_form_handlerTest extends TestCase
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
         Functions\when('wp_mail')->justReturn('true');
 
-        $response = meeting_update_form_handler_rest($form_post);
+        $handlers = new Handlers;
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
     }
@@ -276,7 +310,9 @@ final class meeting_update_form_handlerTest extends TestCase
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
         Functions\when('wp_mail')->justReturn('true');
 
-        $response = meeting_update_form_handler_rest($form_post);
+        $handlers = new Handlers;
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
         $wbw_dbg->debug_log($wbw_dbg->vdump($response));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
@@ -323,7 +359,9 @@ final class meeting_update_form_handlerTest extends TestCase
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
         Functions\when('wp_mail')->justReturn('true');
 
-        $response = meeting_update_form_handler_rest($form_post);
+        $handlers = new Handlers;
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
         $wbw_dbg->debug_log($wbw_dbg->vdump($response));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
@@ -479,7 +517,9 @@ final class meeting_update_form_handlerTest extends TestCase
         $wpdb->shouldNotReceive('insert');
         Functions\expect('wp_mail')->never();
 
-        $response = meeting_update_form_handler_rest($form_post);
+        $handlers = new Handlers;
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
@@ -510,7 +550,9 @@ final class meeting_update_form_handlerTest extends TestCase
         $wpdb->shouldNotReceive('insert');
         Functions\expect('wp_mail')->never();
 
-        $response = meeting_update_form_handler_rest($form_post);
+        $handlers = new Handlers;
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
@@ -541,7 +583,9 @@ final class meeting_update_form_handlerTest extends TestCase
         $wpdb->shouldNotReceive('insert');
         Functions\expect('wp_mail')->never();
 
-        $response = meeting_update_form_handler_rest($form_post);
+        $handlers = new Handlers;
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
@@ -572,7 +616,9 @@ final class meeting_update_form_handlerTest extends TestCase
         $wpdb->shouldNotReceive('insert');
         Functions\expect('wp_mail')->never();
 
-        $response = meeting_update_form_handler_rest($form_post);
+        $handlers = new Handlers;
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
@@ -603,7 +649,9 @@ final class meeting_update_form_handlerTest extends TestCase
         $wpdb->shouldNotReceive('insert');
         Functions\expect('wp_mail')->never();
 
-        $response = meeting_update_form_handler_rest($form_post);
+        $handlers = new Handlers;
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 

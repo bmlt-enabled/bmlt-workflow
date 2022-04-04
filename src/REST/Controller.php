@@ -331,7 +331,7 @@ class Controller extends \WP_REST_Controller
 		global $wbw_dbg;
 		$wbw_dbg->debug_log($this->vdump($request->get_body_params()));
 
-		$resp = meeting_update_form_handler_rest($request->get_body_params());
+		$resp = $this->handlers->meeting_update_form_handler_rest($request->get_body_params());
 
 		return rest_ensure_response($resp);
 	}

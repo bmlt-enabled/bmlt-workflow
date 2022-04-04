@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use wbw\Debug;
 use wbw\REST\Handlers;
+use wbw\BMLT\Integration;
 
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
@@ -13,8 +14,10 @@ define('ABSPATH', '99999999999');
 
 // We require the file we need to test.
 // require 'admin/admin_rest_handlers.php';
-require 'admin/admin_rest_handlers.php';
-
+// require 'admin/admin_rest_handlers.php';
+define('WBW_DEBUG', false);
+global $wbw_dbg;
+$wbw_dbg = new Debug;
 
 class my_wp_user
 {
@@ -37,7 +40,7 @@ class my_wp_user
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-final class admin_rest_handlersTest extends TestCase
+final class HandlersTest extends TestCase
 {
 
     protected function setVerboseErrorHandler()
@@ -55,8 +58,8 @@ Line: $errorLine
 
     protected function setUp(): void
     {
-        // $this->setVerboseErrorHandler();
-        $basedir = dirname(dirname(dirname(__FILE__)));
+        $this->setVerboseErrorHandler();
+        $basedir = dirname(dirname(dirname(dirname(__FILE__))));
         require($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-error.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-http-response.php');
@@ -64,11 +67,11 @@ Line: $errorLine
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-request.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/wp-db.php');
 
-        Functions\when('wp_json_encode')->returnArg();
-        Functions\when('apply_filters')->returnArg(2);
-        Functions\when('current_time')->justReturn('2022-03-23 09:22:44');
-        Functions\when('absint')->returnArg();
-        Functions\when('get_option')->returnArg();
+        Functions\when('\wp_json_encode')->returnArg();
+        Functions\when('\apply_filters')->returnArg(2);
+        Functions\when('\current_time')->justReturn('2022-03-23 09:22:44');
+        Functions\when('\absint')->returnArg();
+        Functions\when('\get_option')->returnArg();
 
         if (!defined('CONST_OTHER_SERVICE_BODY')) {
             define('CONST_OTHER_SERVICE_BODY', '99999999999');
@@ -121,7 +124,7 @@ Line: $errorLine
         );
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
-        $bmlt = Mockery::mock('overload:BMLTIntegration');
+        $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp]);
@@ -138,10 +141,10 @@ Line: $errorLine
         );
 
         $user = new my_wp_user(1, 'username');
-        Functions\when('wp_get_current_user')->justReturn($user);
-        Functions\when('is_wp_error')->justReturn(false);
-        Functions\when('wp_remote_retrieve_body')->justReturn($resp);
-        Functions\when('wp_mail')->justReturn('true');
+        Functions\when('\wp_get_current_user')->justReturn($user);
+        Functions\when('\is_wp_error')->justReturn(false);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('\wp_mail')->justReturn('true');
 
         $rest = new Handlers();
 
@@ -179,7 +182,7 @@ Line: $errorLine
         );
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
-        $bmlt = Mockery::mock('overload:BMLTIntegration');
+        $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('',\Mockery::capture($bmlt_input));
@@ -196,10 +199,10 @@ Line: $errorLine
         );
 
         $user = new my_wp_user(1, 'username');
-        Functions\when('wp_get_current_user')->justReturn($user);
-        Functions\when('is_wp_error')->justReturn(false);
-        Functions\when('wp_remote_retrieve_body')->justReturn($resp);
-        Functions\when('wp_mail')->justReturn('true');
+        Functions\when('\wp_get_current_user')->justReturn($user);
+        Functions\when('\is_wp_error')->justReturn(false);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('\wp_mail')->justReturn('true');
 
         $rest = new Handlers();
 
@@ -239,7 +242,7 @@ Line: $errorLine
         );
         
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
-        $bmlt = Mockery::mock('overload:BMLTIntegration');
+        $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('',\Mockery::capture($bmlt_input));
@@ -256,10 +259,10 @@ Line: $errorLine
         );
 
         $user = new my_wp_user(1, 'username');
-        Functions\when('wp_get_current_user')->justReturn($user);
-        Functions\when('is_wp_error')->justReturn(false);
-        Functions\when('wp_remote_retrieve_body')->justReturn($resp);
-        Functions\when('wp_mail')->justReturn('true');
+        Functions\when('\wp_get_current_user')->justReturn($user);
+        Functions\when('\is_wp_error')->justReturn(false);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('\wp_mail')->justReturn('true');
 
         $rest = new Handlers();
 
@@ -303,7 +306,7 @@ Line: $errorLine
         );
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
-        $bmlt = Mockery::mock('overload:BMLTIntegration');
+        $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('',\Mockery::capture($bmlt_input));
@@ -320,13 +323,13 @@ Line: $errorLine
         );
 
         $user = new my_wp_user(1, 'username');
-        Functions\when('wp_get_current_user')->justReturn($user);
-        Functions\when('is_wp_error')->justReturn(false);
-        Functions\when('wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('\wp_get_current_user')->justReturn($user);
+        Functions\when('\is_wp_error')->justReturn(false);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
 
         $rest = new Handlers();
 
-        Functions\expect('wp_mail')->times(1)->with('a@a.com',Mockery::any(),Mockery::any(),Mockery::any());
+        Functions\expect('\wp_mail')->times(1)->with('a@a.com',Mockery::any(),Mockery::any(),Mockery::any());
 
         $response = $rest->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -358,7 +361,7 @@ Line: $errorLine
         );
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
-        $bmlt = Mockery::mock('overload:BMLTIntegration');
+        $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('',\Mockery::capture($bmlt_input));
@@ -375,13 +378,13 @@ Line: $errorLine
         );
 
         $user = new my_wp_user(1, 'username');
-        Functions\when('wp_get_current_user')->justReturn($user);
-        Functions\when('is_wp_error')->justReturn(false);
-        Functions\when('wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('\wp_get_current_user')->justReturn($user);
+        Functions\when('\is_wp_error')->justReturn(false);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
 
         $rest = new Handlers();
 
-        Functions\expect('wp_mail')->times(1)->with('a@a.com',Mockery::any(),Mockery::any(),Mockery::any());
+        Functions\expect('\wp_mail')->times(1)->with('a@a.com',Mockery::any(),Mockery::any(),Mockery::any());
 
         $response = $rest->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -412,7 +415,7 @@ Line: $errorLine
         );
         
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
-        $bmlt = Mockery::mock('overload:BMLTIntegration');
+        $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('',\Mockery::capture($bmlt_input));
@@ -429,10 +432,10 @@ Line: $errorLine
         );
 
         $user = new my_wp_user(1, 'username');
-        Functions\when('wp_get_current_user')->justReturn($user);
-        Functions\when('is_wp_error')->justReturn(false);
-        Functions\when('wp_remote_retrieve_body')->justReturn($resp);
-        Functions\when('wp_mail')->justReturn('true');
+        Functions\when('\wp_get_current_user')->justReturn($user);
+        Functions\when('\is_wp_error')->justReturn(false);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('\wp_mail')->justReturn('true');
 
         $rest = new Handlers();
 
@@ -469,7 +472,7 @@ Line: $errorLine
         );
         
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
-        $bmlt = Mockery::mock('overload:BMLTIntegration');
+        $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('',\Mockery::capture($bmlt_input));
@@ -486,10 +489,10 @@ Line: $errorLine
         );
 
         $user = new my_wp_user(1, 'username');
-        Functions\when('wp_get_current_user')->justReturn($user);
-        Functions\when('is_wp_error')->justReturn(false);
-        Functions\when('wp_remote_retrieve_body')->justReturn($resp);
-        Functions\when('wp_mail')->justReturn('true');
+        Functions\when('\wp_get_current_user')->justReturn($user);
+        Functions\when('\is_wp_error')->justReturn(false);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('\wp_mail')->justReturn('true');
 
         $rest = new Handlers();
 
