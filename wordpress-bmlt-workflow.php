@@ -431,25 +431,13 @@ function wbw_register_setting()
 
     register_setting(
         'wbw-settings-group',
-        'wbw_optional_location_nation',
+        'wbw_optional_location_sub_province',
         array(
             'type' => 'string',
-            'description' => 'optional field for location_nation',
+            'description' => 'optional field for location_sub_province',
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
             'default' => 'hidden'
-        )
-    );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_delete_closed_meetings',
-        array(
-            'type' => 'string',
-            'description' => 'Default for close meeting submission',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => 'unpublish'
         )
     );
 
