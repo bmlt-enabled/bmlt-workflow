@@ -1,4 +1,4 @@
-# Wordpress-BMLT-workflow (WBW) v0.3.3
+# Wordpress-BMLT-workflow (WBW) v0.3.4
 
 ## Background
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.
@@ -66,6 +66,7 @@ Requires composer. From the root of the repository:
 - Not tested on wordpress multisite 
 
 For any other issues you find - please raise an issue here: https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues and/or ping me on BMLT slack #wordpress-BMLT-workflow
+
 
 ## Changes from 0.32 Release
 - Email notification (submitter and trusted servant) and notification to submitter on reject/approval support added. (#10)
