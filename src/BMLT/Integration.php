@@ -19,7 +19,7 @@ class Integration
         );
 
         $url = $server . "index.php";
-        $this->dbg->debug_log($url);
+        $wbw_dbg->debug_log($url);
         $ret = \wp_safe_remote_post($url, array('body'=> http_build_query($postargs)));
         $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 
