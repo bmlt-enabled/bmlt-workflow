@@ -257,7 +257,7 @@ jQuery(document).ready(function ($) {
               break;
             case "reason_close":
               submission_type = "Close Meeting";
-              console.log(data);
+              // console.log(data);
               namestr = data["meeting_name"];
               break;
             case "reason_change":
