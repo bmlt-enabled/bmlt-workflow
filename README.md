@@ -61,6 +61,13 @@ Requires composer. From the root of the repository:
 ```./vendor/bin/phpunit```
 
 For any other issues you find - please raise an issue here: https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues and/or ping me on BMLT slack #wordpress-BMLT-workflow
+## Changes from 0.3.3 Release
+https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/20
+https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/19
+https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/17
+https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/16
+Namespace refactoring
+Debug changes to handle CI pipeline nicely
 
 ## Changes from 0.32 Release
 - Email notification (submitter and trusted servant) and notification to submitter on reject/approval support added. (#10)
