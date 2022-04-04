@@ -62,12 +62,12 @@ jQuery(document).ready(function ($) {
             Object.keys(item).forEach((element) => {
               if ($("#quickedit_" + element).length) {
                 $("#quickedit_" + element).val(item[element]);
-                $("#quickedit_" + element).trigger('change');
+                $("#quickedit_" + element).trigger("change");
               }
             });
 
             // fill in and highlight the changes - use extend to clone
-            changes_requested = $.extend(true,{},wbw_changedata[id].changes_requested);
+            changes_requested = $.extend(true, {}, wbw_changedata[id].changes_requested);
 
             if ("format_shared_id_list" in changes_requested) {
               changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
@@ -75,16 +75,13 @@ jQuery(document).ready(function ($) {
 
             Object.keys(changes_requested).forEach((element) => {
               if ($("#quickedit_" + element).length) {
-                if(element === "format_shared_id_list")
-                {
+                if (element === "format_shared_id_list") {
                   $(".quickedit_format_shared_id_list-select2").addClass("wbw-changed");
-                }
-                else
-                {
-                  $("#quickedit_" + element).addClass("wbw-changed");                
+                } else {
+                  $("#quickedit_" + element).addClass("wbw-changed");
                 }
                 $("#quickedit_" + element).val(changes_requested[element]);
-                $("#quickedit_" + element).trigger('change');
+                $("#quickedit_" + element).trigger("change");
               }
             });
             // trigger adding of highlights when input changes
@@ -100,7 +97,7 @@ jQuery(document).ready(function ($) {
         });
     } else if (wbw_changedata[id].submission_type == "reason_new") {
       // fill in and highlight the changes - use extend to clone
-      changes_requested = $.extend(true,{},wbw_changedata[id].changes_requested);
+      changes_requested = $.extend(true, {}, wbw_changedata[id].changes_requested);
 
       // split up the duration so we can use it in the select
       if ("duration_time" in changes_requested) {
@@ -153,10 +150,10 @@ jQuery(document).ready(function ($) {
     multiple: true,
     width: "100%",
     data: formatdata,
-    selectionCssClass: ':all:',
+    selectionCssClass: ":all:",
     dropdownParent: $("#wbw_submission_quickedit_dialog"),
   });
-  $("#quickedit_format_shared_id_list").trigger('change');
+  $("#quickedit_format_shared_id_list").trigger("change");
 
   var datatable = $("#dt-submission").DataTable({
     dom: "Bfrtip",
@@ -326,12 +323,16 @@ jQuery(document).ready(function ($) {
       if ($("#dt-submission").DataTable().row({ selected: true }).count()) {
         var change_made = $("#dt-submission").DataTable().row({ selected: true }).data()["change_made"];
         var submission_type = $("#dt-submission").DataTable().row({ selected: true }).data()["submission_type"];
-        var actioned = (change_made === "approved" || change_made === "rejected")
-        var cantquickedit = (change_made === "approved" || change_made === "rejected" || submission_type === 'reason_close' || submission_type === 'reason_other');
+        var actioned = change_made === "approved" || change_made === "rejected";
+        var cantquickedit = change_made === "approved" || change_made === "rejected" || submission_type === "reason_close" || submission_type === "reason_other";
+        $("#dt-submission").DataTable().button("approve:name").enable(!actioned);
+        $("#dt-submission").DataTable().button("reject:name").enable(!actioned);
+        $("#dt-submission").DataTable().button("quickedit:name").enable(!cantquickedit);
+      } else {
+        $("#dt-submission").DataTable().button("approve:name").enable(false);
+        $("#dt-submission").DataTable().button("reject:name").enable(false);
+        $("#dt-submission").DataTable().button("quickedit:name").enable(false);
       }
-      $("#dt-submission").DataTable().button("approve:name").enable(!actioned);
-      $("#dt-submission").DataTable().button("reject:name").enable(!actioned);
-      $("#dt-submission").DataTable().button("quickedit:name").enable(!cantquickedit);
     });
 
   // child rows
@@ -388,7 +389,7 @@ jQuery(document).ready(function ($) {
           table += "<tr><td>Contact number (confidential):</td><td>" + d["changes_requested"].contact_number_confidential + "</td></tr>";
           break;
         case "add_email":
-          table += "<tr><td>Add email to meeting:</td><td>" + ((d["changes_requested"].add_email === "yes") ? "Yes" : "No") + "</td></tr>";
+          table += "<tr><td>Add email to meeting:</td><td>" + (d["changes_requested"].add_email === "yes" ? "Yes" : "No") + "</td></tr>";
           break;
 
         case "format_shared_id_list":

@@ -5,12 +5,6 @@ declare(strict_types=1);
 
 // debug settings
 use wbw\Debug;
-define('WBW_DEBUG', true);
-global $wbw_dbg;
-$wbw_dbg = new Debug;
-
-// get us through the header
-define('ABSPATH', '99999999999');
 
 use wbw\REST\Handlers;
 
@@ -18,8 +12,14 @@ use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
 use function Patchwork\{redefine, getFunction, always};
 
+define('WBW_DEBUG', true);
+global $wbw_dbg;
+$wbw_dbg = new Debug;
+
+// get us through the header
+define('ABSPATH', '99999999999');
+
 // We require the file we need to test.
-// require 'admin/meeting_update_form_handler.php';
 
 class meeting_update_form_handlerTest_my_wp_user
 {
