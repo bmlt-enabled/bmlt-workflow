@@ -5,6 +5,8 @@ var mtext = [];
 var weekdays = ["none", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 jQuery(document).ready(function ($) {
+
+  // set up our format selector
   var formatdata = [];
   Object.keys(wbw_bmlt_formats).forEach((key) => {
     formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
@@ -18,6 +20,37 @@ jQuery(document).ready(function ($) {
     width: "100%",
   });
   
+  // hide / show / required our optional fields
+  switch (wbw_optional_location_nation)
+  {
+    case 'hidden':
+      $("#optional_location_nation").hide();
+      break;
+    case 'display':
+      $("#optional_location_nation").show();
+      $("#optional_location_nation").attr('required',false);
+      break;
+    case 'displayrequired':
+      $("#optional_location_nation").show();
+      $("#optional_location_nation").attr('required',true);
+      break;  
+  }
+
+  switch (wbw_optional_location_sub_province)
+  {
+    case 'hidden':
+      $("#optional_location_sub_province").hide();
+      break;
+    case 'display':
+      $("#optional_location_sub_province").show();
+      $("#optional_location_sub_province").attr('required',false);
+      break;
+    case 'displayrequired':
+      $("#optional_location_sub_province").show();
+      $("#optional_location_sub_province").attr('required',true);
+      break;  
+  }
+
   function update_meeting_list(wbw_service_bodies) {
     var search_results_address =
       wbw_bmlt_server_address +
