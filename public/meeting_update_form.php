@@ -1,8 +1,5 @@
 <?php
-
-if (!class_exists('BMLTIntegration')) {
-    require_once(WBW_PLUGIN_DIR . 'admin/bmlt_integration.php');
-}
+use wbw\BMLT\Integration;
 
 $wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
 if ($wbw_bmlt_test_status != "success") {
@@ -11,9 +8,7 @@ if ($wbw_bmlt_test_status != "success") {
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
-$bmlt_integration = new BMLTIntegration;
-$formatarr = $bmlt_integration->getMeetingFormats();
-$script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
+$bmlt_integration = new Integration;
 
 $meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
 
@@ -51,6 +46,8 @@ else
 EOD;
 }
 ?>
+
+
 <div id="form_replace">
     <form action="#" method="post" id="meeting_update_form">
         <input type="hidden" name="action" value="meeting_update_form_response">
@@ -71,8 +68,8 @@ EOD;
             </div>
             <div id="meeting_selector">
                 <br>
-                <label for="update_reason"">Search For Meeting:</label>
-                <select class=" meeting-searcher" id="meeting-searcher">
+                <label for="meeting-searcher"">Search For Meeting:</label>
+                <select name="meeting-searcher" class=" meeting-searcher" id="meeting-searcher">
                     <option></option>
                     </select>
                     <br><br>
@@ -197,7 +194,7 @@ EOD;
                             <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
 
                             <label for="display_format_shared_id_list">Meeting Formats<span class="wbw-required-field"> *</span></label>
-                            <select class="meeting-input" name="display_format_shared_id_list" id="display_format_shared_id_list" required></select>
+                            <select class="display_format_shared_id_list-select2" name="display_format_shared_id_list" id="display_format_shared_id_list" required></select>
                             <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
 
                             <label for=" virtual_meeting_link">Online Meeting Link</label>
@@ -210,6 +207,7 @@ EOD;
                     <div id="additional_info_div">
                     <fieldset>
                         <legend>Additional Information</legend>
+                        <label for="additional_info">Any Other Comments</label>
                         <textarea name="additional_info" id="additional_info" rows="5" cols="50" placeholder="Provide any more detail that may help us action your meeting change request"></textarea>
                         <div id="starter_pack">
                             <label for="starter_kit_required">Starter Kit Required</label>

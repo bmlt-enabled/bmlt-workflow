@@ -2,6 +2,8 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
+use wbw\Debug;
+
 $wbw_submitter_email_template_default = htmlentities(file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
 $wbw_fso_email_template_default = htmlentities(file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
 

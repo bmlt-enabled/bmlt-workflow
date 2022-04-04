@@ -4,14 +4,23 @@
  * Plugin Name: Wordpress BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
  * Description: Wordpress BMLT Workflow
- * Version: 0.3.3
+ * Version: 0.3.4
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
+require 'vendor/autoload.php';
+
+use wbw\Debug;
+use wbw\BMLT\Integration;
+use wbw\REST\Controller;
+
+define('WBW_DEBUG',false);
+
 define('WBW_PLUGIN_DIR', plugin_dir_path(__FILE__));
+
 global $wbw_db_version;
 $wbw_db_version = '1.0';
 global $wpdb;
@@ -19,6 +28,8 @@ global $wbw_submissions_table_name;
 global $wbw_service_bodies_table_name;
 global $wbw_service_bodies_access_table_name;
 global $wbw_rest_namespace;
+global $wbw_dbg;
+$wbw_dbg = new Debug;
 
 // our rest namespace
 $wbw_rest_namespace = 'wbw/v1';
@@ -33,12 +44,10 @@ $wbw_service_bodies_access_table_name = $wpdb->prefix . 'wbw_service_bodies_acce
 global $wbw_capability_manage_submissions;
 $wbw_capability_manage_submissions = 'wbw_manage_submissions';
 
-include_once 'admin/meeting_update_form_handler.php';
-include_once 'admin/admin_rest_controller.php';
-
 function meeting_update_form($atts = [], $content = null, $tag = '')
 {
     global $wbw_rest_namespace;
+    global $wbw_dbg;
 
     prevent_cache_enqueue_script('wbw-meeting-update-form-js',array('jquery'), 'js/meeting_update_form.js');
     prevent_cache_enqueue_script('wbw-general-js',array('jquery'), 'js/script_includes.js');
@@ -54,14 +63,14 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
 
     // add meeting formats
-    $bmlt_integration = new BMLTIntegration;
+    $bmlt_integration = new Integration;
     $formatarr = $bmlt_integration->getMeetingFormats();
-    error_log("FORMATS");
-    error_log(vdump($formatarr));
-    error_log(json_encode($formatarr));
+    $wbw_dbg->debug_log("FORMATS");
+    $wbw_dbg->debug_log($wbw_dbg->vdump($formatarr));
+    $wbw_dbg->debug_log(json_encode($formatarr));
     $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
     
-    error_log("adding script ".$script);
+    $wbw_dbg->debug_log("adding script ".$script);
     $status = wp_add_inline_script('wbw-meeting-update-form-js', $script, 'before');
 
 
@@ -81,7 +90,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
        $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
     endforeach;
 
-    error_log(vdump($result));
+    $wbw_dbg->debug_log($wbw_dbg->vdump($result));
 
     ob_start();
     include('public/meeting_update_form.php');
@@ -96,46 +105,58 @@ function prevent_cache_register_script($handle, $deps, $name)
 
 function prevent_cache_register_style($handle, $deps, $name)
 {
+    global $wbw_dbg;
+
     $ret = wp_register_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
-    error_log("register style");
-    error_log(vdump($ret));
+    $wbw_dbg->debug_log("register style");
+    $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 }
 
 function prevent_cache_enqueue_script($handle, $deps, $name)
 {
+    global $wbw_dbg;
+
     $ret = wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
-    error_log("enqueue style ".$handle);
-    error_log(vdump($ret));
+    $wbw_dbg->debug_log("enqueue style ".$handle);
+    $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 }
 
 function prevent_cache_enqueue_style($handle, $deps, $name)
 {
+    global $wbw_dbg;
+
     $ret = wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
-    error_log("enqueue style ".$handle);
-    error_log(vdump($ret));
+    $wbw_dbg->debug_log("enqueue style ".$handle);
+    $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 
 }
 
 function enqueue_form_deps()
 {
     global $wbw_rest_namespace;
+    global $wbw_dbg;
 
-    wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
-    wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
+    // wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
+    // wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
+    wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
+    wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
+    // wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.full.js', array('jquery'), '1.0', true);
+
     prevent_cache_register_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
     prevent_cache_register_script('wbw-meeting-update-form-js', array('jquery', 'jquery.validate'), 'js/meeting_update_form.js');
     prevent_cache_register_style('wbw-meeting-update-form-css', false, 'css/meeting_update_form.css');
     wp_register_script('jquery.validate', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
     wp_register_script('jquery.validate.additional', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jquery.validate'), '1.0', true);
 
-    error_log("scripts and styles registered");
+    $wbw_dbg->debug_log("scripts and styles registered");
 }
 
 function wbw_admin_scripts($hook)
 {
     global $wbw_rest_namespace;
+    global $wbw_dbg;
 
-        // error_log($hook);
+        // $wbw_dbg->debug_log($hook);
 
     if (($hook != 'toplevel_page_wbw-settings') && ($hook != 'bmlt-workflow_page_wbw-submissions') && ($hook != 'bmlt-workflow_page_wbw-service-bodies')) {
         return;
@@ -148,7 +169,7 @@ function wbw_admin_scripts($hook)
         case ('toplevel_page_wbw-settings'):
             prevent_cache_enqueue_style('wbw-admin-css', false, 'css/admin_page.css');
 
-            // error_log('inside hook');
+            // $wbw_dbg->debug_log('inside hook');
 
             // clipboard
             wp_register_script('clipboard', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
@@ -178,8 +199,10 @@ function wbw_admin_scripts($hook)
             wp_enqueue_style('dtcss');
             wp_enqueue_script('dt');
             // select2 for quick editor
-            wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
-            wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
+            // wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
+            // wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
+            wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
+            wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
             wp_enqueue_style('select2css');
             wp_enqueue_script('select2');
 
@@ -190,11 +213,11 @@ function wbw_admin_scripts($hook)
             $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
 
             // add meeting formats
-            $bmlt_integration = new BMLTIntegration;
+            $bmlt_integration = new Integration;
             $formatarr = $bmlt_integration->getMeetingFormats();
-            error_log("FORMATS");
-            error_log(vdump($formatarr));
-            error_log(json_encode($formatarr));
+            $wbw_dbg->debug_log("FORMATS");
+            $wbw_dbg->debug_log($wbw_dbg->vdump($formatarr));
+            $wbw_dbg->debug_log(json_encode($formatarr));
             $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
@@ -203,7 +226,7 @@ function wbw_admin_scripts($hook)
             $request  = new WP_REST_Request('GET', $url);
             $response = rest_do_request($request);
             $result     = rest_get_server()->response_to_data($response, true);
-            // error_log("result = ".vdump($result));
+            // $wbw_dbg->debug_log("result = ".vdump($result));
             $script .= 'var wbw_admin_wbw_service_bodies = ' . json_encode($result) . '; ';
 
             // defaults for approve close form
@@ -214,8 +237,10 @@ function wbw_admin_scripts($hook)
             wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;
         case ('bmlt-workflow_page_wbw-service-bodies'):
-            wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
-            wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
+            // wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
+            // wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
+            wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
+            wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
             wp_enqueue_style('select2css');
             wp_enqueue_script('select2');
 
@@ -286,6 +311,12 @@ function add_plugin_link($plugin_actions, $plugin_file)
     return array_merge($new_actions, $plugin_actions);
 }
 
+function wbw_rest_controller()
+{
+	$controller = new Controller();
+	$controller->register_routes();
+}
+
 // actions, shortcodes, menus and filters
 add_action('admin_post_nopriv_meeting_update_form_response', 'meeting_update_form_handler');
 add_action('admin_post_meeting_update_form_response', 'meeting_update_form_handler');
@@ -293,7 +324,7 @@ add_action('wp_enqueue_scripts', 'enqueue_form_deps');
 add_action('admin_menu', 'wbw_menu_pages');
 add_action('admin_enqueue_scripts', 'wbw_admin_scripts');
 add_action('admin_init',  'wbw_register_setting');
-add_action('rest_api_init', 'wbw_submissions_controller');
+add_action('rest_api_init', 'wbw_rest_controller');
 add_shortcode('wbw-meeting-update-form', 'meeting_update_form');
 add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
 
@@ -722,7 +753,7 @@ function wbw_uninstall()
 
     // remove custom capability
     global $wbw_capability_manage_submissions;
-    // error_log("deleting capabilities");
+    // $wbw_dbg->debug_log("deleting capabilities");
 
     $users = get_users();
     foreach ($users as $user) {

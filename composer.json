@@ -1,8 +1,8 @@
 {
     "autoload": {
-        "classmap": [
-            "admin/"
-        ]
+        "psr-4": {
+            "wbw\\": "src/"
+        }
     },
     "require-dev": {
         "cyruscollier/wordpress-develop": "dev-master",

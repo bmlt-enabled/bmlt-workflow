@@ -14,10 +14,10 @@ jQuery(document).ready(function ($) {
     placeholder: "Select from available formats",
     multiple: true,
     data: formatdata,
-    // selectionCssClass: ":all:",
+    selectionCssClass: ':all:',
     width: "100%",
   });
-
+  
   function update_meeting_list(wbw_service_bodies) {
     var search_results_address =
       wbw_bmlt_server_address +
@@ -94,6 +94,7 @@ jQuery(document).ready(function ($) {
         });
 
         $("#meeting-searcher").on("select2:select", function (e) {
+          console.log("select");
           var data = e.params.data;
           var id = data.id;
           // set the weekday format
@@ -127,18 +128,22 @@ jQuery(document).ready(function ($) {
           var reason = $("#update_reason").val();
           switch (reason) {
             case "reason_change":
+
               // display form instructions
-              $("#instructions").text("We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval.");
+              $("#instructions").html("We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval.");
               $("#meeting_content").show();
               disable_field("service_body_bigint");
-              $(".meeting-input").on("input", function () {
+              $(".meeting-input").on("input.wbw-highlight", function () {
                 $(this).addClass("wbw-changed");
               });
-  
+              $("#display_format_shared_id_list").on("change.wbw-highlight", function () {
+                $(".display_format_shared_id_list-select2").addClass("wbw-changed");
+              });
+
               break;
             case "reason_close":
               // display form instructions
-              $("#instructions").text("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box");
+              $("#instructions").html("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box");
               $("#meeting_content").show();
               disable_edits();
               break;
@@ -162,8 +167,8 @@ jQuery(document).ready(function ($) {
       var opt = new Option(service_area_name, service_body_bigint, false, false);
       $("#service_body_bigint").append(opt);
       wbw_service_bodies += "services[]=" + service_body_bigint + "&";
-      update_meeting_list(wbw_service_bodies);
     });
+    update_meeting_list(wbw_service_bodies);
   });
 
   $("#meeting_update_form").validate({
@@ -288,10 +293,12 @@ jQuery(document).ready(function ($) {
     $("#other_reason").prop("required", false);
     $("#additional_info").prop("required", false);
     $("#personal_details").attr("class","form-grid-col2");
-    // disable the highlighting
-    $(".meeting-input").off("input");
-    // remove the highlighting
+    // disable the highlighting triggers
+    $(".meeting-input").off("input.wbw-highlight");
+    $("#display_format_shared_id_list").off("change.wbw-highlight"); 
+    // remove the highlighting css
     $(".meeting-input").removeClass("wbw-changed");
+    $(".display_format_shared_id_list-select2").removeClass("wbw-changed");
 
     enable_edits();
     // enable items as required
@@ -306,7 +313,7 @@ jQuery(document).ready(function ($) {
         $("#meeting_details").show();
         $("#additional_info_div").show();
         // display form instructions
-        $("#instructions").text(
+        $("#instructions").html(
           "Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
         );
         // new meeting has a starter pack
@@ -340,7 +347,7 @@ jQuery(document).ready(function ($) {
       case "reason_other":
         clear_form();
         // display form instructions
-        $("#instructions").text("");
+        $("#instructions").html("");
         // other reason has a textarea
         $("#other_reason_div").show();
         $("#meeting_content").show();

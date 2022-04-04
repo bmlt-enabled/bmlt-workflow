@@ -1,5 +1,14 @@
 jQuery(document).ready(function ($) {
 
+  function dismiss_notice(element) {
+    jQuery(element)
+      .parent()
+      .slideUp("normal", function () {
+        jQuery(this).remove();
+      });
+    return false;
+  }
+  
   function clear_notices() {
     jQuery(".notice-dismiss").each(function (i, e) {
       dismiss_notice(e);

@@ -2,9 +2,12 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
+use wbw\Debug;
+use wbw\BMLT\Integration;
+
 wp_nonce_field('wp_rest', '_wprestnonce');
 
-$bmlt_integration = new BMLTIntegration;
+$bmlt_integration = new Integration;
 
 $meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
 
@@ -84,7 +87,7 @@ EOD;
             <label for="quickedit_meeting_name">Meeting Name</label>
             <input type="text" name="quickedit_meeting_name" id="quickedit_meeting_name" class="quickedit-input">
             <label for="quickedit_format_shared_id_list">Meeting Formats</label>
-            <select class="quickedit-input" name="quickedit_format_shared_id_list" id="quickedit_format_shared_id_list" style="width: auto"></select>
+            <select class="quickedit_format_shared_id_list-select2" name="quickedit_format_shared_id_list" id="quickedit_format_shared_id_list" style="width: auto"></select>
             <div class="grid-flex-container">
                 <div class="grid-flex-item">
                     <label for="quickedit_start_time">Start Time</label>

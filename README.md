@@ -1,4 +1,4 @@
-# Wordpress-BMLT-workflow (WBW) v0.3.3
+# Wordpress-BMLT-workflow (WBW) v0.3.4
 
 ## Background
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.
@@ -61,3 +61,31 @@ Requires composer. From the root of the repository:
 ```./vendor/bin/phpunit```
 
 For any other issues you find - please raise an issue here: https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues and/or ping me on BMLT slack #wordpress-BMLT-workflow
+## Changes from 0.3.3 Release
+- https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/20, https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/19, https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/17 - Accessibility fixes (thanks @kgrimley-bu !)
+- https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/16 - Quickedit fixes
+- Namespace refactoring
+- Debug changes to handle CI pipeline nicely
+
+## Changes from 0.32 Release
+- Email notification (submitter and trusted servant) and notification to submitter on reject/approval support added. (#10)
+- Quickedit now shows the additional info field (thanks @tempsaint!) (#13)
+- Support for populating State and Subprovince from BMLT (thanks @pjaudiomv) (#1)
+- Many cleanups, bugfixes and extra PHPUnit test cases
+## Changes from 0.31 Release
+- Request to add email to meeting contact is now honoured through to backend
+- Highlighting of changed fields in user form
+- Additional PHPUnit test cases for approval rest interface
+- Many cleanups and bugfixes
+
+## Changes from 0.3 Release
+- Hosting repo on BMLT-Enabled! https://github.com/bmlt-enabled/wordpress-bmlt-workflow
+- Support for 'Other' and 'Close' meeting management, including publish or delete of closed meetings. This includes a new settings option for the admin to choose which default for Trusted servants.
+- Additional PHPUnit test cases for approval rest interface
+
+## Changes from 0.2 Release
+- Improved front end form layout
+- Close meeting will unpublish an existing meeting
+- Submissions now contain full information from front end form
+- Additional front end fields added (nation and subprovince)
+- PHPUnit test cases built
