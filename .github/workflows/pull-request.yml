@@ -35,6 +35,8 @@ jobs:
 
       - name: PHP Unit Test
         id: php-unit-test
+        with:
+          php_version: 7.4
         run: |
           php -i
           vendor/bin/phpunit
