@@ -24,6 +24,7 @@ jQuery(document).ready(function ($) {
   switch (wbw_optional_location_nation)
   {
     case 'hidden':
+    case '':
       $("#optional_location_nation").hide();
       break;
     case 'display':
@@ -39,6 +40,7 @@ jQuery(document).ready(function ($) {
   switch (wbw_optional_location_sub_province)
   {
     case 'hidden':
+    case '':
       $("#optional_location_sub_province").hide();
       break;
     case 'display':
