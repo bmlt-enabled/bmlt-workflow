@@ -66,7 +66,7 @@ https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/20
 https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/19
 https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/17
 https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/16
-Namespace refactoring 
+Namespace refactoring
 Debug changes to handle CI pipeline nicely
 
 ## Changes from 0.32 Release
