@@ -60,13 +60,7 @@ Requires composer. From the root of the repository:
 ```composer update```
 ```./vendor/bin/phpunit```
 
-
-## 0.3.3 Beta Known Issues
-- Support for 'Other' service body (for a user to select when they are unsure) is not implemented
-- Not tested on wordpress multisite 
-
 For any other issues you find - please raise an issue here: https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues and/or ping me on BMLT slack #wordpress-BMLT-workflow
-
 
 ## Changes from 0.32 Release
 - Email notification (submitter and trusted servant) and notification to submitter on reject/approval support added. (#10)
