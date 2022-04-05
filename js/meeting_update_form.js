@@ -25,11 +25,11 @@ jQuery(document).ready(function ($) {
       break;
     case "display":
       $("#optional_location_nation").show();
-      $("#optional_location_nation").attr("required", false);
+      $("#location_nation").attr("required", false);
       break;
     case "displayrequired":
       $("#optional_location_nation").show();
-      $("#optional_location_nation").attr("required", true);
+      $("#location_nation").attr("required", true);
       break;
   }
 
@@ -40,11 +40,11 @@ jQuery(document).ready(function ($) {
       break;
     case "display":
       $("#optional_location_sub_province").show();
-      $("#optional_location_sub_province").attr("required", false);
+      $("#location_sub_province").attr("required", false);
       break;
     case "displayrequired":
       $("#optional_location_sub_province").show();
-      $("#optional_location_sub_province").attr("required", true);
+      $("#location_sub_province").attr("required", true);
       break;
   }
 

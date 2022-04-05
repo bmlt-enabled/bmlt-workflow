@@ -248,7 +248,10 @@ function wbw_admin_scripts($hook)
             $wbw_default_closed_meetings = get_option('wbw_delete_closed_meetings');
             $script .= 'var wbw_default_closed_meetings = "' . $wbw_default_closed_meetings . '"; ';
 
-
+            // optional fields in quickedit
+            $script .= 'var wbw_optional_location_nation = "' . get_option('wbw_optional_location_nation') . '";';
+            $script .= 'var wbw_optional_location_sub_province = "' . get_option('wbw_optional_location_sub_province') . '";';
+        
             wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;
 
