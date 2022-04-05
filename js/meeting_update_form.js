@@ -76,7 +76,7 @@ jQuery(document).ready(function ($) {
       },
     });
   }
-  
+
   $.ajax({
     url: wp_rest_base + wbw_admin_wbw_service_bodies_rest_route,
     dataType: "json",
@@ -142,6 +142,7 @@ jQuery(document).ready(function ($) {
   }
 
   function create_meeting_searcher(response) {
+    console.log("here");
     var mdata = response.json();
     var mtext = [];
 
