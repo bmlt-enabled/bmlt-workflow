@@ -32,7 +32,7 @@ echo '</form></div>';
     </div>
 
     <br><label for="wbw_bmlt_server_address"><b>Server Address:</b></label>
-    <input type="url" size="50" id="wbw_bmlt_server_address" name="wbw_bmlt_server_address" value="<?php echo get_option('wbw_bmlt_username') ?>" />
+    <input type="url" size="50" id="wbw_bmlt_server_address" name="wbw_bmlt_server_address" value="<?php echo get_option('wbw_bmlt_server_address') ?>" />
     <br><label for="wbw_bmlt_username"><b>BMLT Username:</b></label>
     <input type="text" size="50" id="wbw_bmlt_username" name="wbw_bmlt_username" value="<?php echo get_option('wbw_bmlt_username') ?>" />
     <br><label for="wbw_bmlt_password"><b>BMLT Password:</b></label>

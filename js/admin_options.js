@@ -1,4 +1,3 @@
-
 function dismiss_notice(element) {
   jQuery(element)
     .parent()
@@ -17,42 +16,42 @@ jQuery(document).ready(function ($) {
 
   var clipboard = new ClipboardJS(".clipboard-button");
 
-    $("#wbw_bmlt_configuration_dialog").dialog({
-      title: "BMLT Configuration",
-      autoOpen: false,
-      draggable: false,
-      width: 'auto',
-      maxWidth: 'auto',
-      modal: true,
-      resizable: false,
-      closeOnEscape: true,
-      position: {
-        my: "center",
-        at: "center",
-        of: window,
+  $("#wbw_bmlt_configuration_dialog").dialog({
+    title: "BMLT Configuration",
+    autoOpen: false,
+    draggable: false,
+    width: "auto",
+    maxWidth: "auto",
+    modal: true,
+    resizable: false,
+    closeOnEscape: true,
+    position: {
+      my: "center",
+      at: "center",
+      of: window,
+    },
+    buttons: {
+      "Save and Close": function () {
+        update_option("wbw_bmlt_server_address", $("#wbw_bmlt_server_address").val());
+        update_option("wbw_bmlt_username", $("#wbw_bmlt_username").val());
+        update_option("wbw_bmlt_password", $("#wbw_bmlt_password").val());
+        $(this).dialog("close");
       },
-      buttons: {
-        'Test Server': function () {
-          bmlt_test_server();
-        },
-        Cancel: function () {
-          $(this).dialog("close");
-        },
+      Cancel: function () {
+        $(this).dialog("close");
       },
-      open: function () {
-        var $this = $(this);
-        // close dialog by clicking the overlay behind it
-        $(".ui-widget-overlay").on("click", function () {
-          $this.dialog("close");
-        });
-      },
-      create: function () {
-        $(".ui-dialog-titlebar-close").addClass("ui-button");
-      },
-    });
-  
-
-  
+    },
+    open: function () {
+      var $this = $(this);
+      // close dialog by clicking the overlay behind it
+      $(".ui-widget-overlay").on("click", function () {
+        $this.dialog("close");
+      });
+    },
+    create: function () {
+      $(".ui-dialog-titlebar-close").addClass("ui-button");
+    },
+  });
 
   if (test_status == "success") {
     $("#wbw_test_yes").show();
@@ -75,7 +74,7 @@ jQuery(document).ready(function ($) {
     $("#wbw_bmlt_configuration_dialog").dialog("open");
   });
 
-  function bmlt_test_server() {
+  $("#wbw_test_bmlt_server").on("click", function (event) {
     var parameters = {};
     parameters["wbw_bmlt_server_address"] = $("#wbw_bmlt_server_address").val();
     parameters["wbw_bmlt_username"] = $("#wbw_bmlt_username").val();
@@ -118,6 +117,5 @@ jQuery(document).ready(function ($) {
             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
         );
       });
-  };
-
+  });
 });
