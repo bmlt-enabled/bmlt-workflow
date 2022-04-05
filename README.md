@@ -23,6 +23,10 @@ This initial release is quite specific to the NA Australian Region use case (par
 ## Installation
 Standard wordpress plugin installation procedure. Just copy the contents of this repo to your wp-content/plugins folder.
 
+## Contact/Issues
+For any other issues you find - please raise an issue here: https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues and/or reach out on BMLT slack #wordpress-BMLT-workflow
+
+
 ## Usage
 Locate **BMLT Workflow -> Configuration** in your Wordpress Admin page. You'll need to put in a valid BMLT server address, username and password and press the Test Server button.
 The username and password is a BMLT user who is configured as a **BMLT Service Body Administrator**. This user will be used to make changes to the service bodies they are configured as a **Full meeting list editor**. 
@@ -61,4 +65,3 @@ Requires composer. From the root of the repository:
 ```composer update```
 ```./vendor/bin/phpunit```
 
-For any other issues you find - please raise an issue here: https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues and/or ping me on BMLT slack #wordpress-BMLT-workflow
