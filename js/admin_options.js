@@ -32,7 +32,8 @@ jQuery(document).ready(function ($) {
         of: window,
       },
       buttons: {
-        Ok: function () {
+        'Test Server': function () {
+          bmlt_test_server();
         },
         Cancel: function () {
           $(this).dialog("close");
@@ -74,7 +75,7 @@ jQuery(document).ready(function ($) {
     $("#wbw_bmlt_configuration_dialog").dialog("open");
   });
 
-  $("#wbw_test_bmlt_server").on("click", function (event) {
+  function bmlt_test_server() {
     var parameters = {};
     parameters["wbw_bmlt_server_address"] = $("#wbw_bmlt_server_address").val();
     parameters["wbw_bmlt_username"] = $("#wbw_bmlt_username").val();
@@ -117,6 +118,6 @@ jQuery(document).ready(function ($) {
             '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
         );
       });
-  });
+  };
 
 });
