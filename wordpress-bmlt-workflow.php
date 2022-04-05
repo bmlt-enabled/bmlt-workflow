@@ -20,7 +20,7 @@ if (file_exists('vendor/autoload.php')) {
     // custom autoloader if not. only autoloads out of src directory
 
     spl_autoload_register(function (string $class) {
-        if(startsWith('wbw\\', $class))
+        if (strpos($class, 'wbw\\') === 0)
         {
             $class = str_replace('wbw\\','', $class);
             require __DIR__ . '/src/' . str_replace('\\', '/', $class) . '.php';    
