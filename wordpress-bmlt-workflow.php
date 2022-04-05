@@ -12,37 +12,40 @@
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 require 'vendor/autoload.php';
+require 'config.php';
 
 use wbw\Debug;
 use wbw\BMLT\Integration;
 use wbw\REST\Controller;
 
-define('WBW_DEBUG', false);
 
-define('WBW_PLUGIN_DIR', plugin_dir_path(__FILE__));
-
-global $wbw_db_version;
-$wbw_db_version = '1.0';
-global $wpdb;
-global $wbw_submissions_table_name;
-global $wbw_service_bodies_table_name;
-global $wbw_service_bodies_access_table_name;
-global $wbw_rest_namespace;
+// debugging options
 global $wbw_dbg;
 $wbw_dbg = new Debug;
 
 // our rest namespace
+global $wbw_rest_namespace;
 $wbw_rest_namespace = 'wbw/v1';
 
-// placeholder for an 'other' service body
-define('CONST_OTHER_SERVICE_BODY', '99999999999');
+// database configuration
+global $wpdb;
 
+global $wbw_db_version;
+$wbw_db_version = '1.0';
+
+global $wbw_submissions_table_name;
 $wbw_submissions_table_name = $wpdb->prefix . 'wbw_submissions';
+
+global $wbw_service_bodies_table_name;
 $wbw_service_bodies_table_name = $wpdb->prefix . 'wbw_service_bodies';
+
+global $wbw_service_bodies_access_table_name;
 $wbw_service_bodies_access_table_name = $wpdb->prefix . 'wbw_service_bodies_access';
 
 global $wbw_capability_manage_submissions;
 $wbw_capability_manage_submissions = 'wbw_manage_submissions';
+
+
 
 function meeting_update_form($atts = [], $content = null, $tag = '')
 {
