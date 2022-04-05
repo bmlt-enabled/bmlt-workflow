@@ -601,9 +601,7 @@ function wbw_register_setting()
 
 function wbw_bmlt_server_address_html()
 {
-    $wbw_bmlt_server_address = get_option('wbw_bmlt_server_address');
     $wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
-    $wbw_bmlt_username = get_option('wbw_bmlt_username');
 
     echo <<<END
     <div class="wbw_info_text">
