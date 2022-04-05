@@ -11,13 +11,22 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-require 'vendor/autoload.php';
 require 'config.php';
+
+if (file_exists('vendor/autoload.php')) {
+    // use composer autoload if we're running under phpunit
+    include 'vendor/autoload.php';
+} else {
+    // custom autoloader if not. only autoloads out of src directory
+
+    spl_autoload_register(function (string $class) {
+        require __DIR__ . '/src/' . str_replace('\\', '/', $class) . '.php';
+    });
+}
 
 use wbw\Debug;
 use wbw\BMLT\Integration;
 use wbw\REST\Controller;
-
 
 // debugging options
 global $wbw_dbg;
@@ -44,7 +53,6 @@ $wbw_service_bodies_access_table_name = $wpdb->prefix . 'wbw_service_bodies_acce
 
 global $wbw_capability_manage_submissions;
 $wbw_capability_manage_submissions = 'wbw_manage_submissions';
-
 
 
 function meeting_update_form($atts = [], $content = null, $tag = '')
