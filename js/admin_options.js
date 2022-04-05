@@ -1,4 +1,3 @@
-var clipboard = new ClipboardJS(".clipboard-button");
 
 function dismiss_notice(element) {
   jQuery(element)
@@ -15,6 +14,8 @@ jQuery(document).ready(function ($) {
       dismiss_notice(e);
     });
   }
+
+  var clipboard = new ClipboardJS(".clipboard-button");
 
     $("#wbw_bmlt_configuration_dialog").dialog({
       title: "BMLT Configuration",

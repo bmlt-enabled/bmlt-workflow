@@ -209,7 +209,6 @@ function wbw_admin_scripts($hook)
             prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
 
             // clipboard
-            wp_register_script('clipboard', 'https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js', array('jquery'), '1.0', true);
             wp_enqueue_script('clipboard');
 
             // jquery dialog
@@ -218,10 +217,7 @@ function wbw_admin_scripts($hook)
             // inline scripts
             $script  = 'var wbw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/bmltserver') . '; ';
 
-            $arr = get_option('wbw_service_committee_option_array');
-            $js_array = json_encode($arr);
             $test_result = get_option('wbw_bmlt_test_status', 'failure');
-            $script  .= 'var wbw_service_form_array = ' . $js_array . '; ';
             $script  .= 'var test_status = "' . $test_result . '"; ';
 
             wp_add_inline_script('admin_options_js', $script, 'before');
