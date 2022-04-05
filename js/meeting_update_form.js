@@ -30,6 +30,7 @@ jQuery(document).ready(function ($) {
     case "displayrequired":
       $("#optional_location_nation").show();
       $("#location_nation").attr("required", true);
+      $("#location_nation_label").append('<span class="wbw-required-field"> *</span>');
       break;
   }
 
@@ -45,6 +46,7 @@ jQuery(document).ready(function ($) {
     case "displayrequired":
       $("#optional_location_sub_province").show();
       $("#location_sub_province").attr("required", true);
+      $("#location_sub_province_label").append('<span class="wbw-required-field"> *</span>');
       break;
   }
 
