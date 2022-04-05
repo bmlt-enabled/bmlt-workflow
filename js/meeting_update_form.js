@@ -61,24 +61,10 @@ jQuery(document).ready(function ($) {
       wbw_service_bodies +
       "recursive=1&sort_keys=meeting_name";
 
-    // fetchJsonp(search_results_address)
-    //   .then((response) => response.json())
-    //   .then((mdata) => create_meeting_searcher(mdata));
+    fetchJsonp(search_results_address)
+      .then((response) => response.json())
+      .then((mdata) => create_meeting_searcher(mdata));
 
-    $.ajax({
-      url: search_results_address,
-      dataType: "jsonp", // jsonp
-      type: "GET",
-      jsonp: false,
-      jsonpCallback: "create_meeting_searcher",
-      contentType: "application/json; charset=utf-8",
-      success: function (result, status, xhr) {
-        console.log(result);
-    },
-    error: function (xhr, status, error) {
-        console.log("Result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText)
-    }
-      });
   }
 
   $.ajax({
@@ -145,9 +131,7 @@ jQuery(document).ready(function ($) {
     return null;
   }
 
-  function create_meeting_searcher(response) {
-    console.log("here");
-    var mdata = response.json();
+  function create_meeting_searcher(mdata) {
     var mtext = [];
 
     // create friendly meeting details for meeting searcher
