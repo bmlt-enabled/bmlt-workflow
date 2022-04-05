@@ -69,6 +69,7 @@ jQuery(document).ready(function ($) {
       url: search_results_address,
       dataType: "jsonp", // jsonp
       type: "GET",
+      jsonp: false,
       jsonpCallback: "create_meeting_searcher",
       contentType: "application/json; charset=utf-8",
       success: function (result, status, xhr) {
