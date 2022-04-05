@@ -148,17 +148,18 @@ function prevent_cache_enqueue_style($handle, $deps, $name)
     $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 }
 
+function register_select2()
+{
+    wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
+    wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
+}
+
 function enqueue_form_deps()
 {
     global $wbw_rest_namespace;
     global $wbw_dbg;
 
-    // wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
-    // wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
-    wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
-    wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
-    // wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.full.js', array('jquery'), '1.0', true);
-
+    register_select2();
     prevent_cache_register_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
     prevent_cache_register_script('wbw-meeting-update-form-js', array('jquery', 'jquery.validate'), 'js/meeting_update_form.js');
     prevent_cache_register_style('wbw-meeting-update-form-css', false, 'css/meeting_update_form.css');
@@ -189,7 +190,7 @@ function wbw_admin_scripts($hook)
             // $wbw_dbg->debug_log('inside hook');
 
             // clipboard
-            wp_register_script('clipboard', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
+            wp_register_script('clipboard', 'https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js', array('jquery'), '1.0', true);
             wp_enqueue_script('clipboard');
 
             prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
@@ -204,6 +205,7 @@ function wbw_admin_scripts($hook)
 
             wp_add_inline_script('admin_options_js', $script, 'before');
             break;
+
         case ('bmlt-workflow_page_wbw-submissions'):
             prevent_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
             prevent_cache_enqueue_style('wbw-admin-submissions-css', false, 'css/admin_submissions.css');
@@ -216,13 +218,9 @@ function wbw_admin_scripts($hook)
             wp_enqueue_style('dtcss');
             wp_enqueue_script('dt');
             // select2 for quick editor
-            // wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
-            // wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
-            wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
-            wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
+            register_select2();
             wp_enqueue_style('select2css');
             wp_enqueue_script('select2');
-
 
             // make sure our rest url is populated
             $script  = 'var wbw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/submissions/') . '; ';
@@ -253,11 +251,9 @@ function wbw_admin_scripts($hook)
 
             wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;
+
         case ('bmlt-workflow_page_wbw-service-bodies'):
-            // wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
-            // wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
-            wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
-            wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
+            register_select2();
             wp_enqueue_style('select2css');
             wp_enqueue_script('select2');
 
