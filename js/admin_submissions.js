@@ -10,6 +10,31 @@ function dismiss_notice(element) {
 var wbw_changedata = {};
 
 jQuery(document).ready(function ($) {
+
+
+  // hide / show / required our optional fields
+  switch (wbw_optional_location_nation) {
+    case "hidden":
+    case "":
+      $("#optional_location_nation").hide();
+      break;
+    case "display":
+    case "displayrequired":
+      $("#optional_location_nation").show();
+      break;
+  }
+
+  switch (wbw_optional_location_sub_province) {
+    case "hidden":
+    case "":
+      $("#optional_location_sub_province").hide();
+      break;
+    case "display":
+    case "displayrequired":
+      $("#optional_location_sub_province").show();
+      break;
+  }
+
   function populate_and_open_quickedit(id) {
     // clear quickedit
 
@@ -257,7 +282,7 @@ jQuery(document).ready(function ($) {
               break;
             case "reason_close":
               submission_type = "Close Meeting";
-              console.log(data);
+              // console.log(data);
               namestr = data["meeting_name"];
               break;
             case "reason_change":

@@ -1,10 +1,9 @@
 "use strict";
 
-var mdata = [];
-var mtext = [];
 var weekdays = ["none", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 jQuery(document).ready(function ($) {
+  // set up our format selector
   var formatdata = [];
   Object.keys(wbw_bmlt_formats).forEach((key) => {
     formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
@@ -14,10 +13,43 @@ jQuery(document).ready(function ($) {
     placeholder: "Select from available formats",
     multiple: true,
     data: formatdata,
-    selectionCssClass: ':all:',
+    selectionCssClass: ":all:",
     width: "100%",
   });
-  
+
+  // hide / show / required our optional fields
+  switch (wbw_optional_location_nation) {
+    case "hidden":
+    case "":
+      $("#optional_location_nation").hide();
+      break;
+    case "display":
+      $("#optional_location_nation").show();
+      $("#location_nation").attr("required", false);
+      break;
+    case "displayrequired":
+      $("#optional_location_nation").show();
+      $("#location_nation").attr("required", true);
+      $("#location_nation_label").append('<span class="wbw-required-field"> *</span>');
+      break;
+  }
+
+  switch (wbw_optional_location_sub_province) {
+    case "hidden":
+    case "":
+      $("#optional_location_sub_province").hide();
+      break;
+    case "display":
+      $("#optional_location_sub_province").show();
+      $("#location_sub_province").attr("required", false);
+      break;
+    case "displayrequired":
+      $("#optional_location_sub_province").show();
+      $("#location_sub_province").attr("required", true);
+      $("#location_sub_province_label").append('<span class="wbw-required-field"> *</span>');
+      break;
+  }
+
   function update_meeting_list(wbw_service_bodies) {
     var search_results_address =
       wbw_bmlt_server_address +
@@ -31,125 +63,7 @@ jQuery(document).ready(function ($) {
 
     fetchJsonp(search_results_address)
       .then((response) => response.json())
-      .then((data) => {
-        mdata = data;
-
-        for (let i = 0, length = mdata.length; i < length; i++) {
-          let str = mdata[i].meeting_name + " [ " + weekdays[mdata[i].weekday_tinyint] + ", " + mdata[i].start_time + " ]";
-          var city = "";
-          if (mdata[i].location_municipality != "") {
-            city = mdata[i].location_municipality + ", ";
-          }
-          if (mdata[i].location_province != "") {
-            city += mdata[i].location_province;
-          }
-          if (city != "") {
-            city = "[ " + city + " ]";
-          }
-
-          str = str + city;
-
-          mtext[i] = { text: str, id: i };
-        }
-
-        function matchCustom(params, data) {
-          // If there are no search terms, return all of the data
-          if ((typeof params.term === "undefined") || (params.term.trim() === "")) {
-            return data;
-          }
-
-          // Do not display the item if there is no 'text' property
-          if (typeof data.text === "undefined") {
-            return null;
-          }
-
-          // `params.term` should be the term that is used for searching
-          // `data.text` is the text that is displayed for the data object
-
-          // split the term on spaces and search them all as independent terms
-          var allterms = params.term.split(/\s/).filter(function (x) {
-            return x;
-          });
-          var ltext = data.text.toLowerCase();
-          for (var i = 0; i < allterms.length; ++i) {
-            if (ltext.indexOf(allterms[i].toLowerCase()) > -1) {
-              return data;
-            }
-          }
-
-          // Return `null` if the term should not be displayed
-          return null;
-        }
-
-        $("#meeting-searcher").select2({
-          data: mtext,
-          placeholder: "Select a meeting",
-          allowClear: true,
-          dropdownAutoWidth: true,
-          matcher: matchCustom,
-        });
-
-        $("#meeting-searcher").on("select2:open", function (e) {
-          $("input.select2-search__field").prop("placeholder", "Begin typing your meeting name");
-        });
-
-        $("#meeting-searcher").on("select2:select", function (e) {
-          console.log("select");
-          var data = e.params.data;
-          var id = data.id;
-          // set the weekday format
-          $("#weekday_tinyint").val(mdata[id].weekday_tinyint);
-
-          // fill in the other fields from bmlt
-          put_field("meeting_name", mdata[id].meeting_name);
-          put_field("start_time", mdata[id].start_time);
-          put_field("location_street", mdata[id].location_street);
-          put_field("location_text", mdata[id].location_text);
-          put_field("location_info", mdata[id].location_info);
-          put_field("location_municipality", mdata[id].location_municipality);
-          put_field("location_province", mdata[id].location_province);
-          put_field("location_postal_code_1", mdata[id].location_postal_code_1);
-          put_field("display_format_shared_id_list", mdata[id].format_shared_id_list.split(","));
-
-          // handle duration in the select dropdowns
-          var durationarr = mdata[id].duration_time.split(":");
-          // hoping we got both hours, minutes and seconds here
-          if (durationarr.length == 3) {
-            $("#duration_hours").val(durationarr[0]);
-            $("#duration_minutes").val(durationarr[1]);
-          }
-          // handle service body in the select dropdown
-          $("#service_body_bigint").val(mdata[id].service_body_bigint);
-
-          // store the selected meeting ID away
-          put_field("meeting_id", mdata[id].id_bigint);
-
-          // tweak form instructions
-          var reason = $("#update_reason").val();
-          switch (reason) {
-            case "reason_change":
-
-              // display form instructions
-              $("#instructions").html("We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval.");
-              $("#meeting_content").show();
-              disable_field("service_body_bigint");
-              $(".meeting-input").on("input.wbw-highlight", function () {
-                $(this).addClass("wbw-changed");
-              });
-              $("#display_format_shared_id_list").on("change.wbw-highlight", function () {
-                $(".display_format_shared_id_list-select2").addClass("wbw-changed");
-              });
-
-              break;
-            case "reason_close":
-              // display form instructions
-              $("#instructions").html("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box");
-              $("#meeting_content").show();
-              disable_edits();
-              break;
-          }
-        });
-      });
+      .then((mdata) => create_meeting_searcher(mdata));
   }
 
   $.ajax({
@@ -187,28 +101,163 @@ jQuery(document).ready(function ($) {
     }
   });
 
+  function matchCustom(params, data) {
+    // If there are no search terms, return all of the data
+    if (typeof params.term === "undefined" || params.term.trim() === "") {
+      return data;
+    }
+
+    // Do not display the item if there is no 'text' property
+    if (typeof data.text === "undefined") {
+      return null;
+    }
+
+    // `params.term` should be the term that is used for searching
+    // `data.text` is the text that is displayed for the data object
+
+    // split the term on spaces and search them all as independent terms
+    var allterms = params.term.split(/\s/).filter(function (x) {
+      return x;
+    });
+    var ltext = data.text.toLowerCase();
+    for (var i = 0; i < allterms.length; ++i) {
+      if (ltext.indexOf(allterms[i].toLowerCase()) > -1) {
+        return data;
+      }
+    }
+
+    // Return `null` if the term should not be displayed
+    return null;
+  }
+
+  function create_meeting_searcher(mdata) {
+    var mtext = [];
+
+    // create friendly meeting details for meeting searcher
+    for (let i = 0, length = mdata.length; i < length; i++) {
+      let str = mdata[i].meeting_name + " [ " + weekdays[mdata[i].weekday_tinyint] + ", " + mdata[i].start_time + " ]";
+      var city = "";
+      if (mdata[i].location_municipality != "") {
+        city = mdata[i].location_municipality + ", ";
+      }
+      if (mdata[i].location_province != "") {
+        city += mdata[i].location_province;
+      }
+      if (city != "") {
+        city = "[ " + city + " ]";
+      }
+      str = str + city;
+      mtext[i] = { text: str, id: i };
+    }
+
+    $("#meeting-searcher").select2({
+      data: mtext,
+      placeholder: "Select a meeting",
+      allowClear: true,
+      dropdownAutoWidth: true,
+      matcher: matchCustom,
+    });
+
+    $("#meeting-searcher").on("select2:open", function (e) {
+      $("input.select2-search__field").prop("placeholder", "Begin typing your meeting name");
+    });
+
+    $("#meeting-searcher").on("select2:select", function (e) {
+      disable_and_clear_highlighting();
+      var data = e.params.data;
+      var id = data.id;
+      // set the weekday format
+      $("#weekday_tinyint").val(mdata[id].weekday_tinyint);
+
+      // fill in the other fields from bmlt
+      put_field("meeting_name", mdata[id].meeting_name);
+      put_field("start_time", mdata[id].start_time);
+      put_field("location_street", mdata[id].location_street);
+      put_field("location_text", mdata[id].location_text);
+      put_field("location_info", mdata[id].location_info);
+      put_field("location_municipality", mdata[id].location_municipality);
+      put_field("location_province", mdata[id].location_province);
+      put_field("location_postal_code_1", mdata[id].location_postal_code_1);
+      put_field("display_format_shared_id_list", mdata[id].format_shared_id_list.split(","));
+
+      // handle duration in the select dropdowns
+      var durationarr = mdata[id].duration_time.split(":");
+      // hoping we got both hours, minutes and seconds here
+      if (durationarr.length == 3) {
+        $("#duration_hours").val(durationarr[0]);
+        $("#duration_minutes").val(durationarr[1]);
+      }
+      // handle service body in the select dropdown
+      $("#service_body_bigint").val(mdata[id].service_body_bigint);
+
+      // store the selected meeting ID away
+      put_field("meeting_id", mdata[id].id_bigint);
+
+      // different form behaviours after meeting selection depending on the change type
+      var reason = $("#update_reason").val();
+      switch (reason) {
+        case "reason_change":
+          // display form instructions
+          $("#instructions").html(
+            "We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval."
+          );
+          $("#meeting_content").show();
+          disable_field("service_body_bigint");
+          enable_highlighting();
+
+          break;
+        case "reason_close":
+          // display form instructions
+          $("#instructions").html("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box");
+          $("#meeting_content").show();
+          disable_edits();
+          break;
+      }
+    });
+  }
+
+  function disable_and_clear_highlighting() {
+    // disable the highlighting triggers
+    $(".meeting-input").off("input.wbw-highlight");
+    $("#display_format_shared_id_list").off("change.wbw-highlight");
+    // remove the highlighting css
+    $(".meeting-input").removeClass("wbw-changed");
+    $(".display_format_shared_id_list-select2").removeClass("wbw-changed");
+  }
+
+  function enable_highlighting() {
+    // add highlighting trigger for general input fields
+    $(".meeting-input").on("input.wbw-highlight", function () {
+      $(this).addClass("wbw-changed");
+    });
+    // add highlighting trigger for select2
+    $("#display_format_shared_id_list").on("change.wbw-highlight", function () {
+      $(".display_format_shared_id_list-select2").addClass("wbw-changed");
+    });
+  }
+
   function put_field(fieldname, value) {
     var field = "#" + fieldname;
     $(field).val(value);
-    $(field).trigger('change');
+    $(field).trigger("change");
   }
 
   function clear_field(fieldname, value) {
     var field = "#" + fieldname;
     $(field).val("");
-    $(field).trigger('change');
+    $(field).trigger("change");
   }
 
   function enable_field(fieldname) {
     var field = "#" + fieldname;
     $(field).prop("disabled", false);
-    $(field).trigger('change');
+    $(field).trigger("change");
   }
 
   function disable_field(fieldname) {
     var field = "#" + fieldname;
     $(field).prop("disabled", true);
-    $(field).trigger('change');
+    $(field).trigger("change");
   }
 
   function enable_edits() {
@@ -267,8 +316,7 @@ jQuery(document).ready(function ($) {
     clear_field("meeting_id");
     clear_field("meeting_searcher");
     // set email selector to no
-    $("#add-email").val('no');
-
+    $("#add-email").val("no");
   }
 
   // meeting logic before selection is made
@@ -276,10 +324,9 @@ jQuery(document).ready(function ($) {
   $("#meeting_content").hide();
   $("#other_reason_div").hide();
   $("#other_reason").prop("required", false);
-  $("#personal_details").attr("class","form-grid-col2");
+  $("#personal_details").attr("class", "form-grid-col2");
 
-
-  $("#update_reason").on('change',function () {
+  $("#update_reason").on("change", function () {
     // hide all the optional items
     $("#reason_new_text").hide();
     $("#reason_change_text").hide();
@@ -292,14 +339,8 @@ jQuery(document).ready(function ($) {
     $("#other_reason_div").hide();
     $("#other_reason").prop("required", false);
     $("#additional_info").prop("required", false);
-    $("#personal_details").attr("class","form-grid-col2");
-    // disable the highlighting triggers
-    $(".meeting-input").off("input.wbw-highlight");
-    $("#display_format_shared_id_list").off("change.wbw-highlight"); 
-    // remove the highlighting css
-    $(".meeting-input").removeClass("wbw-changed");
-    $(".display_format_shared_id_list-select2").removeClass("wbw-changed");
-
+    $("#personal_details").attr("class", "form-grid-col2");
+    disable_and_clear_highlighting();
     enable_edits();
     // enable items as required
     var reason = $(this).val();
@@ -351,7 +392,7 @@ jQuery(document).ready(function ($) {
         // other reason has a textarea
         $("#other_reason_div").show();
         $("#meeting_content").show();
-        $("#personal_details").attr("class","form-grid-col1");
+        $("#personal_details").attr("class", "form-grid-col1");
         $("#personal_details").show();
         $("#meeting_details").hide();
         $("#other_reason").prop("required", true);
@@ -360,19 +401,17 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  // $("#meeting_update_form").submit(function (event) {
-
   // form submit handler
   function real_submit_handler() {
     // in case we disabled this we want to send it now
     enable_field("service_body_bigint");
 
     // prevent displayable list from being submitted
-    $("#display_format_shared_id_list").attr('disabled','disabled')
+    $("#display_format_shared_id_list").attr("disabled", "disabled");
     // turn the format list into a single string and move it into the submitted format_shared_id_list
     $("#format_shared_id_list").val($("#display_format_shared_id_list").val().join(","));
     // $("#format_shared_id_list").val($("#display_format_shared_id_list").val());
-    
+
     // construct our duration
     var str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
     put_field("duration_time", str);

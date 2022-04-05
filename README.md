@@ -1,4 +1,4 @@
-# Wordpress-BMLT-workflow (WBW) v0.3.4
+# Wordpress-BMLT-workflow (WBW)
 
 ## Background
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.
@@ -11,16 +11,21 @@ For admins, modification of email templates, service committees and email contac
 This initial release is quite specific to the NA Australian Region use case (particularly the FSO/Starter Kit email) but the code is written such that templates are relatively easy to adjust based on feedback from other regions.
 
 ## Features
-- Form Submitters - Minimal typing of details with most content populated from BMLT.
+- Form Submitters - Minimal typing of details with most content populated from BMLT
 - Form Submitters - Notification of approval/rejection of changes, with messages from the trusted servant managing the change.
 - Admin - Configurable BMLT settings
 - Admin - Email template for mail to the submitter, and for an email to the fso for starter kit requests. Fields can be inserted from the form submission
 - Admin - Shortcode configuration of the meeting form
 - Admin - Configurable BMLT service areas for use within the workflow submission page, including access control
-- Trusted Servants - Full featured approve/reject workflow and automatic insertion of changes into BMLT.
-- Trusted Servants - Notification will be sent to the wordpress email of trusted servants for any new submissions they are permitted to manage. 
+- Admin - Optional Nation and SubProvince fields depending on your BMLT usage
+- Trusted Servants - Full featured approve/reject workflow and automatic insertion of changes into BMLT
+- Trusted Servants - Notification will be sent to the wordpress email of trusted servants for any new submissions they are permitted to manage
 ## Installation
 Standard wordpress plugin installation procedure. Just copy the contents of this repo to your wp-content/plugins folder.
+
+## Contact/Issues
+For any other issues you find - please raise an issue here: https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues and/or reach out on BMLT slack #wordpress-BMLT-workflow
+
 
 ## Usage
 Locate **BMLT Workflow -> Configuration** in your Wordpress Admin page. You'll need to put in a valid BMLT server address, username and password and press the Test Server button.
@@ -60,32 +65,3 @@ Requires composer. From the root of the repository:
 ```composer update```
 ```./vendor/bin/phpunit```
 
-For any other issues you find - please raise an issue here: https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues and/or ping me on BMLT slack #wordpress-BMLT-workflow
-## Changes from 0.3.3 Release
-- https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/20, https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/19, https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/17 - Accessibility fixes (thanks @kgrimley-bu !)
-- https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/16 - Quickedit fixes
-- Namespace refactoring
-- Debug changes to handle CI pipeline nicely
-
-## Changes from 0.32 Release
-- Email notification (submitter and trusted servant) and notification to submitter on reject/approval support added. (#10)
-- Quickedit now shows the additional info field (thanks @tempsaint!) (#13)
-- Support for populating State and Subprovince from BMLT (thanks @pjaudiomv) (#1)
-- Many cleanups, bugfixes and extra PHPUnit test cases
-## Changes from 0.31 Release
-- Request to add email to meeting contact is now honoured through to backend
-- Highlighting of changed fields in user form
-- Additional PHPUnit test cases for approval rest interface
-- Many cleanups and bugfixes
-
-## Changes from 0.3 Release
-- Hosting repo on BMLT-Enabled! https://github.com/bmlt-enabled/wordpress-bmlt-workflow
-- Support for 'Other' and 'Close' meeting management, including publish or delete of closed meetings. This includes a new settings option for the admin to choose which default for Trusted servants.
-- Additional PHPUnit test cases for approval rest interface
-
-## Changes from 0.2 Release
-- Improved front end form layout
-- Close meeting will unpublish an existing meeting
-- Submissions now contain full information from front end form
-- Additional front end fields added (nation and subprovince)
-- PHPUnit test cases built

@@ -11,56 +11,74 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-require 'vendor/autoload.php';
+require 'config.php';
+
+if (file_exists('vendor/autoload.php')) {
+    // use composer autoload if we're running under phpunit
+    include 'vendor/autoload.php';
+} else {
+    // custom autoloader if not. only autoloads out of src directory
+
+    spl_autoload_register(function (string $class) {
+        if (strpos($class, 'wbw\\') === 0)
+        {
+            $class = str_replace('wbw\\','', $class);
+            require __DIR__ . '/src/' . str_replace('\\', '/', $class) . '.php';    
+        }
+    });
+}
 
 use wbw\Debug;
 use wbw\BMLT\Integration;
 use wbw\REST\Controller;
 
-define('WBW_DEBUG',false);
-
-define('WBW_PLUGIN_DIR', plugin_dir_path(__FILE__));
-
-global $wbw_db_version;
-$wbw_db_version = '1.0';
-global $wpdb;
-global $wbw_submissions_table_name;
-global $wbw_service_bodies_table_name;
-global $wbw_service_bodies_access_table_name;
-global $wbw_rest_namespace;
+// debugging options
 global $wbw_dbg;
 $wbw_dbg = new Debug;
 
 // our rest namespace
+global $wbw_rest_namespace;
 $wbw_rest_namespace = 'wbw/v1';
 
-// placeholder for an 'other' service body
-define('CONST_OTHER_SERVICE_BODY','99999999999');
+// database configuration
+global $wpdb;
 
+global $wbw_db_version;
+$wbw_db_version = '1.0';
+
+global $wbw_submissions_table_name;
 $wbw_submissions_table_name = $wpdb->prefix . 'wbw_submissions';
+
+global $wbw_service_bodies_table_name;
 $wbw_service_bodies_table_name = $wpdb->prefix . 'wbw_service_bodies';
+
+global $wbw_service_bodies_access_table_name;
 $wbw_service_bodies_access_table_name = $wpdb->prefix . 'wbw_service_bodies_access';
 
 global $wbw_capability_manage_submissions;
 $wbw_capability_manage_submissions = 'wbw_manage_submissions';
+
 
 function meeting_update_form($atts = [], $content = null, $tag = '')
 {
     global $wbw_rest_namespace;
     global $wbw_dbg;
 
-    prevent_cache_enqueue_script('wbw-meeting-update-form-js',array('jquery'), 'js/meeting_update_form.js');
-    prevent_cache_enqueue_script('wbw-general-js',array('jquery'), 'js/script_includes.js');
-    prevent_cache_enqueue_style('wbw-meeting-update-form-css',false, 'js/meeting_update_form.js');
+    prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
+    prevent_cache_enqueue_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
+    prevent_cache_enqueue_style('wbw-meeting-update-form-css', false, 'js/meeting_update_form.js');
     wp_enqueue_style('wbw-meeting-update-form-css');
     wp_enqueue_script('jquery-validate');
     wp_enqueue_script('jquery-validate-additional');
     wp_enqueue_style('select2css');
     wp_enqueue_script('select2');
-    $script  = 'var wbw_form_submit = ' . json_encode($wbw_rest_namespace.'/submissions') . '; ';
-    $script .= 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace.'/servicebodies') . '; ';
+    $script  = 'var wbw_form_submit = ' . json_encode($wbw_rest_namespace . '/submissions') . '; ';
+    $script .= 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace . '/servicebodies') . '; ';
     $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
+    // optional fields
+    $script .= 'var wbw_optional_location_nation = "' . get_option('wbw_optional_location_nation') . '";';
+    $script .= 'var wbw_optional_location_sub_province = "' . get_option('wbw_optional_location_sub_province') . '";';
 
     // add meeting formats
     $bmlt_integration = new Integration;
@@ -69,8 +87,8 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $wbw_dbg->debug_log($wbw_dbg->vdump($formatarr));
     $wbw_dbg->debug_log(json_encode($formatarr));
     $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
-    
-    $wbw_dbg->debug_log("adding script ".$script);
+
+    $wbw_dbg->debug_log("adding script " . $script);
     $status = wp_add_inline_script('wbw-meeting-update-form-js', $script, 'before');
 
 
@@ -80,14 +98,14 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
 
     // Print all loaded Scripts
     global $wp_scripts;
-    foreach( $wp_scripts->queue as $script ) :
-       $result['scripts'][] =  $wp_scripts->registered[$script]->src . ";";
+    foreach ($wp_scripts->queue as $script) :
+        $result['scripts'][] =  $wp_scripts->registered[$script]->src . ";";
     endforeach;
 
     // Print all loaded Styles (CSS)
     global $wp_styles;
-    foreach( $wp_styles->queue as $style ) :
-       $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
+    foreach ($wp_styles->queue as $style) :
+        $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
     endforeach;
 
     $wbw_dbg->debug_log($wbw_dbg->vdump($result));
@@ -117,7 +135,7 @@ function prevent_cache_enqueue_script($handle, $deps, $name)
     global $wbw_dbg;
 
     $ret = wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
-    $wbw_dbg->debug_log("enqueue style ".$handle);
+    $wbw_dbg->debug_log("enqueue style " . $handle);
     $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 }
 
@@ -126,9 +144,14 @@ function prevent_cache_enqueue_style($handle, $deps, $name)
     global $wbw_dbg;
 
     $ret = wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
-    $wbw_dbg->debug_log("enqueue style ".$handle);
+    $wbw_dbg->debug_log("enqueue style " . $handle);
     $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
+}
 
+function register_select2()
+{
+    wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
+    wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
 }
 
 function enqueue_form_deps()
@@ -136,12 +159,7 @@ function enqueue_form_deps()
     global $wbw_rest_namespace;
     global $wbw_dbg;
 
-    // wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
-    // wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
-    wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
-    wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
-    // wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.full.js', array('jquery'), '1.0', true);
-
+    register_select2();
     prevent_cache_register_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
     prevent_cache_register_script('wbw-meeting-update-form-js', array('jquery', 'jquery.validate'), 'js/meeting_update_form.js');
     prevent_cache_register_style('wbw-meeting-update-form-css', false, 'css/meeting_update_form.css');
@@ -156,7 +174,7 @@ function wbw_admin_scripts($hook)
     global $wbw_rest_namespace;
     global $wbw_dbg;
 
-        // $wbw_dbg->debug_log($hook);
+    // $wbw_dbg->debug_log($hook);
 
     if (($hook != 'toplevel_page_wbw-settings') && ($hook != 'bmlt-workflow_page_wbw-submissions') && ($hook != 'bmlt-workflow_page_wbw-service-bodies')) {
         return;
@@ -172,7 +190,7 @@ function wbw_admin_scripts($hook)
             // $wbw_dbg->debug_log('inside hook');
 
             // clipboard
-            wp_register_script('clipboard', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
+            wp_register_script('clipboard', 'https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js', array('jquery'), '1.0', true);
             wp_enqueue_script('clipboard');
 
             prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
@@ -187,6 +205,7 @@ function wbw_admin_scripts($hook)
 
             wp_add_inline_script('admin_options_js', $script, 'before');
             break;
+
         case ('bmlt-workflow_page_wbw-submissions'):
             prevent_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
             prevent_cache_enqueue_style('wbw-admin-submissions-css', false, 'css/admin_submissions.css');
@@ -199,13 +218,9 @@ function wbw_admin_scripts($hook)
             wp_enqueue_style('dtcss');
             wp_enqueue_script('dt');
             // select2 for quick editor
-            // wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
-            // wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
-            wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
-            wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
+            register_select2();
             wp_enqueue_style('select2css');
             wp_enqueue_script('select2');
-
 
             // make sure our rest url is populated
             $script  = 'var wbw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/submissions/') . '; ';
@@ -222,7 +237,7 @@ function wbw_admin_scripts($hook)
 
             // do a one off lookup for our servicebodies
             $url = '/' . $wbw_rest_namespace . '/servicebodies';
-            
+
             $request  = new WP_REST_Request('GET', $url);
             $response = rest_do_request($request);
             $result     = rest_get_server()->response_to_data($response, true);
@@ -233,14 +248,15 @@ function wbw_admin_scripts($hook)
             $wbw_default_closed_meetings = get_option('wbw_delete_closed_meetings');
             $script .= 'var wbw_default_closed_meetings = "' . $wbw_default_closed_meetings . '"; ';
 
-
+            // optional fields in quickedit
+            $script .= 'var wbw_optional_location_nation = "' . get_option('wbw_optional_location_nation') . '";';
+            $script .= 'var wbw_optional_location_sub_province = "' . get_option('wbw_optional_location_sub_province') . '";';
+        
             wp_add_inline_script('admin_submissions_js', $script, 'before');
             break;
+
         case ('bmlt-workflow_page_wbw-service-bodies'):
-            // wp_register_style('select2css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css', false, '1.0', 'all');
-            // wp_register_script('select2', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), '1.0', true);
-            wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
-            wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
+            register_select2();
             wp_enqueue_style('select2css');
             wp_enqueue_script('select2');
 
@@ -248,7 +264,7 @@ function wbw_admin_scripts($hook)
             prevent_cache_enqueue_style('wbw-admin-submissions-css', false, 'css/admin_service_bodies.css');
 
             // make sure our rest url is populated
-            $script  = 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace.'/servicebodies') . '; ';
+            $script  = 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace . '/servicebodies') . '; ';
             $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
             wp_add_inline_script('admin_service_bodies_js', $script, 'before');
             break;
@@ -313,8 +329,8 @@ function add_plugin_link($plugin_actions, $plugin_file)
 
 function wbw_rest_controller()
 {
-	$controller = new Controller();
-	$controller->register_routes();
+    $controller = new Controller();
+    $controller->register_routes();
 }
 
 // actions, shortcodes, menus and filters
@@ -354,7 +370,7 @@ function wbw_register_setting()
 
     global $wbw_capability_manage_submissions;
 
-    if ((!current_user_can('activate_plugins'))&&(!current_user_can($wbw_capability_manage_submissions))) {
+    if ((!current_user_can('activate_plugins')) && (!current_user_can($wbw_capability_manage_submissions))) {
         wp_die("This page cannot be accessed");
     }
 
@@ -415,6 +431,30 @@ function wbw_register_setting()
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
             'default' => 'unpublish'
+        )
+    );
+
+    register_setting(
+        'wbw-settings-group',
+        'wbw_optional_location_nation',
+        array(
+            'type' => 'string',
+            'description' => 'optional field for location_nation',
+            'sanitize_callback' => 'string_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => 'hidden'
+        )
+    );
+
+    register_setting(
+        'wbw-settings-group',
+        'wbw_optional_location_sub_province',
+        array(
+            'type' => 'string',
+            'description' => 'optional field for location_sub_province',
+            'sanitize_callback' => 'string_sanitize_callback',
+            'show_in_rest' => false,
+            'default' => 'hidden'
         )
     );
 
@@ -506,6 +546,14 @@ function wbw_register_setting()
     );
 
     add_settings_field(
+        'wbw_optional_form_fields',
+        'Optional form fields',
+        'wbw_optional_form_fields_html',
+        'wbw-settings',
+        'wbw-settings-section-id'
+    );
+
+    add_settings_field(
         'wbw_fso_email_address',
         'Email address for the FSO (Starter Kit Notifications)',
         'wbw_fso_email_address_html',
@@ -529,7 +577,6 @@ function wbw_register_setting()
         'wbw-settings',
         'wbw-settings-section-id'
     );
-
 }
 
 function wbw_bmlt_server_address_html()
@@ -586,12 +633,9 @@ function wbw_delete_closed_meetings_html()
     $selection = get_option('wbw_delete_closed_meetings');
     $delete = '';
     $unpublish = '';
-    if($selection === 'delete')
-    {
+    if ($selection === 'delete') {
         $delete = 'selected';
-    }
-    else
-    {
+    } else {
         $unpublish = 'selected';
     }
 
@@ -602,8 +646,53 @@ function wbw_delete_closed_meetings_html()
     </div>
     END;
 
-    echo '<br><label for="wbw_delete_closed_meetings"><b>Close meeting default:</b></label><select name="wbw_delete_closed_meetings"><option name="unpublish" value="unpublish" '.$unpublish.'>Unpublish</option><option name="delete" value="delete" '.$delete.'>Delete</option>';
+    echo '<br><label for="wbw_delete_closed_meetings"><b>Close meeting default:</b></label><select name="wbw_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>Unpublish</option><option name="delete" value="delete" ' . $delete . '>Delete</option>';
     echo '<br><br>';
+}
+
+
+function wbw_optional_form_fields_html()
+{
+    echo <<<END
+    <div class="wbw_info_text">
+    <br>Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users.
+    <br><br>
+    </div>
+    END;
+
+    do_optional_field('wbw_optional_location_nation', 'Nation');
+    do_optional_field('wbw_optional_location_sub_province', 'Sub Province');
+}
+
+function do_optional_field($option, $friendlyname)
+{
+    $value = get_option($option);
+    global $wbw_dbg;
+    $wbw_dbg->debug_log($wbw_dbg->vdump($value));
+    $hidden = '';
+    $displayrequired = '';
+    $display = '';
+
+    switch ($value) {
+        case 'hidden':
+            $hidden = 'selected';
+            break;
+        case 'displayrequired':
+            $displayrequired = 'selected';
+            break;
+        case 'display':
+            $display = 'selected';
+            break;
+    }
+    echo <<<END
+    <br><label for="${option}"><b>${friendlyname}:</b>
+    </label><select name="${option}">
+    <option name="hidden" value="hidden" ${hidden}>Hidden</option>
+    <option name="displayrequired" value="displayrequired" ${displayrequired}>Display + Required Field</option>
+    <option name="display" value="display" ${display}>Display Only</option>
+    </select>
+    <br><br>
+    END;
 }
 
 function wbw_fso_email_address_html()
@@ -761,7 +850,7 @@ function wbw_uninstall()
     }
 
     remove_role('wbw_trusted_servant');
-    
+
     // Fix for production usage
     $sql = "DROP TABLE " . $wbw_service_bodies_access_table_name . ";";
     $wpdb->query($sql);
@@ -769,5 +858,4 @@ function wbw_uninstall()
     $wpdb->query($sql);
     $sql = "DROP TABLE " . $wbw_service_bodies_table_name . ";";
     $wpdb->query($sql);
-
 }
