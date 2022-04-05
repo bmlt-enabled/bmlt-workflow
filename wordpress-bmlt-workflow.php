@@ -64,14 +64,20 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     global $wbw_rest_namespace;
     global $wbw_dbg;
 
+    // base css and js for this page
     prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
-    prevent_cache_enqueue_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
     prevent_cache_enqueue_style('wbw-meeting-update-form-css', false, 'js/meeting_update_form.js');
     wp_enqueue_style('wbw-meeting-update-form-css');
+    prevent_cache_enqueue_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
+
+    // jquery validation
     wp_enqueue_script('jquery-validate');
     wp_enqueue_script('jquery-validate-additional');
-    wp_enqueue_style('select2css');
-    wp_enqueue_script('select2');
+
+    // select2
+    enqueue_select2();
+
+    // inline scripts
     $script  = 'var wbw_form_submit = ' . json_encode($wbw_rest_namespace . '/submissions') . '; ';
     $script .= 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace . '/servicebodies') . '; ';
     $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
@@ -123,35 +129,48 @@ function prevent_cache_register_script($handle, $deps, $name)
 
 function prevent_cache_register_style($handle, $deps, $name)
 {
-    global $wbw_dbg;
+    // global $wbw_dbg;
 
     $ret = wp_register_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
-    $wbw_dbg->debug_log("register style");
-    $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
+    // $wbw_dbg->debug_log("register style");
+    // $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 }
 
 function prevent_cache_enqueue_script($handle, $deps, $name)
 {
-    global $wbw_dbg;
+    // global $wbw_dbg;
 
     $ret = wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
-    $wbw_dbg->debug_log("enqueue style " . $handle);
-    $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
+    // $wbw_dbg->debug_log("enqueue style " . $handle);
+    // $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 }
 
 function prevent_cache_enqueue_style($handle, $deps, $name)
 {
-    global $wbw_dbg;
+    // global $wbw_dbg;
 
     $ret = wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
-    $wbw_dbg->debug_log("enqueue style " . $handle);
-    $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
+    // $wbw_dbg->debug_log("enqueue style " . $handle);
+    // $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 }
 
 function register_select2()
 {
     wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
     wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
+}
+
+function enqueue_select2()
+{
+    wp_enqueue_style('select2css');
+    wp_enqueue_script('select2');
+}
+
+function enqueue_jquery_dialog()
+{
+    // jquery dialogs
+    wp_enqueue_script('jquery-ui-dialog');
+    wp_enqueue_style('wp-jquery-ui-dialog');
 }
 
 function enqueue_form_deps()
@@ -185,15 +204,17 @@ function wbw_admin_scripts($hook)
     switch ($hook) {
 
         case ('toplevel_page_wbw-settings'):
-            prevent_cache_enqueue_style('wbw-admin-css', false, 'css/admin_page.css');
-
-            // $wbw_dbg->debug_log('inside hook');
+            // base css and scripts for this page
+            prevent_cache_enqueue_style('wbw-admin-css', false, 'css/admin_options.css');
+            prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
 
             // clipboard
             wp_register_script('clipboard', 'https://cdn.jsdelivr.net/npm/clipboard@2.0.10/dist/clipboard.min.js', array('jquery'), '1.0', true);
             wp_enqueue_script('clipboard');
 
-            prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
+            // jquery dialog
+            enqueue_jquery_dialog();
+
             // inline scripts
             $script  = 'var wbw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/bmltserver') . '; ';
 
@@ -207,20 +228,22 @@ function wbw_admin_scripts($hook)
             break;
 
         case ('bmlt-workflow_page_wbw-submissions'):
+            // base css and scripts for this page
             prevent_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
             prevent_cache_enqueue_style('wbw-admin-submissions-css', false, 'css/admin_submissions.css');
-            // jquery dialogs
-            wp_enqueue_script('jquery-ui-dialog');
-            wp_enqueue_style('wp-jquery-ui-dialog');
+
+            // jquery dialog
+            enqueue_jquery_dialog();
+
             // datatables
             wp_register_style('dtcss', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.css', false, '1.0', 'all');
             wp_register_script('dt', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
             wp_enqueue_style('dtcss');
             wp_enqueue_script('dt');
+
             // select2 for quick editor
             register_select2();
-            wp_enqueue_style('select2css');
-            wp_enqueue_script('select2');
+            enqueue_select2();
 
             // make sure our rest url is populated
             $script  = 'var wbw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/submissions/') . '; ';
@@ -241,7 +264,6 @@ function wbw_admin_scripts($hook)
             $request  = new WP_REST_Request('GET', $url);
             $response = rest_do_request($request);
             $result     = rest_get_server()->response_to_data($response, true);
-            // $wbw_dbg->debug_log("result = ".vdump($result));
             $script .= 'var wbw_admin_wbw_service_bodies = ' . json_encode($result) . '; ';
 
             // defaults for approve close form
@@ -253,15 +275,17 @@ function wbw_admin_scripts($hook)
             $script .= 'var wbw_optional_location_sub_province = "' . get_option('wbw_optional_location_sub_province') . '";';
         
             wp_add_inline_script('admin_submissions_js', $script, 'before');
+
             break;
 
         case ('bmlt-workflow_page_wbw-service-bodies'):
-            register_select2();
-            wp_enqueue_style('select2css');
-            wp_enqueue_script('select2');
-
+            // base css and scripts for this page
             prevent_cache_enqueue_script('admin_service_bodies_js', array('jquery'), 'js/admin_service_bodies.js');
             prevent_cache_enqueue_style('wbw-admin-submissions-css', false, 'css/admin_service_bodies.css');
+
+            // select2
+            register_select2();
+            enqueue_select2();
 
             // make sure our rest url is populated
             $script  = 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace . '/servicebodies') . '; ';
@@ -595,10 +619,7 @@ function wbw_bmlt_server_address_html()
     </div>
     END;
 
-    echo '<br><label for="wbw_bmlt_server_address"><b>Server Address:</b></label><input type="url" size="50" id="wbw_bmlt_server_address" name="wbw_bmlt_server_address" value="' . $wbw_bmlt_server_address . '"/>';
-    echo '<br><label for="wbw_bmlt_username"><b>BMLT Username:</b></label><input type="text" size="50" id="wbw_bmlt_username" name="wbw_bmlt_username" value="' . $wbw_bmlt_username . '"/>';
-    echo '<br><label for="wbw_bmlt_password"><b>BMLT Password:</b></label><input type="password" size="50" id="wbw_bmlt_password" name="wbw_bmlt_password"/>';
-    echo '<button type="button" id="wbw_test_bmlt_server">Test BMLT Configuration</button><span style="display: none;" id="wbw_test_yes" class="dashicons dashicons-yes"></span><span style="display: none;" id="wbw_test_no" class="dashicons dashicons-no"></span>';
+    echo '<button type="button" id="wbw_configure_bmlt_server">Edit BMLT Configuration</button><span style="display: none;" id="wbw_test_yes" class="dashicons dashicons-yes"></span><span style="display: none;" id="wbw_test_no" class="dashicons dashicons-no"></span>';
     echo '<br><br>';
     echo '<input type="hidden" id="wbw_bmlt_test_status" name="wbw_bmlt_test_status" value="' . $wbw_bmlt_test_status . '"></input>';
 }

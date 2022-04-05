@@ -1,10 +1,10 @@
-## 0.3.5-beta (Aprl 5, 2022)
+## 0.3.5-beta (April 5, 2022)
 - https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/24, https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/23 - highlighting fixes (thanks @rogersearle !)
 - Mini-autoloader to support non composer deploy
 - Nation and Sub-province fields are now optional and configurable (hidden / displayed / displayed and required) through the configuration panel 
 - Select2 updated to 4.1.0-rc0
 
-## 0.3.4-beta (Aprl 4, 2022)
+## 0.3.4-beta (April 4, 2022)
 - https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/20, https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/19, https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/17 - Accessibility fixes (thanks @kgrimley-bu !)
 - https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/16 - Quickedit fixes
 - Namespace refactoring

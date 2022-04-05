@@ -16,6 +16,42 @@ jQuery(document).ready(function ($) {
     });
   }
 
+    $("#wbw_bmlt_configuration_dialog").dialog({
+      title: "BMLT Configuration",
+      autoOpen: false,
+      draggable: false,
+      width: 'auto',
+      maxWidth: 'auto',
+      modal: true,
+      resizable: false,
+      closeOnEscape: true,
+      position: {
+        my: "center",
+        at: "center",
+        of: window,
+      },
+      buttons: {
+        Ok: function () {
+        },
+        Cancel: function () {
+          $(this).dialog("close");
+        },
+      },
+      open: function () {
+        var $this = $(this);
+        // close dialog by clicking the overlay behind it
+        $(".ui-widget-overlay").on("click", function () {
+          $this.dialog("close");
+        });
+      },
+      create: function () {
+        $(".ui-dialog-titlebar-close").addClass("ui-button");
+      },
+    });
+  
+
+  
+
   if (test_status == "success") {
     $("#wbw_test_yes").show();
     $("#wbw_test_no").hide();
@@ -32,6 +68,10 @@ jQuery(document).ready(function ($) {
   });
 
   $("#wbw_bmlt_test_status").val(test_status);
+
+  $("#wbw_configure_bmlt_server").on("click", function (event) {
+    $("#wbw_bmlt_configuration_dialog").dialog("open");
+  });
 
   $("#wbw_test_bmlt_server").on("click", function (event) {
     var parameters = {};
