@@ -71,10 +71,13 @@ jQuery(document).ready(function ($) {
       type: "GET",
       jsonpCallback: "create_meeting_searcher",
       contentType: "application/json; charset=utf-8",
-      error: function (xhr, status, error) {
-        console.log("Result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText);
-      },
-    });
+      success: function (result, status, xhr) {
+        console.log(result);
+    },
+    error: function (xhr, status, error) {
+        console.log("Result: " + status + " " + error + " " + xhr.status + " " + xhr.statusText)
+    }
+      });
   }
 
   $.ajax({
