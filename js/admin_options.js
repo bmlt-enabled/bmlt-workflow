@@ -8,13 +8,31 @@ function dismiss_notice(element) {
 }
 
 jQuery(document).ready(function ($) {
+  var wbw_test_status = "failure";
+
+  get_test_status()
+  .then((data) => {
+    console.log(data)
+    update_from_test_result(data);
+  })
+
+  function update_from_test_result(data) {
+    if (wbw_test_status == "success") {
+      $("#wbw_test_yes").show();
+      $("#wbw_test_no").hide();
+    } else {
+      $("#wbw_test_no").show();
+      $("#wbw_test_yes").hide();
+    }
+  }
+
   function clear_notices() {
     jQuery(".notice-dismiss").each(function (i, e) {
       dismiss_notice(e);
     });
   }
 
-  function notice_success(response,notice_class) {
+  function notice_success(response, notice_class) {
     var msg = "";
     if (response.message == "")
       msg =
@@ -24,11 +42,11 @@ jQuery(document).ready(function ($) {
         '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
         response.message +
         '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-    $("."+notice_class).after(msg);
+    $("." + notice_class).after(msg);
   }
 
-  function notice_error(xhr,notice_class) {
-    $("."+notice_class).after(
+  function notice_error(xhr, notice_class) {
+    $("." + notice_class).after(
       '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
         xhr.responseJSON.message +
         '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
@@ -52,6 +70,9 @@ jQuery(document).ready(function ($) {
       of: window,
     },
     buttons: {
+      "Test Configuration": function () {
+        test_configuration();
+      },
       "Save and Close": function () {
         save_and_close(this);
       },
@@ -71,14 +92,6 @@ jQuery(document).ready(function ($) {
     },
   });
 
-  if (test_status == "success") {
-    $("#wbw_test_yes").show();
-    $("#wbw_test_no").hide();
-  } else {
-    $("#wbw_test_no").show();
-    $("#wbw_test_yes").hide();
-  }
-
   $("form").on("submit", function () {
     $("#wbw_new_meeting_template_default").attr("disabled", "disabled");
     $("#wbw_existing_meeting_template_default").attr("disabled", "disabled");
@@ -86,14 +99,12 @@ jQuery(document).ready(function ($) {
     $("#wbw_close_meeting_template_default").attr("disabled", "disabled");
   });
 
-  $("#wbw_bmlt_test_status").val(test_status);
-
   $("#wbw_configure_bmlt_server").on("click", function (event) {
     clear_notices();
     $("#wbw_bmlt_configuration_dialog").dialog("open");
   });
 
-  $("#wbw_test_bmlt_server").on("click", function (event) {
+  function test_configuration() {
     var parameters = {};
     parameters["wbw_bmlt_server_address"] = $("#wbw_bmlt_server_address").val();
     parameters["wbw_bmlt_username"] = $("#wbw_bmlt_username").val();
@@ -111,18 +122,52 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        notice_success(response, 'quickedit-wp-header-end');
-        $("#wbw_bmlt_test_status").val("success");
-        $("#wbw_test_yes").show();
-        $("#wbw_test_no").hide();
+        notice_success(response, "quickedit-wp-header-end");
+        update_from_test_result()
       })
       .fail(function (xhr) {
-        notice_error(xhr,'quickedit-wp-header-end');
-        $("#wbw_bmlt_test_status").val("failure");
-        $("#wbw_test_no").show();
-        $("#wbw_test_yes").hide();
+        notice_error(xhr, "quickedit-wp-header-end");
+        update_from_test_result()
       });
-  });
+  }
+
+
+  // function doTheThing() {
+  //   return new Promise((resolve, reject) => {
+  //     $.ajax({
+  //       url: window.location.href,
+  //       type: 'POST',
+  //       data: {
+  //         key: 'value',
+  //       },
+  //       success: function (data) {
+  //         resolve(data)
+  //       },
+  //       error: function (error) {
+  //         reject(error)
+  //       },
+  //     })
+  //   })
+  // }
+  
+
+  function get_test_status() {
+    return new Promise((resolve, reject) => {
+    $.ajax({
+      url: wbw_admin_bmltserver_rest_url,
+      type: "GET",
+      dataType: "json",
+      contentType: "application/json",
+      data: JSON.stringify(parameters),
+      beforeSend: function (xhr) {
+        clear_notices();
+        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+      },
+    }).done(function (response) {
+      resolve(response)
+    })
+  })
+  }
 
   function save_and_close(element) {
     var parameters = {};
@@ -139,16 +184,16 @@ jQuery(document).ready(function ($) {
       beforeSend: function (xhr) {
         clear_notices();
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
-      }
+      },
     })
 
       .done(function (response) {
-        notice_success(response,'quickedit-wp-header-end');
+        notice_success(response, "quickedit-wp-header-end");
         $(element).dialog("close");
       })
 
       .fail(function (xhr) {
-        notice_error(xhr,'quickedit-wp-header-end');
+        notice_error(xhr, "quickedit-wp-header-end");
       });
   }
 });

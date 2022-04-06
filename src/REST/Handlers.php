@@ -654,7 +654,7 @@ class Handlers
         return $this->wbw_rest_success('Approved submission id ' . $change_id);
     }
 
-    private function check_server_parameters($username, $password, $server)
+    private function check_bmltserver_parameters($username, $password, $server)
     {
         // global $wbw_dbg;
         // $wbw_dbg->debug_log($wbw_dbg->vdump($username));
@@ -681,7 +681,12 @@ class Handlers
         return true;
     }
 
-    public function post_server_handler($request)
+    public function get_bmltserver_handler($request)
+    {
+        return get_option("wbw_bmlt_test_status", "failure");
+    }
+
+    public function post_bmltserver_handler($request)
     {
         global $wbw_dbg;
 
@@ -689,7 +694,7 @@ class Handlers
         $password = $request['wbw_bmlt_password'];
         $server = $request['wbw_bmlt_server_address'];
 
-        $result = $this->check_server_parameters($username, $password, $server);
+        $result = $this->check_bmltserver_parameters($username, $password, $server);
         if ($result !== true)
         {
             return $result;
@@ -698,20 +703,22 @@ class Handlers
         $ret = $this->bmlt_integration->testServerAndAuth($username, $password, $server);
         $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
         if (is_wp_error($ret)) {
+            update_option("wbw_bmlt_test_status","failure");
             return $this->wbw_rest_error('Server and Authentication test failed - ' . $ret->get_error_message(), 500);
         } else {
+            update_option("wbw_bmlt_test_status","success");
             return $this->wbw_rest_success('BMLT Server and Authentication test succeeded.');
         }
     }
 
-    public function patch_server_handler($request)
+    public function patch_bmltserver_handler($request)
     {
 
         $username = $request['wbw_bmlt_username'];
         $password = $request['wbw_bmlt_password'];
         $server = $request['wbw_bmlt_server_address'];
 
-        $result = $this->check_server_parameters($username, $password,$server);
+        $result = $this->check_bmltserver_parameters($username, $password,$server);
         if ($result !== true)
         {
             return $result;
