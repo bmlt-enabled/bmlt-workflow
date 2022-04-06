@@ -124,7 +124,6 @@ jQuery(document).ready(function ($) {
   });
 
   function save_and_close(element) {
-
     var parameters = {};
     parameters["wbw_bmlt_server_address"] = $("#wbw_bmlt_server_address").val();
     parameters["wbw_bmlt_username"] = $("#wbw_bmlt_username").val();
@@ -140,12 +139,12 @@ jQuery(document).ready(function ($) {
         clear_notices();
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
-    })
-      .done(function (response) {
+      success: function (response) {
         notice_success(response);
         $(element).dialog("close");
+      }
+    })
 
-      })
       .fail(function (xhr) {
         notice_error(xhr);
       });
