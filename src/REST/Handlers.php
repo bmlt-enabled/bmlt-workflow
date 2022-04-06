@@ -687,7 +687,6 @@ class Handlers
 
         $response = array("wbw_bmlt_test_status" => get_option("wbw_bmlt_test_status", "failure"));
 
-        // return json_encode($response);
         return $response;
     }
 

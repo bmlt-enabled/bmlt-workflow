@@ -11,7 +11,7 @@ jQuery(document).ready(function ($) {
 
   get_test_status()
   .then((data) => {
-    update_from_test_result(JSON.parse(data));
+    update_from_test_result(data);
   });
 
   function clear_notices() {
@@ -66,8 +66,6 @@ jQuery(document).ready(function ($) {
         // trigger an update on the main page
         test_configuration().then((data) =>
         {
-          console.log("get test status returned");
-          console.log(data);
           update_from_test_result(data);
         });
         $(this).dialog("close");
