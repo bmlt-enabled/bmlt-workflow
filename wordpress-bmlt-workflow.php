@@ -598,12 +598,10 @@ function wbw_register_setting()
 
 function wbw_bmlt_server_address_html()
 {
-
+    echo '<div id="wbw_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your BMLT details are successfully configured.</div>';
+    echo '<div id="wbw_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Your BMLT details are not configured correctly.</div>';
     echo '<br>';
-    echo '<div id="wbw_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt"></span>Your BMLT settings are successfully configured.</div>';
-    echo '<div id="wbw_test_no" style="display: none;" ><span class="dashicons dashicons-no"></span>Your BMLT settings are not configured correctly.</div>';
-    echo '<br>';
-    echo '<button type="button" id="wbw_configure_bmlt_server">Edit BMLT Configuration</button>';
+    echo '<button type="button" id="wbw_configure_bmlt_server">Update BMLT Configuration</button>';
     echo '<br>';
 }
 
