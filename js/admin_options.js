@@ -71,6 +71,7 @@ jQuery(document).ready(function ($) {
       },
       "Save and Close": function () {
         save_and_close(this);
+        $(this).dialog("close");
       },
       Cancel: function () {
         $(this).dialog("close");
@@ -168,14 +169,11 @@ jQuery(document).ready(function ($) {
     })
 
       .done(function (response) {
-        notice_success(response, "quickedit-wp-header-end");
+        // notice_success(response, "quickedit-wp-header-end");
         do_test_and_update();
-        $(element).dialog("close");
       })
-
       .fail(function (xhr) {
-        update_from_test_result(xhr)
-        notice_error(xhr, "quickedit-wp-header-end");
+        // notice_error(xhr, "quickedit-wp-header-end");
         do_test_and_update();
       });
   }
