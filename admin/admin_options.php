@@ -25,9 +25,13 @@ echo '</form></div>';
 <div id="wbw_bmlt_configuration_dialog" class="hidden" style="max-width:800px">
 <div class="quickedit-wp-header-end"></div><br>
     <div class="wbw_info_text">
-        <br>Enter your BMLT server address, and a configured BMLT username and password.
-        <br><br>The server address is the full URL to your server installation. For example: <code>https://na.test.zzz/main_server/</code>
-        <br>
+    <br>Enter your BMLT server address, and a BMLT username and password.
+    <br>
+    <br>The BMLT username and password is used to action meeting approvals/rejections as well as perform any BMLT related actions on the Wordpress users behalf. 
+    <br>This user must be configured as a service body administrator and have access within BMLT to edit all service bodies that are used in WBW form submissions.
+    <br>
+    <br>The server address is the full URL to your server installation. For example: <code>https://na.test.zzz/main_server/</code>
+    <br>
     </div>
 
     <br><label for="wbw_bmlt_server_address"><b>Server Address:</b></label>
