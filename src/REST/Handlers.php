@@ -660,6 +660,7 @@ class Handlers
         $wbw_dbg->debug_log($wbw_dbg->vdump($username));
         $wbw_dbg->debug_log($wbw_dbg->vdump($password));
         $wbw_dbg->debug_log($wbw_dbg->vdump($server));
+        $wbw_dbg->debug_log($wbw_dbg->vdump(empty($password)));
 
         if(empty($username))
         {
