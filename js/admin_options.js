@@ -126,11 +126,11 @@ jQuery(document).ready(function ($) {
     })
       .done(function (response) {
         notice_success(response, "quickedit-wp-header-end");
-        resolve(true);
+        resolve(response);
       })
       .fail(function (xhr) {
         notice_error(xhr, "quickedit-wp-header-end");
-        resolve(true);
+        resolve(xhr);
       })
     })
   }
