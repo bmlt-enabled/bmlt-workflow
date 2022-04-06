@@ -64,12 +64,17 @@ jQuery(document).ready(function ($) {
       "Save and Close": function () {
         save_results(this);
         // trigger an update on the main page
-        test_configuration().then(
+        test_configuration().then((data) =>
+        {
+          console.log("test configuration returned");
+          console.log(data);
           get_test_status()
+        })
         .then((data) => {
+          console.log("get test status returned");
+          console.log(data);
           update_from_test_result(JSON.parse(data));
-        })  
-    );
+        });
         $(this).dialog("close");
       },
       Cancel: function () {
