@@ -13,7 +13,7 @@ jQuery(document).ready(function ($) {
   get_test_status()
   .then((data) => {
     console.log(data)
-    update_from_test_result(data);
+    update_from_test_result(json_decode(data));
   })
 
   function update_from_test_result(data) {
@@ -123,11 +123,11 @@ jQuery(document).ready(function ($) {
     })
       .done(function (response) {
         notice_success(response, "quickedit-wp-header-end");
-        update_from_test_result()
+        update_from_test_result(response)
       })
       .fail(function (xhr) {
         notice_error(xhr, "quickedit-wp-header-end");
-        update_from_test_result()
+        update_from_test_result(xhr)
       });
   }
   
