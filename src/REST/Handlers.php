@@ -303,11 +303,6 @@ class Handlers
         //
 
         $from_address = get_option('wbw_email_from_address');
-
-        //
-        // send action email
-        //
-
         $to_address = $submitter_email;
         $subject = "NA Meeting Change Request Rejection - Submission ID " . $request['id'];
         $body = "Your meeting change (ID " . $request['id'] . ") has been rejected.";
@@ -683,7 +678,8 @@ class Handlers
 
     public function get_bmltserver_handler($request)
     {
-        return get_option("wbw_bmlt_test_status", "failure");
+        $response = array("wbw_bmlt_test_status" => get_option("wbw_bmlt_test_status", "failure"));
+        return json_encode($response);
     }
 
     public function post_bmltserver_handler($request)
