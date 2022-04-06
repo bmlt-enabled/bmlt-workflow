@@ -23,7 +23,7 @@ echo '</form></div>';
 ?>
 
 <div id="wbw_bmlt_configuration_dialog" class="hidden" style="max-width:800px">
-<hr class="quickedit-wp-header-end">
+<div class="quickedit-wp-header-end"></div><br>
     <div class="wbw_info_text">
         <br>Your BMLT server address, and a configured BMLT username and password.
         <br><br>Server address is used to populate the meeting list for meeting changes and closures. For example: <code>https://na.test.zzz/main_server/</code>
