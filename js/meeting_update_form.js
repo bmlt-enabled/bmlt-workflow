@@ -414,7 +414,7 @@ jQuery(document).ready(function ($) {
     // $("#format_shared_id_list").val($("#display_format_shared_id_list").val());
 
     // time control by default doesn't add extra seconds, so add them to be compaitble with BMLT 
-    if (('#start_time').val().length === 5)
+    if (($('#start_time').val().length) === 5)
     {
       $('#start_time').val($('#start_time').val()+":00");
     }
