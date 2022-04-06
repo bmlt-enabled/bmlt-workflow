@@ -697,6 +697,8 @@ class Handlers
         $wbw_dbg->debug_log('check_bmltserver_parameters returned');
         $wbw_dbg->debug_log($wbw_dbg->vdump($result));
         if ($result !== true) {
+            update_option("wbw_bmlt_test_status", "failure");
+
             // $result is a WP_Error
             $data = array(
                 "status" => $result->get_error_code(),
