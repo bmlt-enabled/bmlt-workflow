@@ -217,9 +217,6 @@ function wbw_admin_scripts($hook)
             // inline scripts
             $script  = 'var wbw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/bmltserver') . '; ';
 
-            $test_result = get_option('wbw_bmlt_test_status', 'failure');
-            $script  .= 'var test_status = "' . $test_result . '"; ';
-
             wp_add_inline_script('admin_options_js', $script, 'before');
             break;
 
@@ -601,14 +598,6 @@ function wbw_register_setting()
 
 function wbw_bmlt_server_address_html()
 {
-    $wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
-
-    // echo <<<END
-    // <div class="wbw_info_text">
-    // <br><br>You should see a tick below after successully configuring the BMLT settings.
-    // <br><br>
-    // </div>
-    // END;
 
     echo '<br>';
     echo '<div id="wbw_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt"></span>Your BMLT settings are successfully configured.</div>';
@@ -616,7 +605,6 @@ function wbw_bmlt_server_address_html()
     echo '<br>';
     echo '<button type="button" id="wbw_configure_bmlt_server">Edit BMLT Configuration</button>';
     echo '<br>';
-    echo '<input type="hidden" id="wbw_bmlt_test_status" name="wbw_bmlt_test_status" value="' . $wbw_bmlt_test_status . '"></input>';
 }
 
 

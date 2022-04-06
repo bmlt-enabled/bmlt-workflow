@@ -17,7 +17,7 @@ jQuery(document).ready(function ($) {
   })
 
   function update_from_test_result(data) {
-    if (wbw_test_status == "success") {
+    if (data['wbw_test_status'] === "success") {
       $("#wbw_test_yes").show();
       $("#wbw_test_no").hide();
     } else {
@@ -130,27 +130,7 @@ jQuery(document).ready(function ($) {
         update_from_test_result()
       });
   }
-
-
-  // function doTheThing() {
-  //   return new Promise((resolve, reject) => {
-  //     $.ajax({
-  //       url: window.location.href,
-  //       type: 'POST',
-  //       data: {
-  //         key: 'value',
-  //       },
-  //       success: function (data) {
-  //         resolve(data)
-  //       },
-  //       error: function (error) {
-  //         reject(error)
-  //       },
-  //     })
-  //   })
-  // }
   
-
   function get_test_status() {
     return new Promise((resolve, reject) => {
     $.ajax({
