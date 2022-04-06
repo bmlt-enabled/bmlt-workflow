@@ -25,10 +25,8 @@ echo '</form></div>';
 <div id="wbw_bmlt_configuration_dialog" class="hidden" style="max-width:800px">
 <div class="quickedit-wp-header-end"></div><br>
     <div class="wbw_info_text">
-        <br>Your BMLT server address, and a configured BMLT username and password.
-        <br><br>Server address is used to populate the meeting list for meeting changes and closures. For example: <code>https://na.test.zzz/main_server/</code>
-        <br><br>The BMLT Username and Password is used to action meeting approvals/rejections as well as perform any BMLT related actions on the Wordpress users behalf. This user must be configured as a service body administrator and have access within BMLT to edit any service bodies that are used in WBW form submissions.
-        <br><br>Ensure you have used the <b>Test Server</b> button and saved settings before using the shortcode form
+        <br>Enter your BMLT server address, and a configured BMLT username and password.
+        <br><br>The server address is the full URL to your server installation. For example: <code>https://na.test.zzz/main_server/</code>
         <br>
     </div>
 
