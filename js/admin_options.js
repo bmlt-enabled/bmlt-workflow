@@ -122,11 +122,9 @@ jQuery(document).ready(function ($) {
     })
       .done(function (response) {
         notice_success(response, "quickedit-wp-header-end");
-        update_from_test_result(response)
       })
       .fail(function (xhr) {
         notice_error(xhr, "quickedit-wp-header-end");
-        update_from_test_result(xhr)
       });
   }
   
@@ -166,11 +164,13 @@ jQuery(document).ready(function ($) {
     })
 
       .done(function (response) {
+        update_from_test_result(response)
         notice_success(response, "quickedit-wp-header-end");
         $(element).dialog("close");
       })
 
       .fail(function (xhr) {
+        update_from_test_result(xhr)
         notice_error(xhr, "quickedit-wp-header-end");
       });
   }
