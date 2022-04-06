@@ -89,6 +89,7 @@ jQuery(document).ready(function ($) {
   $("#wbw_bmlt_test_status").val(test_status);
 
   $("#wbw_configure_bmlt_server").on("click", function (event) {
+    clear_notices();
     $("#wbw_bmlt_configuration_dialog").dialog("open");
   });
 
