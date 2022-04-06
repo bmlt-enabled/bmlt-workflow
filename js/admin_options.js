@@ -12,8 +12,7 @@ jQuery(document).ready(function ($) {
 
   get_test_status()
   .then((data) => {
-    console.log(data)
-    update_from_test_result(json_decode(data));
+    update_from_test_result(JSON.parse(data));
   })
 
   function update_from_test_result(data) {
