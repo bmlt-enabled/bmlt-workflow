@@ -612,11 +612,12 @@ function wbw_bmlt_server_address_html()
     </div>
     END;
 
-    echo '<br><br>';
+    echo '<br>';
     echo '<div id="wbw_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt"></span>Your BMLT settings are successfully configured.</div>';
     echo '<div id="wbw_test_no" style="display: none;" ><span class="dashicons dashicons-no"></span>Your BMLT settings are not configured correctly.</div>';
+    echo '<br>';
     echo '<button type="button" id="wbw_configure_bmlt_server">Edit BMLT Configuration</button>';
-    echo '<br><br>';
+    echo '<br>';
     echo '<input type="hidden" id="wbw_bmlt_test_status" name="wbw_bmlt_test_status" value="' . $wbw_bmlt_test_status . '"></input>';
 }
 
