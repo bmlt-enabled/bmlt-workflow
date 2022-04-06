@@ -27,7 +27,7 @@ jQuery(document).ready(function ($) {
     $("."+notice_class).after(msg);
   }
 
-  function notice_error(xhr,clnotice_classass) {
+  function notice_error(xhr,notice_class) {
     $("."+notice_class).after(
       '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
         xhr.responseJSON.message +
