@@ -698,6 +698,7 @@ class Handlers
         }
 
         $ret = $this->bmlt_integration->testServerAndAuth($username, $password, $server);
+        $wbw_dbg->debug_log('testServerAndAuth returned');
         $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
         if (is_wp_error($ret)) {
             update_option("wbw_bmlt_test_status", "failure");
