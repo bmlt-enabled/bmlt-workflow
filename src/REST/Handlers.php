@@ -656,11 +656,11 @@ class Handlers
 
     private function check_server_parameters($username, $password, $server)
     {
-        global $wbw_dbg;
-        $wbw_dbg->debug_log($wbw_dbg->vdump($username));
-        $wbw_dbg->debug_log($wbw_dbg->vdump($password));
-        $wbw_dbg->debug_log($wbw_dbg->vdump($server));
-        $wbw_dbg->debug_log($wbw_dbg->vdump(empty($password)));
+        // global $wbw_dbg;
+        // $wbw_dbg->debug_log($wbw_dbg->vdump($username));
+        // $wbw_dbg->debug_log($wbw_dbg->vdump($password));
+        // $wbw_dbg->debug_log($wbw_dbg->vdump($server));
+        // $wbw_dbg->debug_log($wbw_dbg->vdump(empty($password)));
 
         if(empty($username))
         {
