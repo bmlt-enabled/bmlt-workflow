@@ -68,7 +68,7 @@ jQuery(document).ready(function ($) {
         {
           console.log("get test status returned");
           console.log(data);
-          update_from_test_result(JSON.parse(data));
+          update_from_test_result(data);
         });
         $(this).dialog("close");
       },
