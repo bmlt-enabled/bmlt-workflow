@@ -14,7 +14,7 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  function notice_success(response) {
+  function notice_success(response,notice_class) {
     var msg = "";
     if (response.message == "")
       msg =
@@ -24,11 +24,11 @@ jQuery(document).ready(function ($) {
         '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
         response.message +
         '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-    $(".wp-header-end").after(msg);
+    $("."+notice_class).after(msg);
   }
 
-  function notice_error(xhr) {
-    $(".wp-header-end").after(
+  function notice_error(xhr,clnotice_classass) {
+    $("."+notice_class).after(
       '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
         xhr.responseJSON.message +
         '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
@@ -110,13 +110,13 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        notice_success(response);
+        notice_success(response, 'quickedit-wp-header-end');
         $("#wbw_bmlt_test_status").val("success");
         $("#wbw_test_yes").show();
         $("#wbw_test_no").hide();
       })
       .fail(function (xhr) {
-        notice_error(xhr);
+        notice_error(xhr,'quickedit-wp-header-end');
         $("#wbw_bmlt_test_status").val("failure");
         $("#wbw_test_no").show();
         $("#wbw_test_yes").hide();
@@ -138,15 +138,16 @@ jQuery(document).ready(function ($) {
       beforeSend: function (xhr) {
         clear_notices();
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
-      },
-      success: function (response) {
-        notice_success(response);
-        $(element).dialog("close");
       }
     })
 
+      .done(function (response) {
+        notice_success(response,'quickedit-wp-header-end');
+        $(element).dialog("close");
+      })
+
       .fail(function (xhr) {
-        notice_error(xhr);
+        notice_error(xhr,'quickedit-wp-header-end');
       });
   }
 });
