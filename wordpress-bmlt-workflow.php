@@ -605,7 +605,8 @@ function wbw_bmlt_server_address_html()
 
     echo <<<END
     <div class="wbw_info_text">
-    <br><br>The BMLT Username and Password is used to action meeting approvals/rejections as well as perform any BMLT related actions on the Wordpress users behalf. This user must be configured as a service body administrator and have access within BMLT to edit any service bodies that are used in WBW form submissions.
+    <br>The BMLT Username and Password is used to action meeting approvals/rejections as well as perform any BMLT related actions on the Wordpress users behalf. 
+    <br>This user must be configured as a service body administrator and have access within BMLT to edit all service bodies that are used in WBW form submissions.
     <br><br>You should see a tick below after successully configuring the BMLT settings.
     <br><br>
     </div>
