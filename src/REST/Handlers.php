@@ -684,6 +684,7 @@ class Handlers
         return json_encode($response);
     }
 
+    // This is for testing username/password/server combination
     public function post_bmltserver_handler($request)
     {
         global $wbw_dbg;
@@ -693,7 +694,15 @@ class Handlers
         $server = $request['wbw_bmlt_server_address'];
 
         $result = $this->check_bmltserver_parameters($username, $password, $server);
+        $wbw_dbg->debug_log('check_bmltserver_parameters returned');
+        $wbw_dbg->debug_log($wbw_dbg->vdump($result));
         if ($result !== true) {
+            // $result is a WP_Error
+            $data = array(
+                "status" => $result->get_error_code(),
+                "wbw_bmlt_test_status" => "failure"
+            );            
+            $result->add_data($data, $result->get_error_code());
             return $result;
         }
 
