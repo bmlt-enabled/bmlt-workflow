@@ -16,7 +16,7 @@ jQuery(document).ready(function ($) {
   })
 
   function update_from_test_result(data) {
-    if (data['wbw_test_status'] === "success") {
+    if (data['wbw_bmlt_test_status'] === "success") {
       $("#wbw_test_yes").show();
       $("#wbw_test_no").hide();
     } else {
