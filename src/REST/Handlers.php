@@ -703,6 +703,9 @@ class Handlers
                 "wbw_bmlt_test_status" => "failure"
             );            
             $result->add_data($data, $result->get_error_code());
+            $wbw_dbg->debug_log('returning');
+            $wbw_dbg->debug_log($wbw_dbg->vdump($result));
+    
             return $result;
         }
 
