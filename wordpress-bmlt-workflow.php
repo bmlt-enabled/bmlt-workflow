@@ -535,7 +535,7 @@ function wbw_register_setting()
 
     add_settings_field(
         'wbw_bmlt_server_address',
-        'BMLT Server Address',
+        'BMLT Configuration',
         'wbw_bmlt_server_address_html',
         'wbw-settings',
         'wbw-settings-section-id'
