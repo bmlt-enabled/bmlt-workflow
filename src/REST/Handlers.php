@@ -690,7 +690,7 @@ class Handlers
         $server = $request['wbw_bmlt_server_address'];
 
         $result = $this->check_server_parameters($username, $password, $server);
-        if (!$result)
+        if ($result !== true)
         {
             return $result;
         }
