@@ -158,7 +158,6 @@ jQuery(document).ready(function ($) {
       type: "GET",
       dataType: "json",
       contentType: "application/json",
-      data: JSON.stringify(parameters),
       beforeSend: function (xhr) {
         clear_notices();
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
