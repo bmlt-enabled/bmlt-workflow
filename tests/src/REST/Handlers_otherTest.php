@@ -15,7 +15,7 @@ define('ABSPATH', '99999999999');
 // We require the file we need to test.
 // require 'admin/admin_rest_handlers.php';
 // require 'admin/admin_rest_handlers.php';
-define('WBW_DEBUG', false);
+define('WBW_DEBUG', true);
 global $wbw_dbg;
 $wbw_dbg = new Debug;
 
@@ -508,4 +508,26 @@ Line: $errorLine
 
         // $wbw_dbg->debug_log($wbw_dbg->vdump($response));
     }
+
+    public function test_can_get_bmltserver(): void
+    {
+
+        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/wbw/v1/bmltserver");
+        $request->set_header('content-type', 'application/json');
+        $request->set_route("/wbw/v1/bmltserver");
+        $request->set_method('GET');
+
+        $rest = new Handlers();
+
+        $response = $rest->get_bmltserver_handler($request);
+        global $wbw_dbg;
+                $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        // $this->assertEquals(200, $response->get_status());
+        // $this->assertEquals('Approved submission id 14', $response->data['message']);
+
+        // $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+    }
+
 }

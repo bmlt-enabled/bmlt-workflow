@@ -687,7 +687,7 @@ class Handlers
 
         $response = array("wbw_bmlt_test_status" => get_option("wbw_bmlt_test_status", "failure"));
 
-        return $response;
+        return $this->wbw_rest_success($response);
     }
 
     // This is for testing username/password/server combination
