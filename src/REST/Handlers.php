@@ -702,14 +702,14 @@ class Handlers
         if (is_wp_error($ret)) {
             update_option("wbw_bmlt_test_status", "failure");
             $response = array(
-                "wbw_bmlt_test_status" => get_option("wbw_bmlt_test_status", "failure")
+                "wbw_bmlt_test_status" => "failure"
             );            
             return $this->wbw_rest_error_with_data('Server and Authentication test failed - ' . $ret->get_error_message(), 500, $response);
         } else {
             update_option("wbw_bmlt_test_status", "success");
             $response = array(
                 "message" => "BMLT Server and Authentication test succeeded.",
-                "wbw_bmlt_test_status" => get_option("wbw_bmlt_test_status", "failure")
+                "wbw_bmlt_test_status" => "success"
             );
             return $this->wbw_rest_success($response);
         }
