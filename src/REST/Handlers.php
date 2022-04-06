@@ -654,6 +654,27 @@ class Handlers
         return $this->wbw_rest_success('Approved submission id ' . $change_id);
     }
 
+    private function check_server_parameters($username, $password, $server)
+    {
+        if(empty($username))
+        {
+            return $this->wbw_rest_error('Empty BMLT username parameter', 400);
+        }
+        if(empty($password))
+        {
+            return $this->wbw_rest_error('Empty BMLT password parameter', 400);
+        }
+        if(empty($server))
+        {
+            return $this->wbw_rest_error('Empty BMLT server parameter', 400);
+        }
+        if(substr($server,-1)!=='/')
+        {
+            return $this->wbw_rest_error('BMLT Server address missing trailiing /', 400);
+        }
+        return true;
+    }
+
     public function post_server_handler($request)
     {
         global $wbw_dbg;
@@ -662,13 +683,39 @@ class Handlers
         $password = $request['wbw_bmlt_password'];
         $server = $request['wbw_bmlt_server_address'];
 
+        $result = $this->check_server_parameters($username, $password, $server);
+        if (!$result)
+        {
+            return $result;
+        }
+
         $ret = $this->bmlt_integration->testServerAndAuth($username, $password, $server);
         $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
         if (is_wp_error($ret)) {
             return $this->wbw_rest_error('Server and Authentication test failed - ' . $ret->get_error_message(), 500);
         } else {
-            return $this->wbw_rest_success('Server and Authentication test succeeded.');
+            return $this->wbw_rest_success('BMLT Server and Authentication test succeeded.');
         }
+    }
+
+    public function patch_server_handler($request)
+    {
+
+        $username = $request['wbw_bmlt_username'];
+        $password = $request['wbw_bmlt_password'];
+        $server = $request['wbw_bmlt_server_address'];
+
+        $result = $this->check_server_parameters($username, $password,$server);
+        if (!$result)
+        {
+            return $result;
+        }
+
+        update_option('wbw_bmlt_username',$username);
+        update_option('wbw_bmlt_password',$password);
+        update_option('wbw_bmlt_server_address',$server);
+        return $this->wbw_rest_success('BMLT Server and Authentication details updated.');
+
     }
 
 
@@ -686,25 +733,6 @@ class Handlers
         }
         return implode(',', $emails);
     }
-
-    // // accepts raw string or array
-    // function wbw_rest_success($message)
-    // {
-    //     if (is_array($message)) {
-    //         $data = $message;
-    //     } else {
-    //         $data = array('message' => $message);
-    //     }
-    //     $response = new WP_REST_Response();
-    //     $response->set_data($data);
-    //     $response->set_status(200);
-    //     return $response;
-    // }
-
-    // function wbw_rest_error($message, $code)
-    // {
-    //     return new WP_Error('wbw_error', $message, array('status' => $code));
-    // }
 
     private function invalid_form_field($field)
     {

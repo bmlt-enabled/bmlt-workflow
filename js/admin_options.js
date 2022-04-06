@@ -14,6 +14,27 @@ jQuery(document).ready(function ($) {
     });
   }
 
+  function notice_success(response) {
+    var msg = "";
+    if (response.message == "")
+      msg =
+        '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
+    else
+      msg =
+        '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
+        response.message +
+        '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
+    $(".wp-header-end").after(msg);
+  }
+
+  function notice_error(xhr) {
+    $(".wp-header-end").after(
+      '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
+        xhr.responseJSON.message +
+        '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
+    );
+  }
+
   var clipboard = new ClipboardJS(".clipboard-button");
 
   $("#wbw_bmlt_configuration_dialog").dialog({
@@ -32,9 +53,7 @@ jQuery(document).ready(function ($) {
     },
     buttons: {
       "Save and Close": function () {
-        update_option("wbw_bmlt_server_address", $("#wbw_bmlt_server_address").val());
-        update_option("wbw_bmlt_username", $("#wbw_bmlt_username").val());
-        update_option("wbw_bmlt_password", $("#wbw_bmlt_password").val());
+        save_and_close();
         $(this).dialog("close");
       },
       Cancel: function () {
@@ -92,30 +111,41 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        var msg = "";
+        notice_success(response);
         $("#wbw_bmlt_test_status").val("success");
         $("#wbw_test_yes").show();
         $("#wbw_test_no").hide();
-        if (response.message == "")
-          msg =
-            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-        else
-          msg =
-            '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
-            response.message +
-            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-        $(".wp-header-end").after(msg);
       })
       .fail(function (xhr) {
+        notice_error(xhr);
         $("#wbw_bmlt_test_status").val("failure");
         $("#wbw_test_no").show();
         $("#wbw_test_yes").hide();
-
-        $(".wp-header-end").after(
-          '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
-            xhr.responseJSON.message +
-            '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
-        );
       });
   });
+
+  function save_and_close() {
+    var parameters = {};
+    parameters["wbw_bmlt_server_address"] = $("#wbw_bmlt_server_address").val();
+    parameters["wbw_bmlt_username"] = $("#wbw_bmlt_username").val();
+    parameters["wbw_bmlt_password"] = $("#wbw_bmlt_password").val();
+
+    $.ajax({
+      url: wbw_admin_bmltserver_rest_url,
+      type: "PATCH",
+      dataType: "json",
+      contentType: "application/json",
+      data: JSON.stringify(parameters),
+      beforeSend: function (xhr) {
+        clear_notices();
+        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+      },
+    })
+      .done(function (response) {
+        notice_success(response);
+      })
+      .fail(function (xhr) {
+        notice_error(xhr);
+      });
+  }
 });

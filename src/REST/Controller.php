@@ -4,7 +4,6 @@ namespace wbw\REST;
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 use wbw\Debug;
-use wbw\BMLT\Integration;
 use wbw\REST\Handlers;
 
 class Controller extends \WP_REST_Controller
@@ -20,7 +19,6 @@ class Controller extends \WP_REST_Controller
 		$this->submissions_rest_base = 'submissions';
 		$this->service_bodies_rest_base = 'servicebodies';
 		$this->server_rest_base = 'bmltserver';
-		$this->bmlt_integration = new Integration;
 		$this->handlers = new Handlers();
 	}
 
@@ -130,14 +128,21 @@ class Controller extends \WP_REST_Controller
 				'permission_callback' => array($this, 'post_server_permissions_check'),
 			),
 		);
+
+		// PATCH server
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->server_rest_base,
+
+			array(
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => array($this, 'patch_server'),
+				'permission_callback' => array($this, 'patch_server_permissions_check'),
+			),
+		);
+		
 	}
-	/**
-	 * Check permissions for submission management. These are general purpose checks for all submission editors, granular edit permission will be checked within the callback itself.
-	 *
-	 * @param WP_REST_Request $request get data from request.
-	 *
-	 * @return bool|WP_Error
-	 */
+
 	public function get_submissions_permissions_check($request)
 	{
 		global $wbw_capability_manage_submissions;
@@ -209,14 +214,6 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-
-	/**
-	 * Check permissions for user management.
-	 *
-	 * @param WP_REST_Request $request get data from request.
-	 *
-	 * @return bool|WP_Error
-	 */
 	public function get_service_bodies_permissions_check($request)
 	{
 		// get service areas is unauthenticated as it is also used by the end-user form 
@@ -224,13 +221,6 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	/**
-	 * Check permissions for user management.
-	 *
-	 * @param WP_REST_Request $request get data from request.
-	 *
-	 * @return bool|WP_Error
-	 */
 	public function post_service_bodies_permissions_check($request)
 	{
 		global $wbw_dbg;
@@ -242,13 +232,6 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	/**
-	 * Check permissions for server configuration.
-	 *
-	 * @param WP_REST_Request $request get data from request.
-	 *
-	 * @return bool|WP_Error
-	 */
 	public function post_server_permissions_check($request)
 	{
 		global $wbw_dbg;
@@ -260,13 +243,17 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	/**
-	 * Check permissions for form post
-	 *
-	 * @param WP_REST_Request $request get data from request.
-	 *
-	 * @return bool|WP_Error
-	 */
+	public function patch_server_permissions_check($request)
+	{
+		global $wbw_dbg;
+
+		$wbw_dbg->debug_log("patch_server " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot patch server updates.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
 	public function post_submissions_permissions_check($request)
 	{
 		// Anyone can post a form submission
@@ -318,14 +305,6 @@ class Controller extends \WP_REST_Controller
 		return rest_ensure_response($result);
 	}
 
-	/**
-	 * Form post
-	 *
-	 * @param WP_REST_Request $request get data from request.
-	 *
-	 * @return mixed|WP_Error|WP_REST_Response
-	 */
-
 	public function post_submissions($request)
 	{
 		global $wbw_dbg;
@@ -342,15 +321,15 @@ class Controller extends \WP_REST_Controller
 		return rest_ensure_response($result);
 	}
 
-	// public function post_service_bodies_detail($request)
-	// {
-	// 	$result = $this->handlers->post_service_bodies_detail_handler($request);
-	// 	return rest_ensure_response($result);
-	// }
-
 	public function post_server($request)
 	{
 		$result = $this->handlers->post_server_handler($request);
+		return rest_ensure_response($result);
+	}
+
+	public function patch_server($request)
+	{
+		$result = $this->handlers->patch_server_handler($request);
 		return rest_ensure_response($result);
 	}
 
