@@ -144,6 +144,9 @@ jQuery(document).ready(function ($) {
     }).done(function (response) {
       resolve(response)
     })
+    .fail(function (xhr) {
+      resolve(xhr);
+    })
   })
   }
 
