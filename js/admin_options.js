@@ -123,8 +123,8 @@ jQuery(document).ready(function ($) {
       });
   });
 
-  function save_and_close(this) {
-    
+  function save_and_close(element) {
+
     var parameters = {};
     parameters["wbw_bmlt_server_address"] = $("#wbw_bmlt_server_address").val();
     parameters["wbw_bmlt_username"] = $("#wbw_bmlt_username").val();
@@ -143,7 +143,7 @@ jQuery(document).ready(function ($) {
     })
       .done(function (response) {
         notice_success(response);
-        $(this).dialog("close");
+        $(element).dialog("close");
 
       })
       .fail(function (xhr) {
