@@ -703,7 +703,8 @@ class Handlers
         $wbw_dbg->debug_log($wbw_dbg->vdump($result));
         if ($result !== true) {
             $wbw_dbg->debug_log('update option to failure');
-            update_option("wbw_bmlt_test_status", "failure");
+            $r = update_option("wbw_bmlt_test_status", "failure");
+            $wbw_dbg->debug_log('update_option returned'.$r);
 
             // $result is a WP_Error
             $data = array(
@@ -722,14 +723,16 @@ class Handlers
         $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
         if (is_wp_error($ret)) {
             $wbw_dbg->debug_log('update option to failure');
-            update_option("wbw_bmlt_test_status", "failure");
+            $r = update_option("wbw_bmlt_test_status", "failure");
+            $wbw_dbg->debug_log('update_option returned'.$r);
             $response = array(
                 "wbw_bmlt_test_status" => "failure"
             );            
             return $this->wbw_rest_error_with_data('Server and Authentication test failed - ' . $ret->get_error_message(), 500, $response);
         } else {
             $wbw_dbg->debug_log('update option to success');
-            update_option("wbw_bmlt_test_status", "success");
+            $r = update_option("wbw_bmlt_test_status", "success");
+            $wbw_dbg->debug_log('update_option returned'.$r);
             $response = array(
                 "message" => "BMLT Server and Authentication test succeeded.",
                 "wbw_bmlt_test_status" => "success"
