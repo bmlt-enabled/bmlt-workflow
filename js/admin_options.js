@@ -10,10 +10,7 @@ function dismiss_notice(element) {
 jQuery(document).ready(function ($) {
   var wbw_test_status = "failure";
 
-  get_test_status()
-  .then((data) => {
-    update_from_test_result(JSON.parse(data));
-  })
+  do_test_and_update();
 
   function update_from_test_result(data) {
     if (data['wbw_bmlt_test_status'] === "success") {
@@ -128,6 +125,13 @@ jQuery(document).ready(function ($) {
       });
   }
   
+  function do_test_and_update()
+  {
+    get_test_status()
+    .then((data) => {
+      update_from_test_result(JSON.parse(data));
+    })  
+  }
   function get_test_status() {
     return new Promise((resolve, reject) => {
     $.ajax({
@@ -164,14 +168,15 @@ jQuery(document).ready(function ($) {
     })
 
       .done(function (response) {
-        update_from_test_result(response)
         notice_success(response, "quickedit-wp-header-end");
+        do_test_and_update();
         $(element).dialog("close");
       })
 
       .fail(function (xhr) {
         update_from_test_result(xhr)
         notice_error(xhr, "quickedit-wp-header-end");
+        do_test_and_update();
       });
   }
 });
