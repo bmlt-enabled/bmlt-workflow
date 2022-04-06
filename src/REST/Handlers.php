@@ -657,9 +657,10 @@ class Handlers
     private function check_server_parameters($username, $password, $server)
     {
         global $wbw_dbg;
-        $wbw_dbg->debug_log($username);
-        $wbw_dbg->debug_log($password);
-        $wbw_dbg->debug_log($server);
+        $wbw_dbg->debug_log($wbw_dbg->vdump($username));
+        $wbw_dbg->debug_log($wbw_dbg->vdump($password));
+        $wbw_dbg->debug_log($wbw_dbg->vdump($server));
+
         if(empty($username))
         {
             return $this->wbw_rest_error('Empty BMLT username parameter', 400);
