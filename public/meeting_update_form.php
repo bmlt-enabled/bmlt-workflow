@@ -111,15 +111,14 @@ EOD;
                             <option>Yes - Virtual only</option>
                             <option>Yes - Hybrid (Virtual and Face to Face)</option>
                         </select>
-                        <label for="virtual_meeting_link">Online Meeting Link</label>
+                        <label for="virtual_meeting_link">Online Meeting Link
                         <div class="tooltip">
-                            <span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>
                             <span class="dashicons dashicons-info-outline" style="color: cornflowerblue;"></span>
                             <div class="left">
                                 <li>A URL for the virtual meeting
                                 <li>eg: https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1
                             </div>
-                        </div>
+                        </div></label>
                         <input class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
                         A URL for the virtual meeting, eg: https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1
                         <label for="virtual_meeting_additional_info">Virtual Meeting Additional Info </label>
