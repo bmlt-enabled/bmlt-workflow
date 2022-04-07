@@ -131,8 +131,12 @@ body {
   position:relative;
   border-bottom:1px dotted #666;
   text-align:left;
+  margin-bottom: 1%;
 }
 
+.tooltip label {
+  padding-bottom: 0%;
+}
 
 .tooltip .left {
   min-width:200px;
