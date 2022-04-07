@@ -50,10 +50,14 @@ Line: $errorLine
      */
     public function test_debug_log_enabled(): void
     {
-        $dbg = new Debug();
-        Functions\expect('error_log')->once();
-
-        $dbg->debug_log("hi");
+        if(WBW_DEBUG)
+        {
+            $dbg = new Debug();
+            Functions\expect('error_log')->once();
+    
+            $dbg->debug_log("hi");
+    
+        }        
         $this->assertTrue(true);
     }
 
