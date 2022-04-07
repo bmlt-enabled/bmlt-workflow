@@ -300,44 +300,44 @@ class Controller extends \WP_REST_Controller
 
 	public function get_submissions($request)
 	{
-		$result = $this->SubmissionHandler->get_submissions_handler($request);
+		$result = $this->SubmissionsHandler->get_submissions_handler($request);
 		return rest_ensure_response($result);
 	}
 
 	public function get_submission($request)
 	{
-		$result = $this->SubmissionHandler->get_submission_handler($request);
+		$result = $this->SubmissionsHandler->get_submission_handler($request);
 		return rest_ensure_response($result);
 	}
 
 	public function delete_submission($request)
 	{
-		$result = $this->SubmissionHandler->delete_submission_handler($request);
+		$result = $this->SubmissionsHandler->delete_submission_handler($request);
 		return rest_ensure_response($result);
 	}
 
 	public function approve_submission($request)
 	{
-		$result = $this->SubmissionHandler->approve_submission_handler($request);
+		$result = $this->SubmissionsHandler->approve_submission_handler($request);
 		return rest_ensure_response($result);
 	}
 
 	public function reject_submission($request)
 	{
-		$result = $this->SubmissionHandler->reject_submission_handler($request);
+		$result = $this->SubmissionsHandler->reject_submission_handler($request);
 		return rest_ensure_response($result);
 	}
 
 	public function patch_submission($request)
 	{
-		$result = $this->SubmissionHandler->patch_submission_handler($request);
+		$result = $this->SubmissionsHandler->patch_submission_handler($request);
 		return rest_ensure_response($result);
 	}
 
 	public function post_submissions($request)
 	{
 
-		$resp = $this->SubmissionHandler->meeting_update_form_handler_rest($request->get_body_params());
+		$resp = $this->SubmissionsHandler->meeting_update_form_handler_rest($request->get_body_params());
 		return rest_ensure_response($resp);
 	}
 
