@@ -12,7 +12,7 @@ use Brain\Monkey\Functions;
 use function Patchwork\{redefine, getFunction, always};
 
 if (!defined('WBW_DEBUG')) {
-    define('WBW_DEBUG', true);
+    define('WBW_DEBUG', false);
 }
 global $wbw_dbg;
 $wbw_dbg = new Debug;
