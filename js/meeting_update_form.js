@@ -362,6 +362,7 @@ jQuery(document).ready(function ($) {
         $("#personal_details").show();
         $("#meeting_details").show();
         $("#additional_info_div").show();
+        $("#virtual_meeting_settings").hide();
         // display form instructions
         $("#instructions").html(
           "Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
