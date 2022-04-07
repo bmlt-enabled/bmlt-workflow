@@ -1,3 +1,8 @@
+## 0.3.6-beta (April 7, 2022)
+- https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/26 (thanks @brustar !)
+- Refactoring REST code and unit test components
+- Additional unit tests
+
 ## 0.3.5-beta (April 5, 2022)
 - https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/24, https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/23 - highlighting fixes (thanks @rogersearle !)
 - Mini-autoloader to support non composer deploy
