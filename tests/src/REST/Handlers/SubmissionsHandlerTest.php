@@ -22,15 +22,25 @@ if (!defined('ABSPATH')) {
     define('ABSPATH', '99999999999');
 }
 
-// We require the file we need to test.
-
 class SubmissionsHandlerTest_my_wp_user
 {
-    public function __construct()
+    public function __construct($id, $name)
     {
+        $this->ID = $id;
+        $this->user_login = $name;
         $this->user_email = "a@a.com";
     }
+
+    public function get()
+    {
+        return $this->ID;
+    }
 }
+/**
+ * @covers wbw\REST\Handlers\SubmissionsHandler
+ * @uses wbw\Debug
+ * @uses wbw\REST\HandlerCore
+ */
 final class SubmissionsHandlerTest extends TestCase
 {
 
@@ -50,12 +60,14 @@ Line: $errorLine
     protected function setUp(): void
     {
         $this->setVerboseErrorHandler();
-        $basedir = dirname(dirname(dirname(dirname(__FILE__))));
-        // echo $basedir;
+        $basedir = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+        //  echo $basedir;
         require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-error.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-http-response.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-response.php');
+        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/endpoints/class-wp-rest-controller.php');
+        Brain\Monkey\setUp();
         Functions\when('sanitize_text_field')->returnArg();
         Functions\when('sanitize_email')->returnArg();
         Functions\when('sanitize_textarea_field')->returnArg();
@@ -68,6 +80,7 @@ Line: $errorLine
         Functions\when('wp_safe_remote_post')->returnArg();
         Functions\when('wp_remote_retrieve_body')->justReturn('{"0":{"id":"1","key_string":"0","name_string":"0"},"1":{"id":"2","key_string":"0","name_string":"0"},"2":{"id":"3","key_string":"0","name_string":"0"}}');
         Functions\when('is_wp_error')->justReturn(false);
+
 
         if (!defined('CONST_OTHER_SERVICE_BODY')) {
             define('CONST_OTHER_SERVICE_BODY', '99999999999');
@@ -96,7 +109,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_close(): void
     {
@@ -124,13 +137,13 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
         Functions\when('wp_mail')->justReturn('true');
 
         $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
         Functions\when('curl_exec')->justReturn($json);
 
-        $handlers = new SubmissionsHandler;
+        $handlers = new SubmissionsHandler();
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $wbw_dbg->debug_log("TEST RESPONSE");
@@ -142,7 +155,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_request_other(): void
     {
@@ -168,7 +181,7 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
         Functions\when('wp_mail')->justReturn('true');
 
         $handlers = new SubmissionsHandler;
@@ -179,7 +192,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_change_meeting_name(): void
     {
@@ -208,7 +221,7 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
         Functions\when('wp_mail')->justReturn('true');
 
         $handlers = new SubmissionsHandler;
@@ -219,7 +232,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_change_meeting_format(): void
     {
@@ -249,7 +262,7 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
         Functions\when('wp_mail')->justReturn('true');
 
         $handlers = new SubmissionsHandler;
@@ -260,7 +273,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_change_if_meeting_format_has_leading_or_trailing_commas(): void
     {
@@ -290,7 +303,7 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
         Functions\when('wp_mail')->justReturn('true');
 
         $handlers = new SubmissionsHandler;
@@ -302,7 +315,7 @@ Line: $errorLine
 
 
     /**
-     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_create_new_with_no_starter_kit_requested(): void
     {
@@ -341,7 +354,7 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
         Functions\when('wp_mail')->justReturn('true');
 
         $handlers = new SubmissionsHandler;
@@ -353,7 +366,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_create_new_with_starter_kit_requested(): void
     {
@@ -393,7 +406,7 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
         Functions\when('wp_mail')->justReturn('true');
 
         $handlers = new SubmissionsHandler;
@@ -409,7 +422,7 @@ Line: $errorLine
     //
 
     /**
-     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_create_new_if_starter_kit_answer_missing(): void
     {
@@ -453,7 +466,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_if_format_list_has_garbage(): void
     {
@@ -489,7 +502,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_if_weekday_is_too_big(): void
     {
@@ -525,7 +538,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_if_weekday_is_zero(): void
     {
@@ -561,7 +574,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_if_weekday_is_garbage(): void
     {
@@ -639,13 +652,15 @@ Line: $errorLine
             ]
         );
 
-        $user = new my_wp_user(1, 'username');
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
         Functions\when('\wp_mail')->justReturn('true');
 
         $rest = new SubmissionsHandler($bmlt);
+// global $wbw_dbg;
+// $wbw_dbg->debug_log('APPROVEREQUEST');
 
         // $wbw_dbg->debug_log($wbw_dbg->vdump($request));
 
@@ -658,7 +673,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers wbw\REST\Handlers::approve_submission_handler
+     * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_can_approve_close_meeting_with_unpublish(): void
@@ -702,7 +717,7 @@ Line: $errorLine
             ]
         );
 
-        $user = new my_wp_user(1, 'username');
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
@@ -724,7 +739,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers wbw\REST\Handlers::approve_submission_handler
+     * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_can_approve_close_meeting_with_delete(): void
@@ -767,7 +782,7 @@ Line: $errorLine
             ]
         );
 
-        $user = new my_wp_user(1, 'username');
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
@@ -793,7 +808,7 @@ Line: $errorLine
     //
 
     /**
-     * @covers wbw\REST\Handlers::approve_submission_handler
+     * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_approve_change_meeting_sends_email_to_submitter(): void
@@ -836,7 +851,7 @@ Line: $errorLine
             ]
         );
 
-        $user = new my_wp_user(1, 'username');
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
@@ -853,7 +868,7 @@ Line: $errorLine
 
 
     /**
-     * @covers wbw\REST\Handlers::approve_submission_handler
+     * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_approve_change_meeting_sends_email_to_submitter_with_action_message(): void
@@ -896,7 +911,7 @@ Line: $errorLine
             ]
         );
 
-        $user = new my_wp_user(1, 'username');
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
@@ -912,7 +927,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers wbw\REST\Handlers::approve_submission_handler
+     * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_approve_close_meeting_sends_email_to_submitter_with_delete(): void
@@ -955,7 +970,7 @@ Line: $errorLine
             ]
         );
 
-        $user = new my_wp_user(1, 'username');
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
@@ -974,7 +989,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers wbw\REST\Handlers::approve_submission_handler
+     * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_approve_close_meeting_sends_email_to_submitter_with_unpublish(): void
@@ -1017,7 +1032,7 @@ Line: $errorLine
             ]
         );
 
-        $user = new my_wp_user(1, 'username');
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($resp);

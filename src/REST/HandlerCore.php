@@ -2,8 +2,6 @@
 
 namespace wbw\REST;
 
-if (!defined('ABSPATH')) exit; // die if being called directly
-
 use wbw\Debug;
 use wbw\BMLT\Integration;
 

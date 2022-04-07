@@ -1,5 +1,5 @@
 {
     "redefinable-internals": [
-        "curl_exec","time"
+        "curl_exec","time","error_log"
     ]
 }

@@ -20,12 +20,68 @@ if (!defined('ABSPATH')) {
     define('ABSPATH', '99999999999');
 }
 
+/**
+ * @covers wbw\REST\Handlers\BMLTServerHandler
+ * @uses wbw\Debug
+ * @uses wbw\REST\HandlerCore
+ */
 final class BMLTServerHandlerTest extends TestCase
 {
+    protected function setVerboseErrorHandler()
+    {
+        $handler = function ($errorNumber, $errorString, $errorFile, $errorLine) {
+            echo "
+ERROR INFO
+Message: $errorString
+File: $errorFile
+Line: $errorLine
+";
+        };
+        set_error_handler($handler);
+    }
+
+    protected function setUp(): void
+    {
+
+        $this->setVerboseErrorHandler();
+        $basedir = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+        require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
+        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-error.php');
+        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-http-response.php');
+        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/endpoints/class-wp-rest-controller.php');
+        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-response.php');
+        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-request.php');
+        if (!class_exists('wpdb')){
+            require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/wp-db.php');
+        }
+
+        Brain\Monkey\setUp();
+
+        Functions\when('\wp_json_encode')->returnArg();
+        Functions\when('\apply_filters')->returnArg(2);
+        Functions\when('\current_time')->justReturn('2022-03-23 09:22:44');
+        Functions\when('\absint')->returnArg();
+        Functions\when('\get_option')->returnArg();
+        Functions\when('wp_safe_remote_post')->returnArg();
+
+        if (!defined('CONST_OTHER_SERVICE_BODY')) {
+            define('CONST_OTHER_SERVICE_BODY', '99999999999');
+        }
+        if (!defined('ABSPATH')) {
+            define('ABSPATH', '99999999999');
+        }
+    }
+
+    protected function tearDown(): void
+    {
+        Brain\Monkey\tearDown();
+        parent::tearDown();
+        Mockery::close();
+    }
 
 // test for GET bmltserver (get server test settings)
     /**
-     * @covers wbw\REST\Handlers::get_bmltserver_handler
+     * @covers wbw\REST\Handlers\BMLTServerHandler::get_bmltserver_handler
      */
     public function test_can_get_bmltserver_with_success(): void
     {
@@ -54,9 +110,8 @@ final class BMLTServerHandlerTest extends TestCase
 
     // test for GET bmltserver (get server test settings)
     /**
-     * @covers wbw\REST\Handlers::get_bmltserver_handler
+     * @covers wbw\REST\Handlers\BMLTServerHandler::get_bmltserver_handler
      */
-
     public function test_can_get_bmltserver_with_failure(): void
     {
         $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/wbw/v1/bmltserver");
@@ -79,7 +134,7 @@ final class BMLTServerHandlerTest extends TestCase
 
     // test for POST bmltserver
     /**
-     * @covers wbw\REST\Handlers::post_bmltserver_handler
+     * @covers wbw\REST\Handlers\BMLTServerHandler::post_bmltserver_handler
      */
 
     public function test_can_post_bmltserver_with_valid_parameters(): void
@@ -117,7 +172,7 @@ final class BMLTServerHandlerTest extends TestCase
     // test for POST bmltserver
 
     /**
-     * @covers wbw\REST\Handlers::post_bmltserver_handler
+     * @covers wbw\REST\Handlers\BMLTServerHandler::post_bmltserver_handler
      */
     public function test_cant_post_bmltserver_with_invalid_server(): void
     {
@@ -142,7 +197,7 @@ final class BMLTServerHandlerTest extends TestCase
     }
 
     /**
-     * @covers wbw\REST\Handlers::post_bmltserver_handler
+     * @covers wbw\REST\Handlers\BMLTServerHandler::post_bmltserver_handler
      */
     public function test_cant_post_bmltserver_with_blank_username(): void
     {
@@ -167,7 +222,7 @@ final class BMLTServerHandlerTest extends TestCase
     }
 
     /**
-     * @covers wbw\REST\Handlers::post_bmltserver_handler
+     * @covers wbw\REST\Handlers\BMLTServerHandler::post_bmltserver_handler
      */
     public function test_cant_post_bmltserver_with_blank_password(): void
     {
