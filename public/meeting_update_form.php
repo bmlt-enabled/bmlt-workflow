@@ -111,8 +111,9 @@ EOD;
                             <option>Yes - Virtual only</option>
                             <option>Yes - Hybrid (Virtual and Face to Face)</option>
                         </select>
-                        <label for="virtual_meeting_link">Online Meeting Link
                         <div class="tooltip">
+
+                        <label for="virtual_meeting_link">Online Meeting Link
                             <span class="dashicons dashicons-info-outline" style="color: cornflowerblue;"></span>
                             <div class="left">
                                 <li>A URL for the virtual meeting
