@@ -113,6 +113,7 @@ EOD;
                         </select>
                         <label for="virtual_meeting_link">Online Meeting Link</label>
                         <div class="tooltip">
+                            <span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>
                             <span class="dashicons dashicons-info-outline" style="color: cornflowerblue;"></span>
                             <div class="left">
                                 <li>A URL for the virtual meeting
