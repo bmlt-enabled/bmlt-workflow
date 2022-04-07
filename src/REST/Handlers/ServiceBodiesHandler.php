@@ -124,8 +124,9 @@ class ServiceBodiesHandler
             // $wbw_dbg->debug_log($wbw_dbg->vdump($sblist));
 
         }
+        return $this->handlerCore->wbw_rest_success($sblist);
 
-        return $sblist;
+        // return $sblist;
     }
 
     public function post_service_bodies_handler($request)
