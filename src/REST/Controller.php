@@ -5,6 +5,7 @@ if (!defined('ABSPATH')) exit; // die if being called directly
 
 use wbw\Debug;
 use wbw\REST\Handlers;
+use wbw\REST\Handlers\BMLTServerHandler;
 
 class Controller extends \WP_REST_Controller
 {
@@ -20,6 +21,7 @@ class Controller extends \WP_REST_Controller
 		$this->service_bodies_rest_base = 'servicebodies';
 		$this->server_rest_base = 'bmltserver';
 		$this->handlers = new Handlers();
+		$this->BMLTServerHandler = new BMLTServerHandler();
 	}
 
 	public function register_routes()
@@ -350,19 +352,19 @@ class Controller extends \WP_REST_Controller
 
 	public function get_bmltserver($request)
 	{
-		$result = $this->handlers->get_bmltserver_handler($request);
+		$result = $this->BMLTServerHandler->get_bmltserver_handler($request);
 		return rest_ensure_response($result);
 	}
 
 	public function post_bmltserver($request)
 	{
-		$result = $this->handlers->post_bmltserver_handler($request);
+		$result = $this->BMLTServerHandler->post_bmltserver_handler($request);
 		return rest_ensure_response($result);
 	}
 
 	public function patch_bmltserver($request)
 	{
-		$result = $this->handlers->patch_bmltserver_handler($request);
+		$result = $this->BMLTServerHandler->patch_bmltserver_handler($request);
 		return rest_ensure_response($result);
 	}
 

@@ -12,12 +12,16 @@ use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
 use function Patchwork\{redefine, getFunction, always};
 
-define('WBW_DEBUG', false);
+if (!defined('WBW_DEBUG')) {
+    define('WBW_DEBUG', true);
+}
 global $wbw_dbg;
 $wbw_dbg = new Debug;
 
 // get us through the header
-define('ABSPATH', '99999999999');
+if (!defined('ABSPATH')) {
+    define('ABSPATH', '99999999999');
+}
 
 // We require the file we need to test.
 
@@ -49,7 +53,7 @@ Line: $errorLine
         $this->setVerboseErrorHandler();
         $basedir = dirname(dirname(dirname(dirname(__FILE__))));
         // echo $basedir;
-        require($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
+        require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-error.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-http-response.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-response.php');
@@ -69,7 +73,6 @@ Line: $errorLine
         if (!defined('CONST_OTHER_SERVICE_BODY')) {
             define('CONST_OTHER_SERVICE_BODY', '99999999999');
         }
-        
     }
 
     protected function tearDown(): void
@@ -79,6 +82,9 @@ Line: $errorLine
         Mockery::close();
     }
 
+    /**
+     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     */
     public function test_can_close(): void
     {
         global $wbw_dbg;
@@ -122,6 +128,9 @@ Line: $errorLine
         // $this->assertEquals($email_addresses,'a@a.com,a@a.com');
     }
 
+    /**
+     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     */
     public function test_can_request_other(): void
     {
 
@@ -156,6 +165,9 @@ Line: $errorLine
         $this->assertEquals(200, $response->get_status());
     }
 
+    /**
+     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     */
     public function test_can_change_meeting_name(): void
     {
 
@@ -193,6 +205,9 @@ Line: $errorLine
         $this->assertEquals(200, $response->get_status());
     }
 
+    /**
+     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     */
     public function test_can_change_meeting_format(): void
     {
 
@@ -231,6 +246,9 @@ Line: $errorLine
         $this->assertEquals(200, $response->get_status());
     }
 
+    /**
+     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     */
     public function test_can_change_if_meeting_format_has_leading_or_trailing_commas(): void
     {
 
@@ -270,6 +288,9 @@ Line: $errorLine
     }
 
 
+    /**
+     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     */
     public function test_can_create_new_with_no_starter_kit_requested(): void
     {
         global $wbw_dbg;
@@ -318,6 +339,9 @@ Line: $errorLine
         $this->assertEquals(200, $response->get_status());
     }
 
+    /**
+     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     */
     public function test_can_create_new_with_starter_kit_requested(): void
     {
         global $wbw_dbg;
@@ -368,120 +392,12 @@ Line: $errorLine
     }
 
     //
-    // EMAIL TESTING
-    //
-
-    // public function test_email_send_for_starter_kit_requested(): void
-    // {
-
-    //     $form_post = array(
-    //         "action" => "meeting_update_form_response",
-    //         "update_reason" => "reason_new",
-    //         "meeting_name" => "testing name change",
-    //         "meeting_id" => "3277",
-    //         "start_time" => "10:00:00",
-    //         "duration_time" => "01:00:00",
-    //         "location_text" => "test location",
-    //         "location_street" => "test street",
-    //         "location_municipality" => "test municipality",
-    //         "location_province" => "test province",
-    //         "location_postal_code_1" => "12345",
-    //         "weekday_tinyint" => "1",
-    //         "service_body_bigint" => "99",
-    //         "format_shared_id_list" => "1",
-    //         "starter_kit_required" => "yes",
-    //         "starter_kit_postal_address" => "my house",
-    //         "first_name" => "joe",
-    //         "last_name" => "joe",
-    //         "email_address" => "joe@joe.com",
-    //         "submit" => "Submit Form",
-    //         "group_relationship" => "Group Member",
-    //         "add_email" => "yes",
-
-    //     );
-
-    //     global $wpdb;
-    //     $wpdb = Mockery::mock('wpdb');
-    //     /** @var Mockery::mock $wpdb test */
-    //     // handle db insert of submission
-    //     $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
-    //     // handle email to service body
-    //     $wpdb->shouldReceive('prepare')->andReturn(true);
-    //     $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-    //     Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
-
-    //     // we should generate 3 mails - one to the trusted servants  one to the form submitter and one to the fso
-
-    //     // service body users
-    //     Functions\expect('wp_mail')->times(1)->with("a@a.com,a@a.com", Mockery::any(), Mockery::any(), Mockery::any());
-    //     // submitter
-    //     Functions\expect('wp_mail')->times(1)->with("joe@joe.com", Mockery::any(), Mockery::any(), Mockery::any());
-    //     // fso
-    //     Functions\expect('wp_mail')->times(1)->with("wbw_fso_email_address", Mockery::any(), Mockery::any(), Mockery::any());
-
-    //     $response = meeting_update_form_handler_rest($form_post);
-    //     $wbw_dbg->debug_log($wbw_dbg->vdump($response));
-    //     $this->assertInstanceOf(WP_REST_Response::class, $response);
-    //     $this->assertEquals(200, $response->get_status());
-    // }
-
-    // public function test_email_send_for_no_starter_kit_requested(): void
-    // {
-
-    //     $form_post = array(
-    //         "action" => "meeting_update_form_response",
-    //         "update_reason" => "reason_new",
-    //         "meeting_name" => "testing name change",
-    //         "meeting_id" => "3277",
-    //         "start_time" => "10:00:00",
-    //         "duration_time" => "01:00:00",
-    //         "location_text" => "test location",
-    //         "location_street" => "test street",
-    //         "location_municipality" => "test municipality",
-    //         "location_province" => "test province",
-    //         "location_postal_code_1" => "12345",
-    //         "weekday_tinyint" => "1",
-    //         "service_body_bigint" => "99",
-    //         "format_shared_id_list" => "1",
-    //         "starter_kit_required" => "no",
-    //         "first_name" => "joe",
-    //         "last_name" => "joe",
-    //         "email_address" => "joe@joe.com",
-    //         "submit" => "Submit Form",
-    //         "group_relationship" => "Group Member",
-    //         "add_email" => "yes",
-
-    //     );
-
-    //     global $wpdb;
-    //     $wpdb = Mockery::mock('wpdb');
-    //     /** @var Mockery::mock $wpdb test */
-    //     // handle db insert of submission
-    //     $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
-    //     // handle email to service body
-    //     $wpdb->shouldReceive('prepare')->andReturn(true);
-    //     $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-    //     Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new meeting_update_form_handlerTest_my_wp_user);
-
-    //     // we should generate 3 mails - one to the trusted servants  one to the form submitter and one to the fso
-
-    //     // service body users
-    //     Functions\expect('wp_mail')->times(1)->with("a@a.com,a@a.com", Mockery::any(), Mockery::any(), Mockery::any());
-    //     // submitter
-    //     Functions\expect('wp_mail')->times(1)->with("joe@joe.com", Mockery::any(), Mockery::any(), Mockery::any());
-
-    //     $response = meeting_update_form_handler_rest($form_post);
-    //     $wbw_dbg->debug_log($wbw_dbg->vdump($response));
-    //     $this->assertInstanceOf(WP_REST_Response::class, $response);
-    //     $this->assertEquals(200, $response->get_status());
-    // }
-
-
-
-    //
     // FAILURE TESTING
     //
 
+    /**
+     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     */
     public function test_cant_create_new_if_starter_kit_answer_missing(): void
     {
 
@@ -523,6 +439,9 @@ Line: $errorLine
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
+    /**
+     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     */
     public function test_cant_change_if_format_list_has_garbage(): void
     {
 
@@ -556,6 +475,9 @@ Line: $errorLine
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
+    /**
+     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     */
     public function test_cant_change_if_weekday_is_too_big(): void
     {
 
@@ -589,6 +511,9 @@ Line: $errorLine
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
+    /**
+     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     */
     public function test_cant_change_if_weekday_is_zero(): void
     {
 
@@ -622,6 +547,9 @@ Line: $errorLine
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
+    /**
+     * @covers wbw\REST\Handlers::meeting_update_form_handler_rest
+     */
     public function test_cant_change_if_weekday_is_garbage(): void
     {
 
@@ -654,5 +582,4 @@ Line: $errorLine
 
         $this->assertInstanceOf(WP_Error::class, $response);
     }
-
 }
