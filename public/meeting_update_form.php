@@ -1,4 +1,5 @@
 <?php
+
 use wbw\BMLT\Integration;
 
 $wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
@@ -12,36 +13,28 @@ $bmlt_integration = new Integration;
 
 $meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
 
-if($meeting_counties_and_sub_provinces)
-{
+if ($meeting_counties_and_sub_provinces) {
     $counties = '<select class="meeting-input" name="location_sub_province">';
-    foreach ($meeting_counties_and_sub_provinces as $key)
-    {
-        $counties .= '<option value="'.$key.'">'.$key.'</option>';
+    foreach ($meeting_counties_and_sub_provinces as $key) {
+        $counties .= '<option value="' . $key . '">' . $key . '</option>';
     }
     $counties .= '</select>';
-}
-else
-{
-    $counties =<<<EOD
+} else {
+    $counties = <<<EOD
     <input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">
 EOD;
 }
 
 $meeting_states_and_provinces = $bmlt_integration->getMeetingStates();
 
-if($meeting_states_and_provinces)
-{
+if ($meeting_states_and_provinces) {
     $states = '<select class="meeting-input" name="location_province">';
-    foreach ($meeting_states_and_provinces as $key)
-    {
-        $states .= '<option value="'.$key.'">'.$key.'</option>';
+    foreach ($meeting_states_and_provinces as $key) {
+        $states .= '<option value="' . $key . '">' . $key . '</option>';
     }
     $states .= '</select>';
-}
-else
-{
-    $states =<<<EOD
+} else {
+    $states = <<<EOD
     <input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>
 EOD;
 }
@@ -69,7 +62,7 @@ EOD;
             <div id="meeting_selector">
                 <br>
                 <label for="meeting-searcher"">Search For Meeting:</label>
-                <select name="meeting-searcher" class=" meeting-searcher" id="meeting-searcher">
+                <select name=" meeting-searcher" class=" meeting-searcher" id="meeting-searcher">
                     <option></option>
                     </select>
                     <br><br>
@@ -79,7 +72,7 @@ EOD;
                 <div class="form-grid-top">
                     <p id="instructions"></p>
                 </div>
-                
+
                 <!-- personal details -->
                 <div id="personal_details" class="form-grid-col2-1">
                     <fieldset>
@@ -109,13 +102,17 @@ EOD;
                     </fieldset>
                 </div>
                 <div id="virtual_meeting" class="form-grid-col2-2">
-                    <fieldset><legend>Virtual Meeting Settings</legend>
-                    <label for="field1">field1</label>
-                        <input type="number" name="field1" id="field1">
-                        <label for="field2">field2</label>
-                        <input type="number" name="field2" id="field2">
-                        <label for="field3">field3</label>
-                        <input type="number" name="field3" id="field3">
+                    <fieldset>
+                        <legend>Virtual Meeting Options</legend>
+                        <label for="vh">Is this a virtual or a hybrid meeting?</label>
+                        <select name="vh">
+                            <option value="" disabled selected hidden>Select one</option>
+                            <option>No</option>
+                            <option>Yes - Virtual only</option>
+                            <option>Yes - Hybrid (Virtual and Face to Face)</option>
+                        </select>
+                        <label for="virtual_meeting_link">Online Meeting Link</label>
+                        <input class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
                     </fieldset>
                 </div>
                 <!-- meeting details -->
@@ -142,7 +139,7 @@ EOD;
                                     <input class="meeting-input" type="time" name="start_time" size="10" id="start_time" required>
                                 </div>
                                 <div class="grid-flex-item">
-                                <label>Duration</label>
+                                    <label>Duration</label>
                                     <div class="inline">
                                         <span>
                                             <select class="meeting-input" id="duration_hours">
@@ -211,30 +208,28 @@ EOD;
                             <select class="display_format_shared_id_list-select2" name="display_format_shared_id_list" id="display_format_shared_id_list" required></select>
                             <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
 
-                            <label for="virtual_meeting_link">Online Meeting Link</label>
-                            <input class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
                         </div>
                     </fieldset>
                 </div>
                 <!-- other details -->
                 <div class="form-grid-bottom">
                     <div id="additional_info_div">
-                    <fieldset>
-                        <legend>Additional Information</legend>
-                        <label for="additional_info">Any Other Comments</label>
-                        <textarea name="additional_info" id="additional_info" rows="5" cols="50" placeholder="Provide any more detail that may help us action your meeting change request"></textarea>
-                        <div id="starter_pack">
-                            <label for="starter_kit_required">Starter Kit Required</label>
-                            <select name="starter_kit_required" id="starter_kit_required">
-                                <option value="yes" selected="true" id="starter_kit_required_yes">Yes</option>
-                                <option value="no" id="starter_kit_required_no">No</option>
-                            </select>
-                            <div id="starter_kit_postal_address_div">
-                                <label for="starter_kit_postal_address">Starter Kit Postal Address<span class="wbw-required-field"> *</span></label>
-                                <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" rows="5" cols="50"></textarea>
+                        <fieldset>
+                            <legend>Additional Information</legend>
+                            <label for="additional_info">Any Other Comments</label>
+                            <textarea name="additional_info" id="additional_info" rows="5" cols="50" placeholder="Provide any more detail that may help us action your meeting change request"></textarea>
+                            <div id="starter_pack">
+                                <label for="starter_kit_required">Starter Kit Required</label>
+                                <select name="starter_kit_required" id="starter_kit_required">
+                                    <option value="yes" selected="true" id="starter_kit_required_yes">Yes</option>
+                                    <option value="no" id="starter_kit_required_no">No</option>
+                                </select>
+                                <div id="starter_kit_postal_address_div">
+                                    <label for="starter_kit_postal_address">Starter Kit Postal Address<span class="wbw-required-field"> *</span></label>
+                                    <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" rows="5" cols="50"></textarea>
+                                </div>
                             </div>
-                        </div>
-                    </fieldset>
+                        </fieldset>
                     </div>
                     <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
                 </div>
