@@ -80,7 +80,7 @@ EOD;
                     <p id="instructions"></p>
                 </div>
                 <!-- personal details -->
-                <div id="personal_details" class="form-grid-col2">
+                <div id="personal_details" class="form-grid-col2-1">
                     <fieldset>
                         <legend>Personal Details</legend>
                         <label for="first_name">First Name<span class="wbw-required-field">*</span></label>
@@ -107,7 +107,7 @@ EOD;
                         </select>
                     </fieldset>
                 </div>
-                <div id="virtual_meeting" class="form-grid-col2">
+                <div id="virtual_meeting" class="form-grid-col2-2">
                     <fieldset><legend>Virtual Meeting Settings</legend>
                     <label for="field1">field1</label>
                         <input type="number" name="field1" id="field1">
