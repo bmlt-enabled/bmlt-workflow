@@ -175,7 +175,6 @@ function enqueue_jquery_dialog()
 
 function enqueue_form_deps()
 {
-    global $wbw_rest_namespace;
     global $wbw_dbg;
 
     register_select2();
@@ -184,7 +183,7 @@ function enqueue_form_deps()
     prevent_cache_register_style('wbw-meeting-update-form-css', false, 'css/meeting_update_form.css');
     wp_register_script('jquery.validate', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
     wp_register_script('jquery.validate.additional', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jquery.validate'), '1.0', true);
-
+    wp_enqueue_style( 'dashicons' );
     $wbw_dbg->debug_log("scripts and styles registered");
 }
 
