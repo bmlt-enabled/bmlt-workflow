@@ -113,6 +113,13 @@ EOD;
                         </select>
                         <label for="virtual_meeting_link">Online Meeting Link</label>
                         <input class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
+                        A URL for the virtual meeting, eg: https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1
+                        <label for="virtual_meeting_additional_info">Virtual Meeting Additional Info </label>
+                        <input class="meeting-input" type="text" name="virtual_meeting_additional_info" size="50" id="virtual_meeting_additional_info">
+                        Additional information, such as a meeting ID and Password, eg Zoom ID: 456 033 8613, Passcode: 1953
+                        <label for="phone_meeting_number">Phone Meeting Dial-in Number</label>
+                        <input class="meeting-input" type="text" name="phone_meeting_number" size="50" id="phone_meeting_number">    
+                        Any phone details for this virtual meeting.               
                     </fieldset>
                 </div>
                 <!-- meeting details -->
