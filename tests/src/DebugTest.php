@@ -9,9 +9,6 @@ use Brain\Monkey\Functions;
 use Brain\Monkey;
 use function Patchwork\{redefine, getFunction, always};
 
-define('DEBUG_ENABLED',true);
-define('DEBUG_DISABLED',false);
-
 /**
  * @covers wbw\Debug
  */
@@ -53,7 +50,6 @@ Line: $errorLine
      */
     public function test_debug_log_enabled(): void
     {
-        define('WBW_DEBUG',true);
         $dbg = new Debug();
         Functions\expect('error_log')->once();
 
