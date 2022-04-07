@@ -79,6 +79,7 @@ EOD;
                 <div class="form-grid-top">
                     <p id="instructions"></p>
                 </div>
+                
                 <!-- personal details -->
                 <div id="personal_details" class="form-grid-col2-1">
                     <fieldset>
