@@ -75,10 +75,10 @@ jQuery(document).ready(function ($) {
     },
   }).done(function (response) {
     var wbw_service_bodies = "";
-    Object.keys(response['data']).forEach((item) => {
+    Object.keys(response).forEach((item) => {
       // console.log(response);
       var service_body_bigint = item;
-      var service_area_name = response['data'][item]["name"];
+      var service_area_name = response[item]["name"];
       var opt = new Option(service_area_name, service_body_bigint, false, false);
       $("#service_body_bigint").append(opt);
       wbw_service_bodies += "services[]=" + service_body_bigint + "&";
