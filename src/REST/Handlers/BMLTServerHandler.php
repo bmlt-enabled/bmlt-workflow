@@ -72,10 +72,9 @@ private function check_bmltserver_parameters($username, $password, $server)
 
             // $result is a WP_Error
             $data = array(
-                "status" => $result->get_error_code(),
                 "wbw_bmlt_test_status" => "failure"
             );
-            $result->add_data($data, $result->get_error_code());
+            $result->add_data($data);
     
             return $result;
         }
