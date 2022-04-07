@@ -327,6 +327,16 @@ jQuery(document).ready(function ($) {
   $("#other_reason").prop("required", false);
   $("#personal_details").attr("class", "form-grid-col2-1");
 
+  $("#virtual_hybrid_select").on("change", function () {
+    if (this.value == "no") {
+      $("#virtual_meeting_link").show();
+      $("#virtual_meeting_additional_info").prop("required", true);
+    } else {
+      $("#starter_kit_postal_address_div").hide();
+      $("#starter_kit_postal_address").prop("required", false);
+    }
+  });
+
   $("#update_reason").on("change", function () {
     // hide all the optional items
     $("#reason_new_text").hide();

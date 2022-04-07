@@ -101,44 +101,48 @@ EOD;
                         </select>
                     </fieldset>
                 </div>
-                <div id="virtual_meeting" class="form-grid-col2-2">
+                <div id="virtual_meeting_options" class="form-grid-col2-2">
                     <fieldset>
                         <legend>Virtual Meeting Options</legend>
-                        <label for="vh">Is this a virtual or a hybrid meeting?</label>
-                        <select name="vh">
+                        <label for="virtual_hybrid_select">Is this a virtual or a hybrid meeting?</label>
+                        <select name="virtual_hybrid_select" id="virtual_hybrid_select">
                             <option value="" disabled selected hidden>Select one</option>
-                            <option>No</option>
-                            <option>Yes - Virtual only</option>
-                            <option>Yes - Hybrid (Virtual and Face to Face)</option>
+                            <option value="no">No</option>
+                            <option value="yes_virtual">Yes - Virtual only</option>
+                            <option value="yes_hybrid"">Yes - Hybrid (Virtual and Face to Face)</option>
                         </select>
-                        <div class="tooltip">
-                        <label for="virtual_meeting_link">Online Meeting Link
-                            <span class="dashicons dashicons-info-outline" style="color: cornflowerblue;"></span>
-                            <div class="left">
-                                A URL for the virtual meeting
-                                <br>eg: https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1
-                            </div>
-                        </div></label>
-                        <input class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
-                        <div class="tooltip">
-                        <label for="virtual_meeting_additional_info">Virtual Meeting Additional Info                            
-                            <span class="dashicons dashicons-info-outline" style="color: cornflowerblue;"></span>
-                            <div class="left">
-                            Additional information, such as a meeting ID and Password, 
-                                <br>eg Zoom ID: 456 033 8613, Passcode: 1953
-                            </div>
-                        </div></label>
-                        <input class="meeting-input" type="text" name="virtual_meeting_additional_info" size="50" id="virtual_meeting_additional_info">
-                        <div class="tooltip">
+                        <div id="virtual_meeting_settings">
+                                <div class="tooltip">
+                                    <label for="virtual_meeting_link">Online Meeting Link
+                                        <span class="dashicons dashicons-info-outline"></span>
+                                    </label>
+                                    <div class="left">
+                                        A URL for the virtual meeting
+                                        <br>eg: https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1
+                                    </div>
+                                </div>
+                                <input class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
+                                <div class="tooltip">
+                                    <label for="virtual_meeting_additional_info">Virtual Meeting Additional Info
+                                        <span class="dashicons dashicons-info-outline"></span>
+                                    </label>
+                                    <div class="left">
+                                        Additional information, such as a meeting ID and Password,
+                                        <br>eg Zoom ID: 456 033 8613, Passcode: 1953
+                                    </div>
+                                </div>
+                                <input class="meeting-input" type="text" name="virtual_meeting_additional_info" size="50" id="virtual_meeting_additional_info">
+                                <div class="tooltip">
+                                    <label for="phone_meeting_number">Phone Meeting Dial-in Number
+                                        <span class="dashicons dashicons-info-outline" style="color: cornflowerblue;"></span>
+                                    </label>
 
-                        <label for="phone_meeting_number">Phone Meeting Dial-in Number
-                            <span class="dashicons dashicons-info-outline" style="color: cornflowerblue;"></span>
-                            <div class="left">
-                            Any phone details for this virtual meeting.
-                            </div>
-                        </div></label>
-                        <input class="meeting-input" type="text" name="phone_meeting_number" size="50" id="phone_meeting_number">
-                        
+                                    <div class="left">
+                                        Any phone details for this virtual meeting.
+                                    </div>
+                                </div>
+                                <input class="meeting-input" type="text" name="phone_meeting_number" size="50" id="phone_meeting_number">
+                        </div>
                     </fieldset>
                 </div>
                 <!-- meeting details -->
