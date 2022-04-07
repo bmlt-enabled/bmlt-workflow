@@ -111,7 +111,10 @@ EOD;
                             <option>Yes - Virtual only</option>
                             <option>Yes - Hybrid (Virtual and Face to Face)</option>
                         </select>
+                        <div class="tooltip">
                         <label for="virtual_meeting_link">Online Meeting Link</label>
+                        <div class="left">
+tooltip text here</div></div>
                         <input class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
                         A URL for the virtual meeting, eg: https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1
                         <label for="virtual_meeting_additional_info">Virtual Meeting Additional Info </label>

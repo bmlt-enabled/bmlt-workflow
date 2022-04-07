@@ -125,3 +125,58 @@ body {
 .select2-container--default .select2-selection--multiple button.select2-selection__choice__remove {
   color: #000;
 }
+
+.tooltip {
+  display:inline-block;
+  position:relative;
+  border-bottom:1px dotted #666;
+  text-align:left;
+}
+
+.tooltip h3 {margin:12px 0;}
+
+.tooltip .left {
+  min-width:200px;
+  max-width:400px;
+  top:50%;
+  right:100%;
+  margin-right:20px;
+  transform:translate(0, -50%);
+  padding:20px;
+  color:#666666;
+  background-color:#FFFFE0;
+  font-weight:normal;
+  font-size:13px;
+  border-radius:8px;
+  position:absolute;
+  z-index:99999999;
+  box-sizing:border-box;
+  display:none;
+  border:1px solid #DCA;
+}
+
+.tooltip:hover .left {
+  display:block;
+}
+
+.tooltip .left i {
+  position:absolute;
+  top:50%;
+  left:100%;
+  margin-top:-12px;
+  width:12px;
+  height:24px;
+  overflow:hidden;
+}
+
+.tooltip .left i::after {
+  content:'';
+  position:absolute;
+  width:12px;
+  height:12px;
+  left:0;
+  top:50%;
+  transform:translate(-50%,-50%) rotate(-45deg);
+  background-color:#FFFFE0;
+  border:1px solid #DCA;
+}
