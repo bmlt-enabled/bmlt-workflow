@@ -95,7 +95,7 @@ EOD;
                             <option value="yes">Yes</option>
                             <option value="no" selected>No</option>
                         </select>
-                        <label for="contact_number_confidential" class="formbuilder-number-label">Contact Number (Confidential)</label>
+                        <label for="contact_number_confidential">Contact Number (Confidential)</label>
                         <input type="number" name="contact_number_confidential" id="contact_number_confidential">
                         <label for="group_relationship">Relationship to group</label>
                         <select name="group_relationship" id="group_relationship">
@@ -105,6 +105,16 @@ EOD;
                             <option value="NA Member">NA Member</option>
                             <option value="Not A Member">Not A Member</option>
                         </select>
+                    </fieldset>
+                </div>
+                <div id="virtual_meeting" class="form-grid-col2">
+                    <fieldset><legend>Virtual Meeting Settings</legend>
+                    <label for="field1">field1</label>
+                        <input type="number" name="field1" id="field1">
+                        <label for="field2">field2</label>
+                        <input type="number" name="field2" id="field2">
+                        <label for="field3">field3</label>
+                        <input type="number" name="field3" id="field3">
                     </fieldset>
                 </div>
                 <!-- meeting details -->
