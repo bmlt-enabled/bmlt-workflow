@@ -126,6 +126,10 @@ body {
   color: #000;
 }
 
+span.dashicons.dashicons-info-outline {
+  color: cornflowerblue;
+}
+
 .tooltip {
   display:inline-block;
   position:relative;

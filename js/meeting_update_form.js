@@ -329,11 +329,9 @@ jQuery(document).ready(function ($) {
 
   $("#virtual_hybrid_select").on("change", function () {
     if (this.value == "no") {
-      $("#virtual_meeting_link").show();
-      $("#virtual_meeting_additional_info").prop("required", true);
+      $("#virtual_meeting_settings").hide();
     } else {
-      $("#starter_kit_postal_address_div").hide();
-      $("#starter_kit_postal_address").prop("required", false);
+      $("#virtual_meeting_settings").show();
     }
   });
 
