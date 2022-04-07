@@ -23,7 +23,7 @@ class HandlerCore
     }
 
     // accepts raw string or array
-    private function wbw_rest_success($message)
+    public function wbw_rest_success($message)
     {
         if (is_array($message)) {
             $data = $message;
@@ -36,7 +36,7 @@ class HandlerCore
         return $response;
     }
 
-    private function wbw_rest_error($message, $code)
+    public function wbw_rest_error($message, $code)
     {
         return new \WP_Error('wbw_error', $message, array('status' => $code));
     }
