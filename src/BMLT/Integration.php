@@ -1,8 +1,6 @@
 <?php
 namespace wbw\BMLT;
 
-if (!defined('ABSPATH')) exit; // die if being called directly
-
 use wbw\Debug;
 
 class Integration
@@ -23,7 +21,7 @@ class Integration
         $ret = \wp_safe_remote_post($url, array('body'=> http_build_query($postargs)));
         $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
 
-        $response_code = wp_remote_retrieve_response_code($ret);
+        $response_code = \wp_remote_retrieve_response_code($ret);
 
         if ($response_code != 200)
         {

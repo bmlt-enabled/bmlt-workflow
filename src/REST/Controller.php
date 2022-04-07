@@ -4,8 +4,9 @@ namespace wbw\REST;
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 use wbw\Debug;
-use wbw\BMLT\Integration;
-use wbw\REST\Handlers;
+use wbw\REST\Handlers\BMLTServerHandler;
+use wbw\REST\Handlers\ServiceBodiesHandler;
+use wbw\REST\Handlers\SubmissionsHandler;
 
 class Controller extends \WP_REST_Controller
 {
@@ -20,8 +21,10 @@ class Controller extends \WP_REST_Controller
 		$this->submissions_rest_base = 'submissions';
 		$this->service_bodies_rest_base = 'servicebodies';
 		$this->server_rest_base = 'bmltserver';
-		$this->bmlt_integration = new Integration;
-		$this->handlers = new Handlers();
+		// $this->handlers = new Handlers();
+		$this->BMLTServerHandler = new BMLTServerHandler();
+		$this->ServiceBodiesHandler = new ServiceBodiesHandler();
+		$this->SubmissionsHandler = new SubmissionsHandler();
 	}
 
 	public function register_routes()
@@ -119,25 +122,53 @@ class Controller extends \WP_REST_Controller
 			),
 		);
 
-		// POST server
+		// GET bmltserver
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->server_rest_base,
+
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_bmltserver'),
+				'permission_callback' => array($this, 'get_bmltserver_permissions_check'),
+			),
+		);
+		
+		// POST bmltserver
 		register_rest_route(
 			$this->namespace,
 			'/' . $this->server_rest_base,
 
 			array(
 				'methods'             => \WP_REST_Server::CREATABLE,
-				'callback'            => array($this, 'post_server'),
-				'permission_callback' => array($this, 'post_server_permissions_check'),
+				'callback'            => array($this, 'post_bmltserver'),
+				'permission_callback' => array($this, 'post_bmltserver_permissions_check'),
 			),
 		);
+
+		// PATCH bmltserver
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->server_rest_base,
+
+			array(
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => array($this, 'patch_bmltserver'),
+				'permission_callback' => array($this, 'patch_bmltserver_permissions_check'),
+			),
+		);
+		
 	}
-	/**
-	 * Check permissions for submission management. These are general purpose checks for all submission editors, granular edit permission will be checked within the callback itself.
-	 *
-	 * @param WP_REST_Request $request get data from request.
-	 *
-	 * @return bool|WP_Error
-	 */
+
+	private function authorization_status_code()
+	{
+		$status = 401;
+		if (is_user_logged_in()) {
+			$status = 403;
+		}
+		return $status;
+	}
+
 	public function get_submissions_permissions_check($request)
 	{
 		global $wbw_capability_manage_submissions;
@@ -209,14 +240,6 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-
-	/**
-	 * Check permissions for user management.
-	 *
-	 * @param WP_REST_Request $request get data from request.
-	 *
-	 * @return bool|WP_Error
-	 */
 	public function get_service_bodies_permissions_check($request)
 	{
 		// get service areas is unauthenticated as it is also used by the end-user form 
@@ -224,13 +247,7 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	/**
-	 * Check permissions for user management.
-	 *
-	 * @param WP_REST_Request $request get data from request.
-	 *
-	 * @return bool|WP_Error
-	 */
+
 	public function post_service_bodies_permissions_check($request)
 	{
 		global $wbw_dbg;
@@ -242,31 +259,39 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	/**
-	 * Check permissions for server configuration.
-	 *
-	 * @param WP_REST_Request $request get data from request.
-	 *
-	 * @return bool|WP_Error
-	 */
-	public function post_server_permissions_check($request)
+	public function post_bmltserver_permissions_check($request)
 	{
 		global $wbw_dbg;
 
-		$wbw_dbg->debug_log("post_server " . get_current_user_id());
+		$wbw_dbg->debug_log("post_bmltserver " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post server updates.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
 
-	/**
-	 * Check permissions for form post
-	 *
-	 * @param WP_REST_Request $request get data from request.
-	 *
-	 * @return bool|WP_Error
-	 */
+	public function get_bmltserver_permissions_check($request)
+	{
+		global $wbw_dbg;
+
+		$wbw_dbg->debug_log("get_bmltserver " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post server updates.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
+	public function patch_bmltserver_permissions_check($request)
+	{
+		global $wbw_dbg;
+
+		$wbw_dbg->debug_log("patch_bmltserver " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot patch server updates.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
 	public function post_submissions_permissions_check($request)
 	{
 		// Anyone can post a form submission
@@ -275,103 +300,77 @@ class Controller extends \WP_REST_Controller
 
 	public function get_submissions($request)
 	{
-		$result = $this->handlers->get_submissions_handler($request);
+		$result = $this->SubmissionsHandler->get_submissions_handler($request);
 		return rest_ensure_response($result);
 	}
 
 	public function get_submission($request)
 	{
-		$result = $this->handlers->get_submission_handler($request);
+		$result = $this->SubmissionsHandler->get_submission_handler($request);
 		return rest_ensure_response($result);
 	}
 
 	public function delete_submission($request)
 	{
-		$result = $this->handlers->delete_submission_handler($request);
+		$result = $this->SubmissionsHandler->delete_submission_handler($request);
 		return rest_ensure_response($result);
-	}
-
-	private function vdump($object)
-	{
-		ob_start();
-		var_dump($object);
-		$contents = ob_get_contents();
-		ob_end_clean();
-		return $contents;
 	}
 
 	public function approve_submission($request)
 	{
-		$result = $this->handlers->approve_submission_handler($request);
+		$result = $this->SubmissionsHandler->approve_submission_handler($request);
 		return rest_ensure_response($result);
 	}
 
 	public function reject_submission($request)
 	{
-		$result = $this->handlers->reject_submission_handler($request);
+		$result = $this->SubmissionsHandler->reject_submission_handler($request);
 		return rest_ensure_response($result);
 	}
 
 	public function patch_submission($request)
 	{
-		$result = $this->handlers->patch_submission_handler($request);
+		$result = $this->SubmissionsHandler->patch_submission_handler($request);
 		return rest_ensure_response($result);
 	}
-
-	/**
-	 * Form post
-	 *
-	 * @param WP_REST_Request $request get data from request.
-	 *
-	 * @return mixed|WP_Error|WP_REST_Response
-	 */
 
 	public function post_submissions($request)
 	{
-		global $wbw_dbg;
-		$wbw_dbg->debug_log($this->vdump($request->get_body_params()));
 
-		$resp = $this->handlers->meeting_update_form_handler_rest($request->get_body_params());
-
+		$resp = $this->SubmissionsHandler->meeting_update_form_handler_rest($request->get_body_params());
 		return rest_ensure_response($resp);
-	}
-
-	public function post_service_bodies($request)
-	{
-		$result = $this->handlers->post_service_bodies_handler($request);
-		return rest_ensure_response($result);
-	}
-
-	// public function post_service_bodies_detail($request)
-	// {
-	// 	$result = $this->handlers->post_service_bodies_detail_handler($request);
-	// 	return rest_ensure_response($result);
-	// }
-
-	public function post_server($request)
-	{
-		$result = $this->handlers->post_server_handler($request);
-		return rest_ensure_response($result);
 	}
 
 	public function get_service_bodies($request)
 	{
-		$result = $this->handlers->get_service_bodies_handler($request);
+		$result = $this->ServiceBodiesHandler->get_service_bodies_handler($request);
 		return rest_ensure_response($result);
 	}
 
-	// public function get_service_bodies_detail($request)
-	// {
-	// 	$result = $this->handlers->get_service_bodies_detail_handler($request);
-	// 	return rest_ensure_response($result);
-	// }
-
-	public function authorization_status_code()
+	public function post_service_bodies($request)
 	{
-		$status = 401;
-		if (is_user_logged_in()) {
-			$status = 403;
-		}
-		return $status;
+		$result = $this->ServiceBodiesHandler->post_service_bodies_handler($request);
+		return rest_ensure_response($result);
 	}
+
+	public function get_bmltserver($request)
+	{
+		$result = $this->BMLTServerHandler->get_bmltserver_handler($request);
+		return rest_ensure_response($result);
+	}
+
+	public function post_bmltserver($request)
+	{
+		$result = $this->BMLTServerHandler->post_bmltserver_handler($request);
+		return rest_ensure_response($result);
+	}
+
+	public function patch_bmltserver($request)
+	{
+		$result = $this->BMLTServerHandler->patch_bmltserver_handler($request);
+		return rest_ensure_response($result);
+	}
+
+
+
 }

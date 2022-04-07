@@ -64,6 +64,7 @@ jQuery(document).ready(function ($) {
     fetchJsonp(search_results_address)
       .then((response) => response.json())
       .then((mdata) => create_meeting_searcher(mdata));
+
   }
 
   $.ajax({

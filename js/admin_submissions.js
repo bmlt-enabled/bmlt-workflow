@@ -607,12 +607,15 @@ jQuery(document).ready(function ($) {
 
     // pull out all the changed elements
     $(".wbw-changed").each(function () {
-      var short_id = $(this).attr("id").replace("quickedit_", "");
-      // turn the format list into a comma seperated array
-      if (short_id === "format_shared_id_list") {
-        quickedit_changes_requested[short_id] = $(this).val().join(",");
-      } else {
-        quickedit_changes_requested[short_id] = $(this).val();
+      if($(this).is('textarea,select,input'))
+      {
+        var short_id = $(this).attr("id").replace("quickedit_", "");
+        // turn the format list into a comma seperated array
+        if (short_id === "format_shared_id_list") {
+          quickedit_changes_requested[short_id] = $(this).val().join(",");
+        } else {
+          quickedit_changes_requested[short_id] = $(this).val();
+        }  
       }
     });
 
