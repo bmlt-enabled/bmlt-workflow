@@ -4,8 +4,9 @@ namespace wbw\REST;
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 use wbw\Debug;
-use wbw\REST\Handlers;
 use wbw\REST\Handlers\BMLTServerHandler;
+use wbw\REST\Handlers\ServiceBodiesHandler;
+use wbw\REST\Handlers\SubmissionsHandler;
 
 class Controller extends \WP_REST_Controller
 {
@@ -20,8 +21,10 @@ class Controller extends \WP_REST_Controller
 		$this->submissions_rest_base = 'submissions';
 		$this->service_bodies_rest_base = 'servicebodies';
 		$this->server_rest_base = 'bmltserver';
-		$this->handlers = new Handlers();
+		// $this->handlers = new Handlers();
 		$this->BMLTServerHandler = new BMLTServerHandler();
+		$this->ServiceBodiesHandler = new ServiceBodiesHandler();
+		$this->SubmissionsHandler = new SubmissionsHandler();
 	}
 
 	public function register_routes()

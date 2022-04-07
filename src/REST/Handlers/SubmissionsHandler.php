@@ -1,13 +1,10 @@
-<?php
+<?php 
+namespace wbw\REST\Handlers;
 
-namespace wbw\REST;
-
-if (!defined('ABSPATH')) exit; // die if being called directly
-
-use wbw\Debug;
 use wbw\BMLT\Integration;
+use wbw\REST\HandlerCore;
 
-class Handlers
+class SubmissionsHandler
 {
 
     public function __construct($stub = null)
@@ -20,32 +17,9 @@ class Handlers
         {
             $this->bmlt_integration = $stub;
         }
+        $this->handlerCore = new HandlerCore;
     }
 
-    // accepts raw string or array
-    private function wbw_rest_success($message)
-    {
-        if (is_array($message)) {
-            $data = $message;
-        } else {
-            $data = array('message' => $message);
-        }
-        $response = new \WP_REST_Response();
-        $response->set_data($data);
-        $response->set_status(200);
-        return $response;
-    }
-
-    private function wbw_rest_error($message, $code)
-    {
-        return new \WP_Error('wbw_error', $message, array('status' => $code));
-    }
-
-    private function wbw_rest_error_with_data($message, $code, array $data)
-    {
-        $data['status'] = $code;
-        return new \WP_Error('wbw_error', $message, $data);
-    }
 
     public function get_submissions_handler()
     {
@@ -68,160 +42,6 @@ class Handlers
         return $result;
     }
 
-    public function get_service_bodies_handler($request)
-    {
-
-        global $wpdb;
-        global $wbw_service_bodies_table_name;
-        global $wbw_service_bodies_access_table_name;
-        global $wbw_dbg;
-
-        $params = $request->get_params();
-        $wbw_dbg->debug_log($wbw_dbg->vdump($params));
-        // $wbw_dbg->debug_log("params detail".$params['detail']);
-        // only an admin can get the service areas detail (permissions) information
-        if ((!empty($params['detail'])) && ($params['detail'] == "true") && (current_user_can('manage_options'))) {
-            // do detail lookup
-
-            $sblist = array();
-
-            $req = array();
-            $req['admin_action'] = 'get_service_body_info';
-            $req['flat'] = '';
-
-            // get an xml for a workaround
-            $response = $this->bmlt_integration->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
-            if (is_wp_error($response)) {
-                return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
-            }
-
-            $xml = simplexml_load_string($response['body']);
-            $arr = json_decode(json_encode($xml), 1);
-
-            // $wbw_dbg->debug_log($wbw_dbg->vdump($arr));
-
-            $idlist = array();
-
-            // make our list of service bodies
-            foreach ($arr['service_body'] as $key => $value) {
-                // $wbw_dbg->debug_log("looping key = " . $key);
-                if (array_key_exists('@attributes', $value)) {
-                    $sbid = $value['@attributes']['id'];
-                    $idlist[] = $sbid;
-                    $sblist[$sbid] = array('name' => $value['@attributes']['name']);
-                } else {
-                    // we need a name at minimum
-                    break;
-                }
-                $sblist[$sbid]['contact_email'] = '';
-                if (array_key_exists('contact_email', $value)) {
-                    $sblist[$sbid]['contact_email'] = $value['contact_email'];
-                }
-            }
-
-            // update our service area list in the database in case there have been some new ones added
-            // $wbw_dbg->debug_log("get ids");
-            $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $wbw_service_bodies_table_name . ';', 0);
-
-            // $wbw_dbg->debug_log($wbw_dbg->vdump($sqlresult));
-            $missing = array_diff($idlist, $sqlresult);
-            // $wbw_dbg->debug_log("missing ids");
-            // $wbw_dbg->debug_log($wbw_dbg->vdump($missing));
-
-            foreach ($missing as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
-                $wpdb->query($sql);
-            }
-            // update any values that may have changed since last time we looked
-
-            foreach ($idlist as $value) {
-                $sql = $wpdb->prepare('UPDATE ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
-                $wpdb->query($sql);
-            }
-
-            // $wbw_dbg->debug_log("our sblist");
-            // $wbw_dbg->debug_log($wbw_dbg->vdump($sblist));
-
-            // make our group membership lists
-            foreach ($sblist as $key => $value) {
-                $wbw_dbg->debug_log("getting memberships for " . $key);
-                $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $wbw_service_bodies_access_table_name . ' where service_body_bigint = "%d"', $key);
-                $result = $wpdb->get_col($sql, 0);
-                // $wbw_dbg->debug_log($wbw_dbg->vdump($result));
-                $sblist[$key]['membership'] = implode(',', $result);
-            }
-            // get the form display settings
-            $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $wbw_service_bodies_table_name, ARRAY_A);
-
-            foreach ($sqlresult as $key => $value) {
-                $bool = $value['show_on_form'] ? (true) : (false);
-                $sblist[$value['service_body_bigint']]['show_on_form'] = $bool;
-            }
-        } else {
-            // simple
-
-
-            $sblist = array();
-            // $wbw_dbg->debug_log("simple list of service areas and names");
-            $result = $wpdb->get_results('SELECT * from ' . $wbw_service_bodies_table_name . ' where show_on_form != "0"', ARRAY_A);
-            // $wbw_dbg->debug_log($wbw_dbg->vdump($result));
-            // create simple service area list (names of service areas that are enabled by admin with show_on_form)
-            foreach ($result as $key => $value) {
-                $sblist[$value['service_body_bigint']]['name'] = $value['service_area_name'];
-            }
-            // $wbw_dbg->debug_log($wbw_dbg->vdump($sblist));
-
-        }
-
-        return $sblist;
-    }
-
-    public function post_service_bodies_handler($request)
-    {
-        global $wpdb;
-        global $wbw_service_bodies_access_table_name;
-        global $wbw_capability_manage_submissions;
-        global $wbw_service_bodies_table_name;
-        global $wbw_dbg;
-
-        // $wbw_dbg->debug_log("request body");
-        // $wbw_dbg->debug_log($wbw_dbg->vdump($request->get_json_params()));
-        $permissions = $request->get_json_params();
-        // clear out our old permissions
-        $wpdb->query('DELETE from ' . $wbw_service_bodies_access_table_name);
-        // insert new permissions from form
-        foreach ($permissions as $sb => $arr) {
-            $members = $arr['membership'];
-            foreach ($members as $member) {
-                $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_access_table_name . ' SET wp_uid = "%d", service_body_bigint="%d"', $member, $sb);
-                $wpdb->query($sql);
-            }
-            // update show/hide
-            $show_on_form = $arr['show_on_form'];
-            $sql = $wpdb->prepare('UPDATE ' . $wbw_service_bodies_table_name . ' SET show_on_form = "%d" where service_body_bigint="%d"', $show_on_form, $sb);
-            $wpdb->query($sql);
-        }
-
-        // add / remove user capabilities
-        $users = get_users();
-        $result = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $wbw_service_bodies_access_table_name, 0);
-        // $wbw_dbg->debug_log($wbw_dbg->vdump($sql));
-        // $wbw_dbg->debug_log($wbw_dbg->vdump($result));
-        foreach ($users as $user) {
-            $wbw_dbg->debug_log("checking user id " . $user->get('ID'));
-            if (in_array($user->get('ID'), $result)) {
-                $user->add_cap($wbw_capability_manage_submissions);
-                // $wbw_dbg->debug_log("adding cap");
-            } else {
-                $user->remove_cap($wbw_capability_manage_submissions);
-                // $wbw_dbg->debug_log("removing cap");
-            }
-        }
-
-        return $this->wbw_rest_success('Updated Service Areas');
-    }
-
-
     public function delete_submission_handler($request)
     {
 
@@ -231,7 +51,7 @@ class Handlers
         $sql = $wpdb->prepare('DELETE FROM ' . $wbw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
         $wpdb->query($sql, ARRAY_A);
 
-        return $this->wbw_rest_success('Deleted submission id ' . $request['id']);
+        return $this->handlerCore->wbw_rest_success('Deleted submission id ' . $request['id']);
     }
 
     public function get_submission_handler($request)
@@ -259,7 +79,7 @@ class Handlers
         $wbw_dbg->debug_log("RESULT");
         $wbw_dbg->debug_log($wbw_dbg->vdump($result));
         if (empty($result)) {
-            return $this->wbw_rest_error("Permission denied viewing submission id {$change_id}", 400);
+            return $this->handlerCore->wbw_rest_error("Permission denied viewing submission id {$change_id}", 400);
         }
         return $result;
     }
@@ -283,7 +103,7 @@ class Handlers
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->wbw_rest_error("Submission id {$change_id} is already $change_made", 400);
+            return $this->handlerCore->wbw_rest_error("Submission id {$change_id} is already $change_made", 400);
         }
 
         $params = $request->get_json_params();
@@ -291,7 +111,7 @@ class Handlers
         if (!empty($params['action_message'])) {
             $message = $params['action_message'];
             if (strlen($message) > 1023) {
-                return $this->wbw_rest_error('Reject message must be less than 1024 characters', 400);
+                return $this->handlerCore->wbw_rest_error('Reject message must be less than 1024 characters', 400);
             }
         } else {
             $wbw_dbg->debug_log("action message is null");
@@ -328,7 +148,7 @@ class Handlers
         $wbw_dbg->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . $wbw_dbg->vdump($headers));
         wp_mail($to_address, $subject, $body, $headers);
 
-        return $this->wbw_rest_success('Rejected submission id ' . $change_id);
+        return $this->handlerCore->wbw_rest_success('Rejected submission id ' . $change_id);
     }
 
     public function patch_submission_handler($request)
@@ -378,7 +198,7 @@ class Handlers
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->wbw_rest_error("Submission id {$change_id} is already $change_made", 400);
+            return $this->handlerCore->wbw_rest_error("Submission id {$change_id} is already $change_made", 400);
         }
         // $wbw_dbg->debug_log("change made is ".$change_made);
 
@@ -413,7 +233,7 @@ class Handlers
 
         $result = $wpdb->get_results($sql, ARRAY_A);
 
-        return $this->wbw_rest_success('Updated submission id ' . $change_id);
+        return $this->handlerCore->wbw_rest_success('Updated submission id ' . $change_id);
     }
 
     public function approve_submission_handler($request)
@@ -434,7 +254,7 @@ class Handlers
         if (!empty($params['action_message'])) {
             $message = $params['action_message'];
             if (strlen($message) > 1023) {
-                return $this->wbw_rest_error('Approve message must be less than 1024 characters', 400);
+                return $this->handlerCore->wbw_rest_error('Approve message must be less than 1024 characters', 400);
             }
         }
 
@@ -448,7 +268,7 @@ class Handlers
         // can't approve an already actioned submission
         $change_made = $result['change_made'];
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->wbw_rest_error("Submission id {$change_id} is already {$change_made}", 400);
+            return $this->handlerCore->wbw_rest_error("Submission id {$change_id} is already {$change_made}", 400);
         }
 
         $change = json_decode($result['changes_requested'], 1);
@@ -508,7 +328,7 @@ class Handlers
                 $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                 if (is_wp_error($response)) {
-                    return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+                    return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                 }
 
                 break;
@@ -525,7 +345,7 @@ class Handlers
                 $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                 if (is_wp_error($response)) {
-                    return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+                    return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                 }
                 $wbw_dbg->debug_log("response");
                 $wbw_dbg->debug_log($wbw_dbg->vdump($response));
@@ -536,7 +356,7 @@ class Handlers
                 $wbw_dbg->debug_log($wbw_dbg->vdump($change));
                 // the response back from BMLT doesnt even match what we are trying to change
                 if ((!empty($arr['id_bigint'])) && ($arr['id_bigint'] != $change['id_bigint'])) {
-                    return $this->wbw_rest_error('BMLT Communication Error - Meeting change failed', 500);
+                    return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting change failed', 500);
                 }
 
                 break;
@@ -553,16 +373,16 @@ class Handlers
                     $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                     if (is_wp_error($response)) {
-                        return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+                        return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                     }
 
                     $arr = json_decode(wp_remote_retrieve_body($response), true);
 
                     if ((!empty($arr['success'])) && ($arr['success'] != 'true')) {
-                        return $this->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
+                        return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
                     }
                     if ((!empty($arr['report'])) && ($arr['report'] != $change['id_bigint'])) {
-                        return $this->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
+                        return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
                     }
                 } else {
                     // unpublish by default
@@ -574,13 +394,13 @@ class Handlers
                     $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                     if (is_wp_error($response)) {
-                        return $this->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+                        return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                     }
 
                     $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
 
                     if ((!empty($arr['published'])) && ($arr['published'] != 0)) {
-                        return $this->wbw_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
+                        return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
                     }
                 }
 
@@ -590,7 +410,7 @@ class Handlers
                 }
 
             default:
-                return $this->wbw_rest_error("This change type ({$submission_type}) cannot be approved", 400);
+                return $this->handlerCore->wbw_rest_error("This change type ({$submission_type}) cannot be approved", 400);
         }
 
         $current_user = wp_get_current_user();
@@ -659,7 +479,7 @@ class Handlers
             }
         }
 
-        return $this->wbw_rest_success('Approved submission id ' . $change_id);
+        return $this->handlerCore->wbw_rest_success('Approved submission id ' . $change_id);
     }
 
 
@@ -680,7 +500,7 @@ class Handlers
 
     private function invalid_form_field($field)
     {
-        return $this->wbw_rest_error('Form field "' . $field . '" is invalid.', 400);
+        return $this->handlerCore->wbw_rest_error('Form field "' . $field . '" is invalid.', 400);
     }
 
     private function bmlt_retrieve_single_meeting($meeting_id)
@@ -701,18 +521,18 @@ class Handlers
 
         $resp = curl_exec($curl);
         if (!$resp) {
-            return $this->wbw_rest_error('Server error retrieving meeting list', 500);
+            return $this->handlerCore->wbw_rest_error('Server error retrieving meeting list', 500);
         }
         curl_close($curl);
         $meetingarr = json_decode($resp, true);
         if (empty($meetingarr[0])) {
-            return $this->wbw_rest_error('Server error retrieving meeting list', 500);
+            return $this->handlerCore->wbw_rest_error('Server error retrieving meeting list', 500);
         }
         $meeting = $meetingarr[0];
         $wbw_dbg->debug_log($wbw_dbg->vdump($meeting));
         // how possibly can we get a meeting that is not the same as we asked for
         if ($meeting['id_bigint'] != $meeting_id) {
-            return $this->wbw_rest_error('Server error retrieving meeting list', 500);
+            return $this->handlerCore->wbw_rest_error('Server error retrieving meeting list', 500);
         }
         return $meeting;
     }
@@ -744,7 +564,7 @@ class Handlers
         }
 
         if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_other_bool && !$reason_change_bool && !$reason_close_bool))) {
-            return $this->wbw_rest_error('No valid meeting update reason provided', 400);
+            return $this->handlerCore->wbw_rest_error('No valid meeting update reason provided', 400);
         }
 
         // sanitize any input
@@ -792,7 +612,7 @@ class Handlers
             $field_is_required = $validation[1];
             // if the form field is required, check if the submission is empty or non existent
             if ($field_is_required && empty($data[$field])) {
-                return $this->wbw_rest_error('Form field "' . $field . '" is required.', 400);
+                return $this->handlerCore->wbw_rest_error('Form field "' . $field . '" is required.', 400);
             }
 
             // sanitise only fields that have been provided
@@ -839,7 +659,7 @@ class Handlers
                         }
                         break;
                     default:
-                        return $this->wbw_rest_error('Form processing error', 500);
+                        return $this->handlerCore->wbw_rest_error('Form processing error', 500);
                         break;
                 }
                 $sanitised_fields[$field] = $data[$field];
@@ -956,7 +776,7 @@ class Handlers
                             // $wbw_dbg->debug_log($wbw_dbg->vdump($sanitised_fields));
                             // don't allow someone to modify a meeting service body
                             if ($field === 'service_body_bigint') {
-                                return $this->wbw_rest_error('Service body cannot be changed.', 400);
+                                return $this->handlerCore->wbw_rest_error('Service body cannot be changed.', 400);
                             }
                             $submission[$field] = $sanitised_fields[$field];
                         }
@@ -964,7 +784,7 @@ class Handlers
                 }
 
                 if (!count($submission)) {
-                    return $this->wbw_rest_error('Nothing was changed.', 400);
+                    return $this->handlerCore->wbw_rest_error('Nothing was changed.', 400);
                 }
 
                 // add in extra form fields (non BMLT fields) to the submission
@@ -1020,7 +840,7 @@ class Handlers
 
                 break;
             default:
-                return $this->wbw_rest_error('Invalid meeting change', 400);
+                return $this->handlerCore->wbw_rest_error('Invalid meeting change', 400);
         }
 
         $wbw_dbg->debug_log("SUBMISSION");
@@ -1112,7 +932,7 @@ class Handlers
         $wbw_dbg->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . $wbw_dbg->vdump($headers));
         wp_mail($to_address, $subject, $body, $headers);
 
-        return $this->wbw_rest_success($message);
+        return $this->handlerCore->wbw_rest_success($message);
         // return;
     }
 

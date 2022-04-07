@@ -1,0 +1,85 @@
+<?php
+
+
+declare(strict_types=1);
+
+// debug settings
+use wbw\Debug;
+
+use wbw\REST\Handlers;
+
+use PHPUnit\Framework\TestCase;
+use Brain\Monkey\Functions;
+use function Patchwork\{redefine, getFunction, always};
+
+if (!defined('WBW_DEBUG')) {
+    define('WBW_DEBUG', true);
+}
+global $wbw_dbg;
+$wbw_dbg = new Debug;
+
+// get us through the header
+if (!defined('ABSPATH')) {
+    define('ABSPATH', '99999999999');
+}
+
+// We require the file we need to test.
+
+class meeting_update_form_handlerTest_my_wp_user
+{
+    public function __construct()
+    {
+        $this->user_email = "a@a.com";
+    }
+}
+final class meeting_update_form_handlerTest extends TestCase
+{
+
+    protected function setVerboseErrorHandler()
+    {
+        $handler = function ($errorNumber, $errorString, $errorFile, $errorLine) {
+            echo "
+ERROR INFO
+Message: $errorString
+File: $errorFile
+Line: $errorLine
+";
+        };
+        set_error_handler($handler);
+    }
+
+    protected function setUp(): void
+    {
+        $this->setVerboseErrorHandler();
+        $basedir = dirname(dirname(dirname(dirname(__FILE__))));
+        // echo $basedir;
+        require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
+        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-error.php');
+        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-http-response.php');
+        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-response.php');
+        Functions\when('sanitize_text_field')->returnArg();
+        Functions\when('sanitize_email')->returnArg();
+        Functions\when('sanitize_textarea_field')->returnArg();
+        Functions\when('absint')->returnArg();
+        Functions\when('get_option')->returnArg();
+        Functions\when('current_time')->justReturn('2022-03-23 09:22:44');
+        Functions\when('wp_json_encode')->returnArg();
+        Functions\when('get_site_url')->justReturn('http://127.0.0.1/wordpress');
+        Functions\when('wp_remote_post')->returnArg();
+        Functions\when('wp_safe_remote_post')->returnArg();
+        Functions\when('wp_remote_retrieve_body')->justReturn('{"0":{"id":"1","key_string":"0","name_string":"0"},"1":{"id":"2","key_string":"0","name_string":"0"},"2":{"id":"3","key_string":"0","name_string":"0"}}');
+        Functions\when('is_wp_error')->justReturn(false);
+
+        if (!defined('CONST_OTHER_SERVICE_BODY')) {
+            define('CONST_OTHER_SERVICE_BODY', '99999999999');
+        }
+    }
+
+    protected function tearDown(): void
+    {
+        Brain\Monkey\tearDown();
+        parent::tearDown();
+        Mockery::close();
+    }
+
+}
