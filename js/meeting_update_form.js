@@ -221,6 +221,14 @@ jQuery(document).ready(function ($) {
       });
       // doesn't handle if they have both selected in BMLT
       $("#virtual_hybrid_select").val(virtual_format);
+      if(virtual_format === 'none')
+      {
+        $("#virtual_meeting_settings").hide();
+      }
+      else
+      {
+        $("#virtual_meeting_settings").show();
+      }
       
       // store the selected meeting ID away
       put_field("meeting_id", mdata[id].id_bigint);
