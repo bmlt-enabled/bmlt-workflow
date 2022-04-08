@@ -140,11 +140,17 @@ EOD;
                 </div>
             </div>
             <label for="quickedit_virtual_meeting_additional_info">Virtual Meeting Additional Info</label>
-            <input type="text" name="quickedit_virtual_meeting_additional_info" id="quickedit_virtual_meeting_additional_info" class="quickedit-input">
+            <div class="grow-wrap">
+                <textarea class="dialog_textarea quickedit-input" id="quickedit_virtual_meeting_additional_info" name="quickedit_virtual_meeting_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
+            </div>
             <label for="quickedit_phone_meeting_number">Virtual Meeting Phone Details</label>
-            <input type="text" name="quickedit_phone_meeting_number" id="quickedit_phone_meeting_number" class="quickedit-input">
+            <div class="grow-wrap">
+                <textarea class="dialog_textarea quickedit-input" id="quickedit_phone_meeting_number" name="quickedit_phone_meeting_number" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
+            </div>
             <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
-            <input type="text" name="quickedit_virtual_meeting_link" id="quickedit_virtual_meeting_link" class="quickedit-input">
+            <div class="grow-wrap">
+                <textarea class="dialog_textarea quickedit-input" id="quickedit_virtual_meeting_link" name="quickedit_virtual_meeting_link" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
+            </div>
             <label for="quickedit_additional_info">Additional Information</label>
             <div class="grow-wrap">
                 <textarea class="dialog_textarea" id="quickedit_additional_info" name="quickedit_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value" disabled></textarea>
