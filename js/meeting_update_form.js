@@ -83,6 +83,7 @@ jQuery(document).ready(function ($) {
     },
   }).done(function (response) {
     var wbw_service_bodies = "";
+    
     Object.keys(response).forEach((item) => {
       // console.log(response);
       var service_body_bigint = item;
@@ -207,12 +208,13 @@ jQuery(document).ready(function ($) {
 
       // handle virtual meeting type in the virtual meeting dropdown
       var virtual_format='none'
-      Object.keys(meeting_formats).forEach((key) => {
-        if(wbw_bmlt_formats[key]['key_string'] === 'HY')
+
+      meeting_formats.forEach((item, index) => {
+        if(wbw_bmlt_formats[item]['key_string'] === 'HY')
         {
           virtual_format='hybrid';
         }
-        else if(wbw_bmlt_formats[key]['key_string'] === 'VM')
+        else if(wbw_bmlt_formats[item]['key_string'] === 'VM')
         {
           virtual_format='virtual';
         }
