@@ -117,8 +117,8 @@ EOD;
                                         <span class="dashicons dashicons-info-outline"></span>
                                     </label>
                                     <div class="left">
-                                        A URL for the virtual meeting
-                                        <br>eg: https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1
+                                        A URL for the virtual meeting eg:
+                                        <br><code>https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1</code>
                                         <i></i>
                                     </div>
                                 </div>
@@ -128,8 +128,8 @@ EOD;
                                         <span class="dashicons dashicons-info-outline"></span>
                                     </label>
                                     <div class="left">
-                                        Additional information, such as a meeting ID and Password,
-                                        <br>eg Zoom ID: 456 033 8613, Passcode: 1953
+                                        Additional information, such as a meeting ID and Password eg:
+                                        <br>Zoom ID: 456 033 8613, Passcode: 1953
                                         <i></i>
                                     </div>
                                 </div>
