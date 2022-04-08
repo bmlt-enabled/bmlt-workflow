@@ -142,14 +142,17 @@ span.dashicons.dashicons-info-outline {
   padding-bottom: 0%;
 }
 
+
 .tooltip .left {
-  min-width:200px;
-  max-width:400px;
+  min-width:5em;
+  max-width:500em;
+  word-wrap: break-word;
   top:50%;
   right:100%;
   margin-right:20px;
+  line-height: 1.4em;
   transform:translate(0, -50%);
-  padding:20px;
+  padding:10px;
   color:#666666;
   background-color:#FFFFE0;
   font-weight:normal;
