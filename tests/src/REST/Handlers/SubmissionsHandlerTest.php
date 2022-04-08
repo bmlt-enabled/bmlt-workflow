@@ -10,17 +10,10 @@ use wbw\REST\Handlers\SubmissionsHandler;
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
 use function Patchwork\{redefine, getFunction, always};
+require_once('config_phpunit.php');
 
-if (!defined('WBW_DEBUG')) {
-    define('WBW_DEBUG', false);
-}
 global $wbw_dbg;
 $wbw_dbg = new Debug;
-
-// get us through the header
-if (!defined('ABSPATH')) {
-    define('ABSPATH', '99999999999');
-}
 
 class SubmissionsHandlerTest_my_wp_user
 {
@@ -40,6 +33,7 @@ class SubmissionsHandlerTest_my_wp_user
  * @covers wbw\REST\Handlers\SubmissionsHandler
  * @uses wbw\Debug
  * @uses wbw\REST\HandlerCore
+ * @uses wbw\BMLT\Integration
  */
 final class SubmissionsHandlerTest extends TestCase
 {
@@ -60,8 +54,7 @@ Line: $errorLine
     protected function setUp(): void
     {
         $this->setVerboseErrorHandler();
-        $basedir = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
-        //  echo $basedir;
+        $basedir = getcwd();
         require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-error.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-http-response.php');
@@ -86,10 +79,6 @@ Line: $errorLine
         Functions\when('wp_remote_retrieve_body')->justReturn('{"0":{"id":"1","key_string":"0","name_string":"0"},"1":{"id":"2","key_string":"0","name_string":"0"},"2":{"id":"3","key_string":"0","name_string":"0"}}');
         Functions\when('is_wp_error')->justReturn(false);
 
-
-        if (!defined('CONST_OTHER_SERVICE_BODY')) {
-            define('CONST_OTHER_SERVICE_BODY', '99999999999');
-        }
     }
 
     protected function tearDown(): void
@@ -615,7 +604,7 @@ Line: $errorLine
     }
 
         /**
-     * @covers ::approve_submission_handler
+     * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
     public function test_can_approve_change_meeting(): void
     {

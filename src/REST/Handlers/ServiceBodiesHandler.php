@@ -116,7 +116,7 @@ class ServiceBodiesHandler
             $sblist = array();
             // $wbw_dbg->debug_log("simple list of service areas and names");
             $result = $wpdb->get_results('SELECT * from ' . $wbw_service_bodies_table_name . ' where show_on_form != "0"', ARRAY_A);
-            // $wbw_dbg->debug_log($wbw_dbg->vdump($result));
+            $wbw_dbg->debug_log($wbw_dbg->vdump($result));
             // create simple service area list (names of service areas that are enabled by admin with show_on_form)
             foreach ($result as $key => $value) {
                 $sblist[$value['service_body_bigint']]['name'] = $value['service_area_name'];
