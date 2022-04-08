@@ -8,17 +8,10 @@ use wbw\REST\Handlers\BMLTServerHandler;
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
 use function Patchwork\{redefine, getFunction, always};
+require_once('config_phpunit.php');
 
-if (!defined('WBW_DEBUG')) {
-    define('WBW_DEBUG', false);
-}
 global $wbw_dbg;
 $wbw_dbg = new Debug;
-
-// get us through the header
-if (!defined('ABSPATH')) {
-    define('ABSPATH', '99999999999');
-}
 
 /**
  * @covers wbw\REST\Handlers\BMLTServerHandler
@@ -44,7 +37,7 @@ Line: $errorLine
     {
 
         $this->setVerboseErrorHandler();
-        $basedir = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+        $basedir = getcwd();
         require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-error.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-http-response.php');
@@ -64,12 +57,6 @@ Line: $errorLine
         Functions\when('\get_option')->returnArg();
         Functions\when('wp_safe_remote_post')->returnArg();
 
-        if (!defined('CONST_OTHER_SERVICE_BODY')) {
-            define('CONST_OTHER_SERVICE_BODY', '99999999999');
-        }
-        if (!defined('ABSPATH')) {
-            define('ABSPATH', '99999999999');
-        }
     }
 
     protected function tearDown(): void
@@ -148,8 +135,6 @@ Line: $errorLine
         $request->set_param('wbw_bmlt_password', 'test');
         Functions\when('\get_option')->justReturn('success');
         Functions\when('\update_option')->returnArg(1);
-        // Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
-        // Functions\when('\wp_remote_retrieve_body')->justReturn('<html></html');
 
         $stub = \Mockery::mock('Integration');
         /** @var Mockery::mock $stub test */

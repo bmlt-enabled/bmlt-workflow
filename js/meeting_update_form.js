@@ -5,8 +5,16 @@ var weekdays = ["none", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
 jQuery(document).ready(function ($) {
   // set up our format selector
   var formatdata = [];
+  var hybrid_formatid = "";
+  var virtual_formatid = "";
+
   Object.keys(wbw_bmlt_formats).forEach((key) => {
     formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
+    if (wbw_bmlt_formats[key]["key_string"] === "HY") {
+      hybrid_formatid = key;
+    } else if (wbw_bmlt_formats[key]["key_string"] === "VM") {
+      virtual_formatid = key;
+    }
   });
 
   $("#display_format_shared_id_list").select2({
@@ -56,15 +64,20 @@ jQuery(document).ready(function ($) {
       "client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&data_field_key=location_postal_code_1,duration_time," +
       "start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality," +
       "location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed," +
-      "root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1," +
+      "root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,virtual_meeting_link,phone_meeting_number,contact_name_1,contact_phone_1," +
       "contact_email_1,contact_name_2,contact_phone_2,contact_email_2&" +
       wbw_service_bodies +
       "recursive=1&sort_keys=meeting_name";
 
+    // // https://na.org.au/main_server/client_interface/jsonp/?switcher=GetSearchResults&get_used_formats
+    // &lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,
+    // location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,
+    // location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,virtual_meeting_link,phone_meeting_number,
+    // latitude,longitude,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&services[]=1&recursive=1&sort_keys=start_time
+
     fetchJsonp(search_results_address)
       .then((response) => response.json())
       .then((mdata) => create_meeting_searcher(mdata));
-
   }
 
   $.ajax({
@@ -75,6 +88,7 @@ jQuery(document).ready(function ($) {
     },
   }).done(function (response) {
     var wbw_service_bodies = "";
+
     Object.keys(response).forEach((item) => {
       // console.log(response);
       var service_body_bigint = item;
@@ -170,6 +184,7 @@ jQuery(document).ready(function ($) {
       // set the weekday format
       $("#weekday_tinyint").val(mdata[id].weekday_tinyint);
 
+      var meeting_formats = mdata[id].format_shared_id_list.split(",");
       // fill in the other fields from bmlt
       put_field("meeting_name", mdata[id].meeting_name);
       put_field("start_time", mdata[id].start_time);
@@ -178,8 +193,13 @@ jQuery(document).ready(function ($) {
       put_field("location_info", mdata[id].location_info);
       put_field("location_municipality", mdata[id].location_municipality);
       put_field("location_province", mdata[id].location_province);
+      put_field("location_sub_province", mdata[id].location_sub_province);
+      put_field("location_nation", mdata[id].location_nation);
       put_field("location_postal_code_1", mdata[id].location_postal_code_1);
-      put_field("display_format_shared_id_list", mdata[id].format_shared_id_list.split(","));
+      put_field("display_format_shared_id_list", meeting_formats);
+      put_field("virtual_meeting_additional_info", mdata[id].virtual_meeting_additional_info);
+      put_field("phone_meeting_number", mdata[id].phone_meeting_number);
+      put_field("virtual_meeting_link", mdata[id].virtual_meeting_link);
 
       // handle duration in the select dropdowns
       var durationarr = mdata[id].duration_time.split(":");
@@ -190,6 +210,31 @@ jQuery(document).ready(function ($) {
       }
       // handle service body in the select dropdown
       $("#service_body_bigint").val(mdata[id].service_body_bigint);
+
+      // handle virtual meeting type in the virtual meeting dropdown
+      var virtual_format = "none";
+      if (meeting_formats.includes(hybrid_formatid)) {
+        virtual_format = "hybrid";
+      } else if (meeting_formats.includes(virtual_formatid)) {
+        virtual_format = "virtual";
+      }
+      // meeting_formats.forEach((item, index) => {
+      //   if(wbw_bmlt_formats[item]['key_string'] === 'HY')
+      //   {
+      //     virtual_format='hybrid';
+      //   }
+      //   else if(wbw_bmlt_formats[item]['key_string'] === 'VM')
+      //   {
+      //     virtual_format='virtual';
+      //   }
+      // });
+      // doesn't handle if they have both selected in BMLT
+      $("#virtual_hybrid_select").val(virtual_format);
+      if (virtual_format === "none") {
+        $("#virtual_meeting_settings").hide();
+      } else {
+        $("#virtual_meeting_settings").show();
+      }
 
       // store the selected meeting ID away
       put_field("meeting_id", mdata[id].id_bigint);
@@ -325,7 +370,28 @@ jQuery(document).ready(function ($) {
   $("#meeting_content").hide();
   $("#other_reason_div").hide();
   $("#other_reason").prop("required", false);
-  $("#personal_details").attr("class", "form-grid-col2");
+  $("#personal_details").attr("class", "form-grid-col2-1");
+
+  $("#virtual_hybrid_select").on("change", function () {
+    // show and hide the virtual meeting settings, and adjust formats as required
+    var oldarr = $("#display_format_shared_id_list").val();
+    // strip out all the virtual/hybrids first
+    var arr = oldarr.filter(function (value, index, a) {
+      return value != virtual_formatid && value != hybrid_formatid;
+    });
+
+    if (this.value == "none") {
+      $("#virtual_meeting_settings").hide();
+    } else {
+      $("#virtual_meeting_settings").show();
+      if (this.value === "virtual") {
+        arr.push(virtual_formatid);
+      } else if (this.value === "hybrid") {
+        arr.push(hybrid_formatid);
+      }
+    }
+    $("#display_format_shared_id_list").val(arr).trigger("change");
+  });
 
   $("#update_reason").on("change", function () {
     // hide all the optional items
@@ -340,7 +406,7 @@ jQuery(document).ready(function ($) {
     $("#other_reason_div").hide();
     $("#other_reason").prop("required", false);
     $("#additional_info").prop("required", false);
-    $("#personal_details").attr("class", "form-grid-col2");
+    $("#personal_details").attr("class", "form-grid-col2-1");
     disable_and_clear_highlighting();
     enable_edits();
     // enable items as required
@@ -354,6 +420,7 @@ jQuery(document).ready(function ($) {
         $("#personal_details").show();
         $("#meeting_details").show();
         $("#additional_info_div").show();
+        $("#virtual_meeting_settings").hide();
         // display form instructions
         $("#instructions").html(
           "Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
@@ -413,12 +480,11 @@ jQuery(document).ready(function ($) {
     $("#format_shared_id_list").val($("#display_format_shared_id_list").val().join(","));
     // $("#format_shared_id_list").val($("#display_format_shared_id_list").val());
 
-    // time control by default doesn't add extra seconds, so add them to be compaitble with BMLT 
-    if (($('#start_time').val().length) === 5)
-    {
-      $('#start_time').val($('#start_time').val()+":00");
+    // time control by default doesn't add extra seconds, so add them to be compaitble with BMLT
+    if ($("#start_time").val().length === 5) {
+      $("#start_time").val($("#start_time").val() + ":00");
     }
-    
+
     // construct our duration
     var str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
     put_field("duration_time", str);

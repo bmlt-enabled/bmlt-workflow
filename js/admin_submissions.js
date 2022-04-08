@@ -10,8 +10,6 @@ function dismiss_notice(element) {
 var wbw_changedata = {};
 
 jQuery(document).ready(function ($) {
-
-
   // hide / show / required our optional fields
   switch (wbw_optional_location_nation) {
     case "hidden":
@@ -416,6 +414,15 @@ jQuery(document).ready(function ($) {
         case "add_email":
           table += "<tr><td>Add email to meeting:</td><td>" + (d["changes_requested"].add_email === "yes" ? "Yes" : "No") + "</td></tr>";
           break;
+        case "virtual_meeting_additional_info":
+          table += "<tr><td>Virtual Meeting Additional Info:</td><td>" + d["changes_requested"].virtual_meeting_additional_info + "</td></tr>";
+          break;
+        case "phone_meeting_number":
+          table += "<tr><td>Virtual Meeting Phone Details:</td><td>" + d["changes_requested"].phone_meeting_number + "</td></tr>";
+          break;
+        case "virtual_meeting_link":
+          table += "<tr><td>Virtual Meeting Link:</td><td>" + d["changes_requested"].virtual_meeting_link + "</td></tr>";
+          break;
 
         case "format_shared_id_list":
           friendlyname = "Meeting Formats";
@@ -533,7 +540,7 @@ jQuery(document).ready(function ($) {
   wbw_create_generic_modal("wbw_submission_approve_dialog", "Approve Submission", "auto", "auto");
   wbw_create_generic_modal("wbw_submission_approve_close_dialog", "Approve Submission", "auto", "auto");
   wbw_create_generic_modal("wbw_submission_reject_dialog", "Reject Submission", "auto", "auto");
-  wbw_create_quickedit_modal("wbw_submission_quickedit_dialog", "Submission QuickEdit", "50%", "auto");
+  wbw_create_quickedit_modal("wbw_submission_quickedit_dialog", "Submission QuickEdit", "auto", "auto");
 
   wbw_submission_approve_dialog_ok = function (id) {
     clear_notices();
@@ -607,15 +614,14 @@ jQuery(document).ready(function ($) {
 
     // pull out all the changed elements
     $(".wbw-changed").each(function () {
-      if($(this).is('textarea,select,input'))
-      {
+      if ($(this).is("textarea,select,input")) {
         var short_id = $(this).attr("id").replace("quickedit_", "");
         // turn the format list into a comma seperated array
         if (short_id === "format_shared_id_list") {
           quickedit_changes_requested[short_id] = $(this).val().join(",");
         } else {
           quickedit_changes_requested[short_id] = $(this).val();
-        }  
+        }
       }
     });
 

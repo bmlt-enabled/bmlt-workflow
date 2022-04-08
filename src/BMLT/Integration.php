@@ -7,6 +7,11 @@ class Integration
 {
     protected $cookies = null; // our authentication cookies
     
+    private function wbw_rest_error($message, $code)
+    {
+        return new \WP_Error('wbw_error', $message, array('status' => $code));
+    }
+
     public function testServerAndAuth($username, $password, $server)
     {
         global $wbw_dbg;
@@ -57,7 +62,12 @@ class Integration
 
         return $newformat;
     }
-
+    
+    /**
+     * getMeetingStates
+     *
+     * @return \WP_Error|bool|array
+     */
     public function getMeetingStates()
     {
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
@@ -73,7 +83,12 @@ class Integration
         }
         return false;
     }
-
+    
+    /**
+     * getMeetingCounties
+     *
+     * @return \WP_Error|bool|array
+     */
     public function getMeetingCounties()
     {
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
@@ -82,6 +97,9 @@ class Integration
         }
         // $wbw_dbg->debug_log(wp_remote_retrieve_body($response));  
         $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
+        // global $wbw_dbg;
+        // $wbw_dbg->debug_log("***");
+        // $wbw_dbg->debug_log($wbw_dbg->vdump($arr));
         if(!empty($arr['meeting_counties_and_sub_provinces']))
         {
             $counties = explode(',',$arr['meeting_counties_and_sub_provinces']);
@@ -91,24 +109,15 @@ class Integration
 
     }
 
-    private function vdump($object)
-    {
-        ob_start();
-        var_dump($object);
-        $contents = ob_get_contents();
-        ob_end_clean();
-        return $contents;
-    }
-
     private function authenticateRootServer()
     {
         if ($this->cookies == null) {
             $postargs = array(
                 'admin_action' => 'login',
-                'c_comdef_admin_login' => get_option('wbw_bmlt_username'),
-                'c_comdef_admin_password' => get_option('wbw_bmlt_password')
+                'c_comdef_admin_login' => \get_option('wbw_bmlt_username'),
+                'c_comdef_admin_password' => \get_option('wbw_bmlt_password')
             );
-            $url = get_option('wbw_bmlt_server_address') . "index.php";
+            $url = \get_option('wbw_bmlt_server_address') . "index.php";
 
             // $wbw_dbg->debug_log("AUTH URL = " . $url);
             $ret = $this->post($url, null, $postargs);
@@ -124,7 +133,7 @@ class Integration
                 return new \WP_Error('wbw', 'authenticateRootServer: Authentication Failure');
             }
             
-            $this->cookies = wp_remote_retrieve_cookies($ret);
+            $this->cookies = \wp_remote_retrieve_cookies($ret);
 
         }
         return true;
@@ -208,28 +217,62 @@ class Integration
             return $ret;
         }
     }
-
+    
+    /**
+     * postAuthenticatedRootServerRequest
+     *
+     * @param  string $url
+     * @param  array $postargs
+     * @return array|\WP_Error
+     */
     public function postAuthenticatedRootServerRequest($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
         if (is_wp_error($ret)) {
             return $ret;
         }
-        return $this->post(get_option('wbw_bmlt_server_address') . $url, $this->cookies, $postargs);
+        if (!(is_array($postargs)))
+        {
+            return $this->wbw_rest_error("Missing post parameters", "wbw_bmlt_integration");
+        }
+        return $this->post(\get_option('wbw_bmlt_server_address') . $url, $this->cookies, $postargs);
     }
-
+    
+    /**
+     * postUnauthenticatedRootServerRequest
+     *
+     * @param  string $url
+     * @param  array $postargs
+     * @return array|\WP_Error
+     */
     private function postUnauthenticatedRootServerRequest($url, $postargs)
     {
-        return $this->post(get_option('wbw_bmlt_server_address') . $url, null, $postargs);
+        if (!(is_array($postargs)))
+        {
+            return $this->wbw_rest_error("Missing post parameters", "wbw_bmlt_integration");
+        }
+        return $this->post(\get_option('wbw_bmlt_server_address') . $url, null, $postargs);
     }
-
+    
+    /**
+     * postAuthenticatedRootServerRequestSemantic
+     *
+     * @param  string $url
+     * @param  array $postargs
+     * @return array|\WP_Error
+     */
     public function postAuthenticatedRootServerRequestSemantic($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
         if (is_wp_error($ret)) {
             return $ret;
         }
-        return $this->postsemantic(get_option('wbw_bmlt_server_address') . $url, $this->cookies, $postargs);
+        if (!(is_array($postargs)))
+        {
+            return $this->wbw_rest_error("Missing post parameters", "wbw_bmlt_integration");
+        }
+
+        return $this->postsemantic(\get_option('wbw_bmlt_server_address') . $url, $this->cookies, $postargs);
     }
 
 }
