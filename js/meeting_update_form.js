@@ -178,7 +178,7 @@ jQuery(document).ready(function ($) {
       // set the weekday format
       $("#weekday_tinyint").val(mdata[id].weekday_tinyint);
 
-      meeting_formats = mdata[id].format_shared_id_list.split(",");
+      var meeting_formats = mdata[id].format_shared_id_list.split(",");
       // fill in the other fields from bmlt
       put_field("meeting_name", mdata[id].meeting_name);
       put_field("start_time", mdata[id].start_time);
