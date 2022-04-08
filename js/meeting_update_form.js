@@ -375,22 +375,22 @@ jQuery(document).ready(function ($) {
   $("#virtual_hybrid_select").on("change", function () {
     // show and hide the virtual meeting settings, and adjust formats as required
     var arr = $("#display_format_shared_id_list").val();
+    // strip out all the virtual/hybrids first
+    arr = array.filter(function (value, index, arr) {
+      return value != virtual_formatid && value != hybrid_formatid;
+    });
+
     if (this.value == "none") {
       $("#virtual_meeting_settings").hide();
-      arr = array.filter(function (value, index, arr) {
-        return value != virtual_formatid && value != hybrid_formatid;
-      });
     } else {
       $("#virtual_meeting_settings").show();
       if (this.value === "virtual") {
-        arr = $("#display_format_shared_id_list").val();
         arr.push(virtual_formatid);
       } else if (this.value === "hybrid") {
-        arr = $("#display_format_shared_id_list").val();
         arr.push(hybrid_formatid);
       }
+      $("#display_format_shared_id_list").val(arr).trigger("change");
     }
-    $("#display_format_shared_id_list").val(arr).trigger("change");
   });
 
   $("#update_reason").on("change", function () {
