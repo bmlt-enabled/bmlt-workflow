@@ -122,7 +122,7 @@ EOD;
                                         <i></i>
                                     </div>
                                 </div>
-                                <input class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
+                                <textarea class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link"></textarea>
                                 <div class="tooltip">
                                     <label for="virtual_meeting_additional_info">Virtual Meeting Additional Info
                                         <span class="dashicons dashicons-info-outline"></span>
@@ -133,7 +133,7 @@ EOD;
                                         <i></i>
                                     </div>
                                 </div>
-                                <input class="meeting-input" type="text" name="virtual_meeting_additional_info" size="50" id="virtual_meeting_additional_info">
+                                <textarea class="meeting-input" type="text" name="virtual_meeting_additional_info" size="50" id="virtual_meeting_additional_info"></textarea>
                                 <div class="tooltip">
                                     <label for="phone_meeting_number">Phone Meeting Dial-in Number
                                         <span class="dashicons dashicons-info-outline" style="color: cornflowerblue;"></span>
@@ -144,7 +144,7 @@ EOD;
                                         <i></i>
                                     </div>
                                 </div>
-                                <input class="meeting-input" type="text" name="phone_meeting_number" size="50" id="phone_meeting_number">
+                                <textarea class="meeting-input" type="text" name="phone_meeting_number" size="50" id="phone_meeting_number"></textarea>
                         </div>
                     </fieldset>
                 </div>
