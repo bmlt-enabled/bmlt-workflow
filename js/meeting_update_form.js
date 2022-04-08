@@ -374,9 +374,9 @@ jQuery(document).ready(function ($) {
 
   $("#virtual_hybrid_select").on("change", function () {
     // show and hide the virtual meeting settings, and adjust formats as required
-    var arr = $("#display_format_shared_id_list").val();
+    var oldarr = $("#display_format_shared_id_list").val();
     // strip out all the virtual/hybrids first
-    arr = array.filter(function (value, index, arr) {
+    var arr = oldarr.filter(function (value, index, a) {
       return value != virtual_formatid && value != hybrid_formatid;
     });
 
