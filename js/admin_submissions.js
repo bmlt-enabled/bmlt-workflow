@@ -416,7 +416,16 @@ jQuery(document).ready(function ($) {
         case "add_email":
           table += "<tr><td>Add email to meeting:</td><td>" + (d["changes_requested"].add_email === "yes" ? "Yes" : "No") + "</td></tr>";
           break;
-
+          case "virtual_meeting_additional_info":
+            table += "<tr><td>Virtual Meeting Additional Info:</td><td>" + d["changes_requested"].virtual_meeting_additional_info + "</td></tr>";
+            break;
+            case "phone_meeting_number":
+              table += "<tr><td>Virtual Meeting Phone Details:</td><td>" + d["changes_requested"].phone_meeting_number + "</td></tr>";
+              break;
+              case "virtual_meeting_link":
+                table += "<tr><td>Virtual Meeting Link:</td><td>" + d["changes_requested"].virtual_meeting_link + "</td></tr>";
+                break;
+            
         case "format_shared_id_list":
           friendlyname = "Meeting Formats";
           // convert the meeting formats to human readable

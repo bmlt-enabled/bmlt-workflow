@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace wbw\REST\Handlers;
 
 use wbw\BMLT\Integration;
@@ -9,12 +10,9 @@ class SubmissionsHandler
 
     public function __construct($stub = null)
     {
-        if (empty($stub))
-        {
+        if (empty($stub)) {
             $this->bmlt_integration = new Integration;
-        }
-        else
-        {
+        } else {
             $this->bmlt_integration = $stub;
         }
         $this->handlerCore = new HandlerCore;
@@ -175,8 +173,10 @@ class SubmissionsHandler
             "location_province",
             "location_postal_code_1",
             "weekday_tinyint",
-            "virtual_meeting_link",
-            "format_shared_id_list"
+            "format_shared_id_list",
+            "virtual_meeting_additional_info", 
+            "phone_meeting_number", 
+            "virtual_meeting_link"
         );
 
         foreach ($quickedit_change as $key => $value) {
@@ -294,10 +294,12 @@ class SubmissionsHandler
             "location_postal_code_1",
             "weekday_tinyint",
             "service_body_bigint",
-            "virtual_meeting_link",
             "format_shared_id_list",
             "location_sub_province",
             "location_nation",
+            "virtual_meeting_additional_info",
+            "phone_meeting_number",
+            "virtual_meeting_link"
         );
 
         foreach ($change as $key => $value) {
@@ -586,7 +588,6 @@ class SubmissionsHandler
             "location_postal_code_1" => array("number", $reason_new_bool),
             "weekday_tinyint" => array("weekday", $reason_new_bool),
             "service_body_bigint" => array("bigint", $reason_new_bool),
-            "virtual_meeting_link" => array("url", false),
             "email_address" => array("email", true),
             "contact_number_confidential" => array("text", false),
             "format_shared_id_list" => array("commaseperatednumbers",  $reason_new_bool),
@@ -598,7 +599,9 @@ class SubmissionsHandler
             "location_nation" => array("text", false),
             "group_relationship" => array("text", true),
             "add_email" => array("yesno", true),
-
+            "virtual_meeting_additional_info" => array("text", false),
+            "phone_meeting_number" => array("text", false),
+            "virtual_meeting_link" => array("url", false),
         );
 
         $sanitised_fields = array();
@@ -700,12 +703,14 @@ class SubmissionsHandler
                     "location_sub_province",
                     "weekday_tinyint",
                     "service_body_bigint",
-                    "virtual_meeting_link",
                     "format_shared_id_list",
                     "contact_number_confidential",
                     "group_relationship",
                     "add_email",
                     "additional_info",
+                    "virtual_meeting_additional_info",
+                    "phone_meeting_number",
+                    "virtual_meeting_link"
                 );
 
                 // new meeting - add all fields to the changes requested
@@ -736,8 +741,11 @@ class SubmissionsHandler
                     "location_sub_province",
                     "weekday_tinyint",
                     "service_body_bigint",
-                    "virtual_meeting_link",
                     "format_shared_id_list",
+                    "virtual_meeting_additional_info",
+                    "phone_meeting_number",
+                    "virtual_meeting_link"
+
                 );
 
                 $allowed_fields_extra = array(
@@ -996,6 +1004,16 @@ class SubmissionsHandler
                     $result = ($value === 'yes' ? 'Yes' : 'No');
                     $table .= '<tr><td>Add email to meeting:</td><td>' . $result . '</td></tr>';
                     break;
+                case "virtual_meeting_additional_info":
+                    $table .= '<tr><td>Virtual Meeting Additional Info</td><td>' . $value . '</td></tr>';
+                    break;
+                case "phone_meeting_number":
+                    $table .= '<tr><td>Virtual Meeting Phone Details</td><td>' . $value . '</td></tr>';
+                    break;
+                case "virtual_meeting_link":
+                    $table .= '<tr><td>Virtual Meeting Link</td><td>' . $value . '</td></tr>';
+                    break;
+
 
                 case "format_shared_id_list":
                     $friendlyname = "Meeting Formats";
