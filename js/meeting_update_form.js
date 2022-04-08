@@ -5,17 +5,14 @@ var weekdays = ["none", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
 jQuery(document).ready(function ($) {
   // set up our format selector
   var formatdata = [];
-  var hybrid_formatid = '';
-  var virtual_formatid = '';
+  var hybrid_formatid = "";
+  var virtual_formatid = "";
 
   Object.keys(wbw_bmlt_formats).forEach((key) => {
     formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
-    if(wbw_bmlt_formats[key]["key_string"] === 'HY')
-    {
+    if (wbw_bmlt_formats[key]["key_string"] === "HY") {
       hybrid_formatid = key;
-    }
-    else if(wbw_bmlt_formats[key]["key_string"] === 'VM')
-    {
+    } else if (wbw_bmlt_formats[key]["key_string"] === "VM") {
       virtual_formatid = key;
     }
   });
@@ -72,18 +69,15 @@ jQuery(document).ready(function ($) {
       wbw_service_bodies +
       "recursive=1&sort_keys=meeting_name";
 
-
-      // // https://na.org.au/main_server/client_interface/jsonp/?switcher=GetSearchResults&get_used_formats
-      // &lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,
-      // location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,
-      // location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,virtual_meeting_link,phone_meeting_number,
-      // latitude,longitude,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&services[]=1&recursive=1&sort_keys=start_time
-
+    // // https://na.org.au/main_server/client_interface/jsonp/?switcher=GetSearchResults&get_used_formats
+    // &lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,
+    // location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,
+    // location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,virtual_meeting_link,phone_meeting_number,
+    // latitude,longitude,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&services[]=1&recursive=1&sort_keys=start_time
 
     fetchJsonp(search_results_address)
       .then((response) => response.json())
       .then((mdata) => create_meeting_searcher(mdata));
-
   }
 
   $.ajax({
@@ -94,7 +88,7 @@ jQuery(document).ready(function ($) {
     },
   }).done(function (response) {
     var wbw_service_bodies = "";
-    
+
     Object.keys(response).forEach((item) => {
       // console.log(response);
       var service_body_bigint = item;
@@ -218,14 +212,11 @@ jQuery(document).ready(function ($) {
       $("#service_body_bigint").val(mdata[id].service_body_bigint);
 
       // handle virtual meeting type in the virtual meeting dropdown
-      var virtual_format='none'
-      if (virtual_formatid in meeting_formats)
-      {
-        virtual_format='hybrid';
-      }
-      else if(hybrid_formatid in meeting_formats)
-      {
-        virtual_format='virtual';
+      var virtual_format = "none";
+      if (virtual_formatid in meeting_formats) {
+        virtual_format = "hybrid";
+      } else if (hybrid_formatid in meeting_formats) {
+        virtual_format = "virtual";
       }
       // meeting_formats.forEach((item, index) => {
       //   if(wbw_bmlt_formats[item]['key_string'] === 'HY')
@@ -239,12 +230,9 @@ jQuery(document).ready(function ($) {
       // });
       // doesn't handle if they have both selected in BMLT
       $("#virtual_hybrid_select").val(virtual_format);
-      if(virtual_format === 'none')
-      {
+      if (virtual_format === "none") {
         $("#virtual_meeting_settings").hide();
-      }
-      else
-      {
+      } else {
         $("#virtual_meeting_settings").show();
       }
 
@@ -385,27 +373,24 @@ jQuery(document).ready(function ($) {
   $("#personal_details").attr("class", "form-grid-col2-1");
 
   $("#virtual_hybrid_select").on("change", function () {
+    // show and hide the virtual meeting settings, and adjust formats as required
+    var arr = $("#display_format_shared_id_list").val();
     if (this.value == "none") {
       $("#virtual_meeting_settings").hide();
-      var arr = array.filter(function(value, index, arr){ 
-        return ((value != virtual_formatid)&&(value != hybrid_formatid))
+      arr = array.filter(function (value, index, arr) {
+        return value != virtual_formatid && value != hybrid_formatid;
       });
-      $("#display_format_shared_id_list").val(arr).trigger('change');
     } else {
       $("#virtual_meeting_settings").show();
-      if (this.value === 'virtual')
-      {
-        var arr = $("#display_format_shared_id_list").val();
-        arr.push(virtual_formatid);  
-        $("#display_format_shared_id_list").val(arr).trigger('change');
-      }
-      else if (this.value === 'hybrid')
-      {
-        var arr = $("#display_format_shared_id_list").val();
-        arr.push(hybrid_formatid);  
-        $("#display_format_shared_id_list").val(arr).trigger('change');
+      if (this.value === "virtual") {
+        arr = $("#display_format_shared_id_list").val();
+        arr.push(virtual_formatid);
+      } else if (this.value === "hybrid") {
+        arr = $("#display_format_shared_id_list").val();
+        arr.push(hybrid_formatid);
       }
     }
+    $("#display_format_shared_id_list").val(arr).trigger("change");
   });
 
   $("#update_reason").on("change", function () {
@@ -495,12 +480,11 @@ jQuery(document).ready(function ($) {
     $("#format_shared_id_list").val($("#display_format_shared_id_list").val().join(","));
     // $("#format_shared_id_list").val($("#display_format_shared_id_list").val());
 
-    // time control by default doesn't add extra seconds, so add them to be compaitble with BMLT 
-    if (($('#start_time').val().length) === 5)
-    {
-      $('#start_time').val($('#start_time').val()+":00");
+    // time control by default doesn't add extra seconds, so add them to be compaitble with BMLT
+    if ($("#start_time").val().length === 5) {
+      $("#start_time").val($("#start_time").val() + ":00");
     }
-    
+
     // construct our duration
     var str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
     put_field("duration_time", str);
