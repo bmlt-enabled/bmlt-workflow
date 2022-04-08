@@ -144,9 +144,9 @@ span.dashicons.dashicons-info-outline {
 
 
 .tooltip .left {
-  min-width:200em;
+  min-width:10em;
   max-width:500em;
-  word-wrap: break-word;
+  white-space: nowrap;
   top:50%;
   right:100%;
   margin-right:20px;

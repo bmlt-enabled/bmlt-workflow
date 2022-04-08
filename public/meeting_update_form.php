@@ -118,7 +118,7 @@ EOD;
                                     </label>
                                     <div class="left">
                                         A URL for the virtual meeting eg:
-                                        <br><code>https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1</code>
+                                        <br>https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1
                                         <i></i>
                                     </div>
                                 </div>
@@ -140,7 +140,7 @@ EOD;
                                     </label>
 
                                     <div class="left">
-                                        Any phone details for this virtual meeting.
+                                        Any phone dialin details for this virtual meeting.
                                         <i></i>
                                     </div>
                                 </div>
