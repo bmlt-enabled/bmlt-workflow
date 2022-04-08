@@ -166,7 +166,7 @@ span.dashicons.dashicons-info-outline {
   display:block;
 }
 
-.tooltip .left i {
+.tooltip .left {
   position:absolute;
   top:50%;
   left:100%;
@@ -176,7 +176,7 @@ span.dashicons.dashicons-info-outline {
   overflow:hidden;
 }
 
-.tooltip .left i::after {
+.tooltip .left::after {
   content:'';
   position:absolute;
   width:12px;
