@@ -1,3 +1,8 @@
+## 0.3.7-beta (April 9, 2022)
+- Virtual meetings and associated fields now fully supported! https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/25 (thanks @brustar !)
+- BMLT configuration UI rewritten
+- Additional unit tests and coverage reports
+
 ## 0.3.6-beta (April 7, 2022)
 - https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/26 (thanks @brustar !)
 - Refactoring REST code and unit test components
