@@ -56,10 +56,17 @@ jQuery(document).ready(function ($) {
       "client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&data_field_key=location_postal_code_1,duration_time," +
       "start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality," +
       "location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed," +
-      "root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1," +
+      "root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,virtual_meeting_link,phone_meeting_number,contact_name_1,contact_phone_1," +
       "contact_email_1,contact_name_2,contact_phone_2,contact_email_2&" +
       wbw_service_bodies +
       "recursive=1&sort_keys=meeting_name";
+
+      // // https://na.org.au/main_server/client_interface/jsonp/?switcher=GetSearchResults&get_used_formats
+      // &lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,
+      // location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,
+      // location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,virtual_meeting_link,phone_meeting_number,
+      // latitude,longitude,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&services[]=1&recursive=1&sort_keys=start_time
+
 
     fetchJsonp(search_results_address)
       .then((response) => response.json())
@@ -178,8 +185,13 @@ jQuery(document).ready(function ($) {
       put_field("location_info", mdata[id].location_info);
       put_field("location_municipality", mdata[id].location_municipality);
       put_field("location_province", mdata[id].location_province);
+      put_field("location_sub_province", mdata[id].location_sub_province);
+      put_field("location_nation", mdata[id].location_nation);
       put_field("location_postal_code_1", mdata[id].location_postal_code_1);
       put_field("display_format_shared_id_list", mdata[id].format_shared_id_list.split(","));
+      put_field("virtual_meeting_additional_info", mdata[id].virtual_meeting_additional_info);
+      put_field("phone_meeting_number", mdata[id].phone_meeting_number);
+      put_field("virtual_meeting_link", mdata[id].virtual_meeting_link);
 
       // handle duration in the select dropdowns
       var durationarr = mdata[id].duration_time.split(":");
