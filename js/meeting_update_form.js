@@ -5,8 +5,19 @@ var weekdays = ["none", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
 jQuery(document).ready(function ($) {
   // set up our format selector
   var formatdata = [];
+  var hybrid_formatid = '';
+  var virtual_formatid = '';
+
   Object.keys(wbw_bmlt_formats).forEach((key) => {
     formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
+    if(wbw_bmlt_formats[key]["key_string"] === 'HY')
+    {
+      hybrid_formatid = key;
+    }
+    else if(wbw_bmlt_formats[key]["key_string"] === 'VM')
+    {
+      virtual_formatid = key;
+    }
   });
 
   $("#display_format_shared_id_list").select2({
@@ -208,17 +219,24 @@ jQuery(document).ready(function ($) {
 
       // handle virtual meeting type in the virtual meeting dropdown
       var virtual_format='none'
-
-      meeting_formats.forEach((item, index) => {
-        if(wbw_bmlt_formats[item]['key_string'] === 'HY')
-        {
-          virtual_format='hybrid';
-        }
-        else if(wbw_bmlt_formats[item]['key_string'] === 'VM')
-        {
-          virtual_format='virtual';
-        }
-      });
+      if (virtual_formatid in meeting_formats)
+      {
+        virtual_format='hybrid';
+      }
+      else if(hybrid_formatid in meeting_formats)
+      {
+        virtual_format='virtual';
+      }
+      // meeting_formats.forEach((item, index) => {
+      //   if(wbw_bmlt_formats[item]['key_string'] === 'HY')
+      //   {
+      //     virtual_format='hybrid';
+      //   }
+      //   else if(wbw_bmlt_formats[item]['key_string'] === 'VM')
+      //   {
+      //     virtual_format='virtual';
+      //   }
+      // });
       // doesn't handle if they have both selected in BMLT
       $("#virtual_hybrid_select").val(virtual_format);
       if(virtual_format === 'none')
@@ -229,7 +247,7 @@ jQuery(document).ready(function ($) {
       {
         $("#virtual_meeting_settings").show();
       }
-      
+
       // store the selected meeting ID away
       put_field("meeting_id", mdata[id].id_bigint);
 
@@ -367,10 +385,26 @@ jQuery(document).ready(function ($) {
   $("#personal_details").attr("class", "form-grid-col2-1");
 
   $("#virtual_hybrid_select").on("change", function () {
-    if (this.value == "no") {
+    if (this.value == "none") {
       $("#virtual_meeting_settings").hide();
+      var arr = array.filter(function(value, index, arr){ 
+        return ((value != virtual_formatid)&&(value != hybrid_formatid))
+      });
+      $("#display_format_shared_id_list").val(arr).trigger('change');
     } else {
       $("#virtual_meeting_settings").show();
+      if (this.value === 'virtual')
+      {
+        var arr = $("#display_format_shared_id_list").val();
+        arr.push(virtual_formatid);  
+        $("#display_format_shared_id_list").val(arr).trigger('change');
+      }
+      else if (this.value === 'hybrid')
+      {
+        var arr = $("#display_format_shared_id_list").val();
+        arr.push(hybrid_formatid);  
+        $("#display_format_shared_id_list").val(arr).trigger('change');
+      }
     }
   });
 
