@@ -135,8 +135,6 @@ Line: $errorLine
         $request->set_param('wbw_bmlt_password', 'test');
         Functions\when('\get_option')->justReturn('success');
         Functions\when('\update_option')->returnArg(1);
-        // Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
-        // Functions\when('\wp_remote_retrieve_body')->justReturn('<html></html');
 
         $stub = \Mockery::mock('Integration');
         /** @var Mockery::mock $stub test */

@@ -30,11 +30,9 @@ class ServiceBodiesHandler
 
         $params = $request->get_params();
         $wbw_dbg->debug_log($wbw_dbg->vdump($params));
-        // $wbw_dbg->debug_log("params detail".$params['detail']);
         // only an admin can get the service bodies detail (permissions) information
         if ((!empty($params['detail'])) && ($params['detail'] == "true") && (current_user_can('manage_options'))) {
-            // do detail lookup
-
+            // detail list
             $sblist = array();
 
             $req = array();
@@ -49,8 +47,6 @@ class ServiceBodiesHandler
 
             $xml = simplexml_load_string($response['body']);
             $arr = json_decode(json_encode($xml), 1);
-
-            // $wbw_dbg->debug_log($wbw_dbg->vdump($arr));
 
             $idlist = array();
 
@@ -72,13 +68,9 @@ class ServiceBodiesHandler
             }
 
             // update our service body list in the database in case there have been some new ones added
-            // $wbw_dbg->debug_log("get ids");
             $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $wbw_service_bodies_table_name . ';', 0);
 
-            // $wbw_dbg->debug_log($wbw_dbg->vdump($sqlresult));
             $missing = array_diff($idlist, $sqlresult);
-            // $wbw_dbg->debug_log("missing ids");
-            // $wbw_dbg->debug_log($wbw_dbg->vdump($missing));
 
             foreach ($missing as $value) {
                 $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
@@ -91,15 +83,11 @@ class ServiceBodiesHandler
                 $wpdb->query($sql);
             }
 
-            // $wbw_dbg->debug_log("our sblist");
-            // $wbw_dbg->debug_log($wbw_dbg->vdump($sblist));
-
             // make our group membership lists
             foreach ($sblist as $key => $value) {
                 $wbw_dbg->debug_log("getting memberships for " . $key);
                 $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $wbw_service_bodies_access_table_name . ' where service_body_bigint = "%d"', $key);
                 $result = $wpdb->get_col($sql, 0);
-                // $wbw_dbg->debug_log($wbw_dbg->vdump($result));
                 $sblist[$key]['membership'] = implode(',', $result);
             }
             // get the form display settings
@@ -110,22 +98,16 @@ class ServiceBodiesHandler
                 $sblist[$value['service_body_bigint']]['show_on_form'] = $bool;
             }
         } else {
-            // simple
-
-
+            // simple list
             $sblist = array();
-            // $wbw_dbg->debug_log("simple list of service areas and names");
             $result = $wpdb->get_results('SELECT * from ' . $wbw_service_bodies_table_name . ' where show_on_form != "0"', ARRAY_A);
             $wbw_dbg->debug_log($wbw_dbg->vdump($result));
             // create simple service area list (names of service areas that are enabled by admin with show_on_form)
             foreach ($result as $key => $value) {
                 $sblist[$value['service_body_bigint']]['name'] = $value['service_area_name'];
             }
-            // $wbw_dbg->debug_log($wbw_dbg->vdump($sblist));
 
         }
-        // $wbw_dbg->debug_log("DEBUG SERVICE BODY");
-        // $wbw_dbg->debug_log($wbw_dbg->vdump($this->handlerCore->wbw_rest_success($sblist)));
         return $this->handlerCore->wbw_rest_success($sblist);
 
         // return $sblist;
