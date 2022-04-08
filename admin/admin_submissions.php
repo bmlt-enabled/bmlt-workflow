@@ -139,6 +139,10 @@ EOD;
                     </select> m
                 </div>
             </div>
+            <label for="quickedit_virtual_meeting_additional_info">Virtual Meeting Additional Info</label>
+            <input type="text" name="quickedit_virtual_meeting_additional_info" id="quickedit_virtual_meeting_additional_info" class="quickedit-input">
+            <label for="quickedit_phone_meeting_number">Virtual Meeting Phone Details</label>
+            <input type="text" name="quickedit_phone_meeting_number" id="quickedit_phone_meeting_number" class="quickedit-input">
             <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
             <input type="text" name="quickedit_virtual_meeting_link" id="quickedit_virtual_meeting_link" class="quickedit-input">
             <label for="quickedit_additional_info">Additional Information</label>
@@ -171,12 +175,6 @@ EOD;
                 <label for="quickedit_location_nation">Nation</label>
                 <input class="meeting-input" type="text" name="quickedit_location_nation" size="50" id="quickedit_location_nation">
             </div>
-            <label for="quickedit_virtual_meeting_additional_info">Virtual Meeting Additional Info</label>
-            <input type="text" name="quickedit_virtual_meeting_additional_info" id="quickedit_virtual_meeting_additional_info" class="quickedit-input">
-            <label for="quickedit_phone_meeting_number">Virtual Meeting Phone Details</label>
-            <input type="text" name="quickedit_phone_meeting_number" id="quickedit_phone_meeting_number" class="quickedit-input">
-            <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
-            <input type="text" name="quickedit_virtual_meeting_link" id="quickedit_virtual_meeting_link" class="quickedit-input">
             
         </div>
     </div>
