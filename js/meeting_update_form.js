@@ -213,9 +213,9 @@ jQuery(document).ready(function ($) {
 
       // handle virtual meeting type in the virtual meeting dropdown
       var virtual_format = "none";
-      if (virtual_formatid in meeting_formats) {
+      if (meeting_formats.includes(virtual_formatid)) {
         virtual_format = "hybrid";
-      } else if (hybrid_formatid in meeting_formats) {
+      } else if (meeting_formats.includes(hybrid_formatid)) {
         virtual_format = "virtual";
       }
       // meeting_formats.forEach((item, index) => {
