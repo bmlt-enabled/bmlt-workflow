@@ -389,8 +389,8 @@ jQuery(document).ready(function ($) {
       } else if (this.value === "hybrid") {
         arr.push(hybrid_formatid);
       }
-      $("#display_format_shared_id_list").val(arr).trigger("change");
     }
+    $("#display_format_shared_id_list").val(arr).trigger("change");
   });
 
   $("#update_reason").on("change", function () {
