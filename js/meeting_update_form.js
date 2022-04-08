@@ -61,7 +61,7 @@ jQuery(document).ready(function ($) {
       wbw_service_bodies +
       "recursive=1&sort_keys=meeting_name";
 
-      
+
       // // https://na.org.au/main_server/client_interface/jsonp/?switcher=GetSearchResults&get_used_formats
       // &lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,
       // location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,
@@ -178,6 +178,7 @@ jQuery(document).ready(function ($) {
       // set the weekday format
       $("#weekday_tinyint").val(mdata[id].weekday_tinyint);
 
+      meeting_formats = mdata[id].format_shared_id_list.split(",");
       // fill in the other fields from bmlt
       put_field("meeting_name", mdata[id].meeting_name);
       put_field("start_time", mdata[id].start_time);
@@ -189,7 +190,7 @@ jQuery(document).ready(function ($) {
       put_field("location_sub_province", mdata[id].location_sub_province);
       put_field("location_nation", mdata[id].location_nation);
       put_field("location_postal_code_1", mdata[id].location_postal_code_1);
-      put_field("display_format_shared_id_list", mdata[id].format_shared_id_list.split(","));
+      put_field("display_format_shared_id_list", meeting_formats);
       put_field("virtual_meeting_additional_info", mdata[id].virtual_meeting_additional_info);
       put_field("phone_meeting_number", mdata[id].phone_meeting_number);
       put_field("virtual_meeting_link", mdata[id].virtual_meeting_link);
@@ -204,6 +205,21 @@ jQuery(document).ready(function ($) {
       // handle service body in the select dropdown
       $("#service_body_bigint").val(mdata[id].service_body_bigint);
 
+      // handle virtual meeting type in the virtual meeting dropdown
+      var virtual_format='none'
+      Object.keys(meeting_formats).forEach((key) => {
+        if(wbw_bmlt_formats[key]['key_string'] === 'HY')
+        {
+          virtual_format='hybrid';
+        }
+        else if(wbw_bmlt_formats[key]['key_string'] === 'VM')
+        {
+          virtual_format='virtual';
+        }
+      });
+      // doesn't handle if they have both selected in BMLT
+      $("#virtual_hybrid_select").val(virtual_format);
+      
       // store the selected meeting ID away
       put_field("meeting_id", mdata[id].id_bigint);
 

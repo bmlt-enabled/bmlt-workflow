@@ -107,9 +107,9 @@ EOD;
                         <label for="virtual_hybrid_select">Is this a virtual or a hybrid meeting?</label>
                         <select name="virtual_hybrid_select" id="virtual_hybrid_select">
                             <option value="" disabled selected hidden>Select one</option>
-                            <option value="no">No</option>
-                            <option value="yes_virtual">Yes - Virtual only</option>
-                            <option value="yes_hybrid"">Yes - Hybrid (Virtual and Face to Face)</option>
+                            <option value="none">No</option>
+                            <option value="virtual">Yes - Virtual only</option>
+                            <option value="hybrid"">Yes - Hybrid (Virtual and Face to Face)</option>
                         </select>
                         <div id="virtual_meeting_settings">
                                 <div class="tooltip">
