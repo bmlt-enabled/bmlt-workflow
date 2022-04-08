@@ -119,6 +119,7 @@ EOD;
                                     <div class="left">
                                         A URL for the virtual meeting
                                         <br>eg: https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1
+                                        <i></i>
                                     </div>
                                 </div>
                                 <input class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link">
@@ -129,6 +130,7 @@ EOD;
                                     <div class="left">
                                         Additional information, such as a meeting ID and Password,
                                         <br>eg Zoom ID: 456 033 8613, Passcode: 1953
+                                        <i></i>
                                     </div>
                                 </div>
                                 <input class="meeting-input" type="text" name="virtual_meeting_additional_info" size="50" id="virtual_meeting_additional_info">
@@ -139,6 +141,7 @@ EOD;
 
                                     <div class="left">
                                         Any phone details for this virtual meeting.
+                                        <i></i>
                                     </div>
                                 </div>
                                 <input class="meeting-input" type="text" name="phone_meeting_number" size="50" id="phone_meeting_number">
