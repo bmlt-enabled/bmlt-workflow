@@ -77,7 +77,7 @@ class ServiceBodiesHandler
                 $wpdb->query($sql);
             }
             // make sure our 'Other' service body has an entry
-            $sql = $wpdb->prepare('INSERT IGNORE into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=1', '', 'Other', CONST_OTHER_SERVICE_BODY);
+            $sql = $wpdb->prepare('INSERT IGNORE into ' . $wbw_service_bodies_table_name . ' set contact_email="", service_area_name="Other", service_body_bigint="%d", show_on_form=1', CONST_OTHER_SERVICE_BODY);
             $wpdb->query($sql);
 
             // update any values that may have changed since last time we looked
