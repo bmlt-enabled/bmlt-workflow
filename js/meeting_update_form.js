@@ -97,6 +97,10 @@ jQuery(document).ready(function ($) {
       $("#service_body_bigint").append(opt);
       wbw_service_bodies += "services[]=" + service_body_bigint + "&";
     });
+    // add 'Other' service body
+    opt = new Option('Other', wbw_other_service_body, false, false);
+    $("#service_body_bigint").append(opt);
+
     update_meeting_list(wbw_service_bodies);
   });
 

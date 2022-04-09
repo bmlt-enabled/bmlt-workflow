@@ -1,3 +1,7 @@
+## 0.3.8-beta 
+- Time display in submission amended when no changes have been made #34
+- Day/Time shown in meeting submission change summary #31
+
 ## 0.3.7-beta (April 9, 2022)
 - Virtual meetings and associated fields now fully supported! https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/25 (thanks @brustar !)
 - BMLT configuration UI rewritten

@@ -85,6 +85,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     // optional fields
     $script .= 'var wbw_optional_location_nation = "' . get_option('wbw_optional_location_nation') . '";';
     $script .= 'var wbw_optional_location_sub_province = "' . get_option('wbw_optional_location_sub_province') . '";';
+    $script .= 'var wbw_other_service_body = "' . CONST_OTHER_SERVICE_BODY .'";';
 
     // add meeting formats
     $bmlt_integration = new Integration;
