@@ -804,7 +804,7 @@ function wbw_install()
     $wpdb->query($sql);
 
     $sql = "CREATE TABLE " . $wbw_submissions_table_name . " (
-		id mediumint(9) NOT NULL AUTO_INCREMENT,
+		id bigint(20) NOT NULL AUTO_INCREMENT,
 		submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 		change_time datetime DEFAULT '0000-00-00 00:00:00',
         changed_by varchar(10),
@@ -813,7 +813,7 @@ function wbw_install()
 		submission_type tinytext NOT NULL,
         submitter_email varchar(320) NOT NULL,
         meeting_id bigint(20) unsigned,
-        service_body_bigint mediumint(9) NOT NULL,
+        service_body_bigint bigint(20) NOT NULL,
         changes_requested varchar(1024),
         action_message varchar(1024),
 		PRIMARY KEY (id),
