@@ -309,7 +309,7 @@ jQuery(document).ready(function ($) {
         render: function (data, type, row) {
           if(data === '0000-00-00 00:00:00')
           {
-            return '-'
+            return '(no change made)'
           }
           return data;
         }
