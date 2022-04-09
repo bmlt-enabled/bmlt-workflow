@@ -10,6 +10,9 @@ function dismiss_notice(element) {
 var wbw_changedata = {};
 
 jQuery(document).ready(function ($) {
+
+  weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
   // hide / show / required our optional fields
   switch (wbw_optional_location_nation) {
     case "hidden":
@@ -294,8 +297,8 @@ jQuery(document).ready(function ($) {
               submission_type = data["submission_type"];
           }
           summary = "Submission Type: " + submission_type + "<br>";
-          summary += "Meeting Name: " + namestr;
-
+          summary += "Meeting Name: " + namestr + "<br>"
+          summary += "Day/Time: " + weekdays[data["original_weekday_tinyint"]] + " " + data["original_start_time"];
           return summary;
         },
       },
@@ -406,7 +409,6 @@ jQuery(document).ready(function ($) {
           table += "<tr><td>Relationship to Group:</td><td>" + d["changes_requested"].group_relationship + "</td></tr>";
           break;
         case "weekday_tinyint":
-          weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
           table += "<tr><td>Meeting Day:</td><td>" + weekdays[d["changes_requested"].weekday_tinyint] + "</td></tr>";
           break;
         case "additional_info":

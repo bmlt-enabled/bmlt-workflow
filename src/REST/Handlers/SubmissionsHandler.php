@@ -806,6 +806,8 @@ class SubmissionsHandler
                 $wbw_dbg->debug_log($wbw_dbg->vdump($submission));
                 // store away the original meeting name so we know what changed
                 $submission['original_meeting_name'] = $bmlt_meeting['meeting_name'];
+                $submission['original_weekday_tinyint'] = $bmlt_meeting['weekday_tinyint'];
+                $submission['original_start_time'] = $bmlt_meeting['start_time'];
 
                 break;
             case ('reason_close'):
