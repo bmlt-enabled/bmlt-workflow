@@ -784,8 +784,8 @@ function wbw_install()
     // require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
     $sql = "CREATE TABLE " . $wbw_service_bodies_table_name . " (
-		service_body_bigint mediumint(9) NOT NULL,
-        service_area_name tinytext NOT NULL,
+		service_body_bigint bigint(20) NOT NULL,
+        service_body_name tinytext NOT NULL,
         contact_email varchar(255) NOT NULL default '',
         show_on_form bool,
 		PRIMARY KEY (service_body_bigint)
@@ -795,7 +795,7 @@ function wbw_install()
     $wpdb->query($sql);
 
     $sql = "CREATE TABLE " . $wbw_service_bodies_access_table_name . " (
-		service_body_bigint mediumint(9) NOT NULL,
+		service_body_bigint bigint(20) NOT NULL,
         wp_uid bigint(20) unsigned  NOT NULL,
 		FOREIGN KEY (service_body_bigint) REFERENCES " . $wbw_service_bodies_table_name . "(service_body_bigint) 
 	) $charset_collate;";

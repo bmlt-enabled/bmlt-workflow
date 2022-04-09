@@ -81,19 +81,19 @@ Line: $errorLine
         $sblookup = array(
             '0' => array(
                 "service_body_bigint" => "2",
-                "service_area_name" => "Sydney Metro",
+                "service_body_name" => "Sydney Metro",
                 "contact_email" => "",
                 "show_on_form" => "1"
             ),
             '1' => array(
                 "service_body_bigint" =>"3",
-                "service_area_name" =>"Sydney North",
+                "service_body_name" =>"Sydney North",
                 "contact_email" =>"",
                 "show_on_form" =>"1"
             ),
             '2' => array(
                 "service_body_bigint" => "4",
-                "service_area_name" =>"Sydney South",
+                "service_body_name" =>"Sydney South",
                 "contact_email" =>"",
                 "show_on_form" =>"1"
             )
@@ -135,19 +135,19 @@ Line: $errorLine
     //     $sblookup = array(
     //         '0' => array(
     //             "service_body_bigint" => "2",
-    //             "service_area_name" => "Sydney Metro",
+    //             "service_body_name" => "Sydney Metro",
     //             "contact_email" => "",
     //             "show_on_form" => "1"
     //         ),
     //         '1' => array(
     //             "service_body_bigint" =>"3",
-    //             "service_area_name" =>"Sydney North",
+    //             "service_body_name" =>"Sydney North",
     //             "contact_email" =>"",
     //             "show_on_form" =>"1"
     //         ),
     //         '2' => array(
     //             "service_body_bigint" => "4",
-    //             "service_area_name" =>"Sydney South",
+    //             "service_body_name" =>"Sydney South",
     //             "contact_email" =>"",
     //             "show_on_form" =>"0"
     //         )

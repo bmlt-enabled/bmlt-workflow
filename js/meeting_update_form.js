@@ -92,8 +92,8 @@ jQuery(document).ready(function ($) {
     Object.keys(response).forEach((item) => {
       // console.log(response);
       var service_body_bigint = item;
-      var service_area_name = response[item]["name"];
-      var opt = new Option(service_area_name, service_body_bigint, false, false);
+      var service_body_name = response[item]["name"];
+      var opt = new Option(service_body_name, service_body_bigint, false, false);
       $("#service_body_bigint").append(opt);
       wbw_service_bodies += "services[]=" + service_body_bigint + "&";
     });
