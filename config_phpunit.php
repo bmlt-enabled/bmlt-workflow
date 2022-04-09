@@ -1,5 +1,5 @@
 <?php
-define('WBW_DEBUG', false);
+define('WBW_DEBUG', true);
 // placeholder for an 'other' service body
 define('CONST_OTHER_SERVICE_BODY', '99999999999');
 

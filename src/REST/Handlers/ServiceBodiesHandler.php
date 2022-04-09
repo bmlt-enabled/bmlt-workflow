@@ -76,6 +76,10 @@ class ServiceBodiesHandler
                 $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
                 $wpdb->query($sql);
             }
+            // make sure our 'Other' service body has an entry
+            $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=1', '', 'Other', CONST_OTHER_SERVICE_BODY);
+            $wpdb->query($sql);
+
             // update any values that may have changed since last time we looked
 
             foreach ($idlist as $value) {
@@ -100,7 +104,10 @@ class ServiceBodiesHandler
         } else {
             // simple list
             $sblist = array();
-            $result = $wpdb->get_results('SELECT * from ' . $wbw_service_bodies_table_name . ' where show_on_form != "0"', ARRAY_A);
+            // get all the service bodies, except our 'Other' which is not required as part of any client side BMLT lookups
+            $sql = $wpdb->prepare('SELECT * from ' . $wbw_service_bodies_table_name . ' where show_on_form != "0" and service_body_bigint != "%d"', CONST_OTHER_SERVICE_BODY);
+            $result = $wpdb->get_results($sql);
+            // $result = $wpdb->get_results('SELECT * from ' . $wbw_service_bodies_table_name . ' where show_on_form != "0"', ARRAY_A);
             $wbw_dbg->debug_log($wbw_dbg->vdump($result));
             // create simple service area list (names of service areas that are enabled by admin with show_on_form)
             foreach ($result as $key => $value) {
@@ -110,7 +117,6 @@ class ServiceBodiesHandler
         }
         return $this->handlerCore->wbw_rest_success($sblist);
 
-        // return $sblist;
     }
 
     public function post_service_bodies_handler($request)

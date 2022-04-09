@@ -27,7 +27,6 @@ class SubmissionsHandler
         global $wbw_service_bodies_access_table_name;
 
         // only show submissions we have access to
-        // select * from wp_wbw_submissions s inner join wp_wbw_service_bodies_access a on s.service_body_bigint = a.service_body_bigint where a.wp_uid = 1
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
         $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' s inner join ' . $wbw_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
@@ -674,16 +673,29 @@ class SubmissionsHandler
 
         // fields used throughout the rest of the form processing
         $reason = $sanitised_fields['update_reason'];
-        $service_body_bigint = CONST_OTHER_SERVICE_BODY;
-        if (!empty($sanitised_fields['service_body_bigint'])) {
-            $service_body_bigint = $sanitised_fields['service_body_bigint'];
+
+        // ensure service body is correctly set
+
+        if (empty($sanitised_fields['service_body_bigint']))
+        {
+            // we should never have a blank service body unless it is 'other' request
+            if ($reason !== 'reason_other')
+            {
+                return $this->handlerCore->wbw_rest_error('Form field "service_body_bigint" is required.', 400);
+            }
+            // empty service body, and reason_other - send them to the 'other' queue
+            else
+            {
+                $sanitised_fields['service_body_bigint'] = CONST_OTHER_SERVICE_BODY;
+            }
         }
-        $submitter_name = $sanitised_fields['first_name'] . " " . $sanitised_fields['last_name'];
-        $submitter_email = $sanitised_fields['email_address'];
+        
+        // main switch for meeting change type
+        //
+        // this is where we create our submission for the database changes_requested field
+
         $submission = array();
 
-
-        // create our submission for the database changes_requested field
         switch ($reason) {
             case ('reason_new'):
                 $subject = 'New meeting notification';
@@ -723,6 +735,7 @@ class SubmissionsHandler
 
                 break;
             case ('reason_change'):
+
                 // change meeting - just add the deltas. no real reason to do this as bmlt result would be the same, but safe to filter it regardless
                 $subject = 'Change meeting notification';
 
@@ -758,7 +771,7 @@ class SubmissionsHandler
                 $bmlt_meeting = $this->bmlt_retrieve_single_meeting($sanitised_fields['meeting_id']);
                 // $wbw_dbg->debug_log($wbw_dbg->vdump($meeting));
                 if (is_wp_error($bmlt_meeting)) {
-                    return $bmlt_meeting;
+                    return $this->handlerCore->wbw_rest_error('Internal BMLT error.', 500);
                 }
                 // strip blanks from BMLT
                 foreach ($bmlt_meeting as $key => $value) {
@@ -818,6 +831,7 @@ class SubmissionsHandler
                     "contact_number_confidential",
                     "group_relationship",
                     "add_email",
+                    "service_body_bigint",
                     "additional_info",
                 );
 
@@ -840,6 +854,7 @@ class SubmissionsHandler
                     "group_relationship",
                     "add_email",
                     "other_reason",
+                    "service_body_bigint",
                 );
 
                 foreach ($allowed_fields as $item) {
@@ -847,7 +862,10 @@ class SubmissionsHandler
                         $submission[$item] = $sanitised_fields[$item];
                     }
                 }
-
+                if ($sanitised_fields['service_body_bigint'] !== CONST_OTHER_SERVICE_BODY)
+                {
+                    return $this->handlerCore->wbw_rest_error('Form field "service_body_bigint" is invalid.', 400);
+                }
                 break;
             default:
                 return $this->handlerCore->wbw_rest_error('Invalid meeting change', 400);
@@ -856,16 +874,8 @@ class SubmissionsHandler
         $wbw_dbg->debug_log("SUBMISSION");
         $wbw_dbg->debug_log($wbw_dbg->vdump($submission));
 
-
-
-        // id mediumint(9) NOT NULL AUTO_INCREMENT,
-        // submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-        // change_time datetime DEFAULT '0000-00-00 00:00:00',
-        // changed_by varchar(10),
-        // change_made varchar(10),
-        // submitter_name tinytext NOT NULL,
-        // submission_type tinytext NOT NULL,
-        // submitter_email varchar(320) NOT NULL,
+        $submitter_name = $sanitised_fields['first_name'] . " " . $sanitised_fields['last_name'];
+        $submitter_email = $sanitised_fields['email_address'];
 
         // insert into submissions db
         global $wpdb;
@@ -880,7 +890,7 @@ class SubmissionsHandler
                 'submission_type'  => $reason,
                 'submitter_email' => $submitter_email,
                 'changes_requested' => wp_json_encode($submission, 0, 1),
-                'service_body_bigint' => $service_body_bigint
+                'service_body_bigint' => $sanitised_fields['service_body_bigint']
             ),
             array(
                 '%s',
@@ -902,8 +912,10 @@ class SubmissionsHandler
         // Common email fields
         $from_address = get_option('wbw_email_from_address');
 
-
-        // Send a notification to the trusted servants
+        /*
+        * Send a notification to the configured trusted servants for the correct service body
+        */
+        
         switch ($reason) {
             case "reason_new":
                 $submission_type = "New Meeting";
@@ -919,14 +931,16 @@ class SubmissionsHandler
                 break;
         }
 
-        $to_address = $this->get_emails_by_servicebody_id($service_body_bigint);
+        $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['service_body_bigint']);
         $subject = '[bmlt-workflow] ' . $submission_type . 'request received - ID ' . $insert_id;
         $body = 'Log in to <a href="' . get_site_url() . '/wp-admin/admin.php?page=wbw-submissions">WBW Submissions Page</a> to review.';
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         wp_mail($to_address, $subject, $body, $headers);
 
+        /*
+        * Send acknowledgement email to the submitter
+        */
 
-        // Send email to the submitter
         $to_address = $submitter_email;
         $subject = "NA Meeting Change Request Acknowledgement - Submission ID " . $insert_id;
 
@@ -943,7 +957,6 @@ class SubmissionsHandler
         wp_mail($to_address, $subject, $body, $headers);
 
         return $this->handlerCore->wbw_rest_success($message);
-        // return;
     }
 
     private function submission_format($submission)
