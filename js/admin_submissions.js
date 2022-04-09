@@ -312,7 +312,7 @@ jQuery(document).ready(function ($) {
           }
           if((meeting_day !== "")&&(meeting_time != ""))
           {
-            summary += original + "Schedule: " + meeting_day + " " + meeting_time;
+            summary += original + "Time: " + meeting_day + " " + meeting_time;
           }
           return summary;
         },
