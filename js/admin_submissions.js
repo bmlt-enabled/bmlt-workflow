@@ -280,15 +280,21 @@ jQuery(document).ready(function ($) {
             case "reason_new":
               submission_type = "New Meeting";
               namestr = data["meeting_name"];
+              meeting_day = weekdays[data["weekday_tinyint"]];
+              meeting_time = data["start_time"];
               break;
             case "reason_close":
               submission_type = "Close Meeting";
               // console.log(data);
               namestr = data["meeting_name"];
+              meeting_day = weekdays[data["weekday_tinyint"]];
+              meeting_time = data["start_time"];
               break;
             case "reason_change":
               submission_type = "Modify Meeting";
               namestr = data["original_meeting_name"];
+              meeting_day = weekdays[data["original_weekday_tinyint"]];
+              meeting_time = data["original_start_time"];
               break;
             case "reason_other":
               submission_type = "Other Request";
@@ -297,8 +303,15 @@ jQuery(document).ready(function ($) {
               submission_type = data["submission_type"];
           }
           summary = "Submission Type: " + submission_type + "<br>";
-          summary += "Meeting Name: " + namestr + "<br>"
-          summary += "Day/Time: " + weekdays[data["original_weekday_tinyint"]] + " " + data["original_start_time"];
+          if(namestr !== "")
+          {
+            summary += "Meeting Name: " + namestr + "<br>";
+
+          }
+          if((meeting_day !== "")&&(meeting_time != ""))
+          {
+            summary += "Day/Time: " + meeting_day + " " + meeting_time;
+          }
           return summary;
         },
       },
