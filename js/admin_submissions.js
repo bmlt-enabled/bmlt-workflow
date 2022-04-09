@@ -302,6 +302,13 @@ jQuery(document).ready(function ($) {
       {
         name: "submission_time",
         data: "submission_time",
+        render: function (data, type, row) {
+          if(data === '0000-00-00 00:00:00')
+          {
+            return '-'
+          }
+          return data;
+        }
       },
       {
         name: "change_time",
