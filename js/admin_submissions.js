@@ -301,7 +301,11 @@ jQuery(document).ready(function ($) {
       },
       {
         name: "submission_time",
-        data: "submission_time",
+        data: "submission_time"
+      },
+      {
+        name: "change_time",
+        data: "change_time",
         render: function (data, type, row) {
           if(data === '0000-00-00 00:00:00')
           {
@@ -309,10 +313,6 @@ jQuery(document).ready(function ($) {
           }
           return data;
         }
-      },
-      {
-        name: "change_time",
-        data: "change_time",
       },
       {
         name: "changed_by",
