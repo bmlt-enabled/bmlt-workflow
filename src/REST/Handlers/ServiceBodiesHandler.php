@@ -76,10 +76,6 @@ class ServiceBodiesHandler
                 $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_body_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
                 $wpdb->query($sql);
             }
-            // make sure our 'Other' service body has an entry
-            $sql = $wpdb->prepare('INSERT IGNORE into ' . $wbw_service_bodies_table_name . ' set contact_email="", service_body_name="Other", service_body_bigint="%d", show_on_form=1', CONST_OTHER_SERVICE_BODY);
-            $wpdb->query($sql);
-
             // update any values that may have changed since last time we looked
 
             foreach ($idlist as $value) {
@@ -87,6 +83,13 @@ class ServiceBodiesHandler
                 $wpdb->query($sql);
             }
 
+            // make sure our 'Other' service body has an entry
+            $sql = $wpdb->prepare('INSERT IGNORE into ' . $wbw_service_bodies_table_name . ' set contact_email="", service_body_name="Other", service_body_bigint="%d", show_on_form=1', CONST_OTHER_SERVICE_BODY);
+            $wpdb->query($sql);
+            // make sure our sblist has 'Other' listed for display in the admin page
+            $sblist[CONST_OTHER_SERVICE_BODY]['name']="Other";
+            $sblist[CONST_OTHER_SERVICE_BODY]['contact_email']="";
+            
             // make our group membership lists
             foreach ($sblist as $key => $value) {
                 $wbw_dbg->debug_log("getting memberships for " . $key);
