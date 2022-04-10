@@ -28,8 +28,8 @@ body {
 .form-grid {
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: auto-fill, [col] auto;
-  grid-template-rows: repeat(auto-fill, [row] auto  );
+  grid-template-columns: repeat(2, [col] 1fr);
+  grid-template-rows: repeat(5, [row] auto);
 }
 
 .form-grid-top {
