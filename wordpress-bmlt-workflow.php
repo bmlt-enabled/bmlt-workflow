@@ -258,7 +258,7 @@ function wbw_admin_scripts($hook)
             $response = rest_do_request($request);
             $result     = rest_get_server()->response_to_data($response, true);
             $script .= 'var wbw_admin_wbw_service_bodies = ' . json_encode($result) . '; ';
-            $script .= 'var wbw_admin_const_other_service_body = ' . CONST_OTHER_SERVICE_BODY . '; ';
+            $script .= 'var wbw_admin_const_other_service_body = "' . CONST_OTHER_SERVICE_BODY . '"; ';
 
             // defaults for approve close form
             $wbw_default_closed_meetings = get_option('wbw_delete_closed_meetings');
