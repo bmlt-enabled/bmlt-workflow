@@ -25,8 +25,8 @@
 }
 
 .form-grid-col1 {
-  grid-column: col  ;
-  grid-row: col 2;
+  grid-column: col;
+  grid-row: row 2;
 }
 
 .form-grid-col2{

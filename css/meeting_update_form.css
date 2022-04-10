@@ -39,13 +39,14 @@ body {
 
 .form-grid-col1 {
   grid-column: col  ;
-  grid-row: col 2 / span 3 ;
+  grid-row: row 2 / span 3 ;
 }
 
 .form-grid-col2-1 {
   grid-column: col 2 ;
   grid-row: row 2 ;
 }
+
 .form-grid-col2-2 {
   grid-column: col 2 ;
   grid-row: row 3 ;
