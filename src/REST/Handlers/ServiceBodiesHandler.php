@@ -109,7 +109,7 @@ class ServiceBodiesHandler
             $sblist = array();
             // get all the service bodies, except our 'Other' which is not required as part of any client side BMLT lookups
             $sql = $wpdb->prepare('SELECT * from ' . $wbw_service_bodies_table_name . ' where show_on_form != "0" and service_body_bigint != "%d"', CONST_OTHER_SERVICE_BODY);
-            $result = $wpdb->get_results($sql);
+            $result = $wpdb->get_results($sql,ARRAY_A);
             // $result = $wpdb->get_results('SELECT * from ' . $wbw_service_bodies_table_name . ' where show_on_form != "0"', ARRAY_A);
             $wbw_dbg->debug_log($wbw_dbg->vdump($result));
             // create simple service area list (names of service areas that are enabled by admin with show_on_form)
