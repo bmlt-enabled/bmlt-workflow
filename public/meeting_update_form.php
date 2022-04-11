@@ -244,7 +244,7 @@ EOD;
                                     </label>
                                     <div class="right">
                                         Creating a new meeting and unsure of your service committee?
-                                        <br>Pick the closest match and leave us a note in the 'Additional Comments' section below
+                                        <br>Pick the closest match and leave us a note in the 'Any Other Comments' section below
                                         <i></i>
                                     </div>
                                 </div>
