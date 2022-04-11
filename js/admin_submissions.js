@@ -56,9 +56,7 @@ jQuery(document).ready(function ($) {
       if (durationarr.length == 3) {
         changes_requested["duration_hours"]= durationarr[0];
         changes_requested["duration_minutes"]= durationarr[1];
-        changes_requested = changes_requested.filter(function(item) {
-          return item !== duration_time;
-      })
+        delete changes_requested["duration_time"];
       }
   
     }
@@ -630,6 +628,8 @@ jQuery(document).ready(function ($) {
     quickedit_changes_requested = {};
 
     clear_notices();
+    var duration_hours = "00";
+    var duration_minutes = "00";
 
     // pull out all the changed elements
     $(".wbw-changed").each(function () {
@@ -638,11 +638,24 @@ jQuery(document).ready(function ($) {
         // turn the format list into a comma seperated array
         if (short_id === "format_shared_id_list") {
           quickedit_changes_requested[short_id] = $(this).val().join(",");
-        } else {
+        } 
+        // reconstruct our duration from the select list
+        else if (short_id === "duration_hours")
+        {
+          duration_hours = $(this).val();
+        }
+        else if (short_id === "duration_minutes")
+        {
+          duration_minutes = $(this).val();
+        }
+        else
+        {
           quickedit_changes_requested[short_id] = $(this).val();
         }
       }
     });
+
+    quickedit_changes_requested["duration_time"] = duration_hours + ":" + duration_minutes + ":00";
 
     parameters["changes_requested"] = quickedit_changes_requested;
 
