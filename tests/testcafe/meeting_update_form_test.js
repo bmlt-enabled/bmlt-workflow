@@ -1,34 +1,30 @@
-import { Selector } from 'testcafe';
+// import { Selector } from 'testcafe';
+import { uf } from './models/meeting_update_form';
 
-var host = "http://54.153.167.239/flop/sample-page-2/";
+// const reason = Selector('#update_reason');
+// const reasonOption = reason.find('option');
 
-const reason = Selector('#update_reason');
-const reasonOption = reason.find('option');
-
-fixture `meeting_update_form`
-    .page(host);
+fixture `meeting_update_form_fixture`
+    .page(uf.page_location);
 
 test('New Meeting Submit Form', async t => {
     await t
-    .click(reason)
-    .click(reasonOption.withText('New Meeting'))
-    .expect(reason.value).eql('reason_new')
+    .click(uf.update_reason)
+    .click((uf.update_reason).find('option').withText('New Meeting'))
+    .expect(uf.update_reason.value).eql('reason_new')
 
-    .typeText('#first_name', 'first')
-    .typeText('#last_name', 'last')
-    .typeText('#email_address', 'test@test.com.zz')
-    .typeText('#first_name', 'first')
-    .typeText('#first_name', 'first')
+    .typeText(uf.first_name, 'first')
+    .typeText(uf.last_name, 'last')
+    .typeText(uf.email_address, 'test@test.com.zz')
+    .typeText(uf.contact_number_confidential, '`12345`')
+    .typeText(uf.first_name, 'first')
 
-    .click(Selector('#add_email'))
-    .click(Selector('#add_email').find('option').withText('Yes'))
+    .click(uf.add_email)
+    .click((uf.add_email).find('option').withText('Yes'))
 
-    // <select name="add_email" id="add_email">
-    //     <option value="yes">Yes</option>
-    //     <option value="no" selected>No</option>
-    // </select>
-    // <label for="contact_number_confidential">Contact Number (Confidential)</label>
-    // <input type="number" name="contact_number_confidential" id="contact_number_confidential">
-    // <label for="group_relationship">Relationship to group</label>
+    .click(uf.group_relationship)
+    .click((uf.group_relationship).find('option').withText('Group Member'))
+
+    .click(uf.submit)
 
 });
