@@ -243,8 +243,9 @@ EOD;
                                         <span class="dashicons dashicons-info-outline"></span>
                                     </label>
                                     <div class="right">
-                                        If you're creating a new meeting and unsure of your service committee,
-                                        <br>leave a note in the 'Additional Comments' section below
+                                        Creating a new meeting and unsure of your service committee?
+                                        <br>Pick the closest match and leave us a note in the
+                                        <br>'Additional Comments' section below
                                         <i></i>
                                     </div>
                                 </div>
