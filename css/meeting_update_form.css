@@ -211,7 +211,7 @@ span.dashicons.dashicons-info-outline {
   position:absolute;
   z-index:99999999;
   box-sizing:border-box;
-  display:block;
+  display:none;
   border:1px solid #DCA;
 }
 
@@ -236,7 +236,7 @@ span.dashicons.dashicons-info-outline {
   height:12px;
   left:0;
   top:50%;
-  transform:translate(-50%,-50%) rotate(45deg);
+  transform:translate(50%,-50%) rotate(45deg);
   background-color:#FFFFE0;
   border:1px solid #DCA;
 }
