@@ -11,7 +11,7 @@ function mysql2localdate(data)
 {
   var t = data.split(/[- :]/);
   var d = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
-  var ds = (  d.getFullYear() + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + "0" + d.getDate()).slice(-2) + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+  var ds = d.getFullYear() + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2) + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
   return ds;
 }
 
