@@ -149,42 +149,42 @@ Line: $errorLine
         // $this->assertEquals($email_addresses,'a@a.com,a@a.com');
     }
 
-    /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
-     */
-    public function test_can_request_other(): void
-    {
+    // /**
+    //  * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+    //  */
+    // public function test_can_request_other(): void
+    // {
 
-        $form_post = array(
-            "action" => "meeting_update_form_response",
-            "update_reason" => "reason_other",
-            "other_reason" => "testing other",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_email" => "yes",
+    //     $form_post = array(
+    //         "action" => "meeting_update_form_response",
+    //         "update_reason" => "reason_other",
+    //         "other_reason" => "testing other",
+    //         "first_name" => "joe",
+    //         "last_name" => "joe",
+    //         "email_address" => "joe@joe.com",
+    //         "submit" => "Submit Form",
+    //         "group_relationship" => "Group Member",
+    //         "add_email" => "yes",
 
-        );
+    //     );
 
-        global $wpdb;
-        $wpdb = Mockery::mock('wpdb');
-        /** @var Mockery::mock $wpdb test */
-        // handle db insert of submission
-        $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
-        // handle email to service body
-        $wpdb->shouldReceive('prepare')->andReturn(true);
-        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
-        Functions\when('wp_mail')->justReturn('true');
+    //     global $wpdb;
+    //     $wpdb = Mockery::mock('wpdb');
+    //     /** @var Mockery::mock $wpdb test */
+    //     // handle db insert of submission
+    //     $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
+    //     // handle email to service body
+    //     $wpdb->shouldReceive('prepare')->andReturn(true);
+    //     $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+    //     Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
+    //     Functions\when('wp_mail')->justReturn('true');
 
-        $handlers = new SubmissionsHandler;
-        $response = $handlers->meeting_update_form_handler_rest($form_post);
+    //     $handlers = new SubmissionsHandler;
+    //     $response = $handlers->meeting_update_form_handler_rest($form_post);
 
-        $this->assertInstanceOf(WP_REST_Response::class, $response);
-        $this->assertEquals(200, $response->get_status());
-    }
+    //     $this->assertInstanceOf(WP_REST_Response::class, $response);
+    //     $this->assertEquals(200, $response->get_status());
+    // }
 
     /**
      * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest

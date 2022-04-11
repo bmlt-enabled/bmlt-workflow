@@ -52,7 +52,7 @@ EOD;
                     <option value="reason_new">New Meeting</option>
                     <option value="reason_change">Change Existing Meeting</option>
                     <option value="reason_close">Close Meeting</option>
-                    <option value="reason_other">Other</option>
+                    <!-- <option value="reason_other">Other</option> -->
                     </select>
             </div>
             <div id="other_reason_div">
