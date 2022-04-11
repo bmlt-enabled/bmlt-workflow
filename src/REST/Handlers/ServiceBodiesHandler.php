@@ -107,7 +107,6 @@ class ServiceBodiesHandler
             foreach ($result as $key => $value) {
                 $sblist[$value['service_body_bigint']]['name'] = $value['service_body_name'];
             }
-
         }
         return $this->handlerCore->wbw_rest_success($sblist);
 
