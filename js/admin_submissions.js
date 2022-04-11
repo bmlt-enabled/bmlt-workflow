@@ -7,6 +7,14 @@ function dismiss_notice(element) {
   return false;
 }
 
+function mysql2localdate(data)
+{
+  var t = data.split(/[- :]/);
+  var d = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
+  var ds = (  d.getFullYear() + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + "0" + d.getDate()).slice(-2) + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+  return ds;
+}
+
 var wbw_changedata = {};
 
 jQuery(document).ready(function ($) {
@@ -319,7 +327,11 @@ jQuery(document).ready(function ($) {
       },
       {
         name: "submission_time",
-        data: "submission_time"
+        data: "submission_time",
+        render: function (data, type, row)
+        {
+          return mysql2localdate(data);
+        }
       },
       {
         name: "change_time",
@@ -329,7 +341,7 @@ jQuery(document).ready(function ($) {
           {
             return '(no change made)'
           }
-          return data;
+          return mysql2localdate(data);
         }
       },
       {
