@@ -51,7 +51,7 @@ jQuery(document).ready(function ($) {
     }
 
     if ("duration_time" in changes_requested) {
-      var durationarr = item["duration_time"].split(":");
+      var durationarr = changes_requested["duration_time"].split(":");
       // hoping we got hours, minutes and seconds here
       if (durationarr.length == 3) {
         changes_requested["duration_hours"]= durationarr[0];
@@ -388,7 +388,8 @@ jQuery(document).ready(function ($) {
           table += "<tr><td>Start Time:</td><td>" + d["changes_requested"].start_time + "</td></tr>";
           break;
         case "duration_time":
-          table += "<tr><td>Duration:</td><td>" + d["changes_requested"].duration_time + "</td></tr>";
+          var durationarr = changes_requested["duration_time"].split(":");
+          table += "<tr><td>Duration:</td><td>" + durationarr[0] + "h" + durationarr[1] + "m</td></tr>";
           break;
         case "location_text":
           table += "<tr><td>Location:</td><td>" + d["changes_requested"].location_text + "</td></tr>";
