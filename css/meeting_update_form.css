@@ -198,8 +198,8 @@ span.dashicons.dashicons-info-outline {
   max-width:500em;
   white-space: nowrap;
   top:50%;
-  right:100%;
-  margin-right:20px;
+  left:100%;
+  margin-left:20px;
   line-height: 1.4em;
   transform:translate(0, -50%);
   padding:10px;
@@ -222,21 +222,21 @@ span.dashicons.dashicons-info-outline {
 .tooltip .right i {
   position:absolute;
   top:50%;
-  left:100%;
+  right:100%;
   margin-top:-12px;
   width:12px;
   height:24px;
   overflow:hidden;
 }
 
-.tooltip .right i::after {
+.tooltip .right i::before {
   content:'';
   position:absolute;
   width:12px;
   height:12px;
   left:0;
   top:50%;
-  transform:translate(-50%,-50%) rotate(-45deg);
+  transform:translate(-50%,-50%) rotate(45deg);
   background-color:#FFFFE0;
   border:1px solid #DCA;
 }
