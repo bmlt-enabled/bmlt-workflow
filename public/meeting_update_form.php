@@ -242,7 +242,7 @@ EOD;
                             <label for="service_body_bigint">Service Committee
                                         <span class="dashicons dashicons-info-outline"></span>
                                     </label>
-                                    <div class="left">
+                                    <div class="right">
                                         If you're creating a new meeting and unsure of your service committee,
                                         <br>leave a note in the 'Additional Comments' section below
                                         <i></i>
