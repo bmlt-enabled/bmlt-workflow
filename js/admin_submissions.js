@@ -7,18 +7,16 @@ function dismiss_notice(element) {
   return false;
 }
 
-function mysql2localdate(data)
-{
+function mysql2localdate(data) {
   var t = data.split(/[- :]/);
-  var d = new Date(Date.UTC(t[0], t[1]-1, t[2], t[3], t[4], t[5]));
-  var ds = d.getFullYear() + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2) + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+  var d = new Date(Date.UTC(t[0], t[1] - 1, t[2], t[3], t[4], t[5]));
+  var ds = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2) + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
   return ds;
 }
 
 var wbw_changedata = {};
 
 jQuery(document).ready(function ($) {
-
   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   // hide / show / required our optional fields
@@ -42,6 +40,34 @@ jQuery(document).ready(function ($) {
     case "displayrequired":
       $("#optional_location_sub_province").show();
       break;
+  }
+
+  function add_highlighted_changes(wbw_requested) {
+    // fill in and highlight the changes - use extend to clone
+    changes_requested = $.extend(true, {}, wbw_requested);
+
+    if ("format_shared_id_list" in changes_requested) {
+      changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
+    }
+
+    Object.keys(changes_requested).forEach((element) => {
+      if ($("#quickedit_" + element).length) {
+        if (element === "format_shared_id_list") {
+          $(".quickedit_format_shared_id_list-select2").addClass("wbw-changed");
+        } else {
+          $("#quickedit_" + element).addClass("wbw-changed");
+        }
+        $("#quickedit_" + element).val(changes_requested[element]);
+        $("#quickedit_" + element).trigger("change");
+      }
+    });
+    // trigger adding of highlights when input changes
+    $(".quickedit-input").on("input.wbw-highlight", function () {
+      $(this).addClass("wbw-changed");
+    });
+    $("#quickedit_format_shared_id_list").on("change.wbw-highlight", function () {
+      $(".quickedit_format_shared_id_list-select2").addClass("wbw-changed");
+    });
   }
 
   function populate_and_open_quickedit(id) {
@@ -99,64 +125,12 @@ jQuery(document).ready(function ($) {
                 $("#quickedit_" + element).trigger("change");
               }
             });
-
-            // fill in and highlight the changes - use extend to clone
-            changes_requested = $.extend(true, {}, wbw_changedata[id].changes_requested);
-
-            if ("format_shared_id_list" in changes_requested) {
-              changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
-            }
-
-            Object.keys(changes_requested).forEach((element) => {
-              if ($("#quickedit_" + element).length) {
-                if (element === "format_shared_id_list") {
-                  $(".quickedit_format_shared_id_list-select2").addClass("wbw-changed");
-                } else {
-                  $("#quickedit_" + element).addClass("wbw-changed");
-                }
-                $("#quickedit_" + element).val(changes_requested[element]);
-                $("#quickedit_" + element).trigger("change");
-              }
-            });
-            // trigger adding of highlights when input changes
-            $(".quickedit-input").on("input.wbw-highlight", function () {
-              $(this).addClass("wbw-changed");
-            });
-            $("#quickedit_format_shared_id_list").on("change.wbw-highlight", function () {
-              $(".quickedit_format_shared_id_list-select2").addClass("wbw-changed");
-            });
-
+            add_highlighted_changes_and_open(wbw_changedata[id].changes_requested);
             $("#wbw_submission_quickedit_dialog").data("id", id).dialog("open");
           }
         });
     } else if (wbw_changedata[id].submission_type == "reason_new") {
-      // fill in and highlight the changes - use extend to clone
-      changes_requested = $.extend(true, {}, wbw_changedata[id].changes_requested);
-
-      // split up the duration so we can use it in the select
-      if ("duration_time" in changes_requested) {
-        var durationarr = changes_requested["duration_time"].split(":");
-        // hoping we got both hours, minutes and seconds here
-        if (durationarr.length == 3) {
-          $("#quickedit_duration_hours").val(durationarr[0]);
-          $("#quickedit_duration_minutes").val(durationarr[1]);
-        }
-      }
-
-      if ("format_shared_id_list" in changes_requested) {
-        changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
-      }
-      Object.keys(changes_requested).forEach((element) => {
-        if ($("#quickedit_" + element).length) {
-          $("#quickedit_" + element).addClass("wbw-changed");
-          $("#quickedit_" + element).val(changes_requested[element]);
-        }
-      });
-
-      // trigger adding of highlights when input changes
-      $(".quickedit-input").on("input", function () {
-        $(this).addClass("wbw-changed");
-      });
+      add_highlighted_changes_and_open(wbw_changedata[id].changes_requested);
       $("#wbw_submission_quickedit_dialog").data("id", id).dialog("open");
     }
   }
@@ -313,13 +287,10 @@ jQuery(document).ready(function ($) {
               submission_type = data["submission_type"];
           }
           summary = "Submission Type: " + submission_type + "<br>";
-          if(namestr !== "")
-          {
+          if (namestr !== "") {
             summary += "Meeting Name: " + namestr + "<br>";
-
           }
-          if((meeting_day !== "")&&(meeting_time != ""))
-          {
+          if (meeting_day !== "" && meeting_time != "") {
             summary += original + "Time: " + meeting_day + " " + meeting_time;
           }
           return summary;
@@ -328,21 +299,19 @@ jQuery(document).ready(function ($) {
       {
         name: "submission_time",
         data: "submission_time",
-        render: function (data, type, row)
-        {
+        render: function (data, type, row) {
           return mysql2localdate(data);
-        }
+        },
       },
       {
         name: "change_time",
         data: "change_time",
         render: function (data, type, row) {
-          if(data === '0000-00-00 00:00:00')
-          {
-            return '(no change made)'
+          if (data === "0000-00-00 00:00:00") {
+            return "(no change made)";
           }
           return mysql2localdate(data);
-        }
+        },
       },
       {
         name: "changed_by",
