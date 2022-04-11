@@ -386,7 +386,7 @@ jQuery(document).ready(function ($) {
           table += "<tr><td>Start Time:</td><td>" + d["changes_requested"].start_time + "</td></tr>";
           break;
         case "duration_time":
-          var durationarr = changes_requested["duration_time"].split(":");
+          var durationarr = d["changes_requested"].duration_time.split(":");
           table += "<tr><td>Duration:</td><td>" + durationarr[0] + "h" + durationarr[1] + "m</td></tr>";
           break;
         case "location_text":
