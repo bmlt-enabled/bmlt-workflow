@@ -50,6 +50,19 @@ jQuery(document).ready(function ($) {
       changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
     }
 
+    if ("duration_time" in changes_requested) {
+      var durationarr = item["duration_time"].split(":");
+      // hoping we got hours, minutes and seconds here
+      if (durationarr.length == 3) {
+        changes_requested["duration_hours"]= durationarr[0];
+        changes_requested["duration_minutes"]= durationarr[1];
+        changes_requested = changes_requested.filter(function(item) {
+          return item !== duration_time;
+      })
+      }
+  
+    }
+
     Object.keys(changes_requested).forEach((element) => {
       if ($("#quickedit_" + element).length) {
         if (element === "format_shared_id_list") {
@@ -108,7 +121,7 @@ jQuery(document).ready(function ($) {
             // split up the duration so we can use it in the select
             if ("duration_time" in item) {
               var durationarr = item["duration_time"].split(":");
-              // hoping we got both hours, minutes and seconds here
+              // hoping we got hours, minutes and seconds here
               if (durationarr.length == 3) {
                 $("#quickedit_duration_hours").val(durationarr[0]);
                 $("#quickedit_duration_minutes").val(durationarr[1]);
@@ -374,8 +387,8 @@ jQuery(document).ready(function ($) {
         case "start_time":
           table += "<tr><td>Start Time:</td><td>" + d["changes_requested"].start_time + "</td></tr>";
           break;
-        case "duration":
-          table += "<tr><td>Duration:</td><td>" + d["changes_requested"].duration + "</td></tr>";
+        case "duration_time":
+          table += "<tr><td>Duration:</td><td>" + d["changes_requested"].duration_time + "</td></tr>";
           break;
         case "location_text":
           table += "<tr><td>Location:</td><td>" + d["changes_requested"].location_text + "</td></tr>";
