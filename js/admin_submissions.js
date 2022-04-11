@@ -42,7 +42,7 @@ jQuery(document).ready(function ($) {
       break;
   }
 
-  function add_highlighted_changes(wbw_requested) {
+  function add_highlighted_changes_to_quickedit(wbw_requested) {
     // fill in and highlight the changes - use extend to clone
     changes_requested = $.extend(true, {}, wbw_requested);
 
@@ -125,12 +125,12 @@ jQuery(document).ready(function ($) {
                 $("#quickedit_" + element).trigger("change");
               }
             });
-            add_highlighted_changes_and_open(wbw_changedata[id].changes_requested);
+            add_highlighted_changes_to_quickedit(wbw_changedata[id].changes_requested);
             $("#wbw_submission_quickedit_dialog").data("id", id).dialog("open");
           }
         });
     } else if (wbw_changedata[id].submission_type == "reason_new") {
-      add_highlighted_changes_and_open(wbw_changedata[id].changes_requested);
+      add_highlighted_changes_to_quickedit(wbw_changedata[id].changes_requested);
       $("#wbw_submission_quickedit_dialog").data("id", id).dialog("open");
     }
   }
