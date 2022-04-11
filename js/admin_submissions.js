@@ -266,10 +266,6 @@ jQuery(document).ready(function ($) {
         name: "service_body_bigint",
         data: "service_body_bigint",
         render: function (data, type, row) {
-          if(data === wbw_admin_const_other_service_body)
-          {
-            return 'Other';
-          }
           return wbw_admin_wbw_service_bodies[data]["name"];
         },
       },

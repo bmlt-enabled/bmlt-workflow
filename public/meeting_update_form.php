@@ -238,7 +238,16 @@ EOD;
                                 <label id="location_nation_label" for="location_nation">Nation</label>
                                 <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
                             </div>
-                            <label for="service_body_bigint">Service Committee (or Other if not known)</label>
+                            <div class="tooltip">
+                            <label for="service_body_bigint">Service Committee
+                                        <span class="dashicons dashicons-info-outline"></span>
+                                    </label>
+                                    <div class="left">
+                                        If you're creating a new meeting and unsure of your service committee,
+                                        <br>leave a note in the 'Additional Comments' section below
+                                        <i></i>
+                                    </div>
+                                </div>
                             <select class="meeting-input" name="service_body_bigint" id="service_body_bigint">
                             </select>
 

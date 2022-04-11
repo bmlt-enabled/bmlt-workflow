@@ -503,57 +503,6 @@ Line: $errorLine
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
-        /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
-     */
-    public function test_can_create_with_other_service_body(): void
-    {
-        global $wbw_dbg;
-
-        $form_post = array(
-            "action" => "meeting_update_form_response",
-            "update_reason" => "reason_new",
-            "meeting_name" => "testing name change",
-            "meeting_id" => "3277",
-            "start_time" => "10:00:00",
-            "duration_time" => "01:00:00",
-            "location_text" => "test location",
-            "location_street" => "test street",
-            "location_municipality" => "test municipality",
-            "location_province" => "test province",
-            "location_postal_code_1" => "12345",
-            "weekday_tinyint" => "1",
-            "service_body_bigint" => CONST_OTHER_SERVICE_BODY,
-            "format_shared_id_list" => "1",
-            "starter_kit_required" => "no",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_email" => "yes",
-
-        );
-
-        global $wpdb;
-        $wpdb = Mockery::mock('wpdb');
-        /** @var Mockery::mock $wpdb test */
-        // handle db insert of submission
-        $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
-        // handle email to service body
-        $wpdb->shouldReceive('prepare')->andReturn(true);
-        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
-        Functions\when('wp_mail')->justReturn('true');
-
-        $handlers = new SubmissionsHandler;
-        $response = $handlers->meeting_update_form_handler_rest($form_post);
-
-        $wbw_dbg->debug_log($wbw_dbg->vdump($response));
-        $this->assertInstanceOf(WP_REST_Response::class, $response);
-        $this->assertEquals(200, $response->get_status());
-    }
-
 
     /**
      * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest

@@ -683,11 +683,6 @@ class SubmissionsHandler
             {
                 return $this->handlerCore->wbw_rest_error('Form field "service_body_bigint" is required.', 400);
             }
-            // empty service body, and reason_other - send them to the 'other' queue
-            else
-            {
-                $sanitised_fields['service_body_bigint'] = CONST_OTHER_SERVICE_BODY;
-            }
         }
         
         // main switch for meeting change type
@@ -861,10 +856,6 @@ class SubmissionsHandler
                     if (isset($sanitised_fields[$item])) {
                         $submission[$item] = $sanitised_fields[$item];
                     }
-                }
-                if ($sanitised_fields['service_body_bigint'] !== CONST_OTHER_SERVICE_BODY)
-                {
-                    return $this->handlerCore->wbw_rest_error('Form field "service_body_bigint" is invalid.', 400);
                 }
                 break;
             default:
