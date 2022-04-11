@@ -350,8 +350,6 @@ function wbw_rest_controller()
 }
 
 // actions, shortcodes, menus and filters
-add_action('admin_post_nopriv_meeting_update_form_response', 'meeting_update_form_handler');
-add_action('admin_post_meeting_update_form_response', 'meeting_update_form_handler');
 add_action('wp_enqueue_scripts', 'enqueue_form_deps');
 add_action('admin_menu', 'wbw_menu_pages');
 add_action('admin_enqueue_scripts', 'wbw_admin_scripts');

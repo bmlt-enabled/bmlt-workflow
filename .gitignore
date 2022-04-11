@@ -4,3 +4,5 @@
 .phpunit.result.cache
 /vendor
 .vscode
+package-lock.json
+/node_modules

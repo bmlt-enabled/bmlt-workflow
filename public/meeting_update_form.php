@@ -43,7 +43,6 @@ EOD;
 
 <div id="form_replace">
     <form action="#" method="post" id="meeting_update_form">
-        <input type="hidden" name="action" value="meeting_update_form_response">
         <div class="rendered-form">
             <div>
                 <label for="update_reason"">Reason For Update:</label>
