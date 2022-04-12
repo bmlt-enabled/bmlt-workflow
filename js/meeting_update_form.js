@@ -361,7 +361,12 @@ jQuery(document).ready(function ($) {
     clear_field("email_address");
     clear_field("display_format_shared_id_list");
     clear_field("meeting_id");
+    clear_field("additional_info");
     clear_field("meeting_searcher");
+    // placeholder for these select elements
+    $("#group_relationship").val("");
+    $("#virtual_hybrid_select").val("");
+    $("#service_body_bigint").val("");
     // set email selector to no
     $("#add-email").val("no");
   }
@@ -414,9 +419,9 @@ jQuery(document).ready(function ($) {
     var reason = $(this).val();
     // <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
 
+    clear_form();
     switch (reason) {
       case "reason_new":
-        clear_form();
         $("#meeting_content").show();
         $("#personal_details").show();
         $("#meeting_details").show();
@@ -430,7 +435,6 @@ jQuery(document).ready(function ($) {
         $("#starter_pack").show();
         break;
       case "reason_change":
-        clear_form();
         // hide this until they've selected a meeting
         $("#meeting_content").hide();
         $("#personal_details").show();
@@ -442,7 +446,6 @@ jQuery(document).ready(function ($) {
 
         break;
       case "reason_close":
-        clear_form();
         // hide this until they've selected a meeting
         $("#meeting_content").hide();
         $("#personal_details").show();
@@ -455,7 +458,6 @@ jQuery(document).ready(function ($) {
 
         break;
       case "reason_other":
-        clear_form();
         // display form instructions
         $("#instructions").html("");
         // other reason has a textarea
