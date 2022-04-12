@@ -342,7 +342,7 @@ jQuery(document).ready(function ($) {
     disable_field("location_postal_code_1");
     disable_field("location_sub_province");
     disable_field("location_nation");
-    disable_field("format_shared_id_list");
+    disable_field("display_format_shared_id_list");
     disable_field("weekday_tinyint");
     disable_field("service_body_bigint");
     disable_field("virtual_meeting_additional_info");
