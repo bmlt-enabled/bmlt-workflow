@@ -14,7 +14,7 @@ from './helpers/helper.js';
 fixture `meeting_update_form_fixture`
     .page(uf.page_location);
 
-test('New Meeting Submit Form', async t => {
+test('New_Meeting_Submit_Form', async t => {
 
     await select_dropdown_by_value(uf.update_reason,'reason_new');
 
@@ -99,21 +99,24 @@ test('New Meeting Submit Form', async t => {
 
 });
 
-test('Change Meeting Submit Form', async t => {
+test('Change_Meeting_Submit_Form', async t => {
 
     await select_dropdown_by_value(uf.update_reason,'reason_change');
 
     // check our divs are visible
     await t
-    .expect(uf.update_reason.value).eql('reason_change')
+    .expect(uf.update_reason.value).eql('reason_change');
+
+    // meeting selector
+    await t.click('#select2-meeting-searcher-container');
+    await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'),'Avalon');
+    await t.pressKey('enter');
+
+    await t
     .expect(uf.personal_details.visible).eql(true)
     .expect(uf.meeting_details.visible).eql(true)
     .expect(uf.additional_info_div.visible).eql(true);
 
-    // meeting selector
-    await t
-    .click(uf.format_list_clickable)
-    .pressKey('b e g enter')
     
     // personal details
     await t
@@ -173,7 +176,7 @@ test('Change Meeting Submit Form', async t => {
     .typeText(uf.location_province, 'province')
     .typeText(uf.location_postal_code_1, '1234');
 
-    await select_dropdown_by_text(uf.service_body_bigint,'Sydney Metro');
+
     await t
     .typeText(uf.additional_info, 'my additional info');
 

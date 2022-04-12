@@ -92,6 +92,7 @@ EOD;
                         <input type="number" name="contact_number_confidential" id="contact_number_confidential">
                         <label for="group_relationship">Relationship to group</label>
                         <select name="group_relationship" id="group_relationship">
+                            <option value="" disabled selected hidden>Select one</option>
                             <option value="Group Member">Group Member</option>
                             <option value="Area Trusted Servant">Area Trusted Servant</option>
                             <option value="Regional Trusted Servant">Regional Trusted Servant</option>
@@ -248,6 +249,7 @@ EOD;
                                     </div>
                                 </div>
                             <select class="meeting-input" name="service_body_bigint" id="service_body_bigint">
+                                <option value="" disabled selected hidden>Select one</option>
                             </select>
 
 
