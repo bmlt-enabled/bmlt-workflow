@@ -76,7 +76,7 @@ class SubmissionsHandler
         $wbw_dbg->debug_log("RESULT");
         $wbw_dbg->debug_log($wbw_dbg->vdump($result));
         if (empty($result)) {
-            return $this->handlerCore->wbw_rest_error("Permission denied viewing submission id {$change_id}", 400);
+            return $this->handlerCore->wbw_rest_error("Permission denied viewing submission id {$change_id}", 403);
         }
         return $result;
     }
@@ -100,7 +100,7 @@ class SubmissionsHandler
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->handlerCore->wbw_rest_error("Submission id {$change_id} is already $change_made", 400);
+            return $this->handlerCore->wbw_rest_error("Submission id {$change_id} is already $change_made", 422);
         }
 
         $params = $request->get_json_params();
@@ -108,7 +108,7 @@ class SubmissionsHandler
         if (!empty($params['action_message'])) {
             $message = $params['action_message'];
             if (strlen($message) > 1023) {
-                return $this->handlerCore->wbw_rest_error('Reject message must be less than 1024 characters', 400);
+                return $this->handlerCore->wbw_rest_error('Reject message must be less than 1024 characters', 422);
             }
         } else {
             $wbw_dbg->debug_log("action message is null");
@@ -197,7 +197,7 @@ class SubmissionsHandler
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->handlerCore->wbw_rest_error("Submission id {$change_id} is already $change_made", 400);
+            return $this->handlerCore->wbw_rest_error("Submission id {$change_id} is already $change_made", 422);
         }
         // $wbw_dbg->debug_log("change made is ".$change_made);
 
@@ -253,7 +253,7 @@ class SubmissionsHandler
         if (!empty($params['action_message'])) {
             $message = $params['action_message'];
             if (strlen($message) > 1023) {
-                return $this->handlerCore->wbw_rest_error('Approve message must be less than 1024 characters', 400);
+                return $this->handlerCore->wbw_rest_error('Approve message must be less than 1024 characters', 422);
             }
         }
 
@@ -267,7 +267,7 @@ class SubmissionsHandler
         // can't approve an already actioned submission
         $change_made = $result['change_made'];
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->handlerCore->wbw_rest_error("Submission id {$change_id} is already {$change_made}", 400);
+            return $this->handlerCore->wbw_rest_error("Submission id {$change_id} is already {$change_made}", 422);
         }
 
         $change = json_decode($result['changes_requested'], 1);
@@ -411,7 +411,7 @@ class SubmissionsHandler
                 }
 
             default:
-                return $this->handlerCore->wbw_rest_error("This change type ({$submission_type}) cannot be approved", 400);
+                return $this->handlerCore->wbw_rest_error("This change type ({$submission_type}) cannot be approved", 422);
         }
 
         $current_user = wp_get_current_user();
@@ -501,7 +501,7 @@ class SubmissionsHandler
 
     private function invalid_form_field($field)
     {
-        return $this->handlerCore->wbw_rest_error('Form field "' . $field . '" is invalid.', 400);
+        return $this->handlerCore->wbw_rest_error('Form field "' . $field . '" is invalid.', 422);
     }
 
     private function bmlt_retrieve_single_meeting($meeting_id)
@@ -565,7 +565,7 @@ class SubmissionsHandler
         }
 
         if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_other_bool && !$reason_change_bool && !$reason_close_bool))) {
-            return $this->handlerCore->wbw_rest_error('No valid meeting update reason provided', 400);
+            return $this->handlerCore->wbw_rest_error('No valid meeting update reason provided', 422);
         }
 
         // sanitize any input
@@ -614,7 +614,7 @@ class SubmissionsHandler
             $field_is_required = $validation[1];
             // if the form field is required, check if the submission is empty or non existent
             if ($field_is_required && empty($data[$field])) {
-                return $this->handlerCore->wbw_rest_error('Form field "' . $field . '" is required.', 400);
+                return $this->handlerCore->wbw_rest_error('Form field "' . $field . '" is required.', 422);
             }
 
             // sanitise only fields that have been provided
@@ -681,7 +681,7 @@ class SubmissionsHandler
             // we should never have a blank service body unless it is 'other' request
             if ($reason !== 'reason_other')
             {
-                return $this->handlerCore->wbw_rest_error('Form field "service_body_bigint" is required.', 400);
+                return $this->handlerCore->wbw_rest_error('Form field "service_body_bigint" is required.', 422);
             }
         }
         
@@ -792,7 +792,7 @@ class SubmissionsHandler
                             // $wbw_dbg->debug_log($wbw_dbg->vdump($sanitised_fields));
                             // don't allow someone to modify a meeting service body
                             if ($field === 'service_body_bigint') {
-                                return $this->handlerCore->wbw_rest_error('Service body cannot be changed.', 400);
+                                return $this->handlerCore->wbw_rest_error('Service body cannot be changed.', 403);
                             }
                             $submission[$field] = $sanitised_fields[$field];
                         }
@@ -800,7 +800,7 @@ class SubmissionsHandler
                 }
 
                 if (!count($submission)) {
-                    return $this->handlerCore->wbw_rest_error('Nothing was changed.', 400);
+                    return $this->handlerCore->wbw_rest_error('Nothing was changed.', 422);
                 }
 
                 // add in extra form fields (non BMLT fields) to the submission
@@ -859,7 +859,7 @@ class SubmissionsHandler
                 }
                 break;
             default:
-                return $this->handlerCore->wbw_rest_error('Invalid meeting change', 400);
+                return $this->handlerCore->wbw_rest_error('Invalid meeting change', 422);
         }
 
         $wbw_dbg->debug_log("SUBMISSION");
