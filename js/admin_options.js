@@ -59,7 +59,11 @@ jQuery(document).ready(function ($) {
     },
     buttons: {
       "Test Configuration": function () {
-        test_configuration().finally(null,null);
+        test_configuration().then(response => {
+          console.log(response);
+      }).catch(e => {
+          console.log(e);
+      });
       },
       "Save and Close": function () {
         save_results(this);
