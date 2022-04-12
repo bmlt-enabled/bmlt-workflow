@@ -81,7 +81,7 @@ test('Success_New_Meeting_And_Submit', async t => {
     .typeText(uf.location_street, 'street')
     .typeText(uf.location_info, 'info')
     .typeText(uf.location_municipality, 'municipality')
-    .typeText(uf.location_sub_province, 'subprovince')
+    // .typeText(uf.location_sub_province, 'subprovince')
     .typeText(uf.location_province, 'province')
     .typeText(uf.location_postal_code_1, '1234');
 
@@ -130,7 +130,7 @@ test('Success_Change_Meeting_Name_And_Submit', async t => {
 
     .typeText(uf.meeting_name, 'update')
     // make sure highlighting is present
-    .expect(uf.meeting_name.hasClass('wbw-updated'));
+    .expect(uf.meeting_name.hasClass('wbw-changed')).ok();
 
     // email dropdown
     await select_dropdown_by_text(uf.add_email,'Yes');

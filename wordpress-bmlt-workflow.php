@@ -4,7 +4,7 @@
  * Plugin Name: Wordpress BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
  * Description: Wordpress BMLT Workflow
- * Version: 0.3.7
+ * Version: 0.3.8
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
@@ -385,42 +385,6 @@ function wbw_register_setting()
         wp_die("This page cannot be accessed");
     }
 
-    // register_setting(
-    //     'wbw-settings-group',
-    //     'wbw_bmlt_server_address',
-    //     array(
-    //         'type' => 'string',
-    //         'description' => 'bmlt server address',
-    //         'sanitize_callback' => 'string_sanitize_callback',
-    //         'show_in_rest' => false,
-    //         'default' => ''
-    //     )
-    // );
-
-    // register_setting(
-    //     'wbw-settings-group',
-    //     'wbw_bmlt_username',
-    //     array(
-    //         'type' => 'string',
-    //         'description' => 'bmlt automation username',
-    //         'sanitize_callback' => 'string_sanitize_callback',
-    //         'show_in_rest' => false,
-    //         'default' => ''
-    //     )
-    // );
-
-    // register_setting(
-    //     'wbw-settings-group',
-    //     'wbw_bmlt_password',
-    //     array(
-    //         'type' => 'string',
-    //         'description' => 'bmlt automation password',
-    //         'sanitize_callback' => 'string_sanitize_callback',
-    //         'show_in_rest' => false,
-    //         'default' => ''
-    //     )
-    // );
-
     register_setting(
         'wbw-settings-group',
         'wbw_email_from_address',
@@ -492,18 +456,6 @@ function wbw_register_setting()
             'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html')
         )
     );
-
-    // register_setting(
-    //     'wbw-settings-group',
-    //     'wbw_bmlt_test_status',
-    //     array(
-    //         'type' => 'string',
-    //         'description' => 'wbw_bmlt_test_status',
-    //         'sanitize_callback' => 'string_sanitize_callback',
-    //         'show_in_rest' => false,
-    //         'default' => 'failure'
-    //     )
-    // );
 
     register_setting(
         'wbw-settings-group',
