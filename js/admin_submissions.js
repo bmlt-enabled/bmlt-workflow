@@ -382,6 +382,9 @@ jQuery(document).ready(function ($) {
 
     for (var key in d["changes_requested"]) {
       switch (key) {
+        case "meeting_name":
+          table += "<tr><td>Meeting Name (new):</td><td>" + d["changes_requested"].meeting_name + "</td></tr>";
+          break;
         case "start_time":
           table += "<tr><td>Start Time:</td><td>" + d["changes_requested"].start_time + "</td></tr>";
           break;
