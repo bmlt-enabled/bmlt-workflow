@@ -364,7 +364,7 @@ jQuery(document).ready(function ($) {
     clear_field("additional_info");
     clear_field("meeting_searcher");
     clear_field("starter_kit_postal_address");
-    clear_field("virtual_meeting_info");
+    clear_field("virtual_meeting_additional_info");
     clear_field("phone_meeting_number");
     clear_field("virtual_meeting_link");
     // placeholder for these select elements
