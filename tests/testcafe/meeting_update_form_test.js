@@ -128,6 +128,8 @@ test('Change_Meeting_Submit_Form', async t => {
     .typeText(uf.email_address, 'test@test.com.zz')
     .typeText(uf.contact_number_confidential, '`12345`')
 
+    .typeText(uf.meeting_name, 'update')
+
     // email dropdown
     await select_dropdown_by_text(uf.add_email,'Yes');
     await t
