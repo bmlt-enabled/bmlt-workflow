@@ -1,5 +1,12 @@
-// import { Selector } from 'testcafe';
+import { Selector } from 'testcafe';
 import { uf } from './models/meeting_update_form';
+
+import { 
+    select_dropdown_by_id,
+    select_dropdown_by_text,
+    select_dropdown_by_value
+} 
+from './helpers/helper.js';
 
 // const reason = Selector('#update_reason');
 // const reasonOption = reason.find('option');
@@ -8,23 +15,176 @@ fixture `meeting_update_form_fixture`
     .page(uf.page_location);
 
 test('New Meeting Submit Form', async t => {
-    await t
-    .click(uf.update_reason)
-    .click((uf.update_reason).find('option').withText('New Meeting'))
-    .expect(uf.update_reason.value).eql('reason_new')
 
+    await select_dropdown_by_value(uf.update_reason,'reason_new');
+
+    // check our divs are visible
+    await t
+    .expect(uf.update_reason.value).eql('reason_new')
+    .expect(uf.personal_details.visible).eql(true)
+    .expect(uf.meeting_details.visible).eql(true)
+    .expect(uf.additional_info_div.visible).eql(true);
+
+    // personal details
+    await t
     .typeText(uf.first_name, 'first')
     .typeText(uf.last_name, 'last')
     .typeText(uf.email_address, 'test@test.com.zz')
     .typeText(uf.contact_number_confidential, '`12345`')
-    .typeText(uf.first_name, 'first')
 
-    .click(uf.add_email)
-    .click((uf.add_email).find('option').withText('Yes'))
+    // email dropdown
+    await select_dropdown_by_text(uf.add_email,'Yes');
+    await t
+    .expect(uf.add_email.value).eql('yes');
 
-    .click(uf.group_relationship)
-    .click((uf.group_relationship).find('option').withText('Group Member'))
+    // group member dropdown
+    await select_dropdown_by_value(uf.group_relationship,'Group Member');
+    await t
+    .expect(uf.group_relationship.value).eql('Group Member');
 
+    // virtual meeting settings
+    await select_dropdown_by_value(uf.virtual_hybrid_select,'hybrid');
+    await t
+    .expect(uf.virtual_hybrid_select.value).eql('hybrid')
+    .expect(uf.virtual_meeting_link.visible).eql(true)
+    .expect(uf.phone_meeting_number.visible).eql(true)
+    .expect(uf.virtual_meeting_additional_info.visible).eql(true);
+    await t
+    .typeText(uf.phone_meeting_number, '+61 1800 253430 code #8303782669')
+    .typeText(uf.virtual_meeting_link, 'https://us02web.zoom.us/j/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09')
+    .typeText(uf.virtual_meeting_additional_info, 'Zoom ID 83037287669 Passcode: testing');
+
+    // meeting settings
+    await t
+    .typeText(uf.meeting_name, 'my test meeting');
+
+    await select_dropdown_by_text(uf.weekday_tinyint,'Monday');
+
+    await t 
+    .typeText(uf.start_time, '10:40');
+
+    await select_dropdown_by_value(uf.duration_hours,'04');
+    await select_dropdown_by_value(uf.duration_minutes,'30');
+
+    // format list
+    await t
+    .click(uf.format_list_clickable)
+    .pressKey('b e g enter')
+    .click(uf.format_list_clickable)
+    .pressKey('l i n enter');
+
+    await t 
+
+    .typeText(uf.location_text, 'my location')
+    .typeText(uf.location_street, 'street')
+    .typeText(uf.location_info, 'info')
+    .typeText(uf.location_municipality, 'municipality')
+    .typeText(uf.location_sub_province, 'subprovince')
+    .typeText(uf.location_province, 'province')
+    .typeText(uf.location_postal_code_1, '1234');
+
+    await select_dropdown_by_text(uf.service_body_bigint,'Sydney Metro');
+    await t
+    .typeText(uf.additional_info, 'my additional info');
+
+    await select_dropdown_by_value(uf.starter_kit_required,'yes');
+    await t
+    // .typeText(uf.starter_kit_postal_address, 'postal address')
+    .typeText(uf.starter_kit_postal_address, 'postal address')
+    .expect(uf.starter_kit_postal_address.value).eql('postal address');
+
+    await t
     .click(uf.submit)
+    .expect(Selector('#page h3').innerText).match(/submission\ successful/);
+
+});
+
+test('Change Meeting Submit Form', async t => {
+
+    await select_dropdown_by_value(uf.update_reason,'reason_change');
+
+    // check our divs are visible
+    await t
+    .expect(uf.update_reason.value).eql('reason_change')
+    .expect(uf.personal_details.visible).eql(true)
+    .expect(uf.meeting_details.visible).eql(true)
+    .expect(uf.additional_info_div.visible).eql(true);
+
+    // meeting selector
+    await t
+    .click(uf.format_list_clickable)
+    .pressKey('b e g enter')
+    
+    // personal details
+    await t
+    .typeText(uf.first_name, 'first')
+    .typeText(uf.last_name, 'last')
+    .typeText(uf.email_address, 'test@test.com.zz')
+    .typeText(uf.contact_number_confidential, '`12345`')
+
+    // email dropdown
+    await select_dropdown_by_text(uf.add_email,'Yes');
+    await t
+    .expect(uf.add_email.value).eql('yes');
+
+    // group member dropdown
+    await select_dropdown_by_value(uf.group_relationship,'Group Member');
+    await t
+    .expect(uf.group_relationship.value).eql('Group Member');
+
+    // virtual meeting settings
+    await select_dropdown_by_value(uf.virtual_hybrid_select,'hybrid');
+    await t
+    .expect(uf.virtual_hybrid_select.value).eql('hybrid')
+    .expect(uf.virtual_meeting_link.visible).eql(true)
+    .expect(uf.phone_meeting_number.visible).eql(true)
+    .expect(uf.virtual_meeting_additional_info.visible).eql(true);
+    await t
+    .typeText(uf.phone_meeting_number, '+61 1800 253430 code #8303782669')
+    .typeText(uf.virtual_meeting_link, 'https://us02web.zoom.us/j/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09')
+    .typeText(uf.virtual_meeting_additional_info, 'Zoom ID 83037287669 Passcode: testing');
+
+    // meeting settings
+    await t
+    .typeText(uf.meeting_name, 'my test meeting');
+
+    await select_dropdown_by_text(uf.weekday_tinyint,'Monday');
+
+    await t 
+    .typeText(uf.start_time, '10:40');
+
+    await select_dropdown_by_value(uf.duration_hours,'04');
+    await select_dropdown_by_value(uf.duration_minutes,'30');
+
+    // format list
+    await t
+    .click(uf.format_list_clickable)
+    .pressKey('b e g enter')
+    .click(uf.format_list_clickable)
+    .pressKey('l i n enter');
+
+    await t 
+
+    .typeText(uf.location_text, 'my location')
+    .typeText(uf.location_street, 'street')
+    .typeText(uf.location_info, 'info')
+    .typeText(uf.location_municipality, 'municipality')
+    .typeText(uf.location_sub_province, 'subprovince')
+    .typeText(uf.location_province, 'province')
+    .typeText(uf.location_postal_code_1, '1234');
+
+    await select_dropdown_by_text(uf.service_body_bigint,'Sydney Metro');
+    await t
+    .typeText(uf.additional_info, 'my additional info');
+
+    await select_dropdown_by_value(uf.starter_kit_required,'yes');
+    await t
+    // .typeText(uf.starter_kit_postal_address, 'postal address')
+    .typeText(uf.starter_kit_postal_address, 'postal address')
+    .expect(uf.starter_kit_postal_address.value).eql('postal address');
+
+    await t
+    .click(uf.submit)
+    .expect(Selector('#page h3').innerText).match(/submission\ successful/);
 
 });

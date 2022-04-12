@@ -46,7 +46,7 @@ EOD;
         <div class="rendered-form">
             <div>
                 <label for="update_reason"">Reason For Update:</label>
-                <select name=" update_reason" id="update_reason">
+                <select name="update_reason" id="update_reason">
                     <option disabled="null" selected="null">Select Reason...</option>
                     <option value="reason_new">New Meeting</option>
                     <option value="reason_change">Change Existing Meeting</option>
@@ -61,7 +61,7 @@ EOD;
             <div id="meeting_selector">
                 <br>
                 <label for="meeting-searcher"">Search For Meeting:</label>
-                <select name=" meeting-searcher" class=" meeting-searcher" id="meeting-searcher">
+                <select name="meeting-searcher" class="meeting-searcher" id="meeting-searcher">
                     <option></option>
                     </select>
                     <br><br>
