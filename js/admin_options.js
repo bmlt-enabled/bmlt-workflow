@@ -64,7 +64,7 @@ jQuery(document).ready(function ($) {
       "Save and Close": function () {
         save_results(this);
         // trigger an update on the main page
-        test_configuration().then(update_from_test_result(data), update_from_test_result(data));
+        test_configuration().then(data => update_from_test_result(data), data => update_from_test_result(data));
         // }).catch((data) => {
         //   update_from_test_result(data);
         // });
