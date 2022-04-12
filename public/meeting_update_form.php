@@ -43,16 +43,15 @@ EOD;
 
 <div id="form_replace">
     <form action="#" method="post" id="meeting_update_form">
-        <input type="hidden" name="action" value="meeting_update_form_response">
         <div class="rendered-form">
             <div>
                 <label for="update_reason"">Reason For Update:</label>
-                <select name=" update_reason" id="update_reason">
+                <select name="update_reason" id="update_reason">
                     <option disabled="null" selected="null">Select Reason...</option>
                     <option value="reason_new">New Meeting</option>
                     <option value="reason_change">Change Existing Meeting</option>
                     <option value="reason_close">Close Meeting</option>
-                    <option value="reason_other">Other</option>
+                    <!-- <option value="reason_other">Other</option> -->
                     </select>
             </div>
             <div id="other_reason_div">
@@ -62,7 +61,7 @@ EOD;
             <div id="meeting_selector">
                 <br>
                 <label for="meeting-searcher"">Search For Meeting:</label>
-                <select name=" meeting-searcher" class=" meeting-searcher" id="meeting-searcher">
+                <select name="meeting-searcher" class="meeting-searcher" id="meeting-searcher">
                     <option></option>
                     </select>
                     <br><br>
@@ -93,6 +92,7 @@ EOD;
                         <input type="number" name="contact_number_confidential" id="contact_number_confidential">
                         <label for="group_relationship">Relationship to group</label>
                         <select name="group_relationship" id="group_relationship">
+                            <option value="" disabled selected hidden>Select one</option>
                             <option value="Group Member">Group Member</option>
                             <option value="Area Trusted Servant">Area Trusted Servant</option>
                             <option value="Regional Trusted Servant">Regional Trusted Servant</option>
@@ -238,8 +238,18 @@ EOD;
                                 <label id="location_nation_label" for="location_nation">Nation</label>
                                 <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
                             </div>
-                            <label for="service_body_bigint">Service Committee (or Other if not known)</label>
+                            <div class="tooltip">
+                            <label for="service_body_bigint">Service Committee
+                                        <span class="dashicons dashicons-info-outline"></span>
+                                    </label>
+                                    <div class="right">
+                                        Creating a new meeting and unsure of your service committee?
+                                        <br>Pick the closest match and leave us a note in the 'Any Other Comments' section below
+                                        <i></i>
+                                    </div>
+                                </div>
                             <select class="meeting-input" name="service_body_bigint" id="service_body_bigint">
+                                <option value="" disabled selected hidden>Select one</option>
                             </select>
 
 

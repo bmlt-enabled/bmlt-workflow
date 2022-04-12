@@ -39,7 +39,7 @@ class HandlerCore
         return new \WP_Error('wbw_error', $message, array('status' => $code));
     }
 
-    private function wbw_rest_error_with_data($message, $code, array $data)
+    public function wbw_rest_error_with_data($message, $code, array $data)
     {
         $data['status'] = $code;
         return new \WP_Error('wbw_error', $message, $data);

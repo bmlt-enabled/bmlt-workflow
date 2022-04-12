@@ -7,9 +7,18 @@ function dismiss_notice(element) {
   return false;
 }
 
+function mysql2localdate(data) {
+  var t = data.split(/[- :]/);
+  var d = new Date(Date.UTC(t[0], t[1] - 1, t[2], t[3], t[4], t[5]));
+  var ds = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2) + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+  return ds;
+}
+
 var wbw_changedata = {};
 
 jQuery(document).ready(function ($) {
+  weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
   // hide / show / required our optional fields
   switch (wbw_optional_location_nation) {
     case "hidden":
@@ -31,6 +40,45 @@ jQuery(document).ready(function ($) {
     case "displayrequired":
       $("#optional_location_sub_province").show();
       break;
+  }
+
+  function add_highlighted_changes_to_quickedit(wbw_requested) {
+    // fill in and highlight the changes - use extend to clone
+    changes_requested = $.extend(true, {}, wbw_requested);
+
+    if ("format_shared_id_list" in changes_requested) {
+      changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
+    }
+
+    if ("duration_time" in changes_requested) {
+      var durationarr = changes_requested["duration_time"].split(":");
+      // hoping we got hours, minutes and seconds here
+      if (durationarr.length == 3) {
+        changes_requested["duration_hours"]= durationarr[0];
+        changes_requested["duration_minutes"]= durationarr[1];
+        delete changes_requested["duration_time"];
+      }
+  
+    }
+
+    Object.keys(changes_requested).forEach((element) => {
+      if ($("#quickedit_" + element).length) {
+        if (element === "format_shared_id_list") {
+          $(".quickedit_format_shared_id_list-select2").addClass("wbw-changed");
+        } else {
+          $("#quickedit_" + element).addClass("wbw-changed");
+        }
+        $("#quickedit_" + element).val(changes_requested[element]);
+        $("#quickedit_" + element).trigger("change");
+      }
+    });
+    // trigger adding of highlights when input changes
+    $(".quickedit-input").on("input.wbw-highlight", function () {
+      $(this).addClass("wbw-changed");
+    });
+    $("#quickedit_format_shared_id_list").on("change.wbw-highlight", function () {
+      $(".quickedit_format_shared_id_list-select2").addClass("wbw-changed");
+    });
   }
 
   function populate_and_open_quickedit(id) {
@@ -71,7 +119,7 @@ jQuery(document).ready(function ($) {
             // split up the duration so we can use it in the select
             if ("duration_time" in item) {
               var durationarr = item["duration_time"].split(":");
-              // hoping we got both hours, minutes and seconds here
+              // hoping we got hours, minutes and seconds here
               if (durationarr.length == 3) {
                 $("#quickedit_duration_hours").val(durationarr[0]);
                 $("#quickedit_duration_minutes").val(durationarr[1]);
@@ -88,64 +136,12 @@ jQuery(document).ready(function ($) {
                 $("#quickedit_" + element).trigger("change");
               }
             });
-
-            // fill in and highlight the changes - use extend to clone
-            changes_requested = $.extend(true, {}, wbw_changedata[id].changes_requested);
-
-            if ("format_shared_id_list" in changes_requested) {
-              changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
-            }
-
-            Object.keys(changes_requested).forEach((element) => {
-              if ($("#quickedit_" + element).length) {
-                if (element === "format_shared_id_list") {
-                  $(".quickedit_format_shared_id_list-select2").addClass("wbw-changed");
-                } else {
-                  $("#quickedit_" + element).addClass("wbw-changed");
-                }
-                $("#quickedit_" + element).val(changes_requested[element]);
-                $("#quickedit_" + element).trigger("change");
-              }
-            });
-            // trigger adding of highlights when input changes
-            $(".quickedit-input").on("input.wbw-highlight", function () {
-              $(this).addClass("wbw-changed");
-            });
-            $("#quickedit_format_shared_id_list").on("change.wbw-highlight", function () {
-              $(".quickedit_format_shared_id_list-select2").addClass("wbw-changed");
-            });
-
+            add_highlighted_changes_to_quickedit(wbw_changedata[id].changes_requested);
             $("#wbw_submission_quickedit_dialog").data("id", id).dialog("open");
           }
         });
     } else if (wbw_changedata[id].submission_type == "reason_new") {
-      // fill in and highlight the changes - use extend to clone
-      changes_requested = $.extend(true, {}, wbw_changedata[id].changes_requested);
-
-      // split up the duration so we can use it in the select
-      if ("duration_time" in changes_requested) {
-        var durationarr = changes_requested["duration_time"].split(":");
-        // hoping we got both hours, minutes and seconds here
-        if (durationarr.length == 3) {
-          $("#quickedit_duration_hours").val(durationarr[0]);
-          $("#quickedit_duration_minutes").val(durationarr[1]);
-        }
-      }
-
-      if ("format_shared_id_list" in changes_requested) {
-        changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
-      }
-      Object.keys(changes_requested).forEach((element) => {
-        if ($("#quickedit_" + element).length) {
-          $("#quickedit_" + element).addClass("wbw-changed");
-          $("#quickedit_" + element).val(changes_requested[element]);
-        }
-      });
-
-      // trigger adding of highlights when input changes
-      $(".quickedit-input").on("input", function () {
-        $(this).addClass("wbw-changed");
-      });
+      add_highlighted_changes_to_quickedit(wbw_changedata[id].changes_requested);
       $("#wbw_submission_quickedit_dialog").data("id", id).dialog("open");
     }
   }
@@ -273,19 +269,27 @@ jQuery(document).ready(function ($) {
           var summary = "";
           var submission_type = "";
           var namestr = "";
+          var original = "";
           switch (data["submission_type"]) {
             case "reason_new":
               submission_type = "New Meeting";
               namestr = data["meeting_name"];
+              meeting_day = weekdays[data["weekday_tinyint"]];
+              meeting_time = data["start_time"];
               break;
             case "reason_close":
               submission_type = "Close Meeting";
               // console.log(data);
               namestr = data["meeting_name"];
+              meeting_day = weekdays[data["weekday_tinyint"]];
+              meeting_time = data["start_time"];
               break;
             case "reason_change":
               submission_type = "Modify Meeting";
               namestr = data["original_meeting_name"];
+              meeting_day = weekdays[data["original_weekday_tinyint"]];
+              meeting_time = data["original_start_time"];
+              original = "Original ";
               break;
             case "reason_other":
               submission_type = "Other Request";
@@ -294,18 +298,31 @@ jQuery(document).ready(function ($) {
               submission_type = data["submission_type"];
           }
           summary = "Submission Type: " + submission_type + "<br>";
-          summary += "Meeting Name: " + namestr;
-
+          if (namestr !== "") {
+            summary += "Meeting Name: " + namestr + "<br>";
+          }
+          if (meeting_day !== "" && meeting_time != "") {
+            summary += original + "Time: " + meeting_day + " " + meeting_time;
+          }
           return summary;
         },
       },
       {
         name: "submission_time",
         data: "submission_time",
+        render: function (data, type, row) {
+          return mysql2localdate(data);
+        },
       },
       {
         name: "change_time",
         data: "change_time",
+        render: function (data, type, row) {
+          if (data === "0000-00-00 00:00:00") {
+            return "(no change made)";
+          }
+          return mysql2localdate(data);
+        },
       },
       {
         name: "changed_by",
@@ -365,11 +382,15 @@ jQuery(document).ready(function ($) {
 
     for (var key in d["changes_requested"]) {
       switch (key) {
+        case "meeting_name":
+          table += "<tr><td>Meeting Name (new):</td><td>" + d["changes_requested"].meeting_name + "</td></tr>";
+          break;
         case "start_time":
           table += "<tr><td>Start Time:</td><td>" + d["changes_requested"].start_time + "</td></tr>";
           break;
-        case "duration":
-          table += "<tr><td>Duration:</td><td>" + d["changes_requested"].duration + "</td></tr>";
+        case "duration_time":
+          var durationarr = d["changes_requested"].duration_time.split(":");
+          table += "<tr><td>Duration:</td><td>" + durationarr[0] + "h" + durationarr[1] + "m</td></tr>";
           break;
         case "location_text":
           table += "<tr><td>Location:</td><td>" + d["changes_requested"].location_text + "</td></tr>";
@@ -399,7 +420,6 @@ jQuery(document).ready(function ($) {
           table += "<tr><td>Relationship to Group:</td><td>" + d["changes_requested"].group_relationship + "</td></tr>";
           break;
         case "weekday_tinyint":
-          weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
           table += "<tr><td>Meeting Day:</td><td>" + weekdays[d["changes_requested"].weekday_tinyint] + "</td></tr>";
           break;
         case "additional_info":
@@ -611,6 +631,8 @@ jQuery(document).ready(function ($) {
     quickedit_changes_requested = {};
 
     clear_notices();
+    var duration_hours = "00";
+    var duration_minutes = "00";
 
     // pull out all the changed elements
     $(".wbw-changed").each(function () {
@@ -619,11 +641,24 @@ jQuery(document).ready(function ($) {
         // turn the format list into a comma seperated array
         if (short_id === "format_shared_id_list") {
           quickedit_changes_requested[short_id] = $(this).val().join(",");
-        } else {
+        } 
+        // reconstruct our duration from the select list
+        else if (short_id === "duration_hours")
+        {
+          duration_hours = $(this).val();
+        }
+        else if (short_id === "duration_minutes")
+        {
+          duration_minutes = $(this).val();
+        }
+        else
+        {
           quickedit_changes_requested[short_id] = $(this).val();
         }
       }
     });
+
+    quickedit_changes_requested["duration_time"] = duration_hours + ":" + duration_minutes + ":00";
 
     parameters["changes_requested"] = quickedit_changes_requested;
 

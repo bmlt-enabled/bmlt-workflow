@@ -28,8 +28,8 @@ body {
 .form-grid {
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: auto-fill, [col] auto;
-  grid-template-rows: repeat(auto-fill, [row] auto  );
+  grid-template-columns: repeat(2, [col] 1fr);
+  grid-template-rows: repeat(5, [row] auto);
 }
 
 .form-grid-top {
@@ -39,13 +39,14 @@ body {
 
 .form-grid-col1 {
   grid-column: col  ;
-  grid-row: col 2 / span 3 ;
+  grid-row: row 2 / span 3 ;
 }
 
 .form-grid-col2-1 {
   grid-column: col 2 ;
   grid-row: row 2 ;
 }
+
 .form-grid-col2-2 {
   grid-column: col 2 ;
   grid-row: row 3 ;
@@ -187,6 +188,55 @@ span.dashicons.dashicons-info-outline {
   left:0;
   top:50%;
   transform:translate(-50%,-50%) rotate(-45deg);
+  background-color:#FFFFE0;
+  border:1px solid #DCA;
+}
+
+
+.tooltip .right {
+  min-width:10em;
+  max-width:500em;
+  white-space: nowrap;
+  top:50%;
+  left:100%;
+  margin-left:20px;
+  line-height: 1.4em;
+  transform:translate(0, -50%);
+  padding:10px;
+  color:#666666;
+  background-color:#FFFFE0;
+  font-weight:normal;
+  font-size:13px;
+  border-radius:8px;
+  position:absolute;
+  z-index:99999999;
+  box-sizing:border-box;
+  display:none;
+  border:1px solid #DCA;
+}
+
+.tooltip:hover .right {
+  display:block;
+}
+
+.tooltip .right i {
+  position:absolute;
+  top:50%;
+  right:100%;
+  margin-top:-12px;
+  width:12px;
+  height:24px;
+  overflow:hidden;
+}
+
+.tooltip .right i::before {
+  content:'';
+  position:absolute;
+  width:12px;
+  height:12px;
+  left:0;
+  top:50%;
+  transform:translate(50%,-50%) rotate(45deg);
   background-color:#FFFFE0;
   border:1px solid #DCA;
 }

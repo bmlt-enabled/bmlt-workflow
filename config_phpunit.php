@@ -1,7 +1,5 @@
 <?php
 define('WBW_DEBUG', false);
-// placeholder for an 'other' service body
-define('CONST_OTHER_SERVICE_BODY', '99999999999');
 
 // get us through the header
 if (!defined('ABSPATH')) {

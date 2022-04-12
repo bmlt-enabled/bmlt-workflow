@@ -59,15 +59,12 @@ jQuery(document).ready(function ($) {
     },
     buttons: {
       "Test Configuration": function () {
-        test_configuration();
+        test_configuration(false);
       },
       "Save and Close": function () {
         save_results(this);
         // trigger an update on the main page
-        test_configuration().then((data) =>
-        {
-          update_from_test_result(data);
-        });
+        test_configuration(true);
         $(this).dialog("close");
       },
       Cancel: function () {
@@ -98,8 +95,7 @@ jQuery(document).ready(function ($) {
     $("#wbw_bmlt_configuration_dialog").dialog("open");
   });
 
-  function test_configuration() {
-    return new Promise((resolve) => {
+  function test_configuration(saving) {
 
     var parameters = {};
     parameters["wbw_bmlt_server_address"] = $("#wbw_bmlt_server_address").val();
@@ -119,14 +115,20 @@ jQuery(document).ready(function ($) {
     })
       .done(function (response) {
         notice_success(response, "quickedit-wp-header-end");
-        resolve(response);
+        if(saving)
+        {
+          update_from_test_result(response);
+        }
       })
       .fail(function (xhr) {
         notice_error(xhr, "quickedit-wp-header-end");
-        resolve(xhr);
+        if(saving)
+        {
+          update_from_test_result(xhr);
+        }
       })
-    })
-  }
+    }
+
   
   function get_test_status() {
     return new Promise((resolve) => {

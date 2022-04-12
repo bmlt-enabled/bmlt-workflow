@@ -8,7 +8,7 @@ For trusted servants, there is now one place that you can see submitted requests
 
 For admins, modification of email templates, service committees and email contact details can now be done in the same place, without complex logic in a form builder.
 
-This initial release is quite specific to the NA Australian Region use case (particularly the FSO/Starter Kit email) but the code is written such that templates are relatively easy to adjust based on feedback from other regions.
+This initial release is specific to the NA Australian Region use case (particularly the FSO/Starter Kit email) but the code is written such that templates are relatively easy to adjust based on feedback from other regions.
 
 ## Features
 - Form Submitters - Minimal typing of details with most content populated from BMLT

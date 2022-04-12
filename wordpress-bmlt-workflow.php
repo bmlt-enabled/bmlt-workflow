@@ -4,7 +4,7 @@
  * Plugin Name: Wordpress BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
  * Description: Wordpress BMLT Workflow
- * Version: 0.3.7
+ * Version: 0.3.8
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
@@ -350,8 +350,6 @@ function wbw_rest_controller()
 }
 
 // actions, shortcodes, menus and filters
-add_action('admin_post_nopriv_meeting_update_form_response', 'meeting_update_form_handler');
-add_action('admin_post_meeting_update_form_response', 'meeting_update_form_handler');
 add_action('wp_enqueue_scripts', 'enqueue_form_deps');
 add_action('admin_menu', 'wbw_menu_pages');
 add_action('admin_enqueue_scripts', 'wbw_admin_scripts');
@@ -380,51 +378,12 @@ function string_sanitize_callback($args)
 
 function wbw_register_setting()
 {
-    if ((defined('DOING_AJAX') && DOING_AJAX) || (strpos($_SERVER['SCRIPT_NAME'], 'admin-post.php'))) {
-        return;
-    }
 
     global $wbw_capability_manage_submissions;
 
     if ((!current_user_can('activate_plugins')) && (!current_user_can($wbw_capability_manage_submissions))) {
         wp_die("This page cannot be accessed");
     }
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_bmlt_server_address',
-        array(
-            'type' => 'string',
-            'description' => 'bmlt server address',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => ''
-        )
-    );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_bmlt_username',
-        array(
-            'type' => 'string',
-            'description' => 'bmlt automation username',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => ''
-        )
-    );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_bmlt_password',
-        array(
-            'type' => 'string',
-            'description' => 'bmlt automation password',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => ''
-        )
-    );
 
     register_setting(
         'wbw-settings-group',
@@ -495,18 +454,6 @@ function wbw_register_setting()
             'sanitize_callback' => 'string_sanitize_callback',
             'show_in_rest' => false,
             'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html')
-        )
-    );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_bmlt_test_status',
-        array(
-            'type' => 'string',
-            'description' => 'wbw_bmlt_test_status',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => 'failure'
         )
     );
 
@@ -783,8 +730,8 @@ function wbw_install()
     // require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
     $sql = "CREATE TABLE " . $wbw_service_bodies_table_name . " (
-		service_body_bigint mediumint(9) NOT NULL,
-        service_area_name tinytext NOT NULL,
+		service_body_bigint bigint(20) NOT NULL,
+        service_body_name tinytext NOT NULL,
         contact_email varchar(255) NOT NULL default '',
         show_on_form bool,
 		PRIMARY KEY (service_body_bigint)
@@ -794,7 +741,7 @@ function wbw_install()
     $wpdb->query($sql);
 
     $sql = "CREATE TABLE " . $wbw_service_bodies_access_table_name . " (
-		service_body_bigint mediumint(9) NOT NULL,
+		service_body_bigint bigint(20) NOT NULL,
         wp_uid bigint(20) unsigned  NOT NULL,
 		FOREIGN KEY (service_body_bigint) REFERENCES " . $wbw_service_bodies_table_name . "(service_body_bigint) 
 	) $charset_collate;";
@@ -803,7 +750,7 @@ function wbw_install()
     $wpdb->query($sql);
 
     $sql = "CREATE TABLE " . $wbw_submissions_table_name . " (
-		id mediumint(9) NOT NULL AUTO_INCREMENT,
+		id bigint(20) NOT NULL AUTO_INCREMENT,
 		submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
 		change_time datetime DEFAULT '0000-00-00 00:00:00',
         changed_by varchar(10),
@@ -812,7 +759,7 @@ function wbw_install()
 		submission_type tinytext NOT NULL,
         submitter_email varchar(320) NOT NULL,
         meeting_id bigint(20) unsigned,
-        service_body_bigint mediumint(9) NOT NULL,
+        service_body_bigint bigint(20) NOT NULL,
         changes_requested varchar(1024),
         action_message varchar(1024),
 		PRIMARY KEY (id),

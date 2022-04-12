@@ -31,7 +31,7 @@ Line: $errorLine
     {
 
         $this->setVerboseErrorHandler();
-        $basedir = dirname(dirname(dirname(__FILE__)));
+        $basedir = getcwd();
         require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
 
         Monkey\setUp();

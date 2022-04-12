@@ -92,11 +92,12 @@ jQuery(document).ready(function ($) {
     Object.keys(response).forEach((item) => {
       // console.log(response);
       var service_body_bigint = item;
-      var service_area_name = response[item]["name"];
-      var opt = new Option(service_area_name, service_body_bigint, false, false);
+      var service_body_name = response[item]["name"];
+      var opt = new Option(service_body_name, service_body_bigint, false, false);
       $("#service_body_bigint").append(opt);
       wbw_service_bodies += "services[]=" + service_body_bigint + "&";
     });
+
     update_meeting_list(wbw_service_bodies);
   });
 
@@ -322,6 +323,10 @@ jQuery(document).ready(function ($) {
     enable_field("display_format_shared_id_list");
     enable_field("weekday_tinyint");
     enable_field("service_body_bigint");
+    enable_field("virtual_meeting_additional_info");
+    enable_field("phone_meeting_number");
+    enable_field("virtual_meeting_link");
+    enable_field("virtual_hybrid_select");
   }
 
   function disable_edits() {
@@ -337,9 +342,14 @@ jQuery(document).ready(function ($) {
     disable_field("location_postal_code_1");
     disable_field("location_sub_province");
     disable_field("location_nation");
-    disable_field("format_shared_id_list");
+    disable_field("display_format_shared_id_list");
     disable_field("weekday_tinyint");
     disable_field("service_body_bigint");
+    disable_field("virtual_meeting_additional_info");
+    disable_field("phone_meeting_number");
+    disable_field("virtual_meeting_link");
+    disable_field("virtual_hybrid_select");
+    
   }
 
   function clear_form() {
@@ -360,7 +370,16 @@ jQuery(document).ready(function ($) {
     clear_field("email_address");
     clear_field("display_format_shared_id_list");
     clear_field("meeting_id");
+    clear_field("additional_info");
     clear_field("meeting_searcher");
+    clear_field("starter_kit_postal_address");
+    clear_field("virtual_meeting_additional_info");
+    clear_field("phone_meeting_number");
+    clear_field("virtual_meeting_link");
+    // placeholder for these select elements
+    $("#group_relationship").val("");
+    $("#virtual_hybrid_select").val("");
+    $("#service_body_bigint").val("");
     // set email selector to no
     $("#add-email").val("no");
   }
@@ -413,9 +432,9 @@ jQuery(document).ready(function ($) {
     var reason = $(this).val();
     // <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
 
+    clear_form();
     switch (reason) {
       case "reason_new":
-        clear_form();
         $("#meeting_content").show();
         $("#personal_details").show();
         $("#meeting_details").show();
@@ -429,7 +448,6 @@ jQuery(document).ready(function ($) {
         $("#starter_pack").show();
         break;
       case "reason_change":
-        clear_form();
         // hide this until they've selected a meeting
         $("#meeting_content").hide();
         $("#personal_details").show();
@@ -441,7 +459,6 @@ jQuery(document).ready(function ($) {
 
         break;
       case "reason_close":
-        clear_form();
         // hide this until they've selected a meeting
         $("#meeting_content").hide();
         $("#personal_details").show();
@@ -454,7 +471,6 @@ jQuery(document).ready(function ($) {
 
         break;
       case "reason_other":
-        clear_form();
         // display form instructions
         $("#instructions").html("");
         // other reason has a textarea

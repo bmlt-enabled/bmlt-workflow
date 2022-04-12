@@ -29,16 +29,16 @@ private function check_bmltserver_parameters($username, $password, $server)
         // $wbw_dbg->debug_log($wbw_dbg->vdump(empty($password)));
 
         if (empty($username)) {
-            return $this->handlerCore->wbw_rest_error('Empty BMLT username parameter', 400);
+            return $this->handlerCore->wbw_rest_error('Empty BMLT username parameter', 422);
         }
         if (empty($password)) {
-            return $this->handlerCore->wbw_rest_error('Empty BMLT password parameter', 400);
+            return $this->handlerCore->wbw_rest_error('Empty BMLT password parameter', 422);
         }
         if (empty($server)) {
-            return $this->handlerCore->wbw_rest_error('Empty BMLT server parameter', 400);
+            return $this->handlerCore->wbw_rest_error('Empty BMLT server parameter', 422);
         }
         if (substr($server, -1) !== '/') {
-            return $this->handlerCore->wbw_rest_error('BMLT Server address missing trailiing /', 400);
+            return $this->handlerCore->wbw_rest_error('BMLT Server address missing trailiing /', 422);
         }
 
         return true;

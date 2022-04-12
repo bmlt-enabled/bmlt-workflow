@@ -73,16 +73,17 @@ class ServiceBodiesHandler
             $missing = array_diff($idlist, $sqlresult);
 
             foreach ($missing as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+                $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_body_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
                 $wpdb->query($sql);
             }
             // update any values that may have changed since last time we looked
 
             foreach ($idlist as $value) {
-                $sql = $wpdb->prepare('UPDATE ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_area_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+                $sql = $wpdb->prepare('UPDATE ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_body_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
                 $wpdb->query($sql);
             }
 
+            
             // make our group membership lists
             foreach ($sblist as $key => $value) {
                 $wbw_dbg->debug_log("getting memberships for " . $key);
@@ -104,13 +105,11 @@ class ServiceBodiesHandler
             $wbw_dbg->debug_log($wbw_dbg->vdump($result));
             // create simple service area list (names of service areas that are enabled by admin with show_on_form)
             foreach ($result as $key => $value) {
-                $sblist[$value['service_body_bigint']]['name'] = $value['service_area_name'];
+                $sblist[$value['service_body_bigint']]['name'] = $value['service_body_name'];
             }
-
         }
         return $this->handlerCore->wbw_rest_success($sblist);
 
-        // return $sblist;
     }
 
     public function post_service_bodies_handler($request)
