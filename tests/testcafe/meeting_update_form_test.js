@@ -14,7 +14,7 @@ from './helpers/helper.js';
 fixture `meeting_update_form_fixture`
     .page(uf.page_location);
 
-test('New_Meeting_Submit_Form', async t => {
+test('Success_New_Meeting_And_Submit', async t => {
 
     await select_dropdown_by_value(uf.update_reason,'reason_new');
 
@@ -101,13 +101,65 @@ test('New_Meeting_Submit_Form', async t => {
 
 });
 
-test('Change_Meeting_Submit_Form', async t => {
+test('Success_Change_Meeting_Name_And_Submit', async t => {
 
     await select_dropdown_by_value(uf.update_reason,'reason_change');
 
     // check our divs are visible
     await t
     .expect(uf.update_reason.value).eql('reason_change');
+
+    // meeting selector
+    await t.click('#select2-meeting-searcher-container');
+    await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'),'Avalon');
+    await t.pressKey('enter');
+
+    // validate form is laid out correctl
+    await t
+    .expect(uf.personal_details.visible).eql(true)
+    .expect(uf.meeting_details.visible).eql(true)
+    .expect(uf.additional_info_div.visible).eql(true);
+
+    
+    // personal details
+    await t
+    .typeText(uf.first_name, 'first')
+    .typeText(uf.last_name, 'last')
+    .typeText(uf.email_address, 'test@test.com.zz')
+    .typeText(uf.contact_number_confidential, '`12345`')
+
+    .typeText(uf.meeting_name, 'update')
+    // make sure highlighting is present
+    .expect(uf.meeting_name.hasClass('wbw-updated'));
+
+    // email dropdown
+    await select_dropdown_by_text(uf.add_email,'Yes');
+    await t
+    .expect(uf.add_email.value).eql('yes');
+
+    // group member dropdown
+    await select_dropdown_by_value(uf.group_relationship,'Group Member');
+    await t
+    .expect(uf.group_relationship.value).eql('Group Member');
+
+
+
+    await t
+    .typeText(uf.additional_info, 'my additional info');
+
+    await t
+    .click(uf.submit)
+    .expect(Selector('#page h3').innerText).match(/submission\ successful/);
+
+});
+
+test('Success_Close_Meeting_And_Submit', async t => {
+
+    await select_dropdown_by_value(uf.update_reason,'reason_close');
+
+    // check our divs are visible
+    await t
+    .expect(uf.update_reason.value).eql('reason_close');
 
     // meeting selector
     await t.click('#select2-meeting-searcher-container');
@@ -139,8 +191,6 @@ test('Change_Meeting_Submit_Form', async t => {
     await select_dropdown_by_value(uf.group_relationship,'Group Member');
     await t
     .expect(uf.group_relationship.value).eql('Group Member');
-
-
 
     await t
     .typeText(uf.additional_info, 'my additional info');
