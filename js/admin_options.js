@@ -59,7 +59,7 @@ jQuery(document).ready(function ($) {
     },
     buttons: {
       "Test Configuration": function () {
-        test_configuration(false)
+        test_configuration(false);
       },
       "Save and Close": function () {
         save_results(this);
@@ -117,14 +117,14 @@ jQuery(document).ready(function ($) {
         notice_success(response, "quickedit-wp-header-end");
         if(saving)
         {
-          update_from_test_result();
+          update_from_test_result(response);
         }
       })
       .fail(function (xhr) {
         notice_error(xhr, "quickedit-wp-header-end");
         if(saving)
         {
-          update_from_test_result();
+          update_from_test_result(xhr);
         }
       })
     }
