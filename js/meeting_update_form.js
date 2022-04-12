@@ -323,6 +323,10 @@ jQuery(document).ready(function ($) {
     enable_field("display_format_shared_id_list");
     enable_field("weekday_tinyint");
     enable_field("service_body_bigint");
+    enable_field("virtual_meeting_additional_info");
+    enable_field("phone_meeting_number");
+    enable_field("virtual_meeting_link");
+    enable_field("virtual_hybrid_select");
   }
 
   function disable_edits() {
@@ -341,6 +345,11 @@ jQuery(document).ready(function ($) {
     disable_field("format_shared_id_list");
     disable_field("weekday_tinyint");
     disable_field("service_body_bigint");
+    disable_field("virtual_meeting_additional_info");
+    disable_field("phone_meeting_number");
+    disable_field("virtual_meeting_link");
+    disable_field("virtual_hybrid_select");
+    
   }
 
   function clear_form() {
