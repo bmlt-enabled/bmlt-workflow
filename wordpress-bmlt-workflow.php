@@ -378,9 +378,6 @@ function string_sanitize_callback($args)
 
 function wbw_register_setting()
 {
-    if ((defined('DOING_AJAX') && DOING_AJAX) || (strpos($_SERVER['SCRIPT_NAME'], 'admin-post.php'))) {
-        return;
-    }
 
     global $wbw_capability_manage_submissions;
 
@@ -388,41 +385,41 @@ function wbw_register_setting()
         wp_die("This page cannot be accessed");
     }
 
-    register_setting(
-        'wbw-settings-group',
-        'wbw_bmlt_server_address',
-        array(
-            'type' => 'string',
-            'description' => 'bmlt server address',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => ''
-        )
-    );
+    // register_setting(
+    //     'wbw-settings-group',
+    //     'wbw_bmlt_server_address',
+    //     array(
+    //         'type' => 'string',
+    //         'description' => 'bmlt server address',
+    //         'sanitize_callback' => 'string_sanitize_callback',
+    //         'show_in_rest' => false,
+    //         'default' => ''
+    //     )
+    // );
 
-    register_setting(
-        'wbw-settings-group',
-        'wbw_bmlt_username',
-        array(
-            'type' => 'string',
-            'description' => 'bmlt automation username',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => ''
-        )
-    );
+    // register_setting(
+    //     'wbw-settings-group',
+    //     'wbw_bmlt_username',
+    //     array(
+    //         'type' => 'string',
+    //         'description' => 'bmlt automation username',
+    //         'sanitize_callback' => 'string_sanitize_callback',
+    //         'show_in_rest' => false,
+    //         'default' => ''
+    //     )
+    // );
 
-    register_setting(
-        'wbw-settings-group',
-        'wbw_bmlt_password',
-        array(
-            'type' => 'string',
-            'description' => 'bmlt automation password',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => ''
-        )
-    );
+    // register_setting(
+    //     'wbw-settings-group',
+    //     'wbw_bmlt_password',
+    //     array(
+    //         'type' => 'string',
+    //         'description' => 'bmlt automation password',
+    //         'sanitize_callback' => 'string_sanitize_callback',
+    //         'show_in_rest' => false,
+    //         'default' => ''
+    //     )
+    // );
 
     register_setting(
         'wbw-settings-group',
@@ -496,17 +493,17 @@ function wbw_register_setting()
         )
     );
 
-    register_setting(
-        'wbw-settings-group',
-        'wbw_bmlt_test_status',
-        array(
-            'type' => 'string',
-            'description' => 'wbw_bmlt_test_status',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => 'failure'
-        )
-    );
+    // register_setting(
+    //     'wbw-settings-group',
+    //     'wbw_bmlt_test_status',
+    //     array(
+    //         'type' => 'string',
+    //         'description' => 'wbw_bmlt_test_status',
+    //         'sanitize_callback' => 'string_sanitize_callback',
+    //         'show_in_rest' => false,
+    //         'default' => 'failure'
+    //     )
+    // );
 
     register_setting(
         'wbw-settings-group',

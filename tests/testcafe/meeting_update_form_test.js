@@ -143,12 +143,6 @@ test('Change_Meeting_Submit_Form', async t => {
     await t
     .typeText(uf.additional_info, 'my additional info');
 
-    await select_dropdown_by_value(uf.starter_kit_required,'yes');
-    await t
-    // .typeText(uf.starter_kit_postal_address, 'postal address')
-    .typeText(uf.starter_kit_postal_address, 'postal address')
-    .expect(uf.starter_kit_postal_address.value).eql('postal address');
-
     await t
     .click(uf.submit)
     .expect(Selector('#page h3').innerText).match(/submission\ successful/);
