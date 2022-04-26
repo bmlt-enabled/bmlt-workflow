@@ -155,19 +155,31 @@ class Integration
         curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
         $resp = curl_exec($curl);
+
         if (!$resp) {
-            return $this->handlerCore->wbw_rest_error('Server error geolocating address', 500);
+            return new \WP_Error('wbw', 'Server error geolocating address');
         }
+
         curl_close($curl);
         $wbw_dbg->debug_log("*** GMAPS RESPONSE");
         $wbw_dbg->debug_log($resp);
 
         $geo = json_decode($resp, true);
-        $location = array();
-        $location['lat'] = $geo['results'][0]['geometry']['location']['lat'];
-        $location['lng'] = $geo['results'][0]['geometry']['location']['lng'];
-        return $location;
-
+        if((empty($geo)) || (empty($geo['status'])))
+        {
+            return new \WP_Error('wbw', 'Server error geolocating address');
+        }
+        if(($geo['status'] === "ZERO_RESULTS") || empty($geo['results'][0]['geometry']['location']['lat']) || empty($geo['results'][0]['geometry']['location']['lng']))
+        {
+            return new \WP_Error('wbw', 'Could not geolocate meeting address. Please try amending the address with additional/correct details.');
+        }
+        else
+        {
+            $location = array();
+            $location['lat'] = $geo['results'][0]['geometry']['location']['lat'];
+            $location['lng'] = $geo['results'][0]['geometry']['location']['lng'];
+            return $location;
+        }
     }
 
     private function authenticateRootServer()
