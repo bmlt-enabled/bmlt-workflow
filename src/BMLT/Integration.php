@@ -121,17 +121,17 @@ class Integration
         global $wbw_dbg;
         $ret = $this->authenticateRootServer();
         if (is_wp_error($ret)) {
-            $wbw_dbg->debug_log("*** AUTH ERROR");
-            $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
+            // $wbw_dbg->debug_log("*** AUTH ERROR");
+            // $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
             return $ret;
         }
 
         $url = \get_option('wbw_bmlt_server_address') . "index.php";
-        $wbw_dbg->debug_log("*** ADMIN URL ".$url);
+        // $wbw_dbg->debug_log("*** ADMIN URL ".$url);
 
         $resp = $this->get($url, $this->cookies);
-        $wbw_dbg->debug_log("*** ADMIN PAGE");
-        $wbw_dbg->debug_log(wp_remote_retrieve_body($resp));
+        // $wbw_dbg->debug_log("*** ADMIN PAGE");
+        // $wbw_dbg->debug_log(wp_remote_retrieve_body($resp));
 
         preg_match('/"google_api_key":"(.*?)",/', wp_remote_retrieve_body($resp), $matches);
         return $matches[1];
@@ -140,8 +140,8 @@ class Integration
     public function geolocateAddress($address)
     {
         $key = $this->getGmapsKey();
-        // curl "https://maps.googleapis.com/maps/api/geocode/json?address=sydneym,australia&&key=${GOOGLE_MAPS_API_KEY}"
-        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=sydneym,australia&&key=".$key;
+
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($address)."&&key=".$key;
         global $wbw_dbg;
         $wbw_dbg->debug_log("*** GMAPS URL");
         $wbw_dbg->debug_log($url);
