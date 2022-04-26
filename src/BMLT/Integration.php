@@ -118,12 +118,18 @@ class Integration
      */
     public function getGmapsKey()
     {
-        $this->authenticateRootServer();
+        global $wbw_dbg;
+        $ret = $this->authenticateRootServer();
+        if (is_wp_error($ret)) {
+            $wbw_dbg->debug_log("*** AUTH ERROR");
+            $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
+            return $ret;
+        }
 
         $url = \get_option('wbw_bmlt_server_address') . "index.php";
+        $wbw_dbg->debug_log("*** ADMIN URL ".$url);
 
         $resp = $this->get($url, $this->cookies);
-        global $wbw_dbg;
         $wbw_dbg->debug_log("*** ADMIN PAGE");
         $wbw_dbg->debug_log(wp_remote_retrieve_body($resp));
 
