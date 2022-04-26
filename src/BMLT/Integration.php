@@ -121,6 +121,10 @@ class Integration
         $url = \get_option('wbw_bmlt_server_address') . "index.php";
 
         $resp = $this->get($url, $this->cookies);
+        global $wbw_dbg;
+        $wbw_dbg->debug_log("*** ADMIN PAGE");
+        $wbw_dbg->debug_log(wp_remote_retrieve_body($resp));
+
         preg_match('/"google_api_key":"(.*?)",/', wp_remote_retrieve_body($resp), $matches);
         return $matches[1];
     }
