@@ -118,6 +118,8 @@ class Integration
      */
     public function getGmapsKey()
     {
+        $this->authenticateRootServer();
+
         $url = \get_option('wbw_bmlt_server_address') . "index.php";
 
         $resp = $this->get($url, $this->cookies);
