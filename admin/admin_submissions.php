@@ -181,7 +181,13 @@ EOD;
                 <label for="quickedit_location_nation">Nation</label>
                 <input class="meeting-input" type="text" name="quickedit_location_nation" size="50" id="quickedit_location_nation">
             </div>
-            
+            <fieldset>
+                <legend>Meeting Geolocation</legend>
+                <label for="quickedit_latitude">Latitude<span class="wbw-required-field"> *</span></label>
+                <input class="meeting-input" type="number" name="quickedit_latitude"  id="quickedit_latitude" required>
+                <label for="quickedit_longitude">Longitude<span class="wbw-required-field"> *</span></label>
+                <input class="meeting-input" type="number" name="quickedit_longitude"  id="quickedit_longitude" required>
+            </fieldset>
         </div>
     </div>
 </div>
