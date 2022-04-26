@@ -7,6 +7,14 @@ class Integration
 {
     protected $cookies = null; // our authentication cookies
     
+    public function __construct($cookies = null)
+    {
+        if (!empty($cookies))
+        {
+            $this->cookies = $cookies;
+        }
+    }
+
     private function wbw_rest_error($message, $code)
     {
         return new \WP_Error('wbw_error', $message, array('status' => $code));
