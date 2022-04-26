@@ -321,6 +321,26 @@ class SubmissionsHandler
             case 'reason_new':
                 // workaround for semantic new meeting bug
                 $change['id_bigint'] = 0;
+                // workaround for server side geolocation
+
+                // var address_line = sprintf('%s,%s,%s,%s,%s,%s', street_text, borough_text, city_text, state_text, zip_text, nation_text);
+                $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
+                $locdata = array();
+                foreach($locfields as $field)
+                {
+                    if(!empty($change[$field]))
+                    {
+                        $locdata[]=$change[$field];
+                    }
+                }
+                $locstring = implode(', ',$locdata);
+                $wbw_dbg->debug_log("GMAPS location lookup = " . $locstring);
+
+                $location = $this->bmlt_integration->geolocateAddress($locstring);
+                $wbw_dbg->debug_log("GMAPS location lookup returns = " . $location['lat'] . " " . $location['lng']);
+
+                $change['latitude']= $location['lat'];
+                $change['longitude']= $location['lng'];
                 // handle publish/unpublish here
                 $change['published'] = 1;
                 $changearr = array();

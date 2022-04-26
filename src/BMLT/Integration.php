@@ -109,6 +109,55 @@ class Integration
 
     }
 
+    /**
+     * getGmapsKey
+     *
+     * workaround for client/server side maps key issues
+     * 
+     * @return \WP_Error|string
+     */
+    public function getGmapsKey()
+    {
+        $url = \get_option('wbw_bmlt_server_address') . "index.php";
+
+        $resp = $this->get($url, $this->cookies);
+        preg_match('/"google_api_key":"(.*?)",/', wp_remote_retrieve_body($resp), $matches);
+        return $matches[1];
+    }
+
+    public function geolocateAddress($address)
+    {
+        $key = $this->getGmapsKey();
+        // curl "https://maps.googleapis.com/maps/api/geocode/json?address=sydneym,australia&&key=${GOOGLE_MAPS_API_KEY}"
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=sydneym,australia&&key=".$key;
+        global $wbw_dbg;
+        $wbw_dbg->debug_log("*** GMAPS URL");
+        $wbw_dbg->debug_log($url);
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        $headers = array(
+            "Accept: */*",
+        );
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+        $resp = curl_exec($curl);
+        if (!$resp) {
+            return $this->handlerCore->wbw_rest_error('Server error geolocating address', 500);
+        }
+        curl_close($curl);
+        $wbw_dbg->debug_log("*** GMAPS RESPONSE");
+        $wbw_dbg->debug_log($resp);
+
+        $geo = json_decode($resp, true);
+        $location = array();
+        $location['lat'] = $geo['results'][0]['geometry']['location']['lat'];
+        $location['lng'] = $geo['results'][0]['geometry']['location']['lng'];
+        return $location;
+
+    }
+
     private function authenticateRootServer()
     {
         if ($this->cookies == null) {
