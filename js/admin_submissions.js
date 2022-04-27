@@ -639,7 +639,7 @@ jQuery(document).ready(function ($) {
     // $locstring = implode(', ',$locdata);
     var locfields = ["location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation" ];
     var locdata = [];
-    
+
     locfields.forEach((item,i) => 
     {
       var el = "#quickedit_" + item;
@@ -655,7 +655,7 @@ jQuery(document).ready(function ($) {
 
     $.ajax({
       url: wbw_bmltserver_geolocate_rest_url,
-      type: action,
+      type: 'GET',
       dataType: "json",
       contentType: "application/json",
       data: JSON.stringify(address),
