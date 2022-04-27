@@ -1,3 +1,6 @@
+## 0.3.9-beat
+- Geolocation support for meetings added (thanks @brustar !)
+
 ## 0.3.8-beta 
 - **Breaking database changes in this release - please deactivate and reactivate the plugin before using**
 - 'Other' change type removed #36
