@@ -658,7 +658,7 @@ jQuery(document).ready(function ($) {
       type: 'GET',
       dataType: "json",
       contentType: "application/json",
-      data: JSON.stringify(address),
+      data: encodeURI(address),
       beforeSend: function (xhr) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
