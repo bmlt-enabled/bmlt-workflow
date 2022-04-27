@@ -399,6 +399,11 @@ class Controller extends \WP_REST_Controller
 		return rest_ensure_response($result);
 	}
 
+	public function get_bmltserver_geolocate($request)
+	{
+		$result = $this->BMLTServerHandler->get_bmltserver_geolocate_handler($request);
+		return rest_ensure_response($result);
+	}
 
 
 }
