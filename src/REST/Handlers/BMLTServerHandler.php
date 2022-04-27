@@ -138,10 +138,10 @@ private function check_bmltserver_parameters($username, $password, $server)
             return $location;
         }
 
-        $wbw_dbg->debug_log("GMAPS location lookup returns = " . $location['lat'] . " " . $location['lng']);
+        $wbw_dbg->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
 
-        $change['latitude']= $location['lat'];
-        $change['longitude']= $location['lng'];
+        $change['latitude']= $location['latitude'];
+        $change['longitude']= $location['longitude'];
         $change['message']='Geolocation successful';
         return $change;
 

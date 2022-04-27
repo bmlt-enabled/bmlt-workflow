@@ -184,8 +184,8 @@ class Integration
         else
         {
             $location = array();
-            $location['lat'] = $geo['results'][0]['geometry']['location']['lat'];
-            $location['lng'] = $geo['results'][0]['geometry']['location']['lng'];
+            $location['latitude'] = $geo['results'][0]['geometry']['location']['lat'];
+            $location['longitude'] = $geo['results'][0]['geometry']['location']['lng'];
             return $location;
         }
     }

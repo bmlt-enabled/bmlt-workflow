@@ -388,8 +388,8 @@ Line: $errorLine
         $wbw_dbg->debug_log("*** GEO RESPONSE");
         $wbw_dbg->debug_log($wbw_dbg->vdump($response));
 
-        $this->assertIsNumeric($response['lat']);
-        $this->assertIsNumeric($response['lng']);
+        $this->assertIsNumeric($response['latitude']);
+        $this->assertIsNumeric($response['longitude']);
 
     }
 

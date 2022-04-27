@@ -256,11 +256,11 @@ class SubmissionsHandler
             return $location;
         }
 
-        $wbw_dbg->debug_log("GMAPS location lookup returns = " . $location['lat'] . " " . $location['lng']);
+        $wbw_dbg->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
 
         $latlng = array();
-        $latlng['latitude']= $location['lat'];
-        $latlng['longitude']= $location['lng'];
+        $latlng['latitude']= $location['latitude'];
+        $latlng['longitude']= $location['longitude'];
         return $latlng;
 
     }
