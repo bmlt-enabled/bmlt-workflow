@@ -651,7 +651,7 @@ jQuery(document).ready(function ($) {
 
     })
 
-    var address = locdata.join(',');
+    var address = "address="+locdata.join(',');
 
     $.ajax({
       url: wbw_bmltserver_geolocate_rest_url,

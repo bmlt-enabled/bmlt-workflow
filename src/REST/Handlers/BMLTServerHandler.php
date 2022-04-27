@@ -124,10 +124,16 @@ private function check_bmltserver_parameters($username, $password, $server)
 
     public function get_bmltserver_geolocate_handler($request)
     {
-        
+
         global $wbw_dbg;
 
-        $location = $this->bmlt_integration->geolocateAddress($request['address']);
+        $address = $request->get_param('address');
+        
+        if (empty($address)) {
+            return $this->handlerCore->wbw_rest_error('Empty address parameter', 422);
+        }
+
+        $location = $this->bmlt_integration->geolocateAddress($address);
         if (is_wp_error($location)) {
             return $location;
         }
