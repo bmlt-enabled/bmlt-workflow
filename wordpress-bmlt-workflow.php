@@ -4,7 +4,7 @@
  * Plugin Name: Wordpress BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
  * Description: Wordpress BMLT Workflow
- * Version: 0.3.8
+ * Version: 0.3.9
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
