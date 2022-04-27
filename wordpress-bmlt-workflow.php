@@ -237,8 +237,9 @@ function wbw_admin_scripts($hook)
             register_select2();
             enqueue_select2();
 
-            // make sure our rest url is populated
+            // make sure our rest urls are populated
             $script  = 'var wbw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/submissions/') . '; ';
+            $script  = 'var wbw_bmltserver_geolocate_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/bmltserver/geolocate') . '; ';
             // add our bmlt server for the submission lookups
             $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
 

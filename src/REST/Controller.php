@@ -20,7 +20,7 @@ class Controller extends \WP_REST_Controller
 		$this->namespace = $wbw_rest_namespace;
 		$this->submissions_rest_base = 'submissions';
 		$this->service_bodies_rest_base = 'servicebodies';
-		$this->server_rest_base = 'bmltserver';
+		$this->bmltserver_rest_base = 'bmltserver';
 		// $this->handlers = new Handlers();
 		$this->BMLTServerHandler = new BMLTServerHandler();
 		$this->ServiceBodiesHandler = new ServiceBodiesHandler();
@@ -125,7 +125,7 @@ class Controller extends \WP_REST_Controller
 		// GET bmltserver
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->server_rest_base,
+			'/' . $this->bmltserver_rest_base,
 
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
@@ -137,7 +137,7 @@ class Controller extends \WP_REST_Controller
 		// POST bmltserver
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->server_rest_base,
+			'/' . $this->bmltserver_rest_base,
 
 			array(
 				'methods'             => \WP_REST_Server::CREATABLE,
@@ -149,7 +149,7 @@ class Controller extends \WP_REST_Controller
 		// PATCH bmltserver
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->server_rest_base,
+			'/' . $this->bmltserver_rest_base,
 
 			array(
 				'methods'             => \WP_REST_Server::EDITABLE,
@@ -158,6 +158,16 @@ class Controller extends \WP_REST_Controller
 			),
 		);
 		
+		// GET bmltserver/geolocate
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->bmltserver_rest_base.'/geolocate',
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_bmltserver_geolocate'),
+				'permission_callback' => array($this, 'get_bmltserver_geolocate_permissions_check'),
+			),
+		);
 	}
 
 	private function authorization_status_code()
@@ -291,6 +301,19 @@ class Controller extends \WP_REST_Controller
 		}
 		return true;
 	}
+
+	public function get_bmltserver_geolocate_permissions_check($request)
+	{
+		global $wbw_dbg;
+		global $wbw_capability_manage_submissions;
+		
+		$wbw_dbg->debug_log("patch_bmltserver " . get_current_user_id());
+		if (!current_user_can($wbw_capability_manage_submissions)) {
+			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot geolocate an address.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
 
 	public function post_submissions_permissions_check($request)
 	{

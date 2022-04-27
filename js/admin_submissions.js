@@ -533,9 +533,9 @@ jQuery(document).ready(function ($) {
         of: window,
       },
       buttons: {
-        // "Save and Approve": function () {
-        //   save_approve_handler($(this).data("id"));
-        // },
+        "Check Geolocate": function () {
+          geolocate_handler($(this).data("id"));
+        },
         Save: function () {
           save_handler($(this).data("id"));
         },
@@ -623,6 +623,55 @@ jQuery(document).ready(function ($) {
         notice_error(xhr);
       });
     $("#" + slug + "_dialog").dialog("close");
+  }
+
+  function geolocate_handler(id) {
+
+    // $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
+    // $locdata = array();
+    // foreach($locfields as $field)
+    // {
+    //     if(!empty($change[$field]))
+    //     {
+    //         $locdata[]=$change[$field];
+    //     }
+    // }
+    // $locstring = implode(', ',$locdata);
+    var locfields = ["location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation" ];
+    var locdata = [];
+    
+    locfields.forEach((item,i) => 
+    {
+      var el = "#quickedit_" + item;
+      var val = $(el).val();
+      if (val != '')
+      {
+        locdata.push(val);
+      }
+
+    })
+
+    var address = locdata.join(',');
+
+    $.ajax({
+      url: wbw_bmltserver_geolocate_rest_url,
+      type: action,
+      dataType: "json",
+      contentType: "application/json",
+      data: JSON.stringify(address),
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+      },
+    })
+      .done(function (response) {
+        $("#quicketit_latitude").val(response['lat']);
+        $("#quicketit_longitude").val(response['lng']);
+        notice_success(response);
+      })
+      .fail(function (xhr) {
+        notice_error(xhr);
+      });
+  
   }
 
   function save_handler(id) {

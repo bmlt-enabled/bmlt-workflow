@@ -122,4 +122,22 @@ private function check_bmltserver_parameters($username, $password, $server)
         return $this->handlerCore->wbw_rest_success('BMLT Server and Authentication details updated.');
     }
 
+    public function get_bmltserver_geolocate_handler($request)
+    {
+        
+        global $wbw_dbg;
+
+        $location = $this->bmlt_integration->geolocateAddress($request['address']);
+        if (is_wp_error($location)) {
+            return $location;
+        }
+
+        $wbw_dbg->debug_log("GMAPS location lookup returns = " . $location['lat'] . " " . $location['lng']);
+
+        $change['latitude']= $location['lat'];
+        $change['longitude']= $location['lng'];
+        return $change;
+
+    }
+
 }

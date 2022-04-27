@@ -323,7 +323,6 @@ class SubmissionsHandler
                 $change['id_bigint'] = 0;
                 // workaround for server side geolocation
 
-                // var address_line = sprintf('%s,%s,%s,%s,%s,%s', street_text, borough_text, city_text, state_text, zip_text, nation_text);
                 $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
                 $locdata = array();
                 foreach($locfields as $field)
