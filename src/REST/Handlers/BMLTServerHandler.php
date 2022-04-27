@@ -128,7 +128,7 @@ private function check_bmltserver_parameters($username, $password, $server)
         global $wbw_dbg;
 
         $address = $request->get_param('address');
-        
+
         if (empty($address)) {
             return $this->handlerCore->wbw_rest_error('Empty address parameter', 422);
         }
@@ -142,6 +142,7 @@ private function check_bmltserver_parameters($username, $password, $server)
 
         $change['latitude']= $location['lat'];
         $change['longitude']= $location['lng'];
+        $change['message']='Geolocation successful';
         return $change;
 
     }
