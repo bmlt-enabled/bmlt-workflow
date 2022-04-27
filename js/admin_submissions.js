@@ -664,8 +664,8 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        $("#quicketit_latitude").val(response['lat']);
-        $("#quicketit_longitude").val(response['lng']);
+        $("#quickedit_latitude").val(response['latitude']);
+        $("#quickedit_longitude").val(response['longitude']);
         notice_success(response);
       })
       .fail(function (xhr) {
