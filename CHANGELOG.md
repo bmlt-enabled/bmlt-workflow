@@ -1,4 +1,4 @@
-## 0.3.9-beat
+## 0.3.9-beta
 - Geolocation support for meetings added (thanks @brustar !)
 
 ## 0.3.8-beta 
