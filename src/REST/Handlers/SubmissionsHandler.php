@@ -358,8 +358,8 @@ class SubmissionsHandler
                     return $latlng;
                 }
 
-                $change['latitude']= $latlng['lat'];
-                $change['longitude']= $latlng['lng'];
+                $change['latitude']= $latlng['latitude'];
+                $change['longitude']= $latlng['longitude'];
 
                 // handle publish/unpublish here
                 $change['published'] = 1;
@@ -386,8 +386,8 @@ class SubmissionsHandler
                     return $latlng;
                 }
 
-                $change['latitude']= $latlng['lat'];
-                $change['longitude']= $latlng['lng'];
+                $change['latitude']= $latlng['latitude'];
+                $change['longitude']= $latlng['longitude'];
 
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;
