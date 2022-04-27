@@ -235,6 +235,36 @@ class SubmissionsHandler
         return $this->handlerCore->wbw_rest_success('Updated submission id ' . $change_id);
     }
 
+    private function do_geolocate($change)
+    {
+        // workaround for server side geolocation
+        global $wbw_dbg;
+        $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
+        $locdata = array();
+        foreach($locfields as $field)
+        {
+            if(!empty($change[$field]))
+            {
+                $locdata[]=$change[$field];
+            }
+        }
+        $locstring = implode(', ',$locdata);
+        $wbw_dbg->debug_log("GMAPS location lookup = " . $locstring);
+
+        $location = $this->bmlt_integration->geolocateAddress($locstring);
+        if (is_wp_error($location)) {
+            return $location;
+        }
+
+        $wbw_dbg->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
+
+        $latlng = array();
+        $latlng['latitude']= $location['latitude'];
+        $latlng['longitude']= $location['longitude'];
+        return $latlng;
+
+    }
+
     public function approve_submission_handler($request)
     {
         global $wpdb;
@@ -321,6 +351,16 @@ class SubmissionsHandler
             case 'reason_new':
                 // workaround for semantic new meeting bug
                 $change['id_bigint'] = 0;
+
+                // run our geolocator on the address
+                $latlng = $this->do_geolocate($change);
+                if (is_wp_error($latlng)) {
+                    return $latlng;
+                }
+
+                $change['latitude']= $latlng['latitude'];
+                $change['longitude']= $latlng['longitude'];
+
                 // handle publish/unpublish here
                 $change['published'] = 1;
                 $changearr = array();
@@ -339,6 +379,15 @@ class SubmissionsHandler
 
                 $wbw_dbg->debug_log("CHANGE");
                 $wbw_dbg->debug_log($wbw_dbg->vdump($change));
+
+                // run our geolocator on the address
+                $latlng = $this->do_geolocate($change);
+                if (is_wp_error($latlng)) {
+                    return $latlng;
+                }
+
+                $change['latitude']= $latlng['latitude'];
+                $change['longitude']= $latlng['longitude'];
 
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;

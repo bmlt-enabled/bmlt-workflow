@@ -7,6 +7,14 @@ class Integration
 {
     protected $cookies = null; // our authentication cookies
     
+    public function __construct($cookies = null)
+    {
+        if (!empty($cookies))
+        {
+            $this->cookies = $cookies;
+        }
+    }
+
     private function wbw_rest_error($message, $code)
     {
         return new \WP_Error('wbw_error', $message, array('status' => $code));
@@ -107,6 +115,79 @@ class Integration
         }
         return false;
 
+    }
+
+    /**
+     * getGmapsKey
+     *
+     * workaround for client/server side maps key issues
+     * 
+     * @return \WP_Error|string
+     */
+    public function getGmapsKey()
+    {
+        global $wbw_dbg;
+        $ret = $this->authenticateRootServer();
+        if (is_wp_error($ret)) {
+            // $wbw_dbg->debug_log("*** AUTH ERROR");
+            // $wbw_dbg->debug_log($wbw_dbg->vdump($ret));
+            return $ret;
+        }
+
+        $url = \get_option('wbw_bmlt_server_address') . "index.php";
+        // $wbw_dbg->debug_log("*** ADMIN URL ".$url);
+
+        $resp = $this->get($url, $this->cookies);
+        // $wbw_dbg->debug_log("*** ADMIN PAGE");
+        // $wbw_dbg->debug_log(wp_remote_retrieve_body($resp));
+
+        preg_match('/"google_api_key":"(.*?)",/', wp_remote_retrieve_body($resp), $matches);
+        return $matches[1];
+    }
+
+    public function geolocateAddress($address)
+    {
+        $key = $this->getGmapsKey();
+
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($address)."&&key=".$key;
+        global $wbw_dbg;
+        $wbw_dbg->debug_log("*** GMAPS URL");
+        $wbw_dbg->debug_log($url);
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        $headers = array(
+            "Accept: */*",
+        );
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+        $resp = curl_exec($curl);
+
+        if (!$resp) {
+            return new \WP_Error('wbw', 'Server error geolocating address');
+        }
+
+        curl_close($curl);
+        $wbw_dbg->debug_log("*** GMAPS RESPONSE");
+        $wbw_dbg->debug_log($resp);
+
+        $geo = json_decode($resp, true);
+        if((empty($geo)) || (empty($geo['status'])))
+        {
+            return new \WP_Error('wbw', 'Server error geolocating address');
+        }
+        if(($geo['status'] === "ZERO_RESULTS") || empty($geo['results'][0]['geometry']['location']['lat']) || empty($geo['results'][0]['geometry']['location']['lng']))
+        {
+            return new \WP_Error('wbw', 'Could not geolocate meeting address. Please try amending the address with additional/correct details.');
+        }
+        else
+        {
+            $location = array();
+            $location['latitude'] = $geo['results'][0]['geometry']['location']['lat'];
+            $location['longitude'] = $geo['results'][0]['geometry']['location']['lng'];
+            return $location;
+        }
     }
 
     private function authenticateRootServer()

@@ -4,7 +4,7 @@
  * Plugin Name: Wordpress BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
  * Description: Wordpress BMLT Workflow
- * Version: 0.3.8
+ * Version: 0.3.9
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
@@ -39,6 +39,12 @@ $wbw_dbg = new Debug;
 // our rest namespace
 global $wbw_rest_namespace;
 $wbw_rest_namespace = 'wbw/v1';
+global $wbw_submissions_rest_base;
+$wbw_submissions_rest_base = 'submissions';
+global $wbw_service_bodies_rest_base;
+$wbw_service_bodies_rest_base = 'servicebodies';
+global $wbw_bmltserver_rest_base;
+$wbw_bmltserver_rest_base = 'bmltserver';
 
 // database configuration
 global $wpdb;
@@ -237,8 +243,9 @@ function wbw_admin_scripts($hook)
             register_select2();
             enqueue_select2();
 
-            // make sure our rest url is populated
+            // make sure our rest urls are populated
             $script  = 'var wbw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/submissions/') . '; ';
+            $script  .= 'var wbw_bmltserver_geolocate_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/bmltserver/geolocate') . '; ';
             // add our bmlt server for the submission lookups
             $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
 

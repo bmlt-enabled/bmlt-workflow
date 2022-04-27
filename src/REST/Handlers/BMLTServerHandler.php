@@ -122,4 +122,29 @@ private function check_bmltserver_parameters($username, $password, $server)
         return $this->handlerCore->wbw_rest_success('BMLT Server and Authentication details updated.');
     }
 
+    public function get_bmltserver_geolocate_handler($request)
+    {
+
+        global $wbw_dbg;
+
+        $address = $request->get_param('address');
+
+        if (empty($address)) {
+            return $this->handlerCore->wbw_rest_error('Empty address parameter', 422);
+        }
+
+        $location = $this->bmlt_integration->geolocateAddress($address);
+        if (is_wp_error($location)) {
+            return $location;
+        }
+
+        $wbw_dbg->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
+
+        $change['latitude']= $location['latitude'];
+        $change['longitude']= $location['longitude'];
+        $change['message']='Geolocation successful';
+        return $change;
+
+    }
+
 }

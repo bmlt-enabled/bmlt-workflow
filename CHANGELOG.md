@@ -1,5 +1,10 @@
+## 0.3.9-beta
+- Geolocation support for meetings added (thanks @brustar !)
+
 ## 0.3.8-beta 
 - **Breaking database changes in this release - please deactivate and reactivate the plugin before using**
+- 'Other' change type removed #36
+- 'Other' service body removed #33 (thanks @brustar !)
 - Time display in submission amended when no changes have been made #34
 - Day/Time shown in meeting submission change summary #31
 - Time display in submission is now in local browser time #37
