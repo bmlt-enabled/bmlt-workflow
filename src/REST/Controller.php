@@ -16,12 +16,17 @@ class Controller extends \WP_REST_Controller
 
 	public function __construct()
 	{
+
 		global $wbw_rest_namespace;
+		global $wbw_submissions_rest_base;
+		global $wbw_service_bodies_rest_base;
+		global $wbw_bmltserver_rest_base;
+
 		$this->namespace = $wbw_rest_namespace;
-		$this->submissions_rest_base = 'submissions';
-		$this->service_bodies_rest_base = 'servicebodies';
-		$this->bmltserver_rest_base = 'bmltserver';
-		// $this->handlers = new Handlers();
+		$this->submissions_rest_base = $wbw_submissions_rest_base;
+		$this->service_bodies_rest_base = $wbw_service_bodies_rest_base;
+		$this->bmltserver_rest_base = $wbw_bmltserver_rest_base;
+
 		$this->BMLTServerHandler = new BMLTServerHandler();
 		$this->ServiceBodiesHandler = new ServiceBodiesHandler();
 		$this->SubmissionsHandler = new SubmissionsHandler();
@@ -306,7 +311,7 @@ class Controller extends \WP_REST_Controller
 	{
 		global $wbw_dbg;
 		global $wbw_capability_manage_submissions;
-		
+
 		$wbw_dbg->debug_log("patch_bmltserver " . get_current_user_id());
 		if (!current_user_can($wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot geolocate an address.'), array('status' => $this->authorization_status_code()));

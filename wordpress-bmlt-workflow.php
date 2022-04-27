@@ -39,6 +39,12 @@ $wbw_dbg = new Debug;
 // our rest namespace
 global $wbw_rest_namespace;
 $wbw_rest_namespace = 'wbw/v1';
+global $wbw_submissions_rest_base;
+$wbw_submissions_rest_base = 'submissions';
+global $wbw_service_bodies_rest_base;
+$wbw_service_bodies_rest_base = 'servicebodies';
+global $wbw_bmltserver_rest_base;
+$wbw_bmltserver_rest_base = 'bmltserver';
 
 // database configuration
 global $wpdb;
