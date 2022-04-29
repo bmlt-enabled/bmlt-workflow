@@ -441,6 +441,7 @@ class SubmissionsHandler
                     $changearr = array();
                     $changearr['bmlt_ajax_callback'] = 1;
                     $changearr['set_meeting_change'] = json_encode($change);
+                    $wbw_dbg->debug_log("UNPUBLISH");
                     $wbw_dbg->debug_log($wbw_dbg->vdump($changearr));
 
                     $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
