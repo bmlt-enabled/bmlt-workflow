@@ -7,12 +7,13 @@ import {
     select_dropdown_by_value
 } 
 from './helpers/helper.js';
+import { userVariables } from '../../.testcaferc';
 
 // const reason = Selector('#update_reason');
 // const reasonOption = reason.find('option');
 
 fixture `meeting_update_form_fixture`
-    .page(uf.page_location);
+    .page(userVariables.formpage);
 
 test('Success_New_Meeting_And_Submit', async t => {
 
@@ -114,7 +115,7 @@ test('Success_Change_Meeting_Name_And_Submit', async t => {
     await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'),'Avalon');
     await t.pressKey('enter');
 
-    // validate form is laid out correctl
+    // validate form is laid out correctly
     await t
     .expect(uf.personal_details.visible).eql(true)
     .expect(uf.meeting_details.visible).eql(true)

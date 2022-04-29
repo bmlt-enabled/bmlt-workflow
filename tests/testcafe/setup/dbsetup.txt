@@ -1,0 +1,3 @@
+create user 'ssm-user' identified via unix_socket;
+GRANT ALL PRIVILEGES on '*.* to 'ssm-user'
+

@@ -3,8 +3,6 @@ import { Selector } from 'testcafe';
 class Meeting_Update_Form {
     constructor () {
 
-        this.page_location = "http://54.153.167.239/flop/sample-page-2/";
-
         this.form_replace = Selector('#form_replace');
         this.meeting_update_form      = Selector('#meeting_update_form');
         this.update_reason = Selector('#update_reason');
