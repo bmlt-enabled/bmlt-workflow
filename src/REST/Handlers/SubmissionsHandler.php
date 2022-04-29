@@ -440,6 +440,7 @@ class SubmissionsHandler
 
                     $changearr = array();
                     $changearr['bmlt_ajax_callback'] = 1;
+                    $change['id_bigint']=$result['meeting_id'];
                     $changearr['set_meeting_change'] = json_encode($change);
                     $wbw_dbg->debug_log("UNPUBLISH");
                     $wbw_dbg->debug_log($wbw_dbg->vdump($changearr));
@@ -887,9 +888,12 @@ class SubmissionsHandler
                         $submission[$item] = $sanitised_fields[$item];
                     }
                 }
-                // populate the meeting name so we dont need to do it again on the submission page
-                $meeting = $this->bmlt_retrieve_single_meeting($sanitised_fields['meeting_id']);
-                $submission['meeting_name'] = $meeting['meeting_name'];
+
+                // populate the meeting name/time/day so we dont need to do it again on the submission page
+                $bmlt_meeting = $this->bmlt_retrieve_single_meeting($sanitised_fields['meeting_id']);
+                $submission['meeting_name'] = $bmlt_meeting['meeting_name'];
+                $submission['weekday_tinyint'] = $bmlt_meeting['weekday_tinyint'];
+                $submission['start_time'] = $bmlt_meeting['start_time'];
 
                 break;
             case ('reason_other'):
