@@ -380,8 +380,18 @@ class SubmissionsHandler
                 $wbw_dbg->debug_log("CHANGE");
                 $wbw_dbg->debug_log($wbw_dbg->vdump($change));
 
-                // run our geolocator on the address
-                $latlng = $this->do_geolocate($change);
+                // geolocate based on changes - apply the changes to the BMLT version, then geolocate
+                $bmlt_meeting = $this->bmlt_retrieve_single_meeting($result['meeting_id']);
+                $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
+                foreach($locfields as $field)
+                {
+                    if(!empty($change[$field]))
+                    {
+                        $bmlt_meeting[$field]=$change[$field];
+                    }
+                }
+        
+                $latlng = $this->do_geolocate($bmlt_meeting);
                 if (is_wp_error($latlng)) {
                     return $latlng;
                 }
