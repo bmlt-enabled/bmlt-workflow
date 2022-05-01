@@ -143,8 +143,6 @@ test('Success_Change_Meeting_Name_And_Submit', async t => {
     await t
     .expect(uf.group_relationship.value).eql('Group Member');
 
-
-
     await t
     .typeText(uf.additional_info, 'my additional info');
 

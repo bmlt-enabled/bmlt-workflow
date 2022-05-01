@@ -12,6 +12,10 @@ class Admin_Submissions {
         this.approve_close_dialog = Selector("#wbw_submission_approve_close_dialog");
         this.approve_close_dialog_parent = this.approve_close_dialog.parent();
         this.approve_close_dialog_textarea = Selector("#wbw_submission_approve_close_dialog_textarea");
+        this.reject_dialog = Selector("#wbw_submission_reject_dialog");
+        this.reject_dialog_parent = this.reject_dialog.parent();
+        this.reject_dialog_textarea = Selector("#wbw_submission_reject_dialog_textarea");
+        this.quickedit_dialog = Selector("#wbw_submission_quickedit_dialog");
     }
 }
 
