@@ -381,8 +381,9 @@ class SubmissionsHandler
                 $wbw_dbg->debug_log($wbw_dbg->vdump($change));
 
                 // geolocate based on changes - apply the changes to the BMLT version, then geolocate
-                $bmlt_meeting = $this->bmlt_retrieve_single_meeting($result['meeting_id']);
+                $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($result['meeting_id']);
                 $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
+
                 foreach($locfields as $field)
                 {
                     if(!empty($change[$field]))
@@ -395,7 +396,7 @@ class SubmissionsHandler
                 if (is_wp_error($latlng)) {
                     return $latlng;
                 }
-
+                // add the new geo to the original change
                 $change['latitude']= $latlng['latitude'];
                 $change['longitude']= $latlng['longitude'];
 
@@ -567,39 +568,7 @@ class SubmissionsHandler
         return $this->handlerCore->wbw_rest_error('Form field "' . $field . '" is invalid.', 422);
     }
 
-    private function bmlt_retrieve_single_meeting($meeting_id)
-    {
-        global $wbw_dbg;
 
-        $wbw_bmlt_server_address = get_option('wbw_bmlt_server_address');
-        $url = $wbw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" . $meeting_id . "&lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&&recursive=1&sort_keys=start_time";
-
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-        $headers = array(
-            "Accept: */*",
-        );
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
-        $resp = curl_exec($curl);
-        if (!$resp) {
-            return $this->handlerCore->wbw_rest_error('Server error retrieving meeting list', 500);
-        }
-        curl_close($curl);
-        $meetingarr = json_decode($resp, true);
-        if (empty($meetingarr[0])) {
-            return $this->handlerCore->wbw_rest_error('Server error retrieving meeting list', 500);
-        }
-        $meeting = $meetingarr[0];
-        $wbw_dbg->debug_log($wbw_dbg->vdump($meeting));
-        // how possibly can we get a meeting that is not the same as we asked for
-        if ($meeting['id_bigint'] != $meeting_id) {
-            return $this->handlerCore->wbw_rest_error('Server error retrieving meeting list', 500);
-        }
-        return $meeting;
-    }
 
     public function meeting_update_form_handler_rest($data)
     {
@@ -826,7 +795,7 @@ class SubmissionsHandler
                     "additional_info",
                 );
 
-                $bmlt_meeting = $this->bmlt_retrieve_single_meeting($sanitised_fields['meeting_id']);
+                $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
                 // $wbw_dbg->debug_log($wbw_dbg->vdump($meeting));
                 if (is_wp_error($bmlt_meeting)) {
                     return $this->handlerCore->wbw_rest_error('Internal BMLT error.', 500);
@@ -900,7 +869,7 @@ class SubmissionsHandler
                 }
 
                 // populate the meeting name/time/day so we dont need to do it again on the submission page
-                $bmlt_meeting = $this->bmlt_retrieve_single_meeting($sanitised_fields['meeting_id']);
+                $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
                 $submission['meeting_name'] = $bmlt_meeting['meeting_name'];
                 $submission['weekday_tinyint'] = $bmlt_meeting['weekday_tinyint'];
                 $submission['start_time'] = $bmlt_meeting['start_time'];

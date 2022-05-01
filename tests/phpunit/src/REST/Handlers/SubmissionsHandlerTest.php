@@ -666,7 +666,8 @@ Line: $errorLine
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])
-        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1));
+        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true));
 
 
         global $wpdb;
@@ -871,8 +872,8 @@ Line: $errorLine
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
-        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1));
-
+        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true));
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -933,7 +934,8 @@ Line: $errorLine
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
-        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1));
+        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true));
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
