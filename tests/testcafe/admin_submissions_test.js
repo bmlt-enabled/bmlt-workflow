@@ -1,4 +1,4 @@
-import { Selector } from 'testcafe';
+import { Role } from 'testcafe';
 import { as } from './models/admin_submissions';
 import { wordpress_login } from './models/wordpress_login';
 
@@ -16,18 +16,22 @@ from './helpers/helper.js';
 import { userVariables } from '../../.testcaferc';
 
 fixture `admin_submissions_fixture`
-    .page(userVariables.admin_submissions_page)
     .beforeEach(async t => {
         var http = require('http');
         await http.get(userVariables.admin_submission_reset);
+        await t.useRole(wbw_admin)
+        .navigateTo(userVariables.admin_submissions_page)
     });
 
-test('Approve_New_Meeting', async t => {
-
+const wbw_admin = Role(userVariables.admin_logon_page, async t => {
     await t
     .typeText(wordpress_login.user_login, userVariables.admin_logon)
     .typeText(wordpress_login.user_pass, userVariables.admin_password)
     .click(wordpress_login.wp_submit);
+});
+
+test('Approve_New_Meeting', async t => {
+
     // new meeting = row 0
     var row = 0;
     await click_table_row_column(as.dt_submission,row,0);
@@ -52,10 +56,6 @@ test('Approve_New_Meeting', async t => {
 
 test('Approve_Modify_Meeting', async t => {
 
-    await t
-    .typeText(wordpress_login.user_login, userVariables.admin_logon)
-    .typeText(wordpress_login.user_pass, userVariables.admin_password)
-    .click(wordpress_login.wp_submit);
     // modify meeting = row 1
     var row = 1;
     await click_table_row_column(as.dt_submission,row,0);
@@ -81,10 +81,6 @@ test('Approve_Modify_Meeting', async t => {
 
 test('Approve_Close_Meeting', async t => {
 
-    await t
-    .typeText(wordpress_login.user_login, userVariables.admin_logon)
-    .typeText(wordpress_login.user_pass, userVariables.admin_password)
-    .click(wordpress_login.wp_submit);
     // close meeting = row 2
     var row = 2;
     await click_table_row_column(as.dt_submission,row,0);
@@ -109,10 +105,6 @@ test('Approve_Close_Meeting', async t => {
 
 test('Reject_New_Meeting', async t => {
 
-    await t
-    .typeText(wordpress_login.user_login, userVariables.admin_logon)
-    .typeText(wordpress_login.user_pass, userVariables.admin_password)
-    .click(wordpress_login.wp_submit);
     // new meeting = row 0
     var row = 0;
     await click_table_row_column(as.dt_submission,row,0);
@@ -137,10 +129,6 @@ test('Reject_New_Meeting', async t => {
 
 test('Reject_Modify_Meeting', async t => {
 
-    await t
-    .typeText(wordpress_login.user_login, userVariables.admin_logon)
-    .typeText(wordpress_login.user_pass, userVariables.admin_password)
-    .click(wordpress_login.wp_submit);
     // modify meeting = row 1
     var row = 1;
     await click_table_row_column(as.dt_submission,row,0);
@@ -166,10 +154,6 @@ test('Reject_Modify_Meeting', async t => {
 
 test('Reject_Close_Meeting', async t => {
 
-    await t
-    .typeText(wordpress_login.user_login, userVariables.admin_logon)
-    .typeText(wordpress_login.user_pass, userVariables.admin_password)
-    .click(wordpress_login.wp_submit);
     // close meeting = row 2
     var row = 2;
     await click_table_row_column(as.dt_submission,row,0);
@@ -195,10 +179,6 @@ test('Reject_Close_Meeting', async t => {
 
 test('Submission_Buttons_Active_correctly', async t => {
 
-    await t
-    .typeText(wordpress_login.user_login, userVariables.admin_logon)
-    .typeText(wordpress_login.user_pass, userVariables.admin_password)
-    .click(wordpress_login.wp_submit);
     // new meeting = row 0
     var row = 0;
     await click_table_row_column(as.dt_submission,row,0);
@@ -277,11 +257,9 @@ test('Submission_Buttons_Active_correctly', async t => {
 
 // test('Quickedit_New_Meeting', async t => {
 
-//     await t
-//     .typeText(wordpress_login.user_login, userVariables.admin_logon)
-//     .typeText(wordpress_login.user_pass, userVariables.admin_password)
-//     .click(wordpress_login.wp_submit);
-//     // new meeting = row 0
+    // await t.useRole(wbw_admin);
+
+    //     // new meeting = row 0
 //     var row = 0;
 //     await click_table_row_column(as.dt_submission,row,0);
 //     // quickedit

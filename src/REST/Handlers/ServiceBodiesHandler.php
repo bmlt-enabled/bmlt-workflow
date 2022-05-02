@@ -53,17 +53,16 @@ class ServiceBodiesHandler
             // make our list of service bodies
             foreach ($arr['service_body'] as $key => $value) {
                 // $wbw_dbg->debug_log("looping key = " . $key);
-                if (array_key_exists('@attributes', $value)) {
+                if (!empty($value['@attributes'])) {
                     $sbid = $value['@attributes']['id'];
                     $idlist[] = $sbid;
-                    $sblist[$sbid] = array('name' => $value['@attributes']['name']);
+                    $sblist[$sbid] = array('name' => $value['@attributes']['name'], 'contact_email' => '');
+                    if (!empty($value['contact_email'])) {
+                        $sblist[$sbid]['contact_email'] = $value['contact_email'];
+                    }
                 } else {
                     // we need a name at minimum
                     break;
-                }
-                $sblist[$sbid]['contact_email'] = '';
-                if (array_key_exists('contact_email', $value)) {
-                    $sblist[$sbid]['contact_email'] = $value['contact_email'];
                 }
             }
 
