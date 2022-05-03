@@ -88,7 +88,7 @@ test('e2e_New_meeting', async t => {
     .typeText(uf.location_province, 'province')
     .typeText(uf.location_postal_code_1, '1234');
 
-    await select_dropdown_by_text(uf.service_body_bigint,'Sydney Metro');
+    await select_dropdown_by_text(uf.service_body_bigint,'a-level1');
     await t
     .typeText(uf.additional_info, 'my additional info');
 

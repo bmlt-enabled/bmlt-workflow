@@ -85,12 +85,25 @@ class Integration
     {
         global $wbw_dbg;
 
-        $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetFormats', array());
+        $req = array();
+        $req['admin_action'] = 'get_format_info';
+
+        // get an xml for a workaround
+        $response = $this->bmlt_integration->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
         if (is_wp_error($response)) {
             return new \WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
+
+        // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetFormats', array());
+        // if (is_wp_error($response)) {
+        //     return new \WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
+        // }
+
         $wbw_dbg->debug_log(wp_remote_retrieve_body($response));  
-        $formatarr = json_decode(wp_remote_retrieve_body($response), true);
+        // $formatarr = json_decode(wp_remote_retrieve_body($response), true);
+        $xml = simplexml_load_string(wp_remote_retrieve_body($response));
+        $formatarr = json_decode(json_encode($xml), 1);
+
         $wbw_dbg->debug_log($wbw_dbg->vdump($formatarr));
 
         $newformat = array();

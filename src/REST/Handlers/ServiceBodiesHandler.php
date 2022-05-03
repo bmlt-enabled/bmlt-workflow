@@ -76,7 +76,6 @@ class ServiceBodiesHandler
                 $wpdb->query($sql);
             }
             // update any values that may have changed since last time we looked
-
             foreach ($idlist as $value) {
                 $sql = $wpdb->prepare('UPDATE ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_body_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
                 $wpdb->query($sql);
