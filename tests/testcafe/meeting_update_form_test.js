@@ -15,7 +15,9 @@ import { userVariables } from '../../.testcaferc';
 fixture `meeting_update_form_fixture`
     .page(userVariables.formpage);
 
-test('Success_New_Meeting_And_Submit', async t => {
+test('e2e_New_meeting', async t => {
+
+    await t.navigateTo(userVariables.formpage);
 
     await select_dropdown_by_value(uf.update_reason,'reason_new');
 
