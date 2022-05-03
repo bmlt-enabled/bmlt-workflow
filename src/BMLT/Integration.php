@@ -89,7 +89,7 @@ class Integration
         $req['admin_action'] = 'get_format_info';
 
         // get an xml for a workaround
-        $response = $this->bmlt_integration->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
+        $response = $this->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
         if (is_wp_error($response)) {
             return new \WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
