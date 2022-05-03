@@ -107,7 +107,7 @@ class Integration
         $wbw_dbg->debug_log($wbw_dbg->vdump($formatarr));
 
         $newformat = array();
-        foreach ($formatarr as $key => $value) {
+        foreach ($formatarr['row'] as $key => $value) {
             $formatid = $value['id'];
             unset($value['id']);
             $newformat[$formatid] = $value;            
