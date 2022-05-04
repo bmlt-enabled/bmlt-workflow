@@ -138,17 +138,20 @@ Line: $errorLine
         Functions\when('curl_exec')->justReturn($json);
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
         // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
         $bmlt = \Mockery::mock('Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])
         ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
-        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true));
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true))
+        ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats,true));
+
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
 
-        $handlers = new SubmissionsHandler();
+        $handlers = new SubmissionsHandler($bmlt);
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $wbw_dbg->debug_log("TEST RESPONSE");
@@ -228,7 +231,18 @@ Line: $errorLine
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $handlers = new SubmissionsHandler;
+        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
+        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
+        $bmlt = \Mockery::mock('Integration');
+
+        /** @var Mockery::mock $bmlt test */
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])
+        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true))
+        ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats,true));
+
+        $handlers = new SubmissionsHandler($bmlt);
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -267,7 +281,18 @@ Line: $errorLine
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $handlers = new SubmissionsHandler;
+        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
+        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
+        $bmlt = \Mockery::mock('Integration');
+
+        /** @var Mockery::mock $bmlt test */
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])
+        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true))
+        ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats,true));
+
+        $handlers = new SubmissionsHandler($bmlt);
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(\WP_Error::class, $response);
@@ -307,7 +332,18 @@ Line: $errorLine
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $handlers = new SubmissionsHandler;
+        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
+        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
+        $bmlt = \Mockery::mock('Integration');
+
+        /** @var Mockery::mock $bmlt test */
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])
+        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true))
+        ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats,true));
+
+        $handlers = new SubmissionsHandler($bmlt);
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -348,7 +384,18 @@ Line: $errorLine
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $handlers = new SubmissionsHandler;
+        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
+        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
+        $bmlt = \Mockery::mock('Integration');
+
+        /** @var Mockery::mock $bmlt test */
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])
+        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true))
+        ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats,true));
+
+        $handlers = new SubmissionsHandler($bmlt);
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
 
@@ -400,16 +447,19 @@ Line: $errorLine
         Functions\when('wp_mail')->justReturn('true');
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
         // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
         $bmlt = \Mockery::mock('Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])
         ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
-        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true));
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true))
+        ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats,true));
+
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
-        $handlers = new SubmissionsHandler;
+        $handlers = new SubmissionsHandler($bmlt);
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $wbw_dbg->debug_log($wbw_dbg->vdump($response));
@@ -682,13 +732,16 @@ Line: $errorLine
         );
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
         // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
         $bmlt = \Mockery::mock('Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])
         ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
-        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true));
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true))
+        ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats,true));
+
 
 
         global $wpdb;
@@ -707,6 +760,17 @@ Line: $errorLine
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
         Functions\when('\wp_mail')->justReturn('true');
+
+        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
+        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
+        $bmlt = \Mockery::mock('Integration');
+
+        /** @var Mockery::mock $bmlt test */
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])
+        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true))
+        ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats,true));
 
         $rest = new SubmissionsHandler($bmlt);
 // global $wbw_dbg;
@@ -750,12 +814,15 @@ Line: $errorLine
         );
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
         // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
         $bmlt = \Mockery::mock('Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
-        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1));
+        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
+        ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats,true));
+
 
 
         global $wpdb;
@@ -817,12 +884,15 @@ Line: $errorLine
         );
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
         // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
         $bmlt = \Mockery::mock('Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
-        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1));
+        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
+        ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats,true));
+
 
 
         global $wpdb;
@@ -888,13 +958,16 @@ Line: $errorLine
         );
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
         // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
         $bmlt = \Mockery::mock('Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
         ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
-        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true));
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true))
+        ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats,true));
+
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -950,13 +1023,16 @@ Line: $errorLine
         );
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
         // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
         $bmlt = \Mockery::mock('Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
         ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
-        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true));
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true))
+        ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats,true));
+
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -1011,12 +1087,15 @@ Line: $errorLine
         );
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
         // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
         $bmlt = \Mockery::mock('Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
-        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1));
+        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
+        ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats,true));
+
 
 
         global $wpdb;
@@ -1075,12 +1154,15 @@ Line: $errorLine
         );
 
         $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
         // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
         $bmlt = \Mockery::mock('Integration');
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
-        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1));
+        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
+        ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats,true));
+
 
 
         global $wpdb;

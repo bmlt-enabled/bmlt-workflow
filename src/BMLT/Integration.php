@@ -19,7 +19,13 @@ class Integration
     {
         return new \WP_Error('wbw_error', $message, array('status' => $code));
     }
-
+    
+    /**
+     * retrieve_single_meeting
+     *
+     * @param  int $meeting_id
+     * @return void
+     */
     public function retrieve_single_meeting($meeting_id)
     {
         global $wbw_dbg;
@@ -46,6 +52,7 @@ class Integration
             return $this->handlerCore->wbw_rest_error('Server error retrieving meeting', 500);
         }
         $meeting = $meetingarr[0];
+        $wbw_dbg->debug_log("SINGLE MEETING");
         $wbw_dbg->debug_log($wbw_dbg->vdump($meeting));
         // how possibly can we get a meeting that is not the same as we asked for
         if ($meeting['id_bigint'] != $meeting_id) {

@@ -817,11 +817,6 @@ class SubmissionsHandler
                     // if the field is in bmlt and its different to the submitted item, add it to the list
                     else if ((!empty($bmlt_meeting[$field])) && (!empty($sanitised_fields[$field]))) {
                         if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
-                            // $wbw_dbg->debug_log("{$field} is different");
-                            // $wbw_dbg->debug_log("*** bmlt meeting");
-                            // $wbw_dbg->debug_log($wbw_dbg->vdump($bmlt_meeting));
-                            // $wbw_dbg->debug_log("*** sanitised fields");
-                            // $wbw_dbg->debug_log($wbw_dbg->vdump($sanitised_fields));
                             // don't allow someone to modify a meeting service body
                             if ($field === 'service_body_bigint') {
                                 return $this->handlerCore->wbw_rest_error('Service body cannot be changed.', 403);
@@ -988,8 +983,7 @@ class SubmissionsHandler
     private function submission_format($submission)
     {
 
-        $bmlt = new Integration;
-        $formats = $bmlt->getMeetingFormats();
+        $formats = $this->bmlt_integration->getMeetingFormats();
 
         $table = '';
 

@@ -120,6 +120,7 @@ Line: $errorLine
         Functions\when('wp_remote_retrieve_body')->justReturn('[{"key_string": "B","name_string": "Beginners","description_string": "This meeting is focused on the needs of new members of NA.","lang": "en","id": "1","world_id": "BEG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"},{"key_string": "BL","name_string": "Bi-Lingual","description_string": "This meeting is conducted in both English and another language.","lang": "en","id": "2","world_id": "LANG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"}]');
         Functions\when('\get_option')->returnArg();
         Functions\when('wp_safe_remote_post')->returnArg();
+        Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
         $integration = new Integration();
 
