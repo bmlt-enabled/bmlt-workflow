@@ -137,6 +137,17 @@ Line: $errorLine
         $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
         Functions\when('curl_exec')->justReturn($json);
 
+        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
+        $bmlt = \Mockery::mock('Integration');
+
+        /** @var Mockery::mock $bmlt test */
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])
+        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true));
+        Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
+
+
         $handlers = new SubmissionsHandler();
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
@@ -387,6 +398,16 @@ Line: $errorLine
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
         Functions\when('wp_mail')->justReturn('true');
+
+        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
+        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
+        $bmlt = \Mockery::mock('Integration');
+
+        /** @var Mockery::mock $bmlt test */
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])
+        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1))
+        ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp,true));
+        Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
         $handlers = new SubmissionsHandler;
         $response = $handlers->meeting_update_form_handler_rest($form_post);

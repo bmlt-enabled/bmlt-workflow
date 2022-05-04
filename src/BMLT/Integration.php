@@ -102,6 +102,8 @@ class Integration
         $wbw_dbg->debug_log(wp_remote_retrieve_body($response));  
         // $formatarr = json_decode(wp_remote_retrieve_body($response), true);
         $xml = simplexml_load_string(wp_remote_retrieve_body($response));
+        $wbw_dbg->debug_log("XML RESPONSE");
+        $wbw_dbg->debug_log($response);
         $formatarr = json_decode(json_encode($xml), 1);
 
         $wbw_dbg->debug_log($wbw_dbg->vdump($formatarr));
