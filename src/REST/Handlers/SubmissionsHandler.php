@@ -839,6 +839,8 @@ class SubmissionsHandler
 
                 $wbw_dbg->debug_log("SUBMISSION");
                 $wbw_dbg->debug_log($wbw_dbg->vdump($submission));
+                $wbw_dbg->debug_log("BMLT MEETING");
+                $wbw_dbg->debug_log($wbw_dbg->vdump($bmlt_meeting));
                 // store away the original meeting name so we know what changed
                 $submission['original_meeting_name'] = $bmlt_meeting['meeting_name'];
                 $submission['original_weekday_tinyint'] = $bmlt_meeting['weekday_tinyint'];
@@ -865,6 +867,9 @@ class SubmissionsHandler
 
                 // populate the meeting name/time/day so we dont need to do it again on the submission page
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
+                $wbw_dbg->debug_log("BMLT MEETING");
+                $wbw_dbg->debug_log($wbw_dbg->vdump($bmlt_meeting));
+
                 $submission['meeting_name'] = $bmlt_meeting['meeting_name'];
                 $submission['weekday_tinyint'] = $bmlt_meeting['weekday_tinyint'];
                 $submission['start_time'] = $bmlt_meeting['start_time'];
