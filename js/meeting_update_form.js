@@ -185,7 +185,7 @@ jQuery(document).ready(function ($) {
       // set the weekday format
       $("#weekday_tinyint").val(mdata[id].weekday_tinyint);
 
-      fields = [
+      var fields = [
         "meeting_name",
         "start_time",
         "location_street",
