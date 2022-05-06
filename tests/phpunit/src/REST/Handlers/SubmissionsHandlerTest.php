@@ -128,7 +128,6 @@ Line: $errorLine
         "format_shared_id_list": "3"
     }
     EOD;
-
     }
 
     protected function tearDown(): void
@@ -761,7 +760,7 @@ Line: $errorLine
         );
 
         $retrieve_single_response = $this->meeting;
-        
+
         $post_change_response = '[{"id_bigint":"3563"}]';
 
         $bmlt_input = '';
@@ -842,6 +841,10 @@ Line: $errorLine
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
+
+        // global $wbw_dbg;
+        // $wbw_dbg->debug_log($wbw_dbg->debug_log("BMLT INPUT"));
+        // $wbw_dbg->debug_log($wbw_dbg->vdump($bmlt_input));
 
         $this->assertArrayHasKey("set_meeting_change", $bmlt_input);
         $this->assertArrayNotHasKey("delete_meeting", $bmlt_input);

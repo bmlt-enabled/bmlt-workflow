@@ -114,7 +114,7 @@ test('Success_Change_Meeting_Name_And_Submit', async t => {
 
     // meeting selector
     await t.click('#select2-meeting-searcher-container');
-    await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'),'Avalon');
+    await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'),'virtualmeeting');
     await t.pressKey('enter');
 
     // validate form is laid out correctly
@@ -164,7 +164,7 @@ test('Success_Close_Meeting_And_Submit', async t => {
 
     // meeting selector
     await t.click('#select2-meeting-searcher-container');
-    await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'),'Avalon');
+    await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'),'virtualmeeting');
     await t.pressKey('enter');
 
     // validate form is laid out correctl

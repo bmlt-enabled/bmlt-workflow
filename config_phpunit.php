@@ -1,5 +1,5 @@
 <?php
-define('WBW_DEBUG', false);
+define('WBW_DEBUG', true);
 
 // get us through the header
 if (!defined('ABSPATH')) {

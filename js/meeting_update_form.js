@@ -185,22 +185,48 @@ jQuery(document).ready(function ($) {
       // set the weekday format
       $("#weekday_tinyint").val(mdata[id].weekday_tinyint);
 
-      var meeting_formats = mdata[id].format_shared_id_list.split(",");
-      // fill in the other fields from bmlt
-      put_field("meeting_name", mdata[id].meeting_name);
-      put_field("start_time", mdata[id].start_time);
-      put_field("location_street", mdata[id].location_street);
-      put_field("location_text", mdata[id].location_text);
-      put_field("location_info", mdata[id].location_info);
-      put_field("location_municipality", mdata[id].location_municipality);
-      put_field("location_province", mdata[id].location_province);
-      put_field("location_sub_province", mdata[id].location_sub_province);
-      put_field("location_nation", mdata[id].location_nation);
-      put_field("location_postal_code_1", mdata[id].location_postal_code_1);
-      put_field("display_format_shared_id_list", meeting_formats);
-      put_field("virtual_meeting_additional_info", mdata[id].virtual_meeting_additional_info);
-      put_field("phone_meeting_number", mdata[id].phone_meeting_number);
-      put_field("virtual_meeting_link", mdata[id].virtual_meeting_link);
+      fields = [
+        "meeting_name",
+        "start_time",
+        "location_street",
+        "location_text",
+        "location_info",
+        "location_municipality",
+        "location_province",
+        "location_sub_province",
+        "location_nation",
+        "location_postal_code_1",
+        "virtual_meeting_additional_info",
+        "phone_meeting_number",
+        "virtual_meeting_link",
+      ];
+
+      // populate form fields from bmlt if they exist
+      fields.forEach(function (item, i) {
+        if (item in mdata[id]) {
+          put_field(item, mdata[id][item]);
+        }
+      });
+      // seperate handler for split of formats
+      if ("format_shared_id_list" in mdata[id]) {
+        var meeting_formats = mdata[id].format_shared_id_list.split(",");
+        put_field("display_format_shared_id_list", meeting_formats);
+      }
+
+      // // fill in the other fields from bmlt
+      // put_field("meeting_name", mdata[id].meeting_name);
+      // put_field("start_time", mdata[id].start_time);
+      // put_field("location_street", mdata[id].location_street);
+      // put_field("location_text", mdata[id].location_text);
+      // put_field("location_info", mdata[id].location_info);
+      // put_field("location_municipality", mdata[id].location_municipality);
+      // put_field("location_province", mdata[id].location_province);
+      // put_field("location_sub_province", mdata[id].location_sub_province);
+      // put_field("location_nation", mdata[id].location_nation);
+      // put_field("location_postal_code_1", mdata[id].location_postal_code_1);
+      // put_field("virtual_meeting_additional_info", mdata[id].virtual_meeting_additional_info);
+      // put_field("phone_meeting_number", mdata[id].phone_meeting_number);
+      // put_field("virtual_meeting_link", mdata[id].virtual_meeting_link);
 
       // handle duration in the select dropdowns
       var durationarr = mdata[id].duration_time.split(":");
@@ -349,7 +375,6 @@ jQuery(document).ready(function ($) {
     disable_field("phone_meeting_number");
     disable_field("virtual_meeting_link");
     disable_field("virtual_hybrid_select");
-    
   }
 
   function clear_form() {
