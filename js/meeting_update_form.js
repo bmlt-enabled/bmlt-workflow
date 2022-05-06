@@ -207,10 +207,19 @@ jQuery(document).ready(function ($) {
           put_field(item, mdata[id][item]);
         }
       });
-      // seperate handler for split of formats
+      // seperate handler for formats
       if ("format_shared_id_list" in mdata[id]) {
         var meeting_formats = mdata[id].format_shared_id_list.split(",");
         put_field("display_format_shared_id_list", meeting_formats);
+
+        // handle virtual meeting type in the virtual meeting dropdown
+        var virtual_format = "none";
+        if (meeting_formats.includes(hybrid_formatid)) {
+          virtual_format = "hybrid";
+        } else if (meeting_formats.includes(virtual_formatid)) {
+          virtual_format = "virtual";
+        }
+
       }
 
       // // fill in the other fields from bmlt
@@ -238,23 +247,6 @@ jQuery(document).ready(function ($) {
       // handle service body in the select dropdown
       $("#service_body_bigint").val(mdata[id].service_body_bigint);
 
-      // handle virtual meeting type in the virtual meeting dropdown
-      var virtual_format = "none";
-      if (meeting_formats.includes(hybrid_formatid)) {
-        virtual_format = "hybrid";
-      } else if (meeting_formats.includes(virtual_formatid)) {
-        virtual_format = "virtual";
-      }
-      // meeting_formats.forEach((item, index) => {
-      //   if(wbw_bmlt_formats[item]['key_string'] === 'HY')
-      //   {
-      //     virtual_format='hybrid';
-      //   }
-      //   else if(wbw_bmlt_formats[item]['key_string'] === 'VM')
-      //   {
-      //     virtual_format='virtual';
-      //   }
-      // });
       // doesn't handle if they have both selected in BMLT
       $("#virtual_hybrid_select").val(virtual_format);
       if (virtual_format === "none") {
