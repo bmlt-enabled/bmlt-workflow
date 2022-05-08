@@ -466,6 +466,9 @@ class SubmissionsHandler
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                     }
 
+                    $wbw_dbg->debug_log("UNPUBLISH RESPONSE");
+                    $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+
                     $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
 
                     if ((!empty($arr['published'])) && ($arr['published'] != 0)) {
