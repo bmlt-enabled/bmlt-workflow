@@ -441,7 +441,10 @@ class SubmissionsHandler
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                     }
 
-                    $arr = json_decode(wp_remote_retrieve_body($response), true);
+                    $json = wp_remote_retrieve_body($response);
+                    $rep = str_replace("'",'"',$json);
+
+                    $arr = json_decode($rep, true);
 
                     $wbw_dbg->debug_log("DELETE RESPONSE");
                     $wbw_dbg->debug_log($wbw_dbg->vdump($arr));
@@ -473,7 +476,10 @@ class SubmissionsHandler
                     $wbw_dbg->debug_log("UNPUBLISH RESPONSE");
                     $wbw_dbg->debug_log($wbw_dbg->vdump($response));
 
-                    $dec = json_decode(wp_remote_retrieve_body($response), true);
+                    $json = wp_remote_retrieve_body($response);
+                    $rep = str_replace("'",'"',$json);
+
+                    $dec = json_decode($rep, true);
                     if (((!empty($dec['error'])) && ($dec['error'] === true)) || (empty($dec[0])))
                     {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
