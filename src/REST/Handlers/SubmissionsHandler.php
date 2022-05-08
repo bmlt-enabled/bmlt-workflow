@@ -446,7 +446,7 @@ class SubmissionsHandler
                     $wbw_dbg->debug_log("DELETE RESPONSE");
                     $wbw_dbg->debug_log($wbw_dbg->vdump($response));
 
-                    if ((!empty($arr['success'])) && ($arr['success'] != 'true')) {
+                    if ((!empty($arr['success'])) && ($arr['success'] !== true)) {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
                     }
                     if ((!empty($arr['report'])) && ($arr['report'] != $change['id_bigint'])) {
