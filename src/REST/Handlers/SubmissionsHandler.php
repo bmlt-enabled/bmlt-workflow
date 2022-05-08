@@ -444,7 +444,7 @@ class SubmissionsHandler
                     $arr = json_decode(wp_remote_retrieve_body($response), true);
 
                     $wbw_dbg->debug_log("DELETE RESPONSE");
-                    $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+                    $wbw_dbg->debug_log($wbw_dbg->vdump($arr));
 
                     if ((!empty($arr['success'])) && ($arr['success'] !== true)) {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
