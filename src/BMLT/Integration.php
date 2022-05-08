@@ -9,12 +9,13 @@ class Integration
     
     public function __construct($cookies = null)
     {
-        $this->handlerCore = new HandlerCore;
-
         if (!empty($cookies))
         {
             $this->cookies = $cookies;
         }
+
+        $this->handlerCore = new HandlerCore;
+
     }
 
     private function wbw_rest_error($message, $code)
