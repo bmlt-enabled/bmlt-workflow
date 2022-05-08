@@ -382,6 +382,10 @@ class SubmissionsHandler
 
                 // geolocate based on changes - apply the changes to the BMLT version, then geolocate
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($result['meeting_id']);
+                if (is_wp_error($bmlt_meeting)) {
+                    return $this->handlerCore->wbw_rest_error("BMLT Lookup Error - Couldn't find this meeting Id", 500);
+                }
+
                 $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
 
                 foreach($locfields as $field)
