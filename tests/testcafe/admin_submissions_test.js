@@ -1,15 +1,9 @@
-import { Role } from 'testcafe';
-import { as } from './models/admin_submissions';
-import { wordpress_login } from './models/wordpress_login';
+import { as, wbw_admin } from './models/admin_submissions';
 
 import { 
     click_table_row_column,
     click_dt_button_by_index,
     click_dialog_button_by_index,
-    get_table_row_col,
-    select_dropdown_by_id,
-    select_dropdown_by_text,
-    select_dropdown_by_value,
 }
 
 from './helpers/helper.js';
@@ -18,17 +12,11 @@ import { userVariables } from '../../.testcaferc';
 fixture `admin_submissions_fixture`
     .beforeEach(async t => {
         var http = require('http');
-        await http.get(userVariables.admin_submission_reset);
+        http.get(userVariables.admin_submission_reset);
         await t.useRole(wbw_admin)
         .navigateTo(userVariables.admin_submissions_page)
     });
 
-const wbw_admin = Role(userVariables.admin_logon_page, async t => {
-    await t
-    .typeText(wordpress_login.user_login, userVariables.admin_logon)
-    .typeText(wordpress_login.user_pass, userVariables.admin_password)
-    .click(wordpress_login.wp_submit);
-});
 
 test('Approve_New_Meeting', async t => {
 

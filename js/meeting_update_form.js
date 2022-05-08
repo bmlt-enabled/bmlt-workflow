@@ -207,6 +207,7 @@ jQuery(document).ready(function ($) {
           put_field(item, mdata[id][item]);
         }
       });
+      
       // seperate handler for formats
       if ("format_shared_id_list" in mdata[id]) {
         var meeting_formats = mdata[id].format_shared_id_list.split(",");

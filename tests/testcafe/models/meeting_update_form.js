@@ -54,7 +54,7 @@ class Meeting_Update_Form {
         this.starter_kit_postal_address_div = Selector('#starter_kit_postal_address_div');
         this.starter_kit_postal_address = Selector('#starter_kit_postal_address');
         this.submit = Selector('#submit');
-
+        this.success_page_header = Selector('#page h3');
     }
 }
 
