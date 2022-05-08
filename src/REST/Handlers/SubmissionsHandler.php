@@ -449,7 +449,7 @@ class SubmissionsHandler
                     $wbw_dbg->debug_log("DELETE RESPONSE");
                     $wbw_dbg->debug_log($wbw_dbg->vdump($arr));
 
-                    if ((!empty($arr['success'])) && ($arr['success'] !== true)) {
+                    if ((isset($arr['success'])) && ($arr['success'] !== true)) {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
                     }
                     if ((!empty($arr['report'])) && ($arr['report'] != $change['id_bigint'])) {
@@ -480,14 +480,14 @@ class SubmissionsHandler
                     $rep = str_replace("'",'"',$json);
 
                     $dec = json_decode($rep, true);
-                    if (((!empty($dec['error'])) && ($dec['error'] === true)) || (empty($dec[0])))
+                    if (((isset($dec['error'])) && ($dec['error'] === true)) || (empty($dec[0])))
                     {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
                     }
 
                     $arr = $dec[0];
 
-                    if ((!empty($arr['published'])) && ($arr['published'] != 0)) {
+                    if ((isset($arr['published'])) && ($arr['published'] != 0)) {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
                     }
                 }
