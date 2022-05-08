@@ -2,13 +2,15 @@
 namespace wbw\BMLT;
 
 use wbw\Debug;
-
+use wbw\REST\HandlerCore;
 class Integration
 {
     protected $cookies = null; // our authentication cookies
     
     public function __construct($cookies = null)
     {
+        $this->handlerCore = new HandlerCore;
+
         if (!empty($cookies))
         {
             $this->cookies = $cookies;
