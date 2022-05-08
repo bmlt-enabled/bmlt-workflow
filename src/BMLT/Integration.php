@@ -14,8 +14,6 @@ class Integration
             $this->cookies = $cookies;
         }
 
-        $this->handlerCore = new HandlerCore;
-
     }
 
     private function wbw_rest_error($message, $code)
@@ -23,6 +21,27 @@ class Integration
         return new \WP_Error('wbw_error', $message, array('status' => $code));
     }
     
+
+    // accepts raw string or array
+    private function wbw_rest_success($message)
+    {
+        if (is_array($message)) {
+            $data = $message;
+        } else {
+            $data = array('message' => $message);
+        }
+        $response = new \WP_REST_Response();
+        $response->set_data($data);
+        $response->set_status(200);
+        return $response;
+    }
+
+    private function wbw_rest_error_with_data($message, $code, array $data)
+    {
+        $data['status'] = $code;
+        return new \WP_Error('wbw_error', $message, $data);
+    }
+
     /**
      * retrieve_single_meeting
      *
@@ -47,19 +66,19 @@ class Integration
 
         $resp = curl_exec($curl);
         if (!$resp) {
-            return $this->handlerCore->wbw_rest_error('Server error retrieving meeting', 500);
+            return $this->wbw_rest_error('Server error retrieving meeting', 500);
         }
         curl_close($curl);
         $meetingarr = json_decode($resp, true);
         if (empty($meetingarr[0])) {
-            return $this->handlerCore->wbw_rest_error('Server error retrieving meeting', 500);
+            return $this->wbw_rest_error('Server error retrieving meeting', 500);
         }
         $meeting = $meetingarr[0];
         $wbw_dbg->debug_log("SINGLE MEETING");
         $wbw_dbg->debug_log($wbw_dbg->vdump($meeting));
         // how possibly can we get a meeting that is not the same as we asked for
         if ($meeting['id_bigint'] != $meeting_id) {
-            return $this->handlerCore->wbw_rest_error('Server error retrieving meeting', 500);
+            return $this->wbw_rest_error('Server error retrieving meeting', 500);
         }
         return $meeting;
     }
