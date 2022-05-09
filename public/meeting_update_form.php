@@ -218,12 +218,14 @@ EOD;
                             <label for="display_format_shared_id_list">Meeting Formats<span class="wbw-required-field"> *</span></label>
                             <select class="display_format_shared_id_list-select2" name="display_format_shared_id_list" id="display_format_shared_id_list" required></select>
                             <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
-                            <label for="location_text">Location (eg: a building name)<span class="wbw-required-field"> *</span></label>
-                            <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
-                            <label for="location_street">Street Address<span class="wbw-required-field"> *</span></label>
-                            <input class="meeting-input" type="text" name="location_street" size="50" id="location_street" required>
-                            <label for="location_info">Extra Location Info (eg: Near the park)</label>
-                            <input class="meeting-input" type="text" name="location_info" size="50" id="location_info">
+                            <div id="virtual_location">
+                                <label for="location_text">Location (eg: a building name)<span class="wbw-required-field"> *</span></label>
+                                <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
+                                <label for="location_street">Street Address<span class="wbw-required-field"> *</span></label>
+                                <input class="meeting-input" type="text" name="location_street" size="50" id="location_street" required>
+                                <label for="location_info">Extra Location Info (eg: Near the park)</label>
+                                <input class="meeting-input" type="text" name="location_info" size="50" id="location_info">
+                            </div>
                             <label for="location_municipality">City/Town/Suburb<span class="wbw-required-field"> *</span></label>
                             <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
                             <div id="optional_location_sub_province">
