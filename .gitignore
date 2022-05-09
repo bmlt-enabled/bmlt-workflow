@@ -7,3 +7,4 @@
 package-lock.json
 /node_modules
 .testcaferc.js
+/tests/testcafe/setup/blank_bmlt.sql
