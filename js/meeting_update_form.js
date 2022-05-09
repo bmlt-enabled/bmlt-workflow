@@ -223,21 +223,6 @@ jQuery(document).ready(function ($) {
 
       }
 
-      // // fill in the other fields from bmlt
-      // put_field("meeting_name", mdata[id].meeting_name);
-      // put_field("start_time", mdata[id].start_time);
-      // put_field("location_street", mdata[id].location_street);
-      // put_field("location_text", mdata[id].location_text);
-      // put_field("location_info", mdata[id].location_info);
-      // put_field("location_municipality", mdata[id].location_municipality);
-      // put_field("location_province", mdata[id].location_province);
-      // put_field("location_sub_province", mdata[id].location_sub_province);
-      // put_field("location_nation", mdata[id].location_nation);
-      // put_field("location_postal_code_1", mdata[id].location_postal_code_1);
-      // put_field("virtual_meeting_additional_info", mdata[id].virtual_meeting_additional_info);
-      // put_field("phone_meeting_number", mdata[id].phone_meeting_number);
-      // put_field("virtual_meeting_link", mdata[id].virtual_meeting_link);
-
       // handle duration in the select dropdowns
       var durationarr = mdata[id].duration_time.split(":");
       // hoping we got both hours, minutes and seconds here
@@ -419,12 +404,15 @@ jQuery(document).ready(function ($) {
 
     if (this.value == "none") {
       $("#virtual_meeting_settings").hide();
+      $("#virtual_location").show();
     } else {
       $("#virtual_meeting_settings").show();
       if (this.value === "virtual") {
         arr.push(virtual_formatid);
+        $("#virtual_location").hide();
       } else if (this.value === "hybrid") {
         arr.push(hybrid_formatid);
+        $("#virtual_location").show();
       }
     }
     $("#display_format_shared_id_list").val(arr).trigger("change");
