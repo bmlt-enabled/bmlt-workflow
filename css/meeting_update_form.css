@@ -166,7 +166,8 @@ span.dashicons.dashicons-info-outline {
   border:1px solid #DCA;
 }
 
-.tooltip:hover .left {
+.tooltip:hover .left,
+.tooltip:focus .left {
   display:block;
 }
 
@@ -215,7 +216,8 @@ span.dashicons.dashicons-info-outline {
   border:1px solid #DCA;
 }
 
-.tooltip:hover .right {
+.tooltip:hover .right,
+.tooltip:focus .right {
   display:block;
 }
 

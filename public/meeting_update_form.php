@@ -112,7 +112,7 @@ EOD;
                             <option value="hybrid"">Yes - Hybrid (Virtual and Face to Face)</option>
                         </select>
                         <div id="virtual_meeting_settings">
-                                <div class="tooltip">
+                                <div class="tooltip" tabindex="0">
                                     <label for="virtual_meeting_link">Online Meeting Link
                                         <span class="dashicons dashicons-info-outline"></span>
                                     </label>
@@ -123,7 +123,7 @@ EOD;
                                     </div>
                                 </div>
                                 <textarea class="meeting-input" type="url" name="virtual_meeting_link" size="50" id="virtual_meeting_link"></textarea>
-                                <div class="tooltip">
+                                <div class="tooltip" tabindex="0">
                                     <label for="virtual_meeting_additional_info">Virtual Meeting Additional Info
                                         <span class="dashicons dashicons-info-outline"></span>
                                     </label>
@@ -134,7 +134,7 @@ EOD;
                                     </div>
                                 </div>
                                 <textarea class="meeting-input" type="text" name="virtual_meeting_additional_info" size="50" id="virtual_meeting_additional_info"></textarea>
-                                <div class="tooltip">
+                                <div class="tooltip" tabindex="0">
                                     <label for="phone_meeting_number">Phone Meeting Dial-in Number
                                         <span class="dashicons dashicons-info-outline" style="color: cornflowerblue;"></span>
                                     </label>
@@ -238,7 +238,7 @@ EOD;
                                 <label id="location_nation_label" for="location_nation">Nation</label>
                                 <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
                             </div>
-                            <div class="tooltip">
+                            <div class="tooltip" tabindex="0">
                             <label for="service_body_bigint">Service Committee
                                         <span class="dashicons dashicons-info-outline"></span>
                                     </label>
