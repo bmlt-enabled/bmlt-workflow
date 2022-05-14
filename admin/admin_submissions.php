@@ -196,7 +196,7 @@ EOD;
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
     <h2>Meeting Submissions</h2>
-    <hr class="wp-header-end">
+    <hr class="wbw-error-message">
 
     <div class="dt-container">
         <table id="dt-submission" class="display" style="width:90%">

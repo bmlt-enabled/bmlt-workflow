@@ -278,6 +278,8 @@ EOD;
                             </div>
                         </fieldset>
                     </div>
+                    <hr class="wbw-error-message">
+
                     <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
                 </div>
             </div>

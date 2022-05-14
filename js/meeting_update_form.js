@@ -7,7 +7,7 @@ jQuery(document).ready(function ($) {
   var formatdata = [];
   var hybrid_formatid = "";
   var virtual_formatid = "";
-
+  
   Object.keys(wbw_bmlt_formats).forEach((key) => {
     formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
     if (wbw_bmlt_formats[key]["key_string"] === "HY") {

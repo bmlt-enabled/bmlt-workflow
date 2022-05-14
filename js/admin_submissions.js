@@ -114,7 +114,7 @@ jQuery(document).ready(function ($) {
             var a = {};
             a["responseJSON"] = {};
             a["responseJSON"]["message"] = "Error retrieving BMLT data";
-            notice_error(a);
+            notice_error(a,"wbw-error-message");
           } else {
             // split up the duration so we can use it in the select
             if ("duration_time" in item) {
@@ -618,14 +618,14 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        notice_success(response);
+        notice_success(response,"wbw-error-message");
         // reload the table to pick up any changes
         $("#dt-submission").DataTable().ajax.reload();
         // reset the buttons correctly
         $("#dt-submission").DataTable().rows().deselect();
       })
       .fail(function (xhr) {
-        notice_error(xhr);
+        notice_error(xhr,"wbw-error-message");
       });
     $("#" + slug + "_dialog").dialog("close");
   }
@@ -671,10 +671,10 @@ jQuery(document).ready(function ($) {
       .done(function (response) {
         $("#quickedit_latitude").val(response['latitude']);
         $("#quickedit_longitude").val(response['longitude']);
-        notice_success(response);
+        notice_success(response,"wbw-error-message");
       })
       .fail(function (xhr) {
-        notice_error(xhr);
+        notice_error(xhr,"wbw-error-message");
       });
   
   }
@@ -727,7 +727,7 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        notice_success(response);
+        notice_success(response, "wbw-error-message");
 
         // reload the table to pick up any changes
         $("#dt-submission").DataTable().ajax.reload();
@@ -735,29 +735,9 @@ jQuery(document).ready(function ($) {
         $("#dt-submission").DataTable().rows().deselect();
       })
       .fail(function (xhr) {
-        notice_error(xhr);
+        notice_error(xhr,"wbw-error-message");
       });
     $("#wbw_submission_quickedit_dialog").dialog("close");
   }
 
-  function notice_success(response) {
-    var msg = "";
-    if (response.message == "")
-      msg =
-        '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-    else
-      msg =
-        '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
-        response.message +
-        '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-    $(".wp-header-end").after(msg);
-  }
-
-  function notice_error(xhr) {
-    $(".wp-header-end").after(
-      '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
-        xhr.responseJSON.message +
-        '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
-    );
-  }
 });

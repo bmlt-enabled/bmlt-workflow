@@ -16,7 +16,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
     <h2>Service Body Configuration</h2>
-    <hr class="wp-header-end">
+    <hr class="wbw-error-message">
     <div class="wbw_info_text">
         <br>Service bodies are retrieved from BMLT using the BMLT details configured on the option page.
         <br><br>You can configure which service areas are visible to the end-users using the <code>Display on end-user Form</code> checkbox.
