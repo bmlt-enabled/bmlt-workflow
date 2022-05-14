@@ -61,19 +61,9 @@ jQuery(document).ready(function ($) {
   function update_meeting_list(wbw_service_bodies) {
     var search_results_address =
       wbw_bmlt_server_address +
-      "client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&data_field_key=location_postal_code_1,duration_time," +
-      "start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality," +
-      "location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed," +
-      "root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,virtual_meeting_link,phone_meeting_number,contact_name_1,contact_phone_1," +
-      "contact_email_1,contact_name_2,contact_phone_2,contact_email_2&" +
+      "client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&" +
       wbw_service_bodies +
       "recursive=1&sort_keys=meeting_name";
-
-    // // https://na.org.au/main_server/client_interface/jsonp/?switcher=GetSearchResults&get_used_formats
-    // &lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,
-    // location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,
-    // location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,virtual_meeting_link,phone_meeting_number,
-    // latitude,longitude,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&services[]=1&recursive=1&sort_keys=start_time
 
     fetchJsonp(search_results_address)
       .then((response) => response.json())
@@ -511,10 +501,31 @@ jQuery(document).ready(function ($) {
     var str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
     put_field("duration_time", str);
 
-    var url = wp_rest_base + wbw_form_submit;
-    $.post(url, $("#meeting_update_form").serialize(), function (response) {
-      // console.log("submitted");
-      $("#form_replace").replaceWith(response.form_html);
-    });
+    // var url = wp_rest_base + wbw_form_submit;
+
+    $.ajax({
+      url: wp_rest_base + wbw_form_submit,
+      method: "POST",
+      data: $("#meeting_update_form").serialize(),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      processData: false,
+      beforeSend: function (xhr) {
+        turn_on_spinner("#wbw-submit-spinner");
+      },
+    })
+      .done(function (response) {
+        turn_off_spinner("#wbw-submit-spinner");
+        // notice_success(response,"wbw-error-message");
+        $("#form_replace").replaceWith(response.form_html);
+      })
+      .fail(function (xhr) {
+        notice_error(xhr,"wbw-error-message");
+      });
+      
+    // $.post(url, $("#meeting_update_form").serialize(), function (response) {
+    //   // console.log("submitted");
+    //   $("#form_replace").replaceWith(response.form_html);
+    // });
   }
 });

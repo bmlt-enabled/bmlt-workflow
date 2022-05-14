@@ -280,7 +280,7 @@ EOD;
                     </div>
                     <hr class="wbw-error-message">
 
-                    <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"></p>
+                    <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"><span class="spinner" id="wbw-submit-spinner"></span></p>
                 </div>
             </div>
         </div>
