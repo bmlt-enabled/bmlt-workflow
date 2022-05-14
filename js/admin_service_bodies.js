@@ -31,14 +31,6 @@ jQuery(document).ready(function ($) {
     $(selectid).trigger("change");
   }
 
-  function turn_off_spinner(element) {
-    $(element).removeClass("is-active");
-  }
-
-  function turn_on_spinner(element) {
-    $(element).addClass("is-active");
-  }
-
   function create_service_area_permission_post() {
     ret = {};
     $(".wbw-userlist").each(function () {
