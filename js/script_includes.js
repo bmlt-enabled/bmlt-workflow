@@ -129,3 +129,12 @@ function dismiss_notice(element) {
     });
   return false;
 }
+
+function turn_off_spinner(element) {
+    $(element).removeClass("is-active");
+  }
+
+  function turn_on_spinner(element) {
+    $(element).addClass("is-active");
+  }
+  
