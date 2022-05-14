@@ -512,15 +512,20 @@ jQuery(document).ready(function ($) {
       processData: false,
       beforeSend: function (xhr) {
         turn_on_spinner("#wbw-submit-spinner");
+        console.log("spinner on");
       },
     })
       .done(function (response) {
         turn_off_spinner("#wbw-submit-spinner");
+        console.log("spinner off");
         // notice_success(response,"wbw-error-message");
         $("#form_replace").replaceWith(response.form_html);
       })
       .fail(function (xhr) {
         notice_error(xhr,"wbw-error-message");
+        turn_off_spinner("#wbw-submit-spinner");
+        console.log("spinner off");
+
       });
       
     // $.post(url, $("#meeting_update_form").serialize(), function (response) {
