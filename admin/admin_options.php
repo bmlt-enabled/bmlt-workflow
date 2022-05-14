@@ -11,7 +11,7 @@ echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" col
 echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="wbw_fso_email_template_default">' . $wbw_fso_email_template_default . '</textarea></div>';
 
 wp_nonce_field('wp_rest', '_wprestnonce');
-echo '<hr class="wp-header-end">';
+echo '<hr class="wbw-error-message">';
 echo '<div class="wrap">';
 echo '<form method="post" action="options.php">';
 settings_fields('wbw-settings-group');
@@ -23,7 +23,7 @@ echo '</form></div>';
 ?>
 
 <div id="wbw_bmlt_configuration_dialog" class="hidden" style="max-width:800px">
-    <div class="quickedit-wp-header-end"></div>
+    <div class="quickedit-wbw-error-message"></div>
     <br>
     <div class="quickedit_wbw_info_text">
         <br>Enter your BMLT server address, and a BMLT username and password.
