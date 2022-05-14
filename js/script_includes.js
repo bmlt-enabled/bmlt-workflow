@@ -131,10 +131,9 @@ function dismiss_notice(element) {
 }
 
 function turn_off_spinner(element) {
-    $(element).removeClass("is-active");
+    jQuery(element).removeClass("is-active");
   }
 
   function turn_on_spinner(element) {
-    $(element).addClass("is-active");
+    jQuery(element).addClass("is-active");
   }
-  
