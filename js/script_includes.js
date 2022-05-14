@@ -104,11 +104,11 @@ function notice_success(response, notice_class) {
       '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
       response.message +
       '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-  $("." + notice_class).after(msg);
+  jQuery("." + notice_class).after(msg);
 }
 
 function notice_error(xhr, notice_class) {
-  $("." + notice_class).after(
+  jQuery("." + notice_class).after(
     '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
       xhr.responseJSON.message +
       '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
