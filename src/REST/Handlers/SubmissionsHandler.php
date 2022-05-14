@@ -748,7 +748,7 @@ class SubmissionsHandler
 
         switch ($reason) {
             case ('reason_new'):
-                $subject = 'New meeting notification';
+                // $subject = 'New meeting notification';
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
@@ -787,7 +787,7 @@ class SubmissionsHandler
             case ('reason_change'):
 
                 // change meeting - just add the deltas. no real reason to do this as bmlt result would be the same, but safe to filter it regardless
-                $subject = 'Change meeting notification';
+                // $subject = 'Change meeting notification';
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
@@ -871,7 +871,7 @@ class SubmissionsHandler
 
                 break;
             case ('reason_close'):
-                $subject = 'Close meeting notification';
+                // $subject = 'Close meeting notification';
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
@@ -899,7 +899,7 @@ class SubmissionsHandler
 
                 break;
             case ('reason_other'):
-                $subject = 'Other notification';
+                // $subject = 'Other notification';
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
@@ -981,7 +981,7 @@ class SubmissionsHandler
         }
 
         $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['service_body_bigint']);
-        $subject = '[bmlt-workflow] ' . $submission_type . 'request received - ID ' . $insert_id;
+        $subject = '[bmlt-workflow] ' . $submission_type . ' request received - ID ' . $insert_id;
         $body = 'Log in to <a href="' . get_site_url() . '/wp-admin/admin.php?page=wbw-submissions">WBW Submissions Page</a> to review.';
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         wp_mail($to_address, $subject, $body, $headers);
@@ -1017,10 +1017,13 @@ class SubmissionsHandler
 
         foreach ($submission as $key => $value) {
             switch ($key) {
+                case "meeting_name":
+                    $table .= '<tr><td>Meeting Name:</td><td>' . $value . '</td></tr>';
+                    break;
                 case "start_time":
                     $table .= '<tr><td>Start Time:</td><td>' . $value . '</td></tr>';
                     break;
-                case "duration":
+                case "duration_time":
                     $table .= '<tr><td>Duration:</td><td>' . $value . '</td></tr>';
                     break;
                 case "location_text":
@@ -1076,7 +1079,6 @@ class SubmissionsHandler
                 case "virtual_meeting_link":
                     $table .= '<tr><td>Virtual Meeting Link</td><td>' . $value . '</td></tr>';
                     break;
-
 
                 case "format_shared_id_list":
                     $friendlyname = "Meeting Formats";
