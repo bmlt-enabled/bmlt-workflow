@@ -531,6 +531,11 @@ jQuery(document).ready(function ($) {
     // $.post(url, $("#meeting_update_form").serialize(), function (response) {
     //   // console.log("submitted");
     //   $("#form_replace").replaceWith(response.form_html);
+      //     beforeSend: function (xhr) {
+      //   turn_on_spinner("#wbw-submit-spinner");
+      //   console.log("spinner on");
+      // },
+
     // });
   }
 });
