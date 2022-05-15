@@ -499,7 +499,7 @@ jQuery(document).ready(function ($) {
 
   // form submit handler
   function real_submit_handler() {
-    
+
     clear_notices();
     // in case we disabled this we want to send it now
     enable_field("service_body_bigint");
@@ -530,29 +530,17 @@ jQuery(document).ready(function ($) {
       processData: false,
       beforeSend: function (xhr) {
         turn_on_spinner("#wbw-submit-spinner");
-        console.log("spinner on");
       },
     })
       .done(function (response) {
         turn_off_spinner("#wbw-submit-spinner");
-        console.log("spinner off");
         // notice_success(response,"wbw-error-message");
         $("#form_replace").replaceWith(response.form_html);
       })
       .fail(function (xhr) {
         turn_off_spinner("#wbw-submit-spinner");
-        console.log("spinner off");
         notice_error(xhr,"wbw-error-message");
       });
       
-    // $.post(url, $("#meeting_update_form").serialize(), function (response) {
-    //   // console.log("submitted");
-    //   $("#form_replace").replaceWith(response.form_html);
-      //     beforeSend: function (xhr) {
-      //   turn_on_spinner("#wbw-submit-spinner");
-      //   console.log("spinner on");
-      // },
-
-    // });
   }
 });
