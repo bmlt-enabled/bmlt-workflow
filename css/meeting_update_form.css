@@ -245,11 +245,14 @@ span.dashicons.dashicons-info-outline {
 
 /* stolen from wp common.css */
 
-div .notice p,
-.notice-title,
-{
-	margin: 0.5em 0;
-	padding: 2px;
+.notice
+ {
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	border-left-width: 4px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+	margin: 5px 15px 2px;
+	padding: 1px 12px;
 }
 
 .error a {
