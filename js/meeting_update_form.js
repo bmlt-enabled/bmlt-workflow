@@ -507,7 +507,7 @@ jQuery(document).ready(function ($) {
       url: wp_rest_base + wbw_form_submit,
       method: "POST",
       data: $("#meeting_update_form").serialize(),
-      contentType: "application/json; charset=utf-8",
+      // contentType: "application/json; charset=utf-8",
       dataType: "html",
       processData: false,
       beforeSend: function (xhr) {
