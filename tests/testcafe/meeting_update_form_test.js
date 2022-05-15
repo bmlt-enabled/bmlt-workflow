@@ -12,7 +12,7 @@ import { userVariables } from '../../.testcaferc';
 fixture `meeting_update_form_fixture`
     .page(userVariables.formpage);
 
-test('e2e_New_meeting', async t => {
+test('Success_New_Meeting_And_Submit', async t => {
 
     await t.navigateTo(userVariables.formpage);
 
