@@ -245,7 +245,7 @@ span.dashicons.dashicons-info-outline {
 
 /* stolen from wp common.css */
 
-.notice p,
+div .notice p,
 .notice-title,
 {
 	margin: 0.5em 0;
