@@ -522,7 +522,7 @@ jQuery(document).ready(function ($) {
     $.ajax({
       url: wp_rest_base + wbw_form_submit,
       method: "POST",
-      data: $("#meeting_update_form").serialize(),
+      data: $("#meeting_update_form").serializeObject(),
       // contentType: "application/json; charset=utf-8",
       dataType: "html",
       processData: false,
