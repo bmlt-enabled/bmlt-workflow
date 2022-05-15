@@ -339,3 +339,16 @@ div.error {
 .notice-info.notice-alt {
 	background-color: #f0f6fc;
 }
+
+.notice-dismiss:before {
+	background: none;
+	color: #787c82;
+	content: "\f153";
+	display: block;
+	font: normal 16px/20px dashicons;
+	height: 20px;
+	text-align: center;
+	width: 20px;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
