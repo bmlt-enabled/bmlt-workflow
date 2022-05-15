@@ -508,7 +508,7 @@ jQuery(document).ready(function ($) {
       method: "POST",
       data: $("#meeting_update_form").serialize(),
       contentType: "application/json; charset=utf-8",
-      dataType: "json",
+      dataType: "html",
       processData: false,
       beforeSend: function (xhr) {
         turn_on_spinner("#wbw-submit-spinner");
