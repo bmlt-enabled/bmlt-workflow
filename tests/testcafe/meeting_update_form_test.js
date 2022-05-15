@@ -155,7 +155,7 @@ test('Success_Change_Meeting_Name_And_Submit', async t => {
 
     await t
     .click(uf.submit)
-    .expect(Selector('#page h3').innerText).match(/submission\ successful/);
+    .expect(uf.success_page_header.innerText).match(/submission\ successful/);
 
 });
 
@@ -203,7 +203,7 @@ test('Success_Close_Meeting_And_Submit', async t => {
 
     await t
     .click(uf.submit)
-    .expect(Selector('#page h3').innerText).match(/submission\ successful/);
+    .expect(uf.success_page_header.innerText).match(/submission\ successful/);
 
 });
 
@@ -288,5 +288,39 @@ test('Change_Meeting_Details_Check_Highlighting', async t => {
     .expect(uf.location_province.hasClass('wbw-changed')).ok()
     .typeText(uf.location_postal_code_1, '2031')
     .expect(uf.location_postal_code_1.hasClass('wbw-changed')).ok()
+
+});
+
+test('Change_Nothing_Check_Error', async t => {
+
+    await select_dropdown_by_value(uf.update_reason,'reason_change');
+
+    // check our divs are visible
+    await t
+    .expect(uf.update_reason.value).eql('reason_change');
+
+    // meeting selector
+    await t.click('#select2-meeting-searcher-container');
+    await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'),'virtualmeeting');
+    await t.pressKey('enter');
+
+    // validate form is laid out correctly
+    await t
+    .expect(uf.personal_details.visible).eql(true)
+    .expect(uf.meeting_details.visible).eql(true)
+    .expect(uf.additional_info_div.visible).eql(true);
+
+    // personal details
+    await t
+    .typeText(uf.first_name, 'first')
+    .typeText(uf.last_name, 'last')
+    .typeText(uf.email_address, 'test@test.com.zz')
+    .typeText(uf.contact_number_confidential, '`12345`')
+
+    await select_dropdown_by_value(uf.group_relationship,'Group Member');
+
+    await t
+    .click(uf.submit)
+    .expect(uf.error_para.innerText).match(/Nothing\ was\ changed/);
 
 });
