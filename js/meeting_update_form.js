@@ -523,8 +523,8 @@ jQuery(document).ready(function ($) {
       url: wp_rest_base + wbw_form_submit,
       method: "POST",
       data: $("#meeting_update_form").serializeObject(),
-      // contentType: "application/json; charset=utf-8",
-      dataType: "html",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
       processData: false,
       beforeSend: function (xhr) {
         turn_on_spinner("#wbw-submit-spinner");
