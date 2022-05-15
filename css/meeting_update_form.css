@@ -242,3 +242,83 @@ span.dashicons.dashicons-info-outline {
   background-color:#FFFFE0;
   border:1px solid #DCA;
 }
+
+
+.notice-alt {
+	box-shadow: none;
+}
+
+.notice-large {
+	padding: 10px 20px;
+}
+
+.notice-title {
+	display: inline-block;
+	color: #1d2327;
+	font-size: 18px;
+}
+
+.wp-core-ui .notice.is-dismissible {
+	padding-right: 38px;
+	position: relative;
+}
+
+.notice-dismiss {
+	position: absolute;
+	top: 0;
+	right: 1px;
+	border: none;
+	margin: 0;
+	padding: 9px;
+	background: none;
+	color: #787c82;
+	cursor: pointer;
+}
+
+.notice-dismiss:hover:before,
+.notice-dismiss:active:before,
+.notice-dismiss:focus:before {
+	color: #d63638;
+}
+
+.notice-dismiss:focus {
+	outline: none;
+	box-shadow:
+		0 0 0 1px #4f94d4,
+		0 0 2px 1px rgba(79, 148, 212, 0.8);
+}
+
+/* stolen from wp common.css */
+.notice-success,
+div.updated {
+	border-left-color: #00a32a;
+}
+
+.notice-success.notice-alt {
+	background-color: #edfaef;
+}
+
+.notice-warning {
+	border-left-color: #dba617;
+}
+
+.notice-warning.notice-alt {
+	background-color: #fcf9e8;
+}
+
+.notice-error,
+div.error {
+	border-left-color: #d63638;
+}
+
+.notice-error.notice-alt {
+	background-color: #fcf0f1;
+}
+
+.notice-info {
+	border-left-color: #72aee6;
+}
+
+.notice-info.notice-alt {
+	background-color: #f0f6fc;
+}
