@@ -243,7 +243,24 @@ span.dashicons.dashicons-info-outline {
   border:1px solid #DCA;
 }
 
+/* stolen from wp common.css */
 
+.notice p,
+.notice-title,
+div.updated p,
+div.error p,
+.form-table td .notice p {
+	margin: 0.5em 0;
+	padding: 2px;
+}
+
+.error a {
+	text-decoration: underline;
+}
+
+.updated a {
+	padding-bottom: 2px;
+}
 .notice-alt {
 	box-shadow: none;
 }
@@ -288,7 +305,6 @@ span.dashicons.dashicons-info-outline {
 		0 0 2px 1px rgba(79, 148, 212, 0.8);
 }
 
-/* stolen from wp common.css */
 .notice-success,
 div.updated {
 	border-left-color: #00a32a;
