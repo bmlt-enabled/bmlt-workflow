@@ -481,6 +481,22 @@ jQuery(document).ready(function ($) {
     }
   });
 
+  $.fn.serializeObject = function() {
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function() {
+        if (o[this.name]) {
+            if (!o[this.name].push) {
+                o[this.name] = [o[this.name]];
+            }
+            o[this.name].push(this.value || '');
+        } else {
+            o[this.name] = this.value || '';
+        }
+    });
+    return o;
+};
+
   // form submit handler
   function real_submit_handler() {
     // in case we disabled this we want to send it now
@@ -522,10 +538,9 @@ jQuery(document).ready(function ($) {
         $("#form_replace").replaceWith(response.form_html);
       })
       .fail(function (xhr) {
-        notice_error(xhr,"wbw-error-message");
         turn_off_spinner("#wbw-submit-spinner");
         console.log("spinner off");
-
+        notice_error(xhr,"wbw-error-message");
       });
       
     // $.post(url, $("#meeting_update_form").serialize(), function (response) {
