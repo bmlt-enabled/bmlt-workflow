@@ -12,7 +12,10 @@ import { userVariables } from '../../.testcaferc';
 fixture `admin_submissions_fixture`
     .beforeEach(async t => {
         var http = require('http');
+        // pre fill the submissions
         http.get(userVariables.admin_submission_reset);
+        // reset bmlt to reasonable state
+        http.get(userVariables.blank_bmlt);
         await t.useRole(wbw_admin)
         .navigateTo(userVariables.admin_submissions_page)
     });

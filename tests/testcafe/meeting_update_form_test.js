@@ -10,7 +10,15 @@ import { userVariables } from '../../.testcaferc';
 
 
 fixture `meeting_update_form_fixture`
-    .page(userVariables.formpage);
+.beforeEach(async t => {
+    var http = require('http');
+    // reset bmlt to reasonable state
+    http.get(userVariables.blank_bmlt);
+    // clean submissions table
+    // http.get(userVariables.blank_submission);
+    await t.navigateTo(userVariables.formpage);
+});
+
 
 test('Success_New_Meeting_And_Submit', async t => {
 
@@ -78,12 +86,12 @@ test('Success_New_Meeting_And_Submit', async t => {
     await t 
 
     .typeText(uf.location_text, 'my location')
-    .typeText(uf.location_street, 'street')
+    .typeText(uf.location_street, '110 Avoca Street')
     .typeText(uf.location_info, 'info')
-    .typeText(uf.location_municipality, 'municipality')
+    .typeText(uf.location_municipality, 'Randwick')
     // .typeText(uf.location_sub_province, 'subprovince')
-    .typeText(uf.location_province, 'province')
-    .typeText(uf.location_postal_code_1, '1234');
+    .typeText(uf.location_province, 'NSW')
+    .typeText(uf.location_postal_code_1, '2031');
 
     await select_dropdown_by_text(uf.service_body_bigint,'a-level1');
     await t
@@ -270,15 +278,15 @@ test('Change_Meeting_Details_Check_Highlighting', async t => {
     await t 
     .typeText(uf.location_text, 'my location')
     .expect(uf.format_list_clickable.hasClass('wbw-changed')).ok()
-    .typeText(uf.location_street, 'street')
+    .typeText(uf.location_street, '110 Avoca Street')
     .expect(uf.location_street.hasClass('wbw-changed')).ok()
     .typeText(uf.location_info, 'info')
     .expect(uf.location_info.hasClass('wbw-changed')).ok()
-    .typeText(uf.location_municipality, 'municipality')
+    .typeText(uf.location_municipality, 'Randwick')
     .expect(uf.location_municipality.hasClass('wbw-changed')).ok()
-    .typeText(uf.location_province, 'province')
+    .typeText(uf.location_province, 'NSW')
     .expect(uf.location_province.hasClass('wbw-changed')).ok()
-    .typeText(uf.location_postal_code_1, '1234')
+    .typeText(uf.location_postal_code_1, '2031')
     .expect(uf.location_postal_code_1.hasClass('wbw-changed')).ok()
 
 });
