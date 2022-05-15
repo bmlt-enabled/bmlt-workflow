@@ -247,9 +247,7 @@ span.dashicons.dashicons-info-outline {
 
 .notice p,
 .notice-title,
-div.updated p,
-div.error p,
-.form-table td .notice p {
+{
 	margin: 0.5em 0;
 	padding: 2px;
 }
@@ -275,7 +273,7 @@ div.error p,
 	font-size: 18px;
 }
 
-.wp-core-ui .notice.is-dismissible {
+.notice.is-dismissible {
 	padding-right: 38px;
 	position: relative;
 }
