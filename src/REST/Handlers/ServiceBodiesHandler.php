@@ -75,7 +75,7 @@ class ServiceBodiesHandler
             $missing = array_diff($idlist, $sqlresult);
 
             foreach ($missing as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_body_name="%s", service_body_bigint="%d", service_body_description="%s", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $sblist[$value]['description'],$value);
+                $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_body_name="%s", service_body_description="%s, service_body_bigint="%d"", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $sblist[$value]['description'],$value);
                 $wpdb->query($sql);
             }
             // update any values that may have changed since last time we looked
