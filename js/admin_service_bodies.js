@@ -108,11 +108,11 @@ jQuery(document).ready(function ($) {
         var checked = sblist[item]["show_on_form"] ? "checked" : "";
         var appendstr = "<tr>";
 
-        appendstr += "<td>" + sblist[item]["name"] + "</td>";
-        appendstr += "<td><textarea>" + sblist[item]["description"] + "</textarea></td>";
+        appendstr += '<td>' + sblist[item]["name"] + '</td>';
+        appendstr += '<td><textarea cols="40" rows="10">' + sblist[item]["description"] + '</textarea></td>';
         appendstr += '<td><select class="wbw-userlist" id="' + id + '" style="width: auto"></select></td>';
-        appendstr += '<td class="wbw-center-checkbox"><input type="checkbox" ' + checked + "></td>";
-        appendstr += "</tr>";
+        appendstr += '<td class="wbw-center-checkbox"><input type="checkbox" ' + checked + '></td>';
+        appendstr += '</tr>';
         $("#wbw-userlist-table tbody").append(appendstr);
         // store metadata away for later
         $("#" + id).data("id", item);
