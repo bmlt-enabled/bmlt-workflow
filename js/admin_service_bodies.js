@@ -109,6 +109,7 @@ jQuery(document).ready(function ($) {
         var appendstr = "<tr>";
 
         appendstr += "<td>" + sblist[item]["name"] + "</td>";
+        appendstr += "<td><textarea>" + sblist[item]["description"] + "</textarea></td>";
         appendstr += '<td><select class="wbw-userlist" id="' + id + '" style="width: auto"></select></td>';
         appendstr += '<td class="wbw-center-checkbox"><input type="checkbox" ' + checked + "></td>";
         appendstr += "</tr>";
