@@ -1,5 +1,4 @@
 jQuery(document).ready(function ($) {
-
   function dismiss_notice(element) {
     jQuery(element)
       .parent()
@@ -8,7 +7,7 @@ jQuery(document).ready(function ($) {
       });
     return false;
   }
-  
+
   function clear_notices() {
     jQuery(".notice-dismiss").each(function (i, e) {
       dismiss_notice(e);
@@ -74,10 +73,10 @@ jQuery(document).ready(function ($) {
     })
       .done(function (response) {
         turn_off_spinner("#wbw-submit-spinner");
-        notice_success(response,"wbw-error-message");
+        notice_success(response, "wbw-error-message");
       })
       .fail(function (xhr) {
-        notice_error(xhr,"wbw-error-message");
+        notice_error(xhr, "wbw-error-message");
       });
   });
 
@@ -108,15 +107,15 @@ jQuery(document).ready(function ($) {
         var checked = sblist[item]["show_on_form"] ? "checked" : "";
         var appendstr = "<tr>";
 
-    //     <div class="grow-wrap">
-    //     <textarea class='dialog_textarea' id="wbw_submission_approve_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
-    // </div>
+        //     <div class="grow-wrap">
+        //     <textarea class='dialog_textarea' id="wbw_submission_approve_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
+        // </div>
 
-        appendstr += '<td>' + sblist[item]["name"] + '</td>';
-        appendstr += '<td><div class="grow-wrap"><textarea onInput="this.parentNode.dataset.replicatedValue = this.value">' + sblist[item]["description"] + '</textarea></div></td>';
+        appendstr += "<td>" + sblist[item]["name"] + "</td>";
+        appendstr += '<td><div class="grow-wrap"><textarea onInput="this.parentNode.dataset.replicatedValue = this.value">' + sblist[item]["description"] + "</textarea></div></td>";
         appendstr += '<td><select class="wbw-userlist" id="' + id + '" style="width: auto"></select></td>';
-        appendstr += '<td class="wbw-center-checkbox"><input type="checkbox" ' + checked + '></td>';
-        appendstr += '</tr>';
+        appendstr += '<td class="wbw-center-checkbox"><input type="checkbox" ' + checked + "></td>";
+        appendstr += "</tr>";
         $("#wbw-userlist-table tbody").append(appendstr);
         // store metadata away for later
         $("#" + id).data("id", item);
@@ -126,15 +125,17 @@ jQuery(document).ready(function ($) {
           multiple: true,
           width: "100%",
         });
-        $(".grow-wrap").trigger('input');
-        attach_select_options_for_sbid(sblist, userlist, item, "#" + id);
 
-        // turn off spinner
-        turn_off_spinner("#wbw-form-spinner");
-        // turn on table
-        $("#wbw-userlist-table").show();
-        $("#wbw_submit").show();
+        attach_select_options_for_sbid(sblist, userlist, item, "#" + id);
       });
+      // update the auto size boxes
+      $(".grow-wrap").trigger("input");
+
+      // turn off spinner
+      turn_off_spinner("#wbw-form-spinner");
+      // turn on table
+      $("#wbw-userlist-table").show();
+      $("#wbw_submit").show();
     });
   });
 });
