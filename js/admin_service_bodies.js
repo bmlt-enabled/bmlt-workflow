@@ -129,7 +129,7 @@ jQuery(document).ready(function ($) {
         attach_select_options_for_sbid(sblist, userlist, item, "#" + id);
       });
       // update the auto size boxes
-      $(".grow-wrap").trigger("input");
+      $(".grow-wrap").on("input");
 
       // turn off spinner
       turn_off_spinner("#wbw-form-spinner");
