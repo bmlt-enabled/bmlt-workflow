@@ -126,6 +126,7 @@ jQuery(document).ready(function ($) {
           multiple: true,
           width: "100%",
         });
+        $(".grow-wrap").change();
         attach_select_options_for_sbid(sblist, userlist, item, "#" + id);
 
         // turn off spinner
