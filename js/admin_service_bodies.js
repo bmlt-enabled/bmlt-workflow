@@ -108,8 +108,12 @@ jQuery(document).ready(function ($) {
         var checked = sblist[item]["show_on_form"] ? "checked" : "";
         var appendstr = "<tr>";
 
+    //     <div class="grow-wrap">
+    //     <textarea class='dialog_textarea' id="wbw_submission_approve_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
+    // </div>
+
         appendstr += '<td>' + sblist[item]["name"] + '</td>';
-        appendstr += '<td><textarea cols="40" rows="10">' + sblist[item]["description"] + '</textarea></td>';
+        appendstr += '<td><div class="grow-wrap"><textarea onInput="this.parentNode.dataset.replicatedValue = this.value">' + sblist[item]["description"] + '</textarea></div></td>';
         appendstr += '<td><select class="wbw-userlist" id="' + id + '" style="width: auto"></select></td>';
         appendstr += '<td class="wbw-center-checkbox"><input type="checkbox" ' + checked + '></td>';
         appendstr += '</tr>';
