@@ -739,6 +739,7 @@ function wbw_install()
     $sql = "CREATE TABLE " . $wbw_service_bodies_table_name . " (
 		service_body_bigint bigint(20) NOT NULL,
         service_body_name tinytext NOT NULL,
+        service_body_description text,
         contact_email varchar(255) NOT NULL default '',
         show_on_form bool,
 		PRIMARY KEY (service_body_bigint)
