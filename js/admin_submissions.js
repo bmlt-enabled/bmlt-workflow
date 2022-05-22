@@ -464,20 +464,20 @@ jQuery(document).ready(function ($) {
     if ("action_message" in d && d["action_message"] != "" && d["action_message"] != null) {
       table += "<tr><td>Message to submitter:</td><td>" + d["action_message"] + "</td></tr>";
     }
-    table += "</table>";
-    table = '<div class="sub-grid">';
-    table += '<div class="sub-cell">a</div>';
-    table += '<div class="sub-cell">b</div>';
-    table += '<div class="sub-cell">c</div>';
-    table += '<div class="sub-cell">d</div>';
-    table += '<div class="sub-cell">e</div>';
-    table += '<div class="sub-cell">f</div>';
-    table += '<div class="sub-cell">g</div>';
-    table += '<div class="sub-cell">h</div>';
-    table += '<div class="sub-cell">i</div>';
-    table += '<div class="sub-cell">j</div>';
-    table += '<div class="sub-cell">k</div>';
-    table += '</div>';
+    // table += "</table>";
+    // table = '<div class="sub-grid">';
+    // table += '<div class="sub-cell">a</div>';
+    // table += '<div class="sub-cell">b</div>';
+    // table += '<div class="sub-cell">c</div>';
+    // table += '<div class="sub-cell">d</div>';
+    // table += '<div class="sub-cell">e</div>';
+    // table += '<div class="sub-cell">f</div>';
+    // table += '<div class="sub-cell">g</div>';
+    // table += '<div class="sub-cell">h</div>';
+    // table += '<div class="sub-cell">i</div>';
+    // table += '<div class="sub-cell">j</div>';
+    // table += '<div class="sub-cell">k</div>';
+    // table += '</div>';
     return table;
   }
 
