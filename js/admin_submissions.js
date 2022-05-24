@@ -390,11 +390,12 @@ jQuery(document).ready(function ($) {
   function format(d) {
     // console.log(d);
     // table = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
-    table = '<div class="wrapper">';
-    table += '<div class="cell-hdr c1k">Personal Details</div><div class="cell-hdr c1v"></div>';
-    table += '<div class="cell-hdr c2k">Meeting Details</div><div class="cell-hdr c2v"></div>';
-    table += '<div class="cell-hdr c3k">Virtual Meeting Details</div><div class="cell-hdr c3v"></div>';
-    table += '<div class="cell-hdr c4k">FSO Request and Other Info</div><div class="cell-hdr c4v"></div>';
+    table = '<div class="header">';
+    table += '<div class="cell-hdr h1">Personal Details</div><div class="cell-hdr c1v"></div>';
+    table += '<div class="cell-hdr h2">Meeting Details</div><div class="cell-hdr c2v"></div>';
+    table += '<div class="cell-hdr h3">Virtual Meeting Details</div><div class="cell-hdr c3v"></div>';
+    table += '<div class="cell-hdr h4">FSO Request and Other Info</div><div class="cell-hdr c4v"></div>';
+    table += '</div><div class="gridbody">';
 
     for (var key in d["changes_requested"]) {
       switch (key) {
