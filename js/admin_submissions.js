@@ -385,6 +385,10 @@ jQuery(document).ready(function ($) {
     // console.log(d);
     // table = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
     table = '<div class="wrapper">';
+    table += '<div class="cell-hdr c1">Personal Details</div>';
+    table += '<div class="cell-hdr c2">Meeting Details</div>';
+    table += '<div class="cell-hdr c3">Virtual Meeting Details</div>';
+    table += '<div class="cell-hdr c4">FSO Request and Other Info</div>';
 
     for (var key in d["changes_requested"]) {
       switch (key) {
@@ -496,7 +500,7 @@ jQuery(document).ready(function ($) {
       table += column(4, "Message to submitter", d["action_message"]);
 
     }
-    
+
     table += "</div>";
 
     // table = '<div class="wrapper">';
