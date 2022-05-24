@@ -383,7 +383,8 @@ jQuery(document).ready(function ($) {
   // child rows
   function format(d) {
     // console.log(d);
-    table = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+    // table = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+    table = '<div class="wrapper">';
 
     for (var key in d["changes_requested"]) {
       switch (key) {
@@ -495,7 +496,8 @@ jQuery(document).ready(function ($) {
       table += column(4, "Message to submitter", d["action_message"]);
 
     }
-    // table += "</table>";
+    
+    table += "</div>";
 
     // table = '<div class="wrapper">';
     // table += '<div class="cell-hdr c1">Personal Details</div>';
