@@ -468,20 +468,23 @@ jQuery(document).ready(function ($) {
 
     table = '<div class="wrapper">';
     table += '<div class="column">';
-    table += '<div class="cell">a</div>';
+    table += '<div class="cell-hdr">Personal Details</div>';
     table += '<div class="cell">b</div>';
     table += '<div class="cell">c</div>';
     table += '<div class="cell">d</div>';
     table += '</div>';    
     table += '<div class="column">';
+    table += '<div class="cell-hdr">Meeting Details</div>';
     table += '<div class="cell">a</div>';
     table += '<div class="cell">b</div>';
     table += '</div>';    
     table += '<div class="column">';
+    table += '<div class="cell-hdr">Virtual Meeting Details</div>';
     table += '<div class="cell">c</div>';
     table += '<div class="cell">d</div>';
     table += '</div>';    
     table += '<div class="column">';
+    table += '<div class="cell-hdr">FSO Request and Other Info</div>';
     table += '<div class="cell">a</div>';
     table += '</div>';    
     table += '</div>';

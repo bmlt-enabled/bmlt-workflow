@@ -140,21 +140,20 @@
 .cell {
   background-color: #444;
   color: #fff;
-  border-radius: 5px;
   padding: 20px;
-  font-size: 150%;
 }
 
-/* .box:nth-child(even) {
-  background-color: #ccc;
-  color: #000;
+.cell-hdr {
+  background-color: #888;
+  color: #fff;
+  padding: 20px;
 }
- */
+
 .wrapper {
   width: auto;
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(4, 25%);
+  grid-template-columns: repeat(4, 24%);
   grid-auto-rows: 100px;
 }
 
