@@ -137,11 +137,7 @@
   grid-area: 1 / 1 / 2 / 2;
 }
 
-/* body {
-  margin: 40px;
-} */
-
-.sub-cell {
+.cell {
   background-color: #444;
   color: #fff;
   border-radius: 5px;
@@ -152,13 +148,19 @@
 /* .box:nth-child(even) {
   background-color: #ccc;
   color: #000;
-} */
-
-.sub-grid {
+}
+ */
+.wrapper {
   width: auto;
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(3, 30%);
-  grid-template-rows: repeat(5, 10%);
-  grid-auto-flow: column;
+  grid-template-columns: repeat(4, 25%);
+  grid-auto-rows: 100px;
+}
+
+.column {
+  width: auto;
+  display: grid;
+  grid-gap: 10px;
+  grid-auto-rows: 20px;
 }
