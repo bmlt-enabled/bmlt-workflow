@@ -137,29 +137,19 @@
   grid-area: 1 / 1 / 2 / 2;
 }
 
-.cell {
-  background-color: #444;
-  color: #fff;
-  padding: 20px;
-}
 
 .cell-hdr {
   background-color: #888;
   color: #fff;
-  padding: 20px;
+  padding-left: 5px;
 }
 
 .wrapper {
   width: auto;
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(4, 24%);
-  grid-auto-rows: 100px;
-}
-
-.column {
-  width: auto;
-  display: grid;
-  grid-gap: 10px;
-  grid-auto-rows: 20px;
+  grid-template-columns: [c1-start] 1fr [c1-end c2-start] 1fr [c2-end c3-start] 1fr [c3-end c4-start] 1fr [c4-end];
+/*   grid-template-columns: repeat(4, 25%); */
+/*   grid-auto-rows: 100px; */
+  grid-auto-flow: dense;
 }

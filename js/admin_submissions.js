@@ -467,26 +467,24 @@ jQuery(document).ready(function ($) {
     table += "</table>";
 
     table = '<div class="wrapper">';
-    table += '<div class="column">';
-    table += '<div class="cell-hdr">Personal Details</div>';
-    table += '<div class="cell">b</div>';
-    table += '<div class="cell">c</div>';
-    table += '<div class="cell">d</div>';
-    table += '</div>';    
-    table += '<div class="column">';
-    table += '<div class="cell-hdr">Meeting Details</div>';
-    table += '<div class="cell">a</div>';
-    table += '<div class="cell">b</div>';
-    table += '</div>';    
-    table += '<div class="column">';
-    table += '<div class="cell-hdr">Virtual Meeting Details</div>';
-    table += '<div class="cell">c</div>';
-    table += '<div class="cell">d</div>';
-    table += '</div>';    
-    table += '<div class="column">';
-    table += '<div class="cell-hdr">FSO Request and Other Info</div>';
-    table += '<div class="cell">a</div>';
-    table += '</div>';    
+    table += '<div class="cell-hdr c1">Personal Details</div>';
+    table += '<div class="cell-hdr c2">Meeting Details</div>';
+    table += '<div class="cell-hdr c3">Virtual Meeting Details</div>';
+    table += '<div class="cell-hdr c4">FSO Request and Other Info</div>';
+
+    table += '<div class="c1">1a</div>';
+    table += '<div class="c2">2a</div>';
+    table += '<div class="c3">3a</div>';
+    table += '<div class="c4">4a</div>';
+    table += '<div class="c1">1b</div>';
+    table += '<div class="c2">2b</div>';
+    table += '<div class="c3">3b</div>';
+    table += '<div class="c4">4b</div>';
+    table += '<div class="c4">4c</div>';
+    table += '<div class="c3">3c</div>';
+    table += '<div class="c2">2c</div>';
+    table += '<div class="c1">1c</div>';
+
     table += '</div>';
     return table;
   }
