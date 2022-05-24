@@ -391,10 +391,10 @@ jQuery(document).ready(function ($) {
     // console.log(d);
     // table = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
     table = '<div class="header">';
-    table += '<div class="cell-hdr h1">Personal Details</div><div class="cell-hdr c1v"></div>';
-    table += '<div class="cell-hdr h2">Meeting Details</div><div class="cell-hdr c2v"></div>';
-    table += '<div class="cell-hdr h3">Virtual Meeting Details</div><div class="cell-hdr c3v"></div>';
-    table += '<div class="cell-hdr h4">FSO Request and Other Info</div><div class="cell-hdr c4v"></div>';
+    table += '<div class="cell-hdr h1">Personal Details</div>';
+    table += '<div class="cell-hdr h2">Meeting Details</div>';
+    table += '<div class="cell-hdr h3">Virtual Meeting Details</div>';
+    table += '<div class="cell-hdr h4">FSO Request and Other Info</div>';
     table += '</div><div class="gridbody">';
 
     for (var key in d["changes_requested"]) {

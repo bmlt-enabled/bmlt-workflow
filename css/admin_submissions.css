@@ -147,11 +147,8 @@
 .header {
   width: auto;
   display: grid;
-  /* grid-gap: 10px; */
+  grid-gap: 5px;
   grid-template-columns: [h1-start] 1fr [h1-end h2-start] 1fr [h2-end h3-start] 1fr [h3-end h4-start] 1fr [h4-end];
-/*   grid-template-columns: repeat(4, 25%); */
-/*   grid-auto-rows: 100px; */
-  /* grid-auto-flow: dense; */
 }
 
 .gridbody {
