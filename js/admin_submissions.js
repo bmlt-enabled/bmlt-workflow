@@ -385,10 +385,10 @@ jQuery(document).ready(function ($) {
     // console.log(d);
     // table = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
     table = '<div class="wrapper">';
-    table += '<div class="cell-hdr c1">Personal Details</div>';
-    table += '<div class="cell-hdr c2">Meeting Details</div>';
-    table += '<div class="cell-hdr c3">Virtual Meeting Details</div>';
-    table += '<div class="cell-hdr c4">FSO Request and Other Info</div>';
+    table += '<div class="cell-hdr c1k">Personal Details</div><div class="cell-hdr c1v"></div>';
+    table += '<div class="cell-hdr c2k">Meeting Details</div><div class="cell-hdr c2v"></div>';
+    table += '<div class="cell-hdr c3k">Virtual Meeting Details</div><div class="cell-hdr c3v"></div>';
+    table += '<div class="cell-hdr c4k">FSO Request and Other Info</div><div class="cell-hdr c4v"></div>';
 
     for (var key in d["changes_requested"]) {
       switch (key) {
