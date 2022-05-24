@@ -465,8 +465,9 @@ jQuery(document).ready(function ($) {
       table += "<tr><td>Message to submitter:</td><td>" + d["action_message"] + "</td></tr>";
     }
     table += "</table>";
+
     table = '<div class="wrapper">';
-    table = '<div class="column>"';
+    table += '<div class="column">';
     table += '<div class="cell">a</div>';
     table += '<div class="cell">b</div>';
     table += '<div class="cell">c</div>';
