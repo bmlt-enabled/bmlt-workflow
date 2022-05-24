@@ -481,9 +481,12 @@ jQuery(document).ready(function ($) {
     table += '<div class="c3">3b</div>';
     table += '<div class="c4">4b</div>';
     table += '<div class="c4">4c</div>';
+    table += '<div class="c1">1c</div>';
+    table += '<div class="c1">1d</div>';
     table += '<div class="c3">3c</div>';
     table += '<div class="c2">2c</div>';
     table += '<div class="c1">1c</div>';
+    table += '<div class="c4">4d</div>';
 
     table += '</div>';
     return table;
