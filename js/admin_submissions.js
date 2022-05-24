@@ -377,7 +377,13 @@ jQuery(document).ready(function ($) {
 
   function column(col, key, value)
   {
-    return '<div class="c'+col+'k">'+key+':</div><div class="c'+col+'v">'+value+"</div";
+    output = '<div class="c'+col+'k">';
+    output += key;
+    output += ':</div>';
+    output = '<div class="c'+col+'v">';
+    output += value;
+    output += '</div>';
+    return output;
   }
 
   // child rows
