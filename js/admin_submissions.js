@@ -380,7 +380,7 @@ jQuery(document).ready(function ($) {
     output = '<div class="c'+col+'k">';
     output += key;
     output += ':</div>';
-    output = '<div class="c'+col+'v">';
+    output += '<div class="c'+col+'v">';
     output += value;
     output += '</div>';
     return output;
