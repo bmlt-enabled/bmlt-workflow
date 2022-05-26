@@ -389,12 +389,16 @@ jQuery(document).ready(function ($) {
   // child rows
   function format(d) {
     // console.log(d);
-    // table = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+    col_meeting_details = 1;
+    col_personal_details = 2;
+    col_virtual_meeting_details = 3;
+    col_fso_other = 4;
+
     table = '<div class="header">';
-    table += '<div class="cell-hdr h1">Personal Details</div>';
-    table += '<div class="cell-hdr h2">Meeting Details</div>';
-    table += '<div class="cell-hdr h3">Virtual Meeting Details</div>';
-    table += '<div class="cell-hdr h4">FSO Request and Other Info</div>';
+    table += '<div class="cell-hdr h'+col_personal_details+'">Personal Details</div>';
+    table += '<div class="cell-hdr h'+col_meeting_details+'">Meeting Details</div>';
+    table += '<div class="cell-hdr h'+col_virtual_meeting_details+'">Virtual Meeting Details</div>';
+    table += '<div class="cell-hdr h'+col_fso_other+'">FSO Request and Other Info</div>';
     table += '</div><div class="gridbody">';
 
     for (var key in d["changes_requested"]) {
@@ -405,87 +409,67 @@ jQuery(document).ready(function ($) {
           {
             mname = "Meeting Name";
           }
-          // table += '<div class="c2k">'+mname+':</div><div class="c2v">' + d["changes_requested"].meeting_name + "</div>";
-          table += column(2, mname, d["changes_requested"].meeting_name);
+          table += column(col_meeting_details, mname, d["changes_requested"].meeting_name);
           break;
         case "start_time":
-          // table += '<div class="c2k">Start Time:</div><div class="c2v">' + d["changes_requested"].start_time + "</div>";
-          table += column(2, "Start Time", d["changes_requested"].start_time);
+          table += column(col_meeting_details, "Start Time", d["changes_requested"].start_time);
           break;
         case "duration_time":
           var durationarr = d["changes_requested"].duration_time.split(":");
-          table += column(2, "Duration", durationarr[0] + "h" + durationarr[1] + "m");
+          table += column(col_meeting_details, "Duration", durationarr[0] + "h" + durationarr[1] + "m");
 
-          // table += '<div class="c2k">Duration:</div><div class="c2v">' + durationarr[0] + "h" + durationarr[1] + "m</div>";
           break;
         case "location_text":
-          // table += '<div class="c2k">Location:</div><div class="c2v">' + d["changes_requested"].location_text + "</div>";
-          table += column(2, "Location", d["changes_requested"].location_text);
+          table += column(col_meeting_details, "Location", d["changes_requested"].location_text);
 
           break;
         case "location_street":
-          // table += '<div class="c2k">Street:</div><div class="c2v">' + d["changes_requested"].location_street + "</div>";
-          table += column(2, "Street", d["changes_requested"].location_street);
+          table += column(col_meeting_details, "Street", d["changes_requested"].location_street);
           break;
         case "location_info":
-          // table += '<div class="c2k">Location Info:</div><div class="c2v">' + d["changes_requested"].location_info + "</div>";
-          table += column(2, "Location Info", d["changes_requested"].location_info);
+          table += column(col_meeting_details, "Location Info", d["changes_requested"].location_info);
           break;
         case "location_municipality":
-          // table += '<div class="c2k">Municipality:</div><div class="c2v">' + d["changes_requested"].location_municipality + "</div>";
-          table += column(2, "Municipality", d["changes_requested"].location_municipality);
+          table += column(col_meeting_details, "Municipality", d["changes_requested"].location_municipality);
           break;
         case "location_province":
-          // table += '<div class="c2k">Province/State:</div><div class="c2v">' + d["changes_requested"].location_province + "</div>";
-          table += column(2, "Province", d["changes_requested"].location_province);
+          table += column(col_meeting_details, "Province", d["changes_requested"].location_province);
           break;
         case "location_sub_province":
-          // table += '<div class="c2k">SubProvince:</div><div class="c2v">' + d["changes_requested"].location_sub_province + "</div>";
-          table += column(2, "SubProvince", d["changes_requested"].location_sub_province);
+          table += column(col_meeting_details, "SubProvince", d["changes_requested"].location_sub_province);
           break;
         case "location_nation":
-          // table += '<div class="c2k">Nation:</div><div class="c2v">' + d["changes_requested"].location_nation + "</div>";
-          table += column(2, "Nation", d["changes_requested"].location_nation);
+          table += column(col_meeting_details, "Nation", d["changes_requested"].location_nation);
           break;
         case "location_postal_code_1":
-          // table += '<div class="c2k">PostCode:</div><div class="c2v">' + d["changes_requested"].location_postal_code_1 + "</div>";
-          table += column(2, "PostCode", d["changes_requested"].location_postal_code_1);
+          table += column(col_meeting_details, "PostCode", d["changes_requested"].location_postal_code_1);
           break;
         case "group_relationship":
-          // table += '<div class="c4k">Relationship to Group:</div><div class="c4v">' + d["changes_requested"].group_relationship + "</div>";
-          table += column(4, "Relationship to Group", d["changes_requested"].group_relationship);
+          table += column(col_personal_details, "Relationship to Group", d["changes_requested"].group_relationship);
           break;
         case "weekday_tinyint":
-          // table += '<div class="c2k">Meeting Day:</div><div class="c2v">' + weekdays[d["changes_requested"].weekday_tinyint] + "</div>";
-          table += column(2, "Meeting Day", d["changes_requested"].weekday_tinyint);
+          table += column(col_meeting_details, "Meeting Day", d["changes_requested"].weekday_tinyint);
           break;
         case "additional_info":
-          // table += '<div class="c4k">Additional Info:</div><div class="c4v"><textarea rows="5" columns="50" disabled>' + d["changes_requested"].additional_info + "</textarea></div>";
-          table += column(4, "Additional Info", '<textarea rows="5" columns="50" disabled>' + d["changes_requested"].additional_info + '</textarea>');
+          table += column(col_fso_other, "Additional Info", '<textarea rows="5" columns="50" disabled>' + d["changes_requested"].additional_info + '</textarea>');
           break;
         case "other_reason":
-          // table += '<tr><td>Other Reason:</td><td><textarea rows="5" columns="50" disabled>' + d["changes_requested"].other_reason + "</textarea></div>";
-          table += column(4, "Other Reason", '<textarea rows="5" columns="50" disabled>' + d["changes_requested"].other_reason + '</textarea>');
+          table += column(col_fso_other, "Other Reason", '<textarea rows="5" columns="50" disabled>' + d["changes_requested"].other_reason + '</textarea>');
           break;
         case "contact_number_confidential":
-          // table += "<tr><td>Contact number (confidential):</td><td>" + d["changes_requested"].contact_number_confidential + "</div>";
-          table += column(1, "Contact number (confidential)", d["changes_requested"].contact_number_confidential);
+          table += column(col_personal_details, "Contact number (confidential)", d["changes_requested"].contact_number_confidential);
           break;
         case "add_email":
-          // table += "<tr><td>Add email to meeting:</td><td>" + (d["changes_requested"].add_email === "yes" ? "Yes" : "No") + "</div>";
-          table += column(1, "Add email to meeting",(d["changes_requested"].add_email === "yes" ? "Yes" : "No"));
+          table += column(col_personal_details, "Add email to meeting",(d["changes_requested"].add_email === "yes" ? "Yes" : "No"));
           break;
         case "virtual_meeting_additional_info":
-          // table += '<div class="c3k">Virtual Meeting Additional Info:</div><div class="c3v"> + d["changes_requested"].virtual_meeting_additional_info + "</div>";
-          table += column(3, "Virtual Meeting Additional Info", d["changes_requested"].virtual_meeting_additional_info);
+          table += column(col_virtual_meeting_details, "Virtual Meeting Additional Info", d["changes_requested"].virtual_meeting_additional_info);
           break;
         case "phone_meeting_number":
-          // table += '<div class="c3k">Virtual Meeting Phone Details:</div><div class="c3v"> + d["changes_requested"].phone_meeting_number + "</div>";
-          table += column(3, "Virtual Meeting Phone Details", d["changes_requested"].phone_meeting_number);
+          table += column(col_virtual_meeting_details, "Virtual Meeting Phone Details", d["changes_requested"].phone_meeting_number);
           break;
         case "virtual_meeting_link":
-          // table += '<div class="c3k">Virtual Meeting Link:</td><td>" + d["changes_requested"].virtual_meeting_link + "</div>";
-          table += column(3, "Virtual Meeting Link", d["changes_requested"].virtual_meeting_link);
+          table += column(col_virtual_meeting_details, "Virtual Meeting Link", d["changes_requested"].virtual_meeting_link);
           break;
 
         case "format_shared_id_list":
@@ -496,16 +480,13 @@ jQuery(document).ready(function ($) {
           strarr.forEach((element) => {
             friendlydata += "(" + wbw_bmlt_formats[element]["key_string"] + ")-" + wbw_bmlt_formats[element]["name_string"] + " ";
           });
-          // table += "<tr><td>Meeting Formats:</td><td>" + friendlydata + "</div>";
-          table += column(2, "Meeting Formats", friendlydata);
+          table += column(col_meeting_details, "Meeting Formats", friendlydata);
 
           break;
       }
     }
     if ("action_message" in d && d["action_message"] != "" && d["action_message"] != null) {
-      // table += "<tr><td>Message to submitter:</td><td>" + d["action_message"] + "</div>";
-      table += column(4, "Message to submitter", d["action_message"]);
-
+      table += column(col_fso_other, "Message to submitter", d["action_message"]);
     }
 
     table += "</div>";
