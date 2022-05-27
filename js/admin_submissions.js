@@ -174,7 +174,7 @@ jQuery(document).ready(function ($) {
     dom: "Bfrtip",
     select: true,
     searching: false,
-    order: [[6,'desc']],
+    order: [[5,'desc']],
     buttons: [
       {
         name: "approve",
