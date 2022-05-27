@@ -413,72 +413,73 @@ jQuery(document).ready(function ($) {
       }
     }
 
-    for (var key in d["changes_requested"]) {
+    c = d["changes_requested"];
+    for (var key in c) {
       switch (key) {
         case "meeting_name":
           mname = "Meeting Name (new)";
           if (d["submission_type"] === "reason_close") {
             mname = "Meeting Name";
           }
-          table += column(col_meeting_details, mname, d[key]);
+          table += column(col_meeting_details, mname, c[key]);
           break;
         case "start_time":
-          table += column(col_meeting_details, "Start Time", d[key]);
+          table += column(col_meeting_details, "Start Time", c[key]);
           break;
         case "duration_time":
           var durationarr = d["changes_requested"].duration_time.split(":");
           table += column(col_meeting_details, "Duration", durationarr[0] + "h" + durationarr[1] + "m");
           break;
         case "location_text":
-          table += column(col_meeting_details, "Location", d[key]);
+          table += column(col_meeting_details, "Location", c[key]);
           break;
         case "location_street":
-          table += column(col_meeting_details, "Street", d[key]);
+          table += column(col_meeting_details, "Street", c[key]);
           break;
         case "location_info":
-          table += column(col_meeting_details, "Location Info", d[key]);
+          table += column(col_meeting_details, "Location Info", c[key]);
           break;
         case "location_municipality":
-          table += column(col_meeting_details, "Municipality", d[key]);
+          table += column(col_meeting_details, "Municipality", c[key]);
           break;
         case "location_province":
-          table += column(col_meeting_details, "Province", d[key]);
+          table += column(col_meeting_details, "Province", c[key]);
           break;
         case "location_sub_province":
-          table += column(col_meeting_details, "SubProvince", d[key]);
+          table += column(col_meeting_details, "SubProvince", c[key]);
           break;
         case "location_nation":
-          table += column(col_meeting_details, "Nation", d[key]);
+          table += column(col_meeting_details, "Nation", c[key]);
           break;
         case "location_postal_code_1":
-          table += column(col_meeting_details, "PostCode", d[key]);
+          table += column(col_meeting_details, "PostCode", c[key]);
           break;
         case "group_relationship":
-          table += column(col_personal_details, "Relationship to Group", d[key]);
+          table += column(col_personal_details, "Relationship to Group", c[key]);
           break;
         case "weekday_tinyint":
-          table += column(col_meeting_details, "Meeting Day", d[key]);
+          table += column(col_meeting_details, "Meeting Day", c[key]);
           break;
         case "additional_info":
-          table += column(col_fso_other, "Additional Info", '<textarea rows="5" columns="50" disabled>' + d[key] + "</textarea>");
+          table += column(col_fso_other, "Additional Info", '<textarea rows="5" columns="50" disabled>' + c[key] + "</textarea>");
           break;
         case "other_reason":
-          table += column(col_fso_other, "Other Reason", '<textarea rows="5" columns="50" disabled>' + d[key] + "</textarea>");
+          table += column(col_fso_other, "Other Reason", '<textarea rows="5" columns="50" disabled>' + c[key] + "</textarea>");
           break;
         case "contact_number_confidential":
-          table += column(col_personal_details, "Contact number (confidential)", d[key]);
+          table += column(col_personal_details, "Contact number (confidential)", c[key]);
           break;
         case "add_email":
           table += column(col_personal_details, "Add email to meeting", d["changes_requested"].add_email === "yes" ? "Yes" : "No");
           break;
         case "virtual_meeting_additional_info":
-          table += column(col_virtual_meeting_details, "Virtual Meeting Additional Info", d[key]);
+          table += column(col_virtual_meeting_details, "Virtual Meeting Additional Info", c[key]);
           break;
         case "phone_meeting_number":
-          table += column(col_virtual_meeting_details, "Virtual Meeting Phone Details", d[key]);
+          table += column(col_virtual_meeting_details, "Virtual Meeting Phone Details", c[key]);
           break;
         case "virtual_meeting_link":
-          table += column(col_virtual_meeting_details, "Virtual Meeting Link", d[key]);
+          table += column(col_virtual_meeting_details, "Virtual Meeting Link", c[key]);
           break;
 
         case "format_shared_id_list":
