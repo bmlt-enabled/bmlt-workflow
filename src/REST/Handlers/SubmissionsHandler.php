@@ -772,7 +772,9 @@ class SubmissionsHandler
                     "additional_info",
                     "virtual_meeting_additional_info",
                     "phone_meeting_number",
-                    "virtual_meeting_link"
+                    "virtual_meeting_link",
+                    "starter_kit_required",
+                    "starter_kit_postal_address"
                 );
 
                 // new meeting - add all fields to the changes requested
