@@ -467,14 +467,14 @@ jQuery(document).ready(function ($) {
         //     <textarea class="dialog_textarea quickedit-input" id="quickedit_virtual_meeting_link" name="quickedit_virtual_meeting_link" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
         // </div>
 
-            table += column(col_fso_other, "Starter Kit Postal Address", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + "</textarea></div>");
+            table += column(col_fso_other, "Starter Kit Postal Address", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + '</textarea></div>');
           }
           break;
         case "additional_info":
-          table += column(col_meeting_details, "Additional Info", '<textarea rows="5" columns="50" disabled>' + c[key] + "</textarea>");
+          table += column(col_meeting_details, "Additional Info", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + '</textarea></div>');
           break;
         case "other_reason":
-          table += column(col_fso_other, "Other Reason", '<textarea rows="5" columns="50" disabled>' + c[key] + "</textarea>");
+          table += column(col_fso_other, "Other Reason", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + '</textarea></div>');
           break;
         case "contact_number_confidential":
           table += column(col_personal_details, "Contact number (confidential)", c[key]);
