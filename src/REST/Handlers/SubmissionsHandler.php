@@ -709,6 +709,9 @@ class SubmissionsHandler
                         break;
                     case ('textarea'):
                         $data[$field] = sanitize_textarea_field($data[$field]);
+                        if(strlen($data[$field])>512) {
+                            return $this->invalid_form_field($field);
+                        }
                         break;
                     case ('time'):
                         if (!preg_match('/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:00$/', $data[$field])) {
