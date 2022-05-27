@@ -174,6 +174,7 @@ jQuery(document).ready(function ($) {
     dom: "Bfrtip",
     select: true,
     searching: false,
+    order: [[6,'desc']],
     buttons: [
       {
         name: "approve",
@@ -396,6 +397,22 @@ jQuery(document).ready(function ($) {
     table += '<div class="cell-hdr h' + col_fso_other + '">FSO Request and Other Info</div>';
     table += '</div><div class="gridbody">';
 
+    for (var key in d) {
+      switch (key) {
+        case "action_message":
+          if (d["action_message"] != "" && d["action_message"] != null) {
+            table += column(col_fso_other, "Message to submitter", d[key]);
+          }
+          break;
+        case "submitter_email":
+          table += column(col_personal_details, "Submitter Email", d[key]);
+          break;
+        case "submitter_name":
+          table += column(col_personal_details, "Submitter Name", d[key]);
+          break;
+      }
+    }
+
     for (var key in d["changes_requested"]) {
       switch (key) {
         case "meeting_name":
@@ -474,22 +491,6 @@ jQuery(document).ready(function ($) {
           });
           table += column(col_meeting_details, "Meeting Formats", friendlydata);
 
-          break;
-      }
-    }
-    // other keys we want to look at
-    for (var key in d) {
-      switch (key) {
-        case "action_message":
-          if (d["action_message"] != "" && d["action_message"] != null) {
-            table += column(col_fso_other, "Message to submitter", d[key]);
-          }
-          break;
-        case "submitter_email":
-          table += column(col_personal_details, "Submitter Email", d[key]);
-          break;
-        case "submitter_name":
-          table += column(col_personal_details, "Submitter Name", d[key]);
           break;
       }
     }
