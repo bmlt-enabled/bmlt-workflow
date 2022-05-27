@@ -768,7 +768,7 @@ function wbw_install()
         submitter_email varchar(320) NOT NULL,
         meeting_id bigint(20) unsigned,
         service_body_bigint bigint(20) NOT NULL,
-        changes_requested varchar(1024),
+        changes_requested varchar(2048),
         action_message varchar(1024),
 		PRIMARY KEY (id),
         FOREIGN KEY (service_body_bigint) REFERENCES " . $wbw_service_bodies_table_name . "(service_body_bigint) 
