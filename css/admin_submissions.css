@@ -141,6 +141,7 @@
 .cell-hdr {
   background-color: rgb(236, 236, 236);
   color: #111;
+  margin-bottom: 5px;
 }
 
 .header {
@@ -178,7 +179,7 @@
 
 .c1k {
   grid-area: auto / c1k / auto / c1k;
-  padding-left: 5px;
+  padding-left: 2px;
 }
 
 .c1v {
@@ -187,7 +188,7 @@
 
 .c2k {
   grid-area: auto / c2k / auto / c2k;
-  padding-left: 5px;
+  padding-left: 2px;
 
 }
 
@@ -197,7 +198,7 @@
 
 .c3k {
   grid-area: auto / c3k / auto / c3k;
-  padding-left: 5px;
+  padding-left: 2px;
 
 }
 
@@ -207,7 +208,7 @@
 
 .c4k {
   grid-area: auto / c4k / auto / c4k;
-  padding-left: 5px;
+  padding-left: 2px;
 
 }
 
