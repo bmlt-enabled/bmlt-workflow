@@ -74,7 +74,8 @@ Line: $errorLine
         Functions\when('absint')->returnArg();
         Functions\when('get_option')->returnArg();
         Functions\when('current_time')->justReturn('2022-03-23 09:22:44');
-        Functions\when('wp_json_encode')->returnArg();
+        // Functions\when('wp_json_encode')->returnArg();
+        Functions\when('wp_json_encode')->justReturn('{"contact_number_confidential":"12345","group_relationship":"Group Member","add_email":"yes","service_body_bigint":2,"additional_info":"my additional info","meeting_name":"virtualmeeting randwick","weekday_tinyint":"2","start_time":"20:30:00"}');
         Functions\when('get_site_url')->justReturn('http://127.0.0.1/wordpress');
         // Functions\when('wp_remote_post')->returnArg();
         // Functions\when('wp_safe_remote_post')->returnArg();
