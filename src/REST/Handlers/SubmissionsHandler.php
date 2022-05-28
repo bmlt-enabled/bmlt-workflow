@@ -931,6 +931,13 @@ class SubmissionsHandler
         $submitter_name = $sanitised_fields['first_name'] . " " . $sanitised_fields['last_name'];
         $submitter_email = $sanitised_fields['email_address'];
 
+        // max size check for #7
+        $chg = wp_json_encode($submission, 0, 1);
+        if(strlen($chg)>=2048)
+        {
+            return $this->handlerCore->wbw_rest_error('Meeting change request exceeds maximum size', 422); 
+        }
+
         // insert into submissions db
         global $wpdb;
         global $wbw_submissions_table_name;
