@@ -463,16 +463,17 @@ jQuery(document).ready(function ($) {
         case "starter_kit_postal_address":
           if (c["starter_kit_required"] === "yes")
           {
-            table += column(col_fso_other, "Starter Kit Postal Address", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + '</textarea></div>');
+            // table += column(col_fso_other, "Starter Kit Postal Address", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + '</textarea></div>');
+            table += column(col_fso_other, "Starter Kit Postal Address",  c[key]);
           }
           break;
         case "additional_info":
-          table += column(col_fso_other, "Additional Info", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + '</textarea></div>');
-          // table += column(col_fso_other, "Additional Info", c[key]);
+          // table += column(col_fso_other, "Additional Info", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + '</textarea></div>');
+          table += column(col_fso_other, "Additional Info", c[key]);
           break;
         case "other_reason":
-          table += column(col_fso_other, "Other Reason", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + '</textarea></div>');
-          // table += column(col_fso_other, "Other Reason", c[key]);
+          // table += column(col_fso_other, "Other Reason", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + '</textarea></div>');
+          table += column(col_fso_other, "Other Reason", c[key]);
           break;
         case "contact_number_confidential":
           table += column(col_personal_details, "Contact number (confidential)", c[key]);
