@@ -123,7 +123,7 @@ EOD;
                                         <i></i>
                                     </div>
                                 </div>
-                                <textarea class="meeting-input" type="url" name="virtual_meeting_link" maxlength="50" size="50" id="virtual_meeting_link"></textarea>
+                                <textarea class="meeting-input" type="url" name="virtual_meeting_link" maxlength="128" size="128" id="virtual_meeting_link"></textarea>
                                 <div class="tooltip" tabindex="0">
                                     <label for="virtual_meeting_additional_info">Virtual Meeting Additional Info
                                         <span class="dashicons dashicons-info-outline"></span>
@@ -134,7 +134,7 @@ EOD;
                                         <i></i>
                                     </div>
                                 </div>
-                                <textarea class="meeting-input" type="text" name="virtual_meeting_additional_info" maxlength="50" size="50" id="virtual_meeting_additional_info"></textarea>
+                                <textarea class="meeting-input" type="text" name="virtual_meeting_additional_info" maxlength="128" size="128" id="virtual_meeting_additional_info"></textarea>
                                 <div class="tooltip" tabindex="0">
                                     <label for="phone_meeting_number">Phone Meeting Dial-in Number
                                         <span class="dashicons dashicons-info-outline" style="color: cornflowerblue;"></span>
@@ -145,7 +145,7 @@ EOD;
                                         <i></i>
                                     </div>
                                 </div>
-                                <textarea class="meeting-input" type="text" name="phone_meeting_number" maxlength="50" size="50" id="phone_meeting_number"></textarea>
+                                <textarea class="meeting-input" type="text" name="phone_meeting_number" maxlength="128" size="128" id="phone_meeting_number"></textarea>
                         </div>
                     </fieldset>
                 </div>

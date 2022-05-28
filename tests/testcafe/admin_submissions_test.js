@@ -23,8 +23,8 @@ fixture `admin_submissions_fixture`
 
 test('Approve_New_Meeting', async t => {
 
-    // new meeting = row 0
-    var row = 0;
+    // new meeting = row 2
+    var row = 2;
     await click_table_row_column(as.dt_submission,row,0);
     // approve
     await click_dt_button_by_index(as.dt_submission_wrapper,0);
@@ -72,8 +72,8 @@ test('Approve_Modify_Meeting', async t => {
 
 test('Approve_Close_Meeting', async t => {
 
-    // close meeting = row 2
-    var row = 2;
+    // close meeting = row 0
+    var row = 0;
     await click_table_row_column(as.dt_submission,row,0);
     // approve
     await click_dt_button_by_index(as.dt_submission_wrapper,0);
@@ -96,8 +96,8 @@ test('Approve_Close_Meeting', async t => {
 
 test('Reject_New_Meeting', async t => {
 
-    // new meeting = row 0
-    var row = 0;
+    // new meeting = row 2
+    var row = 2;
     await click_table_row_column(as.dt_submission,row,0);
     // reject
     await click_dt_button_by_index(as.dt_submission_wrapper,1);
@@ -145,8 +145,8 @@ test('Reject_Modify_Meeting', async t => {
 
 test('Reject_Close_Meeting', async t => {
 
-    // close meeting = row 2
-    var row = 2;
+    // close meeting = row 0
+    var row = 0;
     await click_table_row_column(as.dt_submission,row,0);
     // reject
     await click_dt_button_by_index(as.dt_submission_wrapper,1);
@@ -170,8 +170,8 @@ test('Reject_Close_Meeting', async t => {
 
 test('Submission_Buttons_Active_correctly', async t => {
 
-    // new meeting = row 0
-    var row = 0;
+    // new meeting = row 2
+    var row = 2;
     await click_table_row_column(as.dt_submission,row,0);
     // approve
     var g = as.dt_submission_wrapper.find('button').nth(0);
@@ -196,8 +196,8 @@ test('Submission_Buttons_Active_correctly', async t => {
     g = as.dt_submission_wrapper.find('button').nth(2);
     await t.expect(g.hasAttribute('disabled')).notOk();
 
-    // close meeting = row 2
-    var row = 2;
+    // close meeting = row 0
+    var row = 0;
     await click_table_row_column(as.dt_submission,row,0);
     // approve
     g = as.dt_submission_wrapper.find('button').nth(0);
@@ -210,7 +210,7 @@ test('Submission_Buttons_Active_correctly', async t => {
     await t.expect(g.hasAttribute('disabled')).ok();
     
     // reject a request then we check the buttons again
-    var row = 2;
+    var row = 0;
     await click_table_row_column(as.dt_submission,row,0);
     await click_table_row_column(as.dt_submission,row,0);
     // reject
@@ -231,8 +231,8 @@ test('Submission_Buttons_Active_correctly', async t => {
     await t .expect((as.dt_submission.child('tbody').child(row).child(column)).innerText).eql('Rejected');
 
     // rejected request has no approve, reject, quickedit
-    // close meeting = row 2
-    var row = 2;
+    // close meeting = row 0
+    var row = 0;
     await click_table_row_column(as.dt_submission,row,0);
     // approve
     g = as.dt_submission_wrapper.find('button').nth(0);
