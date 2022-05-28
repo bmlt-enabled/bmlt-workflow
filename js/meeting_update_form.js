@@ -7,13 +7,16 @@ jQuery(document).ready(function ($) {
   var formatdata = [];
   var hybrid_formatid = "";
   var virtual_formatid = "";
-  
+  var tempclosure_formatid = "";
+
   Object.keys(wbw_bmlt_formats).forEach((key) => {
     formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
     if (wbw_bmlt_formats[key]["key_string"] === "HY") {
       hybrid_formatid = key;
     } else if (wbw_bmlt_formats[key]["key_string"] === "VM") {
       virtual_formatid = key;
+    } else if (wbw_bmlt_formats[key]["key_string"] === "TC") {
+      tempclosure_formatid = key;
     }
   });
 
@@ -59,11 +62,7 @@ jQuery(document).ready(function ($) {
   }
 
   function update_meeting_list(wbw_service_bodies) {
-    var search_results_address =
-      wbw_bmlt_server_address +
-      "client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&" +
-      wbw_service_bodies +
-      "recursive=1&sort_keys=meeting_name";
+    var search_results_address = wbw_bmlt_server_address + "client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&" + wbw_service_bodies + "recursive=1&sort_keys=meeting_name";
 
     fetchJsonp(search_results_address)
       .then((response) => response.json())
@@ -197,7 +196,7 @@ jQuery(document).ready(function ($) {
           put_field(item, mdata[id][item]);
         }
       });
-      
+
       // seperate handler for formats
       if ("format_shared_id_list" in mdata[id]) {
         var meeting_formats = mdata[id].format_shared_id_list.split(",");
@@ -209,8 +208,9 @@ jQuery(document).ready(function ($) {
           virtual_format = "hybrid";
         } else if (meeting_formats.includes(virtual_formatid)) {
           virtual_format = "virtual";
+        } else if (meeting_formats.includes(tempclosure_formatid)) {
+          virtual_format = "tempclosure";
         }
-
       }
 
       // handle duration in the select dropdowns
@@ -389,22 +389,31 @@ jQuery(document).ready(function ($) {
     var oldarr = $("#display_format_shared_id_list").val();
     // strip out all the virtual/hybrids first
     var arr = oldarr.filter(function (value, index, a) {
-      return value != virtual_formatid && value != hybrid_formatid;
+      return value != virtual_formatid && value != hybrid_formatid && value != tempclosure_formatid;
     });
 
     if (this.value == "none") {
       $("#virtual_meeting_settings").hide();
       $("#virtual_location").show();
     } else {
+      
       $("#virtual_meeting_settings").show();
-      if (this.value === "virtual") {
-        arr.push(virtual_formatid);
-        $("#virtual_location").hide();
-      } else if (this.value === "hybrid") {
-        arr.push(hybrid_formatid);
-        $("#virtual_location").show();
+      switch (this.value) {
+        case "virtual":
+          arr.push(virtual_formatid);
+          $("#virtual_location").hide();
+          break;
+        case "hybrid":
+          arr.push(hybrid_formatid);
+          $("#virtual_location").show();
+          break;
+        case "tempclosure":
+          arr.push(tempclosure_formatid);
+          $("#virtual_location").show();
+          break;
       }
     }
+
     $("#display_format_shared_id_list").val(arr).trigger("change");
   });
 
@@ -481,25 +490,24 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  $.fn.serializeObject = function() {
+  $.fn.serializeObject = function () {
     var o = {};
     var a = this.serializeArray();
-    $.each(a, function() {
-        if (o[this.name]) {
-            if (!o[this.name].push) {
-                o[this.name] = [o[this.name]];
-            }
-            o[this.name].push(this.value || '');
-        } else {
-            o[this.name] = this.value || '';
+    $.each(a, function () {
+      if (o[this.name]) {
+        if (!o[this.name].push) {
+          o[this.name] = [o[this.name]];
         }
+        o[this.name].push(this.value || "");
+      } else {
+        o[this.name] = this.value || "";
+      }
     });
     return o;
-};
+  };
 
   // form submit handler
   function real_submit_handler() {
-
     clear_notices();
     // in case we disabled this we want to send it now
     enable_field("service_body_bigint");
@@ -539,8 +547,7 @@ jQuery(document).ready(function ($) {
       })
       .fail(function (xhr) {
         turn_off_spinner("#wbw-submit-spinner");
-        notice_error(xhr,"wbw-error-message");
+        notice_error(xhr, "wbw-error-message");
       });
-      
   }
 });

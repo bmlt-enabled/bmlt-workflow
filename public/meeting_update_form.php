@@ -104,12 +104,13 @@ EOD;
                 <div id="virtual_meeting_options" class="form-grid-col2-2">
                     <fieldset>
                         <legend>Virtual Meeting Options</legend>
-                        <label for="virtual_hybrid_select">Is this a virtual or a hybrid meeting?</label>
+                        <label for="virtual_hybrid_select">Is this a virtual, hybrid or temporarily closed in person meeting?</label>
                         <select name="virtual_hybrid_select" id="virtual_hybrid_select">
                             <option value="" disabled selected hidden>Select one</option>
                             <option value="none">No</option>
                             <option value="virtual">Yes - Virtual only</option>
                             <option value="hybrid"">Yes - Hybrid (Virtual and Face to Face)</option>
+                            <option value="tempclosure"">Yes -Temporary Face to Face Closure</option>
                         </select>
                         <div id="virtual_meeting_settings">
                                 <div class="tooltip" tabindex="0">
