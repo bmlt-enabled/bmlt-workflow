@@ -185,6 +185,7 @@
 .c1v {
   grid-area: auto / c1v / auto / c1v;
   min-width: 0;
+  word-wrap: break-word;
 }
 
 .c2k {
@@ -196,6 +197,7 @@
 .c2v {
   grid-area: auto / c2v / auto / c2v;
   min-width: 0;
+  word-wrap: break-word;
 }
 
 .c3k {
@@ -207,6 +209,7 @@
 .c3v {
   grid-area: auto / c3v / auto / c3v;
   min-width: 0;
+  word-wrap: break-word;
 }
 
 .c4k {
@@ -218,4 +221,5 @@
 .c4v {
   grid-area: auto / c4v / auto / c4v;
   min-width: 0;
+  word-wrap: break-word;
 }
