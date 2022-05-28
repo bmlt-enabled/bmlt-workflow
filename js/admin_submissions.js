@@ -54,11 +54,10 @@ jQuery(document).ready(function ($) {
       var durationarr = changes_requested["duration_time"].split(":");
       // hoping we got hours, minutes and seconds here
       if (durationarr.length == 3) {
-        changes_requested["duration_hours"]= durationarr[0];
-        changes_requested["duration_minutes"]= durationarr[1];
+        changes_requested["duration_hours"] = durationarr[0];
+        changes_requested["duration_minutes"] = durationarr[1];
         delete changes_requested["duration_time"];
       }
-  
     }
 
     Object.keys(changes_requested).forEach((element) => {
@@ -100,10 +99,7 @@ jQuery(document).ready(function ($) {
     if (wbw_changedata[id].submission_type == "reason_change") {
       var meeting_id = wbw_changedata[id]["meeting_id"];
       var search_results_address =
-        wbw_bmlt_server_address +
-        "client_interface/jsonp/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" +
-        meeting_id +
-        "&lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&&recursive=1&sort_keys=start_time";
+        wbw_bmlt_server_address + "client_interface/jsonp/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" + meeting_id + "&lang_enum=en&&recursive=1&sort_keys=start_time";
 
       fetchJsonp(search_results_address)
         .then((response) => response.json())
@@ -114,7 +110,7 @@ jQuery(document).ready(function ($) {
             var a = {};
             a["responseJSON"] = {};
             a["responseJSON"]["message"] = "Error retrieving BMLT data";
-            notice_error(a);
+            notice_error(a, "wbw-error-message");
           } else {
             // split up the duration so we can use it in the select
             if ("duration_time" in item) {
@@ -178,6 +174,7 @@ jQuery(document).ready(function ($) {
     dom: "Bfrtip",
     select: true,
     searching: false,
+    order: [[5,'desc']],
     buttons: [
       {
         name: "approve",
@@ -375,73 +372,123 @@ jQuery(document).ready(function ($) {
       }
     });
 
+  function column(col, key, value) {
+    output = '<div class="c' + col + 'k">';
+    output += key;
+    output += ":</div>";
+    output += '<div class="c' + col + 'v">';
+    output += value;
+    output += "</div>";
+    return output;
+  }
+
   // child rows
   function format(d) {
     // console.log(d);
-    table = '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">';
+    col_meeting_details = 1;
+    col_personal_details = 2;
+    col_virtual_meeting_details = 3;
+    col_fso_other = 4;
 
-    for (var key in d["changes_requested"]) {
+    table = '<div class="header">';
+    table += '<div class="cell-hdr h' + col_personal_details + '">Personal Details</div>';
+    table += '<div class="cell-hdr h' + col_meeting_details + '">Meeting Details</div>';
+    table += '<div class="cell-hdr h' + col_virtual_meeting_details + '">Virtual Meeting Details</div>';
+    table += '<div class="cell-hdr h' + col_fso_other + '">FSO Request and Other Info</div>';
+    table += '</div><div class="gridbody">';
+
+    for (var key in d) {
+      switch (key) {
+        case "action_message":
+          if (d["action_message"] != "" && d["action_message"] != null) {
+            table += column(col_fso_other, "Message to submitter", d[key]);
+          }
+          break;
+        case "submitter_email":
+          table += column(col_personal_details, "Submitter Email", d[key]);
+          break;
+        case "submitter_name":
+          table += column(col_personal_details, "Submitter Name", d[key]);
+          break;
+      }
+    }
+
+    c = d["changes_requested"];
+    for (var key in c) {
       switch (key) {
         case "meeting_name":
-          table += "<tr><td>Meeting Name (new):</td><td>" + d["changes_requested"].meeting_name + "</td></tr>";
+          mname = "Meeting Name (new)";
+          if (d["submission_type"] === "reason_close") {
+            mname = "Meeting Name";
+          }
+          table += column(col_meeting_details, mname, c[key]);
           break;
         case "start_time":
-          table += "<tr><td>Start Time:</td><td>" + d["changes_requested"].start_time + "</td></tr>";
+          table += column(col_meeting_details, "Start Time", c[key]);
           break;
         case "duration_time":
           var durationarr = d["changes_requested"].duration_time.split(":");
-          table += "<tr><td>Duration:</td><td>" + durationarr[0] + "h" + durationarr[1] + "m</td></tr>";
+          table += column(col_meeting_details, "Duration", durationarr[0] + "h" + durationarr[1] + "m");
           break;
         case "location_text":
-          table += "<tr><td>Location:</td><td>" + d["changes_requested"].location_text + "</td></tr>";
+          table += column(col_meeting_details, "Location", c[key]);
           break;
         case "location_street":
-          table += "<tr><td>Street:</td><td>" + d["changes_requested"].location_street + "</td></tr>";
+          table += column(col_meeting_details, "Street", c[key]);
           break;
         case "location_info":
-          table += "<tr><td>Location Info:</td><td>" + d["changes_requested"].location_info + "</td></tr>";
+          table += column(col_meeting_details, "Location Info", c[key]);
           break;
         case "location_municipality":
-          table += "<tr><td>Municipality:</td><td>" + d["changes_requested"].location_municipality + "</td></tr>";
+          table += column(col_meeting_details, "Municipality", c[key]);
           break;
         case "location_province":
-          table += "<tr><td>Province/State:</td><td>" + d["changes_requested"].location_province + "</td></tr>";
+          table += column(col_meeting_details, "Province", c[key]);
           break;
         case "location_sub_province":
-          table += "<tr><td>SubProvince:</td><td>" + d["changes_requested"].location_sub_province + "</td></tr>";
+          table += column(col_meeting_details, "SubProvince", c[key]);
           break;
         case "location_nation":
-          table += "<tr><td>Nation:</td><td>" + d["changes_requested"].location_nation + "</td></tr>";
+          table += column(col_meeting_details, "Nation", c[key]);
           break;
         case "location_postal_code_1":
-          table += "<tr><td>PostCode:</td><td>" + d["changes_requested"].location_postal_code_1 + "</td></tr>";
+          table += column(col_meeting_details, "PostCode", c[key]);
           break;
         case "group_relationship":
-          table += "<tr><td>Relationship to Group:</td><td>" + d["changes_requested"].group_relationship + "</td></tr>";
+          table += column(col_personal_details, "Relationship to Group", c[key]);
           break;
         case "weekday_tinyint":
-          table += "<tr><td>Meeting Day:</td><td>" + weekdays[d["changes_requested"].weekday_tinyint] + "</td></tr>";
+          table += column(col_meeting_details, "Meeting Day", c[key]);
+          break;
+        case "starter_kit_postal_address":
+          if (c["starter_kit_required"] === "yes")
+          {
+            // table += column(col_fso_other, "Starter Kit Postal Address", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + '</textarea></div>');
+            table += column(col_fso_other, "Starter Kit Postal Address",  c[key]);
+          }
           break;
         case "additional_info":
-          table += '<tr><td>Additional Info:</td><td><textarea rows="5" columns="50" disabled>' + d["changes_requested"].additional_info + "</textarea></td></tr>";
+          // table += column(col_fso_other, "Additional Info", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + '</textarea></div>');
+          table += column(col_fso_other, "Additional Info", c[key]);
           break;
         case "other_reason":
-          table += '<tr><td>Other Reason:</td><td><textarea rows="5" columns="50" disabled>' + d["changes_requested"].other_reason + "</textarea></td></tr>";
+          // table += column(col_fso_other, "Other Reason", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + '</textarea></div>');
+          table += column(col_fso_other, "Other Reason", c[key]);
           break;
         case "contact_number_confidential":
-          table += "<tr><td>Contact number (confidential):</td><td>" + d["changes_requested"].contact_number_confidential + "</td></tr>";
+          table += column(col_personal_details, "Contact number (confidential)", c[key]);
           break;
         case "add_email":
-          table += "<tr><td>Add email to meeting:</td><td>" + (d["changes_requested"].add_email === "yes" ? "Yes" : "No") + "</td></tr>";
+          table += column(col_personal_details, "Add email to meeting", d["changes_requested"].add_email === "yes" ? "Yes" : "No");
           break;
         case "virtual_meeting_additional_info":
-          table += "<tr><td>Virtual Meeting Additional Info:</td><td>" + d["changes_requested"].virtual_meeting_additional_info + "</td></tr>";
+          table += column(col_virtual_meeting_details, "Virtual Meeting Additional Info", c[key]);
           break;
         case "phone_meeting_number":
-          table += "<tr><td>Virtual Meeting Phone Details:</td><td>" + d["changes_requested"].phone_meeting_number + "</td></tr>";
+          table += column(col_virtual_meeting_details, "Virtual Meeting Phone Details", c[key]);
           break;
         case "virtual_meeting_link":
-          table += "<tr><td>Virtual Meeting Link:</td><td>" + d["changes_requested"].virtual_meeting_link + "</td></tr>";
+          table += column(col_virtual_meeting_details, "Virtual Meeting Link", c[key]);
           break;
 
         case "format_shared_id_list":
@@ -452,15 +499,13 @@ jQuery(document).ready(function ($) {
           strarr.forEach((element) => {
             friendlydata += "(" + wbw_bmlt_formats[element]["key_string"] + ")-" + wbw_bmlt_formats[element]["name_string"] + " ";
           });
-          table += "<tr><td>Meeting Formats:</td><td>" + friendlydata + "</td></tr>";
+          table += column(col_meeting_details, "Meeting Formats", friendlydata);
+
           break;
       }
     }
-    if ("action_message" in d && d["action_message"] != "" && d["action_message"] != null) {
-      table += "<tr><td>Message to submitter:</td><td>" + d["action_message"] + "</td></tr>";
-    }
-    table += "</table>";
 
+    table += "</div>";
     return table;
   }
 
@@ -613,20 +658,19 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        notice_success(response);
+        notice_success(response, "wbw-error-message");
         // reload the table to pick up any changes
         $("#dt-submission").DataTable().ajax.reload();
         // reset the buttons correctly
         $("#dt-submission").DataTable().rows().deselect();
       })
       .fail(function (xhr) {
-        notice_error(xhr);
+        notice_error(xhr, "wbw-error-message");
       });
     $("#" + slug + "_dialog").dialog("close");
   }
 
   function geolocate_handler(id) {
-
     // $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
     // $locdata = array();
     // foreach($locfields as $field)
@@ -637,25 +681,22 @@ jQuery(document).ready(function ($) {
     //     }
     // }
     // $locstring = implode(', ',$locdata);
-    var locfields = ["location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation" ];
+    var locfields = ["location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation"];
     var locdata = [];
 
-    locfields.forEach((item,i) => 
-    {
+    locfields.forEach((item, i) => {
       var el = "#quickedit_" + item;
       var val = $(el).val();
-      if (val != '')
-      {
+      if (val != "") {
         locdata.push(val);
       }
+    });
 
-    })
-
-    var address = "address="+locdata.join(',');
+    var address = "address=" + locdata.join(",");
 
     $.ajax({
       url: wbw_bmltserver_geolocate_rest_url,
-      type: 'GET',
+      type: "GET",
       dataType: "json",
       contentType: "application/json",
       data: encodeURI(address),
@@ -664,14 +705,13 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        $("#quickedit_latitude").val(response['latitude']);
-        $("#quickedit_longitude").val(response['longitude']);
-        notice_success(response);
+        $("#quickedit_latitude").val(response["latitude"]);
+        $("#quickedit_longitude").val(response["longitude"]);
+        notice_success(response, "wbw-error-message");
       })
       .fail(function (xhr) {
-        notice_error(xhr);
+        notice_error(xhr, "wbw-error-message");
       });
-  
   }
 
   function save_handler(id) {
@@ -690,18 +730,13 @@ jQuery(document).ready(function ($) {
         // turn the format list into a comma seperated array
         if (short_id === "format_shared_id_list") {
           quickedit_changes_requested[short_id] = $(this).val().join(",");
-        } 
+        }
         // reconstruct our duration from the select list
-        else if (short_id === "duration_hours")
-        {
+        else if (short_id === "duration_hours") {
           duration_hours = $(this).val();
-        }
-        else if (short_id === "duration_minutes")
-        {
+        } else if (short_id === "duration_minutes") {
           duration_minutes = $(this).val();
-        }
-        else
-        {
+        } else {
           quickedit_changes_requested[short_id] = $(this).val();
         }
       }
@@ -722,7 +757,7 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        notice_success(response);
+        notice_success(response, "wbw-error-message");
 
         // reload the table to pick up any changes
         $("#dt-submission").DataTable().ajax.reload();
@@ -730,29 +765,8 @@ jQuery(document).ready(function ($) {
         $("#dt-submission").DataTable().rows().deselect();
       })
       .fail(function (xhr) {
-        notice_error(xhr);
+        notice_error(xhr, "wbw-error-message");
       });
     $("#wbw_submission_quickedit_dialog").dialog("close");
-  }
-
-  function notice_success(response) {
-    var msg = "";
-    if (response.message == "")
-      msg =
-        '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-    else
-      msg =
-        '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
-        response.message +
-        '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-    $(".wp-header-end").after(msg);
-  }
-
-  function notice_error(xhr) {
-    $(".wp-header-end").after(
-      '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
-        xhr.responseJSON.message +
-        '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
-    );
   }
 });

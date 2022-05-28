@@ -365,7 +365,7 @@ class Controller extends \WP_REST_Controller
 	public function post_submissions($request)
 	{
 
-		$resp = $this->SubmissionsHandler->meeting_update_form_handler_rest($request->get_body_params());
+		$resp = $this->SubmissionsHandler->meeting_update_form_handler_rest($request);
 		return rest_ensure_response($resp);
 	}
 

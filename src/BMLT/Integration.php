@@ -2,7 +2,7 @@
 namespace wbw\BMLT;
 
 use wbw\Debug;
-
+use wbw\REST\HandlerCore;
 class Integration
 {
     protected $cookies = null; // our authentication cookies
@@ -13,11 +13,74 @@ class Integration
         {
             $this->cookies = $cookies;
         }
+
     }
 
     private function wbw_rest_error($message, $code)
     {
         return new \WP_Error('wbw_error', $message, array('status' => $code));
+    }
+    
+
+    // accepts raw string or array
+    private function wbw_rest_success($message)
+    {
+        if (is_array($message)) {
+            $data = $message;
+        } else {
+            $data = array('message' => $message);
+        }
+        $response = new \WP_REST_Response();
+        $response->set_data($data);
+        $response->set_status(200);
+        return $response;
+    }
+
+    private function wbw_rest_error_with_data($message, $code, array $data)
+    {
+        $data['status'] = $code;
+        return new \WP_Error('wbw_error', $message, $data);
+    }
+
+    /**
+     * retrieve_single_meeting
+     *
+     * @param  int $meeting_id
+     * @return void
+     */
+    public function retrieve_single_meeting($meeting_id)
+    {
+        global $wbw_dbg;
+
+        $wbw_bmlt_server_address = get_option('wbw_bmlt_server_address');
+        $url = $wbw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&lang_enum=en&&meeting_key_value=" . $meeting_id; 
+
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+
+        $headers = array(
+            "Accept: */*",
+        );
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+
+        $resp = curl_exec($curl);
+        if (!$resp) {
+            return $this->wbw_rest_error('Server error retrieving meeting', 500);
+        }
+        curl_close($curl);
+        $meetingarr = json_decode($resp, true);
+        if (empty($meetingarr[0])) {
+            return $this->wbw_rest_error('Server error retrieving meeting', 500);
+        }
+        $meeting = $meetingarr[0];
+        $wbw_dbg->debug_log("SINGLE MEETING");
+        $wbw_dbg->debug_log($wbw_dbg->vdump($meeting));
+        // how possibly can we get a meeting that is not the same as we asked for
+        if ($meeting['id_bigint'] != $meeting_id) {
+            return $this->wbw_rest_error('Server error retrieving meeting', 500);
+        }
+        return $meeting;
     }
 
     public function testServerAndAuth($username, $password, $server)
@@ -51,16 +114,31 @@ class Integration
     {
         global $wbw_dbg;
 
-        $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetFormats', array());
+        $req = array();
+        $req['admin_action'] = 'get_format_info';
+
+        // get an xml for a workaround
+        $response = $this->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
         if (is_wp_error($response)) {
             return new \WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         }
+
+        // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetFormats', array());
+        // if (is_wp_error($response)) {
+        //     return new \WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
+        // }
+
         $wbw_dbg->debug_log(wp_remote_retrieve_body($response));  
-        $formatarr = json_decode(wp_remote_retrieve_body($response), true);
+        // $formatarr = json_decode(wp_remote_retrieve_body($response), true);
+        $xml = simplexml_load_string(wp_remote_retrieve_body($response));
+        $wbw_dbg->debug_log("XML RESPONSE");
+        $wbw_dbg->debug_log(wp_remote_retrieve_body($response));
+        $formatarr = json_decode(json_encode($xml), 1);
+
         $wbw_dbg->debug_log($wbw_dbg->vdump($formatarr));
 
         $newformat = array();
-        foreach ($formatarr as $key => $value) {
+        foreach ($formatarr['row'] as $key => $value) {
             $formatid = $value['id'];
             unset($value['id']);
             $newformat[$formatid] = $value;            

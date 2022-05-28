@@ -53,17 +53,19 @@ class ServiceBodiesHandler
             // make our list of service bodies
             foreach ($arr['service_body'] as $key => $value) {
                 // $wbw_dbg->debug_log("looping key = " . $key);
-                if (array_key_exists('@attributes', $value)) {
+                if (!empty($value['@attributes'])) {
                     $sbid = $value['@attributes']['id'];
                     $idlist[] = $sbid;
-                    $sblist[$sbid] = array('name' => $value['@attributes']['name']);
+                    $sblist[$sbid] = array('name' => $value['@attributes']['name'], 'contact_email' => '', 'description' => '');
+                    if (!empty($value['contact_email'])) {
+                        $sblist[$sbid]['contact_email'] = $value['contact_email'];
+                    }
+                    if (!empty($value['description'])) {
+                        $sblist[$sbid]['description'] = $value['description'];
+                    }
                 } else {
                     // we need a name at minimum
                     break;
-                }
-                $sblist[$sbid]['contact_email'] = '';
-                if (array_key_exists('contact_email', $value)) {
-                    $sblist[$sbid]['contact_email'] = $value['contact_email'];
                 }
             }
 
@@ -73,13 +75,12 @@ class ServiceBodiesHandler
             $missing = array_diff($idlist, $sqlresult);
 
             foreach ($missing as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_body_name="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+                $sql = $wpdb->prepare('INSERT into ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_body_name="%s", service_body_description="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['contact_email'], $sblist[$value]['name'], $sblist[$value]['description'],$value);
                 $wpdb->query($sql);
             }
             // update any values that may have changed since last time we looked
-
             foreach ($idlist as $value) {
-                $sql = $wpdb->prepare('UPDATE ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_body_name="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $value);
+                $sql = $wpdb->prepare('UPDATE ' . $wbw_service_bodies_table_name . ' set contact_email="%s", service_body_name="%s", service_body_description="%s" where service_body_bigint="%d"', $sblist[$value]['contact_email'], $sblist[$value]['name'], $sblist[$value]['description'], $value);
                 $wpdb->query($sql);
             }
 

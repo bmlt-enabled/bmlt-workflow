@@ -10,6 +10,7 @@ use wbw\REST\Handlers\SubmissionsHandler;
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
 use function Patchwork\{redefine, getFunction, always};
+
 require_once('config_phpunit.php');
 
 global $wbw_dbg;
@@ -53,6 +54,7 @@ Line: $errorLine
 
     protected function setUp(): void
     {
+        global $wbw_dbg;
         $this->setVerboseErrorHandler();
         $basedir = getcwd();
         require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
@@ -61,7 +63,7 @@ Line: $errorLine
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-response.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-request.php');
         require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/endpoints/class-wp-rest-controller.php');
-        if (!class_exists('wpdb')){
+        if (!class_exists('wpdb')) {
             require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/wp-db.php');
         }
 
@@ -72,13 +74,61 @@ Line: $errorLine
         Functions\when('absint')->returnArg();
         Functions\when('get_option')->returnArg();
         Functions\when('current_time')->justReturn('2022-03-23 09:22:44');
-        Functions\when('wp_json_encode')->returnArg();
+        // Functions\when('wp_json_encode')->returnArg();
+        Functions\when('wp_json_encode')->justReturn('{"contact_number_confidential":"12345","group_relationship":"Group Member","add_email":"yes","service_body_bigint":2,"additional_info":"my additional info","meeting_name":"virtualmeeting randwick","weekday_tinyint":"2","start_time":"20:30:00"}');
         Functions\when('get_site_url')->justReturn('http://127.0.0.1/wordpress');
-        Functions\when('wp_remote_post')->returnArg();
-        Functions\when('wp_safe_remote_post')->returnArg();
-        Functions\when('wp_remote_retrieve_body')->justReturn('{"0":{"id":"1","key_string":"0","name_string":"0"},"1":{"id":"2","key_string":"0","name_string":"0"},"2":{"id":"3","key_string":"0","name_string":"0"}}');
-        Functions\when('is_wp_error')->justReturn(false);
+        // Functions\when('wp_remote_post')->returnArg();
+        // Functions\when('wp_safe_remote_post')->returnArg();
+        // Functions\when('wp_remote_retrieve_body')->justReturn('{"0":{"id":"1","key_string":"0","name_string":"0"},"1":{"id":"2","key_string":"0","name_string":"0"},"2":{"id":"3","key_string":"0","name_string":"0"}}');
+        // Functions\when('is_wp_error')->justReturn(false);
 
+        $this->meeting = <<<EOD
+    {
+        "id_bigint": "3563",
+        "worldid_mixed": "",
+        "shared_group_id_bigint": "",
+        "service_body_bigint": "3",
+        "weekday_tinyint": "2",
+        "venue_type": "1",
+        "start_time": "19:00:00",
+        "duration_time": "01:15:00",
+        "time_zone": "",
+        "formats": "BT",
+        "lang_enum": "en",
+        "longitude": "0",
+        "latitude": "0",
+        "distance_in_km": "",
+        "distance_in_miles": "",
+        "email_contact": "",
+        "meeting_name": "Test Monday Night Meeting",
+        "location_text": "Glebe Town Hall",
+        "location_info": "",
+        "location_street": "160 Johns Road",
+        "location_city_subsection": "",
+        "location_neighborhood": "",
+        "location_municipality": "Glebe",
+        "location_sub_province": "",
+        "location_province": "NSW",
+        "location_postal_code_1": "NSW",
+        "location_nation": "",
+        "comments": "",
+        "train_lines": "",
+        "bus_lines": "",
+        "contact_phone_2": "",
+        "contact_email_2": "",
+        "contact_name_2": "",
+        "contact_phone_1": "",
+        "contact_email_1": "",
+        "contact_name_1": "",
+        "zone": "",
+        "phone_meeting_number": "",
+        "virtual_meeting_link": "",
+        "virtual_meeting_additional_info": "",
+        "published": "1",
+        "root_server_uri": "http:",
+        "format_shared_id_list": "3"
+    }
+    EOD;
     }
 
     protected function tearDown(): void
@@ -100,6 +150,23 @@ Line: $errorLine
         $request->set_method('POST');
 
         return $request;
+    }
+
+    private function stub_bmlt($json_meeting, &$bmlt_input)
+    {
+        $resp = $json_meeting;
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
+        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
+        $bmlt = \Mockery::mock('Integration');
+
+        /** @var Mockery::mock $bmlt test */
+        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
+            ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1, "longitude" => 1))
+            ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp, true))
+            ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats, true));
+
+        Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
+        return $bmlt;
     }
 
     /**
@@ -131,13 +198,16 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
-        Functions\when('curl_exec')->justReturn($json);
 
-        $handlers = new SubmissionsHandler();
+        $retrieve_single_response = $this->meeting;
+        $wbw_dbg->debug_log("THISMEETING");
+        $wbw_dbg->debug_log($wbw_dbg->vdump($retrieve_single_response));
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $wbw_dbg->debug_log("TEST RESPONSE");
@@ -204,8 +274,6 @@ Line: $errorLine
 
         );
 
-        $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
-        Functions\when('curl_exec')->justReturn($json);
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
@@ -214,17 +282,21 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $handlers = new SubmissionsHandler;
-        $response = $handlers->meeting_update_form_handler_rest($form_post);
+        $resp = '{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"6","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}';
 
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($resp, $bmlt_input));
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+        global $wbw_dbg;
+        $wbw_dbg->debug_log($wbw_dbg->vdump($response));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
     }
 
-        /**
+    /**
      * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_service_body(): void
@@ -244,8 +316,6 @@ Line: $errorLine
 
         );
 
-        $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
-        Functions\when('curl_exec')->justReturn($json);
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
@@ -256,7 +326,10 @@ Line: $errorLine
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $handlers = new SubmissionsHandler;
+        $resp = '{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"6","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}';
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($resp, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(\WP_Error::class, $response);
@@ -274,7 +347,7 @@ Line: $errorLine
             "meeting_id" => "3277",
             "first_name" => "joe",
             "last_name" => "joe",
-            "service_body_bigint" => "6",
+            "service_body_bigint" => "3",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
             "format_shared_id_list" => "1",
@@ -283,8 +356,6 @@ Line: $errorLine
 
         );
 
-        $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
-        Functions\when('curl_exec')->justReturn($json);
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
@@ -293,10 +364,13 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $handlers = new SubmissionsHandler;
+        $retrieve_single_response = $this->meeting;
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -315,7 +389,7 @@ Line: $errorLine
             "meeting_id" => "3277",
             "first_name" => "joe",
             "last_name" => "joe",
-            "service_body_bigint" => "6",
+            "service_body_bigint" => "3",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
             "format_shared_id_list" => ",,1,2,,,,",
@@ -324,8 +398,6 @@ Line: $errorLine
 
         );
 
-        $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
-        Functions\when('curl_exec')->justReturn($json);
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
@@ -334,12 +406,16 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $handlers = new SubmissionsHandler;
-        $response = $handlers->meeting_update_form_handler_rest($form_post);
+        $retrieve_single_response = $this->meeting;
 
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+        global $wbw_dbg;
+        $wbw_dbg->debug_log($wbw_dbg->vdump($response));
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
@@ -385,10 +461,13 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $handlers = new SubmissionsHandler;
+        $retrieve_single_response = $this->meeting;
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $wbw_dbg->debug_log($wbw_dbg->vdump($response));
@@ -436,10 +515,13 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2,"test test"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $handlers = new SubmissionsHandler;
+        $retrieve_single_response = $this->meeting;
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $wbw_dbg->debug_log($wbw_dbg->vdump($response));
@@ -488,7 +570,10 @@ Line: $errorLine
         $wpdb->shouldNotReceive('insert');
         Functions\expect('wp_mail')->never();
 
-        $handlers = new SubmissionsHandler;
+        $retrieve_single_response = $this->meeting;
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -515,8 +600,6 @@ Line: $errorLine
 
         );
 
-        $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
-        Functions\when('curl_exec')->justReturn($json);
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
@@ -524,7 +607,10 @@ Line: $errorLine
         $wpdb->shouldNotReceive('insert');
         Functions\expect('wp_mail')->never();
 
-        $handlers = new SubmissionsHandler;
+        $retrieve_single_response = $this->meeting;
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -550,8 +636,6 @@ Line: $errorLine
 
         );
 
-        $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
-        Functions\when('curl_exec')->justReturn($json);
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
@@ -559,7 +643,10 @@ Line: $errorLine
         $wpdb->shouldNotReceive('insert');
         Functions\expect('wp_mail')->never();
 
-        $handlers = new SubmissionsHandler;
+        $retrieve_single_response = $this->meeting;
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -585,8 +672,6 @@ Line: $errorLine
 
         );
 
-        $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
-        Functions\when('curl_exec')->justReturn($json);
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
@@ -594,7 +679,10 @@ Line: $errorLine
         $wpdb->shouldNotReceive('insert');
         Functions\expect('wp_mail')->never();
 
-        $handlers = new SubmissionsHandler;
+        $retrieve_single_response = $this->meeting;
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -620,8 +708,6 @@ Line: $errorLine
 
         );
 
-        $json = '[{"id_bigint":"3277","worldid_mixed":"OLM297","service_body_bigint":"6","weekday_tinyint":"3","venue_type":"2","start_time":"19:00:00","duration_time":"01:00:00","time_zone":"","formats":"JT,LC,VM","longitude":"151.2437","latitude":"-33.9495","meeting_name":"Online Meeting - Maroubra Nightly","location_text":"Online","location_info":"","location_street":"","location_neighborhood":"","location_municipality":"Maroubra","location_sub_province":"","location_province":"NSW","location_postal_code_1":"2035","comments":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","virtual_meeting_additional_info":"By phone 02 8015 6011Meeting ID: 83037287669 Passcode: 096387","root_server_uri":"http://54.153.167.239/main_server","format_shared_id_list":"14,40,54"}]';
-        Functions\when('curl_exec')->justReturn($json);
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
@@ -629,13 +715,16 @@ Line: $errorLine
         $wpdb->shouldNotReceive('insert');
         Functions\expect('wp_mail')->never();
 
-        $handlers = new SubmissionsHandler;
+        $retrieve_single_response = $this->meeting;
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
-        /**
+    /**
      * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
     public function test_can_approve_change_meeting(): void
@@ -660,15 +749,6 @@ Line: $errorLine
             'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_meeting_name":"Ashfield"}',
         );
 
-        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
-        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
-        $bmlt = \Mockery::mock('Integration');
-
-        /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])
-        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1));
-
-
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
@@ -680,19 +760,25 @@ Line: $errorLine
             ]
         );
 
+        $retrieve_single_response = $this->meeting;
+
+        $post_change_response = '[{"id_bigint":"3563"}]';
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
+
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
-        Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
 
-        $rest = new SubmissionsHandler($bmlt);
-// global $wbw_dbg;
-// $wbw_dbg->debug_log('APPROVEREQUEST');
+        // global $wbw_dbg;
+        // $wbw_dbg->debug_log('APPROVEREQUEST');
 
         // $wbw_dbg->debug_log($wbw_dbg->vdump($request));
 
-        $response = $rest->approve_submission_handler($request);
+        $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
@@ -727,14 +813,11 @@ Line: $errorLine
             'changes_requested' => '{"group_relationship":"Group Member","add_email":"no","additional_info":"please close this meeting","meeting_name":"Ashfield Exodus NA"}'
         );
 
-        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
-        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
-        $bmlt = \Mockery::mock('Integration');
+        $resp = $this->meeting;
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($resp, $bmlt_input));
 
-        /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
-        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1));
-
+        $post_change_response = '[{"published":"0", "success":"true"}]';
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -750,17 +833,19 @@ Line: $errorLine
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
-        Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
-
-        $rest = new SubmissionsHandler($bmlt);
 
         // $wbw_dbg->debug_log($wbw_dbg->vdump($request));
 
-        $response = $rest->approve_submission_handler($request);
+        $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
+
+        // global $wbw_dbg;
+        // $wbw_dbg->debug_log($wbw_dbg->debug_log("BMLT INPUT"));
+        // $wbw_dbg->debug_log($wbw_dbg->vdump($bmlt_input));
 
         $this->assertArrayHasKey("set_meeting_change", $bmlt_input);
         $this->assertArrayNotHasKey("delete_meeting", $bmlt_input);
@@ -794,13 +879,10 @@ Line: $errorLine
             'changes_requested' => '{"group_relationship":"Group Member","add_email":"no","additional_info":"please close this meeting","meeting_name":"Ashfield Exodus NA"}'
         );
 
-        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
-        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
-        $bmlt = \Mockery::mock('Integration');
-
-        /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
-        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1));
+        $retrieve_single_response = $this->meeting;
+        $post_change_response = '[{"id_bigint":"3563"}]';
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
 
 
         global $wpdb;
@@ -817,14 +899,13 @@ Line: $errorLine
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
-        Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
 
-        $rest = new SubmissionsHandler($bmlt);
 
         // $wbw_dbg->debug_log($wbw_dbg->vdump($request));
 
-        $response = $rest->approve_submission_handler($request);
+        $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
@@ -865,14 +946,12 @@ Line: $errorLine
             'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","add_email":"yes","additional_info":"pls approve","original_meeting_name":"Ashfield"}',
         );
 
-        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
-        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
-        $bmlt = \Mockery::mock('Integration');
+        $retrieve_single_response = $this->meeting;
 
-        /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
-        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1));
+        $post_change_response = '[{"id_bigint":"3563"}]';
 
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -888,13 +967,11 @@ Line: $errorLine
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
-        Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
-
-        $rest = new SubmissionsHandler($bmlt);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
 
         Functions\expect('\wp_mail')->times(1)->with('a@a.com', Mockery::any(), Mockery::any(), Mockery::any());
 
-        $response = $rest->approve_submission_handler($request);
+        $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
@@ -927,13 +1004,12 @@ Line: $errorLine
             'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","add_email":"yes","additional_info":"pls approve","original_meeting_name":"Ashfield"}',
         );
 
-        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}]';
-        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
-        $bmlt = \Mockery::mock('Integration');
+        $retrieve_single_response = $this->meeting;
 
-        /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
-        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1));
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
+
+        $post_change_response = '[{"id_bigint":"3563"}]';
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -949,13 +1025,12 @@ Line: $errorLine
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
-        Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
 
-        $rest = new SubmissionsHandler($bmlt);
 
         Functions\expect('\wp_mail')->times(1)->with('a@a.com', Mockery::any(), Mockery::any(), Mockery::any());
 
-        $response = $rest->approve_submission_handler($request);
+        $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
@@ -987,14 +1062,12 @@ Line: $errorLine
             'changes_requested' => '{"group_relationship":"Group Member","add_email":"no","additional_info":"please close this meeting","meeting_name":"Ashfield Exodus NA"}'
         );
 
-        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
-        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
-        $bmlt = \Mockery::mock('Integration');
+        $retrieve_single_response = $this->meeting;
 
-        /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
-        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1));
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
 
+        $post_change_response = '[{"id_bigint":"3563"}]';
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -1010,14 +1083,12 @@ Line: $errorLine
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
-        Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
-
-        $rest = new SubmissionsHandler($bmlt);
 
         // $wbw_dbg->debug_log($wbw_dbg->vdump($request));
 
-        $response = $rest->approve_submission_handler($request);
+        $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
@@ -1051,14 +1122,12 @@ Line: $errorLine
             'changes_requested' => '{"group_relationship":"Group Member","add_email":"no","additional_info":"please close this meeting","meeting_name":"Ashfield Exodus NA"}'
         );
 
-        $resp = '[{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"3","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"0","root_server_uri":"http:","format_shared_id_list":"3"}]';
-        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
-        $bmlt = \Mockery::mock('Integration');
+        $retrieve_single_response = $this->meeting;
 
-        /** @var Mockery::mock $bmlt test */
-        $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
-        ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1,"longitude" => 1));
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
 
+        $post_change_response = '[{"report":"3563", "success":"true"}]';
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -1074,14 +1143,13 @@ Line: $errorLine
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
-        Functions\when('\wp_remote_retrieve_body')->justReturn($resp);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
 
-        $rest = new SubmissionsHandler($bmlt);
 
         // $wbw_dbg->debug_log($wbw_dbg->vdump($request));
 
-        $response = $rest->approve_submission_handler($request);
+        $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
@@ -1091,5 +1159,4 @@ Line: $errorLine
 
         // $wbw_dbg->debug_log($wbw_dbg->vdump($response));
     }
-
 }

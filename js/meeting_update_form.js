@@ -7,6 +7,7 @@ jQuery(document).ready(function ($) {
   var formatdata = [];
   var hybrid_formatid = "";
   var virtual_formatid = "";
+  var tempclosure_formatid = "";
 
   Object.keys(wbw_bmlt_formats).forEach((key) => {
     formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
@@ -14,6 +15,8 @@ jQuery(document).ready(function ($) {
       hybrid_formatid = key;
     } else if (wbw_bmlt_formats[key]["key_string"] === "VM") {
       virtual_formatid = key;
+    } else if (wbw_bmlt_formats[key]["key_string"] === "TC") {
+      tempclosure_formatid = key;
     }
   });
 
@@ -59,21 +62,7 @@ jQuery(document).ready(function ($) {
   }
 
   function update_meeting_list(wbw_service_bodies) {
-    var search_results_address =
-      wbw_bmlt_server_address +
-      "client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&data_field_key=location_postal_code_1,duration_time," +
-      "start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality," +
-      "location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed," +
-      "root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,virtual_meeting_link,phone_meeting_number,contact_name_1,contact_phone_1," +
-      "contact_email_1,contact_name_2,contact_phone_2,contact_email_2&" +
-      wbw_service_bodies +
-      "recursive=1&sort_keys=meeting_name";
-
-    // // https://na.org.au/main_server/client_interface/jsonp/?switcher=GetSearchResults&get_used_formats
-    // &lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,
-    // location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,
-    // location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,virtual_meeting_link,phone_meeting_number,
-    // latitude,longitude,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&services[]=1&recursive=1&sort_keys=start_time
+    var search_results_address = wbw_bmlt_server_address + "client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&" + wbw_service_bodies + "recursive=1&sort_keys=meeting_name";
 
     fetchJsonp(search_results_address)
       .then((response) => response.json())
@@ -185,22 +174,44 @@ jQuery(document).ready(function ($) {
       // set the weekday format
       $("#weekday_tinyint").val(mdata[id].weekday_tinyint);
 
-      var meeting_formats = mdata[id].format_shared_id_list.split(",");
-      // fill in the other fields from bmlt
-      put_field("meeting_name", mdata[id].meeting_name);
-      put_field("start_time", mdata[id].start_time);
-      put_field("location_street", mdata[id].location_street);
-      put_field("location_text", mdata[id].location_text);
-      put_field("location_info", mdata[id].location_info);
-      put_field("location_municipality", mdata[id].location_municipality);
-      put_field("location_province", mdata[id].location_province);
-      put_field("location_sub_province", mdata[id].location_sub_province);
-      put_field("location_nation", mdata[id].location_nation);
-      put_field("location_postal_code_1", mdata[id].location_postal_code_1);
-      put_field("display_format_shared_id_list", meeting_formats);
-      put_field("virtual_meeting_additional_info", mdata[id].virtual_meeting_additional_info);
-      put_field("phone_meeting_number", mdata[id].phone_meeting_number);
-      put_field("virtual_meeting_link", mdata[id].virtual_meeting_link);
+      var fields = [
+        "meeting_name",
+        "start_time",
+        "location_street",
+        "location_text",
+        "location_info",
+        "location_municipality",
+        "location_province",
+        "location_sub_province",
+        "location_nation",
+        "location_postal_code_1",
+        "virtual_meeting_additional_info",
+        "phone_meeting_number",
+        "virtual_meeting_link",
+      ];
+
+      // populate form fields from bmlt if they exist
+      fields.forEach(function (item, i) {
+        if (item in mdata[id]) {
+          put_field(item, mdata[id][item]);
+        }
+      });
+
+      // seperate handler for formats
+      if ("format_shared_id_list" in mdata[id]) {
+        var meeting_formats = mdata[id].format_shared_id_list.split(",");
+        put_field("display_format_shared_id_list", meeting_formats);
+
+        // handle virtual meeting type in the virtual meeting dropdown
+        var virtual_format = "none";
+        if (meeting_formats.includes(hybrid_formatid)) {
+          virtual_format = "hybrid";
+        } else if (meeting_formats.includes(virtual_formatid)) {
+          virtual_format = "virtual";
+        } else if (meeting_formats.includes(tempclosure_formatid)) {
+          virtual_format = "tempclosure";
+        }
+      }
 
       // handle duration in the select dropdowns
       var durationarr = mdata[id].duration_time.split(":");
@@ -212,23 +223,6 @@ jQuery(document).ready(function ($) {
       // handle service body in the select dropdown
       $("#service_body_bigint").val(mdata[id].service_body_bigint);
 
-      // handle virtual meeting type in the virtual meeting dropdown
-      var virtual_format = "none";
-      if (meeting_formats.includes(hybrid_formatid)) {
-        virtual_format = "hybrid";
-      } else if (meeting_formats.includes(virtual_formatid)) {
-        virtual_format = "virtual";
-      }
-      // meeting_formats.forEach((item, index) => {
-      //   if(wbw_bmlt_formats[item]['key_string'] === 'HY')
-      //   {
-      //     virtual_format='hybrid';
-      //   }
-      //   else if(wbw_bmlt_formats[item]['key_string'] === 'VM')
-      //   {
-      //     virtual_format='virtual';
-      //   }
-      // });
       // doesn't handle if they have both selected in BMLT
       $("#virtual_hybrid_select").val(virtual_format);
       if (virtual_format === "none") {
@@ -349,7 +343,6 @@ jQuery(document).ready(function ($) {
     disable_field("phone_meeting_number");
     disable_field("virtual_meeting_link");
     disable_field("virtual_hybrid_select");
-    
   }
 
   function clear_form() {
@@ -396,19 +389,31 @@ jQuery(document).ready(function ($) {
     var oldarr = $("#display_format_shared_id_list").val();
     // strip out all the virtual/hybrids first
     var arr = oldarr.filter(function (value, index, a) {
-      return value != virtual_formatid && value != hybrid_formatid;
+      return value != virtual_formatid && value != hybrid_formatid && value != tempclosure_formatid;
     });
 
     if (this.value == "none") {
       $("#virtual_meeting_settings").hide();
+      $("#virtual_location").show();
     } else {
+      
       $("#virtual_meeting_settings").show();
-      if (this.value === "virtual") {
-        arr.push(virtual_formatid);
-      } else if (this.value === "hybrid") {
-        arr.push(hybrid_formatid);
+      switch (this.value) {
+        case "virtual":
+          arr.push(virtual_formatid);
+          $("#virtual_location").hide();
+          break;
+        case "hybrid":
+          arr.push(hybrid_formatid);
+          $("#virtual_location").show();
+          break;
+        case "tempclosure":
+          arr.push(tempclosure_formatid);
+          $("#virtual_location").show();
+          break;
       }
     }
+
     $("#display_format_shared_id_list").val(arr).trigger("change");
   });
 
@@ -485,8 +490,25 @@ jQuery(document).ready(function ($) {
     }
   });
 
+  $.fn.serializeObject = function () {
+    var o = {};
+    var a = this.serializeArray();
+    $.each(a, function () {
+      if (o[this.name]) {
+        if (!o[this.name].push) {
+          o[this.name] = [o[this.name]];
+        }
+        o[this.name].push(this.value || "");
+      } else {
+        o[this.name] = this.value || "";
+      }
+    });
+    return o;
+  };
+
   // form submit handler
   function real_submit_handler() {
+    clear_notices();
     // in case we disabled this we want to send it now
     enable_field("service_body_bigint");
 
@@ -505,10 +527,27 @@ jQuery(document).ready(function ($) {
     var str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
     put_field("duration_time", str);
 
-    var url = wp_rest_base + wbw_form_submit;
-    $.post(url, $("#meeting_update_form").serialize(), function (response) {
-      // console.log("submitted");
-      $("#form_replace").replaceWith(response.form_html);
-    });
+    // var url = wp_rest_base + wbw_form_submit;
+
+    $.ajax({
+      url: wp_rest_base + wbw_form_submit,
+      method: "POST",
+      data: JSON.stringify($("#meeting_update_form").serializeObject()),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      processData: false,
+      beforeSend: function (xhr) {
+        turn_on_spinner("#wbw-submit-spinner");
+      },
+    })
+      .done(function (response) {
+        turn_off_spinner("#wbw-submit-spinner");
+        // notice_success(response,"wbw-error-message");
+        $("#form_replace").replaceWith(response.form_html);
+      })
+      .fail(function (xhr) {
+        turn_off_spinner("#wbw-submit-spinner");
+        notice_error(xhr, "wbw-error-message");
+      });
   }
 });

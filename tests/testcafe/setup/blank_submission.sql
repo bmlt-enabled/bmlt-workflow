@@ -1,0 +1,1 @@
+delete from wp_wbw_submissions;

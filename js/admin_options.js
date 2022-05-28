@@ -20,27 +20,6 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  function notice_success(response, notice_class) {
-    var msg = "";
-    if (response.message == "")
-      msg =
-        '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-    else
-      msg =
-        '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
-        response.message +
-        '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
-    $("." + notice_class).after(msg);
-  }
-
-  function notice_error(xhr, notice_class) {
-    $("." + notice_class).after(
-      '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
-        xhr.responseJSON.message +
-        '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
-    );
-  }
-
   var clipboard = new ClipboardJS(".clipboard-button");
 
   $("#wbw_bmlt_configuration_dialog").dialog({
@@ -114,14 +93,14 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        notice_success(response, "quickedit-wp-header-end");
+        notice_success(response, "quickedit-wbw-error-message");
         if(saving)
         {
           update_from_test_result(response);
         }
       })
       .fail(function (xhr) {
-        notice_error(xhr, "quickedit-wp-header-end");
+        notice_error(xhr, "quickedit-wbw-error-message");
         if(saving)
         {
           update_from_test_result(xhr);

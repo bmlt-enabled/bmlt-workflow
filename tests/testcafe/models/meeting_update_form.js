@@ -3,8 +3,6 @@ import { Selector } from 'testcafe';
 class Meeting_Update_Form {
     constructor () {
 
-        this.page_location = "http://54.153.167.239/flop/sample-page-2/";
-
         this.form_replace = Selector('#form_replace');
         this.meeting_update_form      = Selector('#meeting_update_form');
         this.update_reason = Selector('#update_reason');
@@ -56,7 +54,8 @@ class Meeting_Update_Form {
         this.starter_kit_postal_address_div = Selector('#starter_kit_postal_address_div');
         this.starter_kit_postal_address = Selector('#starter_kit_postal_address');
         this.submit = Selector('#submit');
-
+        this.success_page_header = Selector('#page h3');
+        this.error_para = Selector('.wbw-error-message + .notice p');
     }
 }
 

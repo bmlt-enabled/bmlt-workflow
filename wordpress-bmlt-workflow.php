@@ -4,7 +4,7 @@
  * Plugin Name: Wordpress BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
  * Description: Wordpress BMLT Workflow
- * Version: 0.3.9
+ * Version: 0.3.10
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
@@ -739,6 +739,7 @@ function wbw_install()
     $sql = "CREATE TABLE " . $wbw_service_bodies_table_name . " (
 		service_body_bigint bigint(20) NOT NULL,
         service_body_name tinytext NOT NULL,
+        service_body_description text,
         contact_email varchar(255) NOT NULL default '',
         show_on_form bool,
 		PRIMARY KEY (service_body_bigint)
@@ -767,7 +768,7 @@ function wbw_install()
         submitter_email varchar(320) NOT NULL,
         meeting_id bigint(20) unsigned,
         service_body_bigint bigint(20) NOT NULL,
-        changes_requested varchar(1024),
+        changes_requested varchar(2048),
         action_message varchar(1024),
 		PRIMARY KEY (id),
         FOREIGN KEY (service_body_bigint) REFERENCES " . $wbw_service_bodies_table_name . "(service_body_bigint) 

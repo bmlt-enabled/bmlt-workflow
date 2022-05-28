@@ -136,3 +136,90 @@
   font: inherit;
   grid-area: 1 / 1 / 2 / 2;
 }
+
+
+.cell-hdr {
+  background-color: rgb(236, 236, 236);
+  color: #111;
+  margin-bottom: 5px;
+}
+
+.header {
+  width: auto;
+  display: grid;
+  grid-column-gap: 5px;
+  grid-template-columns: [h1-start] 1fr [h1-end h2-start] 1fr [h2-end h3-start] 1fr [h3-end h4-start] 1fr [h4-end];
+}
+
+.gridbody {
+  width: auto;
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: [c1k-start] 1fr [c1k-end c1v-start] 1fr [c1v-end c2k-start] 1fr [c2k-end c2v-start] 1fr [c2v-end c3k-start] 1fr [c3k-end c3v-start] 1fr [c3v-end c4k-start] 1fr [c4k-end c4v-start] 1fr [c4v-end];
+/*   grid-template-columns: repeat(4, 25%); */
+/*   grid-auto-rows: 100px; */
+  grid-auto-flow: dense;
+}
+
+.h1 {
+  grid-area: h1;
+}
+
+.h2 {
+  grid-area: h2;
+}
+
+.h3 {
+  grid-area: h3;
+}
+
+.h4 {
+  grid-area: h4;
+}
+
+.c1k {
+  grid-area: auto / c1k / auto / c1k;
+  padding-left: 2px;
+}
+
+.c1v {
+  grid-area: auto / c1v / auto / c1v;
+  min-width: 0;
+  word-wrap: break-word;
+}
+
+.c2k {
+  grid-area: auto / c2k / auto / c2k;
+  padding-left: 2px;
+
+}
+
+.c2v {
+  grid-area: auto / c2v / auto / c2v;
+  min-width: 0;
+  word-wrap: break-word;
+}
+
+.c3k {
+  grid-area: auto / c3k / auto / c3k;
+  padding-left: 2px;
+
+}
+
+.c3v {
+  grid-area: auto / c3v / auto / c3v;
+  min-width: 0;
+  word-wrap: break-word;
+}
+
+.c4k {
+  grid-area: auto / c4k / auto / c4k;
+  padding-left: 2px;
+
+}
+
+.c4v {
+  grid-area: auto / c4v / auto / c4v;
+  min-width: 0;
+  word-wrap: break-word;
+}

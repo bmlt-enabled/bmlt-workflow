@@ -74,17 +74,13 @@ Line: $errorLine
     {
 
         global $wbw_dbg;
-        $wbw_dbg->debug_log("hi1");
         $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/wbw/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/wbw/v1/bmltserver");
         $request->set_method('GET');
-        $wbw_dbg->debug_log("hi2");
 
         Functions\when('\get_option')->justReturn('success');
-        $wbw_dbg->debug_log("hi3");
         $rest = new BMLTServerHandler();
-        $wbw_dbg->debug_log("hi4");
 
         $response = $rest->get_bmltserver_handler($request);
 

@@ -380,12 +380,27 @@ class SubmissionsHandler
                 $wbw_dbg->debug_log("CHANGE");
                 $wbw_dbg->debug_log($wbw_dbg->vdump($change));
 
-                // run our geolocator on the address
-                $latlng = $this->do_geolocate($change);
+                // geolocate based on changes - apply the changes to the BMLT version, then geolocate
+                $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($result['meeting_id']);
+                if (is_wp_error($bmlt_meeting)) {
+                    return $this->handlerCore->wbw_rest_error("BMLT Lookup Error - Couldn't find this meeting Id", 500);
+                }
+
+                $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
+
+                foreach($locfields as $field)
+                {
+                    if(!empty($change[$field]))
+                    {
+                        $bmlt_meeting[$field]=$change[$field];
+                    }
+                }
+        
+                $latlng = $this->do_geolocate($bmlt_meeting);
                 if (is_wp_error($latlng)) {
                     return $latlng;
                 }
-
+                // add the new geo to the original change
                 $change['latitude']= $latlng['latitude'];
                 $change['longitude']= $latlng['longitude'];
 
@@ -426,30 +441,53 @@ class SubmissionsHandler
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                     }
 
-                    $arr = json_decode(wp_remote_retrieve_body($response), true);
+                    $json = wp_remote_retrieve_body($response);
+                    $rep = str_replace("'",'"',$json);
 
-                    if ((!empty($arr['success'])) && ($arr['success'] != 'true')) {
+                    $arr = json_decode($rep, true);
+
+                    $wbw_dbg->debug_log("DELETE RESPONSE");
+                    $wbw_dbg->debug_log($wbw_dbg->vdump($arr));
+
+                    if ((isset($arr['success'])) && ($arr['success'] !== true)) {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
                     }
                     if ((!empty($arr['report'])) && ($arr['report'] != $change['id_bigint'])) {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
                     }
+
                 } else {
                     // unpublish by default
                     $change['published'] = 0;
 
                     $changearr = array();
                     $changearr['bmlt_ajax_callback'] = 1;
+                    $change['id_bigint']=$result['meeting_id'];
                     $changearr['set_meeting_change'] = json_encode($change);
+                    $wbw_dbg->debug_log("UNPUBLISH");
+                    $wbw_dbg->debug_log($wbw_dbg->vdump($changearr));
+
                     $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                     if (is_wp_error($response)) {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                     }
 
-                    $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
+                    $wbw_dbg->debug_log("UNPUBLISH RESPONSE");
+                    $wbw_dbg->debug_log($wbw_dbg->vdump($response));
 
-                    if ((!empty($arr['published'])) && ($arr['published'] != 0)) {
+                    $json = wp_remote_retrieve_body($response);
+                    $rep = str_replace("'",'"',$json);
+
+                    $dec = json_decode($rep, true);
+                    if (((isset($dec['error'])) && ($dec['error'] === true)) || (empty($dec[0])))
+                    {
+                        return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
+                    }
+
+                    $arr = $dec[0];
+
+                    if ((isset($arr['published'])) && ($arr['published'] != 0)) {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
                     }
                 }
@@ -553,39 +591,7 @@ class SubmissionsHandler
         return $this->handlerCore->wbw_rest_error('Form field "' . $field . '" is invalid.', 422);
     }
 
-    private function bmlt_retrieve_single_meeting($meeting_id)
-    {
-        global $wbw_dbg;
 
-        $wbw_bmlt_server_address = get_option('wbw_bmlt_server_address');
-        $url = $wbw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" . $meeting_id . "&lang_enum=en&data_field_key=location_postal_code_1,duration_time,start_time,time_zone,weekday_tinyint,service_body_bigint,longitude,latitude,location_province,location_municipality,location_street,location_info,location_neighborhood,formats,format_shared_id_list,comments,location_sub_province,worldid_mixed,root_server_uri,id_bigint,venue_type,meeting_name,location_text,virtual_meeting_additional_info,contact_name_1,contact_phone_1,contact_email_1,contact_name_2,contact_phone_2,contact_email_2&&recursive=1&sort_keys=start_time";
-
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-        $headers = array(
-            "Accept: */*",
-        );
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-
-        $resp = curl_exec($curl);
-        if (!$resp) {
-            return $this->handlerCore->wbw_rest_error('Server error retrieving meeting list', 500);
-        }
-        curl_close($curl);
-        $meetingarr = json_decode($resp, true);
-        if (empty($meetingarr[0])) {
-            return $this->handlerCore->wbw_rest_error('Server error retrieving meeting list', 500);
-        }
-        $meeting = $meetingarr[0];
-        $wbw_dbg->debug_log($wbw_dbg->vdump($meeting));
-        // how possibly can we get a meeting that is not the same as we asked for
-        if ($meeting['id_bigint'] != $meeting_id) {
-            return $this->handlerCore->wbw_rest_error('Server error retrieving meeting list', 500);
-        }
-        return $meeting;
-    }
 
     public function meeting_update_form_handler_rest($data)
     {
@@ -703,6 +709,9 @@ class SubmissionsHandler
                         break;
                     case ('textarea'):
                         $data[$field] = sanitize_textarea_field($data[$field]);
+                        if(strlen($data[$field])>512) {
+                            return $this->invalid_form_field($field);
+                        }
                         break;
                     case ('time'):
                         if (!preg_match('/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:00$/', $data[$field])) {
@@ -742,7 +751,7 @@ class SubmissionsHandler
 
         switch ($reason) {
             case ('reason_new'):
-                $subject = 'New meeting notification';
+                // $subject = 'New meeting notification';
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
@@ -766,7 +775,9 @@ class SubmissionsHandler
                     "additional_info",
                     "virtual_meeting_additional_info",
                     "phone_meeting_number",
-                    "virtual_meeting_link"
+                    "virtual_meeting_link",
+                    "starter_kit_required",
+                    "starter_kit_postal_address"
                 );
 
                 // new meeting - add all fields to the changes requested
@@ -781,7 +792,7 @@ class SubmissionsHandler
             case ('reason_change'):
 
                 // change meeting - just add the deltas. no real reason to do this as bmlt result would be the same, but safe to filter it regardless
-                $subject = 'Change meeting notification';
+                // $subject = 'Change meeting notification';
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
@@ -812,7 +823,7 @@ class SubmissionsHandler
                     "additional_info",
                 );
 
-                $bmlt_meeting = $this->bmlt_retrieve_single_meeting($sanitised_fields['meeting_id']);
+                $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
                 // $wbw_dbg->debug_log($wbw_dbg->vdump($meeting));
                 if (is_wp_error($bmlt_meeting)) {
                     return $this->handlerCore->wbw_rest_error('Internal BMLT error.', 500);
@@ -834,11 +845,6 @@ class SubmissionsHandler
                     // if the field is in bmlt and its different to the submitted item, add it to the list
                     else if ((!empty($bmlt_meeting[$field])) && (!empty($sanitised_fields[$field]))) {
                         if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
-                            // $wbw_dbg->debug_log("{$field} is different");
-                            // $wbw_dbg->debug_log("*** bmlt meeting");
-                            // $wbw_dbg->debug_log($wbw_dbg->vdump($bmlt_meeting));
-                            // $wbw_dbg->debug_log("*** sanitised fields");
-                            // $wbw_dbg->debug_log($wbw_dbg->vdump($sanitised_fields));
                             // don't allow someone to modify a meeting service body
                             if ($field === 'service_body_bigint') {
                                 return $this->handlerCore->wbw_rest_error('Service body cannot be changed.', 403);
@@ -861,6 +867,8 @@ class SubmissionsHandler
 
                 $wbw_dbg->debug_log("SUBMISSION");
                 $wbw_dbg->debug_log($wbw_dbg->vdump($submission));
+                $wbw_dbg->debug_log("BMLT MEETING");
+                $wbw_dbg->debug_log($wbw_dbg->vdump($bmlt_meeting));
                 // store away the original meeting name so we know what changed
                 $submission['original_meeting_name'] = $bmlt_meeting['meeting_name'];
                 $submission['original_weekday_tinyint'] = $bmlt_meeting['weekday_tinyint'];
@@ -868,7 +876,7 @@ class SubmissionsHandler
 
                 break;
             case ('reason_close'):
-                $subject = 'Close meeting notification';
+                // $subject = 'Close meeting notification';
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
@@ -884,13 +892,19 @@ class SubmissionsHandler
                         $submission[$item] = $sanitised_fields[$item];
                     }
                 }
-                // populate the meeting name so we dont need to do it again on the submission page
-                $meeting = $this->bmlt_retrieve_single_meeting($sanitised_fields['meeting_id']);
-                $submission['meeting_name'] = $meeting['meeting_name'];
+
+                // populate the meeting name/time/day so we dont need to do it again on the submission page
+                $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
+                $wbw_dbg->debug_log("BMLT MEETING");
+                $wbw_dbg->debug_log($wbw_dbg->vdump($bmlt_meeting));
+
+                $submission['meeting_name'] = $bmlt_meeting['meeting_name'];
+                $submission['weekday_tinyint'] = $bmlt_meeting['weekday_tinyint'];
+                $submission['start_time'] = $bmlt_meeting['start_time'];
 
                 break;
             case ('reason_other'):
-                $subject = 'Other notification';
+                // $subject = 'Other notification';
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
@@ -916,6 +930,14 @@ class SubmissionsHandler
 
         $submitter_name = $sanitised_fields['first_name'] . " " . $sanitised_fields['last_name'];
         $submitter_email = $sanitised_fields['email_address'];
+
+        // max size check for #7
+        $chg = wp_json_encode($submission, 0, 1);
+        
+        if(strlen($chg)>=2048)
+        {
+            return $this->handlerCore->wbw_rest_error('Meeting change request exceeds maximum size', 422); 
+        }
 
         // insert into submissions db
         global $wpdb;
@@ -972,7 +994,7 @@ class SubmissionsHandler
         }
 
         $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['service_body_bigint']);
-        $subject = '[bmlt-workflow] ' . $submission_type . 'request received - ID ' . $insert_id;
+        $subject = '[bmlt-workflow] ' . $submission_type . ' request received - ID ' . $insert_id;
         $body = 'Log in to <a href="' . get_site_url() . '/wp-admin/admin.php?page=wbw-submissions">WBW Submissions Page</a> to review.';
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         wp_mail($to_address, $subject, $body, $headers);
@@ -1002,17 +1024,19 @@ class SubmissionsHandler
     private function submission_format($submission)
     {
 
-        $bmlt = new Integration;
-        $formats = $bmlt->getMeetingFormats();
+        $formats = $this->bmlt_integration->getMeetingFormats();
 
         $table = '';
 
         foreach ($submission as $key => $value) {
             switch ($key) {
+                case "meeting_name":
+                    $table .= '<tr><td>Meeting Name:</td><td>' . $value . '</td></tr>';
+                    break;
                 case "start_time":
                     $table .= '<tr><td>Start Time:</td><td>' . $value . '</td></tr>';
                     break;
-                case "duration":
+                case "duration_time":
                     $table .= '<tr><td>Duration:</td><td>' . $value . '</td></tr>';
                     break;
                 case "location_text":
@@ -1068,7 +1092,6 @@ class SubmissionsHandler
                 case "virtual_meeting_link":
                     $table .= '<tr><td>Virtual Meeting Link</td><td>' . $value . '</td></tr>';
                     break;
-
 
                 case "format_shared_id_list":
                     $friendlyname = "Meeting Formats";
