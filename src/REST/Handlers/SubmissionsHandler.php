@@ -933,6 +933,7 @@ class SubmissionsHandler
 
         // max size check for #7
         $chg = wp_json_encode($submission, 0, 1);
+        
         if(strlen($chg)>=2048)
         {
             return $this->handlerCore->wbw_rest_error('Meeting change request exceeds maximum size', 422); 
