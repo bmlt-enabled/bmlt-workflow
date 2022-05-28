@@ -1,3 +1,16 @@
+## 0.3.10-beta (May 28th, 2022)
+- **Breaking database changes in this release - please deactivate and reactivate the plugin before using**
+- Changes requested size validation fixed #7
+- Sorting reverse time by default #49 (thanks @brustar !)
+- JSON error messages handled on front end #47
+- Geolocation fails after trying to add Virtual details #47 (thanks @brustar !)
+- Tooltip accessibility fixes #45 (thanks @klgrimley !)
+- Virtual meetings (virtual only) will hide location fields to match BMLT admin UI
+- Virtual meetings (temp closure) now handled correctly #51
+- Fix for 'meeting change email notification message doesn't include some fields' #48 
+- BMLT service body descriptive text now shown on service bodies page (thanks @brustar !)
+- Fix for starter kit request and details not showing in submission list #39 
+
 ## 0.3.9-beta
 - Geolocation support for meetings added (thanks @brustar !)
 
