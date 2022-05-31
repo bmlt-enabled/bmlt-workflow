@@ -27,6 +27,10 @@ input[type="number"]::-webkit-outer-spin-button {
   background: rgba(255, 0, 0, 0.4);
 }
 
+.select2-custom ul {
+  margin: 0;
+}
+
 body {
   margin: 40px;
 }
