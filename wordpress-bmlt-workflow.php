@@ -18,7 +18,6 @@ if (file_exists('vendor/autoload.php')) {
     include 'vendor/autoload.php';
 } else {
     // custom autoloader if not. only autoloads out of src directory
-
     spl_autoload_register(function (string $class) {
         if (strpos($class, 'wbw\\') === 0)
         {
@@ -45,13 +44,16 @@ global $wbw_service_bodies_rest_base;
 $wbw_service_bodies_rest_base = 'servicebodies';
 global $wbw_bmltserver_rest_base;
 $wbw_bmltserver_rest_base = 'bmltserver';
+global $wbw_options_rest_base;
+$wbw_options_rest_base = 'options';
 
 // database configuration
 global $wpdb;
 
 global $wbw_db_version;
-$wbw_db_version = '1.0';
+$wbw_db_version = '0.4.0';
 
+// database tables
 global $wbw_submissions_table_name;
 $wbw_submissions_table_name = $wpdb->prefix . 'wbw_submissions';
 
@@ -61,6 +63,7 @@ $wbw_service_bodies_table_name = $wpdb->prefix . 'wbw_service_bodies';
 global $wbw_service_bodies_access_table_name;
 $wbw_service_bodies_access_table_name = $wpdb->prefix . 'wbw_service_bodies_access';
 
+// capability for managing submissions
 global $wbw_capability_manage_submissions;
 $wbw_capability_manage_submissions = 'wbw_manage_submissions';
 
@@ -221,6 +224,7 @@ function wbw_admin_scripts($hook)
 
             // inline scripts
             $script  = 'var wbw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/bmltserver') . '; ';
+            $script  += 'var wbw_admin_backup_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/options/backup') . '; ';
 
             wp_add_inline_script('admin_options_js', $script, 'before');
             break;
