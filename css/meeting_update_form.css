@@ -31,6 +31,11 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
+.select2-custom textarea {
+  margin-left: 10px;
+  margin-bottom: 5px;
+}
+
 body {
   margin: 40px;
 }
