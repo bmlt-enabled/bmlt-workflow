@@ -1,3 +1,9 @@
+input[type=number] input[type=number]::-webkit-inner-spin-button, 
+input[type=number] input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
 .select2-results__options::-webkit-scrollbar {
   width: 10px;
 }
@@ -358,8 +364,3 @@ div.error {
 	-moz-osx-font-smoothing: grayscale;
 }
 
-input[type=number] input[type=number]::-webkit-inner-spin-button, 
-input[type=number] input[type=number]::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
