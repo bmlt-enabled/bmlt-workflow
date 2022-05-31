@@ -20,6 +20,10 @@ jQuery(document).ready(function ($) {
     });
   }
 
+  $("#wbw_backup").on('click', function () {
+    turn_on_spinner("#wbw-backup-spinner");
+  });
+
   var clipboard = new ClipboardJS(".clipboard-button");
 
   $("#wbw_bmlt_configuration_dialog").dialog({

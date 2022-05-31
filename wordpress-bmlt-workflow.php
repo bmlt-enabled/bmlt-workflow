@@ -568,8 +568,7 @@ function wbw_bmlt_server_address_html()
 
 function wbw_backup_restore_html()
 {
-    echo '<br>';
-    echo '<button type="button" id="wbw_backup">Backup Configuration</button><button type="button" id="wbw_restore">Restore Configuration</button>';
+    echo '<button type="button" id="wbw_backup">Backup Configuration</button><span class="spinner" id="wbw-backup-spinner"></span>    <button type="button" id="wbw_restore">Restore Configuration</button>';
     echo '<br>';
 }
 
