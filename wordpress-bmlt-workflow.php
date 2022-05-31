@@ -224,7 +224,7 @@ function wbw_admin_scripts($hook)
 
             // inline scripts
             $script  = 'var wbw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/bmltserver') . '; ';
-            $script  += 'var wbw_admin_backup_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/options/backup') . '; ';
+            $script  .= 'var wbw_admin_backup_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/options/backup') . '; ';
 
             wp_add_inline_script('admin_options_js', $script, 'before');
             break;
