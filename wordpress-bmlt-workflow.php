@@ -492,6 +492,14 @@ function wbw_register_setting()
     );
 
     add_settings_field(
+        'wbw_backup_restore',
+        'Backup and Restore',
+        'wbw_backup_restore_html',
+        'wbw-settings',
+        'wbw-settings-section-id'
+    );
+
+    add_settings_field(
         'wbw_shortcode',
         'Meeting Update Form Shortcode',
         'wbw_shortcode_html',
@@ -558,6 +566,12 @@ function wbw_bmlt_server_address_html()
     echo '<br>';
 }
 
+function wbw_backup_restore_html()
+{
+    echo '<br>';
+    echo '<button type="button" id="wbw_backup">Backup Configuration</button><button type="button" id="wbw_restore">Restore Configuration</button>';
+    echo '<br>';
+}
 
 function wbw_shortcode_html()
 {
