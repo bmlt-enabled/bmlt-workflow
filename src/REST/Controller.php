@@ -7,6 +7,7 @@ use wbw\Debug;
 use wbw\REST\Handlers\BMLTServerHandler;
 use wbw\REST\Handlers\ServiceBodiesHandler;
 use wbw\REST\Handlers\SubmissionsHandler;
+use wbw\REST\Handlers\OptionsHandler;
 
 class Controller extends \WP_REST_Controller
 {
@@ -21,15 +22,19 @@ class Controller extends \WP_REST_Controller
 		global $wbw_submissions_rest_base;
 		global $wbw_service_bodies_rest_base;
 		global $wbw_bmltserver_rest_base;
+		global $wbw_options_rest_base;
 
 		$this->namespace = $wbw_rest_namespace;
 		$this->submissions_rest_base = $wbw_submissions_rest_base;
 		$this->service_bodies_rest_base = $wbw_service_bodies_rest_base;
 		$this->bmltserver_rest_base = $wbw_bmltserver_rest_base;
+		$this->options_rest_base = $wbw_options_rest_base;
 
 		$this->BMLTServerHandler = new BMLTServerHandler();
 		$this->ServiceBodiesHandler = new ServiceBodiesHandler();
 		$this->SubmissionsHandler = new SubmissionsHandler();
+		$this->OptionsHandler = new OptionsHandler();
+
 	}
 
 	public function register_routes()
@@ -173,6 +178,14 @@ class Controller extends \WP_REST_Controller
 				'permission_callback' => array($this, 'get_bmltserver_geolocate_permissions_check'),
 			),
 		);
+
+		// POST options/backup
+		register_rest_route($this->namespace, '/' . $this->options_rest_base . '/backup', array(
+			'methods'             => \WP_REST_Server::CREATABLE,
+			'callback'            => array($this, 'post_wbw_backup'),
+			'permission_callback' => array($this, 'post_wbw_backup_permissions_check'),
+		));
+		
 	}
 
 	private function authorization_status_code()
@@ -183,6 +196,8 @@ class Controller extends \WP_REST_Controller
 		}
 		return $status;
 	}
+
+	// permission validation for each rest call
 
 	public function get_submissions_permissions_check($request)
 	{
@@ -319,12 +334,24 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
+	public function post_wbw_backup_permissions_check($request)
+	{
+		global $wbw_dbg;
 
+		$wbw_dbg->debug_log("post_wbw_Backup_permissions_check " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot call the backup API.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+	
 	public function post_submissions_permissions_check($request)
 	{
 		// Anyone can post a form submission
 		return true;
 	}
+
+	// handler stubs calling off to the handler objects
 
 	public function get_submissions($request)
 	{
@@ -405,5 +432,10 @@ class Controller extends \WP_REST_Controller
 		return rest_ensure_response($result);
 	}
 
+	public function post_wbw_backup($request)
+	{
+		$result = $this->OptionsHandler->post_wbw_backup_handler($request);
+		return rest_ensure_response($result);
+	}
 
 }

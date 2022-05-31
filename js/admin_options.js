@@ -21,7 +21,27 @@ jQuery(document).ready(function ($) {
   }
 
   $("#wbw_backup").on('click', function () {
-    turn_on_spinner("#wbw-backup-spinner");
+    $.ajax({
+      url: wp_rest_base + wbw_admin_backup_rest_url,
+      method: "POST",
+      data: JSON.stringify(post),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      processData: false,
+      beforeSend: function (xhr) {
+        turn_on_spinner("#wbw-backup-spinner");
+
+        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+      },
+    })
+      .done(function (response) {
+        turn_off_spinner("#wbw-backup-spinner");
+        notice_success(response, "wbw-error-message");
+      })
+      .fail(function (xhr) {
+        notice_error(xhr, "wbw-error-message");
+        turn_off_spinner("#wbw-backup-spinner");
+      });
   });
 
   var clipboard = new ClipboardJS(".clipboard-button");

@@ -76,6 +76,7 @@ jQuery(document).ready(function ($) {
         notice_success(response, "wbw-error-message");
       })
       .fail(function (xhr) {
+        turn_off_spinner("#wbw-submit-spinner");
         notice_error(xhr, "wbw-error-message");
       });
   });
