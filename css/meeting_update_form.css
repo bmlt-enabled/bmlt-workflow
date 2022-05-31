@@ -1,5 +1,5 @@
-.form-grid input[type="number"]::-webkit-inner-spin-button, 
-.form-grid input[type="number"]::-webkit-outer-spin-button {
+.form-grid input::-webkit-inner-spin-button, 
+.form-grid input::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
