@@ -358,7 +358,7 @@ div.error {
 	-moz-osx-font-smoothing: grayscale;
 }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button {
+.form-grid input[type=number]::-webkit-inner-spin-button, 
+.form-grid input[type=number]::-webkit-outer-spin-button {
   opacity: 1;
 }
