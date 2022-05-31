@@ -22,7 +22,7 @@ jQuery(document).ready(function ($) {
 
   $("#wbw_backup").on('click', function () {
     $.ajax({
-      url: wp_rest_base + wbw_admin_backup_rest_url,
+      url: wbw_admin_backup_rest_url,
       method: "POST",
       data: JSON.stringify(post),
       contentType: "application/json; charset=utf-8",
