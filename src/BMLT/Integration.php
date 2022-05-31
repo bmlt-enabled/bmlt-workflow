@@ -53,7 +53,7 @@ class Integration
         global $wbw_dbg;
 
         $wbw_bmlt_server_address = get_option('wbw_bmlt_server_address');
-        $url = $wbw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&lang_enum=en&&meeting_key_value=" . $meeting_id; 
+        $url = $wbw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -227,7 +227,7 @@ class Integration
     {
         $key = $this->getGmapsKey();
 
-        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($address)."&&key=".$key;
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=".urlencode($address)."&key=".$key;
         global $wbw_dbg;
         $wbw_dbg->debug_log("*** GMAPS URL");
         $wbw_dbg->debug_log($url);

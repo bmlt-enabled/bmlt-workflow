@@ -378,7 +378,7 @@ Line: $errorLine
         $json = '{ "results" : [ { "address_components" : [ { "long_name" : "Sydney", "short_name" : "Sydney", "types" : [ "colloquial_area", "locality", "political" ] }, { "long_name" : "New South Wales", "short_name" : "NSW", "types" : [ "administrative_area_level_1", "political" ] }, { "long_name" : "Australia", "short_name" : "AU", "types" : [ "country", "political" ] } ], "formatted_address" : "Sydney NSW, Australia", "geometry" : { "bounds" : { "northeast" : { "lat" : -33.5781409, "lng" : 151.3430209 }, "southwest" : { "lat" : -34.118347, "lng" : 150.5209286 } }, "location" : { "lat" : -33.8688197, "lng" : 151.2092955 }, "location_type" : "APPROXIMATE", "viewport" : { "northeast" : { "lat" : -33.5781409, "lng" : 151.3430209 }, "southwest" : { "lat" : -34.118347, "lng" : 150.5209286 } } }, "partial_match" : true, "place_id" : "ChIJP3Sa8ziYEmsRUKgyFmh9AQM", "types" : [ "colloquial_area", "locality", "political" ] } ], "status" : "OK" }';
 
         Functions\when('curl_exec')->justReturn($json);
-        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=sydney%2C+australia&&key=googlemapstestkey";
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=sydney%2C+australia&key=googlemapstestkey";
 
         Functions\expect('curl_init')->once()->with($url);
         // Functions\expect('curl_init')->once();
@@ -414,7 +414,7 @@ Line: $errorLine
         $json = ' { "results" : [], "status" : "ZERO_RESULTS" }';
        
         Functions\when('curl_exec')->justReturn($json);
-        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=junk%2C+junk&&key=googlemapstestkey";
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=junk%2C+junk&key=googlemapstestkey";
 
         Functions\expect('curl_init')->once()->with($url);
         // Functions\expect('curl_init')->once();
@@ -448,7 +448,7 @@ Line: $errorLine
         $json = ' { "junk" : "junk" }';
        
         Functions\when('curl_exec')->justReturn($json);
-        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=junk%2C+junk&&key=googlemapstestkey";
+        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=junk%2C+junk&key=googlemapstestkey";
 
         Functions\expect('curl_init')->once()->with($url);
         // Functions\expect('curl_init')->once();
