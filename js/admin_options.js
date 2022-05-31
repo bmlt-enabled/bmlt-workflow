@@ -24,7 +24,6 @@ jQuery(document).ready(function ($) {
     $.ajax({
       url: wbw_admin_backup_rest_url,
       method: "POST",
-      data: JSON.stringify(post),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       processData: false,
