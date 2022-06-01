@@ -46,7 +46,7 @@ EOD;
         <div class="rendered-form">
             <div>
                 <label for="update_reason"">Reason For Update:</label>
-                <select class="aa" name="update_reason" id="update_reason">
+                <select class="update-form-select" name="update_reason" id="update_reason">
                     <option disabled="null" selected="null">Select Reason...</option>
                     <option value="reason_new">New Meeting</option>
                     <option value="reason_change">Change Existing Meeting</option>

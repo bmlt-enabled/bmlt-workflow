@@ -4,13 +4,12 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-.aa {
-  line-height: 1.5 !important;
-  font-size: 1.2em !important;
-  padding: 5px 10px !important;
-  display: block !important;
-  width: 100% !important;
-  height: 2.1em !important;
+.update-form-select {
+  line-height: 1.5;
+  font-size: 1.2em;
+  padding: 5px 10px;
+  display: block;
+  height: 2.1em;
 }
 
 .select2-results__options::-webkit-scrollbar {
