@@ -4,6 +4,15 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
+.update-form-select select {
+  line-height: 1.5;
+  font-size: 1.2em;
+  padding: 5px 10px;
+  display: block;
+  width: 100%;
+  height: 2.1em;
+}
+
 .select2-results__options::-webkit-scrollbar {
   width: 10px;
 }
@@ -33,7 +42,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .select2-custom.select2-custom.select2-custom textarea {
   margin-left: 10px;
-  margin-bottom: 5px;
+  margin-bottom: 3px;
 }
 
 body {
