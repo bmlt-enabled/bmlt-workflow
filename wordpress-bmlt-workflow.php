@@ -67,6 +67,27 @@ $wbw_service_bodies_access_table_name = $wpdb->prefix . 'wbw_service_bodies_acce
 global $wbw_capability_manage_submissions;
 $wbw_capability_manage_submissions = 'wbw_manage_submissions';
 
+// option list so we can back them up
+global $wbw_options;
+$wbw_options = array(
+    'wbw_db_version' => 'wbw_db_version',
+    'wbw_bmlt_server_address' => 'wbw_bmlt_server_address',
+    'wbw_bmlt_username' => 'wbw_bmlt_username',
+    'wbw_bmlt_password' => 'wbw_bmlt_password',
+    'wbw_bmlt_test_status' => 'wbw_bmlt_test_status',
+    'wbw_submitter_email_template' => 'wbw_submitter_email_template',
+    'wbw_optional_location_sub_province' => 'wbw_optional_location_sub_province',
+    'wbw_delete_closed_meetings' => 'wbw_delete_closed_meetings',
+    'wbw_email_from_address' => 'wbw_email_from_address',
+    'wbw_fso_email_template' => 'wbw_fso_email_template',
+    'wbw_submitter_email_template' => 'wbw_submitter_email_template',
+);
+
+function wbw_get_option($option)
+{
+    global $wbw_options;
+    return $wbw_options[$option];
+}
 
 function meeting_update_form($atts = [], $content = null, $tag = '')
 {
@@ -90,10 +111,10 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $script  = 'var wbw_form_submit = ' . json_encode($wbw_rest_namespace . '/submissions') . '; ';
     $script .= 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace . '/servicebodies') . '; ';
     $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
-    $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
+    $script .= 'var wbw_bmlt_server_address = "' . wbw_get_option('wbw_bmlt_server_address') . '";';
     // optional fields
-    $script .= 'var wbw_optional_location_nation = "' . get_option('wbw_optional_location_nation') . '";';
-    $script .= 'var wbw_optional_location_sub_province = "' . get_option('wbw_optional_location_sub_province') . '";';
+    $script .= 'var wbw_optional_location_nation = "' . wbw_get_option('wbw_optional_location_nation') . '";';
+    $script .= 'var wbw_optional_location_sub_province = "' . wbw_get_option('wbw_optional_location_sub_province') . '";';
 
     // add meeting formats
     $bmlt_integration = new Integration;
@@ -251,7 +272,7 @@ function wbw_admin_scripts($hook)
             $script  = 'var wbw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/submissions/') . '; ';
             $script  .= 'var wbw_bmltserver_geolocate_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/bmltserver/geolocate') . '; ';
             // add our bmlt server for the submission lookups
-            $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
+            $script .= 'var wbw_bmlt_server_address = "' . wbw_get_option('wbw_bmlt_server_address') . '";';
 
             // add meeting formats
             $bmlt_integration = new Integration;
@@ -270,12 +291,12 @@ function wbw_admin_scripts($hook)
             $script .= 'var wbw_admin_wbw_service_bodies = ' . json_encode($result) . '; ';
 
             // defaults for approve close form
-            $wbw_default_closed_meetings = get_option('wbw_delete_closed_meetings');
+            $wbw_default_closed_meetings = wbw_get_option('wbw_delete_closed_meetings');
             $script .= 'var wbw_default_closed_meetings = "' . $wbw_default_closed_meetings . '"; ';
 
             // optional fields in quickedit
-            $script .= 'var wbw_optional_location_nation = "' . get_option('wbw_optional_location_nation') . '";';
-            $script .= 'var wbw_optional_location_sub_province = "' . get_option('wbw_optional_location_sub_province') . '";';
+            $script .= 'var wbw_optional_location_nation = "' . wbw_get_option('wbw_optional_location_nation') . '";';
+            $script .= 'var wbw_optional_location_sub_province = "' . wbw_get_option('wbw_optional_location_sub_province') . '";';
         
             wp_add_inline_script('admin_submissions_js', $script, 'before');
 
@@ -588,7 +609,7 @@ function wbw_shortcode_html()
 
 function wbw_email_from_address_html()
 {
-    $from_address = get_option('wbw_email_from_address');
+    $from_address = wbw_get_option('wbw_email_from_address');
     echo <<<END
     <div class="wbw_info_text">
     <br>The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form <code>Display Name &lt;example@example.com&gt;</code> or just a standard email address.
@@ -602,7 +623,7 @@ function wbw_email_from_address_html()
 
 function wbw_delete_closed_meetings_html()
 {
-    $selection = get_option('wbw_delete_closed_meetings');
+    $selection = wbw_get_option('wbw_delete_closed_meetings');
     $delete = '';
     $unpublish = '';
     if ($selection === 'delete') {
@@ -638,7 +659,7 @@ function wbw_optional_form_fields_html()
 
 function do_optional_field($option, $friendlyname)
 {
-    $value = get_option($option);
+    $value = wbw_get_option($option);
     global $wbw_dbg;
     $wbw_dbg->debug_log($wbw_dbg->vdump($value));
     $hidden = '';
@@ -669,7 +690,7 @@ function do_optional_field($option, $friendlyname)
 
 function wbw_fso_email_address_html()
 {
-    $from_address = get_option('wbw_fso_email_address');
+    $from_address = wbw_get_option('wbw_fso_email_address');
     echo <<<END
     <div class="wbw_info_text">
     <br>The email address to notify the FSO that starter kits are required.
@@ -689,7 +710,7 @@ function wbw_fso_email_template_html()
     <br><br>
     </div>
     END;
-    $content = get_option('wbw_fso_email_template');
+    $content = wbw_get_option('wbw_fso_email_template');
     $editor_id = 'wbw_fso_email_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));
@@ -705,7 +726,7 @@ function wbw_submitter_email_template_html()
     <br><br>
     </div>
     END;
-    $content = get_option('wbw_submitter_email_template');
+    $content = wbw_get_option('wbw_submitter_email_template');
     $editor_id = 'wbw_submitter_email_template';
 
     wp_editor($content, $editor_id, array('media_buttons' => false));

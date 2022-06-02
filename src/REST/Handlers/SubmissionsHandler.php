@@ -132,7 +132,7 @@ class SubmissionsHandler
         // send action email
         //
 
-        $from_address = get_option('wbw_email_from_address');
+        $from_address = wbw_get_option('wbw_email_from_address');
         $to_address = $submitter_email;
         $subject = "NA Meeting Change Request Rejection - Submission ID " . $request['id'];
         $body = "Your meeting change (ID " . $request['id'] . ") has been rejected.";
@@ -515,7 +515,7 @@ class SubmissionsHandler
 
         $result = $wpdb->get_results($sql, ARRAY_A);
 
-        $from_address = get_option('wbw_email_from_address');
+        $from_address = wbw_get_option('wbw_email_from_address');
 
         //
         // send action email
@@ -540,10 +540,10 @@ class SubmissionsHandler
         if ($submission_type == "reason_new") {
             if ((!empty($change['starter_kit_required'])) && ($change['starter_kit_required'] === 'yes') && (!empty($change['starter_kit_postal_address']))) {
                 $wbw_dbg->debug_log("We're sending a starter kit");
-                $template = get_option('wbw_fso_email_template');
+                $template = wbw_get_option('wbw_fso_email_template');
                 if (!empty($template)) {
                     $subject = 'Starter Kit Request';
-                    $to_address = get_option('wbw_fso_email_address');
+                    $to_address = wbw_get_option('wbw_fso_email_address');
                     $fso_subfields = array('first_name', 'last_name', 'meeting_name', 'starter_kit_postal_address');
 
                     foreach ($fso_subfields as $field) {
@@ -972,7 +972,7 @@ class SubmissionsHandler
         // Send our emails out
 
         // Common email fields
-        $from_address = get_option('wbw_email_from_address');
+        $from_address = wbw_get_option('wbw_email_from_address');
 
         /*
         * Send a notification to the configured trusted servants for the correct service body
@@ -1006,7 +1006,7 @@ class SubmissionsHandler
         $to_address = $submitter_email;
         $subject = "NA Meeting Change Request Acknowledgement - Submission ID " . $insert_id;
 
-        $template = get_option('wbw_submitter_email_template');
+        $template = wbw_get_option('wbw_submitter_email_template');
 
         $subfield = '{field:submission}';
         $subwith = $this->submission_format($submission);

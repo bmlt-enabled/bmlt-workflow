@@ -52,7 +52,7 @@ class Integration
     {
         global $wbw_dbg;
 
-        $wbw_bmlt_server_address = get_option('wbw_bmlt_server_address');
+        $wbw_bmlt_server_address = wbw_get_option('wbw_bmlt_server_address');
         $url = $wbw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
 
         $curl = curl_init($url);

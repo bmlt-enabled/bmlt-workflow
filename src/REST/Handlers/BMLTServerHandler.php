@@ -51,7 +51,7 @@ private function check_bmltserver_parameters($username, $password, $server)
         $wbw_dbg->debug_log('get test results returning');
         $wbw_dbg->debug_log(get_option("wbw_bmlt_test_status", "failure"));
 
-        $response = array("wbw_bmlt_test_status" => get_option("wbw_bmlt_test_status", "failure"));
+        $response = array("wbw_bmlt_test_status" => wbw_get_option("wbw_bmlt_test_status", "failure"));
 
         return $this->handlerCore->wbw_rest_success($response);
     }

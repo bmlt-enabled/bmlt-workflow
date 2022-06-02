@@ -163,7 +163,7 @@ EOD;
             <input type="text" name="quickedit_location_street" id="quickedit_location_street" class="quickedit-input">
             <label for="quickedit_location_info">Location Info</label>
             <input type="text" name="quickedit_location_info" id="quickedit_location_info" class="quickedit-input">
-            <label for="quickedit_location_municipality">Municipality</label>
+            <label for="quickedit_location_municipality">City/Town/Suburb</label>
             <input type="text" name="quickedit_location_municipality" id="quickedit_location_municipality" class="quickedit-input">
 
             <div id="optional_location_sub_province">
