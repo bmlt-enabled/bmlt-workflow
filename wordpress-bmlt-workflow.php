@@ -77,6 +77,7 @@ $wbw_options = array(
     'wbw_bmlt_test_status' => 'wbw_bmlt_test_status',
     'wbw_submitter_email_template' => 'wbw_submitter_email_template',
     'wbw_optional_location_sub_province' => 'wbw_optional_location_sub_province',
+    'wbw_optional_location_nation' => 'wbw_optional_location_nation',
     'wbw_delete_closed_meetings' => 'wbw_delete_closed_meetings',
     'wbw_email_from_address' => 'wbw_email_from_address',
     'wbw_fso_email_template' => 'wbw_fso_email_template',
@@ -86,7 +87,7 @@ $wbw_options = array(
 function wbw_get_option($option)
 {
     global $wbw_options;
-    return $wbw_options[$option];
+    return get_option($wbw_options[$option]);
 }
 
 function meeting_update_form($atts = [], $content = null, $tag = '')

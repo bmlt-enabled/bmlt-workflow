@@ -55,6 +55,7 @@ Line: $errorLine
         Functions\when('\current_time')->justReturn('2022-03-23 09:22:44');
         Functions\when('\absint')->returnArg();
         Functions\when('\get_option')->returnArg();
+        Functions\when('\wbw_get_option')->returnArg();
         Functions\when('wp_safe_remote_post')->returnArg();
 
     }
@@ -79,7 +80,7 @@ Line: $errorLine
         $request->set_route("/wbw/v1/bmltserver");
         $request->set_method('GET');
 
-        Functions\when('\get_option')->justReturn('success');
+        Functions\when('\wbw_get_option')->justReturn('success');
         $rest = new BMLTServerHandler();
 
         $response = $rest->get_bmltserver_handler($request);
@@ -102,7 +103,7 @@ Line: $errorLine
         $request->set_route("/wbw/v1/bmltserver");
         $request->set_method('GET');
 
-        Functions\when('\get_option')->justReturn('failure');
+        Functions\when('\wbw_get_option')->justReturn('failure');
         $rest = new BMLTServerHandler();
 
         $response = $rest->get_bmltserver_handler($request);
