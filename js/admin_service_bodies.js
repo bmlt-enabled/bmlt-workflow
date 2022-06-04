@@ -1,18 +1,18 @@
 jQuery(document).ready(function ($) {
-  function dismiss_notice(element) {
-    jQuery(element)
-      .parent()
-      .slideUp("normal", function () {
-        jQuery(this).remove();
-      });
-    return false;
-  }
+  // function dismiss_notice(element) {
+  //   jQuery(element)
+  //     .parent()
+  //     .slideUp("normal", function () {
+  //       jQuery(this).remove();
+  //     });
+  //   return false;
+  // }
 
-  function clear_notices() {
-    jQuery(".notice-dismiss").each(function (i, e) {
-      dismiss_notice(e);
-    });
-  }
+  // function clear_notices() {
+  //   jQuery(".notice-dismiss").each(function (i, e) {
+  //     dismiss_notice(e);
+  //   });
+  // }
 
   function attach_select_options_for_sbid(sblist, userlist, sbid, selectid) {
     Object.keys(userlist).forEach((item) => {

@@ -1,11 +1,11 @@
-function dismiss_notice(element) {
-  jQuery(element)
-    .parent()
-    .slideUp("normal", function () {
-      jQuery(this).remove();
-    });
-  return false;
-}
+// function dismiss_notice(element) {
+//   jQuery(element)
+//     .parent()
+//     .slideUp("normal", function () {
+//       jQuery(this).remove();
+//     });
+//   return false;
+// }
 
 function mysql2localdate(data) {
   var t = data.split(/[- :]/);
@@ -142,11 +142,11 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  function clear_notices() {
-    jQuery(".notice-dismiss").each(function (i, e) {
-      dismiss_notice(e);
-    });
-  }
+  // function clear_notices() {
+  //   jQuery(".notice-dismiss").each(function (i, e) {
+  //     dismiss_notice(e);
+  //   });
+  // }
 
   // default close meeting radio button
   if (wbw_default_closed_meetings === "delete") {

@@ -1,11 +1,11 @@
-function dismiss_notice(element) {
-  jQuery(element)
-    .parent()
-    .slideUp("normal", function () {
-      jQuery(this).remove();
-    });
-  return false;
-}
+// function dismiss_notice(element) {
+//   jQuery(element)
+//     .parent()
+//     .slideUp("normal", function () {
+//       jQuery(this).remove();
+//     });
+//   return false;
+// }
 
 jQuery(document).ready(function ($) {
 
@@ -14,11 +14,11 @@ jQuery(document).ready(function ($) {
     update_from_test_result(data);
   });
 
-  function clear_notices() {
-    jQuery(".notice-dismiss").each(function (i, e) {
-      dismiss_notice(e);
-    });
-  }
+  // function clear_notices() {
+  //   jQuery(".notice-dismiss").each(function (i, e) {
+  //     dismiss_notice(e);
+  //   });
+  // }
 
   $("#wbw_backup").on('click', function () {
     $.ajax({
@@ -29,7 +29,7 @@ jQuery(document).ready(function ($) {
       processData: false,
       beforeSend: function (xhr) {
         turn_on_spinner("#wbw-backup-spinner");
-
+        clear_notices();
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
     })
