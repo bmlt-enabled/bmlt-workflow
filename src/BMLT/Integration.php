@@ -274,7 +274,7 @@ class Integration
             $postargs = array(
                 'admin_action' => 'login',
                 'c_comdef_admin_login' => \get_option('wbw_bmlt_username'),
-                'c_comdef_admin_password' => $this->handlerCore->secrets_decrypt(DB_PASSWORD,\get_option ('wbw_bmlt_password'))
+                'c_comdef_admin_password' => $this->handlerCore->secrets_decrypt(DB_PASSWORD,json_decode(\get_option ('wbw_bmlt_password')))
             );
             $url = \get_option('wbw_bmlt_server_address') . "index.php";
 
