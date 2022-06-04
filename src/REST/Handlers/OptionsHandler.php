@@ -32,21 +32,9 @@ class OptionsHandler
         {
             if(array_key_exists($key, $wbw_options))
             {
-                // $wbw_dbg->debug_log("found ".$key);
-                if($key == 'wbw_bmlt_password')
-                {
-                    $mykey = DB_PASSWORD;
-                    $mynonce = \Sodium\randombytes_buf(\Sodium\CRYPTO_SECRETBOX_NONCEBYTES);
-                    $ciphertext = \Sodium\crypto_secretbox($value, $mynonce, $mykey);
-                    $wbw_dbg->debug_log("key is ".$key." ciphertext is ".$ciphertext);
-
-                }
+                $wbw_dbg->debug_log("found ".$key);
                 $savearr[$key]=$value;
             }
-            // else
-            // {
-            //     $wbw_dbg->debug_log("didnt find ".$key);
-            // }
         }
         $wbw_dbg->debug_log(json_encode($savearr, JSON_PRETTY_PRINT));
 
