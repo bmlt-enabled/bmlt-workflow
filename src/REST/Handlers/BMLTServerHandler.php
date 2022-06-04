@@ -104,17 +104,19 @@ private function check_bmltserver_parameters($username, $password, $server)
 
     public function patch_bmltserver_handler($request)
     {
+        global $wbw_dbg;
 
         $username = $request['wbw_bmlt_username'];
         $password = $request['wbw_bmlt_password'];
         $server = $request['wbw_bmlt_server_address'];
 
         $result = $this->check_bmltserver_parameters($username, $password, $server);
+        $wbw_dbg->debug_log("check_bmltserver returned " .$result);
+
         if ($result !== true) {
             
             return $result;
         }
-        global $wbw_dbg;
 
         update_option('wbw_bmlt_username', $username);
         $wbw_dbg->debug_log("encrypting password to  " . json_encode($this->handlerCore->secrets_encrypt(DB_PASSWORD,$password)));
