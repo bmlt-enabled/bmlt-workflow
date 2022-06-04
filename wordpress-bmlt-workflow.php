@@ -81,6 +81,7 @@ $wbw_options = array(
     'wbw_delete_closed_meetings' => 'wbw_delete_closed_meetings',
     'wbw_email_from_address' => 'wbw_email_from_address',
     'wbw_fso_email_template' => 'wbw_fso_email_template',
+    'wbw_fso_email_address' => 'wbw_fso_email_address',
     'wbw_submitter_email_template' => 'wbw_submitter_email_template',
 );
 
