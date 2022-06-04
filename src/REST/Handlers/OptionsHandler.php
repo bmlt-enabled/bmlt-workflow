@@ -36,7 +36,7 @@ class OptionsHandler
                 if($key == 'wbw_bmlt_password')
                 {
                     $mykey = DB_PASSWORD;
-                    $mynonce = 1;
+                    $mynonce = \Sodium\randombytes_buf(\Sodium\CRYPTO_SECRETBOX_NONCEBYTES);
                     $ciphertext = \Sodium\crypto_secretbox($value, $mynonce, $mykey);
                     $wbw_dbg->debug_log("key is ".$key." ciphertext is ".$ciphertext);
 
