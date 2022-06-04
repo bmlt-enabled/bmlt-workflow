@@ -35,6 +35,7 @@ input[type="number"]::-webkit-outer-spin-button {
   background: rgba(255, 0, 0, 0.4);
 }
 
+
 .select2-custom ul {
   margin: 0;
 }
@@ -141,7 +142,7 @@ body {
   background: #e7f478;
 }
 
-.select2-selection--multiple.display_format_shared_id_list-select2.wbw-changed {
+.select2-selection--multiple.select2-custom.wbw-changed {
   background: #e7f478;
 }
 

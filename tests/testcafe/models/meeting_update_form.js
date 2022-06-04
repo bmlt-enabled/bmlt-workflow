@@ -34,7 +34,8 @@ class Meeting_Update_Form {
         this.duration_minutes = Selector('#duration_minutes');
         this.duration_time = Selector('#duration_time');
         this.display_format_shared_id_list = Selector('#display_format_shared_id_list');
-        this.format_list_clickable = Selector('span .display_format_shared_id_list-select2');
+        // this.format_list_clickable = Selector('span .display_format_shared_id_list-select2');
+        this.format_list_clickable = Selector('span.select2-custom span.select2-search--inline');
         this.format_shared_id_list = Selector('#format_shared_id_list');
         this.location_text = Selector('#location_text');
         this.location_street = Selector('#location_street');
