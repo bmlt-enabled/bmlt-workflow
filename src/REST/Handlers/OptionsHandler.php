@@ -22,12 +22,22 @@ class OptionsHandler
         global $wbw_submissions_table_name;
         global $wbw_service_bodies_table_name;
         global $wbw_service_bodies_access_table_name;
-    
+        global $wbw_options;
         $charset_collate = $wpdb->get_charset_collate();
     
         // get options
         $optarr = wp_load_alloptions();
-        
+        foreach ($optarr as $key => $value)
+        {
+            if(array_key_exists($key, $wbw_options))
+            {
+                $wbw_dbg->debug_log("found ".$key);
+            }
+            else
+            {
+                $wbw_dbg->debug_log("didnt find ".$key);
+            }
+        }
         // require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     
         // $sql = "CREATE TABLE " . $wbw_service_bodies_table_name . " (
