@@ -263,7 +263,7 @@ jQuery(document).ready(function ($) {
     $("#display_format_shared_id_list").off("change.wbw-highlight");
     // remove the highlighting css
     $(".meeting-input").removeClass("wbw-changed");
-    $(".display_format_shared_id_list-select2").removeClass("wbw-changed");
+    $(".select2-custom").removeClass("wbw-changed");
   }
 
   function enable_highlighting() {
@@ -273,7 +273,7 @@ jQuery(document).ready(function ($) {
     });
     // add highlighting trigger for select2
     $("#display_format_shared_id_list").on("change.wbw-highlight", function () {
-      $(".display_format_shared_id_list-select2").addClass("wbw-changed");
+      $(".select2-custom").addClass("wbw-changed");
     });
   }
 
