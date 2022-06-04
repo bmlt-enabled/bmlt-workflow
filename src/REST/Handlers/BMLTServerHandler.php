@@ -114,8 +114,11 @@ private function check_bmltserver_parameters($username, $password, $server)
             
             return $result;
         }
+        global $wbw_dbg;
 
         update_option('wbw_bmlt_username', $username);
+        $wbw_dbg->debug_log("encrypting password to  " . json_encode($this->handlerCore->secrets_encrypt(DB_PASSWORD,$password)));
+
         update_option('wbw_bmlt_password', json_encode($this->handlerCore->secrets_encrypt(DB_PASSWORD,$password)));
         update_option('wbw_bmlt_server_address', $server);
 
