@@ -27,17 +27,21 @@ class OptionsHandler
     
         // get options
         $optarr = wp_load_alloptions();
+        $savearr = array();
         foreach ($optarr as $key => $value)
         {
             if(array_key_exists($key, $wbw_options))
             {
-                $wbw_dbg->debug_log("found ".$key);
+                // $wbw_dbg->debug_log("found ".$key);
+                $savearr[$key]=$value;
             }
-            else
-            {
-                $wbw_dbg->debug_log("didnt find ".$key);
-            }
+            // else
+            // {
+            //     $wbw_dbg->debug_log("didnt find ".$key);
+            // }
         }
+        $wbw_dbg->debug_log(json_encode($savearr, JSON_PRETTY_PRINT));
+
         // require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     
         // $sql = "CREATE TABLE " . $wbw_service_bodies_table_name . " (
