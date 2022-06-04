@@ -33,7 +33,7 @@ class OptionsHandler
             if(array_key_exists($key, $wbw_options))
             {
                 // $wbw_dbg->debug_log("found ".$key);
-                if($key = 'wbw_bmlt_password')
+                if($key == 'wbw_bmlt_password')
                 {
                     $mykey = \Sodium\randombytes_buf(\Sodium\CRYPTO_SECRETBOX_KEYBYTES);
                     // Using your key to encrypt information
