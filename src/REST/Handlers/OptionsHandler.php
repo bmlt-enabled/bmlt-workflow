@@ -1,8 +1,8 @@
 <?php 
+
 namespace wbw\REST\Handlers;
 
 use wbw\REST\HandlerCore;
-
 class OptionsHandler
 {
 
@@ -33,6 +33,15 @@ class OptionsHandler
             if(array_key_exists($key, $wbw_options))
             {
                 // $wbw_dbg->debug_log("found ".$key);
+                if($key = 'wbw_bmlt_password')
+                {
+                    $mykey = \Sodium\randombytes_buf(\Sodium\CRYPTO_SECRETBOX_KEYBYTES);
+                    // Using your key to encrypt information
+                    $mynonce = \Sodium\randombytes_buf(\Sodium\CRYPTO_SECRETBOX_NONCEBYTES);
+                    $ciphertext = \Sodium\crypto_secretbox('test', $mynonce, $mykey);
+                    $wbw_dbg->debug_log("ciphertext is ".$ciphertext);
+
+                }
                 $savearr[$key]=$value;
             }
             // else
