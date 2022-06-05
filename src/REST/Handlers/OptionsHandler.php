@@ -54,10 +54,17 @@ class OptionsHandler
         $save['service_bodies_access']=$result;
 
         $wbw_dbg->debug_log(json_encode($save, JSON_PRETTY_PRINT));
-
-
-
+        mkdir(WBW_PLUGIN_DIR."/backups",0700);
+        $dateTime = new \DateTime();
+        $dateTime->format(\DateTimeInterface::RFC3339_EXTENDED);
+        $fname = $dateTime.".json";
+        $wbw_dbg->debug_log("filename = ".$fname);
         return $this->handlerCore->wbw_rest_success('Backup completed.');
+
+    }
+
+    public function post_wbw_restore_handler($request)
+    {
 
     }
 }
