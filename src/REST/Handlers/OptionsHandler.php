@@ -57,7 +57,8 @@ class OptionsHandler
         $dateTime = new \DateTime();
         $fname = $dateTime->format(\DateTimeInterface::RFC3339_EXTENDED).".json";
         $wbw_dbg->debug_log("filename = ".$fname);
-        if(!($backupfile = fopen($fname, "w")))
+        $backupfile = fopen($fname, "w");
+        if($backupfile == false)
         {
             return $this->handlerCore->wbw_rest_error('Failed to create backup file.');
         }
