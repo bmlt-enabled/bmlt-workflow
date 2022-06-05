@@ -59,7 +59,7 @@ jQuery(document).ready(function ($) {
     clear_notices();
 
     $.ajax({
-      url: wp_rest_base + wbw_admin_wbw_service_bodies_rest_route,
+      url: wbw_admin_wbw_service_bodies_rest_url,
       method: "POST",
       data: JSON.stringify(post),
       contentType: "application/json; charset=utf-8",
@@ -84,7 +84,7 @@ jQuery(document).ready(function ($) {
   var parameters = { detail: "true" };
 
   $.ajax({
-    url: wp_rest_base + wbw_admin_wbw_service_bodies_rest_route,
+    url:wbw_admin_wbw_service_bodies_rest_url,
     dataType: "json",
     data: parameters,
     beforeSend: function (xhr) {
@@ -93,7 +93,8 @@ jQuery(document).ready(function ($) {
     },
   }).done(function (response) {
     $.ajax({
-      url: wp_rest_base + "wp/v2/users",
+      // url: wp_rest_base + "wp/v2/users",
+      url: wp_users_url,
       dataType: "json",
       sblist: response,
       beforeSend: function (xhr) {
