@@ -40,7 +40,7 @@ jQuery(document).ready(function ($) {
     },
     buttons: {
       Ok: function () {
-        ($("#yesimsure").prop("checked") == true)
+        if($("#yesimsure").prop("checked") == true)
         {
           wipe_service_bodies({"checked":"true"});
           save_results(this);
