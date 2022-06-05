@@ -22,6 +22,45 @@ jQuery(document).ready(function ($) {
 
   var clipboard = new ClipboardJS(".clipboard-button");
 
+
+  $("#wbw_bmlt_warning_dialog").dialog({
+    title: "BMLT Configuration Change Warning",
+    autoOpen: false,
+    draggable: false,
+    width: "auto",
+    maxWidth: "auto",
+    modal: true,
+    resizable: false,
+    closeOnEscape: true,
+    position: {
+      my: "center",
+      at: "center",
+      of: window,
+    },
+    buttons: {
+      "Ok": function () {
+        save_results(this);
+        // trigger an update on the main page
+        test_configuration(true);
+        $(this).dialog("close");
+      },
+      Cancel: function () {
+        $(this).dialog("close");
+      },
+    },
+    open: function () {
+      var $this = $(this);
+      // close dialog by clicking the overlay behind it
+      $(".ui-widget-overlay").on("click", function () {
+        $this.dialog("close");
+      });
+    },
+    create: function () {
+      $(".ui-dialog-titlebar-close").addClass("ui-button");
+    },
+  });
+
+
   $("#wbw_bmlt_configuration_dialog").dialog({
     title: "BMLT Configuration",
     autoOpen: false,
@@ -41,9 +80,11 @@ jQuery(document).ready(function ($) {
         test_configuration(false);
       },
       "Save and Close": function () {
-        save_results(this);
-        // trigger an update on the main page
-        test_configuration(true);
+        $("#wbw_bmlt_configuration_dialog").dialog("open");
+
+        // save_results(this);
+        // // trigger an update on the main page
+        // test_configuration(true);
         $(this).dialog("close");
       },
       Cancel: function () {

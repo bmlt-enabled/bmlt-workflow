@@ -49,3 +49,11 @@ echo '</form></div>';
 
 
 </div>
+
+<div id="wbw_bmlt_warning_dialog" class="hidden" style="max-width:800px">
+    
+    <br>Changing the BMLT Server settings will remove your service body configuration within the plugin.
+    <br><br>If you press Ok, use the Service Bodies configuration panel to update your service bodies and permissions.
+    <br>
+
+</div>
