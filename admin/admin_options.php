@@ -52,8 +52,10 @@ echo '</form></div>';
 
 <div id="wbw_bmlt_warning_dialog" class="hidden" style="max-width:800px">
     
-    <br>Changing the BMLT Server settings will remove your service body configuration within the plugin.
-    <br><br>If you press Ok, use the Service Bodies configuration panel to update your service bodies and permissions.
+    <br>WARNING: Changing the BMLT Server settings will remove your service body configuration and existing submissions within the plugin.
+    <br><br>Use the backup option before pressing Ok if you do not wish to lose your submissions
+    <br><br>If you press Ok, your service bodies, service body permissions and ALL SUBMISSIONS will be removed.
+    <br><br>Are you sure you wish to do this?
     <br>
 
 </div>
