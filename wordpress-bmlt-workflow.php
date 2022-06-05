@@ -288,7 +288,7 @@ function wbw_admin_scripts($hook)
 
             // make sure our rest url is populated
             $script  = 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/servicebodies') . '; ';
-            $script  .= 'var wp_users_url = ' . json_encode(get_rest_url() . 'vp/v2/users') . '; ';
+            $script  .= 'var wp_users_url = ' . json_encode(get_rest_url() . 'wp/v2/users') . '; ';
             wp_add_inline_script('admin_service_bodies_js', $script, 'before');
             break;
     }
