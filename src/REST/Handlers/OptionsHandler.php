@@ -52,14 +52,18 @@ class OptionsHandler
         // get service bodies access
         $result = $wpdb->get_results("SELECT * from ". $wbw_service_bodies_access_table_name);
         $save['service_bodies_access']=$result;
-
-        $wbw_dbg->debug_log(json_encode($save, JSON_PRETTY_PRINT));
-        mkdir(WBW_PLUGIN_DIR."/backups",0700);
+        $contents = json_encode($save, JSON_PRETTY_PRINT);
+        $wbw_dbg->debug_log($contents);
         $dateTime = new \DateTime();
         $fname = $dateTime->format(\DateTimeInterface::RFC3339_EXTENDED).".json";
         $wbw_dbg->debug_log("filename = ".$fname);
+        if(!($backupfile = fopen($fname, "w")))
+        {
+            return $this->handlerCore->wbw_rest_error('Failed to create backup file.');
+        }
+        fwrite($backupfile, $$ontents);
+        fclose($backupfile);
         return $this->handlerCore->wbw_rest_success('Backup completed.');
-
     }
 
     public function post_wbw_restore_handler($request)
