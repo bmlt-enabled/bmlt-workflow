@@ -55,6 +55,7 @@ class OptionsHandler
         $contents = json_encode($save, JSON_PRETTY_PRINT);
         $wbw_dbg->debug_log($contents);
         $dateTime = new \DateTime();
+        mkdir(WBW_PLUGIN_DIR.'backups');
         $fname = WBW_PLUGIN_DIR.'backups/'.$dateTime->format(\DateTimeInterface::RFC3339_EXTENDED).'.json';
         $wbw_dbg->debug_log("filename = ".$fname);
         $backupfile = fopen($fname, "w");
