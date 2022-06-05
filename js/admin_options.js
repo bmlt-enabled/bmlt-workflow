@@ -86,7 +86,7 @@ jQuery(document).ready(function ($) {
         // save_results(this);
         // // trigger an update on the main page
         // test_configuration(true);
-        $(this).dialog("close");
+        // $(this).dialog("close");
       },
       Cancel: function () {
         $(this).dialog("close");
