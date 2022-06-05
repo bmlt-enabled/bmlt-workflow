@@ -201,7 +201,19 @@ jQuery(document).ready(function ($) {
         clear_notices();
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
+    }).done(function (response) {
+      notice_success(response, "wbw-error-message");
+      if (saving) {
+        update_from_test_result(response);
+      }
+    })
+    .fail(function (xhr) {
+      notice_error(xhr, "wbw-error-message");
+      if (saving) {
+        update_from_test_result(xhr);
+      }
     });
+
   }
 
   function wipe_service_bodies(parameters) {
