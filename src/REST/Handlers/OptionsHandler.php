@@ -25,19 +25,35 @@ class OptionsHandler
         global $wbw_options;
         $charset_collate = $wpdb->get_charset_collate();
     
+        $save = array();
         // get options
         $optarr = wp_load_alloptions();
-        $savearr = array();
+        $saveoptarr = array();
         foreach ($optarr as $key => $value)
         {
             if(array_key_exists($key, $wbw_options))
             {
                 $wbw_dbg->debug_log("found ".$key);
-                $savearr[$key]=$value;
+                $saveoptarr[$key]=$value;
             }
         }
-        $wbw_dbg->debug_log(json_encode($savearr, JSON_PRETTY_PRINT));
+        $save['options']=$saveoptarr;
 
+        // get submissions
+        $result = $wpdb->get_results("SELECT * from ". $wbw_submissions_table_name);
+        $save['submissions']=$result;
+
+        // get service bodies
+        $result = $wpdb->get_results("SELECT * from ". $wbw_service_bodies_table_name);
+        $save['service_bodies']=$result;
+
+        // get service bodies access
+        $result = $wpdb->get_results("SELECT * from ". $wbw_service_bodies_access_table_name);
+        $save['service_bodies_access']=$result;
+
+        $wbw_dbg->debug_log(json_encode($save, JSON_PRETTY_PRINT));
+
+        // 
         // require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     
         // $sql = "CREATE TABLE " . $wbw_service_bodies_table_name . " (
