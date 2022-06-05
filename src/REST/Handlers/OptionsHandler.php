@@ -18,12 +18,10 @@ class OptionsHandler
         $wbw_dbg->debug_log("backup handler called");
 
         global $wpdb;
-        global $wbw_db_version;
         global $wbw_submissions_table_name;
         global $wbw_service_bodies_table_name;
         global $wbw_service_bodies_access_table_name;
         global $wbw_options;
-        $charset_collate = $wpdb->get_charset_collate();
     
         $save = array();
         // get options
@@ -55,21 +53,9 @@ class OptionsHandler
         $contents = json_encode($save, JSON_PRETTY_PRINT);
         $wbw_dbg->debug_log($contents);
         $dateTime = new \DateTime();
-        mkdir(WBW_PLUGIN_DIR.'backups');
-        $fname = WBW_PLUGIN_DIR.'backups/'.$dateTime->format(\DateTimeInterface::RFC3339_EXTENDED).'.json';
-        $wbw_dbg->debug_log("filename = ".$fname);
-        $backupfile = fopen($fname, "w");
-        if($backupfile == false)
-        {
-            return $this->handlerCore->wbw_rest_error('Failed to create backup file.');
-        }
-        $written = fwrite($backupfile, $contents);
-        if(($written == false) || ($written == 0))
-        {
-            return $this->handlerCore->wbw_rest_error('Failed to write backup file.');
-        }
-        fclose($backupfile);
-        return $this->handlerCore->wbw_rest_success('Backup completed.');
+        $fname = $dateTime->format(\DateTimeInterface::RFC3339_EXTENDED);
+        $save['backupdetails']=$fname;
+        return $this->handlerCore->wbw_rest_success(array('message'=> 'Backup Successful', 'backup' => $contents));
     }
 
     public function post_wbw_restore_handler($request)
