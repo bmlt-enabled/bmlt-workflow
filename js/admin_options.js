@@ -29,6 +29,7 @@ jQuery(document).ready(function ($) {
     draggable: false,
     width: "auto",
     maxWidth: "auto",
+    zindex: 1001,
     modal: true,
     resizable: false,
     closeOnEscape: true,
