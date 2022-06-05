@@ -2,11 +2,6 @@
 
 use wbw\BMLT\Integration;
 
-$wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
-if ($wbw_bmlt_test_status != "success") {
-    wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
-}
-
 wp_nonce_field('wp_rest', '_wprestnonce');
 
 $bmlt_integration = new Integration;

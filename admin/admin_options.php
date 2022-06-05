@@ -56,7 +56,7 @@ echo '</form></div>';
     <br><br>Use the BACKUP option before pressing Ok if you do not wish to lose your submissions.
     <br><br>If you press Ok, your service bodies, service body permissions and ALL SUBMISSIONS will be removed.
     <br><br>Are you sure you wish to do this?
-    <br>
+    <br><br>
     <label for="yesimsure">Yes I'm sure!</label>
     <input type="checkbox" id="yesimsure" name="yesimsure">
     <br>
