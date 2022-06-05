@@ -39,37 +39,6 @@ class ServiceBodiesHandler
             $req['admin_action'] = 'get_service_body_info';
             $req['flat'] = '';
 
-            // // get an xml for a workaround
-            // $response = $this->bmlt_integration->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
-            // if (is_wp_error($response)) {
-            //     return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
-            // }
-
-            // $xml = simplexml_load_string($response['body']);
-            // $arr = json_decode(json_encode($xml), 1);
-
-            // $idlist = array();
-
-            // // make our list of service bodies
-            // foreach ($arr['service_body'] as $key => $value) {
-            //     // $wbw_dbg->debug_log("looping key = " . $key);
-            //     if (!empty($value['@attributes'])) {
-            //         $sbid = $value['@attributes']['id'];
-            //         $idlist[] = $sbid;
-            //         $sblist[$sbid] = array('name' => $value['@attributes']['name'], 'contact_email' => '', 'description' => '');
-            //         if (!empty($value['contact_email'])) {
-            //             $sblist[$sbid]['contact_email'] = $value['contact_email'];
-            //         }
-            //         if (!empty($value['description'])) {
-            //             $sblist[$sbid]['description'] = $value['description'];
-            //         }
-            //     } else {
-            //         // we need a name at minimum
-            //         break;
-            //     }
-            // }
-
-
             $response = $this->bmlt_integration->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServiceBodies', $req);
             if (is_wp_error($response)) {
                 return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
@@ -189,4 +158,20 @@ class ServiceBodiesHandler
         return $this->handlerCore->wbw_rest_success('Updated Service Bodies');
     }
 
+    
+    public function delete_service_bodies_handler($request)
+    {
+        global $wbw_dbg;
+        global $wpdb;
+        global $wbw_service_bodies_access_table_name;
+        global $wbw_service_bodies_table_name;
+
+        $result = $wpdb->get_results('DELETE from ' . $wbw_service_bodies_table_name);
+        $result = $wpdb->get_results('DELETE from ' . $wbw_service_bodies_access_table_name);
+        $wbw_dbg->debug_log($wbw_dbg->vdump($result));
+        return $this->handlerCore->wbw_rest_success('Deleted Service Bodies');
+    }
+
+
+            
 }

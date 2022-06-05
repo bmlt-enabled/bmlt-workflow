@@ -84,9 +84,8 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     enqueue_select2();
 
     // inline scripts
-    $script  = 'var wbw_form_submit = ' . json_encode($wbw_rest_namespace . '/submissions') . '; ';
-    $script .= 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace . '/servicebodies') . '; ';
-    $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
+    $script  = 'var wbw_form_submit_url = ' .json_encode(get_rest_url() . $wbw_rest_namespace . '/submissions') . '; ';
+    $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/servicebodies') . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address') . '";';
     // optional fields
     $script .= 'var wbw_optional_location_nation = "' . get_option('wbw_optional_location_nation') . '";';
@@ -221,6 +220,7 @@ function wbw_admin_scripts($hook)
 
             // inline scripts
             $script  = 'var wbw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/bmltserver') . '; ';
+            $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/servicebodies') . '; ';
             $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address'). '"; ';
             wp_add_inline_script('admin_options_js', $script, 'before');
             break;
@@ -287,8 +287,7 @@ function wbw_admin_scripts($hook)
             enqueue_select2();
 
             // make sure our rest url is populated
-            $script  = 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($wbw_rest_namespace . '/servicebodies') . '; ';
-            $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
+            $script  = 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/servicebodies') . '; ';
             wp_add_inline_script('admin_service_bodies_js', $script, 'before');
             break;
     }

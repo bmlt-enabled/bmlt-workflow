@@ -127,6 +127,18 @@ class Controller extends \WP_REST_Controller
 			),
 		);
 
+		// DELETE servicebodies
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->service_bodies_rest_base,
+
+			array(
+				'methods'             => \WP_REST_Server::DELETABLE,
+				'callback'            => array($this, 'delete_service_bodies'),
+				'permission_callback' => array($this, 'delete_service_bodies_permissions_check'),
+			),
+		);
+		
 		// GET bmltserver
 		register_rest_route(
 			$this->namespace,
@@ -184,7 +196,7 @@ class Controller extends \WP_REST_Controller
 		return $status;
 	}
 
-	public function get_submissions_permissions_check($request)
+	private function get_submissions_permissions_check($request)
 	{
 		global $wbw_capability_manage_submissions;
 		global $wbw_dbg;
@@ -196,7 +208,7 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	public function get_submission_permissions_check($request)
+	private function get_submission_permissions_check($request)
 	{
 		global $wbw_capability_manage_submissions;
 		global $wbw_dbg;
@@ -207,7 +219,7 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	public function approve_submission_action_permissions_check($request)
+	private function approve_submission_action_permissions_check($request)
 	{
 		global $wbw_capability_manage_submissions;
 		global $wbw_dbg;
@@ -219,7 +231,7 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	public function reject_submission_action_permissions_check($request)
+	private function reject_submission_action_permissions_check($request)
 	{
 		global $wbw_capability_manage_submissions;
 		global $wbw_dbg;
@@ -231,7 +243,7 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	public function delete_submission_permissions_check($request)
+	private function delete_submission_permissions_check($request)
 	{
 		// delete submissions is limited to admin
 		global $wbw_dbg;
@@ -243,7 +255,7 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	public function patch_submission_permissions_check($request)
+	private function patch_submission_permissions_check($request)
 	{
 		global $wbw_capability_manage_submissions;
 		global $wbw_dbg;
@@ -255,7 +267,7 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	public function get_service_bodies_permissions_check($request)
+	private function get_service_bodies_permissions_check($request)
 	{
 		// get service areas is unauthenticated as it is also used by the end-user form 
 
@@ -263,7 +275,7 @@ class Controller extends \WP_REST_Controller
 	}
 
 
-	public function post_service_bodies_permissions_check($request)
+	private function post_service_bodies_permissions_check($request)
 	{
 		global $wbw_dbg;
 
@@ -274,7 +286,18 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	public function post_bmltserver_permissions_check($request)
+	private function delete_service_bodies_permissions_check($request)
+	{
+		global $wbw_dbg;
+
+		$wbw_dbg->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area updates.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
+	private function post_bmltserver_permissions_check($request)
 	{
 		global $wbw_dbg;
 
@@ -285,7 +308,7 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	public function get_bmltserver_permissions_check($request)
+	private function get_bmltserver_permissions_check($request)
 	{
 		global $wbw_dbg;
 
@@ -296,7 +319,7 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	public function patch_bmltserver_permissions_check($request)
+	private function patch_bmltserver_permissions_check($request)
 	{
 		global $wbw_dbg;
 
@@ -307,7 +330,7 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
-	public function get_bmltserver_geolocate_permissions_check($request)
+	private function get_bmltserver_geolocate_permissions_check($request)
 	{
 		global $wbw_dbg;
 		global $wbw_capability_manage_submissions;
@@ -320,86 +343,92 @@ class Controller extends \WP_REST_Controller
 	}
 
 
-	public function post_submissions_permissions_check($request)
+	private function post_submissions_permissions_check($request)
 	{
 		// Anyone can post a form submission
 		return true;
 	}
 
-	public function get_submissions($request)
+	private function get_submissions($request)
 	{
 		$result = $this->SubmissionsHandler->get_submissions_handler($request);
 		return rest_ensure_response($result);
 	}
 
-	public function get_submission($request)
+	private function get_submission($request)
 	{
 		$result = $this->SubmissionsHandler->get_submission_handler($request);
 		return rest_ensure_response($result);
 	}
 
-	public function delete_submission($request)
+	private function delete_submission($request)
 	{
 		$result = $this->SubmissionsHandler->delete_submission_handler($request);
 		return rest_ensure_response($result);
 	}
 
-	public function approve_submission($request)
+	private function approve_submission($request)
 	{
 		$result = $this->SubmissionsHandler->approve_submission_handler($request);
 		return rest_ensure_response($result);
 	}
 
-	public function reject_submission($request)
+	private function reject_submission($request)
 	{
 		$result = $this->SubmissionsHandler->reject_submission_handler($request);
 		return rest_ensure_response($result);
 	}
 
-	public function patch_submission($request)
+	private function patch_submission($request)
 	{
 		$result = $this->SubmissionsHandler->patch_submission_handler($request);
 		return rest_ensure_response($result);
 	}
 
-	public function post_submissions($request)
+	private function post_submissions($request)
 	{
 
 		$resp = $this->SubmissionsHandler->meeting_update_form_handler_rest($request);
 		return rest_ensure_response($resp);
 	}
 
-	public function get_service_bodies($request)
+	private function get_service_bodies($request)
 	{
 		$result = $this->ServiceBodiesHandler->get_service_bodies_handler($request);
 		return rest_ensure_response($result);
 	}
 
-	public function post_service_bodies($request)
+	private function post_service_bodies($request)
 	{
 		$result = $this->ServiceBodiesHandler->post_service_bodies_handler($request);
 		return rest_ensure_response($result);
 	}
 
-	public function get_bmltserver($request)
+	private function delete_service_bodies($request)
+	{
+		$result = $this->ServiceBodiesHandler->delete_service_bodies_handler($request);
+		return rest_ensure_response($result);
+	}
+
+	private function get_bmltserver($request)
 	{
 		$result = $this->BMLTServerHandler->get_bmltserver_handler($request);
 		return rest_ensure_response($result);
 	}
 
-	public function post_bmltserver($request)
+	private function post_bmltserver($request)
 	{
 		$result = $this->BMLTServerHandler->post_bmltserver_handler($request);
 		return rest_ensure_response($result);
 	}
 
-	public function patch_bmltserver($request)
+	private function patch_bmltserver($request)
 	{
 		$result = $this->BMLTServerHandler->patch_bmltserver_handler($request);
 		return rest_ensure_response($result);
 	}
 
-	public function get_bmltserver_geolocate($request)
+	private function get_bmltserver_geolocate($request)
 	{
 		$result = $this->BMLTServerHandler->get_bmltserver_geolocate_handler($request);
 		return rest_ensure_response($result);

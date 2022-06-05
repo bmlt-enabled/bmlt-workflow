@@ -70,7 +70,7 @@ jQuery(document).ready(function ($) {
   }
 
   $.ajax({
-    url: wp_rest_base + wbw_admin_wbw_service_bodies_rest_route,
+    url: wbw_admin_wbw_service_bodies_rest_url,
     dataType: "json",
     beforeSend: function (xhr) {
       xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
@@ -527,10 +527,9 @@ jQuery(document).ready(function ($) {
     var str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
     put_field("duration_time", str);
 
-    // var url = wp_rest_base + wbw_form_submit;
 
     $.ajax({
-      url: wp_rest_base + wbw_form_submit,
+      url: wbw_form_submit_url,
       method: "POST",
       data: JSON.stringify($("#meeting_update_form").serializeObject()),
       contentType: "application/json; charset=utf-8",
