@@ -35,7 +35,7 @@ class OptionsHandler
 
             if ($found == true)
             {
-                // $wbw_dbg->debug_log("found ".$key);
+                $wbw_dbg->debug_log("found ".$key);
                 $saveoptarr[$key]=$value;
             }
         }
