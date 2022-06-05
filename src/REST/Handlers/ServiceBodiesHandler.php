@@ -166,8 +166,11 @@ class ServiceBodiesHandler
         global $wbw_service_bodies_access_table_name;
         global $wbw_service_bodies_table_name;
 
-        $result = $wpdb->get_results('DELETE from ' . $wbw_service_bodies_table_name);
-        $result = $wpdb->get_results('DELETE from ' . $wbw_service_bodies_access_table_name);
+        $result = $wpdb->query('DELETE from ' . $wbw_service_bodies_table_name);
+        $wbw_dbg->debug_log("Delete service bodies");
+        $wbw_dbg->debug_log($wbw_dbg->vdump($result));
+        $result = $wpdb->query('DELETE from ' . $wbw_service_bodies_access_table_name);
+        $wbw_dbg->debug_log("Delete service bodies access");
         $wbw_dbg->debug_log($wbw_dbg->vdump($result));
         return $this->handlerCore->wbw_rest_success('Deleted Service Bodies');
     }
