@@ -208,7 +208,6 @@ jQuery(document).ready(function ($) {
       type: "DELETE",
       dataType: "json",
       contentType: "application/json",
-      data: JSON.stringify(parameters),
       beforeSend: function (xhr) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
