@@ -404,7 +404,7 @@ class Integration
      * @param  array $postargs
      * @return array|\WP_Error
      */
-    private function postUnauthenticatedRootServerRequest($url, $postargs)
+    public function postUnauthenticatedRootServerRequest($url, $postargs)
     {
         if (!(is_array($postargs)))
         {
