@@ -9,6 +9,9 @@ function dismiss_notice(element) {
 
 jQuery(document).ready(function ($) {
 
+  // set the server address from our option value
+  $('#wbw_bmlt_server_address').val(wbw_bmlt_server_address);
+
   get_test_status()
   .then((data) => {
     update_from_test_result(data);
@@ -44,6 +47,7 @@ jQuery(document).ready(function ($) {
         // trigger an update on the main page
         test_configuration(true);
         $(this).dialog("close");
+        $("#wbw_bmlt_warning_dialog").data('parent').dialog("close");
       },
       Cancel: function () {
         $(this).dialog("close");
@@ -81,7 +85,7 @@ jQuery(document).ready(function ($) {
         test_configuration(false);
       },
       "Save and Close": function () {
-        $("#wbw_bmlt_warning_dialog").dialog("open");
+        $("#wbw_bmlt_warning_dialog").data('parent', $(this)).dialog("open")
 
         // save_results(this);
         // // trigger an update on the main page
