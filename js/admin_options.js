@@ -80,7 +80,7 @@ jQuery(document).ready(function ($) {
         test_configuration(false);
       },
       "Save and Close": function () {
-        $("#wbw_bmlt_configuration_dialog").dialog("open");
+        $("#wbw_bmlt_warning_dialog").dialog("open");
 
         // save_results(this);
         // // trigger an update on the main page
