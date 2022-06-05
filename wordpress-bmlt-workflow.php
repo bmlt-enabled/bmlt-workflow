@@ -221,7 +221,7 @@ function wbw_admin_scripts($hook)
 
             // inline scripts
             $script  = 'var wbw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $wbw_rest_namespace . '/bmltserver') . '; ';
-            $script .= 'var wbw_bmlt_server_address = ' . get_option('wbw_bmlt_server_address'). '; ';
+            $script .= 'var wbw_bmlt_server_address = "' . get_option('wbw_bmlt_server_address'). '"; ';
             wp_add_inline_script('admin_options_js', $script, 'before');
             break;
 
