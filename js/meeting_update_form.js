@@ -69,7 +69,6 @@ jQuery(document).ready(function ($) {
       .then((mdata) => create_meeting_searcher(mdata));
   }
 
-  
   var wbw_service_bodies_querystr = "";
 
   Object.keys(wbw_service_bodies).forEach((item) => {
@@ -82,7 +81,6 @@ jQuery(document).ready(function ($) {
   });
 
   update_meeting_list(wbw_service_bodies_querystr);
-
 
   $("#meeting_update_form").validate({
     submitHandler: function () {
