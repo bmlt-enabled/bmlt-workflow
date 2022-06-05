@@ -69,26 +69,20 @@ jQuery(document).ready(function ($) {
       .then((mdata) => create_meeting_searcher(mdata));
   }
 
-  $.ajax({
-    url: wbw_admin_wbw_service_bodies_rest_url,
-    dataType: "json",
-    beforeSend: function (xhr) {
-      xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
-    },
-  }).done(function (response) {
-    var wbw_service_bodies = "";
+  
+  var wbw_service_bodies_querystr = "";
 
-    Object.keys(response).forEach((item) => {
-      // console.log(response);
-      var service_body_bigint = item;
-      var service_body_name = response[item]["name"];
-      var opt = new Option(service_body_name, service_body_bigint, false, false);
-      $("#service_body_bigint").append(opt);
-      wbw_service_bodies += "services[]=" + service_body_bigint + "&";
-    });
-
-    update_meeting_list(wbw_service_bodies);
+  Object.keys(wbw_service_bodies).forEach((item) => {
+    // console.log(response);
+    var service_body_bigint = item;
+    var service_body_name = response[item]["name"];
+    var opt = new Option(service_body_name, service_body_bigint, false, false);
+    $("#service_body_bigint").append(opt);
+    wbw_service_bodies_querystr += "services[]=" + service_body_bigint + "&";
   });
+
+  update_meeting_list(wbw_service_bodies_querystr);
+
 
   $("#meeting_update_form").validate({
     submitHandler: function () {

@@ -108,7 +108,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     if (count($result) == 0) {
         wp_die("<h4>WBW Plugin Error: Service bodies not configured.</h4>");
     }
-    $script .= 'var wbw_admin_wbw_service_bodies = ' . json_encode($result) . '; ';
+    $script .= 'var wbw_service_bodies = ' . json_encode($result) . '; ';
     
     $wbw_dbg->debug_log("adding script " . $script);
     $status = wp_add_inline_script('wbw-meeting-update-form-js', $script, 'before');
