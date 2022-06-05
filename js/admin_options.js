@@ -203,15 +203,11 @@ jQuery(document).ready(function ($) {
       },
     }).done(function (response) {
       notice_success(response, "wbw-error-message");
-      if (saving) {
-        update_from_test_result(response);
-      }
+      update_from_test_result(response);
     })
     .fail(function (xhr) {
       notice_error(xhr, "wbw-error-message");
-      if (saving) {
-        update_from_test_result(xhr);
-      }
+      update_from_test_result(xhr);
     });
 
   }
