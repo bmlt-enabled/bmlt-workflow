@@ -75,7 +75,7 @@ jQuery(document).ready(function ($) {
   Object.keys(wbw_service_bodies).forEach((item) => {
     // console.log(response);
     var service_body_bigint = item;
-    var service_body_name = response[item]["name"];
+    var service_body_name = wbw_service_bodies[item]["name"];
     var opt = new Option(service_body_name, service_body_bigint, false, false);
     $("#service_body_bigint").append(opt);
     wbw_service_bodies_querystr += "services[]=" + service_body_bigint + "&";
