@@ -40,8 +40,11 @@ jQuery(document).ready(function ($) {
     },
     buttons: {
       Ok: function () {
-        wipe_service_bodies();
-        save_results(this);
+        ($("#yesimsure").prop("checked") == true)
+        {
+          wipe_service_bodies({"checked":"true"});
+          save_results(this);
+        }
         // trigger an update on the main page
         test_configuration(true);
         $(this).dialog("close");
@@ -201,12 +204,13 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  function wipe_service_bodies() {
+  function wipe_service_bodies(parameters) {
 
     $.ajax({
       url: wbw_admin_wbw_service_bodies_rest_url,
       type: "DELETE",
       dataType: "json",
+      data: JSON.stringify(parameters),
       contentType: "application/json",
       beforeSend: function (xhr) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
