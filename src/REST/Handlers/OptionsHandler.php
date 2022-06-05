@@ -61,7 +61,7 @@ class OptionsHandler
         {
             return $this->handlerCore->wbw_rest_error('Failed to create backup file.');
         }
-        fwrite($backupfile, $$ontents);
+        fwrite($backupfile, $contents);
         fclose($backupfile);
         return $this->handlerCore->wbw_rest_success('Backup completed.');
     }
