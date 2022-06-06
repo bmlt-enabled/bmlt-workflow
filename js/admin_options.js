@@ -39,7 +39,9 @@ jQuery(document).ready(function ($) {
         var blob=new Blob([response.backup],{type: 'application/json'});
         var link=document.createElement('a');
         link.href=window.URL.createObjectURL(blob);
-        link.download="myFileName.txt";
+        var currentdate = new Date(); 
+        var datetime = currentdate.getFullYear() + (currentdate.getMonth()+1) + currentdate.getDate() + currentdate.getHours() + currentdate.getMinutes() + currentdate.getSeconds();
+        link.download="backup-" + datetime + ".json";
         link.click();
       })
       .fail(function (xhr) {
