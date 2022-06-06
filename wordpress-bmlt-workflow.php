@@ -869,7 +869,8 @@ function wbw_db_upgrade($desired_version)
         ) $charset_collate;";
 
         $wpdb->query($sql);
-
+        
+        delete_option('wbw_db_version');
         add_option('wbw_db_version', $wbw_db_version);
 
     }
