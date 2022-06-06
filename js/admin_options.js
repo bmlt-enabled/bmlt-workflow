@@ -5,12 +5,12 @@ jQuery(document).ready(function ($) {
     $("#wbw_file_selector").trigger("click");
   });
 
-  $("#wbw_file_selector").on("change", function() {
+  $("#wbw_file_selector").on("change", function(s) {
     var fr = new FileReader();
     fr.onload = function(e) {
 console.log(e.target.result);
     };
-    fr.readAsText(this.files);
+    fr.readAsText(s.files);
   });
 
   // click handler for bmlt configuration popup
