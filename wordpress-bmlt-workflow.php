@@ -595,7 +595,7 @@ function wbw_bmlt_server_address_html()
 
 function wbw_backup_restore_html()
 {
-    echo '<button type="button" id="wbw_backup">Backup Configuration</button><button type="button" id="wbw_restore">Restore Configuration</button><input type="file" id="wbw_file_selector" multiple accept=".json,application/json" style="display:none">';
+    echo '<button type="button" id="wbw_backup">Backup Configuration</button>   <button type="button" id="wbw_restore">Restore Configuration</button><input type="file" id="wbw_file_selector" accept=".json,application/json" style="display:none">';
     echo '<span class="spinner" id="wbw-backup-spinner"></span><br>';
 }
 

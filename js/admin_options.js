@@ -6,12 +6,11 @@ jQuery(document).ready(function ($) {
   });
 
   $("#wbw_file_selector").on("change", function() {
-    var a = this;
     var fr = new FileReader();
     fr.onload = function(e) {
 console.log(e.target.result);
     };
-    fr.readAsText(a.files);
+    fr.readAsText(this.files[0]);
   });
 
   // click handler for bmlt configuration popup
