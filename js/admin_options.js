@@ -5,6 +5,14 @@ jQuery(document).ready(function ($) {
     $("#wbw_file_selector").trigger("click");
   });
 
+  $("#wbw_file_selector").on("change", function() {
+    var fr = new FileReader();
+    fr.onload = function(e) {
+console.log(e.target.result);
+    };
+    fr.readAsText(this.files);
+  });
+
   // click handler for bmlt configuration popup
   $("#wbw_configure_bmlt_server").on("click", function (event) {
     clear_notices();
