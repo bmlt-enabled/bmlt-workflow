@@ -1,25 +1,23 @@
-// function dismiss_notice(element) {
-//   jQuery(element)
-//     .parent()
-//     .slideUp("normal", function () {
-//       jQuery(this).remove();
-//     });
-//   return false;
-// }
-
 jQuery(document).ready(function ($) {
 
+  // click handler for hidden file browser button
+  $("#wbw-restore").on("click", function () {
+    $("#wbw_file_selector").trigger("click");
+  });
+
+  // click handler for bmlt configuration popup
+  $("#wbw_configure_bmlt_server").on("click", function (event) {
+    clear_notices();
+    $("#wbw_bmlt_configuration_dialog").dialog("open");
+  });
+  
+  // update the test status
   get_test_status()
   .then((data) => {
     update_from_test_result(data);
   });
 
-  // function clear_notices() {
-  //   jQuery(".notice-dismiss").each(function (i, e) {
-  //     dismiss_notice(e);
-  //   });
-  // }
-
+  // click handler for backup 
   $("#wbw_backup").on('click', function () {
     $.ajax({
       url: wbw_admin_backup_rest_url,
@@ -90,18 +88,6 @@ jQuery(document).ready(function ($) {
     create: function () {
       $(".ui-dialog-titlebar-close").addClass("ui-button");
     },
-  });
-
-  $("form").on("submit", function () {
-    $("#wbw_new_meeting_template_default").attr("disabled", "disabled");
-    $("#wbw_existing_meeting_template_default").attr("disabled", "disabled");
-    $("#wbw_other_meeting_template_default").attr("disabled", "disabled");
-    $("#wbw_close_meeting_template_default").attr("disabled", "disabled");
-  });
-
-  $("#wbw_configure_bmlt_server").on("click", function (event) {
-    clear_notices();
-    $("#wbw_bmlt_configuration_dialog").dialog("open");
   });
 
   function test_configuration(saving) {
