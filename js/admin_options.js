@@ -40,7 +40,7 @@ jQuery(document).ready(function ($) {
         var link=document.createElement('a');
         link.href=window.URL.createObjectURL(blob);
         var d = new Date(); 
-        var datetime = d.getFullYear().toString() + "-" + ("0" + (d.getMonth() + 1).toString()).slice(-2) + "-" + ("0" + d.getDate().toString()).slice(-2) + " " + ("0" + d.getHours().toString()).slice(-2) + ":" + ("0" + d.getMinutes().toString()).slice(-2);
+        var datetime = d.getFullYear().toString() + ("0" + (d.getMonth() + 1).toString()).slice(-2) + ("0" + d.getDate().toString()).slice(-2) + ("0" + d.getHours().toString()).slice(-2) + ("0" + d.getMinutes().toString()).slice(-2);
         link.download="backup-" + datetime + ".json";
         link.click();
       })
