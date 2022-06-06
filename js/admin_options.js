@@ -36,7 +36,7 @@ jQuery(document).ready(function ($) {
       .done(function (response) {
         turn_off_spinner("#wbw-backup-spinner");
         notice_success(response, "wbw-error-message");
-        var blob=new Blob(response.contents);
+        var blob=new Blob(response.backup);
         var link=document.createElement('a');
         link.href=window.URL.createObjectURL(blob);
         link.download="myFileName.txt";
