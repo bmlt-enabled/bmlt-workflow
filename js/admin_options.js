@@ -39,8 +39,8 @@ jQuery(document).ready(function ($) {
         var blob=new Blob([response.backup],{type: 'application/json'});
         var link=document.createElement('a');
         link.href=window.URL.createObjectURL(blob);
-        var currentdate = new Date(); 
-        var datetime = currentdate.getFullYear() + (currentdate.getMonth()+1) + currentdate.getDate() + currentdate.getHours() + currentdate.getMinutes() + currentdate.getSeconds();
+        var d = new Date(); 
+        var datetime = d.getFullYear().toString() + "-" + ("0" + (d.getMonth() + 1).toString()).slice(-2) + "-" + ("0" + d.getDate().toString()).slice(-2) + " " + ("0" + d.getHours().toString()).slice(-2) + ":" + ("0" + d.getMinutes().toString()).slice(-2);
         link.download="backup-" + datetime + ".json";
         link.click();
       })
