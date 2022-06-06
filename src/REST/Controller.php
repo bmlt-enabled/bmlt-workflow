@@ -186,6 +186,13 @@ class Controller extends \WP_REST_Controller
 			'permission_callback' => array($this, 'post_wbw_backup_permissions_check'),
 		));
 		
+		// POST options/restore
+		register_rest_route($this->namespace, '/' . $this->options_rest_base . '/restore', array(
+			'methods'             => \WP_REST_Server::CREATABLE,
+			'callback'            => array($this, 'post_wbw_restore'),
+			'permission_callback' => array($this, 'post_wbw_restore_permissions_check'),
+		));
+		
 	}
 
 	private function authorization_status_code()
@@ -344,6 +351,17 @@ class Controller extends \WP_REST_Controller
 		}
 		return true;
 	}
+
+	public function post_wbw_restore_permissions_check($request)
+	{
+		global $wbw_dbg;
+
+		$wbw_dbg->debug_log("post_wbw_restore_permissions_check " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot call the restore API.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
 	
 	public function post_submissions_permissions_check($request)
 	{
@@ -435,6 +453,12 @@ class Controller extends \WP_REST_Controller
 	public function post_wbw_backup($request)
 	{
 		$result = $this->OptionsHandler->post_wbw_backup_handler($request);
+		return rest_ensure_response($result);
+	}
+
+	public function post_wbw_restore($request)
+	{
+		$result = $this->OptionsHandler->post_wbw_restore_handler($request);
 		return rest_ensure_response($result);
 	}
 

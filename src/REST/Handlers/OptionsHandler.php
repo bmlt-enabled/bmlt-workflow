@@ -11,6 +11,17 @@ class OptionsHandler
         $this->handlerCore = new HandlerCore;
     }
 
+    public function post_wbw_restore_handler($request)
+    {
+        global $wbw_dbg;
+
+        $wbw_dbg->debug_log("restore handler called");
+        $wbw_dbg->debug_log($wbw_dbg->vdump($request));
+
+        return $this->handlerCore->wbw_rest_success('restore Successful');
+
+    }
+
     public function post_wbw_backup_handler($request)
     {
         global $wbw_dbg;
@@ -58,8 +69,4 @@ class OptionsHandler
         return $this->handlerCore->wbw_rest_success(array('message'=> 'Backup Successful', 'backup' => $contents));
     }
 
-    public function post_wbw_restore_handler($request)
-    {
-
-    }
 }
