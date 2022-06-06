@@ -1,7 +1,7 @@
 jQuery(document).ready(function ($) {
 
   // click handler for hidden file browser button
-  $("#wbw-restore").on("click", function () {
+  $("#wbw_restore").on("click", function () {
     $("#wbw_file_selector").trigger("click");
   });
 
