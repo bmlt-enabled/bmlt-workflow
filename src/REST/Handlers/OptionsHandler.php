@@ -16,7 +16,10 @@ class OptionsHandler
         global $wbw_dbg;
 
         $wbw_dbg->debug_log("restore handler called");
-        $wbw_dbg->debug_log($wbw_dbg->vdump($request));
+        // $wbw_dbg->debug_log($wbw_dbg->vdump($request));
+
+        $params = $request->get_json_params();
+
 
         return $this->handlerCore->wbw_rest_success('restore Successful');
 

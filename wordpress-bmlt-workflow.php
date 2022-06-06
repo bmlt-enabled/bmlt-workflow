@@ -4,10 +4,14 @@
  * Plugin Name: Wordpress BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
  * Description: Wordpress BMLT Workflow
- * Version: 0.3.10
+ * Version: 0.4.0
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
+
+// the version of the db schema in this release
+global $wbw_db_version;
+$wbw_db_version = '0.4.0';
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
@@ -49,9 +53,6 @@ $wbw_options_rest_base = 'options';
 
 // database configuration
 global $wpdb;
-
-global $wbw_db_version;
-$wbw_db_version = '0.4.0';
 
 // database tables
 global $wbw_submissions_table_name;
@@ -767,58 +768,9 @@ function display_wbw_admin_service_bodies_page()
 
 function wbw_install()
 {
-    global $wpdb;
     global $wbw_db_version;
-    global $wbw_submissions_table_name;
-    global $wbw_service_bodies_table_name;
-    global $wbw_service_bodies_access_table_name;
 
-    $charset_collate = $wpdb->get_charset_collate();
-
-    // require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
-    $sql = "CREATE TABLE " . $wbw_service_bodies_table_name . " (
-		service_body_bigint bigint(20) NOT NULL,
-        service_body_name tinytext NOT NULL,
-        service_body_description text,
-        contact_email varchar(255) NOT NULL default '',
-        show_on_form bool,
-		PRIMARY KEY (service_body_bigint)
-	) $charset_collate;";
-
-    // dbDelta($sql);
-    $wpdb->query($sql);
-
-    $sql = "CREATE TABLE " . $wbw_service_bodies_access_table_name . " (
-		service_body_bigint bigint(20) NOT NULL,
-        wp_uid bigint(20) unsigned  NOT NULL,
-		FOREIGN KEY (service_body_bigint) REFERENCES " . $wbw_service_bodies_table_name . "(service_body_bigint) 
-	) $charset_collate;";
-
-    // dbDelta($sql);
-    $wpdb->query($sql);
-
-    $sql = "CREATE TABLE " . $wbw_submissions_table_name . " (
-		id bigint(20) NOT NULL AUTO_INCREMENT,
-		submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-		change_time datetime DEFAULT '0000-00-00 00:00:00',
-        changed_by varchar(10),
-        change_made varchar(10),
-		submitter_name tinytext NOT NULL,
-		submission_type tinytext NOT NULL,
-        submitter_email varchar(320) NOT NULL,
-        meeting_id bigint(20) unsigned,
-        service_body_bigint bigint(20) NOT NULL,
-        changes_requested varchar(2048),
-        action_message varchar(1024),
-		PRIMARY KEY (id),
-        FOREIGN KEY (service_body_bigint) REFERENCES " . $wbw_service_bodies_table_name . "(service_body_bigint) 
-	) $charset_collate;";
-
-    // dbDelta($sql);
-    $wpdb->query($sql);
-
-    add_option('wbw_db_version', $wbw_db_version);
+    wbw_db_upgrade($wbw_db_version);
 
     global $wbw_capability_manage_submissions;
 
@@ -830,12 +782,102 @@ function wbw_install()
     add_role('wbw_trusted_servant', 'BMLT Workflow Trusted Servant');
 }
 
+function wbw_db_upgrade($desired_version)
+{
+    global $wbw_dbg;
+    global $wbw_db_version;
+
+    // work out which version we're at right now
+    $installed_version = wbw_get_option('wbw_db_version');
+
+    // do nothing by default
+    $fresh_install = false;
+    $upgrade = false;
+
+    if($installed_version === false)
+    {
+        $wbw_dbg->debug_log("no db version found, performing fresh install");
+
+        // fresh install
+        $fresh_install = true;
+    }
+    else
+    {
+        if(version_compare($desired_version, $installed_version,'eq'))
+        {
+            $wbw_dbg->debug_log("doing nothing - installed db version ".$installed_version." is same as desired version ".$desired_version);
+        }
+        else
+        {
+            $upgrade = true;
+            $wbw_dbg->debug_log("db version = ".$installed_version." - requesting upgrade");    
+        }
+    }
+
+    if($fresh_install)
+    {
+
+        // latest version
+        global $wpdb;
+        global $wbw_submissions_table_name;
+        global $wbw_service_bodies_table_name;
+        global $wbw_service_bodies_access_table_name;
+
+        $charset_collate = $wpdb->get_charset_collate();
+
+        // shouldn't need this but just in case the tables already exist
+        $sql = "DROP TABLE " . $wbw_service_bodies_access_table_name . ";";
+        $wpdb->query($sql);
+        $sql = "DROP TABLE " . $wbw_submissions_table_name . ";";
+        $wpdb->query($sql);
+        $sql = "DROP TABLE " . $wbw_service_bodies_table_name . ";";
+        $wpdb->query($sql);
+    
+        $sql = "CREATE TABLE " . $wbw_service_bodies_table_name . " (
+            service_body_bigint bigint(20) NOT NULL,
+            service_body_name tinytext NOT NULL,
+            service_body_description text,
+            show_on_form bool,
+            PRIMARY KEY (service_body_bigint)
+        ) $charset_collate;";
+
+        $wpdb->query($sql);
+
+        $sql = "CREATE TABLE " . $wbw_service_bodies_access_table_name . " (
+            service_body_bigint bigint(20) NOT NULL,
+            wp_uid bigint(20) unsigned  NOT NULL,
+            FOREIGN KEY (service_body_bigint) REFERENCES " . $wbw_service_bodies_table_name . "(service_body_bigint) 
+        ) $charset_collate;";
+
+        $wpdb->query($sql);
+
+        $sql = "CREATE TABLE " . $wbw_submissions_table_name . " (
+            id bigint(20) NOT NULL AUTO_INCREMENT,
+            submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+            change_time datetime DEFAULT '0000-00-00 00:00:00',
+            changed_by varchar(10),
+            change_made varchar(10),
+            submitter_name tinytext NOT NULL,
+            submission_type tinytext NOT NULL,
+            submitter_email varchar(320) NOT NULL,
+            meeting_id bigint(20) unsigned,
+            service_body_bigint bigint(20) NOT NULL,
+            changes_requested varchar(2048),
+            action_message varchar(1024),
+            PRIMARY KEY (id),
+            FOREIGN KEY (service_body_bigint) REFERENCES " . $wbw_service_bodies_table_name . "(service_body_bigint) 
+        ) $charset_collate;";
+
+        $wpdb->query($sql);
+
+        add_option('wbw_db_version', $wbw_db_version);
+
+    }
+}
+
 function wbw_uninstall()
 {
     global $wpdb;
-    global $wbw_submissions_table_name;
-    global $wbw_service_bodies_table_name;
-    global $wbw_service_bodies_access_table_name;
 
     // remove custom capability
     global $wbw_capability_manage_submissions;
@@ -848,11 +890,4 @@ function wbw_uninstall()
 
     remove_role('wbw_trusted_servant');
 
-    // Fix for production usage
-    $sql = "DROP TABLE " . $wbw_service_bodies_access_table_name . ";";
-    $wpdb->query($sql);
-    $sql = "DROP TABLE " . $wbw_submissions_table_name . ";";
-    $wpdb->query($sql);
-    $sql = "DROP TABLE " . $wbw_service_bodies_table_name . ";";
-    $wpdb->query($sql);
 }
