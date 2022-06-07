@@ -72,7 +72,7 @@ class OptionsHandler
         // update the database to the latest version
         wbw_db_upgrade($wbw_db_version, false);
 
-        return $this->handlerCore->wbw_rest_success('restore Successful');
+        return $this->handlerCore->wbw_rest_success('Restore Successful');
     }
 
     public function post_wbw_backup_handler($request)
@@ -96,6 +96,12 @@ class OptionsHandler
 
             if ($found == true) {
                 $wbw_dbg->debug_log("found " . $key);
+                if($key = $wbw_options['wbw_bmlt_password'])
+                {
+                    $wbw_dbg->debug_log("encrypting " . $value);
+                    $value = serialize($this->HandlerCore->secrets_encrypt(NONCE_KEY, $value));
+                    $wbw_dbg->debug_log("encrypted to " . $value);
+                }
                 $saveoptarr[$key] = $value;
             }
         }

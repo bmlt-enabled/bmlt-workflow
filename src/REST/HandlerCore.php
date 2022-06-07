@@ -56,18 +56,8 @@ class HandlerCore
             'nonce'     => random_bytes(SODIUM_CRYPTO_AEAD_CHACHA20POLY1305_IETF_NPUBBYTES),
           ];
       
-        // $config['limit_ops'] = SODIUM_CRYPTO_PWHASH_OPSLIMIT_INTERACTIVE;
-        // $config['limit_mem'] = SODIUM_CRYPTO_PWHASH_MEMLIMIT_INTERACTIVE;
-      
-        $key = sodium_crypto_pwhash(
-            $config['size'],
-            $password,
-            $config['salt'],
-            $config['limit_ops'],
-            $config['limit_mem'],
-            $config['alg'],
-          );
-      
+        $key = hash_hkdf('sha256', $password, $config['size'], 'context');
+
         $encrypted = sodium_crypto_aead_chacha20poly1305_ietf_encrypt(
             $secret,
             $config['nonce'], // Associated Data
@@ -87,15 +77,8 @@ class HandlerCore
         $config = array_map('base64_decode', $data['config']);
         $encrypted = base64_decode($data['encrypted']);
       
-        $key = sodium_crypto_pwhash(
-            $config['size'],
-            $password,
-            $config['salt'],
-            $config['limit_ops'],
-            $config['limit_mem'],
-            $config['alg'],
-          );
-      
+        $key = hash_hkdf('sha256', $password, $config['size'], 'context');
+
         return sodium_crypto_aead_chacha20poly1305_ietf_decrypt(
             $encrypted,
             $config['nonce'], // Associated Data
