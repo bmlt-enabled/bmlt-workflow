@@ -41,16 +41,8 @@ class OptionsHandler
                 $wbw_dbg->debug_log("added option: " . $option_name);
             }
         }
-        
-        // restore all the tables
 
-        // submissions table
-        $cnt = 0;
-        foreach ($params['submissions'] as $row => $value) {
-            $rows = $wpdb->insert($wbw_submissions_table_name, $params['submissions'][$row]);
-            $cnt += $rows;
-        }
-        $wbw_dbg->debug_log("submissions rows inserted :" . $cnt);
+        // restore all the tables
 
         // service bodies table
         $cnt = 0;
@@ -67,6 +59,15 @@ class OptionsHandler
             $cnt += $rows;
         }
         $wbw_dbg->debug_log("service_bodies_access rows inserted :" . $cnt);
+
+        // submissions table
+        $cnt = 0;
+        foreach ($params['submissions'] as $row => $value) {
+            $rows = $wpdb->insert($wbw_submissions_table_name, $params['submissions'][$row]);
+            $cnt += $rows;
+        }
+        $wbw_dbg->debug_log("submissions rows inserted :" . $cnt);
+
 
         // update the database to the latest version
         wbw_db_upgrade($wbw_db_version, false);
