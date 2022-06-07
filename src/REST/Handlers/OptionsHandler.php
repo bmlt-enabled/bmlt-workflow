@@ -113,6 +113,7 @@ class OptionsHandler
         $result = $wpdb->get_results("SELECT * from " . $wbw_service_bodies_access_table_name);
         $save['service_bodies_access'] = $result;
         $contents = json_encode($save, JSON_PRETTY_PRINT);
+        $wbw_dbg->debug_log('backup file generated');
         $wbw_dbg->debug_log($contents);
         $dateTime = new \DateTime();
         $fname = $dateTime->format(\DateTimeInterface::RFC3339_EXTENDED);

@@ -1,9 +1,11 @@
 jQuery(document).ready(function ($) {
+
   // click handler for hidden file browser button
   $("#wbw_restore").on("click", function () {
     $("#wbw_file_selector").trigger("click");
   });
 
+  // perform a restore
   $("#wbw_file_selector").on("change", function () {
     var fr = new FileReader();
     fr.onload = function (e) {
@@ -22,7 +24,12 @@ jQuery(document).ready(function ($) {
         },
       }).done(function (response) {
         turn_off_spinner("#wbw-backup-spinner");
+        notice_success(response, "wbw-error-message");
+      }).fail(function (xhr) {
+        notice_error(xhr, "wbw-error-message");
+        turn_off_spinner("#wbw-backup-spinner");
       });
+
     };
     fr.readAsText(this.files[0]);
   });
