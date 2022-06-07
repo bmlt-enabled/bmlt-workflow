@@ -96,7 +96,7 @@ class OptionsHandler
 
             if ($found == true) {
                 $wbw_dbg->debug_log("found " . $key);
-                if($key = $wbw_options['wbw_bmlt_password'])
+                if($key == $wbw_options['wbw_bmlt_password'])
                 {
                     $wbw_dbg->debug_log("encrypting " . $value);
                     $value = serialize($this->handlerCore->secrets_encrypt(NONCE_KEY, $value));
