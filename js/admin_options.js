@@ -9,7 +9,6 @@ jQuery(document).ready(function ($) {
   $("#wbw_file_selector").on("change", function () {
     var fr = new FileReader();
     fr.onload = function (e) {
-      console.log(e.target.result);
       $.ajax({
         url: wbw_admin_restore_rest_url,
         method: "POST",
