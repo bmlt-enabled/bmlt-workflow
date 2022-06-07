@@ -271,11 +271,21 @@ class Integration
     private function authenticateRootServer()
     {
         if ($this->cookies == null) {
+            $unserialized = unserialize(\get_option('wbw_bmlt_password'));
+            if($unserialized === false)
+            {
+                return $this->handlerCore->wbw_rest_failure('Error unpacking password.');    
+            }
+            $decrypted = $this->handlerCore->secrets_decrypt(NONCE_SALT, $unserialized);
+            if($decrypted === false)
+            {
+                return $this->handlerCore->wbw_rest_failure('Error decrypting password.');    
+            }
+    
             $postargs = array(
                 'admin_action' => 'login',
-                'c_comdef_admin_login' => \get_option('wbw_bmlt_username'),
-                // 'c_comdef_admin_password' => $this->handlerCore->secrets_decrypt(DB_PASSWORD,json_decode(\get_option ('wbw_bmlt_password')))
-                'c_comdef_admin_password' => \get_option ('wbw_bmlt_password')
+                'c_comdef_admin_login' => \get_option('wbw_bmlt_username'),                
+                'c_comdef_admin_password' => $decrypted
             );
             $url = \get_option('wbw_bmlt_server_address') . "index.php";
 
@@ -436,5 +446,3 @@ class Integration
     }
 
 }
-
-?>

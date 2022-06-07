@@ -119,10 +119,19 @@ private function check_bmltserver_parameters($username, $password, $server)
         }
 
         update_option('wbw_bmlt_username', $username);
-        // $wbw_dbg->debug_log("encrypting password to  " . json_encode($this->handlerCore->secrets_encrypt(DB_PASSWORD,$password)));
 
-        // update_option('wbw_bmlt_password', json_encode($this->handlerCore->secrets_encrypt(DB_PASSWORD,$password)));
-        update_option('wbw_bmlt_password', $password);
+        $wbw_dbg->debug_log("encrypting BMLT password");
+
+        $pre_serialize = $this->handlerCore->secrets_encrypt(NONCE_SALT, $password);
+        
+        if(!is_array($pre_serialize))
+        {
+            return $this->handlerCore->wbw_rest_failure('Error encrypting password.');
+
+        }
+        $encrypted = serialize($pre_serialize);
+
+        update_option('wbw_bmlt_password', $encrypted);
         update_option('wbw_bmlt_server_address', $server);
 
         return $this->handlerCore->wbw_rest_success('BMLT Server and Authentication details updated.');
