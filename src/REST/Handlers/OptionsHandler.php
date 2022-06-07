@@ -99,7 +99,7 @@ class OptionsHandler
                 if($key = $wbw_options['wbw_bmlt_password'])
                 {
                     $wbw_dbg->debug_log("encrypting " . $value);
-                    $value = serialize($this->HandlerCore->secrets_encrypt(NONCE_KEY, $value));
+                    $value = serialize($this->handlerCore->secrets_encrypt(NONCE_KEY, $value));
                     $wbw_dbg->debug_log("encrypted to " . $value);
                 }
                 $saveoptarr[$key] = $value;
