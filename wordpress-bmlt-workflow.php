@@ -770,7 +770,7 @@ function wbw_install()
 {
     global $wbw_db_version;
 
-    wbw_db_upgrade($wbw_db_version);
+    wbw_db_upgrade($wbw_db_version, false);
 
     global $wbw_capability_manage_submissions;
 
@@ -782,7 +782,7 @@ function wbw_install()
     add_role('wbw_trusted_servant', 'BMLT Workflow Trusted Servant');
 }
 
-function wbw_db_upgrade($desired_version)
+function wbw_db_upgrade($desired_version, $fresh_install)
 {
     global $wbw_dbg;
     global $wbw_db_version;
@@ -791,15 +791,13 @@ function wbw_db_upgrade($desired_version)
     $installed_version = wbw_get_option('wbw_db_version');
 
     // do nothing by default
-    $fresh_install = false;
     $upgrade = false;
 
     if($installed_version === false)
     {
-        $wbw_dbg->debug_log("no db version found, performing fresh install");
-
         // fresh install
         $fresh_install = true;
+        $wbw_dbg->debug_log("no db version found, performing fresh install");
     }
     else
     {
@@ -816,6 +814,7 @@ function wbw_db_upgrade($desired_version)
 
     if($fresh_install)
     {
+        $wbw_dbg->debug_log("fresh install");
 
         // latest version
         global $wpdb;
@@ -832,6 +831,7 @@ function wbw_db_upgrade($desired_version)
         $wpdb->query($sql);
         $sql = "DROP TABLE " . $wbw_service_bodies_table_name . ";";
         $wpdb->query($sql);
+        $wbw_dbg->debug_log("fresh install: tables dropped");
     
         $sql = "CREATE TABLE " . $wbw_service_bodies_table_name . " (
             service_body_bigint bigint(20) NOT NULL,
@@ -870,8 +870,12 @@ function wbw_db_upgrade($desired_version)
 
         $wpdb->query($sql);
 
+        $wbw_dbg->debug_log("fresh install: tables created");
+
         delete_option('wbw_db_version');
         add_option('wbw_db_version', $wbw_db_version);
+        $wbw_dbg->debug_log("fresh install: db version installed");
+
         return;
     }
 

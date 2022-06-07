@@ -8,7 +8,7 @@ class Debug
     {
         if (WBW_DEBUG)
         {
-            error_log($message);
+            error_log(debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2)[0]['function'] . ":" . $message);
         }
     }
     
@@ -19,5 +19,5 @@ class Debug
         $contents = ob_get_contents();
         ob_end_clean();
         return $contents;
-    }    
+    }
 }

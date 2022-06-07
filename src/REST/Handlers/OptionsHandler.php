@@ -13,13 +13,52 @@ class OptionsHandler
 
     public function post_wbw_restore_handler($request)
     {
+        global $wpdb;
         global $wbw_dbg;
+        global $wbw_db_version;
+        global $wbw_options;
+        global $wbw_submissions_table_name;
+        global $wbw_service_bodies_table_name;
+        global $wbw_service_bodies_access_table_name;
 
         $wbw_dbg->debug_log("restore handler called");
         // $wbw_dbg->debug_log($wbw_dbg->vdump($request));
 
         $params = $request->get_json_params();
 
+        // create the database as the revision in the backup file
+        wbw_db_upgrade($params['options']['wbw_db_version'], true);
+
+        // restore all the options
+        foreach ($wbw_options as $key => $value)
+        {
+            $option_name = $value;
+            delete_option($wbw_options[$option_name]);
+            $wbw_dbg->debug_log("deleted option: ".$option_name);
+            // check if we have an option in our restore that matches the options array
+            if(array_key_exists($option_name, $params['options']))
+            {
+                add_option($option_name, $params['options'][$option_name]);
+                $wbw_dbg->debug_log("added option: ".$option_name);
+
+            }
+        }
+        // restore all the tables
+
+        // submissions table
+        $rows = $wpdb->insert($wbw_submissions_table_name, $params['submissions']);
+        $wbw_dbg->debug_log("submissions rows inserted :".$rows);
+
+        // service bodies table
+        $wpdb->insert($wbw_service_bodies_table_name, $params['service_bodies']);
+        $wbw_dbg->debug_log("service_bodies rows inserted :".$rows);
+
+        // service bodies access table
+        $wpdb->insert($wbw_service_bodies_access_table_name, $params['service_bodies_access']);
+        $wbw_dbg->debug_log("service_bodies_access rows inserted :".$rows);
+        
+        // update the database to the latest version
+        wbw_db_upgrade($wbw_db_version, false);
 
         return $this->handlerCore->wbw_rest_success('restore Successful');
 
