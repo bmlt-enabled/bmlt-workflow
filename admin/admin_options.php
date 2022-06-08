@@ -10,7 +10,7 @@ $wbw_fso_email_template_default = htmlentities(file_get_contents(WBW_PLUGIN_DIR 
 echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="wbw_submitter_email_template_default">' . $wbw_submitter_email_template_default . '</textarea></div>';
 echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="wbw_fso_email_template_default">' . $wbw_fso_email_template_default . '</textarea></div>';
 
-echo '<img src="'.WBW_PLUGIN_URL.'/images/Workflow_Banner.png>"';
+echo '<img src="'.WBW_PLUGIN_URL.'/images/Workflow_Banner.png">';
 wp_nonce_field('wp_rest', '_wprestnonce');
 echo '<hr class="wbw-error-message">';
 echo '<div class="wrap">';
