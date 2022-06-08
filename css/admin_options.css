@@ -35,7 +35,12 @@ input {
     height: 130px;
     left: 0;
     margin-bottom: 0;
+    margin-top: 15px;
     text-align: center;
     width: 100%;
 }
 
+hr.wbw-error-message 
+{
+  border: none;
+}
