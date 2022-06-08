@@ -27,8 +27,8 @@ input {
 }
 
 .wbw_banner {
-  background-image: url('../images/Banner_1px.png'), url('../images/Banner_Trimmed.png');
-    background-repeat: repeat-x, no-repeat;
+  background-image: url('../images/Banner_Trimmed.png'),  url('../images/Banner_1px.png'),
+    background-repeat: no-repeat, repeat-x;
     background-size: 196px 175px;
     bottom: 0;
     color: white;
@@ -36,7 +36,6 @@ input {
     left: 0;
     margin-bottom: 0;
     padding-top: 75px;
-    position: fixed;
     text-align: center;
     width: 100%;
 }
