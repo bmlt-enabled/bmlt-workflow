@@ -41,3 +41,8 @@ input {
   padding: 20px;
   font-size: 150%;
 }
+
+.wbw_banner img {
+  max-width: 100%;
+  max-height: 100%;
+}
