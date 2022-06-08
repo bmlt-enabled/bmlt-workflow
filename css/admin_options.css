@@ -29,13 +29,12 @@ input {
 .wbw_banner {
     background-image: url('../images/Banner_Trimmed.png'),  url('../images/Banner_1px.png');
     background-repeat: no-repeat, repeat-x;
-    background-size: 196px 175px;
+    background-size: auto 130px;
     bottom: 0;
     color: white;
-    height: 175px;
+    height: 130px;
     left: 0;
     margin-bottom: 0;
-    padding-top: 75px;
     text-align: center;
     width: 100%;
 }
