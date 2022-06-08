@@ -13,6 +13,7 @@ class Integration
         {
             $this->cookies = $cookies;
         }
+
         $this->handlerCore = new HandlerCore;
     }
 
