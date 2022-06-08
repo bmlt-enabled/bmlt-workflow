@@ -49,7 +49,7 @@ jQuery(document).ready(function ($) {
 
   // restore hook
   var restore_fr = new FileReader();
-  fr.onload = function (e) {
+  restore_fr.onload = function (e) {
     $.ajax({
       url: wbw_admin_restore_rest_url,
       method: "POST",
