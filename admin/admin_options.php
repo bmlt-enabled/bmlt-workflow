@@ -9,11 +9,7 @@ $wbw_fso_email_template_default = htmlentities(file_get_contents(WBW_PLUGIN_DIR 
 
 echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="wbw_submitter_email_template_default">' . $wbw_submitter_email_template_default . '</textarea></div>';
 echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="wbw_fso_email_template_default">' . $wbw_fso_email_template_default . '</textarea></div>';
-echo '<div class="wbw_banner">';
-echo '<div class="box a"><img src="'.WBW_PLUGIN_URL.'/images/Banner_1px.png"></div>';
-echo '<div class="box b"><img src="'.WBW_PLUGIN_URL.'/images/Banner_Trimmed.png"></div>';
-echo '<div class="box c"><img src="'.WBW_PLUGIN_URL.'/images/Banner_1px.png"></div>';
-echo '</div>';
+echo '<div class="wbw_banner"></div>';
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 echo '<hr class="wbw-error-message">';
