@@ -27,22 +27,17 @@ input {
 }
 
 .wbw_banner {
-  display: grid;
-  grid-template-columns: 100px 100px 100px;
-  grid-gap: 10px;
-  background-color: #fff;
-  color: #444;
+    background-image: url('../images/Banner_1px.png'), url('../images/Banner_Trimmed.png'), url('../images/Banner_1px.png');
+    background-repeat: repeat-x, no-repeat, repeat-x;
+    background-size: 175px 196px 175px;
+    bottom: 0;
+    color: white;
+    height: 175px;
+    left: 0;
+    margin-bottom: 0;
+    padding-top: 75px;
+    position: fixed;
+    text-align: center;
+    width: 100%;
 }
 
-.box {
-  background-color: #444;
-  color: #fff;
-  border-radius: 5px;
-  padding: 20px;
-  font-size: 150%;
-}
-
-.wbw_banner img {
-  max-width: 100%;
-  max-height: 100%;
-}
