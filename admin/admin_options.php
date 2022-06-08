@@ -52,7 +52,8 @@ echo '</form></div>';
     <div class="options_dialog_wbw_error_message"></div>
     <br>
     <div class="options_dialog_wbw_warning_text">
-        <br>WARNING: If you proceed your plugin configuration, settings and service bodies will be removed.
+        <br>
+        <br>WARNING: If you proceed, your existing plugin configuration, settings and service bodies will be removed.
         <br>
         <br>
     </div>
