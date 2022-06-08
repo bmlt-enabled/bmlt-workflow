@@ -23,9 +23,9 @@ echo '</form></div>';
 ?>
 
 <div id="wbw_bmlt_configuration_dialog" class="hidden" style="max-width:800px">
-    <div class="quickedit-wbw-error-message"></div>
+    <div class="options_dialog_wbw_error_message"></div>
     <br>
-    <div class="quickedit_wbw_info_text">
+    <div class="options_dialog_wbw_info_text">
         <br>Enter your BMLT server address, and a BMLT username and password.
         <br>
         <br>
@@ -38,7 +38,7 @@ echo '</form></div>';
     <br><label for="wbw_bmlt_password"><b>BMLT Password:</b></label>
     <input type="password" size="50" id="wbw_bmlt_password" name="wbw_bmlt_password" />
     <br><br>
-    <div class="quickedit_wbw_info_text">
+    <div class="options_dialog_wbw_info_text">
         <br>The BMLT username and password is used to action meeting approvals/rejections as well as perform any BMLT related actions on the Wordpress users behalf.
         <br><br>This user must be configured as a service body administrator and have access within BMLT to edit all service bodies that are used in WBW form submissions.
         <br>
@@ -46,6 +46,14 @@ echo '</form></div>';
         <br>
         <br>
     </div>
+</div>
 
-
+<div id="wbw_bmlt_erase_warning_dialog" class="hidden" style="max-width:800px">
+    <div class="options_dialog_wbw_error_message"></div>
+    <br>
+    <div class="options_dialog_wbw_warning_text">
+        <br>WARNING: If you proceed your plugin configuration, settings and service bodies will be removed.
+        <br>
+        <br>
+    </div>
 </div>
