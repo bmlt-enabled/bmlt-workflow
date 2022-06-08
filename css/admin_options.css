@@ -27,7 +27,7 @@ input {
 }
 
 .wbw_banner {
-  background-image: url('../images/Banner_Trimmed.png'),  url('../images/Banner_1px.png'),
+    background-image: url('../images/Banner_Trimmed.png'),  url('../images/Banner_1px.png');
     background-repeat: no-repeat, repeat-x;
     background-size: 196px 175px;
     bottom: 0;
