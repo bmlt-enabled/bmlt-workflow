@@ -58,3 +58,8 @@ input {
   font: inherit;
   grid-area: 1 / 1 / 2 / 2;
 }
+
+hr.wbw-error-message 
+{
+  border: none;
+}
