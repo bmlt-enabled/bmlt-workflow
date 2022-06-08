@@ -2,6 +2,7 @@
 namespace wbw\BMLT;
 
 use wbw\Debug;
+use wbw\Secrets;
 use wbw\REST\HandlerCore;
 class Integration
 {
@@ -13,8 +14,7 @@ class Integration
         {
             $this->cookies = $cookies;
         }
-
-        $this->handlerCore = new HandlerCore;
+        $this->Secrets = new Secrets;
     }
 
     private function wbw_rest_error($message, $code)
@@ -280,12 +280,12 @@ class Integration
 
             if($unserialized === false)
             {
-                return $this->handlerCore->wbw_rest_failure('Error unpacking password.');    
+                return new \WP_Error('wbw', 'Error unpacking password.');    
             }
-            $decrypted = $this->handlerCore->secrets_decrypt(NONCE_SALT, $unserialized);
+            $decrypted = $this->Secrets->secrets_decrypt(NONCE_SALT, $unserialized);
             if($decrypted === false)
             {
-                return $this->handlerCore->wbw_rest_failure('Error decrypting password.');    
+                return new \WP_Error('wbw', 'Error decrypting password.');    
             }
     
             $postargs = array(
@@ -293,7 +293,7 @@ class Integration
                 'c_comdef_admin_login' => wbw_get_option('wbw_bmlt_username'),                
                 'c_comdef_admin_password' => $decrypted
             );
-            $url = \get_option('wbw_bmlt_server_address') . "index.php";
+            $url = wbw_get_option('wbw_bmlt_server_address') . "index.php";
 
             // $wbw_dbg->debug_log("AUTH URL = " . $url);
             $ret = $this->post($url, null, $postargs);

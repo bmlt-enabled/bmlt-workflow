@@ -3,6 +3,7 @@ namespace wbw\REST\Handlers;
 
 use wbw\BMLT\Integration;
 use wbw\REST\HandlerCore;
+use wbw\Secrets;
 
 class BMLTServerHandler
 {
@@ -18,6 +19,7 @@ class BMLTServerHandler
             $this->bmlt_integration = $stub;
         }
         $this->handlerCore = new HandlerCore;
+        $this->Secrets = new Secrets;
     }
 
 private function check_bmltserver_parameters($username, $password, $server)
@@ -122,8 +124,8 @@ private function check_bmltserver_parameters($username, $password, $server)
 
         $wbw_dbg->debug_log("encrypting BMLT password");
 
-        $pre_serialize = $this->handlerCore->secrets_encrypt(NONCE_SALT, $password);
-        
+        $pre_serialize = $this->Secrets->secrets_encrypt(NONCE_SALT, $password);
+
         if(!is_array($pre_serialize))
         {
             return $this->handlerCore->wbw_rest_failure('Error encrypting password.');
