@@ -13,7 +13,7 @@ class Integration
         {
             $this->cookies = $cookies;
         }
-
+        $this->handlerCore = new HandlerCore;
     }
 
     private function wbw_rest_error($message, $code)
@@ -271,7 +271,7 @@ class Integration
     private function authenticateRootServer()
     {
         global $wbw_dbg;
-        
+
         if ($this->cookies == null) {
             $unserialized = unserialize(wbw_get_option('wbw_bmlt_password'));
             $wbw_dbg->debug_log("retrieved encrypted bmlt password");
