@@ -37,18 +37,7 @@ class OptionsHandler
             $wbw_dbg->debug_log("deleted option: " . $option_name);
             // check if we have an option in our restore that matches the options array
             if (array_key_exists($option_name, $params['options'])) {
-                // if($option_name == $wbw_options['wbw_bmlt_password'])
-                // {
-                //     $wbw_dbg->debug_log("decrypting " . $option_name);
-                //     $value = $this->handlerCore->secrets_decrypt(NONCE_SALT, unserialize($params['options'][$option_name]));
-                //     // $wbw_dbg->debug_log("decrypting to " . $value);
-                //     add_option($option_name, $value);
-                // }
-                // else
-                // {
-                    add_option($option_name, $params['options'][$option_name]);
-
-                // }
+                add_option($option_name, $params['options'][$option_name]);
                 $wbw_dbg->debug_log("added option: " . $option_name);
             }
         }

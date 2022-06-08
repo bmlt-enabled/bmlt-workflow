@@ -270,8 +270,13 @@ class Integration
 
     private function authenticateRootServer()
     {
+        global $wbw_dbg;
+        
         if ($this->cookies == null) {
-            $unserialized = unserialize(\get_option('wbw_bmlt_password'));
+            $unserialized = unserialize(wbw_get_option('wbw_bmlt_password'));
+            $wbw_dbg->debug_log("retrieved encrypted bmlt password");
+            $wbw_dbg->debug_log($wbw_dbg->vdump($unserialized));
+
             if($unserialized === false)
             {
                 return $this->handlerCore->wbw_rest_failure('Error unpacking password.');    
@@ -284,7 +289,7 @@ class Integration
     
             $postargs = array(
                 'admin_action' => 'login',
-                'c_comdef_admin_login' => \get_option('wbw_bmlt_username'),                
+                'c_comdef_admin_login' => wbw_get_option('wbw_bmlt_username'),                
                 'c_comdef_admin_password' => $decrypted
             );
             $url = \get_option('wbw_bmlt_server_address') . "index.php";
