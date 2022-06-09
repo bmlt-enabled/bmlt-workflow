@@ -21,7 +21,7 @@ class Integration
         } else {
             $this->WP_Options = $wpoptionssstub;
         }
-        $this->WBW_Debug = new WBW_Debug();
+        $this->wbw_dbg = new WBW_Debug();
     }
 
     private function wbw_rest_error($message, $code)
@@ -269,7 +269,6 @@ class Integration
     private function authenticateRootServer()
     {
         
-
         if ($this->cookies == null) {
             $unserialized = unserialize($this->WP_Options->wbw_get_option('wbw_bmlt_password'));
             $this->wbw_dbg->debug_log("retrieved encrypted bmlt password");
