@@ -301,7 +301,7 @@ Line: $errorLine
         Functions\when('$WP_Options->wbw_get_option')->returnArg();
         Functions\when('wp_safe_remote_post')->justReturn(new \WP_Error(1));
 
-        $secretsstub = \Mockery::mock('Secrets');
+        $secretsstub = \Mockery::mock('WP_Options');
         /** @var Mockery::mock $secretsstub test */
         $secretsstub->shouldReceive('secrets_decrypt')->andReturn('true');
 
@@ -362,7 +362,7 @@ Line: $errorLine
         Functions\when('wp_remote_retrieve_body')->justReturn('[{}]');
         Functions\when('$WP_Options->wbw_get_option')->returnArg();
 
-        $secretsstub = \Mockery::mock('Secrets');
+        $secretsstub = \Mockery::mock('WP_Options');
         /** @var Mockery::mock $secretsstub test */
         $secretsstub->shouldReceive('secrets_decrypt')->andReturn('true');
 

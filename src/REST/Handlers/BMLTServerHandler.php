@@ -135,7 +135,7 @@ private function check_bmltserver_parameters($username, $password, $server)
 
         $this->wbw_dbg->debug_log("encrypting BMLT password");
 
-        $pre_serialize = $this->Secrets->secrets_encrypt(NONCE_SALT, $password);
+        $pre_serialize = $this->WP_Options->secrets_encrypt(NONCE_SALT, $password);
 
         if(!is_array($pre_serialize))
         {

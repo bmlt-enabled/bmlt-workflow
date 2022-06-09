@@ -277,7 +277,7 @@ class Integration
             if ($unserialized === false) {
                 return new \WP_Error('wbw', 'Error unpacking password.');
             }
-            $decrypted = $this->Secrets->secrets_decrypt(NONCE_SALT, $unserialized);
+            $decrypted = $this->WP_Options->secrets_decrypt(NONCE_SALT, $unserialized);
             if ($decrypted === false) {
                 return new \WP_Error('wbw', 'Error decrypting password.');
             }
