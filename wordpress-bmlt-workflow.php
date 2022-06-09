@@ -33,7 +33,7 @@ use wbw\WBW_Debug;
 use wbw\BMLT\Integration;
 use wbw\REST\Controller;
 use wbw\WBW_Database;
-use wbw\WP_Options;
+use wbw\WBW_WP_Options;
 use wbw\WBW_Rest;
 
 // database configuration
@@ -41,7 +41,7 @@ global $wpdb;
 
 function meeting_update_form($atts = [], $content = null, $tag = '')
 {
-    $WBW_Options = new WBW_WP_Options();
+    $WBW_WP_Options = new WBW_WP_Options();
     $WBW_Rest = new WBW_Rest();
     $wbw_dbg = new WBW_Debug();
 
@@ -165,7 +165,7 @@ function enqueue_form_deps()
 function wbw_admin_scripts($hook)
 {
 
-    $WBW_Options = new WBW_WP_Options();
+    $WBW_WP_Options = new WBW_WP_Options();
     $WBW_Rest = new WBW_Rest();
     $wbw_dbg = new WBW_Debug();
 
@@ -557,7 +557,7 @@ function wbw_shortcode_html()
 
 function wbw_email_from_address_html()
 {
-    $WBW_Options = new WBW_WP_Options();
+    $WBW_WP_Options = new WBW_WP_Options();
 
     $from_address = $WBW_WP_Options->wbw_get_option('wbw_email_from_address');
     echo <<<END
@@ -573,7 +573,7 @@ function wbw_email_from_address_html()
 
 function wbw_delete_closed_meetings_html()
 {
-    $WBW_Options = new WBW_WP_Options();
+    $WBW_WP_Options = new WBW_WP_Options();
 
     $selection = $WBW_WP_Options->wbw_get_option('wbw_delete_closed_meetings');
     $delete = '';
@@ -611,7 +611,7 @@ function wbw_optional_form_fields_html()
 
 function do_optional_field($option, $friendlyname)
 {
-    $WBW_Options = new WBW_WP_Options();
+    $WBW_WP_Options = new WBW_WP_Options();
     $wbw_dbg = new WBW_Debug();
 
     $value = $WBW_WP_Options->wbw_get_option($option);
@@ -644,7 +644,7 @@ function do_optional_field($option, $friendlyname)
 
 function wbw_fso_email_address_html()
 {
-    $WBW_Options = new WBW_WP_Options();
+    $WBW_WP_Options = new WBW_WP_Options();
 
     $from_address = $WBW_WP_Options->wbw_get_option('wbw_fso_email_address');
     echo <<<END
@@ -660,7 +660,7 @@ function wbw_fso_email_address_html()
 
 function wbw_fso_email_template_html()
 {
-    $WBW_Options = new WBW_WP_Options();
+    $WBW_WP_Options = new WBW_WP_Options();
 
     echo <<<END
     <div class="wbw_info_text">
@@ -678,7 +678,7 @@ function wbw_fso_email_template_html()
 
 function wbw_submitter_email_template_html()
 {
-    $WBW_Options = new WBW_WP_Options();
+    $WBW_WP_Options = new WBW_WP_Options();
 
     echo <<<END
     <div class="wbw_info_text">
@@ -729,7 +729,7 @@ function wbw_install()
 
     $WBW_Database->wbw_db_upgrade($WBW_Database->wbw_db_version, false);
 
-    $WBW_Options = new WBW_WP_Options();
+    $WBW_WP_Options = new WBW_WP_Options();
 
     // give ourself the capability so we are able to see the submission menu
     $user = wp_get_current_user();
@@ -745,8 +745,10 @@ function wbw_uninstall()
     global $wpdb;
 
     // remove custom capability
-    $WBW_Options = new WBW_WP_Options();
-    // $wbw_dbg->debug_log("deleting capabilities");
+    $WBW_WP_Options = new WBW_WP_Options();
+    $wbw_dbg = new WBW_Debug();
+    
+    $wbw_dbg->debug_log("deleting capabilities");
 
     $users = get_users();
     foreach ($users as $user) {
