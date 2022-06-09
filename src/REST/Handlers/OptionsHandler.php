@@ -14,7 +14,7 @@ class OptionsHandler
     {
         $this->handlerCore = new HandlerCore();
         $this->WBW_Database = new WBW_Database();
-        $this->WP_Options = new WP_Options();
+        $this->WBW_WP_Options = new WP_Options();
 		$this->wbw_dbg = new WBW_Debug();
     }
 
@@ -32,9 +32,9 @@ class OptionsHandler
         $this->WBW_Database->wbw_db_upgrade($params['options']['wbw_db_version'], true);
 
         // restore all the options
-        foreach ($this->WP_Options->wbw_options as $key => $value) {
+        foreach ($this->WBW_WP_Options->wbw_options as $key => $value) {
             $option_name = $value;
-            delete_option($this->WP_Options->wbw_options[$option_name]);
+            delete_option($this->WBW_WP_Options->wbw_options[$option_name]);
             $this->wbw_dbg->debug_log("deleted option: " . $option_name);
             // check if we have an option in our restore that matches the options array
             if (array_key_exists($option_name, $params['options'])) {
@@ -90,9 +90,9 @@ class OptionsHandler
         $saveoptarr = array();
         foreach ($optarr as $key => $value) {
             $this->wbw_dbg->debug_log("searching for " . $key . " in ");
-            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($this->WP_Options->wbw_options));
+            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($this->WBW_WP_Options->wbw_options));
 
-            $found = array_search($key, $this->WP_Options->wbw_options);
+            $found = array_search($key, $this->WBW_WP_Options->wbw_options);
 
             if ($found == true) {
                 $this->wbw_dbg->debug_log("found " . $key);

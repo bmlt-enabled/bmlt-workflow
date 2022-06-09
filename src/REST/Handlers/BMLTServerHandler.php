@@ -3,7 +3,7 @@ namespace wbw\REST\Handlers;
 
 use wbw\BMLT\Integration;
 use wbw\REST\HandlerCore;
-use wbw\WP_Options;
+use wbw\WBW_WP_Options;
 use wbw\WBW_Debug;
 
 class BMLTServerHandler
@@ -22,11 +22,11 @@ class BMLTServerHandler
 
         if (empty($wpoptionssstub))
         {
-            $this->WP_Options = new WP_Options();
+            $this->WBW_WP_Options = new WBW_WP_Options();
         }
         else
         {
-            $this->WP_Options = $wpoptionssstub;
+            $this->WBW_WP_Options = $wpoptionssstub;
         }
 
         $this->handlerCore = new HandlerCore();
@@ -62,9 +62,9 @@ private function check_bmltserver_parameters($username, $password, $server)
         
 
         $this->wbw_dbg->debug_log('get test results returning');
-        $this->wbw_dbg->debug_log($this->WP_Options->wbw_get_option("wbw_bmlt_test_status", "failure"));
+        $this->wbw_dbg->debug_log($this->WBW_WP_Options->wbw_get_option("wbw_bmlt_test_status", "failure"));
 
-        $response = array("wbw_bmlt_test_status" => $this->WP_Options->wbw_get_option("wbw_bmlt_test_status", "failure"));
+        $response = array("wbw_bmlt_test_status" => $this->WBW_WP_Options->wbw_get_option("wbw_bmlt_test_status", "failure"));
 
         return $this->handlerCore->wbw_rest_success($response);
     }
@@ -135,7 +135,7 @@ private function check_bmltserver_parameters($username, $password, $server)
 
         $this->wbw_dbg->debug_log("encrypting BMLT password");
 
-        $pre_serialize = $this->WP_Options->secrets_encrypt(NONCE_SALT, $password);
+        $pre_serialize = $this->WBW_WP_Options->secrets_encrypt(NONCE_SALT, $password);
 
         if(!is_array($pre_serialize))
         {

@@ -3,7 +3,7 @@
 namespace wbw\BMLT;
 
 use wbw\WBW_Debug;
-use wbw\WP_Options;
+use wbw\WBW_WP_Options;
 use wbw\REST\HandlerCore;
 
 class Integration
@@ -17,9 +17,9 @@ class Integration
         }
 
         if (empty($wpoptionssstub)) {
-            $this->WP_Options = new WP_Options();
+            $this->WBW_WP_Options = new WBW_WP_Options();
         } else {
-            $this->WP_Options = $wpoptionssstub;
+            $this->WBW_WP_Options = $wpoptionssstub;
         }
         $this->wbw_dbg = new WBW_Debug();
     }
@@ -59,7 +59,7 @@ class Integration
     public function retrieve_single_meeting($meeting_id)
     {
 
-        $wbw_bmlt_server_address = $this->WP_Options->wbw_get_option('wbw_bmlt_server_address');
+        $wbw_bmlt_server_address = $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address');
         $url = $wbw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
 
         $curl = curl_init($url);
@@ -214,7 +214,7 @@ class Integration
             return $ret;
         }
 
-        $url = $this->WP_Options->wbw_get_option('wbw_bmlt_server_address') . "index.php";
+        $url = $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . "index.php";
         // $this->wbw_dbg->debug_log("*** ADMIN URL ".$url);
 
         $resp = $this->get($url, $this->cookies);
@@ -270,24 +270,24 @@ class Integration
     {
         
         if ($this->cookies == null) {
-            $unserialized = unserialize($this->WP_Options->wbw_get_option('wbw_bmlt_password'));
+            $unserialized = unserialize($this->WBW_WP_Options->wbw_get_option('wbw_bmlt_password'));
             $this->wbw_dbg->debug_log("retrieved encrypted bmlt password");
             $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($unserialized));
 
             if ($unserialized === false) {
                 return new \WP_Error('wbw', 'Error unpacking password.');
             }
-            $decrypted = $this->WP_Options->secrets_decrypt(NONCE_SALT, $unserialized);
+            $decrypted = $this->WBW_WP_Options->secrets_decrypt(NONCE_SALT, $unserialized);
             if ($decrypted === false) {
                 return new \WP_Error('wbw', 'Error decrypting password.');
             }
 
             $postargs = array(
                 'admin_action' => 'login',
-                'c_comdef_admin_login' => $this->WP_Options->wbw_get_option('wbw_bmlt_username'),
+                'c_comdef_admin_login' => $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_username'),
                 'c_comdef_admin_password' => $decrypted
             );
-            $url = $this->WP_Options->wbw_get_option('wbw_bmlt_server_address') . "index.php";
+            $url = $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . "index.php";
 
             // $this->wbw_dbg->debug_log("AUTH URL = " . $url);
             $ret = $this->post($url, null, $postargs);
@@ -402,7 +402,7 @@ class Integration
         if (!(is_array($postargs))) {
             return $this->wbw_rest_error("Missing post parameters", "wbw_bmlt_integration");
         }
-        return $this->post($this->WP_Options->wbw_get_option('wbw_bmlt_server_address') . $url, $this->cookies, $postargs);
+        return $this->post($this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . $url, $this->cookies, $postargs);
     }
 
     /**
@@ -417,7 +417,7 @@ class Integration
         if (!(is_array($postargs))) {
             return $this->wbw_rest_error("Missing post parameters", "wbw_bmlt_integration");
         }
-        return $this->post($this->WP_Options->wbw_get_option('wbw_bmlt_server_address') . $url, null, $postargs);
+        return $this->post($this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . $url, null, $postargs);
     }
 
     /**
@@ -437,6 +437,6 @@ class Integration
             return $this->wbw_rest_error("Missing post parameters", "wbw_bmlt_integration");
         }
 
-        return $this->postsemantic($this->WP_Options->wbw_get_option('wbw_bmlt_server_address') . $url, $this->cookies, $postargs);
+        return $this->postsemantic($this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . $url, $this->cookies, $postargs);
     }
 }

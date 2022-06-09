@@ -2,7 +2,7 @@
 
 namespace wbw;
 
-class WP_Options
+class WBW_WP_Options
 {
 
     public function __construct($stub = null)
