@@ -4,6 +4,7 @@ namespace wbw\REST\Handlers;
 
 use wbw\BMLT\Integration;
 use wbw\REST\HandlerCore;
+use wbw\WBW_Database;
 use wbw\WBW_Debug;
 
 class SubmissionsHandler
@@ -18,6 +19,8 @@ class SubmissionsHandler
         }
         $this->handlerCore = new HandlerCore();
         $this->wbw_dbg = new WBW_Debug();
+        $this->WBW_Database = new WBW_Database();
+
     }
 
     public function get_submissions_handler()
