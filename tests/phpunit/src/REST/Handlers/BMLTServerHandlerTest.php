@@ -52,8 +52,6 @@ Line: $errorLine
         Functions\when('\apply_filters')->returnArg(2);
         Functions\when('\current_time')->justReturn('2022-03-23 09:22:44');
         Functions\when('\absint')->returnArg();
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
-        Functions\when('\$WP_Options->wbw_get_option')->returnArg();
         Functions\when('wp_safe_remote_post')->returnArg();
 
         $this->wbw_dbg = new WBW_Debug();
@@ -81,8 +79,11 @@ Line: $errorLine
         $request->set_route("/wbw/v1/bmltserver");
         $request->set_method('GET');
 
-        Functions\when('\$WP_Options->wbw_get_option')->justReturn('success');
-        $rest = new BMLTServerHandler();
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
+
+        $rest = new BMLTServerHandler(null, $WBW_WP_Options);
 
         $response = $rest->get_bmltserver_handler($request);
 
@@ -105,8 +106,11 @@ Line: $errorLine
         $request->set_route("/wbw/v1/bmltserver");
         $request->set_method('GET');
 
-        Functions\when('\$WP_Options->wbw_get_option')->justReturn('failure');
-        $rest = new BMLTServerHandler();
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+
+        $rest = new BMLTServerHandler(null,$WBW_WP_Options);
 
         $response = $rest->get_bmltserver_handler($request);
 
@@ -133,7 +137,11 @@ Line: $errorLine
         $request->set_param('wbw_bmlt_server_address', 'http://1.1.1.1/main_server/');
         $request->set_param('wbw_bmlt_username', 'test');
         $request->set_param('wbw_bmlt_password', 'test');
-        Functions\when('$WP_Options->wbw_get_option')->justReturn('success');
+
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
+
         Functions\when('\update_option')->returnArg(1);
 
         $stub = \Mockery::mock('Integration');
@@ -168,7 +176,11 @@ Line: $errorLine
         $request->set_param('wbw_bmlt_server_address', 'test');
         $request->set_param('wbw_bmlt_username', 'test');
         $request->set_param('wbw_bmlt_password', 'test');
-        Functions\when('$WP_Options->wbw_get_option')->justReturn('success');
+
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
+
         Functions\when('\update_option')->returnArg(1);
         $rest = new BMLTServerHandler();
 
@@ -193,7 +205,11 @@ Line: $errorLine
         $request->set_param('wbw_bmlt_server_address', 'test');
         $request->set_param('wbw_bmlt_username', '');
         $request->set_param('wbw_bmlt_password', 'test');
-        Functions\when('$WP_Options->wbw_get_option')->justReturn('success');
+
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
+
         Functions\when('\update_option')->returnArg(1);
         $rest = new BMLTServerHandler();
 
@@ -217,7 +233,11 @@ Line: $errorLine
         $request->set_param('wbw_bmlt_server_address', 'test');
         $request->set_param('wbw_bmlt_username', 'test');
         $request->set_param('wbw_bmlt_password', '');
-        Functions\when('$WP_Options->wbw_get_option')->justReturn('success');
+
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
+
         Functions\when('\update_option')->returnArg(1);
         $rest = new BMLTServerHandler();
 

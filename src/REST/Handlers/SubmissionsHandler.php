@@ -11,17 +11,23 @@ use wbw\WBW_WP_Options;
 class SubmissionsHandler
 {
 
-    public function __construct($stub = null)
+    public function __construct($intstub = null, $optstub = null)
     {
-        if (empty($stub)) {
+        if (empty($intstub)) {
             $this->bmlt_integration = new Integration();
         } else {
-            $this->bmlt_integration = $stub;
+            $this->bmlt_integration = $intstub;
         }
+        
         $this->handlerCore = new HandlerCore();
         $this->wbw_dbg = new WBW_Debug();
         $this->WBW_Database = new WBW_Database();
-        $this->WBW_WP_Options = new WBW_WP_Options();
+
+        if (empty($optstub)) {
+            $this->WBW_WP_Options = new WBW_WP_Options();
+        } else {
+            $this->WBW_WP_Options = $optstub;
+        }
 
     }
 

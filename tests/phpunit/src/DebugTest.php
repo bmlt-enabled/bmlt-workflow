@@ -52,7 +52,7 @@ Line: $errorLine
     {
         if(WBW_DEBUG)
         {
-            $dbg = new Debug();
+            $dbg = new WBW_Debug();
             Functions\expect('error_log')->once();
     
             $dbg->debug_log("hi");

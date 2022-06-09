@@ -120,11 +120,16 @@ Line: $errorLine
 
         // Functions\when('wp_remote_retrieve_body')->justReturn('[{"key_string": "B","name_string": "Beginners","description_string": "This meeting is focused on the needs of new members of NA.","lang": "en","id": "1","world_id": "BEG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"},{"key_string": "BL","name_string": "Bi-Lingual","description_string": "This meeting is conducted in both English and another language.","lang": "en","id": "2","world_id": "LANG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"}]');
         Functions\when('wp_remote_retrieve_body')->justReturn($this->formats);
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
-        $integration = new Integration();
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        $WBW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
+
+        $integration = new Integration(null,$WBW_WP_Options);
 
         $response = $integration->getMeetingFormats();
         $this->assertIsArray($response);
@@ -138,10 +143,15 @@ Line: $errorLine
         //     public function getMeetingFormats()
 
         Functions\when('wp_remote_retrieve_body')->justReturn('[{"key_string": "B","name_string": "Beginners","description_string": "This meeting is focused on the needs of new members of NA.","lang": "en","id": "1","world_id": "BEG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"},{"key_string": "BL","name_string": "Bi-Lingual","description_string": "This meeting is conducted in both English and another language.","lang": "en","id": "2","world_id": "LANG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"}]');
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('wp_safe_remote_post')->justReturn(new \WP_Error(1));
 
-        $integration = new Integration();
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        $WBW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
+
+        $integration = new Integration(null, $WBW_WP_Options);
 
         $response = $integration->getMeetingFormats();
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -156,10 +166,14 @@ Line: $errorLine
 
 
         Functions\when('wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": "MA,ME,NH,RI,VT"}]');
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('wp_safe_remote_post')->returnArg();
 
-        $integration = new Integration();
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+
+        $integration = new Integration(null,$WBW_WP_Options);
 
         $response = $integration->getMeetingStates();
         $this->assertIsArray($response);
@@ -174,10 +188,14 @@ Line: $errorLine
 
 
         Functions\when('wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": ""}]');
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('wp_safe_remote_post')->returnArg();
 
-        $integration = new Integration();
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+
+        $integration = new Integration(null, $WBW_WP_Options);
 
         $response = $integration->getMeetingStates();
         $this->assertFalse($response);
@@ -191,10 +209,14 @@ Line: $errorLine
         //         public function getMeetingStates()
 
         Functions\when('wp_remote_retrieve_body')->justReturn('[{"key_string": "B","name_string": "Beginners","description_string": "This meeting is focused on the needs of new members of NA.","lang": "en","id": "1","world_id": "BEG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"},{"key_string": "BL","name_string": "Bi-Lingual","description_string": "This meeting is conducted in both English and another language.","lang": "en","id": "2","world_id": "LANG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"}]');
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('wp_safe_remote_post')->justReturn(new \WP_Error(1));
 
-        $integration = new Integration();
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+
+        $integration = new Integration(null,$WBW_WP_Options);
 
         $response = $integration->getMeetingStates();
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -210,10 +232,14 @@ Line: $errorLine
 
 
         Functions\when('wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": "MA,ME,NH,RI,VT","meeting_counties_and_sub_provinces": "Androscoggin,Aroostook,Barnstable,Belknap"}]');
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('wp_safe_remote_post')->returnArg();
 
-        $integration = new Integration();
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+
+        $integration = new Integration(null,$WBW_WP_Options);
 
         $response = $integration->getMeetingCounties();
         $this->assertIsArray($response);
@@ -228,10 +254,14 @@ Line: $errorLine
 
 
         Functions\when('wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": "MA,ME,NH,RI,VT","meeting_counties_and_sub_provinces": ""}]');
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('wp_safe_remote_post')->returnArg();
 
-        $integration = new Integration();
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+
+        $integration = new Integration(null,$WBW_WP_Options);
 
         $response = $integration->getMeetingCounties();
         $this->assertFalse($response);
@@ -245,10 +275,14 @@ Line: $errorLine
         //         public function getMeetingCounties()
 
         Functions\when('wp_remote_retrieve_body')->justReturn('[{}]');
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('wp_safe_remote_post')->justReturn(new \WP_Error(1));
 
-        $integration = new Integration();
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+
+        $integration = new Integration(null,$WBW_WP_Options);
 
         $response = $integration->getMeetingCounties();
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -262,11 +296,16 @@ Line: $errorLine
         //         public function postAuthenticatedRootServerRequest()
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
-        $integration = new Integration();
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        $WBW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
+
+        $integration = new Integration(null,$WBW_WP_Options);
 
         $response = $integration->postAuthenticatedRootServerRequest('test', array('args'=>'args'));
         $this->assertIsString($response);
@@ -280,11 +319,16 @@ Line: $errorLine
         //         public function postAuthenticatedRootServerRequest()
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
-        $integration = new Integration();
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        $WBW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
+
+        $integration = new Integration(null,$WBW_WP_Options);
 
         $response = $integration->postAuthenticatedRootServerRequest('test', null);
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -298,12 +342,13 @@ Line: $errorLine
         //             public function postAuthenticatedRootServerRequest($url, $postargs)
 
         Functions\when('wp_remote_retrieve_body')->justReturn('[{}]');
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
         Functions\when('wp_safe_remote_post')->justReturn(new \WP_Error(1));
+        Functions\when('wp_remote_retrieve_cookies')->returnArg();
 
         $secretsstub = \Mockery::mock('WP_Options');
         /** @var Mockery::mock $secretsstub test */
         $secretsstub->shouldReceive('secrets_decrypt')->andReturn('true');
+        $secretsstub->shouldReceive('wbw_get_option')->andReturn("failure");
 
         Functions\when('\is_wp_error')->justReturn(false);
 
@@ -321,11 +366,16 @@ Line: $errorLine
         //         public function postAuthenticatedRootServerRequestSemantic()
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
-        $integration = new Integration();
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        $WBW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
+
+        $integration = new Integration(null,$WBW_WP_Options);
 
         $response = $integration->postAuthenticatedRootServerRequestSemantic('test', array('args'=>'args'));
         $this->assertIsString($response);
@@ -339,11 +389,16 @@ Line: $errorLine
         //         public function postAuthenticatedRootServerRequestSemantic()
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
-        $integration = new Integration();
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        $WBW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
+
+        $integration = new Integration(null,$WBW_WP_Options);
 
         $response = $integration->postAuthenticatedRootServerRequestSemantic('test', null);
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -358,17 +413,19 @@ Line: $errorLine
 
         // last call triggers the error
         Functions\when('wp_safe_remote_post')->justReturn(new \WP_Error(1));
-
+        Functions\when('wp_remote_retrieve_cookies')->returnArg();
         Functions\when('wp_remote_retrieve_body')->justReturn('[{}]');
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
 
-        $secretsstub = \Mockery::mock('WP_Options');
-        /** @var Mockery::mock $secretsstub test */
-        $secretsstub->shouldReceive('secrets_decrypt')->andReturn('true');
+
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        $WBW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
+
 
         Functions\when('\is_wp_error')->justReturn(false);
 
-        $integration = new Integration(null, $secretsstub);
+        $integration = new Integration(null, $WBW_WP_Options);
 
         $response = $integration->postAuthenticatedRootServerRequestSemantic('test', array("arg1" => "args1"));
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -383,7 +440,7 @@ Line: $errorLine
      */
     public function test_can_call_geolocateAddress_with_valid_address(): void
     {
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('wp_safe_remote_get')->returnArg();
         Functions\when('wp_safe_remote_post')->returnArg();
         Functions\when('wp_remote_retrieve_cookies')->returnArg();
@@ -399,7 +456,11 @@ Line: $errorLine
         Functions\when('curl_setopt')->returnArg();
         Functions\when('curl_close')->returnArg();
     
-        $integration = new Integration(true);
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+
+        $integration = new Integration(true,$WBW_WP_Options);
         $response = $integration->geolocateAddress('sydney, australia');
         
         $this->wbw_dbg->debug_log("*** GEO RESPONSE");
@@ -420,7 +481,7 @@ Line: $errorLine
     public function test_cant_call_geolocateAddress_with_invalid_address(): void
     {
 
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('wp_safe_remote_get')->returnArg();
         Functions\when('wp_safe_remote_post')->returnArg();
         Functions\when('wp_remote_retrieve_cookies')->returnArg();
@@ -436,7 +497,11 @@ Line: $errorLine
         Functions\when('curl_setopt')->returnArg();
         Functions\when('curl_close')->returnArg();
     
-        $integration = new Integration(true);
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+
+        $integration = new Integration(true,$WBW_WP_Options);
         $response = $integration->geolocateAddress('junk, junk');
         
         $this->wbw_dbg->debug_log("*** GEO RESPONSE");
@@ -455,7 +520,7 @@ Line: $errorLine
     public function test_error_when_gmaps_call_returns_trash(): void
     {
 
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+
         Functions\when('wp_safe_remote_get')->returnArg();
         Functions\when('wp_safe_remote_post')->returnArg();
         Functions\when('wp_remote_retrieve_cookies')->returnArg();
@@ -471,7 +536,11 @@ Line: $errorLine
         Functions\when('curl_setopt')->returnArg();
         Functions\when('curl_close')->returnArg();
     
-        $integration = new Integration(true);
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+
+        $integration = new Integration(true,$WBW_WP_Options);
         $response = $integration->geolocateAddress('junk, junk');
         
         $this->wbw_dbg->debug_log("*** GEO RESPONSE");

@@ -53,7 +53,6 @@ Line: $errorLine
         Functions\when('\apply_filters')->returnArg(2);
         Functions\when('\current_time')->justReturn('2022-03-23 09:22:44');
         Functions\when('\absint')->returnArg();
-        Functions\when('$WP_Options->wbw_get_option')->returnArg();
         Functions\when('wp_safe_remote_post')->returnArg();
 
         $this->wbw_dbg = new WBW_Debug();
@@ -103,6 +102,10 @@ Line: $errorLine
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('prepare')->andReturn("SELECT * from anything");
         $wpdb->shouldReceive('get_results')->andReturn($sblookup);
+
+        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        /** @var Mockery::mock $WBW_WP_Options test */
+        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
 
         $rest = new ServiceBodiesHandler();
 
