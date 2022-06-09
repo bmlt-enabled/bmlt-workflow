@@ -4,7 +4,7 @@ namespace wbw\REST\Handlers;
 
 use wbw\REST\HandlerCore;
 use wbw\WBW_Database;
-use wbw\WP_Options;
+use wbw\WBW_WP_Options;
 use wbw\WBW_Debug;
 
 class OptionsHandler
@@ -14,7 +14,7 @@ class OptionsHandler
     {
         $this->handlerCore = new HandlerCore();
         $this->WBW_Database = new WBW_Database();
-        $this->WBW_WP_Options = new WP_Options();
+        $this->WBW_WP_Options = new WBW_WP_Options();
 		$this->wbw_dbg = new WBW_Debug();
     }
 
