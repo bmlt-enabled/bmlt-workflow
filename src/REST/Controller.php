@@ -9,6 +9,7 @@ use wbw\REST\Handlers\ServiceBodiesHandler;
 use wbw\REST\Handlers\SubmissionsHandler;
 use wbw\REST\Handlers\OptionsHandler;
 use wbw\WBW_Rest;
+use wbw\WBW_WP_Options;
 
 class Controller extends \WP_REST_Controller
 {
@@ -26,6 +27,7 @@ class Controller extends \WP_REST_Controller
 		$this->OptionsHandler = new OptionsHandler();
 		$this->WBW_Rest = new WBW_Rest();
 		$this->wbw_dbg = new WBW_Debug();
+		$this->WBW_WP_Options = new WBW_WP_Options();
 
 		$this->namespace = $this->WBW_Rest->wbw_rest_namespace;
 		$this->submissions_rest_base = $this->WBW_Rest->wbw_submissions_rest_base;
