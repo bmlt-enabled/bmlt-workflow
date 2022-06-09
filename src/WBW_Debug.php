@@ -2,7 +2,7 @@
 
 namespace wbw;
 
-class Debug 
+class WBW_Debug 
 {
     function debug_log($message)
     {

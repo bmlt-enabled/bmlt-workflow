@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use wbw\Debug;
+use wbw\WBW_Debug;
 use wbw\REST\Handlers\BMLTServerHandler;
 
 use PHPUnit\Framework\TestCase;
@@ -10,8 +10,6 @@ use Brain\Monkey\Functions;
 use function Patchwork\{redefine, getFunction, always};
 require_once('config_phpunit.php');
 
-global $wbw_dbg;
-$wbw_dbg = new Debug;
 
 /**
  * @covers wbw\REST\Handlers\BMLTServerHandler
@@ -54,9 +52,11 @@ Line: $errorLine
         Functions\when('\apply_filters')->returnArg(2);
         Functions\when('\current_time')->justReturn('2022-03-23 09:22:44');
         Functions\when('\absint')->returnArg();
-        Functions\when('\get_option')->returnArg();
-        Functions\when('\wbw_get_option')->returnArg();
+        Functions\when('$WP_Options->wbw_get_option')->returnArg();
+        Functions\when('\$WP_Options->wbw_get_option')->returnArg();
         Functions\when('wp_safe_remote_post')->returnArg();
+
+        $this->wbw_dbg = new WBW_Debug();
 
     }
 
@@ -65,6 +65,8 @@ Line: $errorLine
         Brain\Monkey\tearDown();
         parent::tearDown();
         Mockery::close();
+
+        unset($this->wbw_dbg);
     }
 
 // test for GET bmltserver (get server test settings)
@@ -73,19 +75,18 @@ Line: $errorLine
      */
     public function test_can_get_bmltserver_with_success(): void
     {
-
-        global $wbw_dbg;
+        
         $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/wbw/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/wbw/v1/bmltserver");
         $request->set_method('GET');
 
-        Functions\when('\wbw_get_option')->justReturn('success');
+        Functions\when('\$WP_Options->wbw_get_option')->justReturn('success');
         $rest = new BMLTServerHandler();
 
         $response = $rest->get_bmltserver_handler($request);
 
-        $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
 
@@ -98,18 +99,19 @@ Line: $errorLine
      */
     public function test_can_get_bmltserver_with_failure(): void
     {
+
         $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/wbw/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/wbw/v1/bmltserver");
         $request->set_method('GET');
 
-        Functions\when('\wbw_get_option')->justReturn('failure');
+        Functions\when('\$WP_Options->wbw_get_option')->justReturn('failure');
         $rest = new BMLTServerHandler();
 
         $response = $rest->get_bmltserver_handler($request);
 
-        global $wbw_dbg;
-        $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+        
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
 
@@ -123,6 +125,7 @@ Line: $errorLine
 
     public function test_can_post_bmltserver_with_valid_parameters(): void
     {
+
         $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/wbw/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/wbw/v1/bmltserver");
@@ -130,7 +133,7 @@ Line: $errorLine
         $request->set_param('wbw_bmlt_server_address', 'http://1.1.1.1/main_server/');
         $request->set_param('wbw_bmlt_username', 'test');
         $request->set_param('wbw_bmlt_password', 'test');
-        Functions\when('\get_option')->justReturn('success');
+        Functions\when('$WP_Options->wbw_get_option')->justReturn('success');
         Functions\when('\update_option')->returnArg(1);
 
         $stub = \Mockery::mock('Integration');
@@ -143,8 +146,8 @@ Line: $errorLine
 
         $response = $rest->post_bmltserver_handler($request);
 
-        global $wbw_dbg;
-        $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+        
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
 
@@ -165,14 +168,14 @@ Line: $errorLine
         $request->set_param('wbw_bmlt_server_address', 'test');
         $request->set_param('wbw_bmlt_username', 'test');
         $request->set_param('wbw_bmlt_password', 'test');
-        Functions\when('\get_option')->justReturn('success');
+        Functions\when('$WP_Options->wbw_get_option')->justReturn('success');
         Functions\when('\update_option')->returnArg(1);
         $rest = new BMLTServerHandler();
 
         $response = $rest->post_bmltserver_handler($request);
 
-        global $wbw_dbg;
-        $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+        
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
 
         $this->assertInstanceOf(WP_Error::class, $response);
         $this->assertEquals($response->get_error_data()['wbw_bmlt_test_status'], 'failure');
@@ -190,14 +193,13 @@ Line: $errorLine
         $request->set_param('wbw_bmlt_server_address', 'test');
         $request->set_param('wbw_bmlt_username', '');
         $request->set_param('wbw_bmlt_password', 'test');
-        Functions\when('\get_option')->justReturn('success');
+        Functions\when('$WP_Options->wbw_get_option')->justReturn('success');
         Functions\when('\update_option')->returnArg(1);
         $rest = new BMLTServerHandler();
 
         $response = $rest->post_bmltserver_handler($request);
 
-        global $wbw_dbg;
-        $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
 
         $this->assertInstanceOf(WP_Error::class, $response);
         $this->assertEquals($response->get_error_data()['wbw_bmlt_test_status'], 'failure');
@@ -215,14 +217,14 @@ Line: $errorLine
         $request->set_param('wbw_bmlt_server_address', 'test');
         $request->set_param('wbw_bmlt_username', 'test');
         $request->set_param('wbw_bmlt_password', '');
-        Functions\when('\get_option')->justReturn('success');
+        Functions\when('$WP_Options->wbw_get_option')->justReturn('success');
         Functions\when('\update_option')->returnArg(1);
         $rest = new BMLTServerHandler();
 
         $response = $rest->post_bmltserver_handler($request);
 
-        global $wbw_dbg;
-        $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+        
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
 
         $this->assertInstanceOf(WP_Error::class, $response);
         $this->assertEquals($response->get_error_data()['wbw_bmlt_test_status'], 'failure');

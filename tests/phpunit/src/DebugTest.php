@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use wbw\Debug;
+use wbw\WBW_Debug;
 
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;

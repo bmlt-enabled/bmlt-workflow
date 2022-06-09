@@ -2,12 +2,12 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-use wbw\Debug;
+use wbw\WBW_Debug;
 use wbw\BMLT\Integration;
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
-$bmlt_integration = new Integration;
+$bmlt_integration = new Integration();
 
 $meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
 

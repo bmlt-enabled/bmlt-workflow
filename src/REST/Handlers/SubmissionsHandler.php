@@ -4,6 +4,7 @@ namespace wbw\REST\Handlers;
 
 use wbw\BMLT\Integration;
 use wbw\REST\HandlerCore;
+use wbw\WBW_Debug;
 
 class SubmissionsHandler
 {
@@ -11,28 +12,26 @@ class SubmissionsHandler
     public function __construct($stub = null)
     {
         if (empty($stub)) {
-            $this->bmlt_integration = new Integration;
+            $this->bmlt_integration = new Integration();
         } else {
             $this->bmlt_integration = $stub;
         }
-        $this->handlerCore = new HandlerCore;
+        $this->handlerCore = new HandlerCore();
+        $this->wbw_dbg = new WBW_Debug();
     }
-
 
     public function get_submissions_handler()
     {
 
         global $wpdb;
-        global $wbw_submissions_table_name;
-        global $wbw_service_bodies_access_table_name;
 
         // only show submissions we have access to
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
-        $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' s inner join ' . $wbw_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
-        // $wbw_dbg->debug_log($sql);
+        $sql = $wpdb->prepare('SELECT * FROM ' . $this->WBW_Database->wbw_submissions_table_name . ' s inner join ' . $this->WBW_Database->wbw_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
+        // $this->wbw_dbg->debug_log($sql);
         $result = $wpdb->get_results($sql, ARRAY_A);
-        // $wbw_dbg->debug_log($wbw_dbg->vdump($result));
+        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($result));
         foreach ($result as $key => $value) {
             $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 2);
         }
@@ -43,9 +42,8 @@ class SubmissionsHandler
     {
 
         global $wpdb;
-        global $wbw_submissions_table_name;
 
-        $sql = $wpdb->prepare('DELETE FROM ' . $wbw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+        $sql = $wpdb->prepare('DELETE FROM ' . $this->WBW_Database->wbw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
         $wpdb->query($sql, ARRAY_A);
 
         return $this->handlerCore->wbw_rest_success('Deleted submission id ' . $request['id']);
@@ -54,8 +52,8 @@ class SubmissionsHandler
     public function get_submission_handler($request)
     {
         global $wpdb;
-        global $wbw_submissions_table_name;
-        $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+
+        $sql = $wpdb->prepare('SELECT * FROM ' . $this->WBW_Database->wbw_submissions_table_name . ' where id="%d" limit 1', $request['id']);
         $result = $wpdb->get_results($sql, ARRAY_A);
 
         return $result;
@@ -64,17 +62,15 @@ class SubmissionsHandler
     private function get_submission_id_with_permission_check($change_id)
     {
         global $wpdb;
-        global $wbw_submissions_table_name;
-        global $wbw_service_bodies_access_table_name;
-        global $wbw_dbg;
+        
 
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
-        $sql = $wpdb->prepare('SELECT * FROM ' . $wbw_submissions_table_name . ' s inner join ' . $wbw_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
-        // $wbw_dbg->debug_log($sql);
+        $sql = $wpdb->prepare('SELECT * FROM ' . $this->WBW_Database->wbw_submissions_table_name . ' s inner join ' . $this->WBW_Database->wbw_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
+        // $this->wbw_dbg->debug_log($sql);
         $result = $wpdb->get_row($sql, ARRAY_A);
-        $wbw_dbg->debug_log("RESULT");
-        $wbw_dbg->debug_log($wbw_dbg->vdump($result));
+        $this->wbw_dbg->debug_log("RESULT");
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($result));
         if (empty($result)) {
             return $this->handlerCore->wbw_rest_error("Permission denied viewing submission id {$change_id}", 403);
         }
@@ -84,12 +80,11 @@ class SubmissionsHandler
     public function reject_submission_handler($request)
     {
         global $wpdb;
-        global $wbw_submissions_table_name;
-        global $wbw_dbg;
+        
 
         $change_id = $request->get_param('id');
 
-        $wbw_dbg->debug_log("rejection request for id " . $change_id);
+        $this->wbw_dbg->debug_log("rejection request for id " . $change_id);
 
         $result = $this->get_submission_id_with_permission_check($change_id);
         if (is_wp_error($result)) {
@@ -111,14 +106,14 @@ class SubmissionsHandler
                 return $this->handlerCore->wbw_rest_error('Reject message must be less than 1024 characters', 422);
             }
         } else {
-            $wbw_dbg->debug_log("action message is null");
+            $this->wbw_dbg->debug_log("action message is null");
         }
 
         $current_user = wp_get_current_user();
         $username = $current_user->user_login;
 
         $sql = $wpdb->prepare(
-            'UPDATE ' . $wbw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'UPDATE ' . $this->WBW_Database->wbw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
             'rejected',
             $username,
             current_time('mysql', true),
@@ -132,7 +127,7 @@ class SubmissionsHandler
         // send action email
         //
 
-        $from_address = wbw_get_option('wbw_email_from_address');
+        $from_address = $this->WP_Options->wbw_get_option('wbw_email_from_address');
         $to_address = $submitter_email;
         $subject = "NA Meeting Change Request Rejection - Submission ID " . $request['id'];
         $body = "Your meeting change (ID " . $request['id'] . ") has been rejected.";
@@ -141,8 +136,8 @@ class SubmissionsHandler
         }
 
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-        $wbw_dbg->debug_log("Rejection email");
-        $wbw_dbg->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . $wbw_dbg->vdump($headers));
+        $this->wbw_dbg->debug_log("Rejection email");
+        $this->wbw_dbg->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . $this->wbw_dbg->vdump($headers));
         wp_mail($to_address, $subject, $body, $headers);
 
         return $this->handlerCore->wbw_rest_success('Rejected submission id ' . $change_id);
@@ -151,12 +146,11 @@ class SubmissionsHandler
     public function patch_submission_handler($request)
     {
         global $wpdb;
-        global $wbw_submissions_table_name;
-        global $wbw_dbg;
+        
 
         $change_id = $request->get_param('id');
 
-        $wbw_dbg->debug_log("patch request for id " . $change_id);
+        $this->wbw_dbg->debug_log("patch request for id " . $change_id);
 
         // permitted change list from quickedit - notably no meeting id or service body
         $quickedit_change = $request->get_param('changes_requested');
@@ -179,9 +173,9 @@ class SubmissionsHandler
         );
 
         foreach ($quickedit_change as $key => $value) {
-            // $wbw_dbg->debug_log("checking " . $key);
+            // $this->wbw_dbg->debug_log("checking " . $key);
             if ((!in_array($key, $change_subfields)) || (is_array($value))) {
-                // $wbw_dbg->debug_log("removing " . $key);
+                // $this->wbw_dbg->debug_log("removing " . $key);
                 unset($quickedit_change[$key]);
             }
         }
@@ -199,28 +193,28 @@ class SubmissionsHandler
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
             return $this->handlerCore->wbw_rest_error("Submission id {$change_id} is already $change_made", 422);
         }
-        // $wbw_dbg->debug_log("change made is ".$change_made);
+        // $this->wbw_dbg->debug_log("change made is ".$change_made);
 
         // get our saved changes from the db
         $saved_change = json_decode($result['changes_requested'], 1);
 
         // put the quickedit ones over the top
 
-        // $wbw_dbg->debug_log("merge before - saved");
-        // $wbw_dbg->debug_log($wbw_dbg->vdump($saved_change));
-        // $wbw_dbg->debug_log("merge before - quickedit");
-        // $wbw_dbg->debug_log($wbw_dbg->vdump($quickedit_change));
+        // $this->wbw_dbg->debug_log("merge before - saved");
+        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($saved_change));
+        // $this->wbw_dbg->debug_log("merge before - quickedit");
+        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($quickedit_change));
 
         $merged_change = array_merge($saved_change, $quickedit_change);
 
-        // $wbw_dbg->debug_log("merge after - saved");
-        // $wbw_dbg->debug_log($wbw_dbg->vdump($merged_change));
+        // $this->wbw_dbg->debug_log("merge after - saved");
+        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($merged_change));
 
         $current_user = wp_get_current_user();
         $username = $current_user->user_login;
 
         $sql = $wpdb->prepare(
-            'UPDATE ' . $wbw_submissions_table_name . ' set changes_requested = "%s",change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'UPDATE ' . $this->WBW_Database->wbw_submissions_table_name . ' set changes_requested = "%s",change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
             json_encode($merged_change),
             'updated',
             $username,
@@ -228,7 +222,7 @@ class SubmissionsHandler
             NULL,
             $request['id']
         );
-        // $wbw_dbg->debug_log($wbw_dbg->vdump($sql));
+        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($sql));
 
         $result = $wpdb->get_results($sql, ARRAY_A);
 
@@ -238,7 +232,7 @@ class SubmissionsHandler
     private function do_geolocate($change)
     {
         // workaround for server side geolocation
-        global $wbw_dbg;
+        
         $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
         $locdata = array();
         foreach($locfields as $field)
@@ -249,14 +243,14 @@ class SubmissionsHandler
             }
         }
         $locstring = implode(', ',$locdata);
-        $wbw_dbg->debug_log("GMAPS location lookup = " . $locstring);
+        $this->wbw_dbg->debug_log("GMAPS location lookup = " . $locstring);
 
         $location = $this->bmlt_integration->geolocateAddress($locstring);
         if (is_wp_error($location)) {
             return $location;
         }
 
-        $wbw_dbg->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
+        $this->wbw_dbg->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
 
         $latlng = array();
         $latlng['latitude']= $location['latitude'];
@@ -268,11 +262,10 @@ class SubmissionsHandler
     public function approve_submission_handler($request)
     {
         global $wpdb;
-        global $wbw_submissions_table_name;
-        global $wbw_dbg;
+        
 
-        $wbw_dbg->debug_log("REQUEST");
-        $wbw_dbg->debug_log($wbw_dbg->vdump($request));
+        $this->wbw_dbg->debug_log("REQUEST");
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($request));
         // body parameters
         $params = $request->get_json_params();
         // url parameters from parsed route
@@ -288,7 +281,7 @@ class SubmissionsHandler
         }
 
         // retrieve our submission id from the one specified in the route
-        $wbw_dbg->debug_log("getting changes for id " . $change_id);
+        $this->wbw_dbg->debug_log("getting changes for id " . $change_id);
         $result = $this->get_submission_id_with_permission_check($change_id);
         if (is_wp_error($result)) {
             return $result;
@@ -341,12 +334,12 @@ class SubmissionsHandler
             $change['contact_email_1'] = $submitter_email;
         }
 
-        // $wbw_dbg->debug_log("json decoded");
-        // $wbw_dbg->debug_log($wbw_dbg->vdump($change));
+        // $this->wbw_dbg->debug_log("json decoded");
+        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($change));
 
         // approve based on different change types
         $submission_type = $result['submission_type'];
-        $wbw_dbg->debug_log("change type = " . $submission_type);
+        $this->wbw_dbg->debug_log("change type = " . $submission_type);
         switch ($submission_type) {
             case 'reason_new':
                 // workaround for semantic new meeting bug
@@ -377,8 +370,8 @@ class SubmissionsHandler
                 // needs an id_bigint not a meeting_id
                 $change['id_bigint'] = $result['meeting_id'];
 
-                $wbw_dbg->debug_log("CHANGE");
-                $wbw_dbg->debug_log($wbw_dbg->vdump($change));
+                $this->wbw_dbg->debug_log("CHANGE");
+                $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($change));
 
                 // geolocate based on changes - apply the changes to the BMLT version, then geolocate
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($result['meeting_id']);
@@ -412,13 +405,13 @@ class SubmissionsHandler
                 if (is_wp_error($response)) {
                     return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                 }
-                $wbw_dbg->debug_log("response");
-                $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+                $this->wbw_dbg->debug_log("response");
+                $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
                 $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
-                $wbw_dbg->debug_log("arr");
-                $wbw_dbg->debug_log($wbw_dbg->vdump($arr));
-                $wbw_dbg->debug_log("change");
-                $wbw_dbg->debug_log($wbw_dbg->vdump($change));
+                $this->wbw_dbg->debug_log("arr");
+                $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($arr));
+                $this->wbw_dbg->debug_log("change");
+                $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($change));
                 // the response back from BMLT doesnt even match what we are trying to change
                 if ((!empty($arr['id_bigint'])) && ($arr['id_bigint'] != $change['id_bigint'])) {
                     return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting change failed', 500);
@@ -427,7 +420,7 @@ class SubmissionsHandler
                 break;
             case 'reason_close':
 
-                $wbw_dbg->debug_log($wbw_dbg->vdump($params));
+                $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($params));
 
                 // are we doing a delete or an unpublish on close?
                 if ((!empty($params['delete'])) && ($params['delete'] == "true")) {
@@ -446,8 +439,8 @@ class SubmissionsHandler
 
                     $arr = json_decode($rep, true);
 
-                    $wbw_dbg->debug_log("DELETE RESPONSE");
-                    $wbw_dbg->debug_log($wbw_dbg->vdump($arr));
+                    $this->wbw_dbg->debug_log("DELETE RESPONSE");
+                    $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($arr));
 
                     if ((isset($arr['success'])) && ($arr['success'] !== true)) {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
@@ -464,8 +457,8 @@ class SubmissionsHandler
                     $changearr['bmlt_ajax_callback'] = 1;
                     $change['id_bigint']=$result['meeting_id'];
                     $changearr['set_meeting_change'] = json_encode($change);
-                    $wbw_dbg->debug_log("UNPUBLISH");
-                    $wbw_dbg->debug_log($wbw_dbg->vdump($changearr));
+                    $this->wbw_dbg->debug_log("UNPUBLISH");
+                    $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($changearr));
 
                     $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
@@ -473,8 +466,8 @@ class SubmissionsHandler
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
                     }
 
-                    $wbw_dbg->debug_log("UNPUBLISH RESPONSE");
-                    $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+                    $this->wbw_dbg->debug_log("UNPUBLISH RESPONSE");
+                    $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
 
                     $json = wp_remote_retrieve_body($response);
                     $rep = str_replace("'",'"',$json);
@@ -505,7 +498,7 @@ class SubmissionsHandler
         $username = $current_user->user_login;
 
         $sql = $wpdb->prepare(
-            'UPDATE ' . $wbw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'UPDATE ' . $this->WBW_Database->wbw_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
             'approved',
             $username,
             current_time('mysql', true),
@@ -515,7 +508,7 @@ class SubmissionsHandler
 
         $result = $wpdb->get_results($sql, ARRAY_A);
 
-        $from_address = wbw_get_option('wbw_email_from_address');
+        $from_address = $this->WP_Options->wbw_get_option('wbw_email_from_address');
 
         //
         // send action email
@@ -529,8 +522,8 @@ class SubmissionsHandler
         }
 
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-        $wbw_dbg->debug_log("Approval email");
-        $wbw_dbg->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . $wbw_dbg->vdump($headers));
+        $this->wbw_dbg->debug_log("Approval email");
+        $this->wbw_dbg->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . $this->wbw_dbg->vdump($headers));
         wp_mail($to_address, $subject, $body, $headers);
 
         //
@@ -539,11 +532,11 @@ class SubmissionsHandler
 
         if ($submission_type == "reason_new") {
             if ((!empty($change['starter_kit_required'])) && ($change['starter_kit_required'] === 'yes') && (!empty($change['starter_kit_postal_address']))) {
-                $wbw_dbg->debug_log("We're sending a starter kit");
-                $template = wbw_get_option('wbw_fso_email_template');
+                $this->wbw_dbg->debug_log("We're sending a starter kit");
+                $template = $this->WP_Options->wbw_get_option('wbw_fso_email_template');
                 if (!empty($template)) {
                     $subject = 'Starter Kit Request';
-                    $to_address = wbw_get_option('wbw_fso_email_address');
+                    $to_address = $this->WP_Options->wbw_get_option('wbw_fso_email_address');
                     $fso_subfields = array('first_name', 'last_name', 'meeting_name', 'starter_kit_postal_address');
 
                     foreach ($fso_subfields as $field) {
@@ -557,12 +550,12 @@ class SubmissionsHandler
                     }
                     $body = $template;
                     $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-                    $wbw_dbg->debug_log("FSO email");
-                    $wbw_dbg->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . $wbw_dbg->vdump($headers));
+                    $this->wbw_dbg->debug_log("FSO email");
+                    $this->wbw_dbg->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . $this->wbw_dbg->vdump($headers));
 
                     wp_mail($to_address, $subject, $body, $headers);
                 } else {
-                    $wbw_dbg->debug_log("FSO email is empty");
+                    $this->wbw_dbg->debug_log("FSO email is empty");
                 }
             }
         }
@@ -574,10 +567,9 @@ class SubmissionsHandler
     private function get_emails_by_servicebody_id($id)
     {
         global $wpdb;
-        global $wbw_service_bodies_access_table_name;
 
         $emails = array();
-        $sql = $wpdb->prepare('SELECT wp_uid from ' . $wbw_service_bodies_access_table_name . ' where service_body_bigint="%d"', $id);
+        $sql = $wpdb->prepare('SELECT wp_uid from ' . $this->WBW_Database->wbw_service_bodies_access_table_name . ' where service_body_bigint="%d"', $id);
         $result = $wpdb->get_col($sql);
         foreach ($result as $key => $value) {
             $user = get_user_by('ID', $value);
@@ -595,10 +587,10 @@ class SubmissionsHandler
 
     public function meeting_update_form_handler_rest($data)
     {
-        global $wbw_dbg;
+        
 
-        $wbw_dbg->debug_log("in rest handler");
-        $wbw_dbg->debug_log($wbw_dbg->vdump($data));
+        $this->wbw_dbg->debug_log("in rest handler");
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($data));
         $reason_new_bool = false;
         $reason_other_bool = false;
         $reason_change_bool = false;
@@ -824,7 +816,7 @@ class SubmissionsHandler
                 );
 
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
-                // $wbw_dbg->debug_log($wbw_dbg->vdump($meeting));
+                // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($meeting));
                 if (is_wp_error($bmlt_meeting)) {
                     return $this->handlerCore->wbw_rest_error('Internal BMLT error.', 500);
                 }
@@ -839,7 +831,7 @@ class SubmissionsHandler
                 foreach ($allowed_fields as $field) {
                     // if the field is blank in bmlt, but they submitted a change, add it to the list
                     if ((empty($bmlt_meeting[$field])) && (!empty($sanitised_fields[$field]))) {
-                        $wbw_dbg->debug_log("found a blank bmlt entry " . $field);
+                        $this->wbw_dbg->debug_log("found a blank bmlt entry " . $field);
                         $submission[$field] = $sanitised_fields[$field];
                     }
                     // if the field is in bmlt and its different to the submitted item, add it to the list
@@ -865,10 +857,10 @@ class SubmissionsHandler
                     }
                 }
 
-                $wbw_dbg->debug_log("SUBMISSION");
-                $wbw_dbg->debug_log($wbw_dbg->vdump($submission));
-                $wbw_dbg->debug_log("BMLT MEETING");
-                $wbw_dbg->debug_log($wbw_dbg->vdump($bmlt_meeting));
+                $this->wbw_dbg->debug_log("SUBMISSION");
+                $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($submission));
+                $this->wbw_dbg->debug_log("BMLT MEETING");
+                $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($bmlt_meeting));
                 // store away the original meeting name so we know what changed
                 $submission['original_meeting_name'] = $bmlt_meeting['meeting_name'];
                 $submission['original_weekday_tinyint'] = $bmlt_meeting['weekday_tinyint'];
@@ -895,8 +887,8 @@ class SubmissionsHandler
 
                 // populate the meeting name/time/day so we dont need to do it again on the submission page
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
-                $wbw_dbg->debug_log("BMLT MEETING");
-                $wbw_dbg->debug_log($wbw_dbg->vdump($bmlt_meeting));
+                $this->wbw_dbg->debug_log("BMLT MEETING");
+                $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($bmlt_meeting));
 
                 $submission['meeting_name'] = $bmlt_meeting['meeting_name'];
                 $submission['weekday_tinyint'] = $bmlt_meeting['weekday_tinyint'];
@@ -925,8 +917,8 @@ class SubmissionsHandler
                 return $this->handlerCore->wbw_rest_error('Invalid meeting change', 422);
         }
 
-        $wbw_dbg->debug_log("SUBMISSION");
-        $wbw_dbg->debug_log($wbw_dbg->vdump($submission));
+        $this->wbw_dbg->debug_log("SUBMISSION");
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($submission));
 
         $submitter_name = $sanitised_fields['first_name'] . " " . $sanitised_fields['last_name'];
         $submitter_email = $sanitised_fields['email_address'];
@@ -941,10 +933,9 @@ class SubmissionsHandler
 
         // insert into submissions db
         global $wpdb;
-        global $wbw_submissions_table_name;
 
         $wpdb->insert(
-            $wbw_submissions_table_name,
+            $this->WBW_Database->wbw_submissions_table_name,
             array(
                 'submission_time'   => current_time('mysql', true),
                 'meeting_id' => $sanitised_fields['meeting_id'],
@@ -963,7 +954,7 @@ class SubmissionsHandler
             )
         );
         $insert_id = $wpdb->insert_id;
-        // $wbw_dbg->debug_log("id = " . $insert_id);
+        // $this->wbw_dbg->debug_log("id = " . $insert_id);
         $message = array(
             "message" => 'Form submission successful, submission id ' . $insert_id,
             "form_html" => '<h3>Form submission successful, your submission id  is #' . $insert_id . '. You will also receive an email confirmation of your submission.</h3>'
@@ -972,7 +963,7 @@ class SubmissionsHandler
         // Send our emails out
 
         // Common email fields
-        $from_address = wbw_get_option('wbw_email_from_address');
+        $from_address = $this->WP_Options->wbw_get_option('wbw_email_from_address');
 
         /*
         * Send a notification to the configured trusted servants for the correct service body
@@ -1006,7 +997,7 @@ class SubmissionsHandler
         $to_address = $submitter_email;
         $subject = "NA Meeting Change Request Acknowledgement - Submission ID " . $insert_id;
 
-        $template = wbw_get_option('wbw_submitter_email_template');
+        $template = $this->WP_Options->wbw_get_option('wbw_submitter_email_template');
 
         $subfield = '{field:submission}';
         $subwith = $this->submission_format($submission);
@@ -1015,7 +1006,7 @@ class SubmissionsHandler
         $body = $template;
 
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-        $wbw_dbg->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . $wbw_dbg->vdump($headers));
+        $this->wbw_dbg->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . $this->wbw_dbg->vdump($headers));
         wp_mail($to_address, $subject, $body, $headers);
 
         return $this->handlerCore->wbw_rest_success($message);
