@@ -6,6 +6,7 @@ use wbw\BMLT\Integration;
 use wbw\REST\HandlerCore;
 use wbw\WBW_Database;
 use wbw\WBW_Debug;
+use wbw\WBW_WP_Options;
 
 class SubmissionsHandler
 {
@@ -20,6 +21,7 @@ class SubmissionsHandler
         $this->handlerCore = new HandlerCore();
         $this->wbw_dbg = new WBW_Debug();
         $this->WBW_Database = new WBW_Database();
+        $this->WBW_WP_Options = new WBW_WP_Options();
 
     }
 
