@@ -25,7 +25,7 @@ class Controller extends \WP_REST_Controller
 		$this->SubmissionsHandler = new SubmissionsHandler();
 		$this->OptionsHandler = new OptionsHandler();
 		$this->WBW_Rest = new WBW_Rest();
-		$this->WBW_Debug = new WBW_Debug();
+		$this->wbw_dbg = new WBW_Debug();
 
 		$this->namespace = $this->WBW_Rest->wbw_rest_namespace;
 		$this->submissions_rest_base = $this->WBW_Rest->wbw_submissions_rest_base;

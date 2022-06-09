@@ -15,7 +15,7 @@ class OptionsHandler
         $this->handlerCore = new HandlerCore();
         $this->WBW_Database = new WBW_Database();
         $this->WP_Options = new WP_Options();
-        $this->WBW_Debug = new WBW_Debug();
+		$this->wbw_dbg = new WBW_Debug();
     }
 
     public function post_wbw_restore_handler($request)

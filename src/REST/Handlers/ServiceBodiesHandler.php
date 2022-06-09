@@ -18,7 +18,7 @@ class ServiceBodiesHandler
             $this->bmlt_integration = $stub;
         }
         $this->handlerCore = new HandlerCore();
-        $this->wbw_debug = new WBW_Debug();
+		$this->wbw_dbg = new WBW_Debug();
     }
 
     public function get_service_bodies_handler($request)

@@ -454,7 +454,6 @@ Line: $errorLine
      */
     public function test_error_when_gmaps_call_returns_trash(): void
     {
-        $wbw_dbg = new WBW_Debug();
 
         Functions\when('$WP_Options->wbw_get_option')->returnArg();
         Functions\when('wp_safe_remote_get')->returnArg();
