@@ -359,7 +359,7 @@ function string_sanitize_callback($args)
 function wbw_register_setting()
 {
 
-    $WBW_Options = new WBW_WP_Options();
+    $WBW_WP_Options = new WBW_WP_Options();
 
     if ((!current_user_can('activate_plugins')) && (!current_user_can($WBW_WP_Options->wbw_capability_manage_submissions))) {
         wp_die("This page cannot be accessed");
