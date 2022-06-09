@@ -21,7 +21,7 @@ class WBW_Database
 
     public function wbw_db_upgrade($desired_version, $fresh_install)
     {
-        $WP_Options = new WP_Options();
+        $WBW_Options = new WBW_WP_Options();
 
 
         // work out which version we're at right now
