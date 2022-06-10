@@ -417,7 +417,9 @@ class Integration
         if (!(is_array($postargs))) {
             return $this->wbw_rest_error("Missing post parameters", "wbw_bmlt_integration");
         }
-        return $this->post($this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . $url, null, $postargs);
+        $val = $this->post($this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . $url, null, $postargs);
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($val));
+        return $val;
     }
 
     /**

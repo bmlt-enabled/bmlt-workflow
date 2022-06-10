@@ -158,7 +158,12 @@ Line: $errorLine
         /** @var Mockery::mock $WBW_WP_Options test */
         $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
 
-        $rest = new ServiceBodiesHandler(null, $WBW_WP_Options);
+        $sblist = '[{"id":"1","parent_id":"0","name":"toplevel","description":"","type":"AS"},{"id":"2","parent_id":"1","name":"a-level1","description":"","type":"AS"},{"id":"3","parent_id":"1","name":"b-level1","description":"","type":"AS"},{"id":"4","parent_id":"1","name":"c-level","description":"test c level","type":"AS"},{"id":"5","parent_id":"4","name":"d-level","description":"d-level test","type":"AS"}]';
+        $Intstub = \Mockery::mock('Integration');
+        /** @var Mockery::mock $Intstub test */
+        $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
+
+        $rest = new ServiceBodiesHandler($Intstub, $WBW_WP_Options);
 
         $response = $rest->get_service_bodies_handler($request);
 
