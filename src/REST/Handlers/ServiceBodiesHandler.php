@@ -52,7 +52,7 @@ class ServiceBodiesHandler
             $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($arr));
 
             // make our list of service bodies
-            foreach ($arr['service_body'] as $key => $value) {
+            foreach ($arr as $key => $value) {
                 // $this->wbw_dbg->debug_log("looping key = " . $key);
                 if (!empty($value['@attributes'])) {
                     $sbid = $value['@attributes']['id'];
