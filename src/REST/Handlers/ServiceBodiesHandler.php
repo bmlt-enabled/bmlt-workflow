@@ -60,7 +60,7 @@ class ServiceBodiesHandler
                 if ((!empty($value['id']))&&(!empty($value['name']))) {
                     $sbid = $value['id'];
                     $idlist[] = $sbid;
-                    $sblist[$sbid] = array('name' => $value['name'], 'contact_email' => '', 'description' => '');
+                    $sblist[$sbid] = array('name' => $value['name'], 'description' => '');
                     if (!empty($value['description'])) {
                         $sblist[$sbid]['description'] = $value['description'];
                     }
@@ -69,7 +69,6 @@ class ServiceBodiesHandler
                     break;
                 }
             }
-
 
             // update our service body list in the database in case there have been some new ones added
             $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $this->WBW_Database->wbw_service_bodies_table_name . ';', 0);
@@ -119,7 +118,6 @@ class ServiceBodiesHandler
     {
         global $wpdb;
         
-
         $this->wbw_dbg->debug_log("request body");
         $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($request->get_json_params()));
         $permissions = $request->get_json_params();
@@ -180,25 +178,21 @@ class ServiceBodiesHandler
     
     public function delete_service_bodies_handler($request)
     {
-        global $wbw_dbg;
         global $wpdb;
-        global $wbw_service_bodies_access_table_name;
-        global $wbw_service_bodies_table_name;
-        global $wbw_submissions_table_name;
 
         $params = $request->get_params();
-        $wbw_dbg->debug_log($wbw_dbg->vdump($params));
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($params));
         // only an admin can get the service bodies detail (permissions) information
         if ((!empty($params['checked'])) && ($params['checked'] == "true") && (current_user_can('manage_options'))) {
-            $result = $wpdb->query('DELETE from ' . $wbw_submissions_table_name);
-            $wbw_dbg->debug_log("Delete submissions");
-            $wbw_dbg->debug_log($wbw_dbg->vdump($result));
-            $result = $wpdb->query('DELETE from ' . $wbw_service_bodies_access_table_name);
-            $wbw_dbg->debug_log("Delete service bodies access");
-            $wbw_dbg->debug_log($wbw_dbg->vdump($result));
-            $result = $wpdb->query('DELETE from ' . $wbw_service_bodies_table_name);
-            $wbw_dbg->debug_log("Delete service bodies");
-            $wbw_dbg->debug_log($wbw_dbg->vdump($result));
+            $result = $wpdb->query('DELETE from ' . $this->WBW_Database->wbw_submissions_table_name);
+            $this->wbw_dbg->debug_log("Delete submissions");
+            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($result));
+            $result = $wpdb->query('DELETE from ' . $this->WBW_Database->wbw_service_bodies_access_table_name);
+            $this->wbw_dbg->debug_log("Delete service bodies access");
+            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($result));
+            $result = $wpdb->query('DELETE from ' . $this->WBW_Database->wbw_service_bodies_table_name);
+            $this->wbw_dbg->debug_log("Delete service bodies");
+            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($result));
             return $this->handlerCore->wbw_rest_success('Deleted Service Bodies');
         }
         else
