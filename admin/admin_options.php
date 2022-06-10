@@ -58,13 +58,13 @@ echo '</form></div>';
     <div class="options_dialog_wbw_warning_text">
         <br>
         <br>WARNING: If you proceed with the restore, your existing plugin configuration, settings and service bodies will be removed.
-        <br>
-        <br>
+        <br><br>Are you sure you wish to do this?
     </div>
 
     
 <div id="wbw_bmlt_change_server_warning_dialog" class="hidden" style="max-width:800px">
-    
+<div class="options_dialog_wbw_warning_text">
+
     <br>WARNING: Changing the BMLT Server settings will remove your service body configuration and existing submissions within the plugin.
     <br><br>Use the BACKUP option before pressing Ok if you do not wish to lose your submissions.
     <br><br>If you press Ok, your service bodies, service body permissions and ALL SUBMISSIONS will be removed.
@@ -73,5 +73,6 @@ echo '</form></div>';
     <label for="yesimsure">Yes I'm sure!</label>
     <input type="checkbox" id="yesimsure" name="yesimsure">
     <br>
+    <div>
 
 </div>
