@@ -133,7 +133,7 @@ class ServiceBodiesHandler
             return $this->handlerCore->wbw_rest_error('Invalid service bodies post',422);
         }
         foreach ($permissions as $sb => $arr) {
-            if((empty($arr['membership']))||(empty($arr['show_on_form'])))
+            if((!array_key_exists('membership',$arr))||(!array_key_exists('show_on_form',$arr)))
             {
                 if(empty($arr['membership']))
                 {
