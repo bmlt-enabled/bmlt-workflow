@@ -59,7 +59,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     enqueue_select2();
 
     // inline scripts
-    $script  = 'var wbw_form_submit = ' . json_encode($WBW_Rest->wbw_rest_namespace . '/submissions') . '; ';
+    $script  = 'var wbw_form_submit_url = ' . json_encode($WBW_Rest->wbw_rest_namespace . '/submissions') . '; ';
     $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode($WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . $WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . '";';
     // optional fields
