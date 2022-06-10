@@ -56,12 +56,10 @@ echo '</form></div>';
     <div class="options_dialog_wbw_error_message"></div>
     <br>
     <div class="options_dialog_wbw_warning_text">
-        <br>
         <br>WARNING: If you proceed with the restore, your existing plugin configuration, settings and service bodies will be removed.
         <br><br>Are you sure you wish to do this?
         <br><br>
     </div>
-
     
 <div id="wbw_bmlt_change_server_warning_dialog" class="hidden" style="max-width:800px">
 <div class="options_dialog_wbw_warning_text">
