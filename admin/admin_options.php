@@ -59,6 +59,7 @@ echo '</form></div>';
         <br>
         <br>WARNING: If you proceed with the restore, your existing plugin configuration, settings and service bodies will be removed.
         <br><br>Are you sure you wish to do this?
+        <br><br>
     </div>
 
     
