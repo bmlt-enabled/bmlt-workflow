@@ -10,20 +10,29 @@ use wbw\WBW_WP_Options;
 class ServiceBodiesHandler
 {
 
-    public function __construct($stub = null)
+    public function __construct($intstub = null, $optstub = null)
     {
-        if (empty($stub))
+        if (empty($intstub))
         {
             $this->bmlt_integration = new Integration();
         }
         else
         {
-            $this->bmlt_integration = $stub;
+            $this->bmlt_integration = $intstub;
         }
+
+        if (empty($optstub))
+        {
+            $this->WBW_WP_Options = new WBW_WP_Options();
+        }
+        else
+        {
+            $this->WBW_WP_Options = $optstub;
+        }
+
         $this->handlerCore = new HandlerCore();
 		$this->wbw_dbg = new WBW_Debug();
         $this->WBW_Database = new WBW_Database();
-        $this->WBW_WP_Options = new WBW_WP_Options();
     }
 
     public function get_service_bodies_handler($request)
@@ -31,7 +40,6 @@ class ServiceBodiesHandler
 
         global $wpdb;
         
-
         $params = $request->get_params();
         $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($params));
         // only an admin can get the service bodies detail (permissions) information

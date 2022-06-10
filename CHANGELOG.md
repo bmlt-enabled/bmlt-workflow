@@ -1,10 +1,15 @@
 ## 0.4.0 (Jun 10, 2022)
+- Backup and Restore functionality implemented, making plugin deactivation a safe activity and moving this plugin out of beta! #2
+- BMLT password now encrypted at rest and in backups, keyed against the Wordpress installation
 - Select2 elements correctly reset on form change #57 (thanks @pjaudiomv !)
-- We now have a logo! (thanks kevinC !)
-- Backup and Restore functionality implemented, making plugin deactivation a safe activity #2
+- PR from @pjaudiomv to take out spurious ampersands
+- Removed BMLT XML service body query in favour of more stable json query (thanks @pjaudiomv !)
+- We now have an awesome logo! (thanks kevinC !)
 - Lots of code refactoring and additional unit tests
 - Form now errors if no service bodies are set to show #58 (thanks @pjaudiomv !)
 - Municipality text fix in quickedit window #55 (thanks @brustar !)
+- Additional REST api sanitisation #6
+- Testcafe now tests admin submission page and also end-to-end against crouton
 
 ## 0.3.10-beta (May 28th, 2022)
 - **Breaking database changes in this release - please deactivate and reactivate the plugin before using**
