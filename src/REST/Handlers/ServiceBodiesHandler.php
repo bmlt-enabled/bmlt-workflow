@@ -128,11 +128,15 @@ class ServiceBodiesHandler
         // insert new permissions from form
         if(!is_array($permissions))
         {
+            $this->wbw_dbg->debug_log("error not array");
+
             return $this->handlerCore->wbw_rest_error('Invalid service bodies post',422);
         }
         foreach ($permissions as $sb => $arr) {
             if((empty($arr['membership']))||(empty($arr['show_on_form'])))
             {
+                $this->wbw_dbg->debug_log($sb . "error empty body");
+
                 return $this->handlerCore->wbw_rest_error('Invalid service bodies post',422);
             }
             $members = $arr['membership'];
