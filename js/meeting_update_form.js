@@ -362,9 +362,12 @@ jQuery(document).ready(function ($) {
     clear_field("phone_meeting_number");
     clear_field("virtual_meeting_link");
     // placeholder for these select elements
-    $("#group_relationship").val("");
-    $("#virtual_hybrid_select").val("");
-    $("#service_body_bigint").val("");
+    $("#group_relationship").val('');
+    $("#virtual_hybrid_select").val('');
+    $("#service_body_bigint").val('');
+    // reset select2
+    $('#display_format_shared_id_list').val(null).trigger('change');
+    $('#meeting-searcher').val(null).trigger('change');
     // set email selector to no
     $("#add-email").val("no");
   }
