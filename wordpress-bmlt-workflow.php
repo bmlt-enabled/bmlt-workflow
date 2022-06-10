@@ -59,8 +59,8 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     enqueue_select2();
 
     // inline scripts
-    $script  = 'var wbw_form_submit_url = ' . json_encode($WBW_Rest->wbw_rest_namespace . '/submissions') . '; ';
-    $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode($WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
+    $script  = 'var wbw_form_submit_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/submissions') . '; ';
+    $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . $WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . '";';
     // optional fields
     $script .= 'var wbw_optional_location_nation = "' . $WBW_WP_Options->wbw_get_option('wbw_optional_location_nation') . '";';
@@ -75,7 +75,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
     // do a one off lookup for our servicebodies
-    $url = '/' . json_encode($WBW_Rest->wbw_rest_namespace . '/servicebodies');
+    $url = get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/servicebodies';
 
     $request  = new WP_REST_Request('GET', $url);
     $response = rest_do_request($request);
@@ -209,7 +209,7 @@ function wbw_admin_scripts($hook)
             $script  = 'var wbw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/bmltserver') . '; ';
             $script .= 'var wbw_admin_backup_rest_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/options/backup') . '; ';
             $script .= 'var wbw_admin_restore_rest_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/options/restore') . '; ';
-            $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode($WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
+            $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
 
             wp_add_inline_script('admin_options_js', $script, 'before');
             break;
@@ -247,7 +247,7 @@ function wbw_admin_scripts($hook)
             $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
-            $url = '/' . $WBW_Rest->wbw_rest_namespace . '/servicebodies';
+            $url = get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/servicebodies';
 
             $request  = new WP_REST_Request('GET', $url);
             $response = rest_do_request($request);
@@ -276,7 +276,7 @@ function wbw_admin_scripts($hook)
             enqueue_select2();
 
             // make sure our rest url is populated
-            $script = 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode($WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
+            $script = 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
             $script .= 'var wp_users_url = ' . json_encode(get_rest_url() . 'wp/v2/users') . '; ';
             wp_add_inline_script('admin_service_bodies_js', $script, 'before');
             break;
