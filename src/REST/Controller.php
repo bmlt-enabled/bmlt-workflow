@@ -306,9 +306,8 @@ class Controller extends \WP_REST_Controller
 
 	public function delete_service_bodies_permissions_check($request)
 	{
-		global $wbw_dbg;
 
-		$wbw_dbg->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
+		$this->wbw_dbg->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area updates.'), array('status' => $this->authorization_status_code()));
 		}
