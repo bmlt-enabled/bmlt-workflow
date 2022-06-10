@@ -135,7 +135,16 @@ class ServiceBodiesHandler
         foreach ($permissions as $sb => $arr) {
             if((empty($arr['membership']))||(empty($arr['show_on_form'])))
             {
-                $this->wbw_dbg->debug_log($sb . "error empty body");
+                if(empty($arr['membership']))
+                {
+                    $this->wbw_dbg->debug_log($sb . " error membership");
+
+                }
+                if(empty($arr['show_on_form']))
+                {
+                    $this->wbw_dbg->debug_log($sb . " error show_on_form");
+
+                }
 
                 return $this->handlerCore->wbw_rest_error('Invalid service bodies post',422);
             }
