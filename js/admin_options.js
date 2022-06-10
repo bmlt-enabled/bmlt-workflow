@@ -8,10 +8,10 @@ jQuery(document).ready(function ($) {
   // perform a restore
   $("#wbw_file_selector").on("change", function () {
     clear_notices();
-    $("#wbw_bmlt_erase_warning_dialog").dialog("open");
+    $("#wbw_bmlt_restore_warning_dialog").dialog("open");
   });
 
-  $("#wbw_bmlt_erase_warning_dialog").dialog({
+  $("#wbw_bmlt_restore_warning_dialog").dialog({
     title: "Clear plugin warning",
     autoOpen: false,
     draggable: false,
@@ -122,7 +122,7 @@ jQuery(document).ready(function ($) {
 
   var clipboard = new ClipboardJS(".clipboard-button");
 
-  $("#wbw_bmlt_warning_dialog").dialog({
+  $("#wbw_bmlt_change_server_warning_dialog").dialog({
     title: "BMLT Configuration Change Warning",
     autoOpen: false,
     draggable: false,
@@ -147,7 +147,7 @@ jQuery(document).ready(function ($) {
         // trigger an update on the main page
         test_configuration(true);
         $(this).dialog("close");
-        $("#wbw_bmlt_warning_dialog").data("parent").dialog("close");
+        $("#wbw_bmlt_change_server_warning_dialog").data("parent").dialog("close");
       },
       Cancel: function () {
         $(this).dialog("close");
@@ -186,7 +186,7 @@ jQuery(document).ready(function ($) {
       "Save and Close": function () {
         // check if server address changed
         if (wbw_bmlt_server_address != $("#wbw_bmlt_server_address").val()) {
-          $("#wbw_bmlt_warning_dialog").data("parent", $(this)).dialog("open");
+          $("#wbw_bmlt_change_server_warning_dialog").data("parent", $(this)).dialog("open");
         } else {
           save_results();
           // trigger an update on the main page
