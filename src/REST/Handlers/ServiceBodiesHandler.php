@@ -40,16 +40,16 @@ class ServiceBodiesHandler
             $req['admin_action'] = 'get_service_body_info';
             $req['flat'] = '';
 
-            // get an xml for a workaround
-            $response = $this->bmlt_integration->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
+            $response = $this->bmlt_integration->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServiceBodies', $req);
             if (is_wp_error($response)) {
                 return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
             }
 
-            $xml = simplexml_load_string($response['body']);
-            $arr = json_decode(json_encode($xml), 1);
+            $arr = json_decode($response['body'], 1);
 
             $idlist = array();
+            $this->wbw_dbg->debug_log("SERVICE BODY JSON");            
+            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($arr));
 
             // make our list of service bodies
             foreach ($arr['service_body'] as $key => $value) {
@@ -153,4 +153,37 @@ class ServiceBodiesHandler
         return $this->handlerCore->wbw_rest_success('Updated Service Bodies');
     }
 
+    
+    public function delete_service_bodies_handler($request)
+    {
+        global $wbw_dbg;
+        global $wpdb;
+        global $wbw_service_bodies_access_table_name;
+        global $wbw_service_bodies_table_name;
+        global $wbw_submissions_table_name;
+
+        $params = $request->get_params();
+        $wbw_dbg->debug_log($wbw_dbg->vdump($params));
+        // only an admin can get the service bodies detail (permissions) information
+        if ((!empty($params['checked'])) && ($params['checked'] == "true") && (current_user_can('manage_options'))) {
+            $result = $wpdb->query('DELETE from ' . $wbw_submissions_table_name);
+            $wbw_dbg->debug_log("Delete submissions");
+            $wbw_dbg->debug_log($wbw_dbg->vdump($result));
+            $result = $wpdb->query('DELETE from ' . $wbw_service_bodies_access_table_name);
+            $wbw_dbg->debug_log("Delete service bodies access");
+            $wbw_dbg->debug_log($wbw_dbg->vdump($result));
+            $result = $wpdb->query('DELETE from ' . $wbw_service_bodies_table_name);
+            $wbw_dbg->debug_log("Delete service bodies");
+            $wbw_dbg->debug_log($wbw_dbg->vdump($result));
+            return $this->handlerCore->wbw_rest_success('Deleted Service Bodies');
+        }
+        else
+        {
+            return $this->handlerCore->wbw_rest_success('Nothing was performed');
+        }
+
+    }
+
+
+            
 }

@@ -60,8 +60,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
 
     // inline scripts
     $script  = 'var wbw_form_submit = ' . json_encode($WBW_Rest->wbw_rest_namespace . '/submissions') . '; ';
-    $script .= 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
-    $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
+    $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode($WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . $WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . '";';
     // optional fields
     $script .= 'var wbw_optional_location_nation = "' . $WBW_WP_Options->wbw_get_option('wbw_optional_location_nation') . '";';
@@ -75,9 +74,25 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $wbw_dbg->debug_log(json_encode($formatarr));
     $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
+    // do a one off lookup for our servicebodies
+    $url = '/' . json_encode($WBW_Rest->wbw_rest_namespace . '/servicebodies');
+
+    $request  = new WP_REST_Request('GET', $url);
+    $response = rest_do_request($request);
+    $result     = rest_get_server()->response_to_data($response, true);
+    if (count($result) == 0) {
+        wp_die("<h4>WBW Plugin Error: Service bodies not configured.</h4>");
+    }
+    $script .= 'var wbw_service_bodies = ' . json_encode($result) . '; ';
+    
     $wbw_dbg->debug_log("adding script " . $script);
     $status = wp_add_inline_script('wbw-meeting-update-form-js', $script, 'before');
 
+
+    $wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
+    if ($wbw_bmlt_test_status != "success") {
+        wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
+    }
 
     $result = [];
     $result['scripts'] = [];
@@ -260,8 +275,8 @@ function wbw_admin_scripts($hook)
             enqueue_select2();
 
             // make sure our rest url is populated
-            $script  = 'var wbw_admin_wbw_service_bodies_rest_route = ' . json_encode($WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
-            $script .= 'var wp_rest_base = ' . json_encode(get_rest_url()) . '; ';
+            $script = 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode($WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
+            $script .= 'var wp_users_url = ' . json_encode(get_rest_url() . 'wp/v2/users') . '; ';
             wp_add_inline_script('admin_service_bodies_js', $script, 'before');
             break;
     }
@@ -747,7 +762,7 @@ function wbw_uninstall()
     // remove custom capability
     $WBW_WP_Options = new WBW_WP_Options();
     $wbw_dbg = new WBW_Debug();
-    
+
     $wbw_dbg->debug_log("deleting capabilities");
 
     $users = get_users();

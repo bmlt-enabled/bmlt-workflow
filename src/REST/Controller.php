@@ -132,6 +132,18 @@ class Controller extends \WP_REST_Controller
 			),
 		);
 
+		// DELETE servicebodies
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->service_bodies_rest_base,
+
+			array(
+				'methods'             => \WP_REST_Server::DELETABLE,
+				'callback'            => array($this, 'delete_service_bodies'),
+				'permission_callback' => array($this, 'delete_service_bodies_permissions_check'),
+			),
+		);
+		
 		// GET bmltserver
 		register_rest_route(
 			$this->namespace,
@@ -292,6 +304,17 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
+	public function delete_service_bodies_permissions_check($request)
+	{
+		global $wbw_dbg;
+
+		$wbw_dbg->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area updates.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
 	public function post_bmltserver_permissions_check($request)
 	{
 		
@@ -418,6 +441,12 @@ class Controller extends \WP_REST_Controller
 	public function post_service_bodies($request)
 	{
 		$result = $this->ServiceBodiesHandler->post_service_bodies_handler($request);
+		return rest_ensure_response($result);
+	}
+
+	public function delete_service_bodies($request)
+	{
+		$result = $this->ServiceBodiesHandler->delete_service_bodies_handler($request);
 		return rest_ensure_response($result);
 	}
 

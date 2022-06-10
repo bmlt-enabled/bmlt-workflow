@@ -412,7 +412,7 @@ class Integration
      * @param  array $postargs
      * @return array|\WP_Error
      */
-    private function postUnauthenticatedRootServerRequest($url, $postargs)
+    public function postUnauthenticatedRootServerRequest($url, $postargs)
     {
         if (!(is_array($postargs))) {
             return $this->wbw_rest_error("Missing post parameters", "wbw_bmlt_integration");

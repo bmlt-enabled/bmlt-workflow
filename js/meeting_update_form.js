@@ -69,26 +69,18 @@ jQuery(document).ready(function ($) {
       .then((mdata) => create_meeting_searcher(mdata));
   }
 
-  $.ajax({
-    url: wp_rest_base + wbw_admin_wbw_service_bodies_rest_route,
-    dataType: "json",
-    beforeSend: function (xhr) {
-      xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
-    },
-  }).done(function (response) {
-    var wbw_service_bodies = "";
+  var wbw_service_bodies_querystr = "";
 
-    Object.keys(response).forEach((item) => {
-      // console.log(response);
-      var service_body_bigint = item;
-      var service_body_name = response[item]["name"];
-      var opt = new Option(service_body_name, service_body_bigint, false, false);
-      $("#service_body_bigint").append(opt);
-      wbw_service_bodies += "services[]=" + service_body_bigint + "&";
-    });
-
-    update_meeting_list(wbw_service_bodies);
+  Object.keys(wbw_service_bodies).forEach((item) => {
+    // console.log(response);
+    var service_body_bigint = item;
+    var service_body_name = wbw_service_bodies[item]["name"];
+    var opt = new Option(service_body_name, service_body_bigint, false, false);
+    $("#service_body_bigint").append(opt);
+    wbw_service_bodies_querystr += "services[]=" + service_body_bigint + "&";
   });
+
+  update_meeting_list(wbw_service_bodies_querystr);
 
   $("#meeting_update_form").validate({
     submitHandler: function () {
@@ -527,10 +519,9 @@ jQuery(document).ready(function ($) {
     var str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
     put_field("duration_time", str);
 
-    // var url = wp_rest_base + wbw_form_submit;
 
     $.ajax({
-      url: wp_rest_base + wbw_form_submit,
+      url: wbw_form_submit_url,
       method: "POST",
       data: JSON.stringify($("#meeting_update_form").serializeObject()),
       contentType: "application/json; charset=utf-8",
