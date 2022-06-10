@@ -71,7 +71,7 @@ echo '</form></div>';
     <br><br>
     <label for="yesimsure">Yes I'm sure!</label>
     <input type="checkbox" id="yesimsure" name="yesimsure">
-    <br>
+    <br><br>
     <div>
 
 </div>
