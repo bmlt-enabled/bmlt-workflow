@@ -76,6 +76,7 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
 
     // do a one off lookup for our servicebodies
     $url = get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/servicebodies';
+    $wbw_dbg->debug_log("rest url = " . $url);
 
     $request  = new WP_REST_Request('GET', $url);
     $response = rest_do_request($request);
