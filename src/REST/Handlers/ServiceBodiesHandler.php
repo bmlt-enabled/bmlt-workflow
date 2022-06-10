@@ -133,18 +133,17 @@ class ServiceBodiesHandler
             return $this->handlerCore->wbw_rest_error('Invalid service bodies post',422);
         }
         foreach ($permissions as $sb => $arr) {
-            if((!array_key_exists('membership',$arr))||(!array_key_exists('show_on_form',$arr)))
+            if((!is_array($arr))||(!array_key_exists('membership',$arr))||(!array_key_exists('show_on_form',$arr)))
             {
-                if(empty($arr['membership']))
-                {
-                    $this->wbw_dbg->debug_log($sb . " error membership");
+                // if(empty($arr['membership']))
+                // {
+                //     $this->wbw_dbg->debug_log($sb . " error membership");
 
-                }
-                if(empty($arr['show_on_form']))
-                {
-                    $this->wbw_dbg->debug_log($sb . " error show_on_form");
-
-                }
+                // }
+                // if(empty($arr['show_on_form']))
+                // {
+                //     $this->wbw_dbg->debug_log($sb . " error show_on_form");
+                // }
 
                 return $this->handlerCore->wbw_rest_error('Invalid service bodies post',422);
             }
