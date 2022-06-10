@@ -52,11 +52,9 @@ class Controller extends \WP_REST_Controller
 				'methods'         => \WP_REST_Server::CREATABLE,
 				'callback'        => array($this, 'post_submissions'),
 				'permission_callback' => array($this, 'post_submissions_permissions_check'),
-				'args'            => $this->get_endpoint_args_for_item_schema(false),
 			),
-			'schema' => null,
-
 		));
+		
 		// GET submissions/<id>
 		register_rest_route(
 			$this->namespace,

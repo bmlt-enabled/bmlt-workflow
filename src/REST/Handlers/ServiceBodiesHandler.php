@@ -116,8 +116,8 @@ class ServiceBodiesHandler
         global $wpdb;
         
 
-        // $this->wbw_dbg->debug_log("request body");
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($request->get_json_params()));
+        $this->wbw_dbg->debug_log("request body");
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($request->get_json_params()));
         $permissions = $request->get_json_params();
         // clear out our old permissions
         $wpdb->query('DELETE from ' . $this->WBW_Database->wbw_service_bodies_access_table_name);
