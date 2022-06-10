@@ -126,7 +126,15 @@ class ServiceBodiesHandler
         // clear out our old permissions
         $wpdb->query('DELETE from ' . $this->WBW_Database->wbw_service_bodies_access_table_name);
         // insert new permissions from form
+        if(!is_array($permissions))
+        {
+            return $this->handlerCore->wbw_rest_error('Invalid service bodies post',422);
+        }
         foreach ($permissions as $sb => $arr) {
+            if((empty($arr['membership']))||(empty($arr['show_on_form'])))
+            {
+                return $this->handlerCore->wbw_rest_error('Invalid service bodies post',422);
+            }
             $members = $arr['membership'];
             foreach ($members as $member) {
                 $sql = $wpdb->prepare('INSERT into ' . $this->WBW_Database->wbw_service_bodies_access_table_name . ' SET wp_uid = "%d", service_body_bigint="%d"', $member, $sb);
