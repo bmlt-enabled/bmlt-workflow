@@ -149,7 +149,7 @@ class ServiceBodiesHandler
                 $user->add_cap($this->WBW_WP_Options->wbw_capability_manage_submissions);
                 // $this->wbw_dbg->debug_log("adding cap");
             } else {
-                $user->remove_cap($$this->WBW_WP_Options->bw_capability_manage_submissions);
+                $user->remove_cap($this->WBW_WP_Options->wbw_capability_manage_submissions);
                 // $this->wbw_dbg->debug_log("removing cap");
             }
         }
