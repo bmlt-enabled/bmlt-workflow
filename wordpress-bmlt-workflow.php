@@ -60,7 +60,6 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
 
     // inline scripts
     $script  = 'var wbw_form_submit_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/submissions') . '; ';
-    $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
     $script .= 'var wbw_bmlt_server_address = "' . $WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . '";';
     // optional fields
     $script .= 'var wbw_optional_location_nation = "' . $WBW_WP_Options->wbw_get_option('wbw_optional_location_nation') . '";';
@@ -75,12 +74,12 @@ function meeting_update_form($atts = [], $content = null, $tag = '')
     $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
     // do a one off lookup for our servicebodies
-    $url = get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/servicebodies';
+    $url = '/' . $WBW_Rest->wbw_rest_namespace . '/servicebodies';
     $wbw_dbg->debug_log("rest url = " . $url);
 
     $request  = new WP_REST_Request('GET', $url);
     $response = rest_do_request($request);
-    $result     = rest_get_server()->response_to_data($response, true);
+    $result = rest_get_server()->response_to_data($response, true);
     if (count($result) == 0) {
         wp_die("<h4>WBW Plugin Error: Service bodies not configured.</h4>");
     }
@@ -248,7 +247,7 @@ function wbw_admin_scripts($hook)
             $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
-            $url = get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/servicebodies';
+            $url = '/' . $WBW_Rest->wbw_rest_namespace . '/servicebodies';
 
             $request  = new WP_REST_Request('GET', $url);
             $response = rest_do_request($request);
