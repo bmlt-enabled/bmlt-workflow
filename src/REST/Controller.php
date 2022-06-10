@@ -93,6 +93,9 @@ class Controller extends \WP_REST_Controller
 				'action_message' => [
 					'required' => false,
 					'type'     => 'string',
+					'sanitize_callback' => function($param, $request, $key) {
+						return (sanitize_text_field($param));
+					}
 				],
 			],
 		));
@@ -105,6 +108,9 @@ class Controller extends \WP_REST_Controller
 				'action_message' => [
 					'required' => false,
 					'type'     => 'string',
+					'sanitize_callback' => function($param, $request, $key) {
+						return (sanitize_text_field($param));
+					}
 				],
 			],
 		));
@@ -117,6 +123,15 @@ class Controller extends \WP_REST_Controller
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_service_bodies'),
 				'permission_callback' => array($this, 'get_service_bodies_permissions_check'),
+				'args'     => [
+					'detail' => [
+						'required' => false,
+						'type'     => 'string',
+						'validate_callback' => function($param, $request, $key) {
+							return ($param==='true'||$param==='false');
+						}
+					],
+				],	
 			),
 		);
 
@@ -141,6 +156,15 @@ class Controller extends \WP_REST_Controller
 				'methods'             => \WP_REST_Server::DELETABLE,
 				'callback'            => array($this, 'delete_service_bodies'),
 				'permission_callback' => array($this, 'delete_service_bodies_permissions_check'),
+				'args'     => [
+					'checked' => [
+						'required' => false,
+						'type'     => 'string',
+						'validate_callback' => function($param, $request, $key) {
+							return ($param==='true'||$param==='false');
+						}
+					],
+				],	
 			),
 		);
 		
