@@ -147,10 +147,10 @@ class ServiceBodiesHandler
             $this->wbw_dbg->debug_log("checking user id " . $user->get('ID'));
             if (in_array($user->get('ID'), $result)) {
                 $user->add_cap($this->WBW_WP_Options->wbw_capability_manage_submissions);
-                // $this->wbw_dbg->debug_log("adding cap");
+                $this->wbw_dbg->debug_log("adding cap");
             } else {
                 $user->remove_cap($this->WBW_WP_Options->wbw_capability_manage_submissions);
-                // $this->wbw_dbg->debug_log("removing cap");
+                $this->wbw_dbg->debug_log("removing cap");
             }
         }
 
