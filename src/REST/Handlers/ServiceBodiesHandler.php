@@ -53,19 +53,20 @@ class ServiceBodiesHandler
 
             // make our list of service bodies
             foreach ($arr as $key => $value) {
-                // $this->wbw_dbg->debug_log("looping key = " . $key);
-                if (!empty($value['@attributes'])) {
-                    $sbid = $value['@attributes']['id'];
+                // $wbw_dbg->debug_log("looping key = " . $key);
+                if ((!empty($value['id']))&&(!empty($value['name']))) {
+                    $sbid = $value['id'];
                     $idlist[] = $sbid;
-                    $sblist[$sbid] = array('name' => $value['@attributes']['name'], 'description' => '');
+                    $sblist[$sbid] = array('name' => $value['name'], 'contact_email' => '', 'description' => '');
                     if (!empty($value['description'])) {
                         $sblist[$sbid]['description'] = $value['description'];
                     }
                 } else {
-                    // we need a name at minimum
+                    // we need a name and id at minimum
                     break;
                 }
             }
+
 
             // update our service body list in the database in case there have been some new ones added
             $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $this->WBW_Database->wbw_service_bodies_table_name . ';', 0);
