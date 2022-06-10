@@ -31,9 +31,11 @@ class SubmissionsHandlerTest_my_wp_user
 }
 /**
  * @covers wbw\REST\Handlers\SubmissionsHandler
- * @uses wbw\Debug
+ * @uses wbw\WBW_Debug
  * @uses wbw\REST\HandlerCore
  * @uses wbw\BMLT\Integration
+ * @uses wbw\WBW_Database
+ * @uses wbw\WBW_WP_Options
  */
 final class SubmissionsHandlerTest extends TestCase
 {

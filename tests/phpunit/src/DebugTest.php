@@ -10,7 +10,7 @@ use Brain\Monkey;
 use function Patchwork\{redefine, getFunction, always};
 
 /**
- * @covers wbw\Debug
+ * @covers wbw\WBW_Debug
  */
 final class DebugTest extends TestCase
 {

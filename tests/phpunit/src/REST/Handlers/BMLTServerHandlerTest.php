@@ -13,8 +13,10 @@ require_once('config_phpunit.php');
 
 /**
  * @covers wbw\REST\Handlers\BMLTServerHandler
- * @uses wbw\Debug
+ * @uses wbw\WBW_Debug
  * @uses wbw\REST\HandlerCore
+ * @uses wbw\BMLT\Integration
+ * @uses wbw\WBW_WP_Options
  */
 final class BMLTServerHandlerTest extends TestCase
 {

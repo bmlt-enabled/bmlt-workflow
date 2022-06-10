@@ -12,8 +12,11 @@ require_once('config_phpunit.php');
 
 /**
  * @covers wbw\REST\Handlers\OptionsHandler
- * @uses wbw\Debug
+ * @uses wbw\WBW_Debug
  * @uses wbw\REST\HandlerCore
+ * @uses wbw\BMLT\Integration
+ * @uses wbw\WBW_Database
+ * @uses wbw\WBW_WP_Options
  */
 final class OptionsHandlerTest extends TestCase
 {
@@ -113,5 +116,62 @@ Line: $errorLine
         $this->assertEquals($backup['options']['wbw_db_version'],'testing');
         
     }
+
+
+// // test for POST options/restore (retrieve backup json files)
+//     /**
+//      * @covers wbw\REST\Handlers\OptionsHandler::post_wbw_restore_handler
+//      */
+//     public function test_can_post_options_restore_with_success(): void
+//     {
+
+        
+//         $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/wbw/v1/options/restore");
+//         $request->set_header('content-type', 'application/json');
+//         $request->set_route("/wbw/v1/options/restore");
+//         $request->set_method('POST');
+
+//         $dblookup = array(
+//             '0' => array(
+//                 "service_body_bigint" => "2",
+//                 "service_body_name" => "Sydney Metro",
+//                 "show_on_form" => "1"
+//             ),
+//             '1' => array(
+//                 "service_body_bigint" =>"3",
+//                 "service_body_name" =>"Sydney North",
+//                 "show_on_form" =>"1"
+//             ),
+//             '2' => array(
+//                 "service_body_bigint" => "4",
+//                 "service_body_name" =>"Sydney South",
+//                 "show_on_form" =>"1"
+//             )
+//         );
+
+//         global $wpdb;
+//         $wpdb =  Mockery::mock('wpdb');
+//         /** @var Mockery::mock $wpdb test */
+//         $wpdb->shouldReceive('prepare')->andReturn("SELECT * from anything");
+//         $wpdb->shouldReceive('get_results')->andReturn($dblookup);
+
+//         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+//         /** @var Mockery::mock $WBW_WP_Options test */
+//         $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
+
+//         Functions\when('\wp_load_alloptions')->justReturn(array('wbw_db_version'=> 'testing', 'wbw_crap'=> 'testing', 'shouldntbe' => 'inthebackup'));
+//         $rest = new OptionsHandler();
+
+//         $response = $rest->post_wbw_backup_handler($request);
+
+//         $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+//         $data = $response->get_data();
+//         $this->assertEquals($data['message'],'Backup Successful');
+//         $backup = json_decode($data['backup'],true);
+//         $this->assertIsArray($backup['options']);
+//         $this->assertArrayNotHasKey('wbw_crap',$backup['options']);
+//         $this->assertEquals($backup['options']['wbw_db_version'],'testing');
+        
+//     }
 
 }

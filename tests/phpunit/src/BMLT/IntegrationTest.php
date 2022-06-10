@@ -13,7 +13,8 @@ require_once('config_phpunit.php');
 
 /**
  * @covers wbw\BMLT\Integration
- * @uses wbw\Debug
+ * @uses wbw\WBW_Debug
+ * @uses wbw\WBW_WP_Options
  */
 final class IntegrationTest extends TestCase
 {
