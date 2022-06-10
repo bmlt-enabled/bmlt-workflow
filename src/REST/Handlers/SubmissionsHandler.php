@@ -18,7 +18,7 @@ class SubmissionsHandler
         } else {
             $this->bmlt_integration = $intstub;
         }
-        
+
         $this->handlerCore = new HandlerCore();
         $this->wbw_dbg = new WBW_Debug();
         $this->WBW_Database = new WBW_Database();
@@ -28,7 +28,6 @@ class SubmissionsHandler
         } else {
             $this->WBW_WP_Options = $optstub;
         }
-
     }
 
     public function get_submissions_handler()
@@ -73,7 +72,7 @@ class SubmissionsHandler
     private function get_submission_id_with_permission_check($change_id)
     {
         global $wpdb;
-        
+
 
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
@@ -91,7 +90,7 @@ class SubmissionsHandler
     public function reject_submission_handler($request)
     {
         global $wpdb;
-        
+
 
         $change_id = $request->get_param('id');
 
@@ -157,7 +156,7 @@ class SubmissionsHandler
     public function patch_submission_handler($request)
     {
         global $wpdb;
-        
+
 
         $change_id = $request->get_param('id');
 
@@ -178,8 +177,8 @@ class SubmissionsHandler
             "location_postal_code_1",
             "weekday_tinyint",
             "format_shared_id_list",
-            "virtual_meeting_additional_info", 
-            "phone_meeting_number", 
+            "virtual_meeting_additional_info",
+            "phone_meeting_number",
             "virtual_meeting_link"
         );
 
@@ -243,17 +242,15 @@ class SubmissionsHandler
     private function do_geolocate($change)
     {
         // workaround for server side geolocation
-        
+
         $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
         $locdata = array();
-        foreach($locfields as $field)
-        {
-            if(!empty($change[$field]))
-            {
-                $locdata[]=$change[$field];
+        foreach ($locfields as $field) {
+            if (!empty($change[$field])) {
+                $locdata[] = $change[$field];
             }
         }
-        $locstring = implode(', ',$locdata);
+        $locstring = implode(', ', $locdata);
         $this->wbw_dbg->debug_log("GMAPS location lookup = " . $locstring);
 
         $location = $this->bmlt_integration->geolocateAddress($locstring);
@@ -264,16 +261,15 @@ class SubmissionsHandler
         $this->wbw_dbg->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
 
         $latlng = array();
-        $latlng['latitude']= $location['latitude'];
-        $latlng['longitude']= $location['longitude'];
+        $latlng['latitude'] = $location['latitude'];
+        $latlng['longitude'] = $location['longitude'];
         return $latlng;
-
     }
 
     public function approve_submission_handler($request)
     {
         global $wpdb;
-        
+
 
         $this->wbw_dbg->debug_log("REQUEST");
         $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($request));
@@ -362,8 +358,8 @@ class SubmissionsHandler
                     return $latlng;
                 }
 
-                $change['latitude']= $latlng['latitude'];
-                $change['longitude']= $latlng['longitude'];
+                $change['latitude'] = $latlng['latitude'];
+                $change['longitude'] = $latlng['longitude'];
 
                 // handle publish/unpublish here
                 $change['published'] = 1;
@@ -392,21 +388,19 @@ class SubmissionsHandler
 
                 $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
 
-                foreach($locfields as $field)
-                {
-                    if(!empty($change[$field]))
-                    {
-                        $bmlt_meeting[$field]=$change[$field];
+                foreach ($locfields as $field) {
+                    if (!empty($change[$field])) {
+                        $bmlt_meeting[$field] = $change[$field];
                     }
                 }
-        
+
                 $latlng = $this->do_geolocate($bmlt_meeting);
                 if (is_wp_error($latlng)) {
                     return $latlng;
                 }
                 // add the new geo to the original change
-                $change['latitude']= $latlng['latitude'];
-                $change['longitude']= $latlng['longitude'];
+                $change['latitude'] = $latlng['latitude'];
+                $change['longitude'] = $latlng['longitude'];
 
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;
@@ -446,7 +440,7 @@ class SubmissionsHandler
                     }
 
                     $json = wp_remote_retrieve_body($response);
-                    $rep = str_replace("'",'"',$json);
+                    $rep = str_replace("'", '"', $json);
 
                     $arr = json_decode($rep, true);
 
@@ -459,14 +453,13 @@ class SubmissionsHandler
                     if ((!empty($arr['report'])) && ($arr['report'] != $change['id_bigint'])) {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
                     }
-
                 } else {
                     // unpublish by default
                     $change['published'] = 0;
 
                     $changearr = array();
                     $changearr['bmlt_ajax_callback'] = 1;
-                    $change['id_bigint']=$result['meeting_id'];
+                    $change['id_bigint'] = $result['meeting_id'];
                     $changearr['set_meeting_change'] = json_encode($change);
                     $this->wbw_dbg->debug_log("UNPUBLISH");
                     $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($changearr));
@@ -481,11 +474,10 @@ class SubmissionsHandler
                     $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
 
                     $json = wp_remote_retrieve_body($response);
-                    $rep = str_replace("'",'"',$json);
+                    $rep = str_replace("'", '"', $json);
 
                     $dec = json_decode($rep, true);
-                    if (((isset($dec['error'])) && ($dec['error'] === true)) || (empty($dec[0])))
-                    {
+                    if (((isset($dec['error'])) && ($dec['error'] === true)) || (empty($dec[0]))) {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
                     }
 
@@ -598,7 +590,6 @@ class SubmissionsHandler
 
     public function meeting_update_form_handler_rest($data)
     {
-        
 
         $this->wbw_dbg->debug_log("in rest handler");
         $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($data));
@@ -712,7 +703,7 @@ class SubmissionsHandler
                         break;
                     case ('textarea'):
                         $data[$field] = sanitize_textarea_field($data[$field]);
-                        if(strlen($data[$field])>512) {
+                        if (strlen($data[$field]) > 512) {
                             return $this->invalid_form_field($field);
                         }
                         break;
@@ -737,15 +728,13 @@ class SubmissionsHandler
 
         // ensure service body is correctly set
 
-        if (empty($sanitised_fields['service_body_bigint']))
-        {
+        if (empty($sanitised_fields['service_body_bigint'])) {
             // we should never have a blank service body unless it is 'other' request
-            if ($reason !== 'reason_other')
-            {
+            if ($reason !== 'reason_other') {
                 return $this->handlerCore->wbw_rest_error('Form field "service_body_bigint" is required.', 422);
             }
         }
-        
+
         // main switch for meeting change type
         //
         // this is where we create our submission for the database changes_requested field
@@ -936,10 +925,9 @@ class SubmissionsHandler
 
         // max size check for #7
         $chg = wp_json_encode($submission, 0, 1);
-        
-        if(strlen($chg)>=2048)
-        {
-            return $this->handlerCore->wbw_rest_error('Meeting change request exceeds maximum size', 422); 
+
+        if (strlen($chg) >= 2048) {
+            return $this->handlerCore->wbw_rest_error('Meeting change request exceeds maximum size', 422);
         }
 
         // insert into submissions db
@@ -979,7 +967,7 @@ class SubmissionsHandler
         /*
         * Send a notification to the configured trusted servants for the correct service body
         */
-        
+
         switch ($reason) {
             case "reason_new":
                 $submission_type = "New Meeting";

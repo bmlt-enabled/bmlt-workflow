@@ -1,3 +1,11 @@
+## 0.4.0 (Jun 10, 2022)
+- Select2 elements correctly reset on form change #57 (thanks @pjaudiomv !)
+- We now have a logo! (thanks kevinC !)
+- Backup and Restore functionality implemented, making plugin deactivation a safe activity #2
+- Lots of code refactoring and additional unit tests
+- Form now errors if no service bodies are set to show #58 (thanks @pjaudiomv !)
+- Municipality text fix in quickedit window #55 (thanks @brustar !)
+
 ## 0.3.10-beta (May 28th, 2022)
 - **Breaking database changes in this release - please deactivate and reactivate the plugin before using**
 - Changes requested size validation fixed #7
