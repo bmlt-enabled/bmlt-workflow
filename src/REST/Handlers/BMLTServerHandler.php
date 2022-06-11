@@ -135,14 +135,13 @@ private function check_bmltserver_parameters($username, $password, $server)
 
         $this->wbw_dbg->debug_log("encrypting BMLT password");
 
-        $pre_serialize = $this->WBW_WP_Options->secrets_encrypt(NONCE_SALT, $password);
+        $encrypted = $this->WBW_WP_Options->secrets_encrypt(NONCE_SALT, $password);
 
-        if(!is_array($pre_serialize))
+        if(!is_array($encrypted))
         {
             return $this->handlerCore->wbw_rest_failure('Error encrypting password.');
 
         }
-        $encrypted = serialize($pre_serialize);
 
         update_option('wbw_bmlt_password', $encrypted);
         update_option('wbw_bmlt_server_address', $server);

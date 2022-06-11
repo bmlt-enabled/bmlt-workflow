@@ -270,14 +270,14 @@ class Integration
     {
         
         if ($this->cookies == null) {
-            $unserialized = unserialize($this->WBW_WP_Options->wbw_get_option('wbw_bmlt_password'));
+            $encrypted = $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_password');
             $this->wbw_dbg->debug_log("retrieved encrypted bmlt password");
-            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($unserialized));
+            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($encrypted));
 
-            if ($unserialized === false) {
+            if ($encrypted === false) {
                 return new \WP_Error('wbw', 'Error unpacking password.');
             }
-            $decrypted = $this->WBW_WP_Options->secrets_decrypt(NONCE_SALT, $unserialized);
+            $decrypted = $this->WBW_WP_Options->secrets_decrypt(NONCE_SALT, $encrypted);
             if ($decrypted === false) {
                 return new \WP_Error('wbw', 'Error decrypting password.');
             }
