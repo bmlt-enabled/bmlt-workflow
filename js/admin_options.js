@@ -8,10 +8,10 @@ jQuery(document).ready(function ($) {
   // perform a restore
   $("#wbw_file_selector").on("change", function () {
     clear_notices();
-    $("#wbw_bmlt_restore_warning_dialog").dialog("open");
+    $("#wbw_restore_warning_dialog").dialog("open");
   });
 
-  $("#wbw_bmlt_restore_warning_dialog").dialog({
+  $("#wbw_restore_warning_dialog").dialog({
     title: "Clear plugin warning",
     autoOpen: false,
     draggable: false,

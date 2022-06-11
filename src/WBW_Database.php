@@ -16,16 +16,15 @@ class WBW_Database
         $this->wbw_service_bodies_table_name = $wpdb->prefix . 'wbw_service_bodies';
         $this->wbw_service_bodies_access_table_name = $wpdb->prefix . 'wbw_service_bodies_access';
         $this->wbw_dbg = new WBW_Debug();
-    }
+        $this->WBW_Options = new WBW_WP_Options();
 
+    }
 
     public function wbw_db_upgrade($desired_version, $fresh_install)
     {
-        $WBW_Options = new WBW_WP_Options();
-
 
         // work out which version we're at right now
-        $installed_version = $WP_Options->wbw_get_option('wbw_db_version');
+        $installed_version = $this->WBW_WP_Options->wbw_get_option('wbw_db_version');
 
         // do nothing by default
         $upgrade = false;

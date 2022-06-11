@@ -52,7 +52,7 @@ echo '</form></div>';
     </div>
 </div>
 
-<div id="wbw_bmlt_restore_warning_dialog" class="hidden" style="max-width:800px">
+<div id="wbw_restore_warning_dialog" class="hidden" style="max-width:800px">
     <div class="options_dialog_wbw_error_message"></div>
     <br>
     <div class="options_dialog_wbw_warning_text">
