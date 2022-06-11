@@ -9,7 +9,7 @@
 - Form now errors if no service bodies are set to show #58 (thanks @pjaudiomv !)
 - Municipality text fix in quickedit window #55 (thanks @brustar !)
 - Additional REST api sanitisation #6
-- Testcafe now tests admin submission page and also end-to-end against crouton
+- Testcafe now tests admin submission page, backup and restore and also end-to-end against crouton
 
 ## 0.3.10-beta (May 28th, 2022)
 - **Breaking database changes in this release - please deactivate and reactivate the plugin before using**

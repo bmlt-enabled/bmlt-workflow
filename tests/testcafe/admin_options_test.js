@@ -1,9 +1,12 @@
 import { ao, wbw_admin } from './models/admin_options';
+import { as } from './models/admin_submissions';
+
 import { userVariables } from '../../.testcaferc';
 import { RequestLogger } from 'testcafe';
 
 import { 
     click_dialog_button_by_index,
+    get_table_row_col
 }
 
 from './helpers/helper.js';
@@ -61,6 +64,15 @@ test('Restore', async t => {
     await click_dialog_button_by_index(ao.restore_warning_dialog_parent,1);
     // dialog closes after ok button
     await t
-    .expect(ao.restore_warning_dialog_parent.visible).eql(false);
+    .expect(ao.restore_warning_dialog_parent.visible).eql(false)
+    .navigateTo(userVariables.admin_submissions_page);
+    // assert id = 22222
+    var row = 0;
+    var column = 0;
+    await t .expect((as.dt_submission.child('tbody').child(row).child(column)).innerText).eql('22222');
+    // assert email = restoretest
+    var row = 0;
+    var column = 2;
+    await t .expect((as.dt_submission.child('tbody').child(row).child(column)).innerText).eql('restoretest');
 
 });
