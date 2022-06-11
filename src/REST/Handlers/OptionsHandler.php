@@ -87,7 +87,7 @@ class OptionsHandler
         $save = array();
         // get options
         $optarr = \wp_load_alloptions();
-        $this->wbw_dbg->debug_log($optarr);
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($optarr));
 
         $saveoptarr = array();
         foreach ($optarr as $key => $value) {
