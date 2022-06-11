@@ -38,6 +38,13 @@ class OptionsHandler
             $this->wbw_dbg->debug_log("deleted option: " . $option_name);
             // check if we have an option in our restore that matches the options array
             if (array_key_exists($option_name, $params['options'])) {
+                if($option_name === 'wbw_bmlt_password')
+                {
+                    if(is_serialized($params['options'][$option_name]))
+                    {
+                        $params['options'][$option_name]=unserialize($params['options'][$option_name]);
+                    }
+                }
                 add_option($option_name, $params['options'][$option_name]);
                 $this->wbw_dbg->debug_log("added option: " . $option_name);
             }
