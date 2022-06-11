@@ -99,7 +99,7 @@ class WBW_Database
             $this->wbw_dbg->debug_log("fresh install: tables created");
 
             delete_option('wbw_db_version');
-            add_option('wbw_db_version', $this->WBW_Database->wbw_db_version);
+            add_option('wbw_db_version', $this->wbw_db_version);
             $this->wbw_dbg->debug_log("fresh install: db version installed");
 
             return;
@@ -107,7 +107,7 @@ class WBW_Database
 
         if ($upgrade) {
             delete_option('wbw_db_version');
-            add_option('wbw_db_version', $this->WBW_Database->wbw_db_version);
+            add_option('wbw_db_version', $this->wbw_db_version);
             return;
         }
     }
