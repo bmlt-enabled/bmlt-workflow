@@ -5,12 +5,17 @@
     border-left: 5px solid lightblue;
 }
 
-.quickedit_wbw_info_text {
+.options_dialog_wbw_info_text {
   padding-left: 15px;
   background: #f8f8f8;
   border-left: 5px solid lightblue;
 }
 
+.options_dialog_wbw_warning_text {
+  padding-left: 15px;
+  background: #f8f8f8;
+  border-left: 5px solid red;
+}
 
 label{
     display: inline-flex;
@@ -19,4 +24,23 @@ label{
 }
 input {
   display: inline-flex;
+}
+
+.wbw_banner {
+    background-image: url('../images/Banner_Trimmed.png'),  url('../images/Banner_1px.png');
+    background-repeat: no-repeat, repeat-x;
+    background-size: auto 130px;
+    bottom: 0;
+    color: white;
+    height: 130px;
+    left: 0;
+    margin-bottom: 0;
+    margin-top: 15px;
+    text-align: center;
+    width: 100%;
+}
+
+hr.wbw-error-message 
+{
+  border: none;
 }

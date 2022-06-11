@@ -1,15 +1,18 @@
 <?php
 
 use wbw\BMLT\Integration;
+use wbw\WBW_WP_Options;
 
-$wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
+$WBW_WP_Options = new WBW_WP_Options();
+
+$wbw_bmlt_test_status = $WBW_WP_Options->wbw_get_option('wbw_bmlt_test_status', "failure");
 if ($wbw_bmlt_test_status != "success") {
     wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
 }
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
-$bmlt_integration = new Integration;
+$bmlt_integration = new Integration();
 
 $meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
 
@@ -46,7 +49,7 @@ EOD;
         <div class="rendered-form">
             <div>
                 <label for="update_reason"">Reason For Update:</label>
-                <select name="update_reason" id="update_reason">
+                <select class="update-form-select" name="update_reason" id="update_reason">
                     <option disabled="null" selected="null">Select Reason...</option>
                     <option value="reason_new">New Meeting</option>
                     <option value="reason_change">Change Existing Meeting</option>

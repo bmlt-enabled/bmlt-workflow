@@ -3,10 +3,13 @@ namespace wbw\REST;
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-use wbw\Debug;
+use wbw\WBW_Debug;
 use wbw\REST\Handlers\BMLTServerHandler;
 use wbw\REST\Handlers\ServiceBodiesHandler;
 use wbw\REST\Handlers\SubmissionsHandler;
+use wbw\REST\Handlers\OptionsHandler;
+use wbw\WBW_Rest;
+use wbw\WBW_WP_Options;
 
 class Controller extends \WP_REST_Controller
 {
@@ -17,19 +20,21 @@ class Controller extends \WP_REST_Controller
 	public function __construct()
 	{
 
-		global $wbw_rest_namespace;
-		global $wbw_submissions_rest_base;
-		global $wbw_service_bodies_rest_base;
-		global $wbw_bmltserver_rest_base;
-
-		$this->namespace = $wbw_rest_namespace;
-		$this->submissions_rest_base = $wbw_submissions_rest_base;
-		$this->service_bodies_rest_base = $wbw_service_bodies_rest_base;
-		$this->bmltserver_rest_base = $wbw_bmltserver_rest_base;
 
 		$this->BMLTServerHandler = new BMLTServerHandler();
 		$this->ServiceBodiesHandler = new ServiceBodiesHandler();
 		$this->SubmissionsHandler = new SubmissionsHandler();
+		$this->OptionsHandler = new OptionsHandler();
+		$this->WBW_Rest = new WBW_Rest();
+		$this->wbw_dbg = new WBW_Debug();
+		$this->WBW_WP_Options = new WBW_WP_Options();
+
+		$this->namespace = $this->WBW_Rest->wbw_rest_namespace;
+		$this->submissions_rest_base = $this->WBW_Rest->wbw_submissions_rest_base;
+		$this->service_bodies_rest_base = $this->WBW_Rest->wbw_service_bodies_rest_base;
+		$this->bmltserver_rest_base = $this->WBW_Rest->wbw_bmltserver_rest_base;
+		$this->options_rest_base = $this->WBW_Rest->wbw_options_rest_base;
+
 	}
 
 	public function register_routes()
@@ -47,11 +52,9 @@ class Controller extends \WP_REST_Controller
 				'methods'         => \WP_REST_Server::CREATABLE,
 				'callback'        => array($this, 'post_submissions'),
 				'permission_callback' => array($this, 'post_submissions_permissions_check'),
-				'args'            => $this->get_endpoint_args_for_item_schema(false),
 			),
-			'schema' => null,
-
 		));
+		
 		// GET submissions/<id>
 		register_rest_route(
 			$this->namespace,
@@ -88,6 +91,9 @@ class Controller extends \WP_REST_Controller
 				'action_message' => [
 					'required' => false,
 					'type'     => 'string',
+					'sanitize_callback' => function($param, $request, $key) {
+						return (sanitize_text_field($param));
+					}
 				],
 			],
 		));
@@ -100,6 +106,9 @@ class Controller extends \WP_REST_Controller
 				'action_message' => [
 					'required' => false,
 					'type'     => 'string',
+					'sanitize_callback' => function($param, $request, $key) {
+						return (sanitize_text_field($param));
+					}
 				],
 			],
 		));
@@ -112,6 +121,15 @@ class Controller extends \WP_REST_Controller
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_service_bodies'),
 				'permission_callback' => array($this, 'get_service_bodies_permissions_check'),
+				'args'     => [
+					'detail' => [
+						'required' => false,
+						'type'     => 'string',
+						'validate_callback' => function($param, $request, $key) {
+							return ($param==='true'||$param==='false');
+						}
+					],
+				],	
 			),
 		);
 
@@ -127,6 +145,27 @@ class Controller extends \WP_REST_Controller
 			),
 		);
 
+		// DELETE servicebodies
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->service_bodies_rest_base,
+
+			array(
+				'methods'             => \WP_REST_Server::DELETABLE,
+				'callback'            => array($this, 'delete_service_bodies'),
+				'permission_callback' => array($this, 'delete_service_bodies_permissions_check'),
+				'args'     => [
+					'checked' => [
+						'required' => false,
+						'type'     => 'string',
+						'validate_callback' => function($param, $request, $key) {
+							return ($param==='true'||$param==='false');
+						}
+					],
+				],	
+			),
+		);
+		
 		// GET bmltserver
 		register_rest_route(
 			$this->namespace,
@@ -173,6 +212,21 @@ class Controller extends \WP_REST_Controller
 				'permission_callback' => array($this, 'get_bmltserver_geolocate_permissions_check'),
 			),
 		);
+
+		// POST options/backup
+		register_rest_route($this->namespace, '/' . $this->options_rest_base . '/backup', array(
+			'methods'             => \WP_REST_Server::CREATABLE,
+			'callback'            => array($this, 'post_wbw_backup'),
+			'permission_callback' => array($this, 'post_wbw_backup_permissions_check'),
+		));
+
+		// POST options/restore
+		register_rest_route($this->namespace, '/' . $this->options_rest_base . '/restore', array(
+			'methods'             => \WP_REST_Server::CREATABLE,
+			'callback'            => array($this, 'post_wbw_restore'),
+			'permission_callback' => array($this, 'post_wbw_restore_permissions_check'),
+		));
+		
 	}
 
 	private function authorization_status_code()
@@ -184,13 +238,14 @@ class Controller extends \WP_REST_Controller
 		return $status;
 	}
 
+	// permission validation for each rest call
+
 	public function get_submissions_permissions_check($request)
 	{
-		global $wbw_capability_manage_submissions;
-		global $wbw_dbg;
+		
 
-		$wbw_dbg->debug_log("get submissions current user " . get_current_user_id());
-		if (!current_user_can($wbw_capability_manage_submissions)) {
+		$this->wbw_dbg->debug_log("get submissions current user " . get_current_user_id());
+		if (!current_user_can($this->WBW_WP_Options->wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view submissions.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -198,10 +253,9 @@ class Controller extends \WP_REST_Controller
 
 	public function get_submission_permissions_check($request)
 	{
-		global $wbw_capability_manage_submissions;
-		global $wbw_dbg;
-		$wbw_dbg->debug_log("get submissions current user " . get_current_user_id());
-		if (!current_user_can($wbw_capability_manage_submissions)) {
+		
+		$this->wbw_dbg->debug_log("get submissions current user " . get_current_user_id());
+		if (!current_user_can($this->WBW_WP_Options->wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view a submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -209,11 +263,11 @@ class Controller extends \WP_REST_Controller
 
 	public function approve_submission_action_permissions_check($request)
 	{
-		global $wbw_capability_manage_submissions;
-		global $wbw_dbg;
 
-		$wbw_dbg->debug_log("approve submission current user " . get_current_user_id());
-		if (!current_user_can($wbw_capability_manage_submissions)) {
+		
+
+		$this->wbw_dbg->debug_log("approve submission current user " . get_current_user_id());
+		if (!current_user_can($this->WBW_WP_Options->wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot approve this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -221,11 +275,10 @@ class Controller extends \WP_REST_Controller
 
 	public function reject_submission_action_permissions_check($request)
 	{
-		global $wbw_capability_manage_submissions;
-		global $wbw_dbg;
+		
 
-		$wbw_dbg->debug_log("reject submission current user " . get_current_user_id());
-		if (!current_user_can($wbw_capability_manage_submissions)) {
+		$this->wbw_dbg->debug_log("reject submission current user " . get_current_user_id());
+		if (!current_user_can($this->WBW_WP_Options->wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot reject this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -234,9 +287,9 @@ class Controller extends \WP_REST_Controller
 	public function delete_submission_permissions_check($request)
 	{
 		// delete submissions is limited to admin
-		global $wbw_dbg;
+		
 
-		$wbw_dbg->debug_log("delete submission current user " . get_current_user_id());
+		$this->wbw_dbg->debug_log("delete submission current user " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot delete this submission.'), array('status' => $this->authorization_status_code()));
 		}
@@ -245,11 +298,10 @@ class Controller extends \WP_REST_Controller
 
 	public function patch_submission_permissions_check($request)
 	{
-		global $wbw_capability_manage_submissions;
-		global $wbw_dbg;
+		
 
-		$wbw_dbg->debug_log("patch submission current user " . get_current_user_id());
-		if (!current_user_can($wbw_capability_manage_submissions)) {
+		$this->wbw_dbg->debug_log("patch submission current user " . get_current_user_id());
+		if (!current_user_can($this->WBW_WP_Options->wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot patch this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -265,9 +317,19 @@ class Controller extends \WP_REST_Controller
 
 	public function post_service_bodies_permissions_check($request)
 	{
-		global $wbw_dbg;
+		
 
-		$wbw_dbg->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
+		$this->wbw_dbg->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area updates.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
+	public function delete_service_bodies_permissions_check($request)
+	{
+
+		$this->wbw_dbg->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area updates.'), array('status' => $this->authorization_status_code()));
 		}
@@ -276,9 +338,9 @@ class Controller extends \WP_REST_Controller
 
 	public function post_bmltserver_permissions_check($request)
 	{
-		global $wbw_dbg;
+		
 
-		$wbw_dbg->debug_log("post_bmltserver " . get_current_user_id());
+		$this->wbw_dbg->debug_log("post_bmltserver " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post server updates.'), array('status' => $this->authorization_status_code()));
 		}
@@ -287,9 +349,9 @@ class Controller extends \WP_REST_Controller
 
 	public function get_bmltserver_permissions_check($request)
 	{
-		global $wbw_dbg;
+		
 
-		$wbw_dbg->debug_log("get_bmltserver " . get_current_user_id());
+		$this->wbw_dbg->debug_log("get_bmltserver " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post server updates.'), array('status' => $this->authorization_status_code()));
 		}
@@ -298,9 +360,9 @@ class Controller extends \WP_REST_Controller
 
 	public function patch_bmltserver_permissions_check($request)
 	{
-		global $wbw_dbg;
+		
 
-		$wbw_dbg->debug_log("patch_bmltserver " . get_current_user_id());
+		$this->wbw_dbg->debug_log("patch_bmltserver " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot patch server updates.'), array('status' => $this->authorization_status_code()));
 		}
@@ -309,22 +371,44 @@ class Controller extends \WP_REST_Controller
 
 	public function get_bmltserver_geolocate_permissions_check($request)
 	{
-		global $wbw_dbg;
-		global $wbw_capability_manage_submissions;
+		
 
-		$wbw_dbg->debug_log("patch_bmltserver " . get_current_user_id());
-		if (!current_user_can($wbw_capability_manage_submissions)) {
+		$this->wbw_dbg->debug_log("patch_bmltserver " . get_current_user_id());
+		if (!current_user_can($this->WBW_WP_Options->wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot geolocate an address.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
 
+	public function post_wbw_backup_permissions_check($request)
+	{
+		
 
+		$this->wbw_dbg->debug_log("post_wbw_Backup_permissions_check " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot call the backup API.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
+	public function post_wbw_restore_permissions_check($request)
+	{
+		
+
+		$this->wbw_dbg->debug_log("post_wbw_restore_permissions_check " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot call the restore API.'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+	
 	public function post_submissions_permissions_check($request)
 	{
 		// Anyone can post a form submission
 		return true;
 	}
+
+	// handler stubs calling off to the handler objects
 
 	public function get_submissions($request)
 	{
@@ -381,6 +465,12 @@ class Controller extends \WP_REST_Controller
 		return rest_ensure_response($result);
 	}
 
+	public function delete_service_bodies($request)
+	{
+		$result = $this->ServiceBodiesHandler->delete_service_bodies_handler($request);
+		return rest_ensure_response($result);
+	}
+
 	public function get_bmltserver($request)
 	{
 		$result = $this->BMLTServerHandler->get_bmltserver_handler($request);
@@ -405,5 +495,16 @@ class Controller extends \WP_REST_Controller
 		return rest_ensure_response($result);
 	}
 
+	public function post_wbw_backup($request)
+	{
+		$result = $this->OptionsHandler->post_wbw_backup_handler($request);
+		return rest_ensure_response($result);
+	}
+
+	public function post_wbw_restore($request)
+	{
+		$result = $this->OptionsHandler->post_wbw_restore_handler($request);
+		return rest_ensure_response($result);
+	}
 
 }

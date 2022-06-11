@@ -1,5 +1,5 @@
 {
     "redefinable-internals": [
-        "curl_exec","curl_init","curl_setopt","curl_close","time","error_log","http_build_query"
+        "curl_exec","curl_init","curl_setopt","curl_close","time","error_log","http_build_query","unserialize","serialize"
     ]
 }

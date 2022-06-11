@@ -24,7 +24,7 @@ jQuery(document).ready(function ($) {
     placeholder: "Select from available formats",
     multiple: true,
     data: formatdata,
-    selectionCssClass: ":all:",
+    selectionCssClass: "select2-custom",
     width: "100%",
   });
 
@@ -69,26 +69,18 @@ jQuery(document).ready(function ($) {
       .then((mdata) => create_meeting_searcher(mdata));
   }
 
-  $.ajax({
-    url: wp_rest_base + wbw_admin_wbw_service_bodies_rest_route,
-    dataType: "json",
-    beforeSend: function (xhr) {
-      xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
-    },
-  }).done(function (response) {
-    var wbw_service_bodies = "";
+  var wbw_service_bodies_querystr = "";
 
-    Object.keys(response).forEach((item) => {
-      // console.log(response);
-      var service_body_bigint = item;
-      var service_body_name = response[item]["name"];
-      var opt = new Option(service_body_name, service_body_bigint, false, false);
-      $("#service_body_bigint").append(opt);
-      wbw_service_bodies += "services[]=" + service_body_bigint + "&";
-    });
-
-    update_meeting_list(wbw_service_bodies);
+  Object.keys(wbw_service_bodies).forEach((item) => {
+    // console.log(response);
+    var service_body_bigint = item;
+    var service_body_name = wbw_service_bodies[item]["name"];
+    var opt = new Option(service_body_name, service_body_bigint, false, false);
+    $("#service_body_bigint").append(opt);
+    wbw_service_bodies_querystr += "services[]=" + service_body_bigint + "&";
   });
+
+  update_meeting_list(wbw_service_bodies_querystr);
 
   $("#meeting_update_form").validate({
     submitHandler: function () {
@@ -263,7 +255,7 @@ jQuery(document).ready(function ($) {
     $("#display_format_shared_id_list").off("change.wbw-highlight");
     // remove the highlighting css
     $(".meeting-input").removeClass("wbw-changed");
-    $(".display_format_shared_id_list-select2").removeClass("wbw-changed");
+    $(".select2-custom").removeClass("wbw-changed");
   }
 
   function enable_highlighting() {
@@ -273,7 +265,7 @@ jQuery(document).ready(function ($) {
     });
     // add highlighting trigger for select2
     $("#display_format_shared_id_list").on("change.wbw-highlight", function () {
-      $(".display_format_shared_id_list-select2").addClass("wbw-changed");
+      $(".select2-custom").addClass("wbw-changed");
     });
   }
 
@@ -370,9 +362,12 @@ jQuery(document).ready(function ($) {
     clear_field("phone_meeting_number");
     clear_field("virtual_meeting_link");
     // placeholder for these select elements
-    $("#group_relationship").val("");
-    $("#virtual_hybrid_select").val("");
-    $("#service_body_bigint").val("");
+    $("#group_relationship").val('');
+    $("#virtual_hybrid_select").val('');
+    $("#service_body_bigint").val('');
+    // reset select2
+    $('#display_format_shared_id_list').val(null).trigger('change');
+    $('#meeting-searcher').val(null).trigger('change');
     // set email selector to no
     $("#add-email").val("no");
   }
@@ -527,10 +522,9 @@ jQuery(document).ready(function ($) {
     var str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
     put_field("duration_time", str);
 
-    // var url = wp_rest_base + wbw_form_submit;
 
     $.ajax({
-      url: wp_rest_base + wbw_form_submit,
+      url: wbw_form_submit_url,
       method: "POST",
       data: JSON.stringify($("#meeting_update_form").serializeObject()),
       contentType: "application/json; charset=utf-8",

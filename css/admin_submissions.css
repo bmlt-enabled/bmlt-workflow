@@ -223,3 +223,8 @@
   min-width: 0;
   word-wrap: break-word;
 }
+
+hr.wbw-error-message 
+{
+  border: none;
+}

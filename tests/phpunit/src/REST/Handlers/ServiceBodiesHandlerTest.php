@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use wbw\Debug;
+use wbw\WBW_Debug;
 use wbw\REST\Handlers\ServiceBodiesHandler;
 
 use PHPUnit\Framework\TestCase;
@@ -11,13 +11,14 @@ use function Patchwork\{redefine, getFunction, always};
 
 require_once('config_phpunit.php');
 
-global $wbw_dbg;
-$wbw_dbg = new Debug;
 
 /**
  * @covers wbw\REST\Handlers\ServiceBodiesHandler
- * @uses wbw\Debug
+ * @uses wbw\WBW_Debug
  * @uses wbw\REST\HandlerCore
+ * @uses wbw\BMLT\Integration
+ * @uses wbw\WBW_Database
+ * @uses wbw\WBW_WP_Options
  */
 final class ServiceBodiesHandlerTest extends TestCase
 {
@@ -55,8 +56,9 @@ Line: $errorLine
         Functions\when('\apply_filters')->returnArg(2);
         Functions\when('\current_time')->justReturn('2022-03-23 09:22:44');
         Functions\when('\absint')->returnArg();
-        Functions\when('\get_option')->returnArg();
         Functions\when('wp_safe_remote_post')->returnArg();
+
+        $this->wbw_dbg = new WBW_Debug();
     }
 
     protected function tearDown(): void
@@ -64,6 +66,8 @@ Line: $errorLine
         Brain\Monkey\tearDown();
         parent::tearDown();
         Mockery::close();
+
+        unset($this->wbw_dbg);
     }
 
     /**
@@ -72,7 +76,7 @@ Line: $errorLine
     public function test_can_get_service_bodies_simple_with_success(): void
     {
 
-        global $wbw_dbg;
+        
         $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/wbw/v1/servicebodies");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/wbw/v1/servicebodies");
@@ -82,36 +86,35 @@ Line: $errorLine
             '0' => array(
                 "service_body_bigint" => "2",
                 "service_body_name" => "Sydney Metro",
-                "contact_email" => "",
                 "show_on_form" => "1"
             ),
             '1' => array(
                 "service_body_bigint" =>"3",
                 "service_body_name" =>"Sydney North",
-                "contact_email" =>"",
                 "show_on_form" =>"1"
             ),
             '2' => array(
                 "service_body_bigint" => "4",
                 "service_body_name" =>"Sydney South",
-                "contact_email" =>"",
                 "show_on_form" =>"1"
             )
         );
+
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('prepare')->andReturn("SELECT * from anything");
         $wpdb->shouldReceive('get_results')->andReturn($sblookup);
 
+
         $rest = new ServiceBodiesHandler();
 
         $response = $rest->get_service_bodies_handler($request);
 
-        $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
-        $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
         $this->assertEquals($response->get_data()['2']['name'], 'Sydney Metro');
     }
 
@@ -122,7 +125,7 @@ Line: $errorLine
     // public function test_can_get_service_bodies_detail_with_success(): void
     // {
 
-    //     global $wbw_dbg;
+        
     //     $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/wbw/v1/servicebodies");
     //     $request->set_header('content-type', 'application/json');
     //     $request->set_route("/wbw/v1/servicebodies");
@@ -136,35 +139,43 @@ Line: $errorLine
     //         '0' => array(
     //             "service_body_bigint" => "2",
     //             "service_body_name" => "Sydney Metro",
-    //             "contact_email" => "",
     //             "show_on_form" => "1"
     //         ),
     //         '1' => array(
     //             "service_body_bigint" =>"3",
     //             "service_body_name" =>"Sydney North",
-    //             "contact_email" =>"",
     //             "show_on_form" =>"1"
     //         ),
     //         '2' => array(
     //             "service_body_bigint" => "4",
     //             "service_body_name" =>"Sydney South",
-    //             "contact_email" =>"",
     //             "show_on_form" =>"0"
     //         )
     //     );
     //     global $wpdb;
     //     $wpdb =  Mockery::mock('wpdb');
     //     /** @var Mockery::mock $wpdb test */
-    //     $wpdb->shouldReceive('get_results')->andReturn($sblookup);
+    //     $wpdb->shouldReceive('get_results')->andReturn($sblookup)
+    //     ->shouldReceive('get_col')->andreturn(array("1","2"))
+    //     ->shouldReceive('prepare')->andreturn(array("1","2"))
+    //     ->shouldReceive('query')->andreturn(array("1","2"))
 
-    //     $rest = new ServiceBodiesHandler();
+    //     $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+    //     /** @var Mockery::mock $WBW_WP_Options test */
+    //     $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
+    //     $sblist = array('body'=>'[{"id":"1","parent_id":"0","name":"toplevel","description":"","type":"AS"},{"id":"2","parent_id":"1","name":"a-level1","description":"","type":"AS"},{"id":"3","parent_id":"1","name":"b-level1","description":"","type":"AS"},{"id":"4","parent_id":"1","name":"c-level","description":"test c level","type":"AS"},{"id":"5","parent_id":"4","name":"d-level","description":"d-level test","type":"AS"}]');
+    //     $Intstub = \Mockery::mock('Integration');
+    //     /** @var Mockery::mock $Intstub test */
+    //     $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
+
+    //     $rest = new ServiceBodiesHandler($Intstub, $WBW_WP_Options);
 
     //     $response = $rest->get_service_bodies_handler($request);
 
-    //     $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+    //     $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
 
     //     $this->assertInstanceOf(WP_REST_Response::class, $response);
-    //     $wbw_dbg->debug_log($wbw_dbg->vdump($response));
+    //     $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
     //     $this->assertEquals($response->get_data()['2']['name'], 'Sydney Metro');
     // }
 

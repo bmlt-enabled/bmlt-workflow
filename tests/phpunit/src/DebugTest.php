@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use wbw\Debug;
+use wbw\WBW_Debug;
 
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
@@ -10,7 +10,7 @@ use Brain\Monkey;
 use function Patchwork\{redefine, getFunction, always};
 
 /**
- * @covers wbw\Debug
+ * @covers wbw\WBW_Debug
  */
 final class DebugTest extends TestCase
 {
@@ -52,7 +52,7 @@ Line: $errorLine
     {
         if(WBW_DEBUG)
         {
-            $dbg = new Debug();
+            $dbg = new WBW_Debug();
             Functions\expect('error_log')->once();
     
             $dbg->debug_log("hi");

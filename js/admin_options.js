@@ -1,26 +1,169 @@
-function dismiss_notice(element) {
-  jQuery(element)
-    .parent()
-    .slideUp("normal", function () {
-      jQuery(this).remove();
-    });
-  return false;
-}
-
 jQuery(document).ready(function ($) {
 
-  get_test_status()
-  .then((data) => {
+  // click handler for hidden file browser button
+  $("#wbw_restore").on("click", function () {
+    $("#wbw_file_selector").trigger("click");
+  });
+
+  // perform a restore
+  $("#wbw_file_selector").on("change", function () {
+    clear_notices();
+    $("#wbw_restore_warning_dialog").dialog("open");
+  });
+
+  $("#wbw_restore_warning_dialog").dialog({
+    title: "Clear plugin warning",
+    autoOpen: false,
+    draggable: false,
+    width: "auto",
+    maxWidth: "auto",
+    modal: true,
+    resizable: false,
+    closeOnEscape: true,
+    position: {
+      my: "center",
+      at: "center",
+      of: window,
+    },
+    buttons: {
+      Ok: function () {
+        // trigger the restore
+        restore_fr.readAsText($("#wbw_file_selector")[0].files[0]);
+        $(this).dialog("close");
+      },
+      Cancel: function () {
+        $(this).dialog("close");
+      },
+    },
+    open: function () {
+      var $this = $(this);
+      // close dialog by clicking the overlay behind it
+      $(".ui-widget-overlay").on("click", function () {
+        $this.dialog("close");
+      });
+    },
+    create: function () {
+      $(".ui-dialog-titlebar-close").addClass("ui-button");
+    },
+  });
+
+  // restore hook
+  var restore_fr = new FileReader();
+  restore_fr.onload = function (e) {
+    $.ajax({
+      url: wbw_admin_restore_rest_url,
+      method: "POST",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      data: e.target.result,
+      processData: false,
+      beforeSend: function (xhr) {
+        turn_on_spinner("#wbw-backup-spinner");
+        clear_notices();
+        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+      },
+    }).done(function (response) {
+      turn_off_spinner("#wbw-backup-spinner");
+      notice_success(response, "wbw-error-message");
+    }).fail(function (xhr) {
+      notice_error(xhr, "wbw-error-message");
+      turn_off_spinner("#wbw-backup-spinner");
+    });
+
+  };
+
+
+  // click handler for bmlt configuration popup
+  $("#wbw_configure_bmlt_server").on("click", function (event) {
+    clear_notices();
+    $("#wbw_bmlt_configuration_dialog").dialog("open");
+  });
+
+  // update the test status
+  get_test_status().then((data) => {
     update_from_test_result(data);
   });
 
-  function clear_notices() {
-    jQuery(".notice-dismiss").each(function (i, e) {
-      dismiss_notice(e);
-    });
-  }
+  // click handler for backup
+  $("#wbw_backup").on("click", function () {
+    $.ajax({
+      url: wbw_admin_backup_rest_url,
+      method: "POST",
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      processData: false,
+      beforeSend: function (xhr) {
+        turn_on_spinner("#wbw-backup-spinner");
+        clear_notices();
+        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+      },
+    })
+      .done(function (response) {
+        turn_off_spinner("#wbw-backup-spinner");
+        notice_success(response, "wbw-error-message");
+        var blob = new Blob([response.backup], { type: "application/json" });
+        var link = document.createElement("a");
+        link.href = window.URL.createObjectURL(blob);
+        var d = new Date();
+        var datetime =
+          d.getFullYear().toString() +
+          ("0" + (d.getMonth() + 1).toString()).slice(-2) +
+          ("0" + d.getDate().toString()).slice(-2) +
+          ("0" + d.getHours().toString()).slice(-2) +
+          ("0" + d.getMinutes().toString()).slice(-2);
+        link.download = "backup-" + datetime + ".json";
+        link.click();
+      })
+      .fail(function (xhr) {
+        notice_error(xhr, "wbw-error-message");
+        turn_off_spinner("#wbw-backup-spinner");
+      });
+  });
 
   var clipboard = new ClipboardJS(".clipboard-button");
+
+  $("#wbw_bmlt_change_server_warning_dialog").dialog({
+    title: "BMLT Configuration Change Warning",
+    autoOpen: false,
+    draggable: false,
+    width: "auto",
+    maxWidth: "auto",
+    zindex: 1001,
+    modal: true,
+    resizable: false,
+    closeOnEscape: true,
+    position: {
+      my: "center",
+      at: "center",
+      of: window,
+    },
+    buttons: {
+      Ok: function () {
+        if($("#yesimsure").prop("checked") == true)
+        {
+          wipe_service_bodies({"checked":"true"});
+          save_results(this);
+        }
+        // trigger an update on the main page
+        test_configuration(true);
+        $(this).dialog("close");
+        $("#wbw_bmlt_change_server_warning_dialog").data("parent").dialog("close");
+      },
+      Cancel: function () {
+        $(this).dialog("close");
+      },
+    },
+    open: function () {
+      var $this = $(this);
+      // close dialog by clicking the overlay behind it
+      $(".ui-widget-overlay").on("click", function () {
+        $this.dialog("close");
+      });
+    },
+    create: function () {
+      $(".ui-dialog-titlebar-close").addClass("ui-button");
+    },
+  });
 
   $("#wbw_bmlt_configuration_dialog").dialog({
     title: "BMLT Configuration",
@@ -41,10 +184,15 @@ jQuery(document).ready(function ($) {
         test_configuration(false);
       },
       "Save and Close": function () {
-        save_results(this);
-        // trigger an update on the main page
-        test_configuration(true);
-        $(this).dialog("close");
+        // check if server address changed
+        if (wbw_bmlt_server_address != $("#wbw_bmlt_server_address").val()) {
+          $("#wbw_bmlt_change_server_warning_dialog").data("parent", $(this)).dialog("open");
+        } else {
+          save_results();
+          // trigger an update on the main page
+          test_configuration(true);
+          $(this).dialog("close");
+        }
       },
       Cancel: function () {
         $(this).dialog("close");
@@ -62,20 +210,9 @@ jQuery(document).ready(function ($) {
     },
   });
 
-  $("form").on("submit", function () {
-    $("#wbw_new_meeting_template_default").attr("disabled", "disabled");
-    $("#wbw_existing_meeting_template_default").attr("disabled", "disabled");
-    $("#wbw_other_meeting_template_default").attr("disabled", "disabled");
-    $("#wbw_close_meeting_template_default").attr("disabled", "disabled");
-  });
 
-  $("#wbw_configure_bmlt_server").on("click", function (event) {
-    clear_notices();
-    $("#wbw_bmlt_configuration_dialog").dialog("open");
-  });
 
   function test_configuration(saving) {
-
     var parameters = {};
     parameters["wbw_bmlt_server_address"] = $("#wbw_bmlt_server_address").val();
     parameters["wbw_bmlt_username"] = $("#wbw_bmlt_username").val();
@@ -93,44 +230,42 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        notice_success(response, "quickedit-wbw-error-message");
-        if(saving)
-        {
+        notice_success(response, "options_dialog_wbw_error_message");
+        if (saving) {
           update_from_test_result(response);
         }
       })
       .fail(function (xhr) {
-        notice_error(xhr, "quickedit-wbw-error-message");
-        if(saving)
-        {
+        notice_error(xhr, "options_dialog_wbw_error_message");
+        if (saving) {
           update_from_test_result(xhr);
         }
-      })
-    }
+      });
+  }
 
-  
   function get_test_status() {
     return new Promise((resolve) => {
-    $.ajax({
-      url: wbw_admin_bmltserver_rest_url,
-      type: "GET",
-      dataType: "json",
-      contentType: "application/json",
-      beforeSend: function (xhr) {
-        clear_notices();
-        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
-      },
-    }).done(function (response) {
-      resolve(response)
-    })
-    .fail(function (xhr) {
-      resolve(xhr);
-    })
-  })
+      $.ajax({
+        url: wbw_admin_bmltserver_rest_url,
+        type: "GET",
+        dataType: "json",
+        contentType: "application/json",
+        beforeSend: function (xhr) {
+          clear_notices();
+          xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+        },
+      })
+        .done(function (response) {
+          resolve(response);
+        })
+        .fail(function (xhr) {
+          resolve(xhr);
+        });
+    });
   }
 
   function update_from_test_result(data) {
-    if (data['wbw_bmlt_test_status'] === "success") {
+    if (data["wbw_bmlt_test_status"] === "success") {
       $("#wbw_test_yes").show();
       $("#wbw_test_no").hide();
     } else {
@@ -139,7 +274,7 @@ jQuery(document).ready(function ($) {
     }
   }
 
-  function save_results(element) {
+  function save_results() {
     var parameters = {};
     parameters["wbw_bmlt_server_address"] = $("#wbw_bmlt_server_address").val();
     parameters["wbw_bmlt_username"] = $("#wbw_bmlt_username").val();
@@ -155,6 +290,29 @@ jQuery(document).ready(function ($) {
         clear_notices();
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
+    }).done(function (response) {
+      notice_success(response, "wbw-error-message");
+      update_from_test_result(response);
     })
+    .fail(function (xhr) {
+      notice_error(xhr, "wbw-error-message");
+      update_from_test_result(xhr);
+    });
+
   }
+
+  function wipe_service_bodies(parameters) {
+
+    $.ajax({
+      url: wbw_admin_wbw_service_bodies_rest_url,
+      type: "DELETE",
+      dataType: "json",
+      data: JSON.stringify(parameters),
+      contentType: "application/json",
+      beforeSend: function (xhr) {
+        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+      },
+    });
+  }
+
 });

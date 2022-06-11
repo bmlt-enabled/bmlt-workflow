@@ -2,12 +2,12 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-use wbw\Debug;
+use wbw\WBW_Debug;
 use wbw\BMLT\Integration;
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
-$bmlt_integration = new Integration;
+$bmlt_integration = new Integration();
 
 $meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
 
@@ -163,7 +163,7 @@ EOD;
             <input type="text" name="quickedit_location_street" id="quickedit_location_street" class="quickedit-input">
             <label for="quickedit_location_info">Location Info</label>
             <input type="text" name="quickedit_location_info" id="quickedit_location_info" class="quickedit-input">
-            <label for="quickedit_location_municipality">Municipality</label>
+            <label for="quickedit_location_municipality">City/Town/Suburb</label>
             <input type="text" name="quickedit_location_municipality" id="quickedit_location_municipality" class="quickedit-input">
 
             <div id="optional_location_sub_province">

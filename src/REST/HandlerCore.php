@@ -2,7 +2,7 @@
 
 namespace wbw\REST;
 
-use wbw\Debug;
+use wbw\WBW_Debug;
 use wbw\BMLT\Integration;
 
 class HandlerCore
@@ -12,7 +12,7 @@ class HandlerCore
     {
         if (empty($stub))
         {
-            $this->bmlt_integration = new Integration;
+            $this->bmlt_integration = new Integration();
         }
         else
         {
@@ -45,4 +45,5 @@ class HandlerCore
         return new \WP_Error('wbw_error', $message, $data);
     }
 
+  
 }
