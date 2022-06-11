@@ -87,6 +87,8 @@ class OptionsHandler
         $save = array();
         // get options
         $optarr = \wp_load_alloptions();
+        $this->wbw_dbg->debug_log($optarr);
+
         $saveoptarr = array();
         foreach ($optarr as $key => $value) {
             $this->wbw_dbg->debug_log("searching for " . $key . " in ");
