@@ -1,8 +1,12 @@
 import { ao, wbw_admin } from './models/admin_options';
 import { userVariables } from '../../.testcaferc';
-import { Selector, RequestLogger } from 'testcafe';
-import fs from 'fs';
-import path from 'path';
+import { RequestLogger } from 'testcafe';
+
+import { 
+    click_dialog_button_by_index,
+}
+
+from './helpers/helper.js';
 
 const url = 'http://54.153.167.239/flop/wp-json/wbw/v1/options/backup';
 
@@ -50,7 +54,8 @@ test('Restore', async t => {
     .setFilesToUpload(ao.wbw_file_selector, [
         './uploads/restoretest1.json',
     ])
-    .click(ao.restore_button)
+    // .click(ao.restore_button)
+    // .debug()
     .expect(ao.restore_warning_dialog_parent.visible).eql(true);
     // click ok
     await click_dialog_button_by_index(ao.restore_warning_dialog_parent,1);

@@ -16,7 +16,7 @@ class WBW_Database
         $this->wbw_service_bodies_table_name = $wpdb->prefix . 'wbw_service_bodies';
         $this->wbw_service_bodies_access_table_name = $wpdb->prefix . 'wbw_service_bodies_access';
         $this->wbw_dbg = new WBW_Debug();
-        $this->WBW_Options = new WBW_WP_Options();
+        $this->WBW_WP_Options = new WBW_WP_Options();
 
     }
 
