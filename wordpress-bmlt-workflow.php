@@ -473,7 +473,7 @@ if (!class_exists('wbw_plugin')) {
             add_settings_field(
                 'wbw_bmlt_server_address',
                 'BMLT Configuration',
-                'wbw_bmlt_server_address_html',
+                array(&$this, 'wbw_bmlt_server_address_html'),
                 'wbw-settings',
                 'wbw-settings-section-id'
             );
@@ -481,7 +481,7 @@ if (!class_exists('wbw_plugin')) {
             add_settings_field(
                 'wbw_backup_restore',
                 'Backup and Restore',
-                'wbw_backup_restore_html',
+                array(&$this, 'wbw_backup_restore_html'),
                 'wbw-settings',
                 'wbw-settings-section-id'
             );
@@ -489,7 +489,7 @@ if (!class_exists('wbw_plugin')) {
             add_settings_field(
                 'wbw_shortcode',
                 'Meeting Update Form Shortcode',
-                'wbw_shortcode_html',
+                array(&$this,'wbw_shortcode_html'),
                 'wbw-settings',
                 'wbw-settings-section-id'
             );
@@ -497,7 +497,7 @@ if (!class_exists('wbw_plugin')) {
             add_settings_field(
                 'wbw_email_from_address',
                 'Email From Address',
-                'wbw_email_from_address_html',
+                array(&$this,'wbw_email_from_address_html'),
                 'wbw-settings',
                 'wbw-settings-section-id'
             );
@@ -505,7 +505,7 @@ if (!class_exists('wbw_plugin')) {
             add_settings_field(
                 'wbw_delete_closed_meetings',
                 'Default for close meeting submission',
-                'wbw_delete_closed_meetings_html',
+                array(&$this, 'wbw_delete_closed_meetings_html'),
                 'wbw-settings',
                 'wbw-settings-section-id'
             );
@@ -513,7 +513,7 @@ if (!class_exists('wbw_plugin')) {
             add_settings_field(
                 'wbw_optional_form_fields',
                 'Optional form fields',
-                'wbw_optional_form_fields_html',
+                array(&$this, 'wbw_optional_form_fields_html'),
                 'wbw-settings',
                 'wbw-settings-section-id'
             );
@@ -521,7 +521,7 @@ if (!class_exists('wbw_plugin')) {
             add_settings_field(
                 'wbw_fso_email_address',
                 'Email address for the FSO (Starter Kit Notifications)',
-                'wbw_fso_email_address_html',
+                array(&$this, 'wbw_fso_email_address_html'),
                 'wbw-settings',
                 'wbw-settings-section-id'
             );
@@ -530,7 +530,7 @@ if (!class_exists('wbw_plugin')) {
             add_settings_field(
                 'wbw_fso_email_template',
                 'Email Template for FSO emails (Starter Kit Notifications)',
-                'wbw_fso_email_template_html',
+                array(&$this, 'wbw_fso_email_template_html'),
                 'wbw-settings',
                 'wbw-settings-section-id'
             );
@@ -538,7 +538,7 @@ if (!class_exists('wbw_plugin')) {
             add_settings_field(
                 'wbw_submitter_email_template',
                 'Email Template for New Meeting',
-                'wbw_submitter_email_template_html',
+                array(&$this, 'wbw_submitter_email_template_html'),
                 'wbw-settings',
                 'wbw-settings-section-id'
             );
