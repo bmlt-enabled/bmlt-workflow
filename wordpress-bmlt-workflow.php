@@ -42,7 +42,7 @@ if (!class_exists('wbw_plugin')) {
     {
         use \wbw\WBW_Debug;
 
-        function __construct()
+        public function __construct()
         {
             $this->WBW_WP_Options = new WBW_WP_Options();
             $this->bmlt_integration = new Integration();
@@ -63,7 +63,7 @@ if (!class_exists('wbw_plugin')) {
             register_deactivation_hook(__FILE__, 'wbw_uninstall');
         }
 
-        function meeting_update_form($atts = [], $content = null, $tag = '')
+        public function meeting_update_form($atts = [], $content = null, $tag = '')
         {
 
             // base css and js for this page
@@ -295,7 +295,7 @@ if (!class_exists('wbw_plugin')) {
             }
         }
 
-        function wbw_menu_pages()
+        public function wbw_menu_pages()
         {
 
             add_menu_page(
