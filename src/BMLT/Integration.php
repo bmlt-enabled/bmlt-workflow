@@ -342,7 +342,7 @@ class Integration
         
 
         $this->debug_log("POSTING URL = " . $url);
-        // $this->debug_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
+        // $this->debug_log(($this->set_args($cookies, http_build_query($postargs))));
         // $this->debug_log("*********");
         $ret = \wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
@@ -362,7 +362,7 @@ class Integration
         
 
         $this->debug_log("POSTING SEMANTIC URL = " . $url);
-        // $this->debug_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
+        // $this->debug_log(($this->set_args($cookies, http_build_query($postargs))));
         // $this->debug_log("*********");
         $newargs = '';
         foreach ($postargs as $key => $value) {

@@ -525,7 +525,7 @@ class SubmissionsHandler
 
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         $this->debug_log("Approval email");
-        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . ($headers));
+        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers,true));
         wp_mail($to_address, $subject, $body, $headers);
 
         //
@@ -1004,7 +1004,7 @@ class SubmissionsHandler
         $body = $template;
 
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . ($headers));
+        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers,true));
         wp_mail($to_address, $subject, $body, $headers);
 
         return $this->handlerCore->wbw_rest_success($message);

@@ -51,19 +51,19 @@ if (!class_exists('wbw_plugin')) {
             $this->WBW_Database = new WBW_Database();
 
             // actions, shortcodes, menus and filters
-            add_action('wp_enqueue_scripts', array(&$this, 'enqueue_form_deps'));
+            add_action('wp_enqueue_scripts', array(&$this, 'wbw_enqueue_form_deps'));
             add_action('admin_menu', array(&$this, 'wbw_menu_pages'));
             add_action('admin_enqueue_scripts', array(&$this, 'wbw_admin_scripts'));
             add_action('admin_init',  array(&$this, 'wbw_register_setting'));
             add_action('rest_api_init', array(&$this, 'wbw_rest_controller'));
-            add_shortcode('wbw-meeting-update-form', array(&$this, 'meeting_update_form'));
-            add_filter('plugin_action_links', array(&$this, 'add_plugin_link'), 10, 2);
+            add_shortcode('wbw-meeting-update-form', array(&$this, 'wbw_meeting_update_form'));
+            add_filter('plugin_action_links', array(&$this, 'wbw_add_plugin_link'), 10, 2);
 
             register_activation_hook(__FILE__, array(&$this, 'wbw_install'));
             register_deactivation_hook(__FILE__, array(&$this, 'wbw_uninstall'));
         }
 
-        public function meeting_update_form($atts = [], $content = null, $tag = '')
+        public function wbw_meeting_update_form($atts = [], $content = null, $tag = '')
         {
 
             // base css and js for this page
@@ -138,49 +138,49 @@ if (!class_exists('wbw_plugin')) {
             return $content;
         }
 
-        function prevent_cache_register_script($handle, $deps, $name)
+        private function prevent_cache_register_script($handle, $deps, $name)
         {
             wp_register_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
         }
 
-        function prevent_cache_register_style($handle, $deps, $name)
+        private function prevent_cache_register_style($handle, $deps, $name)
         {
 
             $ret = wp_register_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
         }
 
-        function prevent_cache_enqueue_script($handle, $deps, $name)
+        private function prevent_cache_enqueue_script($handle, $deps, $name)
         {
 
             $ret = wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
         }
 
-        function prevent_cache_enqueue_style($handle, $deps, $name)
+        private function prevent_cache_enqueue_style($handle, $deps, $name)
         {
 
             $ret = wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
         }
 
-        function register_select2()
+        private function register_select2()
         {
             wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
             wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
         }
 
-        function enqueue_select2()
+        private function enqueue_select2()
         {
             wp_enqueue_style('select2css');
             wp_enqueue_script('select2');
         }
 
-        function enqueue_jquery_dialog()
+        private function enqueue_jquery_dialog()
         {
             // jquery dialogs
             wp_enqueue_script('jquery-ui-dialog');
             wp_enqueue_style('wp-jquery-ui-dialog');
         }
 
-        function enqueue_form_deps()
+        public function wbw_enqueue_form_deps()
         {
 
             $this->register_select2();
@@ -339,7 +339,7 @@ if (!class_exists('wbw_plugin')) {
             );
         }
 
-        public function add_plugin_link($plugin_actions, $plugin_file)
+        public function wbw_add_plugin_link($plugin_actions, $plugin_file)
         {
 
             $new_actions = array();
@@ -544,7 +544,7 @@ if (!class_exists('wbw_plugin')) {
             );
         }
 
-        function wbw_bmlt_server_address_html()
+        public function wbw_bmlt_server_address_html()
         {
             echo '<div id="wbw_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your BMLT details are successfully configured.</div>';
             echo '<div id="wbw_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Your BMLT details are not configured correctly.</div>';
@@ -553,13 +553,13 @@ if (!class_exists('wbw_plugin')) {
             echo '<br>';
         }
 
-        function wbw_backup_restore_html()
+        public function wbw_backup_restore_html()
         {
             echo '<button type="button" id="wbw_backup">Backup Configuration</button>   <button type="button" id="wbw_restore">Restore Configuration</button><input type="file" id="wbw_file_selector" accept=".json,application/json" style="display:none">';
             echo '<span class="spinner" id="wbw-backup-spinner"></span><br>';
         }
 
-        function wbw_shortcode_html()
+        public function wbw_shortcode_html()
         {
             echo <<<END
     <div class="wbw_info_text">
@@ -569,7 +569,7 @@ if (!class_exists('wbw_plugin')) {
     END;
         }
 
-        function wbw_email_from_address_html()
+        public function wbw_email_from_address_html()
         {
 
             $from_address = $this->WBW_WP_Options->wbw_get_option('wbw_email_from_address');
@@ -584,7 +584,7 @@ if (!class_exists('wbw_plugin')) {
             echo '<br><br>';
         }
 
-        function wbw_delete_closed_meetings_html()
+        public function wbw_delete_closed_meetings_html()
         {
 
             $selection = $this->WBW_WP_Options->wbw_get_option('wbw_delete_closed_meetings');
@@ -608,7 +608,7 @@ if (!class_exists('wbw_plugin')) {
         }
 
 
-        function wbw_optional_form_fields_html()
+        public function wbw_optional_form_fields_html()
         {
             echo <<<END
     <div class="wbw_info_text">
@@ -621,7 +621,7 @@ if (!class_exists('wbw_plugin')) {
             $this->do_optional_field('wbw_optional_location_sub_province', 'Sub Province');
         }
 
-        function do_optional_field($option, $friendlyname)
+        private function do_optional_field($option, $friendlyname)
         {
 
             $value = $this->WBW_WP_Options->wbw_get_option($option);
@@ -652,7 +652,7 @@ if (!class_exists('wbw_plugin')) {
     END;
         }
 
-        function wbw_fso_email_address_html()
+        public function wbw_fso_email_address_html()
         {
             $from_address = $this->WBW_WP_Options->wbw_get_option('wbw_fso_email_address');
             echo <<<END
@@ -666,7 +666,7 @@ if (!class_exists('wbw_plugin')) {
             echo '<br><br>';
         }
 
-        function wbw_fso_email_template_html()
+        public function wbw_fso_email_template_html()
         {
 
             echo <<<END
@@ -683,7 +683,7 @@ if (!class_exists('wbw_plugin')) {
             echo '<br><br>';
         }
 
-        function wbw_submitter_email_template_html()
+        public function wbw_submitter_email_template_html()
         {
 
             echo <<<END
@@ -701,7 +701,7 @@ if (!class_exists('wbw_plugin')) {
         }
 
 
-        function display_wbw_admin_options_page()
+        public function display_wbw_admin_options_page()
         {
             $content = '';
             ob_start();
@@ -710,7 +710,7 @@ if (!class_exists('wbw_plugin')) {
             echo $content;
         }
 
-        function display_wbw_admin_submissions_page()
+        public function display_wbw_admin_submissions_page()
         {
             $content = '';
             ob_start();
@@ -719,7 +719,7 @@ if (!class_exists('wbw_plugin')) {
             echo $content;
         }
 
-        function display_wbw_admin_service_bodies_page()
+        public function display_wbw_admin_service_bodies_page()
         {
             $content = '';
             ob_start();
@@ -728,7 +728,7 @@ if (!class_exists('wbw_plugin')) {
             echo $content;
         }
 
-        function wbw_install()
+        public function wbw_install()
         {
 
 
@@ -742,7 +742,7 @@ if (!class_exists('wbw_plugin')) {
             add_role('wbw_trusted_servant', 'BMLT Workflow Trusted Servant');
         }
 
-        function wbw_uninstall()
+        public function wbw_uninstall()
         {
             global $wpdb;
 
