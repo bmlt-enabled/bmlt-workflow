@@ -51,16 +51,16 @@ if (!class_exists('wbw_plugin')) {
             $this->WBW_Database = new WBW_Database();
 
             // actions, shortcodes, menus and filters
-            add_action('wp_enqueue_scripts', 'enqueue_form_deps');
-            add_action('admin_menu', 'wbw_menu_pages');
-            add_action('admin_enqueue_scripts', 'wbw_admin_scripts');
-            add_action('admin_init',  'wbw_register_setting');
-            add_action('rest_api_init', 'wbw_rest_controller');
-            add_shortcode('wbw-meeting-update-form', 'meeting_update_form');
-            add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
+            add_action('wp_enqueue_scripts', array(&$this, 'enqueue_form_deps'));
+            add_action('admin_menu', array(&$this, 'wbw_menu_pages'));
+            add_action('admin_enqueue_scripts', array(&$this, 'wbw_admin_scripts'));
+            add_action('admin_init',  array(&$this, 'wbw_register_setting'));
+            add_action('rest_api_init', array(&$this, 'wbw_rest_controller'));
+            add_shortcode('wbw-meeting-update-form', array(&$this, 'meeting_update_form'));
+            add_filter('plugin_action_links', array(&$this, 'add_plugin_link'), 10, 2);
 
-            register_activation_hook(__FILE__, 'wbw_install');
-            register_deactivation_hook(__FILE__, 'wbw_uninstall');
+            register_activation_hook(__FILE__, array(&$this, 'wbw_install'));
+            register_deactivation_hook(__FILE__, array(&$this, 'wbw_uninstall'));
         }
 
         public function meeting_update_form($atts = [], $content = null, $tag = '')
@@ -193,7 +193,7 @@ if (!class_exists('wbw_plugin')) {
             $this->debug_log("scripts and styles registered");
         }
 
-        function wbw_admin_scripts($hook)
+        public function wbw_admin_scripts($hook)
         {
 
 
@@ -314,7 +314,7 @@ if (!class_exists('wbw_plugin')) {
                 'Configuration',
                 'manage_options',
                 'wbw-settings',
-                'display_wbw_admin_options_page',
+                array(&$this, 'display_wbw_admin_options_page'),
                 2
             );
 
@@ -324,7 +324,7 @@ if (!class_exists('wbw_plugin')) {
                 'Workflow Submissions',
                 $this->WBW_WP_Options->wbw_capability_manage_submissions,
                 'wbw-submissions',
-                'display_wbw_admin_submissions_page',
+                array(&$this, 'display_wbw_admin_submissions_page'),
                 2
             );
 
@@ -334,12 +334,12 @@ if (!class_exists('wbw_plugin')) {
                 'Service Bodies',
                 'manage_options',
                 'wbw-service-bodies',
-                'display_wbw_admin_service_bodies_page',
+                array(&$this, 'display_wbw_admin_service_bodies_page'),
                 2
             );
         }
 
-        function add_plugin_link($plugin_actions, $plugin_file)
+        public function add_plugin_link($plugin_actions, $plugin_file)
         {
 
             $new_actions = array();
@@ -350,7 +350,7 @@ if (!class_exists('wbw_plugin')) {
             return array_merge($new_actions, $plugin_actions);
         }
 
-        function wbw_rest_controller()
+        public function wbw_rest_controller()
         {
             $this->WBW_Rest_Controller->register_routes();
         }
@@ -371,7 +371,7 @@ if (!class_exists('wbw_plugin')) {
             return $args;
         }
 
-        function wbw_register_setting()
+        public function wbw_register_setting()
         {
 
 
