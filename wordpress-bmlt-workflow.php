@@ -21,15 +21,13 @@ if (file_exists('vendor/autoload.php')) {
 } else {
     // custom autoloader if not. only autoloads out of src directory
     spl_autoload_register(function (string $class) {
-        if (strpos($class, 'wbw\\') === 0)
-        {
-            $class = str_replace('wbw\\','', $class);
-            require __DIR__ . '/src/' . str_replace('\\', '/', $class) . '.php';    
+        if (strpos($class, 'wbw\\') === 0) {
+            $class = str_replace('wbw\\', '', $class);
+            require __DIR__ . '/src/' . str_replace('\\', '/', $class) . '.php';
         }
     });
 }
 
-use wbw\WBW_Debug;
 use wbw\BMLT\Integration;
 use wbw\REST\Controller;
 use wbw\WBW_Database;
@@ -39,615 +37,611 @@ use wbw\WBW_Rest;
 // database configuration
 global $wpdb;
 
-function meeting_update_form($atts = [], $content = null, $tag = '')
-{
-    $WBW_WP_Options = new WBW_WP_Options();
-    $WBW_Rest = new WBW_Rest();
-    $wbw_dbg = new WBW_Debug();
+if (!class_exists('wbw_plugin')) {
+    class wbw_plugin
+    {
+        use \wbw\WBW_Debug;
 
-    // base css and js for this page
-    prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
-    prevent_cache_enqueue_style('wbw-meeting-update-form-css', false, 'js/meeting_update_form.js');
-    wp_enqueue_style('wbw-meeting-update-form-css');
-    prevent_cache_enqueue_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
+        function __construct()
+        {
+            $this->WBW_WP_Options = new WBW_WP_Options();
+            $this->bmlt_integration = new Integration();
+            $this->WBW_Rest = new WBW_Rest();
+            $this->WBW_Rest_Controller = new Controller();
+            $this->WBW_Database = new WBW_Database();
 
-    // jquery validation
-    wp_enqueue_script('jquery-validate');
-    wp_enqueue_script('jquery-validate-additional');
+            // actions, shortcodes, menus and filters
+            add_action('wp_enqueue_scripts', 'enqueue_form_deps');
+            add_action('admin_menu', 'wbw_menu_pages');
+            add_action('admin_enqueue_scripts', 'wbw_admin_scripts');
+            add_action('admin_init',  'wbw_register_setting');
+            add_action('rest_api_init', 'wbw_rest_controller');
+            add_shortcode('wbw-meeting-update-form', 'meeting_update_form');
+            add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
 
-    // select2
-    enqueue_select2();
+            register_activation_hook(__FILE__, 'wbw_install');
+            register_deactivation_hook(__FILE__, 'wbw_uninstall');
+        }
 
-    // inline scripts
-    $script  = 'var wbw_form_submit_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/submissions') . '; ';
-    $script .= 'var wbw_bmlt_server_address = "' . $WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . '";';
-    // optional fields
-    $script .= 'var wbw_optional_location_nation = "' . $WBW_WP_Options->wbw_get_option('wbw_optional_location_nation') . '";';
-    $script .= 'var wbw_optional_location_sub_province = "' . $WBW_WP_Options->wbw_get_option('wbw_optional_location_sub_province') . '";';
+        function meeting_update_form($atts = [], $content = null, $tag = '')
+        {
 
-    // add meeting formats
-    $bmlt_integration = new Integration();
-    $formatarr = $bmlt_integration->getMeetingFormats();
-    $wbw_dbg->debug_log("FORMATS");
-    $wbw_dbg->debug_log($wbw_dbg->vdump($formatarr));
-    $wbw_dbg->debug_log(json_encode($formatarr));
-    $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
+            // base css and js for this page
+            $this->prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
+            $this->prevent_cache_enqueue_style('wbw-meeting-update-form-css', false, 'js/meeting_update_form.js');
+            wp_enqueue_style('wbw-meeting-update-form-css');
+            $this->prevent_cache_enqueue_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
 
-    // do a one off lookup for our servicebodies
-    $url = '/' . $WBW_Rest->wbw_rest_namespace . '/servicebodies';
-    $wbw_dbg->debug_log("rest url = " . $url);
+            // jquery validation
+            wp_enqueue_script('jquery-validate');
+            wp_enqueue_script('jquery-validate-additional');
 
-    $request  = new WP_REST_Request('GET', $url);
-    $response = rest_do_request($request);
-    $result = rest_get_server()->response_to_data($response, true);
-    if (count($result) == 0) {
-        wp_die("<h4>WBW Plugin Error: Service bodies not configured.</h4>");
-    }
-    $script .= 'var wbw_service_bodies = ' . json_encode($result) . '; ';
-    
-    $wbw_dbg->debug_log("adding script " . $script);
-    $status = wp_add_inline_script('wbw-meeting-update-form-js', $script, 'before');
-
-
-    $wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
-    if ($wbw_bmlt_test_status != "success") {
-        wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
-    }
-
-    $result = [];
-    $result['scripts'] = [];
-    $result['styles'] = [];
-
-    // Print all loaded Scripts
-    global $wp_scripts;
-    foreach ($wp_scripts->queue as $script) :
-        $result['scripts'][] =  $wp_scripts->registered[$script]->src . ";";
-    endforeach;
-
-    // Print all loaded Styles (CSS)
-    global $wp_styles;
-    foreach ($wp_styles->queue as $style) :
-        $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
-    endforeach;
-
-    $wbw_dbg->debug_log($wbw_dbg->vdump($result));
-
-    ob_start();
-    include('public/meeting_update_form.php');
-    $content .= ob_get_clean();
-    return $content;
-}
-
-function prevent_cache_register_script($handle, $deps, $name)
-{
-    wp_register_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
-}
-
-function prevent_cache_register_style($handle, $deps, $name)
-{
-
-    $ret = wp_register_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
-
-}
-
-function prevent_cache_enqueue_script($handle, $deps, $name)
-{
-
-    $ret = wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
-
-}
-
-function prevent_cache_enqueue_style($handle, $deps, $name)
-{
-
-    $ret = wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
-
-}
-
-function register_select2()
-{
-    wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
-    wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
-}
-
-function enqueue_select2()
-{
-    wp_enqueue_style('select2css');
-    wp_enqueue_script('select2');
-}
-
-function enqueue_jquery_dialog()
-{
-    // jquery dialogs
-    wp_enqueue_script('jquery-ui-dialog');
-    wp_enqueue_style('wp-jquery-ui-dialog');
-}
-
-function enqueue_form_deps()
-{
-    $wbw_dbg = new WBW_Debug();
-
-    register_select2();
-    prevent_cache_register_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
-    prevent_cache_register_script('wbw-meeting-update-form-js', array('jquery', 'jquery.validate'), 'js/meeting_update_form.js');
-    prevent_cache_register_style('wbw-meeting-update-form-css', false, 'css/meeting_update_form.css');
-    wp_register_script('jquery.validate', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
-    wp_register_script('jquery.validate.additional', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jquery.validate'), '1.0', true);
-    wp_enqueue_style( 'dashicons' );
-    $wbw_dbg->debug_log("scripts and styles registered");
-}
-
-function wbw_admin_scripts($hook)
-{
-
-    $WBW_WP_Options = new WBW_WP_Options();
-    $WBW_Rest = new WBW_Rest();
-    $wbw_dbg = new WBW_Debug();
-
-    // $wbw_dbg->debug_log($hook);
-
-    if (($hook != 'toplevel_page_wbw-settings') && ($hook != 'bmlt-workflow_page_wbw-submissions') && ($hook != 'bmlt-workflow_page_wbw-service-bodies')) {
-        return;
-    }
-
-    prevent_cache_enqueue_script('wbwjs', array('jquery'), 'js/script_includes.js');
-
-    switch ($hook) {
-
-        case ('toplevel_page_wbw-settings'):
-            // base css and scripts for this page
-            prevent_cache_enqueue_style('wbw-admin-css', false, 'css/admin_options.css');
-            prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
-
-            // clipboard
-            wp_enqueue_script('clipboard');
-
-            // jquery dialog
-            enqueue_jquery_dialog();
+            // select2
+            $this->enqueue_select2();
 
             // inline scripts
-            $script  = 'var wbw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/bmltserver') . '; ';
-            $script .= 'var wbw_admin_backup_rest_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/options/backup') . '; ';
-            $script .= 'var wbw_admin_restore_rest_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/options/restore') . '; ';
-            $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
-
-            wp_add_inline_script('admin_options_js', $script, 'before');
-            break;
-
-        case ('bmlt-workflow_page_wbw-submissions'):
-            // base css and scripts for this page
-            prevent_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
-            prevent_cache_enqueue_style('wbw-admin-submissions-css', false, 'css/admin_submissions.css');
-
-            // jquery dialog
-            enqueue_jquery_dialog();
-
-            // datatables
-            wp_register_style('dtcss', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.css', false, '1.0', 'all');
-            wp_register_script('dt', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
-            wp_enqueue_style('dtcss');
-            wp_enqueue_script('dt');
-
-            // select2 for quick editor
-            register_select2();
-            enqueue_select2();
-
-            // make sure our rest urls are populated
-            $script  = 'var wbw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/submissions/') . '; ';
-            $script  .= 'var wbw_bmltserver_geolocate_rest_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/bmltserver/geolocate') . '; ';
-            // add our bmlt server for the submission lookups
-            $script .= 'var wbw_bmlt_server_address = "' . $WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . '";';
+            $script  = 'var wbw_form_submit_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/submissions') . '; ';
+            $script .= 'var wbw_bmlt_server_address = "' . $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . '";';
+            // optional fields
+            $script .= 'var wbw_optional_location_nation = "' . $this->WBW_WP_Options->wbw_get_option('wbw_optional_location_nation') . '";';
+            $script .= 'var wbw_optional_location_sub_province = "' . $this->WBW_WP_Options->wbw_get_option('wbw_optional_location_sub_province') . '";';
 
             // add meeting formats
-            $bmlt_integration = new Integration();
-            $formatarr = $bmlt_integration->getMeetingFormats();
-            $wbw_dbg->debug_log("FORMATS");
-            $wbw_dbg->debug_log($wbw_dbg->vdump($formatarr));
-            $wbw_dbg->debug_log(json_encode($formatarr));
+            $formatarr = $this->bmlt_integration->getMeetingFormats();
+            $this->debug_log("FORMATS");
+            $this->debug_log($formatarr);
+            $this->debug_log(json_encode($formatarr));
             $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
-            $url = '/' . $WBW_Rest->wbw_rest_namespace . '/servicebodies';
+            $url = '/' . $this->WBW_Rest->wbw_rest_namespace . '/servicebodies';
+            $this->debug_log("rest url = " . $url);
 
             $request  = new WP_REST_Request('GET', $url);
             $response = rest_do_request($request);
-            $result     = rest_get_server()->response_to_data($response, true);
-            $script .= 'var wbw_admin_wbw_service_bodies = ' . json_encode($result) . '; ';
+            $result = rest_get_server()->response_to_data($response, true);
+            if (count($result) == 0) {
+                wp_die("<h4>WBW Plugin Error: Service bodies not configured.</h4>");
+            }
+            $script .= 'var wbw_service_bodies = ' . json_encode($result) . '; ';
 
-            // defaults for approve close form
-            $wbw_default_closed_meetings = $WBW_WP_Options->wbw_get_option('wbw_delete_closed_meetings');
-            $script .= 'var wbw_default_closed_meetings = "' . $wbw_default_closed_meetings . '"; ';
-
-            // optional fields in quickedit
-            $script .= 'var wbw_optional_location_nation = "' . $WBW_WP_Options->wbw_get_option('wbw_optional_location_nation') . '";';
-            $script .= 'var wbw_optional_location_sub_province = "' . $WBW_WP_Options->wbw_get_option('wbw_optional_location_sub_province') . '";';
-        
-            wp_add_inline_script('admin_submissions_js', $script, 'before');
-
-            break;
-
-        case ('bmlt-workflow_page_wbw-service-bodies'):
-            // base css and scripts for this page
-            prevent_cache_enqueue_script('admin_service_bodies_js', array('jquery'), 'js/admin_service_bodies.js');
-            prevent_cache_enqueue_style('wbw-admin-submissions-css', false, 'css/admin_service_bodies.css');
-
-            // select2
-            register_select2();
-            enqueue_select2();
-
-            // make sure our rest url is populated
-            $script = 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
-            $script .= 'var wp_users_url = ' . json_encode(get_rest_url() . 'wp/v2/users') . '; ';
-            wp_add_inline_script('admin_service_bodies_js', $script, 'before');
-            break;
-    }
-}
-
-function wbw_menu_pages()
-{
-    $WBW_WP_Options = new WBW_WP_Options();
-
-    add_menu_page(
-        'BMLT Workflow',
-        'BMLT Workflow',
-        'manage_options',
-        'wbw-settings',
-        '',
-        'dashicons-analytics',
-        null
-    );
-
-    add_submenu_page(
-        'wbw-settings',
-        'Configuration',
-        'Configuration',
-        'manage_options',
-        'wbw-settings',
-        'display_wbw_admin_options_page',
-        2
-    );
-
-    add_submenu_page(
-        'wbw-settings',
-        'Workflow Submissions',
-        'Workflow Submissions',
-        $WBW_WP_Options->wbw_capability_manage_submissions,
-        'wbw-submissions',
-        'display_wbw_admin_submissions_page',
-        2
-    );
-
-    add_submenu_page(
-        'wbw-settings',
-        'Service Bodies',
-        'Service Bodies',
-        'manage_options',
-        'wbw-service-bodies',
-        'display_wbw_admin_service_bodies_page',
-        2
-    );
-}
-
-function add_plugin_link($plugin_actions, $plugin_file)
-{
-
-    $new_actions = array();
-    if (basename(plugin_dir_path(__FILE__)) . '/wordpress-bmlt-workflow.php' === $plugin_file) {
-        $new_actions['cl_settings'] = sprintf(__('<a href="%s">Settings</a>', 'comment-limiter'), esc_url(admin_url('admin.php?page=wbw-settings')));
-    }
-
-    return array_merge($new_actions, $plugin_actions);
-}
-
-function wbw_rest_controller()
-{
-    $controller = new Controller();
-    $controller->register_routes();
-}
-
-// actions, shortcodes, menus and filters
-add_action('wp_enqueue_scripts', 'enqueue_form_deps');
-add_action('admin_menu', 'wbw_menu_pages');
-add_action('admin_enqueue_scripts', 'wbw_admin_scripts');
-add_action('admin_init',  'wbw_register_setting');
-add_action('rest_api_init', 'wbw_rest_controller');
-add_shortcode('wbw-meeting-update-form', 'meeting_update_form');
-add_filter('plugin_action_links', 'add_plugin_link', 10, 2);
-
-register_activation_hook(__FILE__, 'wbw_install');
-register_deactivation_hook(__FILE__, 'wbw_uninstall');
-
-function array_sanitize_callback($args)
-{
-    return $args;
-}
-
-function editor_sanitize_callback($args)
-{
-    return $args;
-}
-
-function string_sanitize_callback($args)
-{
-    return $args;
-}
-
-function wbw_register_setting()
-{
-
-    $WBW_WP_Options = new WBW_WP_Options();
-
-    if ((!current_user_can('activate_plugins')) && (!current_user_can($WBW_WP_Options->wbw_capability_manage_submissions))) {
-        wp_die("This page cannot be accessed");
-    }
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_email_from_address',
-        array(
-            'type' => 'string',
-            'description' => 'Email from address',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => 'example@example'
-        )
-    );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_delete_closed_meetings',
-        array(
-            'type' => 'string',
-            'description' => 'Default for close meeting submission',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => 'unpublish'
-        )
-    );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_optional_location_nation',
-        array(
-            'type' => 'string',
-            'description' => 'optional field for location_nation',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => 'hidden'
-        )
-    );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_optional_location_sub_province',
-        array(
-            'type' => 'string',
-            'description' => 'optional field for location_sub_province',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => 'hidden'
-        )
-    );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_submitter_email_template',
-        array(
-            'type' => 'string',
-            'description' => 'wbw_submitter_email_template',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html')
-        )
-    );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_fso_email_template',
-        array(
-            'type' => 'string',
-            'description' => 'wbw_fso_email_template',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html')
-        )
-    );
-
-    register_setting(
-        'wbw-settings-group',
-        'wbw_fso_email_address',
-        array(
-            'type' => 'string',
-            'description' => 'FSO email address',
-            'sanitize_callback' => 'string_sanitize_callback',
-            'show_in_rest' => false,
-            'default' => 'example@example.example'
-        )
-    );
-
-    add_settings_section(
-        'wbw-settings-section-id',
-        '',
-        '',
-        'wbw-settings'
-    );
-
-    add_settings_field(
-        'wbw_bmlt_server_address',
-        'BMLT Configuration',
-        'wbw_bmlt_server_address_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
-
-    add_settings_field(
-        'wbw_backup_restore',
-        'Backup and Restore',
-        'wbw_backup_restore_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
-
-    add_settings_field(
-        'wbw_shortcode',
-        'Meeting Update Form Shortcode',
-        'wbw_shortcode_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
-
-    add_settings_field(
-        'wbw_email_from_address',
-        'Email From Address',
-        'wbw_email_from_address_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
-
-    add_settings_field(
-        'wbw_delete_closed_meetings',
-        'Default for close meeting submission',
-        'wbw_delete_closed_meetings_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
-
-    add_settings_field(
-        'wbw_optional_form_fields',
-        'Optional form fields',
-        'wbw_optional_form_fields_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
-
-    add_settings_field(
-        'wbw_fso_email_address',
-        'Email address for the FSO (Starter Kit Notifications)',
-        'wbw_fso_email_address_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
+            $this->debug_log("adding script " . $script);
+            $status = wp_add_inline_script('wbw-meeting-update-form-js', $script, 'before');
 
 
-    add_settings_field(
-        'wbw_fso_email_template',
-        'Email Template for FSO emails (Starter Kit Notifications)',
-        'wbw_fso_email_template_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
+            $wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
+            if ($wbw_bmlt_test_status != "success") {
+                wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
+            }
 
-    add_settings_field(
-        'wbw_submitter_email_template',
-        'Email Template for New Meeting',
-        'wbw_submitter_email_template_html',
-        'wbw-settings',
-        'wbw-settings-section-id'
-    );
-}
+            $result = [];
+            $result['scripts'] = [];
+            $result['styles'] = [];
 
-function wbw_bmlt_server_address_html()
-{
-    echo '<div id="wbw_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your BMLT details are successfully configured.</div>';
-    echo '<div id="wbw_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Your BMLT details are not configured correctly.</div>';
-    echo '<br>';
-    echo '<button type="button" id="wbw_configure_bmlt_server">Update BMLT Configuration</button>';
-    echo '<br>';
-}
+            // Print all loaded Scripts
+            global $wp_scripts;
+            foreach ($wp_scripts->queue as $script) :
+                $result['scripts'][] =  $wp_scripts->registered[$script]->src . ";";
+            endforeach;
 
-function wbw_backup_restore_html()
-{
-    echo '<button type="button" id="wbw_backup">Backup Configuration</button>   <button type="button" id="wbw_restore">Restore Configuration</button><input type="file" id="wbw_file_selector" accept=".json,application/json" style="display:none">';
-    echo '<span class="spinner" id="wbw-backup-spinner"></span><br>';
-}
+            // Print all loaded Styles (CSS)
+            global $wp_styles;
+            foreach ($wp_styles->queue as $style) :
+                $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
+            endforeach;
 
-function wbw_shortcode_html()
-{
-    echo <<<END
+            $this->debug_log(($result));
+
+            ob_start();
+            include('public/meeting_update_form.php');
+            $content .= ob_get_clean();
+            return $content;
+        }
+
+        function prevent_cache_register_script($handle, $deps, $name)
+        {
+            wp_register_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
+        }
+
+        function prevent_cache_register_style($handle, $deps, $name)
+        {
+
+            $ret = wp_register_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
+        }
+
+        function prevent_cache_enqueue_script($handle, $deps, $name)
+        {
+
+            $ret = wp_enqueue_script($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), true);
+        }
+
+        function prevent_cache_enqueue_style($handle, $deps, $name)
+        {
+
+            $ret = wp_enqueue_style($handle, plugin_dir_url(__FILE__) . $name, $deps, filemtime(plugin_dir_path(__FILE__) . $name), 'all');
+        }
+
+        function register_select2()
+        {
+            wp_register_style('select2css', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
+            wp_register_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
+        }
+
+        function enqueue_select2()
+        {
+            wp_enqueue_style('select2css');
+            wp_enqueue_script('select2');
+        }
+
+        function enqueue_jquery_dialog()
+        {
+            // jquery dialogs
+            wp_enqueue_script('jquery-ui-dialog');
+            wp_enqueue_style('wp-jquery-ui-dialog');
+        }
+
+        function enqueue_form_deps()
+        {
+
+            $this->register_select2();
+            $this->prevent_cache_register_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
+            $this->prevent_cache_register_script('wbw-meeting-update-form-js', array('jquery', 'jquery.validate'), 'js/meeting_update_form.js');
+            $this->prevent_cache_register_style('wbw-meeting-update-form-css', false, 'css/meeting_update_form.css');
+            wp_register_script('jquery.validate', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
+            wp_register_script('jquery.validate.additional', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jquery.validate'), '1.0', true);
+            wp_enqueue_style('dashicons');
+            $this->debug_log("scripts and styles registered");
+        }
+
+        function wbw_admin_scripts($hook)
+        {
+
+
+            // $this->debug_log($hook);
+
+            if (($hook != 'toplevel_page_wbw-settings') && ($hook != 'bmlt-workflow_page_wbw-submissions') && ($hook != 'bmlt-workflow_page_wbw-service-bodies')) {
+                return;
+            }
+
+            $this->prevent_cache_enqueue_script('wbwjs', array('jquery'), 'js/script_includes.js');
+
+            switch ($hook) {
+
+                case ('toplevel_page_wbw-settings'):
+                    // base css and scripts for this page
+                    $this->prevent_cache_enqueue_style('wbw-admin-css', false, 'css/admin_options.css');
+                    $this->prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
+
+                    // clipboard
+                    wp_enqueue_script('clipboard');
+
+                    // jquery dialog
+                    $this->enqueue_jquery_dialog();
+
+                    // inline scripts
+                    $script  = 'var wbw_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/bmltserver') . '; ';
+                    $script .= 'var wbw_admin_backup_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/options/backup') . '; ';
+                    $script .= 'var wbw_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/options/restore') . '; ';
+                    $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
+
+                    wp_add_inline_script('admin_options_js', $script, 'before');
+                    break;
+
+                case ('bmlt-workflow_page_wbw-submissions'):
+                    // base css and scripts for this page
+                    $this->prevent_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
+                    $this->prevent_cache_enqueue_style('wbw-admin-submissions-css', false, 'css/admin_submissions.css');
+
+                    // jquery dialog
+                    $this->enqueue_jquery_dialog();
+
+                    // datatables
+                    wp_register_style('dtcss', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.css', false, '1.0', 'all');
+                    wp_register_script('dt', 'https://cdn.datatables.net/v/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
+                    wp_enqueue_style('dtcss');
+                    wp_enqueue_script('dt');
+
+                    // select2 for quick editor
+                    $this->register_select2();
+                    $this->enqueue_select2();
+
+                    // make sure our rest urls are populated
+                    $script  = 'var wbw_admin_submissions_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/submissions/') . '; ';
+                    $script  .= 'var wbw_bmltserver_geolocate_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/bmltserver/geolocate') . '; ';
+                    // add our bmlt server for the submission lookups
+                    $script .= 'var wbw_bmlt_server_address = "' . $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . '";';
+
+                    // add meeting formats
+                    $formatarr = $this->bmlt_integration->getMeetingFormats();
+                    $this->debug_log("FORMATS");
+                    $this->debug_log(($formatarr));
+                    $this->debug_log(json_encode($formatarr));
+                    $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
+
+                    // do a one off lookup for our servicebodies
+                    $url = '/' . $this->WBW_Rest->wbw_rest_namespace . '/servicebodies';
+
+                    $request  = new WP_REST_Request('GET', $url);
+                    $response = rest_do_request($request);
+                    $result     = rest_get_server()->response_to_data($response, true);
+                    $script .= 'var wbw_admin_wbw_service_bodies = ' . json_encode($result) . '; ';
+
+                    // defaults for approve close form
+                    $wbw_default_closed_meetings = $this->WBW_WP_Options->wbw_get_option('wbw_delete_closed_meetings');
+                    $script .= 'var wbw_default_closed_meetings = "' . $wbw_default_closed_meetings . '"; ';
+
+                    // optional fields in quickedit
+                    $script .= 'var wbw_optional_location_nation = "' . $this->WBW_WP_Options->wbw_get_option('wbw_optional_location_nation') . '";';
+                    $script .= 'var wbw_optional_location_sub_province = "' . $this->WBW_WP_Options->wbw_get_option('wbw_optional_location_sub_province') . '";';
+
+                    wp_add_inline_script('admin_submissions_js', $script, 'before');
+
+                    break;
+
+                case ('bmlt-workflow_page_wbw-service-bodies'):
+                    // base css and scripts for this page
+                    $this->prevent_cache_enqueue_script('admin_service_bodies_js', array('jquery'), 'js/admin_service_bodies.js');
+                    $this->prevent_cache_enqueue_style('wbw-admin-submissions-css', false, 'css/admin_service_bodies.css');
+
+                    // select2
+                    $this->register_select2();
+                    $this->enqueue_select2();
+
+                    // make sure our rest url is populated
+                    $script = 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
+                    $script .= 'var wp_users_url = ' . json_encode(get_rest_url() . 'wp/v2/users') . '; ';
+                    wp_add_inline_script('admin_service_bodies_js', $script, 'before');
+                    break;
+            }
+        }
+
+        function wbw_menu_pages()
+        {
+
+            add_menu_page(
+                'BMLT Workflow',
+                'BMLT Workflow',
+                'manage_options',
+                'wbw-settings',
+                '',
+                'dashicons-analytics',
+                null
+            );
+
+            add_submenu_page(
+                'wbw-settings',
+                'Configuration',
+                'Configuration',
+                'manage_options',
+                'wbw-settings',
+                'display_wbw_admin_options_page',
+                2
+            );
+
+            add_submenu_page(
+                'wbw-settings',
+                'Workflow Submissions',
+                'Workflow Submissions',
+                $this->WBW_WP_Options->wbw_capability_manage_submissions,
+                'wbw-submissions',
+                'display_wbw_admin_submissions_page',
+                2
+            );
+
+            add_submenu_page(
+                'wbw-settings',
+                'Service Bodies',
+                'Service Bodies',
+                'manage_options',
+                'wbw-service-bodies',
+                'display_wbw_admin_service_bodies_page',
+                2
+            );
+        }
+
+        function add_plugin_link($plugin_actions, $plugin_file)
+        {
+
+            $new_actions = array();
+            if (basename(plugin_dir_path(__FILE__)) . '/wordpress-bmlt-workflow.php' === $plugin_file) {
+                $new_actions['cl_settings'] = sprintf(__('<a href="%s">Settings</a>', 'comment-limiter'), esc_url(admin_url('admin.php?page=wbw-settings')));
+            }
+
+            return array_merge($new_actions, $plugin_actions);
+        }
+
+        function wbw_rest_controller()
+        {
+            $this->WBW_Rest_Controller->register_routes();
+        }
+
+
+        function array_sanitize_callback($args)
+        {
+            return $args;
+        }
+
+        function editor_sanitize_callback($args)
+        {
+            return $args;
+        }
+
+        function string_sanitize_callback($args)
+        {
+            return $args;
+        }
+
+        function wbw_register_setting()
+        {
+
+
+            if ((!current_user_can('activate_plugins')) && (!current_user_can($this->WBW_WP_Options->wbw_capability_manage_submissions))) {
+                wp_die("This page cannot be accessed");
+            }
+
+            register_setting(
+                'wbw-settings-group',
+                'wbw_email_from_address',
+                array(
+                    'type' => 'string',
+                    'description' => 'Email from address',
+                    'sanitize_callback' => 'string_sanitize_callback',
+                    'show_in_rest' => false,
+                    'default' => 'example@example'
+                )
+            );
+
+            register_setting(
+                'wbw-settings-group',
+                'wbw_delete_closed_meetings',
+                array(
+                    'type' => 'string',
+                    'description' => 'Default for close meeting submission',
+                    'sanitize_callback' => 'string_sanitize_callback',
+                    'show_in_rest' => false,
+                    'default' => 'unpublish'
+                )
+            );
+
+            register_setting(
+                'wbw-settings-group',
+                'wbw_optional_location_nation',
+                array(
+                    'type' => 'string',
+                    'description' => 'optional field for location_nation',
+                    'sanitize_callback' => 'string_sanitize_callback',
+                    'show_in_rest' => false,
+                    'default' => 'hidden'
+                )
+            );
+
+            register_setting(
+                'wbw-settings-group',
+                'wbw_optional_location_sub_province',
+                array(
+                    'type' => 'string',
+                    'description' => 'optional field for location_sub_province',
+                    'sanitize_callback' => 'string_sanitize_callback',
+                    'show_in_rest' => false,
+                    'default' => 'hidden'
+                )
+            );
+
+            register_setting(
+                'wbw-settings-group',
+                'wbw_submitter_email_template',
+                array(
+                    'type' => 'string',
+                    'description' => 'wbw_submitter_email_template',
+                    'sanitize_callback' => 'string_sanitize_callback',
+                    'show_in_rest' => false,
+                    'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html')
+                )
+            );
+
+            register_setting(
+                'wbw-settings-group',
+                'wbw_fso_email_template',
+                array(
+                    'type' => 'string',
+                    'description' => 'wbw_fso_email_template',
+                    'sanitize_callback' => 'string_sanitize_callback',
+                    'show_in_rest' => false,
+                    'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html')
+                )
+            );
+
+            register_setting(
+                'wbw-settings-group',
+                'wbw_fso_email_address',
+                array(
+                    'type' => 'string',
+                    'description' => 'FSO email address',
+                    'sanitize_callback' => 'string_sanitize_callback',
+                    'show_in_rest' => false,
+                    'default' => 'example@example.example'
+                )
+            );
+
+            add_settings_section(
+                'wbw-settings-section-id',
+                '',
+                '',
+                'wbw-settings'
+            );
+
+            add_settings_field(
+                'wbw_bmlt_server_address',
+                'BMLT Configuration',
+                'wbw_bmlt_server_address_html',
+                'wbw-settings',
+                'wbw-settings-section-id'
+            );
+
+            add_settings_field(
+                'wbw_backup_restore',
+                'Backup and Restore',
+                'wbw_backup_restore_html',
+                'wbw-settings',
+                'wbw-settings-section-id'
+            );
+
+            add_settings_field(
+                'wbw_shortcode',
+                'Meeting Update Form Shortcode',
+                'wbw_shortcode_html',
+                'wbw-settings',
+                'wbw-settings-section-id'
+            );
+
+            add_settings_field(
+                'wbw_email_from_address',
+                'Email From Address',
+                'wbw_email_from_address_html',
+                'wbw-settings',
+                'wbw-settings-section-id'
+            );
+
+            add_settings_field(
+                'wbw_delete_closed_meetings',
+                'Default for close meeting submission',
+                'wbw_delete_closed_meetings_html',
+                'wbw-settings',
+                'wbw-settings-section-id'
+            );
+
+            add_settings_field(
+                'wbw_optional_form_fields',
+                'Optional form fields',
+                'wbw_optional_form_fields_html',
+                'wbw-settings',
+                'wbw-settings-section-id'
+            );
+
+            add_settings_field(
+                'wbw_fso_email_address',
+                'Email address for the FSO (Starter Kit Notifications)',
+                'wbw_fso_email_address_html',
+                'wbw-settings',
+                'wbw-settings-section-id'
+            );
+
+
+            add_settings_field(
+                'wbw_fso_email_template',
+                'Email Template for FSO emails (Starter Kit Notifications)',
+                'wbw_fso_email_template_html',
+                'wbw-settings',
+                'wbw-settings-section-id'
+            );
+
+            add_settings_field(
+                'wbw_submitter_email_template',
+                'Email Template for New Meeting',
+                'wbw_submitter_email_template_html',
+                'wbw-settings',
+                'wbw-settings-section-id'
+            );
+        }
+
+        function wbw_bmlt_server_address_html()
+        {
+            echo '<div id="wbw_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your BMLT details are successfully configured.</div>';
+            echo '<div id="wbw_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Your BMLT details are not configured correctly.</div>';
+            echo '<br>';
+            echo '<button type="button" id="wbw_configure_bmlt_server">Update BMLT Configuration</button>';
+            echo '<br>';
+        }
+
+        function wbw_backup_restore_html()
+        {
+            echo '<button type="button" id="wbw_backup">Backup Configuration</button>   <button type="button" id="wbw_restore">Restore Configuration</button><input type="file" id="wbw_file_selector" accept=".json,application/json" style="display:none">';
+            echo '<span class="spinner" id="wbw-backup-spinner"></span><br>';
+        }
+
+        function wbw_shortcode_html()
+        {
+            echo <<<END
     <div class="wbw_info_text">
     <br>You can use the shortcode <code>[wbw-meeting-update-form]</code> to list the appropriate meetings and service areas in your update form.
     <br><br>
     </div>
     END;
-}
+        }
 
-function wbw_email_from_address_html()
-{
-    $WBW_WP_Options = new WBW_WP_Options();
+        function wbw_email_from_address_html()
+        {
 
-    $from_address = $WBW_WP_Options->wbw_get_option('wbw_email_from_address');
-    echo <<<END
+            $from_address = $this->WBW_WP_Options->wbw_get_option('wbw_email_from_address');
+            echo <<<END
     <div class="wbw_info_text">
     <br>The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form <code>Display Name &lt;example@example.com&gt;</code> or just a standard email address.
     <br><br>
     </div>
     END;
 
-    echo '<br><label for="wbw_email_from_address"><b>From Address:</b></label><input type="text" size="50" name="wbw_email_from_address" value="' . $from_address . '"/>';
-    echo '<br><br>';
-}
+            echo '<br><label for="wbw_email_from_address"><b>From Address:</b></label><input type="text" size="50" name="wbw_email_from_address" value="' . $from_address . '"/>';
+            echo '<br><br>';
+        }
 
-function wbw_delete_closed_meetings_html()
-{
-    $WBW_WP_Options = new WBW_WP_Options();
+        function wbw_delete_closed_meetings_html()
+        {
 
-    $selection = $WBW_WP_Options->wbw_get_option('wbw_delete_closed_meetings');
-    $delete = '';
-    $unpublish = '';
-    if ($selection === 'delete') {
-        $delete = 'selected';
-    } else {
-        $unpublish = 'selected';
-    }
+            $selection = $this->WBW_WP_Options->wbw_get_option('wbw_delete_closed_meetings');
+            $delete = '';
+            $unpublish = '';
+            if ($selection === 'delete') {
+                $delete = 'selected';
+            } else {
+                $unpublish = 'selected';
+            }
 
-    echo <<<END
+            echo <<<END
     <div class="wbw_info_text">
     <br>Trusted servants approving a 'Close Meeting' request can choose to either Delete or Unpublish. This option selects the default for all trusted servants.
     <br><br>
     </div>
     END;
 
-    echo '<br><label for="wbw_delete_closed_meetings"><b>Close meeting default:</b></label><select name="wbw_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>Unpublish</option><option name="delete" value="delete" ' . $delete . '>Delete</option>';
-    echo '<br><br>';
-}
+            echo '<br><label for="wbw_delete_closed_meetings"><b>Close meeting default:</b></label><select name="wbw_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>Unpublish</option><option name="delete" value="delete" ' . $delete . '>Delete</option>';
+            echo '<br><br>';
+        }
 
 
-function wbw_optional_form_fields_html()
-{
-    echo <<<END
+        function wbw_optional_form_fields_html()
+        {
+            echo <<<END
     <div class="wbw_info_text">
     <br>Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users.
     <br><br>
     </div>
     END;
 
-    do_optional_field('wbw_optional_location_nation', 'Nation');
-    do_optional_field('wbw_optional_location_sub_province', 'Sub Province');
-}
+            $this->do_optional_field('wbw_optional_location_nation', 'Nation');
+            $this->do_optional_field('wbw_optional_location_sub_province', 'Sub Province');
+        }
 
-function do_optional_field($option, $friendlyname)
-{
-    $WBW_WP_Options = new WBW_WP_Options();
-    $wbw_dbg = new WBW_Debug();
+        function do_optional_field($option, $friendlyname)
+        {
 
-    $value = $WBW_WP_Options->wbw_get_option($option);
-    $wbw_dbg->debug_log($wbw_dbg->vdump($value));
-    $hidden = '';
-    $displayrequired = '';
-    $display = '';
+            $value = $this->WBW_WP_Options->wbw_get_option($option);
+            $this->debug_log($value);
+            $hidden = '';
+            $displayrequired = '';
+            $display = '';
 
-    switch ($value) {
-        case 'hidden':
-            $hidden = 'selected';
-            break;
-        case 'displayrequired':
-            $displayrequired = 'selected';
-            break;
-        case 'display':
-            $display = 'selected';
-            break;
-    }
-    echo <<<END
+            switch ($value) {
+                case 'hidden':
+                    $hidden = 'selected';
+                    break;
+                case 'displayrequired':
+                    $displayrequired = 'selected';
+                    break;
+                case 'display':
+                    $display = 'selected';
+                    break;
+            }
+            echo <<<END
     <br><label for="${option}"><b>${friendlyname}:</b>
     </label><select name="${option}">
     <option name="hidden" value="hidden" ${hidden}>Hidden</option>
@@ -656,121 +650,112 @@ function do_optional_field($option, $friendlyname)
     </select>
     <br><br>
     END;
-}
+        }
 
-function wbw_fso_email_address_html()
-{
-    $WBW_WP_Options = new WBW_WP_Options();
-
-    $from_address = $WBW_WP_Options->wbw_get_option('wbw_fso_email_address');
-    echo <<<END
+        function wbw_fso_email_address_html()
+        {
+            $from_address = $this->WBW_WP_Options->wbw_get_option('wbw_fso_email_address');
+            echo <<<END
     <div class="wbw_info_text">
     <br>The email address to notify the FSO that starter kits are required.
     <br><br>
     </div>
     END;
 
-    echo '<br><label for="wbw_email_from_address"><b>FSO Email Address:</b></label><input type="text" size="50" name="wbw_fso_email_address" value="' . $from_address . '"/>';
-    echo '<br><br>';
-}
+            echo '<br><label for="wbw_email_from_address"><b>FSO Email Address:</b></label><input type="text" size="50" name="wbw_fso_email_address" value="' . $from_address . '"/>';
+            echo '<br><br>';
+        }
 
-function wbw_fso_email_template_html()
-{
-    $WBW_WP_Options = new WBW_WP_Options();
+        function wbw_fso_email_template_html()
+        {
 
-    echo <<<END
+            echo <<<END
     <div class="wbw_info_text">
     <br>This template will be used when emailing the FSO about starter kit requests.
     <br><br>
     </div>
     END;
-    $content = $WBW_WP_Options->wbw_get_option('wbw_fso_email_template');
-    $editor_id = 'wbw_fso_email_template';
+            $content = $this->WBW_WP_Options->wbw_get_option('wbw_fso_email_template');
+            $editor_id = 'wbw_fso_email_template';
 
-    wp_editor($content, $editor_id, array('media_buttons' => false));
-    echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
-    echo '<br><br>';
-}
+            wp_editor($content, $editor_id, array('media_buttons' => false));
+            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
+            echo '<br><br>';
+        }
 
-function wbw_submitter_email_template_html()
-{
-    $WBW_WP_Options = new WBW_WP_Options();
+        function wbw_submitter_email_template_html()
+        {
 
-    echo <<<END
+            echo <<<END
     <div class="wbw_info_text">
     <br>This template will be used when emailing a submitter about the meeting change they've requested.
     <br><br>
     </div>
     END;
-    $content = $WBW_WP_Options->wbw_get_option('wbw_submitter_email_template');
-    $editor_id = 'wbw_submitter_email_template';
+            $content = $this->WBW_WP_Options->wbw_get_option('wbw_submitter_email_template');
+            $editor_id = 'wbw_submitter_email_template';
 
-    wp_editor($content, $editor_id, array('media_buttons' => false));
-    echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
-    echo '<br><br>';
-}
-
-
-function display_wbw_admin_options_page()
-{
-    $content = '';
-    ob_start();
-    include('admin/admin_options.php');
-    $content = ob_get_clean();
-    echo $content;
-}
-
-function display_wbw_admin_submissions_page()
-{
-    $content = '';
-    ob_start();
-    include('admin/admin_submissions.php');
-    $content = ob_get_clean();
-    echo $content;
-}
-
-function display_wbw_admin_service_bodies_page()
-{
-    $content = '';
-    ob_start();
-    include('admin/admin_service_bodies.php');
-    $content = ob_get_clean();
-    echo $content;
-}
-
-function wbw_install()
-{
-
-    $WBW_Database = new WBW_Database();
-
-    $WBW_Database->wbw_db_upgrade($WBW_Database->wbw_db_version, false);
-
-    $WBW_WP_Options = new WBW_WP_Options();
-
-    // give ourself the capability so we are able to see the submission menu
-    $user = wp_get_current_user();
-    $user->add_cap($WBW_WP_Options->wbw_capability_manage_submissions);
-
-    // add a custom role just for trusted servants
-    add_role('wbw_trusted_servant', 'BMLT Workflow Trusted Servant');
-}
+            wp_editor($content, $editor_id, array('media_buttons' => false));
+            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
+            echo '<br><br>';
+        }
 
 
-function wbw_uninstall()
-{
-    global $wpdb;
+        function display_wbw_admin_options_page()
+        {
+            $content = '';
+            ob_start();
+            include('admin/admin_options.php');
+            $content = ob_get_clean();
+            echo $content;
+        }
 
-    // remove custom capability
-    $WBW_WP_Options = new WBW_WP_Options();
-    $wbw_dbg = new WBW_Debug();
+        function display_wbw_admin_submissions_page()
+        {
+            $content = '';
+            ob_start();
+            include('admin/admin_submissions.php');
+            $content = ob_get_clean();
+            echo $content;
+        }
 
-    $wbw_dbg->debug_log("deleting capabilities");
+        function display_wbw_admin_service_bodies_page()
+        {
+            $content = '';
+            ob_start();
+            include('admin/admin_service_bodies.php');
+            $content = ob_get_clean();
+            echo $content;
+        }
 
-    $users = get_users();
-    foreach ($users as $user) {
-        $user->remove_cap($WBW_WP_Options->wbw_capability_manage_submissions);
+        function wbw_install()
+        {
+
+
+            $this->WBW_Database->wbw_db_upgrade($this->WBW_Database->wbw_db_version, false);
+
+            // give ourself the capability so we are able to see the submission menu
+            $user = wp_get_current_user();
+            $user->add_cap($this->WBW_WP_Options->wbw_capability_manage_submissions);
+
+            // add a custom role just for trusted servants
+            add_role('wbw_trusted_servant', 'BMLT Workflow Trusted Servant');
+        }
+
+        function wbw_uninstall()
+        {
+            global $wpdb;
+
+            // remove custom capability
+
+            $this->debug_log("deleting capabilities");
+
+            $users = get_users();
+            foreach ($users as $user) {
+                $user->remove_cap($this->WBW_WP_Options->wbw_capability_manage_submissions);
+            }
+
+            remove_role('wbw_trusted_servant');
+        }
     }
-
-    remove_role('wbw_trusted_servant');
-
 }

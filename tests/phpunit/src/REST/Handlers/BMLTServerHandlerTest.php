@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use wbw\WBW_Debug;
 use wbw\REST\Handlers\BMLTServerHandler;
 
 use PHPUnit\Framework\TestCase;
@@ -20,6 +19,8 @@ require_once('config_phpunit.php');
  */
 final class BMLTServerHandlerTest extends TestCase
 {
+    use \wbw\WBW_Debug;
+
     protected function setVerboseErrorHandler()
     {
         $handler = function ($errorNumber, $errorString, $errorFile, $errorLine) {
@@ -56,7 +57,6 @@ Line: $errorLine
         Functions\when('\absint')->returnArg();
         Functions\when('wp_safe_remote_post')->returnArg();
 
-        $this->wbw_dbg = new WBW_Debug();
 
     }
 
@@ -89,7 +89,7 @@ Line: $errorLine
 
         $response = $rest->get_bmltserver_handler($request);
 
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
 
@@ -117,7 +117,7 @@ Line: $errorLine
         $response = $rest->get_bmltserver_handler($request);
 
         
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
 
@@ -157,7 +157,7 @@ Line: $errorLine
         $response = $rest->post_bmltserver_handler($request);
 
         
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
 
@@ -189,7 +189,7 @@ Line: $errorLine
         $response = $rest->post_bmltserver_handler($request);
 
         
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_Error::class, $response);
         $this->assertEquals($response->get_error_data()['wbw_bmlt_test_status'], 'failure');
@@ -217,7 +217,7 @@ Line: $errorLine
 
         $response = $rest->post_bmltserver_handler($request);
 
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_Error::class, $response);
         $this->assertEquals($response->get_error_data()['wbw_bmlt_test_status'], 'failure');
@@ -246,7 +246,7 @@ Line: $errorLine
         $response = $rest->post_bmltserver_handler($request);
 
         
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_Error::class, $response);
         $this->assertEquals($response->get_error_data()['wbw_bmlt_test_status'], 'failure');

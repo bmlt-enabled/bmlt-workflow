@@ -4,11 +4,11 @@ namespace wbw\REST\Handlers;
 use wbw\BMLT\Integration;
 use wbw\REST\HandlerCore;
 use wbw\WBW_Database;
-use wbw\WBW_Debug;
 use wbw\WBW_WP_Options;
 
 class ServiceBodiesHandler
 {
+    use \wbw\WBW_Debug;
 
     public function __construct($intstub = null, $optstub = null)
     {
@@ -31,7 +31,6 @@ class ServiceBodiesHandler
         }
 
         $this->handlerCore = new HandlerCore();
-		$this->wbw_dbg = new WBW_Debug();
         $this->WBW_Database = new WBW_Database();
     }
 
@@ -41,7 +40,7 @@ class ServiceBodiesHandler
         global $wpdb;
         
         $params = $request->get_params();
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($params));
+        $this->debug_log(($params));
         // only an admin can get the service bodies detail (permissions) information
         if ((!empty($params['detail'])) && ($params['detail'] == "true") && (current_user_can('manage_options'))) {
             // detail list
@@ -59,8 +58,8 @@ class ServiceBodiesHandler
             $arr = json_decode($response['body'], 1);
 
             $idlist = array();
-            $this->wbw_dbg->debug_log("SERVICE BODY JSON");            
-            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($arr));
+            $this->debug_log("SERVICE BODY JSON");            
+            $this->debug_log(($arr));
 
             // make our list of service bodies
             foreach ($arr as $key => $value) {
@@ -96,7 +95,7 @@ class ServiceBodiesHandler
             
             // make our group membership lists
             foreach ($sblist as $key => $value) {
-                $this->wbw_dbg->debug_log("getting memberships for " . $key);
+                $this->debug_log("getting memberships for " . $key);
                 $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $this->WBW_Database->wbw_service_bodies_access_table_name . ' where service_body_bigint = "%d"', $key);
                 $result = $wpdb->get_col($sql, 0);
                 $sblist[$key]['membership'] = implode(',', $result);
@@ -112,7 +111,7 @@ class ServiceBodiesHandler
             // simple list
             $sblist = array();
             $result = $wpdb->get_results('SELECT * from ' . $this->WBW_Database->wbw_service_bodies_table_name . ' where show_on_form != "0"', ARRAY_A);
-            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($result));
+            $this->debug_log(($result));
             // create simple service area list (names of service areas that are enabled by admin with show_on_form)
             foreach ($result as $key => $value) {
                 $sblist[$value['service_body_bigint']]['name'] = $value['service_body_name'];
@@ -126,15 +125,15 @@ class ServiceBodiesHandler
     {
         global $wpdb;
         
-        $this->wbw_dbg->debug_log("request body");
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($request->get_json_params()));
+        $this->debug_log("request body");
+        $this->debug_log(($request->get_json_params()));
         $permissions = $request->get_json_params();
         // clear out our old permissions
         $wpdb->query('DELETE from ' . $this->WBW_Database->wbw_service_bodies_access_table_name);
         // insert new permissions from form
         if(!is_array($permissions))
         {
-            $this->wbw_dbg->debug_log("error not array");
+            $this->debug_log("error not array");
 
             return $this->handlerCore->wbw_rest_error('Invalid service bodies post',422);
         }
@@ -143,12 +142,12 @@ class ServiceBodiesHandler
             {
                 // if(empty($arr['membership']))
                 // {
-                //     $this->wbw_dbg->debug_log($sb . " error membership");
+                //     $this->debug_log($sb . " error membership");
 
                 // }
                 // if(empty($arr['show_on_form']))
                 // {
-                //     $this->wbw_dbg->debug_log($sb . " error show_on_form");
+                //     $this->debug_log($sb . " error show_on_form");
                 // }
 
                 return $this->handlerCore->wbw_rest_error('Invalid service bodies post',422);
@@ -167,16 +166,16 @@ class ServiceBodiesHandler
         // add / remove user capabilities
         $users = get_users();
         $result = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $this->WBW_Database->wbw_service_bodies_access_table_name, 0);
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($sql));
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($result));
+        // $this->debug_log(($sql));
+        // $this->debug_log(($result));
         foreach ($users as $user) {
-            $this->wbw_dbg->debug_log("checking user id " . $user->get('ID'));
+            $this->debug_log("checking user id " . $user->get('ID'));
             if (in_array($user->get('ID'), $result)) {
                 $user->add_cap($this->WBW_WP_Options->wbw_capability_manage_submissions);
-                $this->wbw_dbg->debug_log("adding cap");
+                $this->debug_log("adding cap");
             } else {
                 $user->remove_cap($this->WBW_WP_Options->wbw_capability_manage_submissions);
-                $this->wbw_dbg->debug_log("removing cap");
+                $this->debug_log("removing cap");
             }
         }
 
@@ -189,18 +188,18 @@ class ServiceBodiesHandler
         global $wpdb;
 
         $params = $request->get_params();
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($params));
+        $this->debug_log(($params));
         // only an admin can get the service bodies detail (permissions) information
         if ((!empty($params['checked'])) && ($params['checked'] == "true") && (current_user_can('manage_options'))) {
             $result = $wpdb->query('DELETE from ' . $this->WBW_Database->wbw_submissions_table_name);
-            $this->wbw_dbg->debug_log("Delete submissions");
-            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($result));
+            $this->debug_log("Delete submissions");
+            $this->debug_log(($result));
             $result = $wpdb->query('DELETE from ' . $this->WBW_Database->wbw_service_bodies_access_table_name);
-            $this->wbw_dbg->debug_log("Delete service bodies access");
-            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($result));
+            $this->debug_log("Delete service bodies access");
+            $this->debug_log(($result));
             $result = $wpdb->query('DELETE from ' . $this->WBW_Database->wbw_service_bodies_table_name);
-            $this->wbw_dbg->debug_log("Delete service bodies");
-            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($result));
+            $this->debug_log("Delete service bodies");
+            $this->debug_log(($result));
             return $this->handlerCore->wbw_rest_success('Deleted Service Bodies');
         }
         else

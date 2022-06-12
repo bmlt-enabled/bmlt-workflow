@@ -4,10 +4,11 @@ namespace wbw\REST\Handlers;
 use wbw\BMLT\Integration;
 use wbw\REST\HandlerCore;
 use wbw\WBW_WP_Options;
-use wbw\WBW_Debug;
 
 class BMLTServerHandler
 {
+
+    use \wbw\WBW_Debug;
 
     public function __construct($intstub = null, $wpoptionssstub = null)
     {
@@ -30,16 +31,15 @@ class BMLTServerHandler
         }
 
         $this->handlerCore = new HandlerCore();
-        $this->wbw_dbg = new WBW_Debug();
     }
 
 private function check_bmltserver_parameters($username, $password, $server)
     {
         // 
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($username));
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($password));
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($server));
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump(empty($password)));
+        // $this->debug_log(($username));
+        // $this->debug_log(($password));
+        // $this->debug_log(($server));
+        // $this->debug_log((empty($password)));
 
         if (empty($username)) {
             return $this->handlerCore->wbw_rest_error('Empty BMLT username parameter', 422);
@@ -61,8 +61,8 @@ private function check_bmltserver_parameters($username, $password, $server)
     {
         
 
-        $this->wbw_dbg->debug_log('get test results returning');
-        $this->wbw_dbg->debug_log($this->WBW_WP_Options->wbw_get_option("wbw_bmlt_test_status", "failure"));
+        $this->debug_log('get test results returning');
+        $this->debug_log($this->WBW_WP_Options->wbw_get_option("wbw_bmlt_test_status", "failure"));
 
         $response = array("wbw_bmlt_test_status" => $this->WBW_WP_Options->wbw_get_option("wbw_bmlt_test_status", "failure"));
 
@@ -124,7 +124,7 @@ private function check_bmltserver_parameters($username, $password, $server)
         $server = $request['wbw_bmlt_server_address'];
 
         $result = $this->check_bmltserver_parameters($username, $password, $server);
-        $this->wbw_dbg->debug_log("check_bmltserver returned " .$result);
+        $this->debug_log("check_bmltserver returned " .$result);
 
         if ($result !== true) {
             
@@ -133,7 +133,7 @@ private function check_bmltserver_parameters($username, $password, $server)
 
         update_option('wbw_bmlt_username', $username);
 
-        $this->wbw_dbg->debug_log("encrypting BMLT password");
+        $this->debug_log("encrypting BMLT password");
 
         $encrypted = $this->WBW_WP_Options->secrets_encrypt(NONCE_SALT, $password);
 
@@ -165,7 +165,7 @@ private function check_bmltserver_parameters($username, $password, $server)
             return $location;
         }
 
-        $this->wbw_dbg->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
+        $this->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
 
         $change['latitude']= $location['latitude'];
         $change['longitude']= $location['longitude'];

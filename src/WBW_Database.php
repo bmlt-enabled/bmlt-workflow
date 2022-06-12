@@ -4,6 +4,7 @@ namespace wbw;
 
 class WBW_Database
 {
+    use \wbw\WBW_Debug;
 
     public function __construct($stub = null)
     {
@@ -15,7 +16,6 @@ class WBW_Database
         $this->wbw_submissions_table_name = $wpdb->prefix . 'wbw_submissions';
         $this->wbw_service_bodies_table_name = $wpdb->prefix . 'wbw_service_bodies';
         $this->wbw_service_bodies_access_table_name = $wpdb->prefix . 'wbw_service_bodies_access';
-        $this->wbw_dbg = new WBW_Debug();
         $this->WBW_WP_Options = new WBW_WP_Options();
 
     }
@@ -32,18 +32,18 @@ class WBW_Database
         if ($installed_version === false) {
             // fresh install
             $fresh_install = true;
-            $this->wbw_dbg->debug_log("no db version found, performing fresh install");
+            $this->debug_log("no db version found, performing fresh install");
         } else {
             if (version_compare($desired_version, $installed_version, 'eq')) {
-                $this->wbw_dbg->debug_log("doing nothing - installed db version " . $installed_version . " is same as desired version " . $desired_version);
+                $this->debug_log("doing nothing - installed db version " . $installed_version . " is same as desired version " . $desired_version);
             } else {
                 $upgrade = true;
-                $this->wbw_dbg->debug_log("db version = " . $installed_version . " - requesting upgrade");
+                $this->debug_log("db version = " . $installed_version . " - requesting upgrade");
             }
         }
 
         if ($fresh_install) {
-            $this->wbw_dbg->debug_log("fresh install");
+            $this->debug_log("fresh install");
 
             // latest version
             global $wpdb;
@@ -57,7 +57,7 @@ class WBW_Database
             $wpdb->query($sql);
             $sql = "DROP TABLE " . $this->wbw_service_bodies_table_name . ";";
             $wpdb->query($sql);
-            $this->wbw_dbg->debug_log("fresh install: tables dropped");
+            $this->debug_log("fresh install: tables dropped");
 
             $sql = "CREATE TABLE " . $this->wbw_service_bodies_table_name . " (
             service_body_bigint bigint(20) NOT NULL,
@@ -96,11 +96,11 @@ class WBW_Database
 
             $wpdb->query($sql);
 
-            $this->wbw_dbg->debug_log("fresh install: tables created");
+            $this->debug_log("fresh install: tables created");
 
             delete_option('wbw_db_version');
             add_option('wbw_db_version', $this->wbw_db_version);
-            $this->wbw_dbg->debug_log("fresh install: db version installed");
+            $this->debug_log("fresh install: db version installed");
 
             return;
         }

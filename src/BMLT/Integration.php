@@ -2,12 +2,14 @@
 
 namespace wbw\BMLT;
 
-use wbw\WBW_Debug;
+//  use wbw\WBW_Debug;
 use wbw\WBW_WP_Options;
 use wbw\REST\HandlerCore;
 
 class Integration
 {
+
+    use \wbw\WBW_Debug;
     protected $cookies = null; // our authentication cookies
 
     public function __construct($cookies = null, $wpoptionssstub = null)
@@ -21,7 +23,6 @@ class Integration
         } else {
             $this->WBW_WP_Options = $wpoptionssstub;
         }
-        $this->wbw_dbg = new WBW_Debug();
     }
 
     private function wbw_rest_error($message, $code)
@@ -81,8 +82,8 @@ class Integration
             return $this->wbw_rest_error('Server error retrieving meeting', 500);
         }
         $meeting = $meetingarr[0];
-        $this->wbw_dbg->debug_log("SINGLE MEETING");
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($meeting));
+        $this->debug_log("SINGLE MEETING");
+        $this->debug_log(($meeting));
         // how possibly can we get a meeting that is not the same as we asked for
         if ($meeting['id_bigint'] != $meeting_id) {
             return $this->wbw_rest_error('Server error retrieving meeting', 500);
@@ -99,9 +100,9 @@ class Integration
         );
 
         $url = $server . "index.php";
-        $this->wbw_dbg->debug_log($url);
+        $this->debug_log($url);
         $ret = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($ret));
+        $this->debug_log(($ret));
 
         $response_code = \wp_remote_retrieve_response_code($ret);
 
@@ -133,14 +134,14 @@ class Integration
         //     return new \WP_Error('wbw','BMLT Configuration Error - Unable to retrieve meeting formats');
         // }
 
-        $this->wbw_dbg->debug_log(wp_remote_retrieve_body($response));
+        $this->debug_log(wp_remote_retrieve_body($response));
         // $formatarr = json_decode(wp_remote_retrieve_body($response), true);
         $xml = simplexml_load_string(wp_remote_retrieve_body($response));
-        $this->wbw_dbg->debug_log("XML RESPONSE");
-        $this->wbw_dbg->debug_log(wp_remote_retrieve_body($response));
+        $this->debug_log("XML RESPONSE");
+        $this->debug_log(wp_remote_retrieve_body($response));
         $formatarr = json_decode(json_encode($xml), 1);
 
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($formatarr));
+        $this->debug_log(($formatarr));
 
         $newformat = array();
         foreach ($formatarr['row'] as $key => $value) {
@@ -148,8 +149,8 @@ class Integration
             unset($value['id']);
             $newformat[$formatid] = $value;
         }
-        $this->wbw_dbg->debug_log("NEWFORMAT");
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($newformat));
+        $this->debug_log("NEWFORMAT");
+        $this->debug_log(($newformat));
 
         return $newformat;
     }
@@ -165,7 +166,7 @@ class Integration
         if (is_wp_error($response)) {
             return new \WP_Error('wbw', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        // $this->wbw_dbg->debug_log(wp_remote_retrieve_body($response));  
+        // $this->debug_log(wp_remote_retrieve_body($response));  
         $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
         if (!empty($arr['meeting_states_and_provinces'])) {
             $states = explode(',', $arr['meeting_states_and_provinces']);
@@ -185,11 +186,11 @@ class Integration
         if (is_wp_error($response)) {
             return new \WP_Error('wbw', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        // $this->wbw_dbg->debug_log(wp_remote_retrieve_body($response));  
+        // $this->debug_log(wp_remote_retrieve_body($response));  
         $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
         // 
-        // $this->wbw_dbg->debug_log("***");
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($arr));
+        // $this->debug_log("***");
+        // $this->debug_log(($arr));
         if (!empty($arr['meeting_counties_and_sub_provinces'])) {
             $counties = explode(',', $arr['meeting_counties_and_sub_provinces']);
             return $counties;
@@ -209,17 +210,17 @@ class Integration
         
         $ret = $this->authenticateRootServer();
         if (is_wp_error($ret)) {
-            // $this->wbw_dbg->debug_log("*** AUTH ERROR");
-            // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($ret));
+            // $this->debug_log("*** AUTH ERROR");
+            // $this->debug_log(($ret));
             return $ret;
         }
 
         $url = $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . "index.php";
-        // $this->wbw_dbg->debug_log("*** ADMIN URL ".$url);
+        // $this->debug_log("*** ADMIN URL ".$url);
 
         $resp = $this->get($url, $this->cookies);
-        // $this->wbw_dbg->debug_log("*** ADMIN PAGE");
-        // $this->wbw_dbg->debug_log(wp_remote_retrieve_body($resp));
+        // $this->debug_log("*** ADMIN PAGE");
+        // $this->debug_log(wp_remote_retrieve_body($resp));
 
         preg_match('/"google_api_key":"(.*?)",/', wp_remote_retrieve_body($resp), $matches);
         return $matches[1];
@@ -231,8 +232,8 @@ class Integration
 
         $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($address) . "&key=" . $key;
         
-        $this->wbw_dbg->debug_log("*** GMAPS URL");
-        $this->wbw_dbg->debug_log($url);
+        $this->debug_log("*** GMAPS URL");
+        $this->debug_log($url);
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_URL, $url);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -249,8 +250,8 @@ class Integration
         }
 
         curl_close($curl);
-        $this->wbw_dbg->debug_log("*** GMAPS RESPONSE");
-        $this->wbw_dbg->debug_log($resp);
+        $this->debug_log("*** GMAPS RESPONSE");
+        $this->debug_log($resp);
 
         $geo = json_decode($resp, true);
         if ((empty($geo)) || (empty($geo['status']))) {
@@ -271,8 +272,8 @@ class Integration
         
         if ($this->cookies == null) {
             $encrypted = $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_password');
-            $this->wbw_dbg->debug_log("retrieved encrypted bmlt password");
-            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($encrypted));
+            $this->debug_log("retrieved encrypted bmlt password");
+            $this->debug_log(($encrypted));
 
             if ($encrypted === false) {
                 return new \WP_Error('wbw', 'Error unpacking password.');
@@ -289,7 +290,7 @@ class Integration
             );
             $url = $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . "index.php";
 
-            // $this->wbw_dbg->debug_log("AUTH URL = " . $url);
+            // $this->debug_log("AUTH URL = " . $url);
             $ret = $this->post($url, null, $postargs);
 
             if (is_wp_error($ret)) {
@@ -340,9 +341,9 @@ class Integration
     {
         
 
-        $this->wbw_dbg->debug_log("POSTING URL = " . $url);
-        // $this->wbw_dbg->debug_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
-        // $this->wbw_dbg->debug_log("*********");
+        $this->debug_log("POSTING URL = " . $url);
+        // $this->debug_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
+        // $this->debug_log("*********");
         $ret = \wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
@@ -360,9 +361,9 @@ class Integration
     {
         
 
-        $this->wbw_dbg->debug_log("POSTING SEMANTIC URL = " . $url);
-        // $this->wbw_dbg->debug_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
-        // $this->wbw_dbg->debug_log("*********");
+        $this->debug_log("POSTING SEMANTIC URL = " . $url);
+        // $this->debug_log($this->vdump($this->set_args($cookies, http_build_query($postargs))));
+        // $this->debug_log("*********");
         $newargs = '';
         foreach ($postargs as $key => $value) {
             switch ($key) {
@@ -379,9 +380,9 @@ class Integration
         if ($newargs != '') {
             // chop trailing &
             $newargs = substr($newargs, 0, -1);
-            $this->wbw_dbg->debug_log("our post body is " . $newargs);
+            $this->debug_log("our post body is " . $newargs);
             $ret = \wp_safe_remote_post($url, $this->set_args($cookies, $newargs));
-            $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($ret));
+            $this->debug_log(($ret));
             return $ret;
         }
     }
@@ -418,7 +419,7 @@ class Integration
             return $this->wbw_rest_error("Missing post parameters", "wbw_bmlt_integration");
         }
         $val = $this->post($this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . $url, null, $postargs);
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($val));
+        $this->debug_log(($val));
         return $val;
     }
 

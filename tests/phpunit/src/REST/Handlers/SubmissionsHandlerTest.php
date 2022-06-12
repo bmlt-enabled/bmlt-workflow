@@ -3,8 +3,6 @@
 
 declare(strict_types=1);
 
-// debug settings
-use wbw\WBW_Debug;
 
 use wbw\REST\Handlers\SubmissionsHandler;
 
@@ -17,6 +15,7 @@ require_once('config_phpunit.php');
 
 class SubmissionsHandlerTest_my_wp_user
 {
+
     public function __construct($id, $name)
     {
         $this->ID = $id;
@@ -39,6 +38,7 @@ class SubmissionsHandlerTest_my_wp_user
  */
 final class SubmissionsHandlerTest extends TestCase
 {
+    use \wbw\WBW_Debug;
 
     protected function setVerboseErrorHandler()
     {
@@ -125,7 +125,6 @@ Line: $errorLine
     }
     EOD;
 
-        $this->wbw_dbg = new WBW_Debug();
     }
 
     protected function tearDown(): void
@@ -202,8 +201,8 @@ Line: $errorLine
 
 
         $retrieve_single_response = $this->meeting;
-        $this->wbw_dbg->debug_log("THISMEETING");
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($retrieve_single_response));
+        $this->debug_log("THISMEETING");
+        $this->debug_log(($retrieve_single_response));
 
         $bmlt_input = '';
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
@@ -213,11 +212,11 @@ Line: $errorLine
         $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
-        $this->wbw_dbg->debug_log("TEST RESPONSE");
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log("TEST RESPONSE");
+        $this->debug_log(($response));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
-        // $this->wbw_dbg->debug_log($email_addresses);
+        // $this->debug_log($email_addresses);
         // $this->assertEquals($email_addresses,'a@a.com,a@a.com');
     }
 
@@ -263,7 +262,7 @@ Line: $errorLine
         $handlers = new SubmissionsHandler($this->stub_bmlt($resp, $bmlt_input),$WBW_WP_Options);
         $response = $handlers->meeting_update_form_handler_rest($form_post);
         
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log(($response));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
     }
@@ -400,7 +399,7 @@ Line: $errorLine
         $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
         $response = $handlers->meeting_update_form_handler_rest($form_post);
         
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
@@ -458,7 +457,7 @@ Line: $errorLine
         $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log(($response));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
     }
@@ -586,7 +585,7 @@ Line: $errorLine
         $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input), $WBW_WP_Options);
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log(($response));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
     }
@@ -860,16 +859,16 @@ Line: $errorLine
         Functions\when('\wp_mail')->justReturn('true');
 
         // 
-        // $this->wbw_dbg->debug_log('APPROVEREQUEST');
+        // $this->debug_log('APPROVEREQUEST');
 
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($request));
+        // $this->debug_log(($request));
 
         $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
 
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        // $this->debug_log(($response));
     }
 
     /**
@@ -927,7 +926,7 @@ Line: $errorLine
         Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
 
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($request));
+        // $this->debug_log(($request));
 
         $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -935,13 +934,13 @@ Line: $errorLine
         $this->assertEquals('Approved submission id 14', $response->data['message']);
 
         // 
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->debug_log("BMLT INPUT"));
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($bmlt_input));
+        // $this->debug_log($this->debug_log("BMLT INPUT"));
+        // $this->debug_log(($bmlt_input));
 
         $this->assertArrayHasKey("set_meeting_change", $bmlt_input);
         $this->assertArrayNotHasKey("delete_meeting", $bmlt_input);
 
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        // $this->debug_log(($response));
     }
 
     /**
@@ -999,7 +998,7 @@ Line: $errorLine
         Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
 
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($request));
+        // $this->debug_log(($request));
 
         $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -1009,7 +1008,7 @@ Line: $errorLine
         $this->assertArrayHasKey("delete_meeting", $bmlt_input);
         $this->assertArrayNotHasKey("set_meeting_change", $bmlt_input);
 
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        // $this->debug_log(($response));
     }
 
     //
@@ -1198,14 +1197,14 @@ Line: $errorLine
         Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
 
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($request));
+        // $this->debug_log(($request));
 
         $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->data['message']);
         $this->assertEquals($bmlt_input, array("bmlt_ajax_callback" => 1, "delete_meeting" => 3563));
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        // $this->debug_log(($response));
     }
 
     /**
@@ -1264,7 +1263,7 @@ Line: $errorLine
         Functions\when('\wp_mail')->justReturn('true');
 
 
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($request));
+        // $this->debug_log(($request));
 
         $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -1274,6 +1273,6 @@ Line: $errorLine
         $this->assertArrayHasKey("set_meeting_change", $bmlt_input);
         $this->assertArrayNotHasKey("delete_meeting", $bmlt_input);
 
-        // $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        // $this->debug_log(($response));
     }
 }
