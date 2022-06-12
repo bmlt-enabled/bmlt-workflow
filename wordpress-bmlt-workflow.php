@@ -758,4 +758,6 @@ if (!class_exists('wbw_plugin')) {
             remove_role('wbw_trusted_servant');
         }
     }
+
+    $start_plugin = new wbw_plugin();
 }
