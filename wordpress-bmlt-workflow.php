@@ -142,7 +142,7 @@ if (!class_exists('wbw_plugin')) {
             $this->prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
 
             ob_start();
-            // include('public/meeting_update_form.php');
+            include('public/meeting_update_form.php');
             $content .= ob_get_clean();
             return $content;
         }
