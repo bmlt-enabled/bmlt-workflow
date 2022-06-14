@@ -77,8 +77,8 @@ if (!class_exists('wbw_plugin')) {
             // $this->debug_log("PRINT SCRIPTS BEFORE");
             // $this->debug_log($wp_scripts->print_scripts());
 
-            wp_enqueue_script('jqueryvalidate');
-            wp_enqueue_script('jqueryvalidateadditional');
+            // wp_enqueue_script('jqueryvalidate');
+            // wp_enqueue_script('jqueryvalidateadditional');
             // $this->debug_log("PRINT SCRIPTS AFTER");
             // $this->debug_log($wp_scripts->print_scripts());
 
