@@ -68,78 +68,78 @@ if (!class_exists('wbw_plugin')) {
 
             // base css and js for this page
             $this->prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
-            $this->prevent_cache_enqueue_style('wbw-meeting-update-form-css', false, 'js/meeting_update_form.js');
-            wp_enqueue_style('wbw-meeting-update-form-css');
-            $this->prevent_cache_enqueue_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
+            // $this->prevent_cache_enqueue_style('wbw-meeting-update-form-css', false, 'js/meeting_update_form.js');
+            // wp_enqueue_style('wbw-meeting-update-form-css');
+            // $this->prevent_cache_enqueue_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
 
-            // jquery validation
+            // // jquery validation
+            // // global $wp_scripts;
+            // // $this->debug_log("PRINT SCRIPTS BEFORE");
+            // // $this->debug_log($wp_scripts->print_scripts());
+
+            // wp_enqueue_script('jqueryvalidate');
+            // wp_enqueue_script('jqueryvalidateadditional');
+            // // $this->debug_log("PRINT SCRIPTS AFTER");
+            // // $this->debug_log($wp_scripts->print_scripts());
+
+            // // select2
+            // $this->enqueue_select2();
+
+            // // inline scripts
+            // $script  = 'var wbw_form_submit_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/submissions') . '; ';
+            // $script .= 'var wbw_bmlt_server_address = "' . $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . '";';
+            // // optional fields
+            // $script .= 'var wbw_optional_location_nation = "' . $this->WBW_WP_Options->wbw_get_option('wbw_optional_location_nation') . '";';
+            // $script .= 'var wbw_optional_location_sub_province = "' . $this->WBW_WP_Options->wbw_get_option('wbw_optional_location_sub_province') . '";';
+
+            // // add meeting formats
+            // $formatarr = $this->bmlt_integration->getMeetingFormats();
+            // $this->debug_log("FORMATS");
+            // $this->debug_log($formatarr);
+            // $this->debug_log(json_encode($formatarr));
+            // $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
+
+            // // do a one off lookup for our servicebodies
+            // $url = '/' . $this->WBW_Rest->wbw_rest_namespace . '/servicebodies';
+            // $this->debug_log("rest url = " . $url);
+
+            // $request  = new WP_REST_Request('GET', $url);
+            // $response = rest_do_request($request);
+            // $result = rest_get_server()->response_to_data($response, true);
+            // if (count($result) == 0) {
+            //     wp_die("<h4>WBW Plugin Error: Service bodies not configured.</h4>");
+            // }
+            // $script .= 'var wbw_service_bodies = ' . json_encode($result) . '; ';
+
+            // $this->debug_log("adding script " . $script);
+            // $status = wp_add_inline_script('wbw-meeting-update-form-js', $script, 'before');
+
+
+            // $wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
+            // if ($wbw_bmlt_test_status != "success") {
+            //     wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
+            // }
+
+            // $result = [];
+            // $result['scripts'] = [];
+            // $result['styles'] = [];
+
+            // $this->debug_log("All scripts and styles");
+
+            // // Print all loaded Scripts
             // global $wp_scripts;
-            // $this->debug_log("PRINT SCRIPTS BEFORE");
-            // $this->debug_log($wp_scripts->print_scripts());
+            // foreach ($wp_scripts->queue as $script) :
+            //     $result['scripts'][] =  $wp_scripts->registered[$script]->src . ";";
+            // endforeach;
 
-            wp_enqueue_script('jqueryvalidate');
-            wp_enqueue_script('jqueryvalidateadditional');
-            // $this->debug_log("PRINT SCRIPTS AFTER");
-            // $this->debug_log($wp_scripts->print_scripts());
+            // // Print all loaded Styles (CSS)
+            // global $wp_styles;
+            // foreach ($wp_styles->queue as $style) :
+            //     $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
+            // endforeach;
 
-            // select2
-            $this->enqueue_select2();
-
-            // inline scripts
-            $script  = 'var wbw_form_submit_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/submissions') . '; ';
-            $script .= 'var wbw_bmlt_server_address = "' . $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . '";';
-            // optional fields
-            $script .= 'var wbw_optional_location_nation = "' . $this->WBW_WP_Options->wbw_get_option('wbw_optional_location_nation') . '";';
-            $script .= 'var wbw_optional_location_sub_province = "' . $this->WBW_WP_Options->wbw_get_option('wbw_optional_location_sub_province') . '";';
-
-            // add meeting formats
-            $formatarr = $this->bmlt_integration->getMeetingFormats();
-            $this->debug_log("FORMATS");
-            $this->debug_log($formatarr);
-            $this->debug_log(json_encode($formatarr));
-            $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
-
-            // do a one off lookup for our servicebodies
-            $url = '/' . $this->WBW_Rest->wbw_rest_namespace . '/servicebodies';
-            $this->debug_log("rest url = " . $url);
-
-            $request  = new WP_REST_Request('GET', $url);
-            $response = rest_do_request($request);
-            $result = rest_get_server()->response_to_data($response, true);
-            if (count($result) == 0) {
-                wp_die("<h4>WBW Plugin Error: Service bodies not configured.</h4>");
-            }
-            $script .= 'var wbw_service_bodies = ' . json_encode($result) . '; ';
-
-            $this->debug_log("adding script " . $script);
-            $status = wp_add_inline_script('wbw-meeting-update-form-js', $script, 'before');
-
-
-            $wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
-            if ($wbw_bmlt_test_status != "success") {
-                wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
-            }
-
-            $result = [];
-            $result['scripts'] = [];
-            $result['styles'] = [];
-
-            $this->debug_log("All scripts and styles");
-
-            // Print all loaded Scripts
-            global $wp_scripts;
-            foreach ($wp_scripts->queue as $script) :
-                $result['scripts'][] =  $wp_scripts->registered[$script]->src . ";";
-            endforeach;
-
-            // Print all loaded Styles (CSS)
-            global $wp_styles;
-            foreach ($wp_styles->queue as $style) :
-                $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
-            endforeach;
-
-            $this->debug_log(($result));
-            // $this->prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
+            // $this->debug_log(($result));
+            // // $this->prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
 
             ob_start();
             // include('public/meeting_update_form.php');
