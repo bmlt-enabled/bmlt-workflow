@@ -69,8 +69,8 @@ if (!class_exists('wbw_plugin')) {
             // base css and js for this page
             $this->prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
             $this->prevent_cache_enqueue_style('wbw-meeting-update-form-css', false, 'js/meeting_update_form.js');
-            wp_enqueue_style('wbw-meeting-update-form-css');
             $this->prevent_cache_enqueue_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
+            wp_enqueue_style('dashicons');
 
             // jquery validation
             // global $wp_scripts;
@@ -94,9 +94,9 @@ if (!class_exists('wbw_plugin')) {
 
             // add meeting formats
             $formatarr = $this->bmlt_integration->getMeetingFormats();
-            $this->debug_log("FORMATS");
-            $this->debug_log($formatarr);
-            $this->debug_log(json_encode($formatarr));
+            // $this->debug_log("FORMATS");
+            // $this->debug_log($formatarr);
+            // $this->debug_log(json_encode($formatarr));
             $script .= 'var wbw_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
@@ -198,7 +198,6 @@ if (!class_exists('wbw_plugin')) {
             $this->prevent_cache_register_style('wbw-meeting-update-form-css', false, 'css/meeting_update_form.css');
             wp_register_script('jqueryvalidate', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
             wp_register_script('jqueryvalidateadditional', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jqueryvalidate'), '1.0', true);
-            wp_enqueue_style('dashicons');
             $this->debug_log("scripts and styles registered");
         }
 
