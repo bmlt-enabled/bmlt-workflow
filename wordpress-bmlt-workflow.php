@@ -77,8 +77,8 @@ if (!class_exists('wbw_plugin')) {
             // $this->debug_log("PRINT SCRIPTS BEFORE");
             // $this->debug_log($wp_scripts->print_scripts());
 
-            wp_enqueue_script('jquery-validate');
-            wp_enqueue_script('jquery-validate-additional');
+            wp_enqueue_script('jqueryvalidate');
+            wp_enqueue_script('jqueryvalidateadditional');
             // $this->debug_log("PRINT SCRIPTS AFTER");
             // $this->debug_log($wp_scripts->print_scripts());
 
@@ -193,8 +193,8 @@ if (!class_exists('wbw_plugin')) {
             $this->prevent_cache_register_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
             $this->prevent_cache_register_script('wbw-meeting-update-form-js', array('jquery', 'jquery.validate'), 'js/meeting_update_form.js');
             $this->prevent_cache_register_style('wbw-meeting-update-form-css', false, 'css/meeting_update_form.css');
-            wp_register_script('jquery-validate', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
-            wp_register_script('jquery.validate.additional', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jquery.validate'), '1.0', true);
+            wp_register_script('jqueryvalidate', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
+            wp_register_script('jqueryvalidateadditional', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jquery.validate'), '1.0', true);
             wp_enqueue_style('dashicons');
             $this->debug_log("scripts and styles registered");
         }
