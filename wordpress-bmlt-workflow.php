@@ -77,8 +77,8 @@ if (!class_exists('wbw_plugin')) {
             // $this->debug_log("PRINT SCRIPTS BEFORE");
             // $this->debug_log($wp_scripts->print_scripts());
 
-            // wp_enqueue_script('jqueryvalidate');
-            // wp_enqueue_script('jqueryvalidateadditional');
+            wp_enqueue_script('jqueryvalidate');
+            wp_enqueue_script('jqueryvalidateadditional');
             // $this->debug_log("PRINT SCRIPTS AFTER");
             // $this->debug_log($wp_scripts->print_scripts());
 
@@ -139,6 +139,7 @@ if (!class_exists('wbw_plugin')) {
             endforeach;
 
             $this->debug_log(($result));
+            $this->prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
 
             ob_start();
             include('public/meeting_update_form.php');
