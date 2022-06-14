@@ -73,15 +73,14 @@ if (!class_exists('wbw_plugin')) {
             $this->prevent_cache_enqueue_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
 
             // jquery validation
-            global $wp_scripts;
-            $this->debug_log("PRINT SCRIPTS BEFORE");
-            $this->debug_log($wp_scripts->print_scripts());
+            // global $wp_scripts;
+            // $this->debug_log("PRINT SCRIPTS BEFORE");
+            // $this->debug_log($wp_scripts->print_scripts());
 
             wp_enqueue_script('jquery-validate');
             wp_enqueue_script('jquery-validate-additional');
-            $this->debug_log("PRINT SCRIPTS AFTER");
-
-            $this->debug_log($wp_scripts->print_scripts());
+            // $this->debug_log("PRINT SCRIPTS AFTER");
+            // $this->debug_log($wp_scripts->print_scripts());
 
             // select2
             $this->enqueue_select2();
