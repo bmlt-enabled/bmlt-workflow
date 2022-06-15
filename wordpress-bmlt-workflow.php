@@ -748,10 +748,14 @@ if (!class_exists('wbw_plugin')) {
 
             $this->WBW_Database->wbw_db_upgrade($this->WBW_Database->wbw_db_version, false);
 
-            // give ourself the capability so we are able to see the submission menu
-            $user = wp_get_current_user();
-            $user->add_cap($this->WBW_WP_Options->wbw_capability_manage_submissions);
-
+            // give all 'manage_options" users the capability so they are able to see the submission menu
+            $users = get_users();
+            foreach ($users as $user) {
+                if($user->has_cap('manage_options'))
+                {
+                    $user->add_cap($this->WBW_WP_Options->wbw_capability_manage_submissions);
+                }
+            }
             // add a custom role just for trusted servants
             add_role('wbw_trusted_servant', 'BMLT Workflow Trusted Servant');
         }
