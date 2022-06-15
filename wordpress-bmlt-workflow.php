@@ -383,8 +383,6 @@ if (!class_exists('wbw_plugin')) {
                 wp_die("This page cannot be accessed");
             }
 
-            $this->debug_log("registering from address");
-
             register_setting(
                 'wbw-settings-group',
                 'wbw_email_from_address',
@@ -396,7 +394,6 @@ if (!class_exists('wbw_plugin')) {
                     'default' => 'example@example'
                 )
             );
-            $this->debug_log("registered from address");
 
             register_setting(
                 'wbw-settings-group',
