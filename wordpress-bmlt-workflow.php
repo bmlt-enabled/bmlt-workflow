@@ -378,7 +378,7 @@ if (!class_exists('wbw_plugin')) {
         {
 
 
-            if ((!current_user_can('activate_plugins')) && (!current_user_can($this->WBW_WP_Options->wbw_capability_manage_submissions))) {
+            if (!current_user_can('activate_plugins')) {
                 wp_die("This page cannot be accessed");
             }
 
@@ -549,8 +549,10 @@ if (!class_exists('wbw_plugin')) {
 
         public function wbw_bmlt_server_address_html()
         {
-            echo '<div id="wbw_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your BMLT details are successfully configured.</div>';
-            echo '<div id="wbw_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Your BMLT details are not configured correctly.</div>';
+            echo '<div id="wbw_bmlt_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your BMLT details are successfully configured.</div>';
+            echo '<div id="wbw_bmlt_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Your BMLT details are not configured correctly.</div>';
+            echo '<div id="wbw_servicebodies_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your service bodies are successfully configured.</div>';
+            echo '<div id="wbw_servicebodies_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Your service bodies are not configured and saved correctly. <a href="?wbw-submissions">Fix</a></div>';
             echo '<br>';
             echo '<button type="button" id="wbw_configure_bmlt_server">Update BMLT Configuration</button>';
             echo '<br>';

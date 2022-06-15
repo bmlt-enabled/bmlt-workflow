@@ -51,11 +51,11 @@ class WBW_Database
             $charset_collate = $wpdb->get_charset_collate();
 
             // shouldn't need this but just in case the tables already exist
-            $sql = "DROP TABLE " . $this->wbw_service_bodies_access_table_name . ";";
+            $sql = "DROP TABLE IF EXISTS " . $this->wbw_service_bodies_access_table_name . ";";
             $wpdb->query($sql);
-            $sql = "DROP TABLE " . $this->wbw_submissions_table_name . ";";
+            $sql = "DROP TABLE IF EXISTS " . $this->wbw_submissions_table_name . ";";
             $wpdb->query($sql);
-            $sql = "DROP TABLE " . $this->wbw_service_bodies_table_name . ";";
+            $sql = "DROP TABLE IF EXISTS " . $this->wbw_service_bodies_table_name . ";";
             $wpdb->query($sql);
             $this->debug_log("fresh install: tables dropped");
 

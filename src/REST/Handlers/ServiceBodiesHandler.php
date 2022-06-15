@@ -91,8 +91,7 @@ class ServiceBodiesHandler
                 $sql = $wpdb->prepare('UPDATE ' . $this->WBW_Database->wbw_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s" where service_body_bigint="%d"', $sblist[$value]['name'], $sblist[$value]['description'], $value);
                 $wpdb->query($sql);
             }
-
-            
+        
             // make our group membership lists
             foreach ($sblist as $key => $value) {
                 $this->debug_log("getting memberships for " . $key);

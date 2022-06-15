@@ -266,12 +266,21 @@ jQuery(document).ready(function ($) {
 
   function update_from_test_result(data) {
     if (data["wbw_bmlt_test_status"] === "success") {
-      $("#wbw_test_yes").show();
-      $("#wbw_test_no").hide();
+      $("#wbw_bmlt_test_yes").show();
+      $("#wbw_bmlt_test_no").hide();
     } else {
-      $("#wbw_test_no").show();
-      $("#wbw_test_yes").hide();
+      $("#wbw_bmlt_test_no").show();
+      $("#wbw_bmlt_test_yes").hide();
     }
+
+    if (data["wbw_servicebodies_test_status"] === "success") {
+      $("#wbw_servicebodies_test_yes").show();
+      $("#wbw_servicebodies_test_no").hide();
+    } else {
+      $("#wbw_servicebodies_test_no").show();
+      $("#wbw_servicebodies_test_yes").hide();
+    }
+
   }
 
   function save_results() {
