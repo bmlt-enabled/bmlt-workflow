@@ -66,6 +66,11 @@ if (!class_exists('wbw_plugin')) {
         public function wbw_meeting_update_form($atts = [], $content = null, $tag = '')
         {
 
+            $wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
+            if ($wbw_bmlt_test_status != "success") {
+                wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
+            }
+
             // base css and js for this page
             $this->prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
             $this->prevent_cache_enqueue_style('wbw-meeting-update-form-css', false, 'js/meeting_update_form.js');
@@ -73,14 +78,9 @@ if (!class_exists('wbw_plugin')) {
             wp_enqueue_style('dashicons');
 
             // jquery validation
-            // global $wp_scripts;
-            // $this->debug_log("PRINT SCRIPTS BEFORE");
-            // $this->debug_log($wp_scripts->print_scripts());
 
             wp_enqueue_script('jqueryvalidate');
             wp_enqueue_script('jqueryvalidateadditional');
-            // $this->debug_log("PRINT SCRIPTS AFTER");
-            // $this->debug_log($wp_scripts->print_scripts());
 
             // select2
             $this->enqueue_select2();
@@ -113,12 +113,7 @@ if (!class_exists('wbw_plugin')) {
 
             $this->debug_log("adding script " . $script);
             $status = wp_add_inline_script('wbw-meeting-update-form-js', $script, 'before');
-
-
-            $wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
-            if ($wbw_bmlt_test_status != "success") {
-                wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
-            }
+            $this->prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
 
             $result = [];
             $result['scripts'] = [];
@@ -139,7 +134,7 @@ if (!class_exists('wbw_plugin')) {
             endforeach;
 
             $this->debug_log(($result));
-            $this->prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
+
 
             ob_start();
             include('public/meeting_update_form.php');
@@ -193,11 +188,11 @@ if (!class_exists('wbw_plugin')) {
         {
 
             $this->register_select2();
-            $this->prevent_cache_register_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
-            $this->prevent_cache_register_script('wbw-meeting-update-form-js', array('jquery', 'jqueryvalidate'), 'js/meeting_update_form.js');
-            $this->prevent_cache_register_style('wbw-meeting-update-form-css', false, 'css/meeting_update_form.css');
             wp_register_script('jqueryvalidate', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
             wp_register_script('jqueryvalidateadditional', 'https://cdn.jsdelivr.net/npm/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jqueryvalidate'), '1.0', true);
+            $this->prevent_cache_register_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
+            $this->prevent_cache_register_script('wbw-meeting-update-form-js', array('jquery', 'jqueryvalidate', 'jqueryvalidateadditional'), 'js/meeting_update_form.js');
+            $this->prevent_cache_register_style('wbw-meeting-update-form-css', false, 'css/meeting_update_form.css');
             $this->debug_log("scripts and styles registered");
         }
 
