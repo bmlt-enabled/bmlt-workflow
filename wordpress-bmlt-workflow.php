@@ -740,6 +740,14 @@ if (!class_exists('wbw_plugin')) {
         public function wbw_install()
         {
 
+            // install all our default options (if they arent set already)
+            add_option('wbw_email_from_address','example@example');
+            add_option('wbw_delete_closed_meetings','unpublish');
+            add_option('wbw_optional_location_nation','hidden');
+            add_option('wbw_optional_location_sub_province','hidden');
+            add_option('wbw_submitter_email_template',file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
+            add_option('wbw_fso_email_template',file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
+            add_option('wbw_fso_email_address','example@example.example');
 
             $this->WBW_Database->wbw_db_upgrade($this->WBW_Database->wbw_db_version, false);
 
