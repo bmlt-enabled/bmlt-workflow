@@ -377,10 +377,13 @@ if (!class_exists('wbw_plugin')) {
         public function wbw_register_setting()
         {
 
+            $this->debug_log("registering settings");
 
             if (!current_user_can('activate_plugins')) {
                 wp_die("This page cannot be accessed");
             }
+
+            $this->debug_log("registering from address");
 
             register_setting(
                 'wbw-settings-group',
@@ -393,6 +396,7 @@ if (!class_exists('wbw_plugin')) {
                     'default' => 'example@example'
                 )
             );
+            $this->debug_log("registered from address");
 
             register_setting(
                 'wbw-settings-group',
