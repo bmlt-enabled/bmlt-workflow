@@ -7,6 +7,7 @@ git pull
 cp tests/testcafe/setup/github/* /var/www/html/github
 cp tests/testcafe/setup/*.sh /home/ssm-user/scripts
 cp tests/testcafe/setup/*.sql /home/ssm-user/scripts
+chmod 755 /home/ssm-user/scripts/*.sh
 cd ..
 rm -rf /home/ssm-user/wbw/*
 cp -R wordpress-bmlt-workflow/* wbw
