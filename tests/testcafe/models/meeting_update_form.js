@@ -56,7 +56,7 @@ class Meeting_Update_Form {
         this.starter_kit_postal_address_div = Selector('#starter_kit_postal_address_div');
         this.starter_kit_postal_address = Selector('#starter_kit_postal_address');
         this.submit = Selector('#submit');
-        this.success_page_header = Selector('#page h3');
+        this.success_page_header = Selector('#wbw_response_message');
         this.error_para = Selector('.wbw-error-message + .notice p');
     }
 }

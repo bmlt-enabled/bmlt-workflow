@@ -184,7 +184,7 @@ class Integration
     {
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         if (is_wp_error($response)) {
-            return new \WP_Error('wbw', 'BMLT Configuration Error - Unable to retrieve meeting formats');
+            return new \WP_Error('wbw', 'BMLT Configuration Error - Unable to retrieve server info');
         }
         // $this->debug_log(wp_remote_retrieve_body($response));  
         $arr = json_decode(wp_remote_retrieve_body($response), true)[0];

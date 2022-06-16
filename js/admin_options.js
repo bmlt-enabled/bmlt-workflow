@@ -273,13 +273,13 @@ jQuery(document).ready(function ($) {
       $("#wbw_bmlt_test_yes").hide();
     }
 
-    if (data["wbw_servicebodies_test_status"] === "success") {
-      $("#wbw_servicebodies_test_yes").show();
-      $("#wbw_servicebodies_test_no").hide();
-    } else {
-      $("#wbw_servicebodies_test_no").show();
-      $("#wbw_servicebodies_test_yes").hide();
-    }
+    // if (data["wbw_servicebodies_test_status"] === "success") {
+    //   $("#wbw_servicebodies_test_yes").show();
+    //   $("#wbw_servicebodies_test_no").hide();
+    // } else {
+    //   $("#wbw_servicebodies_test_no").show();
+    //   $("#wbw_servicebodies_test_yes").hide();
+    // }
 
   }
 
