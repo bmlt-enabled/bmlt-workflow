@@ -761,7 +761,7 @@ if (!class_exists('wbw_plugin')) {
             add_role('wbw_trusted_servant', 'BMLT Workflow Trusted Servant');
         }
 
-        public function wbw_add_capability( $user_id ) {;
+        public function wbw_add_capability( $user_id ) {
 
             // give all 'manage_options" users the capability on create so they are able to see the submission menu
             $user = get_user_by('id',$user_id);
