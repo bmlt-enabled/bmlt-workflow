@@ -235,7 +235,7 @@ test('Submit_Change_Meeting_And_Approve_And_Verify', async t => {
 
     await t
     .click(uf.submit)
-    .expect(Selector('#page h3').innerText).match(/submission\ successful/);
+    .expect(Selector('#wbw_response_message').innerText).match(/submission\ successful/);
 
     // switch to admin page
     await t.useRole(wbw_admin)

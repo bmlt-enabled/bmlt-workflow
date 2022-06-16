@@ -955,7 +955,7 @@ class SubmissionsHandler
         // $this->debug_log("id = " . $insert_id);
         $message = array(
             "message" => 'Form submission successful, submission id ' . $insert_id,
-            "form_html" => '<h3>Form submission successful, your submission id  is #' . $insert_id . '. You will also receive an email confirmation of your submission.</h3>'
+            "form_html" => '<h3 id="wbw_response_message">Form submission successful, your submission id  is #' . $insert_id . '. You will also receive an email confirmation of your submission.</h3>'
         );
 
         // Send our emails out

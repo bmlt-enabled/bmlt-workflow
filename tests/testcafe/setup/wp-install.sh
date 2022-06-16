@@ -16,9 +16,9 @@ export mysqluser=wpdevuser
 export mysqlpass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 export wptitle=devsite
 export wpuser=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --name wbw_test_wpuser --value $wpuser --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name wbw_test_wpuser --value $wpuser --type SecureString --region ap-southeast-2
 export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --name wbw_test_wppass --value $wppass --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name wbw_test_wppass --value $wppass --type SecureString --region ap-southeast-2
 export wpemail=nigel.brittain@gmail.com
 export siteurl=54.153.167.239/wordpressdev
 export BRANCH=0.4.0-fixes
@@ -40,10 +40,30 @@ cd /var/www/html/wordpressdev
 
 
 # Build our wp-config.php file
-sed -e "s/localhost/"$mysqlhost"/" -e "s/database_name_here/"$mysqldb"/" -e "s/username_here/"$mysqluser"/" -e "s/password_here/"$mysqlpass"/" wp-config-sample.php > wp-config.php
+cat > insert << EOF
+// Enable WP_DEBUG mode
+define( 'WP_DEBUG', true );
+
+// Enable Debug logging to the /wp-content/debug.log file
+define( 'WP_DEBUG_LOG', true );
+
+// Disable display of errors and warnings
+define( 'WP_DEBUG_DISPLAY', true );
+define( 'WP_DEBUG_LOG', '/home/ssm-user/php-errors.log' );
+
+// Use dev versions of core JS and CSS files (only needed if you are modifying these core files)
+define( 'SCRIPT_DEBUG', true );
+@ini_set('log_errors','On'); // enable or disable php error logging (use 'On' or 'Off')
+@ini_set('display_errors','On'); // enable or disable public display of errors (use 'On' or 'Off')
+@ini_set('mail.log','/home/ssm-user/mail.log'); // path to server-writable log file
+@ini_set('sendmail_path','/home/ssm-user/maillog.py'); // path to server-writable log file
+
+EOF
+cat wp-config-sample.php | tr -d '\r' | sed -e "s/localhost/"$mysqlhost"/" -e "s/database_name_here/"$mysqldb"/" -e "s/username_here/"$mysqluser"/" -e "s/password_here/"$mysqlpass"/" | sed -e '/\/\* Add any custom values between this line and the "stop editing" line. \*\//r./insert' > wp-config.php
+rm insert
 
 # Grab our Salt Keys
-SALT=$(curl -L https://api.wordpress.org/secret-key/1.1/salt/)
+SALT=$(curl -L https://api.wordpress.org/secret-key/1.1/salt/ | sed -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa');/")
 STRING='put your unique phrase here'
 printf '%s\n' "g/$STRING/d" a "$SALT" . w | ed -s wp-config.php
 
