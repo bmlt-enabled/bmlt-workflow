@@ -40,7 +40,7 @@ global $wpdb;
 if (!class_exists('wbw_plugin')) {
     class wbw_plugin
     {
-        use \wbw\WBW_Debug;
+        use wbw\WBW_Debug;
 
         public function __construct()
         {
