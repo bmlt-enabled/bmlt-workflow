@@ -58,7 +58,8 @@ if (!class_exists('wbw_plugin')) {
             add_action('rest_api_init', array(&$this, 'wbw_rest_controller'));
             add_shortcode('wbw-meeting-update-form', array(&$this, 'wbw_meeting_update_form'));
             add_filter('plugin_action_links', array(&$this, 'wbw_add_plugin_link'), 10, 2);
-
+            add_action( 'user_register', 'wbw_add_capability', 10, 1 );
+ 
             register_activation_hook(__FILE__, array(&$this, 'wbw_install'));
             register_deactivation_hook(__FILE__, array(&$this, 'wbw_uninstall'));
         }
@@ -758,6 +759,17 @@ if (!class_exists('wbw_plugin')) {
             }
             // add a custom role just for trusted servants
             add_role('wbw_trusted_servant', 'BMLT Workflow Trusted Servant');
+        }
+
+        public function wbw_add_capability( $user_id ) {;
+
+            // give all 'manage_options" users the capability on create so they are able to see the submission menu
+            $user = get_user_by('id',$user_id);
+                if($user->has_cap('manage_options'))
+                {
+                    $user->add_cap($this->WBW_WP_Options->wbw_capability_manage_submissions);
+                    $this->debug_log("adding capabilities to new user");
+                }           
         }
 
         public function wbw_uninstall()
