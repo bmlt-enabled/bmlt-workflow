@@ -58,7 +58,7 @@ if (!class_exists('wbw_plugin')) {
             add_action('rest_api_init', array(&$this, 'wbw_rest_controller'));
             add_shortcode('wbw-meeting-update-form', array(&$this, 'wbw_meeting_update_form'));
             add_filter('plugin_action_links', array(&$this, 'wbw_add_plugin_link'), 10, 2);
-            add_action( 'user_register', 'wbw_add_capability', 10, 1 );
+            add_action('user_register', array(&$this,'wbw_add_capability'), 10, 1 );
  
             register_activation_hook(__FILE__, array(&$this, 'wbw_install'));
             register_deactivation_hook(__FILE__, array(&$this, 'wbw_uninstall'));
