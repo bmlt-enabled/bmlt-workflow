@@ -1,3 +1,10 @@
+## 0.4.1 (Jun 16, 2022)
+- Lots of bugfixes from clean site testing
+- Testcafe now has a fresh wordpress site constructor, with plugin install, activation and setup
+- #62 wbw_capability_manage_submissions capabilities not being added correctly on plugin activation (thanks @tempsaint !)
+- #61 wbw_capability_manage_submissions capabilities not being added correctly to new users (thanks @tempsaint !)
+- #60 default settings not being added with register_setting on new installation (thanks @californiasteve kevinC)
+
 ## 0.4.0 (Jun 10, 2022)
 - Backup and Restore functionality implemented, making plugin deactivation a safe activity and moving this plugin out of beta! #2
 - BMLT password now encrypted at rest and in backups, keyed against the Wordpress installation

@@ -3,7 +3,6 @@ namespace wbw\REST;
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-use wbw\WBW_Debug;
 use wbw\REST\Handlers\BMLTServerHandler;
 use wbw\REST\Handlers\ServiceBodiesHandler;
 use wbw\REST\Handlers\SubmissionsHandler;
@@ -13,6 +12,8 @@ use wbw\WBW_WP_Options;
 
 class Controller extends \WP_REST_Controller
 {
+
+	use \wbw\WBW_Debug;
 
 	protected $namespace;
 	protected $rest_base;
@@ -26,7 +27,6 @@ class Controller extends \WP_REST_Controller
 		$this->SubmissionsHandler = new SubmissionsHandler();
 		$this->OptionsHandler = new OptionsHandler();
 		$this->WBW_Rest = new WBW_Rest();
-		$this->wbw_dbg = new WBW_Debug();
 		$this->WBW_WP_Options = new WBW_WP_Options();
 
 		$this->namespace = $this->WBW_Rest->wbw_rest_namespace;
@@ -244,7 +244,7 @@ class Controller extends \WP_REST_Controller
 	{
 		
 
-		$this->wbw_dbg->debug_log("get submissions current user " . get_current_user_id());
+		$this->debug_log("get submissions current user " . get_current_user_id());
 		if (!current_user_can($this->WBW_WP_Options->wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view submissions.'), array('status' => $this->authorization_status_code()));
 		}
@@ -254,7 +254,7 @@ class Controller extends \WP_REST_Controller
 	public function get_submission_permissions_check($request)
 	{
 		
-		$this->wbw_dbg->debug_log("get submissions current user " . get_current_user_id());
+		$this->debug_log("get submissions current user " . get_current_user_id());
 		if (!current_user_can($this->WBW_WP_Options->wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view a submission.'), array('status' => $this->authorization_status_code()));
 		}
@@ -266,7 +266,7 @@ class Controller extends \WP_REST_Controller
 
 		
 
-		$this->wbw_dbg->debug_log("approve submission current user " . get_current_user_id());
+		$this->debug_log("approve submission current user " . get_current_user_id());
 		if (!current_user_can($this->WBW_WP_Options->wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot approve this submission.'), array('status' => $this->authorization_status_code()));
 		}
@@ -277,7 +277,7 @@ class Controller extends \WP_REST_Controller
 	{
 		
 
-		$this->wbw_dbg->debug_log("reject submission current user " . get_current_user_id());
+		$this->debug_log("reject submission current user " . get_current_user_id());
 		if (!current_user_can($this->WBW_WP_Options->wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot reject this submission.'), array('status' => $this->authorization_status_code()));
 		}
@@ -289,7 +289,7 @@ class Controller extends \WP_REST_Controller
 		// delete submissions is limited to admin
 		
 
-		$this->wbw_dbg->debug_log("delete submission current user " . get_current_user_id());
+		$this->debug_log("delete submission current user " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot delete this submission.'), array('status' => $this->authorization_status_code()));
 		}
@@ -300,7 +300,7 @@ class Controller extends \WP_REST_Controller
 	{
 		
 
-		$this->wbw_dbg->debug_log("patch submission current user " . get_current_user_id());
+		$this->debug_log("patch submission current user " . get_current_user_id());
 		if (!current_user_can($this->WBW_WP_Options->wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot patch this submission.'), array('status' => $this->authorization_status_code()));
 		}
@@ -319,7 +319,7 @@ class Controller extends \WP_REST_Controller
 	{
 		
 
-		$this->wbw_dbg->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
+		$this->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area updates.'), array('status' => $this->authorization_status_code()));
 		}
@@ -329,7 +329,7 @@ class Controller extends \WP_REST_Controller
 	public function delete_service_bodies_permissions_check($request)
 	{
 
-		$this->wbw_dbg->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
+		$this->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area updates.'), array('status' => $this->authorization_status_code()));
 		}
@@ -340,7 +340,7 @@ class Controller extends \WP_REST_Controller
 	{
 		
 
-		$this->wbw_dbg->debug_log("post_bmltserver " . get_current_user_id());
+		$this->debug_log("post_bmltserver " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post server updates.'), array('status' => $this->authorization_status_code()));
 		}
@@ -351,7 +351,7 @@ class Controller extends \WP_REST_Controller
 	{
 		
 
-		$this->wbw_dbg->debug_log("get_bmltserver " . get_current_user_id());
+		$this->debug_log("get_bmltserver " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post server updates.'), array('status' => $this->authorization_status_code()));
 		}
@@ -362,7 +362,7 @@ class Controller extends \WP_REST_Controller
 	{
 		
 
-		$this->wbw_dbg->debug_log("patch_bmltserver " . get_current_user_id());
+		$this->debug_log("patch_bmltserver " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot patch server updates.'), array('status' => $this->authorization_status_code()));
 		}
@@ -373,7 +373,7 @@ class Controller extends \WP_REST_Controller
 	{
 		
 
-		$this->wbw_dbg->debug_log("patch_bmltserver " . get_current_user_id());
+		$this->debug_log("patch_bmltserver " . get_current_user_id());
 		if (!current_user_can($this->WBW_WP_Options->wbw_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot geolocate an address.'), array('status' => $this->authorization_status_code()));
 		}
@@ -384,7 +384,7 @@ class Controller extends \WP_REST_Controller
 	{
 		
 
-		$this->wbw_dbg->debug_log("post_wbw_Backup_permissions_check " . get_current_user_id());
+		$this->debug_log("post_wbw_Backup_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot call the backup API.'), array('status' => $this->authorization_status_code()));
 		}
@@ -395,7 +395,7 @@ class Controller extends \WP_REST_Controller
 	{
 		
 
-		$this->wbw_dbg->debug_log("post_wbw_restore_permissions_check " . get_current_user_id());
+		$this->debug_log("post_wbw_restore_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot call the restore API.'), array('status' => $this->authorization_status_code()));
 		}

@@ -11,9 +11,8 @@ import {
 
 from './helpers/helper.js';
 
-const url = 'http://54.153.167.239/flop/wp-json/wbw/v1/options/backup';
-
-const logger = RequestLogger({ url, method: 'post' }, {
+const backupurl = userVariables.admin_backup_json;
+const logger = RequestLogger({ backupurl , method: 'post' }, {
     logResponseHeaders: true,
     logResponseBody:    true
 });

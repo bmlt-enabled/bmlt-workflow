@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use wbw\WBW_Debug;
 use wbw\REST\Handlers\ServiceBodiesHandler;
 
 use PHPUnit\Framework\TestCase;
@@ -22,6 +21,8 @@ require_once('config_phpunit.php');
  */
 final class ServiceBodiesHandlerTest extends TestCase
 {
+    use \wbw\WBW_Debug;
+
     protected function setVerboseErrorHandler()
     {
         $handler = function ($errorNumber, $errorString, $errorFile, $errorLine) {
@@ -58,7 +59,6 @@ Line: $errorLine
         Functions\when('\absint')->returnArg();
         Functions\when('wp_safe_remote_post')->returnArg();
 
-        $this->wbw_dbg = new WBW_Debug();
     }
 
     protected function tearDown(): void
@@ -111,10 +111,10 @@ Line: $errorLine
 
         $response = $rest->get_service_bodies_handler($request);
 
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log(($response));
         $this->assertEquals($response->get_data()['2']['name'], 'Sydney Metro');
     }
 
@@ -172,10 +172,10 @@ Line: $errorLine
 
     //     $response = $rest->get_service_bodies_handler($request);
 
-    //     $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+    //     $this->debug_log(($response));
 
     //     $this->assertInstanceOf(WP_REST_Response::class, $response);
-    //     $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+    //     $this->debug_log(($response));
     //     $this->assertEquals($response->get_data()['2']['name'], 'Sydney Metro');
     // }
 

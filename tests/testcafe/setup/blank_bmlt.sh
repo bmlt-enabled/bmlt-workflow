@@ -1,2 +1,2 @@
 #!/bin/sh
-mysql -D blank_bmlt -ussm-user < /home/ssm-user/blank_bmlt.sql
+mysql -D blank_bmlt -ussm-user < /home/ssm-user/scripts/blank_bmlt.sql

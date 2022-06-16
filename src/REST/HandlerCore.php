@@ -2,7 +2,6 @@
 
 namespace wbw\REST;
 
-use wbw\WBW_Debug;
 use wbw\BMLT\Integration;
 
 class HandlerCore

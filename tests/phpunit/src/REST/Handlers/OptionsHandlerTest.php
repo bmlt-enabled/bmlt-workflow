@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use wbw\WBW_Debug;
 use wbw\REST\Handlers\OptionsHandler;
 
 use PHPUnit\Framework\TestCase;
@@ -20,6 +19,8 @@ require_once('config_phpunit.php');
  */
 final class OptionsHandlerTest extends TestCase
 {
+    use \wbw\WBW_Debug;
+
     protected function setVerboseErrorHandler()
     {
         $handler = function ($errorNumber, $errorString, $errorFile, $errorLine) {
@@ -49,7 +50,6 @@ Line: $errorLine
         }
 
         Brain\Monkey\setUp();
-        $this->wbw_dbg = new WBW_Debug();
     }
 
     protected function tearDown(): void
@@ -107,7 +107,7 @@ Line: $errorLine
 
         $response = $rest->post_wbw_backup_handler($request);
 
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log(($response));
         $data = $response->get_data();
         $this->assertEquals($data['message'],'Backup Successful');
         $backup = json_decode($data['backup'],true);
@@ -164,7 +164,7 @@ Line: $errorLine
 
 //         $response = $rest->post_wbw_backup_handler($request);
 
-//         $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+//         $this->debug_log(($response));
 //         $data = $response->get_data();
 //         $this->assertEquals($data['message'],'Backup Successful');
 //         $backup = json_decode($data['backup'],true);

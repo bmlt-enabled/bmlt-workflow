@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use wbw\WBW_Debug;
 use wbw\BMLT\Integration;
 
 use PHPUnit\Framework\TestCase;
@@ -18,6 +17,8 @@ require_once('config_phpunit.php');
  */
 final class IntegrationTest extends TestCase
 {
+    use \wbw\WBW_Debug;
+
     protected function setVerboseErrorHandler()
     {
         $handler = function ($errorNumber, $errorString, $errorFile, $errorLine) {
@@ -50,7 +51,6 @@ Line: $errorLine
         Brain\Monkey\setUp();
 
         Functions\when('\unserialize')->returnArg();
-        $this->wbw_dbg = new WBW_Debug();
     }
 
     protected function tearDown(): void
@@ -464,8 +464,8 @@ Line: $errorLine
         $integration = new Integration(true,$WBW_WP_Options);
         $response = $integration->geolocateAddress('sydney, australia');
         
-        $this->wbw_dbg->debug_log("*** GEO RESPONSE");
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log("*** GEO RESPONSE");
+        $this->debug_log(($response));
 
         $this->assertIsNumeric($response['latitude']);
         $this->assertIsNumeric($response['longitude']);
@@ -505,8 +505,8 @@ Line: $errorLine
         $integration = new Integration(true,$WBW_WP_Options);
         $response = $integration->geolocateAddress('junk, junk');
         
-        $this->wbw_dbg->debug_log("*** GEO RESPONSE");
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log("*** GEO RESPONSE");
+        $this->debug_log(($response));
         $this->assertInstanceOf(WP_Error::class, $response);
 
     }
@@ -544,8 +544,8 @@ Line: $errorLine
         $integration = new Integration(true,$WBW_WP_Options);
         $response = $integration->geolocateAddress('junk, junk');
         
-        $this->wbw_dbg->debug_log("*** GEO RESPONSE");
-        $this->wbw_dbg->debug_log($this->wbw_dbg->vdump($response));
+        $this->debug_log("*** GEO RESPONSE");
+        $this->debug_log(($response));
         $this->assertInstanceOf(WP_Error::class, $response);
 
     }
