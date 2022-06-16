@@ -1,5 +1,6 @@
 # git clone https://github.com/bmlt-enabled/wordpress-bmlt-workflow.git
 #
+#
 cd /home/ssm-user
 cd wordpress-bmlt-workflow
 git pull
