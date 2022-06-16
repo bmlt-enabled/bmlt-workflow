@@ -74,7 +74,7 @@ if (!class_exists('wbw_plugin')) {
 
             // base css and js for this page
             $this->prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
-            $this->prevent_cache_enqueue_style('wbw-meeting-update-form-css', false, 'js/meeting_update_form.css');
+            $this->prevent_cache_enqueue_style('wbw-meeting-update-form-css', false, 'css/meeting_update_form.css');
             $this->prevent_cache_enqueue_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
             wp_enqueue_style('dashicons');
 
