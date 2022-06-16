@@ -1,3 +1,3 @@
 <?php
-echo shell_exec('sudo -u ssm-user /home/ssm-user/blank_submission.sh');
+echo shell_exec('sudo -u ssm-user /home/ssm-user/scripts/blank_submission.sh');
 ?>

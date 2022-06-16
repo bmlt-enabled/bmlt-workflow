@@ -11,9 +11,8 @@ import {
 
 from './helpers/helper.js';
 
-const url = 'http://54.153.167.239/flop/wp-json/wbw/v1/options/backup';
-
-const logger = RequestLogger({ url, method: 'post' }, {
+const backupurl = userVariables.admin_backup_json;
+const logger = RequestLogger({ backupurl , method: 'post' }, {
     logResponseHeaders: true,
     logResponseBody:    true
 });
@@ -38,7 +37,7 @@ test('Backup', async t => {
         // .expect(logger.contains(r => r.response.statusCode === 200)).ok();
     // debugger;
 
-    // console.log(logger.requests);
+    console.log(logger.requests);
     var f=JSON.parse(logger.requests[0].response.body.toString())
     var backup = JSON.parse(f.backup);
     await t.expect(f.message).eql('Backup Successful')

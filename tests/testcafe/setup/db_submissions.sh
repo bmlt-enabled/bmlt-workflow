@@ -1,2 +1,2 @@
 #!/bin/sh
-mysql -D wordpress-db -ussm-user < /home/ssm-user/db-submission.sql
+mysql -D wpdevdb -ussm-user < /home/ssm-user/db-submission.sql
