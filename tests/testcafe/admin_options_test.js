@@ -37,7 +37,7 @@ test('Backup', async t => {
         // .expect(logger.contains(r => r.response.statusCode === 200)).ok();
     // debugger;
 
-    console.log(logger.requests);
+    // console.log(logger.requests);
     var f=JSON.parse(logger.requests[0].response.body.toString())
     var backup = JSON.parse(f.backup);
     await t.expect(f.message).eql('Backup Successful')
