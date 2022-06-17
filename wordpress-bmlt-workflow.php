@@ -71,7 +71,12 @@ if (!class_exists('wbw_plugin')) {
             if ($wbw_bmlt_test_status != "success") {
                 wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
             }
-
+            wp_dequeue_style('wp-block-library');
+            wp_dequeue_style('wp-block-library-theme');
+            
+            wp_dequeue_style('wc-block-style'); // disable woocommerce frontend block styles
+            wp_dequeue_style('storefront-gutenberg-blocks'); // disable storefront frontend block styles
+            
             wp_dequeue_style( 'global-styles' );
             echo "<test></test>";
             // base css and js for this page
