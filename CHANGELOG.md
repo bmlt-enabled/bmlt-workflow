@@ -1,3 +1,7 @@
+## 0.4.2 (Jun 18, 2022)
+- Fix for #65 ( thanks @paulnage !)
+- Multiple css and css loader fixes ( thanks @tempsaint @californiasteve !)
+
 ## 0.4.1 (Jun 16, 2022)
 - Lots of bugfixes from clean site testing
 - Testcafe now has a fresh wordpress site constructor, with plugin install, activation and setup

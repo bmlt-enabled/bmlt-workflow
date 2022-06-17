@@ -4,12 +4,10 @@
  * Plugin Name: Wordpress BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
  * Description: Wordpress BMLT Workflow
- * Version: 0.4.0
+ * Version: 0.4.2
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
-
-// the version of the db schema in this release
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
