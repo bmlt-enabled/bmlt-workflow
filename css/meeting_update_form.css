@@ -55,6 +55,7 @@ body {
   grid-template-columns: repeat(2, [col] 1fr);
   grid-template-rows: repeat(5, [row] auto);
   box-sizing: border-box;
+  font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
 .form-grid-top {
