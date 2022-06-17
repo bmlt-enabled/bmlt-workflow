@@ -1,3 +1,10 @@
+#form-replace {
+  width: 1170px !important;
+  max-width: 1170px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 input[type="number"]::-webkit-inner-spin-button, 
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -52,8 +59,13 @@ body {
 .form-grid {
   display: grid;
   grid-gap: 10px;
+  width: 1170px;
+  margin-left: auto;
+  margin-right: auto;
   grid-template-columns: repeat(2, [col] 1fr);
   grid-template-rows: repeat(5, [row] auto);
+  box-sizing: border-box;
+  font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 }
 
 .form-grid-top {
@@ -81,7 +93,6 @@ body {
   grid-row: row 5;
 }
 
-
 .form-grid input {
   line-height: 1.5;
   font-size: 1.2em;
@@ -89,6 +100,16 @@ body {
   display: block;
   width: 100%;
   height: 2.1em;
+  box-sizing: border-box;
+}
+
+.form-grid textarea {
+  line-height: 1.5;
+  font-size: 1.2em;
+  padding: 5px 10px;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .form-grid select {
@@ -98,6 +119,7 @@ body {
   display: block;
   width: 100%;
   height: 2.1em;
+  box-sizing: border-box;
 }
 
 .form-grid label {
@@ -106,6 +128,7 @@ body {
   padding: 10px 5px 5px 2px;
   letter-spacing: 1px;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .form-grid .inline label {
@@ -114,6 +137,7 @@ body {
   padding: 10px 5px 5px 2px;
   letter-spacing: 1px;
   cursor: pointer;
+  box-sizing: border-box;
 }
 
 .form-grid .inline select {
@@ -121,8 +145,9 @@ body {
   font-size: 1.2em;
   padding: 5px 10px;
   display: inline;
-  width: 35%;
+  width: auto;
   height: 2.1em;
+  box-sizing: border-box;
 }
 
 .grid-flex-container {
@@ -135,7 +160,7 @@ body {
 }
 
 .grid-flex-item input {
-  width: 90%;
+  width: 70%;
 }
 
 .wbw-changed.wbw-changed {
@@ -166,7 +191,6 @@ span.dashicons.dashicons-info-outline {
 .tooltip label {
   padding-bottom: 0%;
 }
-
 
 .tooltip .left {
   min-width:10em;

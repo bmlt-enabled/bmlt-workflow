@@ -4,12 +4,10 @@
  * Plugin Name: Wordpress BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
  * Description: Wordpress BMLT Workflow
- * Version: 0.4.0
+ * Version: 0.4.2
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
-
-// the version of the db schema in this release
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
@@ -74,7 +72,7 @@ if (!class_exists('wbw_plugin')) {
 
             // base css and js for this page
             $this->prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
-            $this->prevent_cache_enqueue_style('wbw-meeting-update-form-css', false, 'js/meeting_update_form.js');
+            $this->prevent_cache_enqueue_style('wbw-meeting-update-form-css', false, 'css/meeting_update_form.css');
             $this->prevent_cache_enqueue_script('wbw-general-js', array('jquery'), 'js/script_includes.js');
             wp_enqueue_style('dashicons');
 
@@ -390,7 +388,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'Email from address',
-                    'sanitize_callback' => 'string_sanitize_callback',
+                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'example@example'
                 )
@@ -402,7 +400,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'Default for close meeting submission',
-                    'sanitize_callback' => 'string_sanitize_callback',
+                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'unpublish'
                 )
@@ -414,7 +412,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'optional field for location_nation',
-                    'sanitize_callback' => 'string_sanitize_callback',
+                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'hidden'
                 )
@@ -426,7 +424,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'optional field for location_sub_province',
-                    'sanitize_callback' => 'string_sanitize_callback',
+                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'hidden'
                 )
@@ -438,7 +436,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'wbw_submitter_email_template',
-                    'sanitize_callback' => 'string_sanitize_callback',
+                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html')
                 )
@@ -450,7 +448,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'wbw_fso_email_template',
-                    'sanitize_callback' => 'string_sanitize_callback',
+                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html')
                 )
@@ -462,7 +460,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'FSO email address',
-                    'sanitize_callback' => 'string_sanitize_callback',
+                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'example@example.example'
                 )
