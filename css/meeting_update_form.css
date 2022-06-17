@@ -125,6 +125,14 @@ body {
   height: 2.1em;
 }
 
+
+body .wbw_wide_form {
+  float: left;
+  margin-inline-start: 0;
+  margin-inline-end: 2em;
+}   
+
+
 .grid-flex-container {
   display: flex;
 }

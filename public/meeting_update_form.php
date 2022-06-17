@@ -44,7 +44,7 @@ EOD;
 ?>
 
 
-<div id="form_replace">
+<div id="form_replace" class="wbw_wide_form">
     <form action="#" method="post" id="meeting_update_form">
         <div class="rendered-form">
             <div>
