@@ -81,14 +81,21 @@ body {
   grid-row: row 5;
 }
 
-
 .form-grid input {
   line-height: 1.5;
   font-size: 1.2em;
   padding: 5px 10px;
   display: block;
-  width: 100%;
+  width: 95%;
   height: 2.1em;
+}
+
+.form-grid textarea {
+  line-height: 1.5;
+  font-size: 1.2em;
+  padding: 5px 10px;
+  display: block;
+  width: 95%;
 }
 
 .form-grid select {
@@ -121,17 +128,9 @@ body {
   font-size: 1.2em;
   padding: 5px 10px;
   display: inline;
-  width: 35%;
+  width: auto;
   height: 2.1em;
 }
-
-
-body .wbw_wide_form {
-  float: left;
-  margin-inline-start: 0;
-  margin-inline-end: 2em;
-}   
-
 
 .grid-flex-container {
   display: flex;
@@ -143,7 +142,7 @@ body .wbw_wide_form {
 }
 
 .grid-flex-item input {
-  width: 90%;
+  width: 70%;
 }
 
 .wbw-changed.wbw-changed {
@@ -174,7 +173,6 @@ span.dashicons.dashicons-info-outline {
 .tooltip label {
   padding-bottom: 0%;
 }
-
 
 .tooltip .left {
   min-width:10em;

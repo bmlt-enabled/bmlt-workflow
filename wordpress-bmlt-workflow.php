@@ -72,7 +72,7 @@ if (!class_exists('wbw_plugin')) {
                 wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
             }
 
-            wp_dequeue_style( 'global-styles' );
+            // wp_dequeue_style( 'global-styles' );
             // base css and js for this page
             $this->prevent_cache_enqueue_script('wbw-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
             $this->prevent_cache_enqueue_style('wbw-meeting-update-form-css', false, 'css/meeting_update_form.css');

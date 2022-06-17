@@ -48,7 +48,7 @@ EOD;
     <form action="#" method="post" id="meeting_update_form">
         <div class="rendered-form">
             <div>
-                <label for="update_reason"">Reason For Update:</label>
+                <label for="update_reason">Reason For Update:</label>
                 <select class="update-form-select" name="update_reason" id="update_reason">
                     <option disabled="null" selected="null">Select Reason...</option>
                     <option value="reason_new">New Meeting</option>
@@ -63,7 +63,7 @@ EOD;
             </div>
             <div id="meeting_selector">
                 <br>
-                <label for="meeting-searcher"">Search For Meeting:</label>
+                <label for="meeting-searcher">Search For Meeting:</label>
                 <select name="meeting-searcher" class="meeting-searcher" id="meeting-searcher">
                     <option></option>
                     </select>
@@ -284,7 +284,7 @@ EOD;
                     </div>
                     <hr class="wbw-error-message">
 
-                    <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"><span class="spinner" id="wbw-submit-spinner"></span></p>
+                    <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"><span class="spinner" id="wbw-submit-spinner"></span>
                 </div>
             </div>
         </div>
