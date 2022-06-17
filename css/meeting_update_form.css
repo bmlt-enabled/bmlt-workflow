@@ -59,7 +59,7 @@ body {
 .form-grid {
   display: grid;
   grid-gap: 10px;
-  /* width: 1170px; */
+  width: 1170px;
   /* margin-left: auto;
   margin-right: auto; */
   grid-template-columns: repeat(2, [col] 1fr);
