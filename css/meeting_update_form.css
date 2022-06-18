@@ -639,13 +639,13 @@ span.select2-container--wbw_select2_theme .select2-selection--multiple .select2-
   -webkit-appearance: textfield;
 } */
 
-.select2-container--wbw_select2_theme .select2-search--inline .select2-search__field {
+/* .select2-container--wbw_select2_theme .select2-search--inline .select2-search__field {
   background: transparent;
   border: none;
   outline: 0;
   box-shadow: none;
   -webkit-appearance: textfield;
-}
+} */
 
 
 .select2-container--wbw_select2_theme .select2-results>.select2-results__options {
