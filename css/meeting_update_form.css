@@ -157,7 +157,7 @@ body {
 
 .grid-flex-item {
   flex-grow: 1;
-  height: 100px;
+  height: auto;
 }
 
 .grid-flex-item input {
