@@ -60,6 +60,7 @@ EOD;
             <textarea name="other_reason" id="other_reason" maxlength="512" rows="5" cols="50" placeholder="Provide as much detail about your meeting change request as you can and we'll endeavour to help"></textarea>
         </div>
         <div id="meeting_selector">
+            <br>
             <label for="meeting-searcher">Search For Meeting:</label>
             <select name="meeting-searcher" class="meeting-searcher" id="meeting-searcher">
                 <option></option>

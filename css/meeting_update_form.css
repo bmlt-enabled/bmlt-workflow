@@ -506,7 +506,13 @@ span.select2-container--wbw_select2_theme .select2-selection--single {
   border-width: 0 4px 5px 4px;
 }
 
-.select2-container--wbw_select2_theme .select2-selection--multiple {
+span.select2-container--wbw_select2_theme .select2-selection--multiple {
+  background-color: #fff;
+  border-radius: 8px;
+  height: 3rem;
+}
+
+/* .select2-container--wbw_select2_theme .select2-selection--multiple {
   background-color: white;
   border: 1px solid #aaa;
   border-radius: 4px;
@@ -514,7 +520,7 @@ span.select2-container--wbw_select2_theme .select2-selection--single {
   padding-bottom: 5px;
   padding-right: 5px;
   position: relative;
-}
+} */
 
 .select2-container--wbw_select2_theme .select2-selection--multiple.select2-selection--clearable {
   padding-right: 25px;
