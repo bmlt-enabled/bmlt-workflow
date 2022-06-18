@@ -1,9 +1,3 @@
-div#form-replace.wbw_wide_form {
-  max-width: 1170px !important;
-  margin-left: auto;
-  margin-right: auto;
-}
-
 input[type="number"]::-webkit-inner-spin-button, 
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
