@@ -94,7 +94,7 @@ body {
 }
 
 .form-grid input,
-.form-grid textarea,
+.form-grid textarea:not(.select2-search__field),
 .form-grid select,
 select.update-form-select,
 input#submit.button,
