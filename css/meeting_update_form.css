@@ -123,7 +123,7 @@ input#submit.button {
   height: 3rem;
 }
 
-.form-grid textarea {
+.form-grid textarea:not(.select2-search__field) {
   height: 6rem;
 }
 
@@ -510,6 +510,10 @@ span.select2-container--wbw_select2_theme .select2-selection--multiple {
   background-color: #fff;
   border-radius: 8px;
   height: 3rem;
+}
+
+span.select2-container--wbw_select2_theme .select2-selection--single .select2-selection__rendered {
+  padding-top: .6rem;
 }
 
 .select2-container--wbw_select2_theme .select2-selection--multiple .select2-selection__placeholder {
