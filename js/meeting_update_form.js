@@ -24,7 +24,7 @@ jQuery(document).ready(function ($) {
     placeholder: "Select from available formats",
     multiple: true,
     data: formatdata,
-    selectionCssClass: "select2-custom",
+    // selectionCssClass: "select2-custom",
     width: "100%",
     theme: 'flat',
   });
@@ -155,7 +155,7 @@ jQuery(document).ready(function ($) {
       dropdownAutoWidth: true,
       matcher: matchCustom,
       theme: 'flat',
-      selectionCssClass: "meeting-searcher-custom",
+      // selectionCssClass: "meeting-searcher-custom",
     });
 
     $("#meeting-searcher").on("select2:open", function (e) {
