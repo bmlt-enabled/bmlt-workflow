@@ -141,6 +141,10 @@ select.update-form-select {
   border-width: 2px;
 }
 
+select.update-form-select {
+  width: auto;
+}
+
 .form-grid select
 {
   width: 100%;
