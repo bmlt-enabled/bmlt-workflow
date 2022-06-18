@@ -512,6 +512,10 @@ span.select2-container--wbw_select2_theme .select2-selection--multiple {
   height: 3rem;
 }
 
+.select2-container--wbw_select2_theme .select2-selection--multiple .select2-selection__placeholder {
+  color: rgb(64,64,64);
+}
+
 /* .select2-container--wbw_select2_theme .select2-selection--multiple {
   background-color: white;
   border: 1px solid #aaa;
