@@ -509,7 +509,7 @@ span.select2-container--wbw_select2_theme .select2-selection--multiple .select2-
   margin-bottom: 0;
 
   margin-left: 0rem;
-  display: block;
+  /* display: block; */
 }
 
 .select2-container--wbw_select2_theme .select2-selection--multiple .select2-selection__placeholder {
