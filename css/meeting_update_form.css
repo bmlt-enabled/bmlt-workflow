@@ -101,7 +101,7 @@ input#submit.button
 {
   line-height: 1.5;
   padding-top: .25rem; 
-  padding-right: .25rem;
+  /* padding-right: .25rem; */
   padding-bottom: .25rem;
   padding-left: .5rem;
   display: block;
@@ -117,6 +117,7 @@ input#submit.button
 
 input#submit.button {
   background-color: rgb(230,230,230);
+  color: rgba(0,0,0,0.8);
 }
 
 .form-grid input 
