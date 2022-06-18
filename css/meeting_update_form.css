@@ -10,15 +10,6 @@ input[type="number"]::-webkit-outer-spin-button {
   margin: 0;
 }
 
-/* 
-.meeting-searcher-custom.meeting-searcher-custom.meeting-searcher-custom {
-  line-height: 1.5;
-  font-size: 1.2rem;
-  padding: 5px 10px;
-  display: block;
-  height: 2.1rem;
-} */
-
 .select2-results__options::-webkit-scrollbar {
   width: 10px;
 }
@@ -43,7 +34,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 
-.select2-custom ul {
+/* .select2-custom ul {
   margin: 0;
 }
 
@@ -51,7 +42,7 @@ input[type="number"]::-webkit-outer-spin-button {
   margin-left: 10px;
   margin-bottom: 3px;
   height: auto;
-}
+} */
 
 body {
   margin: 40px;
@@ -97,8 +88,8 @@ body {
 .form-grid textarea:not(.select2-search__field),
 .form-grid select,
 select.update-form-select,
-input#submit.button,
-.meeting-searcher-custom.meeting-searcher-custom.meeting-searcher-custom {
+input#submit.button
+{
   line-height: 1.5;
   padding-top: .25rem;
   padding-bottom: .25rem;
@@ -647,6 +638,15 @@ span.select2-container--wbw_select2_theme .select2-selection--multiple .select2-
   margin-top: 0.5em
   -webkit-appearance: textfield;
 } */
+
+.select2-container--wbw_select2_theme .select2-search--inline .select2-search__field {
+  background: transparent;
+  border: none;
+  outline: 0;
+  box-shadow: none;
+  -webkit-appearance: textfield;
+}
+
 
 .select2-container--wbw_select2_theme .select2-results>.select2-results__options {
   max-height: 200px;
