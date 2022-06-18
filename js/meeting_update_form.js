@@ -26,6 +26,7 @@ jQuery(document).ready(function ($) {
     data: formatdata,
     selectionCssClass: "select2-custom",
     width: "100%",
+    theme: 'flat',
   });
 
   // hide / show / required our optional fields
@@ -153,6 +154,7 @@ jQuery(document).ready(function ($) {
       allowClear: true,
       dropdownAutoWidth: true,
       matcher: matchCustom,
+      theme: 'flat',
       selectionCssClass: "meeting-searcher-custom",
     });
 
