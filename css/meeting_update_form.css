@@ -437,7 +437,9 @@ span.select2-container--wbw_select2_theme .select2-selection--single {
 }
 
 .select2-container--wbw_select2_theme .select2-selection--single .select2-selection__rendered {
-  padding-top: .6rem;
+  /* padding-top: .6rem; */
+  padding-top: 0rem;
+  margin-bottom: 0;
 }
 
 .select2-container--wbw_select2_theme .select2-selection--single .select2-selection__clear {
