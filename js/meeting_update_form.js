@@ -153,7 +153,7 @@ jQuery(document).ready(function ($) {
       allowClear: true,
       dropdownAutoWidth: true,
       matcher: matchCustom,
-      selectionCssClass: "select2-custom",
+      selectionCssClass: "meeting-searcher-custom",
     });
 
     $("#meeting-searcher").on("select2:open", function (e) {

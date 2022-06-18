@@ -30,6 +30,14 @@ input[type="number"]::-webkit-outer-spin-button {
   height: 2.1em;
 }
 
+.meeting-searcher-custom {
+  line-height: 1.5;
+  font-size: 1.2em;
+  padding: 5px 10px;
+  display: block;
+  height: 2.1em;
+}
+
 .select2-results__options::-webkit-scrollbar {
   width: 10px;
 }
