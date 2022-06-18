@@ -129,7 +129,8 @@ body {
   font-size: 1.2rem
 }
 
-.form-grid select {
+.form-grid select,
+.update-form-select select {
   line-height: 1.5;
   padding-top: 0;
   padding-bottom: 0;
