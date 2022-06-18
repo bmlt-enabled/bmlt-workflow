@@ -544,7 +544,7 @@ span.select2-container--wbw_select2_theme .select2-selection--multiple .select2-
   vertical-align: bottom;
   white-space: nowrap;
 }
-/*
+
 .select2-container--wbw_select2_theme .select2-selection--multiple .select2-selection__choice__display {
   cursor: default;
   padding-left: 2px;
@@ -583,7 +583,7 @@ span.select2-container--wbw_select2_theme .select2-selection--multiple .select2-
   padding-left: 5px;
   padding-right: 2px;
 }
-
+/*
 .select2-container--wbw_select2_theme[dir="rtl"] .select2-selection--multiple .select2-selection__choice__remove {
   border-left: 1px solid #aaa;
   border-right: none;
