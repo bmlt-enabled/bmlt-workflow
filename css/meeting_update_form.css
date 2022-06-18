@@ -68,15 +68,6 @@ body {
   box-sizing: border-box;
 }
 
-/* input#submit.button {
-  padding: 0;
-  background-color: rgb(230,230,230);
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  border-top-style: solid;
-  border-width: 1px;
-} */
-
 .form-grid-top {
   grid-column: col / span 2;
   grid-row: row ;
@@ -109,7 +100,10 @@ select.update-form-select,
 input#submit.button
 {
   line-height: 1.5;
-  padding: .25rem .25rem .25rem .5rem;
+  padding-top: .25rem 
+  padding-right: .25rem 
+  padding-bottom: .25rem 
+  padding-left: .5rem;
   display: block;
   width: 100%;
   box-sizing: border-box;
@@ -119,6 +113,10 @@ input#submit.button
   border-width: 1px;
   font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size: 1.2rem
+}
+
+input#submit.button {
+  background-color: rgb(230,230,230);
 }
 
 .form-grid input 
