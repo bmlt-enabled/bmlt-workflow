@@ -68,9 +68,14 @@ body {
   box-sizing: border-box;
 }
 
-input#submit.button {
+/* input#submit.button {
   padding: 0;
-}
+  background-color: rgb(230,230,230);
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-top-style: solid;
+  border-width: 1px;
+} */
 
 .form-grid-top {
   grid-column: col / span 2;
@@ -100,7 +105,8 @@ input#submit.button {
 .form-grid input,
 .form-grid textarea,
 .form-grid select,
-select.update-form-select
+select.update-form-select,
+input#submit.button
 {
   line-height: 1.5;
   padding-left: .5rem;
