@@ -460,7 +460,7 @@ span.select2-container--wbw_select2_theme .select2-selection--single {
 }
 
 .select2-container--wbw_select2_theme .select2-selection--single .select2-selection__placeholder {
-  color: #999;
+  color: rgb(64,64,64);
 }
 
 .select2-container--wbw_select2_theme .select2-selection--single .select2-selection__arrow {
