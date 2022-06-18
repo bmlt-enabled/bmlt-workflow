@@ -24,7 +24,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .update-form-select {
   line-height: 1.5;
-  font-size: 1.2em;
+  font-size: 1.2rem;
   padding: 5px 10px;
   display: block;
   height: 2.1rem;
@@ -32,7 +32,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .meeting-searcher-custom.meeting-searcher-custom.meeting-searcher-custom {
   line-height: 1.5;
-  font-size: 1.2em;
+  font-size: 1.2rem;
   padding: 5px 10px;
   display: block;
   height: 2.1rem;
@@ -119,7 +119,7 @@ body {
   /* padding: 5px 10px; */
   display: block;
   width: 100%;
-  /* height: 2.1em; */
+  /* height: 2.1rem; */
   box-sizing: border-box;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
@@ -207,13 +207,13 @@ span.dashicons.dashicons-info-outline {
 }
 
 .tooltip .left {
-  min-width:10em;
-  max-width:500em;
+  min-width:10rem;
+  max-width:500rem;
   white-space: nowrap;
   top:50%;
   right:100%;
   margin-right:20px;
-  line-height: 1.4em;
+  line-height: 1.4rem;
   transform:translate(0, -50%);
   padding:10px;
   color:#666666;
@@ -257,13 +257,13 @@ span.dashicons.dashicons-info-outline {
 
 
 .tooltip .right {
-  min-width:10em;
-  max-width:500em;
+  min-width:10rem;
+  max-width:500rem;
   white-space: nowrap;
   top:50%;
   left:100%;
   margin-left:20px;
-  line-height: 1.4em;
+  line-height: 1.4rem;
   transform:translate(0, -50%);
   padding:10px;
   color:#666666;
@@ -308,7 +308,7 @@ span.dashicons.dashicons-info-outline {
 /* stolen from wp common.css */
 
 .notice p {
-	margin: 0.5em 0;
+	margin: 0.5rem 0;
 	padding: 2px;
 }
 
@@ -353,7 +353,7 @@ span.dashicons.dashicons-info-outline {
 	top: 0;
 	right: 1px;
 	border: none;
-	margin: 0.5em;
+	margin: 0.5rem;
 	padding: 9px;
 	background: none;
 	color: #787c82;
