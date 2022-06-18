@@ -10,14 +10,14 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
-
+/* 
 .meeting-searcher-custom.meeting-searcher-custom.meeting-searcher-custom {
   line-height: 1.5;
   font-size: 1.2rem;
   padding: 5px 10px;
   display: block;
   height: 2.1rem;
-}
+} */
 
 .select2-results__options::-webkit-scrollbar {
   width: 10px;
@@ -97,7 +97,8 @@ body {
 .form-grid textarea,
 .form-grid select,
 select.update-form-select,
-input#submit.button
+input#submit.button,
+.meeting-searcher-custom.meeting-searcher-custom.meeting-searcher-custom
 {
   line-height: 1.5;
   padding-top: .25rem; 
