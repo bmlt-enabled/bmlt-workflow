@@ -150,7 +150,7 @@ jQuery(document).ready(function ($) {
 
     $("#meeting-searcher").select2({
       data: mtext,
-      placeholder: "Begin typing your meeting name",
+      placeholder: "Click to select",
       allowClear: true,
       dropdownAutoWidth: true,
       matcher: matchCustom,
