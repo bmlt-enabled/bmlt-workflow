@@ -42,13 +42,7 @@ if ($meeting_states_and_provinces) {
 EOD;
 }
 ?>
-<style>
-div#form-replace.wbw_wide_form {
-  max-width: 1170px;
-  margin-left: auto;
-  margin-right: auto;
-}
-</style>
+
 <div id="form_replace" class="wbw_wide_form">
     <form action="#" method="post" id="meeting_update_form">
         <div>
