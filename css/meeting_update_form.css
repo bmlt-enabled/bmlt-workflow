@@ -130,39 +130,10 @@ body {
 }
 
 .form-grid .inline select {
-  /* line-height: 1.5;
-  padding: 5px 10px; */
   display: inline;
-  /* width: auto;
-  height: 2.1em;
-  box-sizing: border-box;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  border-top-style: solid;
-  border-width: 1px;
-  font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-  font-size: 1.2em */
-}
+  width: auto;
 
-/* .form-grid textarea,
-.form-grid select {
-  line-height: 1.5;
-  font-size: 1.2em;
-  padding: 5px 10px;
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-} */
-/* 
-.form-grid select {
-  line-height: 1.5;
-  font-size: 1.2em;
-  padding: 5px 10px;
-  display: block;
-  width: 100%;
-  height: 2.1em;
-  box-sizing: border-box;
-} */
+}
 
 .form-grid label {
   width: 100%;
@@ -176,14 +147,7 @@ body {
 }
 
 .form-grid .inline label {
-  /* width: 100%; */
   display: inline;
-  /* padding: 10px 5px 5px 2px;
-  letter-spacing: 1px;
-  cursor: pointer;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-  font-size: 1em; */
 }
 
 
