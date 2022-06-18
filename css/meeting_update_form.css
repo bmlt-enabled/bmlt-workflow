@@ -100,9 +100,9 @@ select.update-form-select,
 input#submit.button
 {
   line-height: 1.5;
-  padding-top: .25rem 
-  padding-right: .25rem 
-  padding-bottom: .25rem 
+  padding-top: .25rem; 
+  padding-right: .25rem;
+  padding-bottom: .25rem;
   padding-left: .5rem;
   display: block;
   width: 100%;
