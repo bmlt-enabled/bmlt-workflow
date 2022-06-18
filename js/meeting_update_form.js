@@ -149,16 +149,16 @@ jQuery(document).ready(function ($) {
 
     $("#meeting-searcher").select2({
       data: mtext,
-      placeholder: "Select a meeting",
+      placeholder: "Begin typing your meeting name",
       allowClear: true,
       dropdownAutoWidth: true,
       matcher: matchCustom,
       selectionCssClass: "meeting-searcher-custom",
     });
 
-    $("#meeting-searcher").on("select2:open", function (e) {
-      $("input.select2-search__field").prop("placeholder", "Begin typing your meeting name");
-    });
+    // $("#meeting-searcher").on("select2:open", function (e) {
+    //   $("input.select2-search__field").prop("placeholder", "Begin typing your meeting name");
+    // });
 
     $("#meeting-searcher").on("select2:select", function (e) {
       disable_and_clear_highlighting();
