@@ -155,6 +155,7 @@ jQuery(document).ready(function ($) {
       dropdownAutoWidth: true,
       matcher: matchCustom,
       theme: 'wbw_select2_theme',
+      width: 'auto',
       // selectionCssClass: "meeting-searcher-custom",
     });
 
