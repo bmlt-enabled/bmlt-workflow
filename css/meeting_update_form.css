@@ -420,7 +420,7 @@ hr.wbw-error-message {
 /* select theme */
 span.select2-container--wbw_select2_theme {
   line-height: 1.5;
-  display: block;
+  /* display: block; */
   box-sizing: border-box;
   border-radius: 8px;
   border-style: solid;
