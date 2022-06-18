@@ -26,7 +26,7 @@ jQuery(document).ready(function ($) {
     data: formatdata,
     // selectionCssClass: "select2-custom",
     width: "100%",
-    theme: 'flat',
+    theme: 'wbw_select2_theme',
   });
 
   // hide / show / required our optional fields
@@ -154,7 +154,7 @@ jQuery(document).ready(function ($) {
       allowClear: true,
       dropdownAutoWidth: true,
       matcher: matchCustom,
-      theme: 'flat',
+      theme: 'wbw_select2_theme',
       // selectionCssClass: "meeting-searcher-custom",
     });
 
