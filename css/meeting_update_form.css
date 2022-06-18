@@ -609,7 +609,7 @@ span.select2-container--wbw_select2_theme .select2-selection--multiple .select2-
 }
 
 .select2-container--wbw_select2_theme.select2-container--focus .select2-selection--multiple {
-  border: solid black 1px;
+  border-color: rgb(204, 204, 204);
   outline: 0;
 }
 
