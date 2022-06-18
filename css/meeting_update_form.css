@@ -514,6 +514,7 @@ span.select2-container--wbw_select2_theme .select2-selection--multiple {
 
 span.select2-container--wbw_select2_theme .select2-selection--multiple .select2-selection__rendered {
   padding-top: .6rem;
+  margin-left: 0rem;
 }
 
 .select2-container--wbw_select2_theme .select2-selection--multiple .select2-selection__placeholder {
