@@ -440,7 +440,6 @@ hr.wbw-error-message
     padding-left: .5rem; */
     display: block;
     /* width: 100%; */
-    heightL 3rem;
     box-sizing: border-box;
     border-radius: 3px;
     border-style: solid;
@@ -452,8 +451,9 @@ hr.wbw-error-message
 
 .select2-container--wbw_select2_theme .select2-selection--single {
 	background-color: #fff;
-	border: 1px solid #aaa;
-	border-radius: 4px;
+	border-radius: 3px;
+  height: 3rem;
+
 }
 
 .select2-container--wbw_select2_theme .select2-selection--single .select2-selection__rendered {
