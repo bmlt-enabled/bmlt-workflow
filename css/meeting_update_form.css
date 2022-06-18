@@ -1,5 +1,5 @@
 div#form-replace.wbw_wide_form {
-  max-width: 1170px;
+  max-width: 1170px !important;
   margin-left: auto;
   margin-right: auto;
 }
