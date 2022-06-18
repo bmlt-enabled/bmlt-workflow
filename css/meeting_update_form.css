@@ -642,6 +642,8 @@ span.select2-container--wbw_select2_theme .select2-search--inline .select2-searc
   border: none;
   outline: 0;
   box-shadow: none;
+  height: auto;
+  margin-top: 0.5em
   -webkit-appearance: textfield;
 }
 
