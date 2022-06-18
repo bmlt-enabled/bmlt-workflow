@@ -85,8 +85,6 @@ body {
   grid-template-columns: repeat(2, [col] 1fr);
   grid-template-rows: repeat(5, [row] auto);
   box-sizing: border-box;
-  font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-  font-size: 1.2em
 }
 
 .form-grid-top {
@@ -128,6 +126,8 @@ body {
   border-top-right-radius: 3px;
   border-top-style: solid;
   border-width: 1px;
+  font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size: 1.2em
 }
 
 /* .form-grid textarea,
@@ -157,6 +157,8 @@ body {
   letter-spacing: 1px;
   cursor: pointer;
   box-sizing: border-box;
+  font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size: 1em;
 }
 
 .form-grid .inline label {
@@ -166,6 +168,8 @@ body {
   letter-spacing: 1px;
   cursor: pointer;
   box-sizing: border-box;
+  font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size: 1em;
 }
 
 .form-grid .inline select {
@@ -180,6 +184,8 @@ body {
   border-top-right-radius: 3px;
   border-top-style: solid;
   border-width: 1px;
+  font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size: 1.2em
 }
 
 .grid-flex-container {
