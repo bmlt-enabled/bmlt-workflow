@@ -109,6 +109,7 @@ input#submit.button
   box-sizing: border-box;
   border-radius: 3px;
   border-style: solid;
+  border-color: rgb(204,204,204);
   border-width: 1px;
   font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size: 1.2rem
@@ -423,3 +424,7 @@ div.error {
 	-moz-osx-font-smoothing: grayscale;
 }
 
+hr.wbw-error-message 
+{
+  border: none;
+}
