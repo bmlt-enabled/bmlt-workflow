@@ -10,7 +10,7 @@ input,
 optgroup,
 select,
 textarea {
-	font-family: 'Times New Roman', Times, serif;
+  font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 	font-size: 100%;
 	line-height: 1.15;
 	margin: 0;
