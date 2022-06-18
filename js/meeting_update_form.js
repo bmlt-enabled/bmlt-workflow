@@ -26,7 +26,7 @@ jQuery(document).ready(function ($) {
     data: formatdata,
     // selectionCssClass: "select2-custom",
     width: "100%",
-    // theme: 'wbw_select2_theme',
+    theme: 'wbw_select2_theme',
   });
 
   // hide / show / required our optional fields
