@@ -5,6 +5,17 @@ div#form_replace.wbw_wide_form {
   margin-right: auto;
 }
 
+button,
+input,
+optgroup,
+select,
+textarea {
+	font-family: 'Times New Roman', Times, serif;
+	font-size: 100%;
+	line-height: 1.15;
+	margin: 0;
+}
+
 input[type="number"]::-webkit-inner-spin-button, 
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
