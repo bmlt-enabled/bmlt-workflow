@@ -435,11 +435,12 @@ hr.wbw-error-message
 .select2-container--wbw_select2_theme
   {
     line-height: 1.5;
-    padding-top: .25rem; 
+    padding-top: 0.5rem; 
     padding-bottom: .25rem;
     padding-left: .5rem;
     display: block;
     width: 100%;
+    heightL 3rem;
     box-sizing: border-box;
     border-radius: 3px;
     border-style: solid;
