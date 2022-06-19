@@ -103,6 +103,12 @@ jQuery(document).ready(function ($) {
         notice_success(response, "wbw-error-message");
         var blob = new Blob([response.backup], { type: "application/json" });
         var link = document.createElement("a");
+        var b_elem = document.getElementById("wbw_backup_filename");
+        if(b_elem != null)
+        {
+          b_elem.parentNode.removeChild(b_elem);
+        }
+        link.setAttribute("id", "wbw_backup_filename");
         link.href = window.URL.createObjectURL(blob);
         var d = new Date();
         var datetime =

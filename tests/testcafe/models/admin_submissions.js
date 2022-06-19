@@ -1,15 +1,4 @@
-import { Selector, Role } from 'testcafe';
-import { userVariables } from '../../../.testcaferc';
-import { wordpress_login } from './wordpress_login';
-
-
-export const wbw_admin = Role(userVariables.admin_logon_page, async t => {
-    await t
-    .typeText(wordpress_login.user_login, userVariables.admin_logon)
-    .typeText(wordpress_login.user_pass, userVariables.admin_password)
-    .click(wordpress_login.wp_submit);
-});
-
+import { Selector } from 'testcafe';
 class Admin_Submissions {
     constructor () {
         // datatables
