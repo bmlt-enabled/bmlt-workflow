@@ -585,7 +585,7 @@ if (!class_exists('wbw_plugin')) {
     </div>
     END;
 
-            echo '<br><label for="wbw_email_from_address"><b>From Address:</b></label><input type="text" size="50" name="wbw_email_from_address" value="' . $from_address . '"/>';
+            echo '<br><label for="wbw_email_from_address"><b>From Address:</b></label><input id="wbw_email_from_address" type="text" size="50" name="wbw_email_from_address" value="' . $from_address . '"/>';
             echo '<br><br>';
         }
 
@@ -608,7 +608,7 @@ if (!class_exists('wbw_plugin')) {
     </div>
     END;
 
-            echo '<br><label for="wbw_delete_closed_meetings"><b>Close meeting default:</b></label><select name="wbw_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>Unpublish</option><option name="delete" value="delete" ' . $delete . '>Delete</option>';
+            echo '<br><label for="wbw_delete_closed_meetings"><b>Close meeting default:</b></label><select id="wbw_delete_closed_meetings" name="wbw_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>Unpublish</option><option name="delete" value="delete" ' . $delete . '>Delete</option>';
             echo '<br><br>';
         }
 
@@ -648,7 +648,7 @@ if (!class_exists('wbw_plugin')) {
             }
             echo <<<END
     <br><label for="${option}"><b>${friendlyname}:</b>
-    </label><select name="${option}">
+    </label><select id="${option}" name="${option}">
     <option name="hidden" value="hidden" ${hidden}>Hidden</option>
     <option name="displayrequired" value="displayrequired" ${displayrequired}>Display + Required Field</option>
     <option name="display" value="display" ${display}>Display Only</option>
@@ -667,7 +667,7 @@ if (!class_exists('wbw_plugin')) {
     </div>
     END;
 
-            echo '<br><label for="wbw_email_from_address"><b>FSO Email Address:</b></label><input type="text" size="50" name="wbw_fso_email_address" value="' . $from_address . '"/>';
+            echo '<br><label for="wbw_email_from_address"><b>FSO Email Address:</b></label><input type="text" size="50" id="wbw_fso_email_address" name="wbw_fso_email_address" value="' . $from_address . '"/>';
             echo '<br><br>';
         }
 

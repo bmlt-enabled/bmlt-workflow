@@ -75,3 +75,17 @@ test('Restore', async t => {
     await t .expect((as.dt_submission.child('tbody').child(row).child(column)).innerText).eql('restoretest');
 
 });
+
+test('Options_Save', async t => {
+    await t
+    .typeText(ao.wbw_fso_email_address, 'fsoemail@fsoemail.com')
+    .expect(ao.wbw_fso_email_address).eql('fsoemail@efsomail.com')
+    .typeText(ao.wbw_email_from_address, 'fromemail@fromemail.com')
+    .expect(ao.wbw_email_from_address).eql('fromemail@fromemail.com')
+    await select_dropdown_by_text(ao.wbw_optional_location_nation,'Display + Required Field');
+    await select_dropdown_by_text(ao.wbw_optional_location_sub_province,'Display Only');
+    await select_dropdown_by_text(ao.wbw_delete_closed_meetings,'Delete');
+    await t
+    .click(ao.submit)
+
+});
