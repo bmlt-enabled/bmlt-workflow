@@ -501,6 +501,15 @@ span.select2-container--wbw_select2_theme .select2-selection--multiple {
   background-color: #fff;
   border-radius: 8px;
   height: 3rem;
+
+	border: 1px solid #aaa;
+	cursor: text;
+	padding-bottom: 5px;
+	padding-right: 5px;
+	position: relative;
+
+
+
 }
 /*
 span.select2-container--wbw_select2_theme .select2-selection--multiple .select2-selection__rendered {
