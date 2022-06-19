@@ -79,15 +79,22 @@ test('Restore', async t => {
 });
 
 test('Options_Save', async t => {
+    const testfso = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 9);
+    const testfrom = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 9);
     await t
-    .typeText(ao.wbw_fso_email_address, 'fsoemail@fsoemail.com', { replace: true })
-    .expect(ao.wbw_fso_email_address.value).eql('fsoemail@fsoemail.com')
-    .typeText(ao.wbw_email_from_address, 'fromemail@fromemail.com', { replace: true })
-    .expect(ao.wbw_email_from_address.value).eql('fromemail@fromemail.com')
+    .typeText(ao.wbw_fso_email_address, testfso, { replace: true })
+    .expect(ao.wbw_fso_email_address.value).eql(testfso)
+    .typeText(ao.wbw_email_from_address, testfrom, { replace: true })
+    .expect(ao.wbw_email_from_address.value).eql(testfrom)
     await select_dropdown_by_text(ao.wbw_optional_location_nation,'Display + Required Field');
     await select_dropdown_by_text(ao.wbw_optional_location_sub_province,'Display Only');
     await select_dropdown_by_text(ao.wbw_delete_closed_meetings,'Delete');
     await t
     .click(ao.submit)
+    await ao.settings_updated();
+    await t    
+    .expect(ao.wbw_fso_email_address.value).eql(testfso)
+    .expect(ao.wbw_email_from_address.value).eql(testfrom)
 
+    // .expect(ao.settings_updated.exists).eql(true);
 });

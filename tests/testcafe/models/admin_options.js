@@ -24,6 +24,7 @@ class Admin_Options {
         this.wbw_delete_closed_meetings = Selector("#wbw_delete_closed_meetings");
         this.wbw_email_from_address = Selector("#wbw_email_from_address");
         this.submit = Selector('#submit');
+        this.settings_updated = Selector("#setting-error-settings_updated");
     }
 }
 
