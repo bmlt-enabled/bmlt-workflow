@@ -33,17 +33,6 @@ input[type="number"]::-webkit-outer-spin-button {
   background: rgba(255, 0, 0, 0.4);
 }
 
-
-/* .select2-custom ul {
-  margin: 0;
-}
-
-.select2-custom.select2-custom.select2-custom textarea {
-  margin-left: 10px;
-  margin-bottom: 3px;
-  height: auto;
-} */
-
 body {
   margin: 40px;
 }
@@ -172,7 +161,7 @@ select.update-form-select {
   background: #e7f478;
 }
 
-.select2-selection--multiple.select2-custom.wbw-changed {
+span.select2-selection--multiple.wbw-changed {
   background: #e7f478;
 }
 

@@ -125,7 +125,7 @@ function dismiss_notice(element) {
   jQuery(element)
     .parent()
     .slideUp("normal", function () {
-      // jQuery(this).remove();
+      jQuery(this).remove();
     });
   return false;
 }
