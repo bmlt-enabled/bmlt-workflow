@@ -456,7 +456,7 @@ span.select2-container--wbw_select2_theme .select2-selection--single {
 .select2-container--wbw_select2_theme .select2-selection--single .select2-selection__arrow {
   height: 26px;
   position: absolute;
-  top: 1px;
+  top: 0.6rem;
   right: 1px;
   width: 20px;
 }
@@ -562,7 +562,8 @@ span.select2-container--wbw_select2_theme .select2-selection--single {
 	cursor: pointer;
 	font-size: 1em;
 	font-weight: bold;
-	padding: 0 4px;
+	padding-top: 0px; 
+  padding-right: 4px;
 	position: absolute;
 	left: 0;
 	top: 0;
