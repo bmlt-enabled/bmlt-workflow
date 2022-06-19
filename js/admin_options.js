@@ -118,6 +118,8 @@ jQuery(document).ready(function ($) {
           ("0" + d.getHours().toString()).slice(-2) +
           ("0" + d.getMinutes().toString()).slice(-2);
         link.download = "backup-" + datetime + ".json";
+        // stick it in the dom so we can find it later
+        document.getElementById('wbw_file_selector').appendChild(link);
         link.click();
       })
       .fail(function (xhr) {

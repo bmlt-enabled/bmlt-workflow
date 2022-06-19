@@ -3,7 +3,7 @@ import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
 
 import { userVariables } from "../../.testcaferc";
-import { Role, RequestLogger } from "testcafe";
+import { Selector, Role, RequestLogger } from "testcafe";
 
 import { wbw_admin, click_dialog_button_by_index, select_dropdown_by_text, select_dropdown_by_value } from "./helpers/helper.js";
 
@@ -64,6 +64,7 @@ test
     });
     await b_elem();
     const filename = b_elem.getAttribute("download");
+    console.log("filename = ".filename);
     downloadedFilePath = getFileDownloadPath(filename);
     await waitForFileDownload(downloadedFilePath);
     var f = JSON.parse(logger.requests[0].response.body.toString());
