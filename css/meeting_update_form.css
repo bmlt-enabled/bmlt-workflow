@@ -638,7 +638,7 @@ span.select2-container--wbw_select2_theme .select2-selection--single {
 .select2-container--wbw_select2_theme .select2-search--inline textarea.select2-search__field {
   padding-bottom: .5rem;
   line-height: 1;
-  height: 1rem;
+  height: 1.6rem;
 }
 
 .select2-container--wbw_select2_theme .select2-results > .select2-results__options {
