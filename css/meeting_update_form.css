@@ -502,12 +502,13 @@ span.select2-container--wbw_select2_theme .select2-selection--multiple {
   border-radius: 8px;
   height: 3rem;
 
+	background-color: white;
 	border: 1px solid #aaa;
+	border-radius: 4px;
 	cursor: text;
 	padding-bottom: 5px;
 	padding-right: 5px;
 	position: relative;
-
 
 
 }
