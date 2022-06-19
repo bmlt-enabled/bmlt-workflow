@@ -429,7 +429,7 @@ span.select2-container--wbw_select2_theme {
   font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size: 1.2rem
 }
-/*
+
 span.select2-container--wbw_select2_theme .select2-selection--single {
   background-color: #fff;
   border-radius: 8px;
@@ -496,7 +496,7 @@ span.select2-container--wbw_select2_theme .select2-selection--single {
   border-color: transparent transparent #888 transparent;
   border-width: 0 4px 5px 4px;
 }
-
+/*
 span.select2-container--wbw_select2_theme .select2-selection--multiple {
   background-color: #fff;
   border-radius: 8px;
@@ -697,7 +697,7 @@ span.select2-container--wbw_select2_theme .select2-search--inline .select2-searc
 */
 
 /* default theme */
-
+/*
 .select2-container--wbw_select2_theme .select2-selection--single {
 	background-color: #fff;
 	border: 1px solid #aaa;
@@ -765,7 +765,7 @@ span.select2-container--wbw_select2_theme .select2-search--inline .select2-searc
 	border-color: transparent transparent #888 transparent;
 	border-width: 0 4px 5px 4px;
 }
-
+*/
 .select2-container--wbw_select2_theme .select2-selection--multiple {
 	background-color: white;
 	border: 1px solid #aaa;
