@@ -6,7 +6,9 @@ import { RequestLogger } from 'testcafe';
 
 import { 
     click_dialog_button_by_index,
-    get_table_row_col
+    get_table_row_col,
+    select_dropdown_by_text,
+    select_dropdown_by_value
 }
 
 from './helpers/helper.js';
@@ -78,10 +80,10 @@ test('Restore', async t => {
 
 test('Options_Save', async t => {
     await t
-    .typeText(ao.wbw_fso_email_address, 'fsoemail@fsoemail.com')
-    .expect(ao.wbw_fso_email_address).eql('fsoemail@efsomail.com')
-    .typeText(ao.wbw_email_from_address, 'fromemail@fromemail.com')
-    .expect(ao.wbw_email_from_address).eql('fromemail@fromemail.com')
+    .typeText(ao.wbw_fso_email_address, 'fsoemail@fsoemail.com', { replace: true })
+    .expect(ao.wbw_fso_email_address.value).eql('fsoemail@fsoemail.com')
+    .typeText(ao.wbw_email_from_address, 'fromemail@fromemail.com', { replace: true })
+    .expect(ao.wbw_email_from_address.value).eql('fromemail@fromemail.com')
     await select_dropdown_by_text(ao.wbw_optional_location_nation,'Display + Required Field');
     await select_dropdown_by_text(ao.wbw_optional_location_sub_province,'Display Only');
     await select_dropdown_by_text(ao.wbw_delete_closed_meetings,'Delete');
