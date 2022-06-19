@@ -418,7 +418,7 @@ hr.wbw-error-message {
 
 
 /* select theme */
-
+/*
 span.select2-container--wbw_select2_theme {
   line-height: 1.5;
   box-sizing: border-box;
@@ -429,7 +429,7 @@ span.select2-container--wbw_select2_theme {
   font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size: 1.2rem
 }
-/*
+
 span.select2-container--wbw_select2_theme .select2-selection--single {
   background-color: #fff;
   border-radius: 8px;
