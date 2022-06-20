@@ -351,6 +351,8 @@ class Integration
             if (is_wp_error($ret)) {
                 return $ret;
             }
+            $this->debug_log("got wp_error from first authenticate");
+
             // try once more in case it was a session timeout
             $ret = \wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
         }
@@ -433,8 +435,6 @@ class Integration
     public function postAuthenticatedRootServerRequestSemantic($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
-        $this->debug_log(('authenticateRootServer returns'));
-        $this->debug_log(($ret));
 
         if (is_wp_error($ret)) {
             return $ret;
