@@ -7,9 +7,9 @@ import { t, Selector, Role, RequestLogger } from "testcafe";
 
 import { wbw_admin, click_dialog_button_by_index, select_dropdown_by_text, select_dropdown_by_value } from "./helpers/helper.js";
 
-import fs from 'fs';
-import { join as joinPath } from 'path';
-import os from 'os';
+import fs from "fs";
+import { join as joinPath } from "path";
+import os from "os";
 
 const backupurl = userVariables.admin_backup_json;
 const logger = RequestLogger(
@@ -20,19 +20,18 @@ const logger = RequestLogger(
   }
 );
 
-async function waitForFileDownload (path) {
-    for (let i = 0; i < 10; i++) {
-        if (fs.existsSync(path))
-            return true;
+async function waitForFileDownload(path) {
+  for (let i = 0; i < 10; i++) {
+    if (fs.existsSync(path)) return true;
 
-        await t.wait(500);
-    }
+    await t.wait(500);
+  }
 
-    return fs.existsSync(path);
+  return fs.existsSync(path);
 }
 
-function getFileDownloadPath (download) {
-    return joinPath(os.homedir(), 'Downloads', download);
+function getFileDownloadPath(download) {
+  return joinPath(os.homedir(), "Downloads", download);
 }
 
 let downloadedFilePath = null;
@@ -48,28 +47,20 @@ fixture`admin_options_fixture`
   })
   .requestHooks(logger);
 
-test
-("Backup", async (t) => {
+test("Backup", async (t) => {
   console.log(backupurl);
   await t.click(ao.backup_button);
-    const b_elem = Selector('#wbw_backup_filename');
-    const state = await b_elem();
-    const filename = state.attributes.download;
-    downloadedFilePath = getFileDownloadPath(filename);
-    await waitForFileDownload(downloadedFilePath);
-    var f = JSON.parse(logger.requests[0].response.body.toString());
-    var backup = JSON.parse(f.backup);
+  const b_elem = Selector("#wbw_backup_filename");
+  const state = await b_elem();
+  const filename = state.attributes.download;
+  downloadedFilePath = getFileDownloadPath(filename);
+  await waitForFileDownload(downloadedFilePath);
+  var f = JSON.parse(logger.requests[0].response.body.toString());
+  var backup = JSON.parse(f.backup);
 
-  await t
-    .expect(f.message)
-    .eql("Backup Successful")
+  await t.expect(f.message).eql("Backup Successful");
 
-
-    await t
-    .expect(backup.options.wbw_db_version)
-    .eql("0.4.0")
-    .expect(backup.options.wbw_bmlt_server_address)
-    .eql("http://54.153.167.239/blank_bmlt/main_server/");
+  await t.expect(backup.options.wbw_db_version).eql("0.4.0").expect(backup.options.wbw_bmlt_server_address).eql("http://54.153.167.239/blank_bmlt/main_server/");
   // find a specific meeting
   let obj = backup.submissions.find((o) => o.id === "94");
 

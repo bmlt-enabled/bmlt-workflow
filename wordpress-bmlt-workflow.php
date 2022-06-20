@@ -357,22 +357,6 @@ if (!class_exists('wbw_plugin')) {
             $this->WBW_Rest_Controller->register_routes();
         }
 
-
-        function array_sanitize_callback($args)
-        {
-            return $args;
-        }
-
-        function editor_sanitize_callback($args)
-        {
-            return $args;
-        }
-
-        function string_sanitize_callback($args)
-        {
-            return $args;
-        }
-
         public function wbw_register_setting()
         {
 
@@ -388,7 +372,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'Email from address',
-                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
+                    'sanitize_callback' => array(&$this, 'wbw_email_from_address_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'example@example'
                 )
@@ -400,7 +384,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'Default for close meeting submission',
-                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
+                    'sanitize_callback' => array(&$this, 'wbw_delete_closed_meetings_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'unpublish'
                 )
@@ -412,7 +396,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'optional field for location_nation',
-                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
+                    'sanitize_callback' => array(&$this, 'wbw_optional_location_nation_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'hidden'
                 )
@@ -424,7 +408,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'optional field for location_sub_province',
-                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
+                    'sanitize_callback' => array(&$this, 'wbw_optional_location_sub_province_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'hidden'
                 )
@@ -436,7 +420,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'wbw_submitter_email_template',
-                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
+                    'sanitize_callback' => null,
                     'show_in_rest' => false,
                     'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html')
                 )
@@ -448,7 +432,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'wbw_fso_email_template',
-                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
+                    'sanitize_callback' => null,
                     'show_in_rest' => false,
                     'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html')
                 )
@@ -460,7 +444,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'FSO email address',
-                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
+                    'sanitize_callback' => array(&$this, 'wbw_fso_email_address_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'example@example.example'
                 )
@@ -545,6 +529,68 @@ if (!class_exists('wbw_plugin')) {
                 'wbw-settings',
                 'wbw-settings-section-id'
             );
+        }
+
+        public function wbw_optional_location_nation_sanitize_callback($input)
+        {
+            $output = get_option('wbw_optional_location_nation');
+            switch ($input) {
+                case 'hidden':
+                case 'displayrequired':
+                case 'display':
+                    add_settings_error('wbw_optional_location_nation','err','Invalid Nation setting.');
+                    return $input;
+                }
+            return $output;
+        }
+
+        public function wbw_optional_location_sub_province_sanitize_callback($input)
+        {
+            $output = get_option('wbw_optional_location_sub_province');
+            switch ($input) {
+                case 'hidden':
+                case 'displayrequired':
+                case 'display':
+                    add_settings_error('wbw_optional_location_sub_province','err','Invalid Sub Province setting.');
+                    return $input;
+                }
+            return $output;
+        }
+
+        public function wbw_email_from_address_sanitize_callback($input)
+        {
+            $output = get_option('wbw_email_from_address');
+            $sanitized_email = sanitize_email($input);
+            if (!is_email($sanitized_email))
+            {
+                add_settings_error('wbw_email_from_address','err','Invalid email from address.');
+                return $output;
+            }
+            return $sanitized_email;
+        }
+
+        public function wbw_fso_email_address_sanitize_callback($input)
+        {
+            $output = get_option('wbw_fso_email_address');
+            $sanitized_email = sanitize_email($input);
+            if (!is_email($sanitized_email))
+            {
+                add_settings_error('wbw_fso_email_address','err','Invalid FSO email address.');
+                return $output;
+            }
+            return $sanitized_email;
+        }
+
+        public function wbw_delete_closed_meetings_sanitize_callback($input)
+        {
+            $output = get_option('wbw_delete_closed_meetings');
+            switch ($input) {
+                case 'delete':
+                case 'unpublish':
+                    add_settings_error('wbw_delete_closed_meetings','err','Invalid delete closed meetings  setting.');
+                    return $input;
+                }
+            return $output;
         }
 
         public function wbw_bmlt_server_address_html()
