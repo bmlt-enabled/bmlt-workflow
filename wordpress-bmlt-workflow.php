@@ -541,9 +541,9 @@ if (!class_exists('wbw_plugin')) {
                 case 'hidden':
                 case 'displayrequired':
                 case 'display':
-                    add_settings_error('wbw_optional_location_nation','err','Invalid Nation setting.');
                     return $input;
                 }
+            add_settings_error('wbw_optional_location_nation','err','Invalid Nation setting.');
             return $output;
         }
 
@@ -554,9 +554,9 @@ if (!class_exists('wbw_plugin')) {
                 case 'hidden':
                 case 'displayrequired':
                 case 'display':
-                    add_settings_error('wbw_optional_location_sub_province','err','Invalid Sub Province setting.');
                     return $input;
                 }
+            add_settings_error('wbw_optional_location_sub_province','err','Invalid Sub Province setting.');
             return $output;
         }
 
@@ -591,9 +591,9 @@ if (!class_exists('wbw_plugin')) {
             switch ($input) {
                 case 'delete':
                 case 'unpublish':
-                    add_settings_error('wbw_delete_closed_meetings','err','Invalid delete closed meetings  setting.');
                     return $input;
                 }
+            add_settings_error('wbw_delete_closed_meetings','err','Invalid delete closed meetings  setting.');
             return $output;
         }
 
