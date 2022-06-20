@@ -431,7 +431,10 @@ class SubmissionsHandler
                     $changearr = array();
                     $changearr['bmlt_ajax_callback'] = 1;
                     $changearr['delete_meeting'] = $result['meeting_id'];
-                    // response message {'success':true,'report':'3557'}
+
+                    $this->debug_log("DELETE SEND");
+                    $this->debug_log(($changearr));
+                    
                     $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                     if (is_wp_error($response)) {
