@@ -443,6 +443,8 @@ class SubmissionsHandler
 
                     $json = wp_remote_retrieve_body($response);
                     $rep = str_replace("'", '"', $json);
+                    $this->debug_log("JSON RESPONSE");
+                    $this->debug_log(($rep));
 
                     $arr = json_decode($rep, true);
 
