@@ -18,6 +18,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 echo '<hr class="wbw-error-message">';
 echo '<div class="wrap">';
 echo '<form method="post" action="options.php">';
+settings_errors();
+
 settings_fields('wbw-settings-group');
 do_settings_sections('wbw-settings');
 

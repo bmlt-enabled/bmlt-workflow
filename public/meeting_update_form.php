@@ -43,7 +43,6 @@ EOD;
 }
 ?>
 
-
 <div id="form_replace" class="wbw_wide_form">
     <form action="#" method="post" id="meeting_update_form">
         <div>
@@ -66,7 +65,6 @@ EOD;
             <select name="meeting-searcher" class="meeting-searcher" id="meeting-searcher">
                 <option></option>
             </select>
-            <br><br>
             <input type="hidden" name="meeting_id" id="meeting_id" value="">
         </div>
         <div id="meeting_content" class="form-grid">

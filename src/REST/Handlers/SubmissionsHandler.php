@@ -431,7 +431,10 @@ class SubmissionsHandler
                     $changearr = array();
                     $changearr['bmlt_ajax_callback'] = 1;
                     $changearr['delete_meeting'] = $result['meeting_id'];
-                    // response message {'success':true,'report':'3557'}
+
+                    $this->debug_log("DELETE SEND");
+                    $this->debug_log(($changearr));
+
                     $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                     if (is_wp_error($response)) {
@@ -440,16 +443,18 @@ class SubmissionsHandler
 
                     $json = wp_remote_retrieve_body($response);
                     $rep = str_replace("'", '"', $json);
+                    $this->debug_log("JSON RESPONSE");
+                    $this->debug_log(($rep));
 
                     $arr = json_decode($rep, true);
 
                     $this->debug_log("DELETE RESPONSE");
                     $this->debug_log(($arr));
 
-                    if ((isset($arr['success'])) && ($arr['success'] !== true)) {
+                    if ((isset($arr['success'])) && ($arr['success'] != 1)) {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
                     }
-                    if ((!empty($arr['report'])) && ($arr['report'] != $change['id_bigint'])) {
+                    if ((!empty($arr['report'])) && ($arr['report'] != $result['meeting_id'])) {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
                     }
                 } else {

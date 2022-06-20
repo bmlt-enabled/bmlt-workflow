@@ -103,6 +103,12 @@ jQuery(document).ready(function ($) {
         notice_success(response, "wbw-error-message");
         var blob = new Blob([response.backup], { type: "application/json" });
         var link = document.createElement("a");
+        var b_elem = document.getElementById("wbw_backup_filename");
+        if(b_elem != null)
+        {
+          b_elem.parentNode.removeChild(b_elem);
+        }
+        link.setAttribute("id", "wbw_backup_filename");
         link.href = window.URL.createObjectURL(blob);
         var d = new Date();
         var datetime =
@@ -112,6 +118,8 @@ jQuery(document).ready(function ($) {
           ("0" + d.getHours().toString()).slice(-2) +
           ("0" + d.getMinutes().toString()).slice(-2);
         link.download = "backup-" + datetime + ".json";
+        // stick it in the dom so we can find it later
+        document.getElementById('wbw_file_selector').appendChild(link);
         link.click();
       })
       .fail(function (xhr) {
@@ -251,7 +259,7 @@ jQuery(document).ready(function ($) {
         dataType: "json",
         contentType: "application/json",
         beforeSend: function (xhr) {
-          clear_notices();
+          // clear_notices();
           xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
         },
       })

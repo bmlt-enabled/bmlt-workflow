@@ -1,256 +1,247 @@
-import { as, wbw_admin } from './models/admin_submissions';
+import { as } from "./models/admin_submissions";
+import { ao } from "./models/admin_options";
 
-import { 
-    click_table_row_column,
-    click_dt_button_by_index,
-    click_dialog_button_by_index,
-}
+import { select_dropdown_by_text, click_table_row_column, click_dt_button_by_index, click_dialog_button_by_index, wbw_admin } from "./helpers/helper.js";
+import { userVariables } from "../../.testcaferc";
 
-from './helpers/helper.js';
-import { userVariables } from '../../.testcaferc';
-
-fixture `admin_submissions_fixture`
-    .beforeEach(async t => {
-        var http = require('http');
-        // pre fill the submissions
-        http.get(userVariables.admin_submission_reset);
-        // reset bmlt to reasonable state
-        http.get(userVariables.blank_bmlt);
-        await t.useRole(wbw_admin)
-        .navigateTo(userVariables.admin_submissions_page)
-    });
-
-
-test('Approve_New_Meeting', async t => {
-
-    // new meeting = row 2
-    var row = 2;
-    await click_table_row_column(as.dt_submission,row,0);
-    // approve
-    await click_dt_button_by_index(as.dt_submission_wrapper,0);
-
-    await t
-    .expect(as.approve_dialog_parent.visible).eql(true);
-
-    await t
-    .typeText(as.approve_dialog_textarea, 'I approve this request');
-    // press ok button
-    await click_dialog_button_by_index(as.approve_dialog_parent,1);
-    // dialog closes after ok button
-    await t
-    .expect(as.approve_dialog_parent.visible).eql(false);
-
-    var column = 8;
-    await t .expect((as.dt_submission.child('tbody').child(row).child(column)).innerText).eql('Approved');
-
+fixture`admin_submissions_fixture`.beforeEach(async (t) => {
+  var http = require("http");
+  // pre fill the submissions
+  http.get(userVariables.admin_submission_reset);
+  // reset bmlt to reasonable state
+  http.get(userVariables.blank_bmlt);
+  await t.useRole(wbw_admin).navigateTo(userVariables.admin_submissions_page);
 });
 
-test('Approve_Modify_Meeting', async t => {
+test("Approve_New_Meeting", async (t) => {
+  // new meeting = row 2
+  var row = 2;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // approve
+  await click_dt_button_by_index(as.dt_submission_wrapper, 0);
 
-    // modify meeting = row 1
-    var row = 1;
-    await click_table_row_column(as.dt_submission,row,0);
-    // approve
-    await click_dt_button_by_index(as.dt_submission_wrapper,0);
+  await t.expect(as.approve_dialog_parent.visible).eql(true);
 
-    await t
-    .expect(as.approve_dialog_parent.visible).eql(true);
+  await t.typeText(as.approve_dialog_textarea, "I approve this request");
+  // press ok button
+  await click_dialog_button_by_index(as.approve_dialog_parent, 1);
+  // dialog closes after ok button
+  await t.expect(as.approve_dialog_parent.visible).eql(false);
 
-    await t
-    .typeText(as.approve_dialog_textarea, 'I approve this request');
-    // press ok button
-    await click_dialog_button_by_index(as.approve_dialog_parent,1);
-    // dialog closes after ok button
-    await t
-    .expect(as.approve_dialog_parent.visible).eql(false);
-
-    // const s = Selector("#dt-submission tr:nth-child(1) td:nth-child(9)");
-    var column = 8;
-    await t .expect((as.dt_submission.child('tbody').child(row).child(column)).innerText).eql('Approved');
-
+  var column = 8;
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
 });
 
-test('Approve_Close_Meeting', async t => {
+test("Approve_Modify_Meeting", async (t) => {
+  // modify meeting = row 1
+  var row = 1;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // approve
+  await click_dt_button_by_index(as.dt_submission_wrapper, 0);
 
-    // close meeting = row 0
-    var row = 0;
-    await click_table_row_column(as.dt_submission,row,0);
-    // approve
-    await click_dt_button_by_index(as.dt_submission_wrapper,0);
+  await t.expect(as.approve_dialog_parent.visible).eql(true);
 
-    await t
-    .expect(as.approve_close_dialog_parent.visible).eql(true);
+  await t.typeText(as.approve_dialog_textarea, "I approve this request");
+  // press ok button
+  await click_dialog_button_by_index(as.approve_dialog_parent, 1);
+  // dialog closes after ok button
+  await t.expect(as.approve_dialog_parent.visible).eql(false);
 
-    await t
-    .typeText(as.approve_close_dialog_textarea, 'I approve this request');
-    // press ok button
-    await click_dialog_button_by_index(as.approve_close_dialog_parent,1);
-    // dialog closes after ok button
-    await t
-    .expect(as.approve_close_dialog_parent.visible).eql(false);
-
-    var column = 8;
-    await t .expect((as.dt_submission.child('tbody').child(row).child(column)).innerText).eql('Approved');
-
+  // const s = Selector("#dt-submission tr:nth-child(1) td:nth-child(9)");
+  var column = 8;
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
 });
 
-test('Reject_New_Meeting', async t => {
+test("Approve_Close_Meeting_With_Unpublish", async (t) => {
 
-    // new meeting = row 2
-    var row = 2;
-    await click_table_row_column(as.dt_submission,row,0);
-    // reject
-    await click_dt_button_by_index(as.dt_submission_wrapper,1);
+  // set it to unpublish
+  await t.navigateTo(userVariables.admin_options_page);
+  await select_dropdown_by_text(ao.wbw_delete_closed_meetings, "Unpublish");
+  await t.click(ao.submit);
+  await ao.settings_updated();
+  await t.navigateTo(userVariables.admin_submissions_page);
 
-    await t
-    .expect(as.reject_dialog_parent.visible).eql(true);
+  // close meeting = row 0
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // approve
+  await click_dt_button_by_index(as.dt_submission_wrapper, 0);
 
-    await t
-    .typeText(as.reject_dialog_textarea, 'I reject this request');
-    // press ok button
-    await click_dialog_button_by_index(as.reject_dialog_parent,1);
-    // dialog closes after ok button
-    await t
-    .expect(as.reject_dialog_parent.visible).eql(false);
+  await t.expect(as.approve_close_dialog_parent.visible).eql(true);
 
-    var column = 8;
-    await t .expect((as.dt_submission.child('tbody').child(row).child(column)).innerText).eql('Rejected');
+  await t.typeText(as.approve_close_dialog_textarea, "I approve this request");
+  // press ok button
+  await click_dialog_button_by_index(as.approve_close_dialog_parent, 1);
+  // dialog closes after ok button
+  await t.expect(as.approve_close_dialog_parent.visible).eql(false);
 
+  var column = 8;
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
 });
 
-test('Reject_Modify_Meeting', async t => {
+test("Approve_Close_Meeting_With_Delete", async (t) => {
 
-    // modify meeting = row 1
-    var row = 1;
-    await click_table_row_column(as.dt_submission,row,0);
-    // reject
-    await click_dt_button_by_index(as.dt_submission_wrapper,1);
+  // set it to delete
+  await t.navigateTo(userVariables.admin_options_page);
+  await select_dropdown_by_text(ao.wbw_delete_closed_meetings, "Delete");
+  await t.click(ao.submit);
+  await ao.settings_updated();
+  await t.navigateTo(userVariables.admin_submissions_page);
 
-    await t
-    .expect(as.reject_dialog_parent.visible).eql(true);
+  // close meeting = row 0
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // approve
+  await click_dt_button_by_index(as.dt_submission_wrapper, 0);
 
-    await t
-    .typeText(as.reject_dialog_textarea, 'I reject this request');
-    // press ok button
-    await click_dialog_button_by_index(as.reject_dialog_parent,1);
-    // dialog closes after ok button
-    await t
-    .expect(as.reject_dialog_parent.visible).eql(false);
+  await t.expect(as.approve_close_dialog_parent.visible).eql(true);
 
-    // const s = Selector("#dt-submission tr:nth-child(1) td:nth-child(9)");
-    var column = 8;
-    await t .expect((as.dt_submission.child('tbody').child(row).child(column)).innerText).eql('Rejected');
+  await t.typeText(as.approve_close_dialog_textarea, "I approve this request");
+  // press ok button
+  await click_dialog_button_by_index(as.approve_close_dialog_parent, 1);
+  // dialog closes after ok button
+  await t.expect(as.approve_close_dialog_parent.visible).eql(false);
 
+  var column = 8;
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
 });
 
-test('Reject_Close_Meeting', async t => {
+test("Reject_New_Meeting", async (t) => {
+  // new meeting = row 2
+  var row = 2;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // reject
+  await click_dt_button_by_index(as.dt_submission_wrapper, 1);
 
-    // close meeting = row 0
-    var row = 0;
-    await click_table_row_column(as.dt_submission,row,0);
-    // reject
-    await click_dt_button_by_index(as.dt_submission_wrapper,1);
+  await t.expect(as.reject_dialog_parent.visible).eql(true);
 
-    await t
-    .expect(as.reject_dialog_parent.visible).eql(true);
+  await t.typeText(as.reject_dialog_textarea, "I reject this request");
+  // press ok button
+  await click_dialog_button_by_index(as.reject_dialog_parent, 1);
+  // dialog closes after ok button
+  await t.expect(as.reject_dialog_parent.visible).eql(false);
 
-    await t
-    .typeText(as.reject_dialog_textarea, 'I reject this request');
-    // press ok button
-    await click_dialog_button_by_index(as.reject_dialog_parent,1);
-    // dialog closes after ok button
-    await t
-    .expect(as.reject_dialog_parent.visible).eql(false);
-
-    var column = 8;
-    await t .expect((as.dt_submission.child('tbody').child(row).child(column)).innerText).eql('Rejected');
-
+  var column = 8;
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Rejected");
 });
 
+test("Reject_Modify_Meeting", async (t) => {
+  // modify meeting = row 1
+  var row = 1;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // reject
+  await click_dt_button_by_index(as.dt_submission_wrapper, 1);
 
-test('Submission_Buttons_Active_correctly', async t => {
+  await t.expect(as.reject_dialog_parent.visible).eql(true);
 
-    // new meeting = row 2
-    var row = 2;
-    await click_table_row_column(as.dt_submission,row,0);
-    // approve
-    var g = as.dt_submission_wrapper.find('button').nth(0);
-    await t.expect(g.hasAttribute('disabled')).notOk();
-    // reject
-    g = as.dt_submission_wrapper.find('button').nth(1);
-    await t.expect(g.hasAttribute('disabled')).notOk();
-    // quickedit
-    g = as.dt_submission_wrapper.find('button').nth(2);
-    await t.expect(g.hasAttribute('disabled')).notOk();
+  await t.typeText(as.reject_dialog_textarea, "I reject this request");
+  // press ok button
+  await click_dialog_button_by_index(as.reject_dialog_parent, 1);
+  // dialog closes after ok button
+  await t.expect(as.reject_dialog_parent.visible).eql(false);
 
-    // change meeting = row 1
-    var row = 1;
-    await click_table_row_column(as.dt_submission,row,0);
-    // approve
-    g = as.dt_submission_wrapper.find('button').nth(0);
-    await t.expect(g.hasAttribute('disabled')).notOk();
-    // reject
-    g = as.dt_submission_wrapper.find('button').nth(1);
-    await t.expect(g.hasAttribute('disabled')).notOk();
-    // quickedit
-    g = as.dt_submission_wrapper.find('button').nth(2);
-    await t.expect(g.hasAttribute('disabled')).notOk();
+  // const s = Selector("#dt-submission tr:nth-child(1) td:nth-child(9)");
+  var column = 8;
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Rejected");
+});
 
-    // close meeting = row 0
-    var row = 0;
-    await click_table_row_column(as.dt_submission,row,0);
-    // approve
-    g = as.dt_submission_wrapper.find('button').nth(0);
-    await t.expect(g.hasAttribute('disabled')).notOk();
-    // reject
-    g = as.dt_submission_wrapper.find('button').nth(1);
-    await t.expect(g.hasAttribute('disabled')).notOk();
-    // quickedit
-    g = as.dt_submission_wrapper.find('button').nth(2);
-    await t.expect(g.hasAttribute('disabled')).ok();
-    
-    // reject a request then we check the buttons again
-    var row = 0;
-    await click_table_row_column(as.dt_submission,row,0);
-    await click_table_row_column(as.dt_submission,row,0);
-    // reject
-    await click_dt_button_by_index(as.dt_submission_wrapper,1);
+test("Reject_Close_Meeting", async (t) => {
+  // close meeting = row 0
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // reject
+  await click_dt_button_by_index(as.dt_submission_wrapper, 1);
 
-    await t
-    .expect(as.reject_dialog_parent.visible).eql(true);
+  await t.expect(as.reject_dialog_parent.visible).eql(true);
 
-    await t
-    .typeText(as.reject_dialog_textarea, 'I reject this request');
-    // press ok button
-    await click_dialog_button_by_index(as.reject_dialog_parent,1);
-    // dialog closes after ok button
-    await t
-    .expect(as.reject_dialog_parent.visible).eql(false);
+  await t.typeText(as.reject_dialog_textarea, "I reject this request");
+  // press ok button
+  await click_dialog_button_by_index(as.reject_dialog_parent, 1);
+  // dialog closes after ok button
+  await t.expect(as.reject_dialog_parent.visible).eql(false);
 
-    var column = 8;
-    await t .expect((as.dt_submission.child('tbody').child(row).child(column)).innerText).eql('Rejected');
+  var column = 8;
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Rejected");
+});
 
-    // rejected request has no approve, reject, quickedit
-    // close meeting = row 0
-    var row = 0;
-    await click_table_row_column(as.dt_submission,row,0);
-    // approve
-    g = as.dt_submission_wrapper.find('button').nth(0);
-    await t.expect(g.hasAttribute('disabled')).ok();
-    // reject
-    g = as.dt_submission_wrapper.find('button').nth(1);
-    await t.expect(g.hasAttribute('disabled')).ok();
-    // quickedit
-    g = as.dt_submission_wrapper.find('button').nth(2);
-    await t.expect(g.hasAttribute('disabled')).ok();
-    
+test("Submission_Buttons_Active_correctly", async (t) => {
+  // new meeting = row 2
+  var row = 2;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // approve
+  var g = as.dt_submission_wrapper.find("button").nth(0);
+  await t.expect(g.hasAttribute("disabled")).notOk();
+  // reject
+  g = as.dt_submission_wrapper.find("button").nth(1);
+  await t.expect(g.hasAttribute("disabled")).notOk();
+  // quickedit
+  g = as.dt_submission_wrapper.find("button").nth(2);
+  await t.expect(g.hasAttribute("disabled")).notOk();
+
+  // change meeting = row 1
+  var row = 1;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // approve
+  g = as.dt_submission_wrapper.find("button").nth(0);
+  await t.expect(g.hasAttribute("disabled")).notOk();
+  // reject
+  g = as.dt_submission_wrapper.find("button").nth(1);
+  await t.expect(g.hasAttribute("disabled")).notOk();
+  // quickedit
+  g = as.dt_submission_wrapper.find("button").nth(2);
+  await t.expect(g.hasAttribute("disabled")).notOk();
+
+  // close meeting = row 0
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // approve
+  g = as.dt_submission_wrapper.find("button").nth(0);
+  await t.expect(g.hasAttribute("disabled")).notOk();
+  // reject
+  g = as.dt_submission_wrapper.find("button").nth(1);
+  await t.expect(g.hasAttribute("disabled")).notOk();
+  // quickedit
+  g = as.dt_submission_wrapper.find("button").nth(2);
+  await t.expect(g.hasAttribute("disabled")).ok();
+
+  // reject a request then we check the buttons again
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 0);
+  await click_table_row_column(as.dt_submission, row, 0);
+  // reject
+  await click_dt_button_by_index(as.dt_submission_wrapper, 1);
+
+  await t.expect(as.reject_dialog_parent.visible).eql(true);
+
+  await t.typeText(as.reject_dialog_textarea, "I reject this request");
+  // press ok button
+  await click_dialog_button_by_index(as.reject_dialog_parent, 1);
+  // dialog closes after ok button
+  await t.expect(as.reject_dialog_parent.visible).eql(false);
+
+  var column = 8;
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Rejected");
+
+  // rejected request has no approve, reject, quickedit
+  // close meeting = row 0
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // approve
+  g = as.dt_submission_wrapper.find("button").nth(0);
+  await t.expect(g.hasAttribute("disabled")).ok();
+  // reject
+  g = as.dt_submission_wrapper.find("button").nth(1);
+  await t.expect(g.hasAttribute("disabled")).ok();
+  // quickedit
+  g = as.dt_submission_wrapper.find("button").nth(2);
+  await t.expect(g.hasAttribute("disabled")).ok();
 });
 
 // test('Quickedit_New_Meeting', async t => {
 
-    // await t.useRole(wbw_admin);
+// await t.useRole(wbw_admin);
 
-    //     // new meeting = row 0
+//     // new meeting = row 0
 //     var row = 0;
 //     await click_table_row_column(as.dt_submission,row,0);
 //     // quickedit

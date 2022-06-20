@@ -4,7 +4,7 @@
  * Plugin Name: Wordpress BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
  * Description: Wordpress BMLT Workflow
- * Version: 0.4.2
+ * Version: 0.4.3
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
@@ -357,22 +357,6 @@ if (!class_exists('wbw_plugin')) {
             $this->WBW_Rest_Controller->register_routes();
         }
 
-
-        function array_sanitize_callback($args)
-        {
-            return $args;
-        }
-
-        function editor_sanitize_callback($args)
-        {
-            return $args;
-        }
-
-        function string_sanitize_callback($args)
-        {
-            return $args;
-        }
-
         public function wbw_register_setting()
         {
 
@@ -388,7 +372,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'Email from address',
-                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
+                    'sanitize_callback' => array(&$this, 'wbw_email_from_address_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'example@example'
                 )
@@ -400,7 +384,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'Default for close meeting submission',
-                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
+                    'sanitize_callback' => array(&$this, 'wbw_delete_closed_meetings_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'unpublish'
                 )
@@ -412,7 +396,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'optional field for location_nation',
-                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
+                    'sanitize_callback' => array(&$this, 'wbw_optional_location_nation_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'hidden'
                 )
@@ -424,7 +408,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'optional field for location_sub_province',
-                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
+                    'sanitize_callback' => array(&$this, 'wbw_optional_location_sub_province_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'hidden'
                 )
@@ -436,7 +420,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'wbw_submitter_email_template',
-                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
+                    'sanitize_callback' => null,
                     'show_in_rest' => false,
                     'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html')
                 )
@@ -448,7 +432,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'wbw_fso_email_template',
-                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
+                    'sanitize_callback' => null,
                     'show_in_rest' => false,
                     'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html')
                 )
@@ -460,7 +444,7 @@ if (!class_exists('wbw_plugin')) {
                 array(
                     'type' => 'string',
                     'description' => 'FSO email address',
-                    'sanitize_callback' => array(&$this, 'string_sanitize_callback'),
+                    'sanitize_callback' => array(&$this, 'wbw_fso_email_address_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'example@example.example'
                 )
@@ -547,6 +531,72 @@ if (!class_exists('wbw_plugin')) {
             );
         }
 
+        public function wbw_optional_location_nation_sanitize_callback($input)
+        {
+            $this->debug_log("location nation sanitize callback");            
+            $this->debug_log($input);
+
+            $output = get_option('wbw_optional_location_nation');
+            switch ($input) {
+                case 'hidden':
+                case 'displayrequired':
+                case 'display':
+                    return $input;
+                }
+            add_settings_error('wbw_optional_location_nation','err','Invalid Nation setting.');
+            return $output;
+        }
+
+        public function wbw_optional_location_sub_province_sanitize_callback($input)
+        {
+            $output = get_option('wbw_optional_location_sub_province');
+            switch ($input) {
+                case 'hidden':
+                case 'displayrequired':
+                case 'display':
+                    return $input;
+                }
+            add_settings_error('wbw_optional_location_sub_province','err','Invalid Sub Province setting.');
+            return $output;
+        }
+
+        public function wbw_email_from_address_sanitize_callback($input)
+        {
+            $output = get_option('wbw_email_from_address');
+            $sanitized_email = sanitize_email($input);
+            if (!is_email($sanitized_email))
+            {
+                add_settings_error('wbw_email_from_address','err','Invalid email from address.');
+                return $output;
+            }
+            return $sanitized_email;
+        }
+
+        public function wbw_fso_email_address_sanitize_callback($input)
+        {
+            $output = get_option('wbw_fso_email_address');
+            $sanitized_email = sanitize_email($input);
+            if (!is_email($sanitized_email))
+            {
+                add_settings_error('wbw_fso_email_address','err','Invalid FSO email address.');
+                return $output;
+            }
+            return $sanitized_email;
+        }
+
+        public function wbw_delete_closed_meetings_sanitize_callback($input)
+        {
+            $output = get_option('wbw_delete_closed_meetings');
+
+            switch ($input) {
+                case 'delete':
+                case 'unpublish':
+                    return $input;
+                }
+            add_settings_error('wbw_delete_closed_meetings','err','Invalid delete closed meetings  setting.');
+            return $output;
+        }
+
         public function wbw_bmlt_server_address_html()
         {
             echo '<div id="wbw_bmlt_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your BMLT details are successfully configured.</div>';
@@ -585,7 +635,7 @@ if (!class_exists('wbw_plugin')) {
     </div>
     END;
 
-            echo '<br><label for="wbw_email_from_address"><b>From Address:</b></label><input type="text" size="50" name="wbw_email_from_address" value="' . $from_address . '"/>';
+            echo '<br><label for="wbw_email_from_address"><b>From Address:</b></label><input id="wbw_email_from_address" type="text" size="50" name="wbw_email_from_address" value="' . $from_address . '"/>';
             echo '<br><br>';
         }
 
@@ -608,7 +658,7 @@ if (!class_exists('wbw_plugin')) {
     </div>
     END;
 
-            echo '<br><label for="wbw_delete_closed_meetings"><b>Close meeting default:</b></label><select name="wbw_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>Unpublish</option><option name="delete" value="delete" ' . $delete . '>Delete</option>';
+            echo '<br><label for="wbw_delete_closed_meetings"><b>Close meeting default:</b></label><select id="wbw_delete_closed_meetings" name="wbw_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>Unpublish</option><option name="delete" value="delete" ' . $delete . '>Delete</option>';
             echo '<br><br>';
         }
 
@@ -648,7 +698,7 @@ if (!class_exists('wbw_plugin')) {
             }
             echo <<<END
     <br><label for="${option}"><b>${friendlyname}:</b>
-    </label><select name="${option}">
+    </label><select id="${option}" name="${option}">
     <option name="hidden" value="hidden" ${hidden}>Hidden</option>
     <option name="displayrequired" value="displayrequired" ${displayrequired}>Display + Required Field</option>
     <option name="display" value="display" ${display}>Display Only</option>
@@ -667,7 +717,7 @@ if (!class_exists('wbw_plugin')) {
     </div>
     END;
 
-            echo '<br><label for="wbw_email_from_address"><b>FSO Email Address:</b></label><input type="text" size="50" name="wbw_fso_email_address" value="' . $from_address . '"/>';
+            echo '<br><label for="wbw_email_from_address"><b>FSO Email Address:</b></label><input type="text" size="50" id="wbw_fso_email_address" name="wbw_fso_email_address" value="' . $from_address . '"/>';
             echo '<br><br>';
         }
 

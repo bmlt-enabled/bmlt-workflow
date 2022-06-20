@@ -1,5 +1,13 @@
-import { t } from 'testcafe';
-import { Selector } from 'testcafe';
+import { t, Role } from 'testcafe';
+import { wordpress_login } from '../models/wordpress_login';
+import { userVariables } from "../../../.testcaferc";
+
+export const wbw_admin = Role(userVariables.admin_logon_page, async t => {
+    await t
+    .typeText(wordpress_login.user_login, userVariables.admin_logon)
+    .typeText(wordpress_login.user_pass, userVariables.admin_password)
+    .click(wordpress_login.wp_submit);
+});
 
 export async function select_dropdown_by_id(element, id) {
     await t

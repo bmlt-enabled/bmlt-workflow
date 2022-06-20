@@ -24,8 +24,8 @@ jQuery(document).ready(function ($) {
     placeholder: "Select from available formats",
     multiple: true,
     data: formatdata,
-    selectionCssClass: "select2-custom",
     width: "100%",
+    theme: 'wbw_select2_theme',
   });
 
   // hide / show / required our optional fields
@@ -149,10 +149,13 @@ jQuery(document).ready(function ($) {
 
     $("#meeting-searcher").select2({
       data: mtext,
-      placeholder: "Select a meeting",
+      placeholder: "Click to select",
       allowClear: true,
       dropdownAutoWidth: true,
       matcher: matchCustom,
+      theme: 'wbw_select2_theme',
+      width: 'auto',
+      // selectionCssClass: "meeting-searcher-custom",
     });
 
     $("#meeting-searcher").on("select2:open", function (e) {
@@ -255,7 +258,7 @@ jQuery(document).ready(function ($) {
     $("#display_format_shared_id_list").off("change.wbw-highlight");
     // remove the highlighting css
     $(".meeting-input").removeClass("wbw-changed");
-    $(".select2-custom").removeClass("wbw-changed");
+    $(".select2-selection--multiple").removeClass("wbw-changed");
   }
 
   function enable_highlighting() {
@@ -265,7 +268,7 @@ jQuery(document).ready(function ($) {
     });
     // add highlighting trigger for select2
     $("#display_format_shared_id_list").on("change.wbw-highlight", function () {
-      $(".select2-custom").addClass("wbw-changed");
+      $(".select2-selection--multiple").addClass("wbw-changed");
     });
   }
 
