@@ -464,6 +464,11 @@ class SubmissionsHandler
 
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
                     }
+                    $this->debug_log("change id bigint = "+ gettype($change['id_bigint']));
+                    $this->debug_log($change['id_bigint']);
+                    $this->debug_log("arr report = "+ gettype($arr['report']));
+                    $this->debug_log($arr['report']);
+
                     if ((!empty($arr['report'])) && ($arr['report'] != $change['id_bigint'])) {
                         $this->debug_log("dropping here 2");
 
