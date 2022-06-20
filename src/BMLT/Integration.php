@@ -345,6 +345,10 @@ class Integration
         // $this->debug_log(($this->set_args($cookies, http_build_query($postargs))));
         // $this->debug_log("*********");
         $ret = \wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
+        $this->debug_log("***safe_remote_post returns******");
+        $this->debug_log($ret);
+        $this->debug_log("*********");
+
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
             $ret =  $this->authenticateRootServer();
