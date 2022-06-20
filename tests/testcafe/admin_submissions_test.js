@@ -1,6 +1,7 @@
 import { as } from "./models/admin_submissions";
+import { ao } from "./models/admin_options";
 
-import { click_table_row_column, click_dt_button_by_index, click_dialog_button_by_index, wbw_admin } from "./helpers/helper.js";
+import { select_dropdown_by_text, click_table_row_column, click_dt_button_by_index, click_dialog_button_by_index, wbw_admin } from "./helpers/helper.js";
 import { userVariables } from "../../.testcaferc";
 
 fixture`admin_submissions_fixture`.beforeEach(async (t) => {
@@ -51,7 +52,42 @@ test("Approve_Modify_Meeting", async (t) => {
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
 });
 
-test("Approve_Close_Meeting", async (t) => {
+test("Approve_Close_Meeting_With_Unpublish", async (t) => {
+
+  // set it to unpublish
+  await t.navigateTo(userVariables.admin_options_page);
+  await select_dropdown_by_text(ao.wbw_delete_closed_meetings, "Unpublish");
+  await t.click(ao.submit);
+  await ao.settings_updated();
+  await t.navigateTo(userVariables.admin_submissions_page);
+
+  // close meeting = row 0
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // approve
+  await click_dt_button_by_index(as.dt_submission_wrapper, 0);
+
+  await t.expect(as.approve_close_dialog_parent.visible).eql(true);
+
+  await t.typeText(as.approve_close_dialog_textarea, "I approve this request");
+  // press ok button
+  await click_dialog_button_by_index(as.approve_close_dialog_parent, 1);
+  // dialog closes after ok button
+  await t.expect(as.approve_close_dialog_parent.visible).eql(false);
+
+  var column = 8;
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
+});
+
+test("Approve_Close_Meeting_With_Delete", async (t) => {
+
+  // set it to delete
+  await t.navigateTo(userVariables.admin_options_page);
+  await select_dropdown_by_text(ao.wbw_delete_closed_meetings, "Delete");
+  await t.click(ao.submit);
+  await ao.settings_updated();
+  await t.navigateTo(userVariables.admin_submissions_page);
+
   // close meeting = row 0
   var row = 0;
   await click_table_row_column(as.dt_submission, row, 0);
