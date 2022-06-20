@@ -460,9 +460,13 @@ class SubmissionsHandler
                         $this->debug_log("Arr success !== 1");
                     }
                     if ((isset($arr['success'])) && ($arr['success'] != 1)) {
+                        $this->debug_log("dropping here 1");
+
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
                     }
                     if ((!empty($arr['report'])) && ($arr['report'] != $change['id_bigint'])) {
+                        $this->debug_log("dropping here 2");
+
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
                     }
                 } else {
