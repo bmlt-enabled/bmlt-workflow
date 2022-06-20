@@ -3,7 +3,7 @@ import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
 
 import { userVariables } from "../../.testcaferc";
-import { Selector, Role, RequestLogger } from "testcafe";
+import { t, Selector, Role, RequestLogger } from "testcafe";
 
 import { wbw_admin, click_dialog_button_by_index, select_dropdown_by_text, select_dropdown_by_value } from "./helpers/helper.js";
 
@@ -13,7 +13,7 @@ import os from 'os';
 
 const backupurl = userVariables.admin_backup_json;
 const logger = RequestLogger(
-  { backupurl, method: "post" },
+  { url: backupurl, method: "post" },
   {
     logResponseHeaders: true,
     logResponseBody: true,
@@ -49,28 +49,17 @@ fixture`admin_options_fixture`
   .requestHooks(logger);
 
 test
-// .before(async () => {
-//     
-
-//     if (fs.existsSync(downloadedFilePath))
-//         fs.unlinkSync(downloadedFilePath);
-// })
 ("Backup", async (t) => {
+  console.log(backupurl);
   await t.click(ao.backup_button);
-  // .expect(logger.contains(r => r.response.statusCode === 200)).ok();
-  // debugger;
-    const b_elem = Selector(() => {
-        return document.getElementById('wbw_backup_filename');
-    });
-    await b_elem();
-    const filename = b_elem.getAttribute("download");
-    console.log("filename = ".filename);
+    const b_elem = Selector('#wbw_backup_filename');
+    const state = await b_elem();
+    const filename = state.attributes.download;
     downloadedFilePath = getFileDownloadPath(filename);
     await waitForFileDownload(downloadedFilePath);
     var f = JSON.parse(logger.requests[0].response.body.toString());
     var backup = JSON.parse(f.backup);
 
-  console.log(logger.requests);
   await t
     .expect(f.message)
     .eql("Backup Successful")

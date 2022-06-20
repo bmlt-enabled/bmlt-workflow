@@ -433,6 +433,9 @@ class Integration
     public function postAuthenticatedRootServerRequestSemantic($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
+        $this->debug_log(('authenticateRootServer returns'));
+        $this->debug_log(($ret));
+
         if (is_wp_error($ret)) {
             return $ret;
         }
