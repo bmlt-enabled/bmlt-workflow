@@ -434,7 +434,7 @@ class SubmissionsHandler
 
                     $this->debug_log("DELETE SEND");
                     $this->debug_log(($changearr));
-                    
+
                     $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                     if (is_wp_error($response)) {
@@ -449,7 +449,7 @@ class SubmissionsHandler
                     $this->debug_log("DELETE RESPONSE");
                     $this->debug_log(($arr));
 
-                    if ((isset($arr['success'])) && ($arr['success'] !== true)) {
+                    if ((isset($arr['success'])) && ($arr['success'] !== 1)) {
                         return $this->handlerCore->wbw_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
                     }
                     if ((!empty($arr['report'])) && ($arr['report'] != $change['id_bigint'])) {
