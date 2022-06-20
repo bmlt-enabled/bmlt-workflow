@@ -533,6 +533,9 @@ if (!class_exists('wbw_plugin')) {
 
         public function wbw_optional_location_nation_sanitize_callback($input)
         {
+            $this->debug_log("location nation sanitize callback");            
+            $this->debug_log($input);
+
             $output = get_option('wbw_optional_location_nation');
             switch ($input) {
                 case 'hidden':
@@ -584,6 +587,7 @@ if (!class_exists('wbw_plugin')) {
         public function wbw_delete_closed_meetings_sanitize_callback($input)
         {
             $output = get_option('wbw_delete_closed_meetings');
+
             switch ($input) {
                 case 'delete':
                 case 'unpublish':
