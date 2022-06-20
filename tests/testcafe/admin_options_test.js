@@ -34,6 +34,11 @@ function getFileDownloadPath(download) {
   return joinPath(os.homedir(), "Downloads", download);
 }
 
+function randstr()
+{
+  return Math.random().toString(36).replace(/[^a-z]+/g, "") .substr(0, 9);
+}
+
 let downloadedFilePath = null;
 
 fixture`admin_options_fixture`
@@ -89,14 +94,8 @@ test("Restore", async (t) => {
 });
 
 test("Options_Save", async (t) => {
-  const testfso = Math.random()
-    .toString(36)
-    .replace(/[^a-z]+/g, "")
-    .substr(0, 9);
-  const testfrom = Math.random()
-    .toString(36)
-    .replace(/[^a-z]+/g, "")
-    .substr(0, 9);
+  const testfso = randstr() + "@" + randstr() + ".com";
+  const testfrom = randstr() + "@" + randstr() + ".com";
   await t
     .typeText(ao.wbw_fso_email_address, testfso, { replace: true })
     .expect(ao.wbw_fso_email_address.value)

@@ -1,6 +1,7 @@
-## 0.4.3 (Jun 19, 2022)
+## 0.4.3 (Jun 20, 2022)
 - Multiple css fixes to override Wordpress theming, including a custom select2 theme
-- Testcafe now tests option save, and our 'optional form fields' for nation and province
+- Testcafe now tests option save, and our 'optional form fields' for nation and province #66
+- Fix for 'save settings page does not give any notification from wordpress that the settings were in fact saved' #67
 
 ## 0.4.2 (Jun 18, 2022)
 - Fix for #65 ( thanks @paulnagle !)
