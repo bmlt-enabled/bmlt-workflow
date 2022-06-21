@@ -61,7 +61,7 @@ if (!class_exists('wbw_plugin')) {
             add_action('user_register', array(&$this,'wbw_add_capability'), 10, 1 );
 
             // auto updates
-            add_filter( 'pre_set_site_transient_update_plugins', 'wbw_plugin_update_check' );
+            add_filter( 'pre_set_site_transient_update_plugins', array(&$this,'wbw_plugin_update_check' ));
 
             register_activation_hook(__FILE__, array(&$this, 'wbw_install'));
             register_deactivation_hook(__FILE__, array(&$this, 'wbw_uninstall'));
