@@ -9,6 +9,8 @@
  * Author URI: https://github.com/nigel-bmlt
  **/
 
+ define('WBW_PLUGIN_VERSION','0.4.3');
+
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 require 'config.php';
@@ -57,9 +59,42 @@ if (!class_exists('wbw_plugin')) {
             add_shortcode('wbw-meeting-update-form', array(&$this, 'wbw_meeting_update_form'));
             add_filter('plugin_action_links', array(&$this, 'wbw_add_plugin_link'), 10, 2);
             add_action('user_register', array(&$this,'wbw_add_capability'), 10, 1 );
- 
+
+            // auto updates
+            add_filter( 'pre_set_site_transient_update_plugins', 'wbw_plugin_update_check' );
+
             register_activation_hook(__FILE__, array(&$this, 'wbw_install'));
             register_deactivation_hook(__FILE__, array(&$this, 'wbw_uninstall'));
+        }
+
+        function wbw_plugin_update_check( $data ) {
+            
+            if ( empty( $data ) ) {
+                return $data;
+            }
+
+            $url = 'https://raw.githubusercontent.com/bmlt-enabled/wordpress-bmlt-workflow/0.4.3-fixes/releases.json?' . time();
+
+            $request = wp_remote_get( $url );
+
+            if ( is_wp_error( $request ) ) {
+                return $data;
+            }
+
+            $json = wp_remote_retrieve_body( $request );
+            $response = json_decode( $json );
+            $this->debug_log("got auto update response");
+            $this->debug_log($response);
+
+            if ( ! isset( $response->slug ) || ! isset( $response->new_version ) || ! isset( $response->url ) || ! isset( $response->package ) ) {
+                return $data;
+            }
+
+            if ( version_compare( WBW_PLUGIN_VERSION, $response->new_version, '<' ) ) {
+                $data->response[ 'wordpress-bmlt-workflow/wordpress-bmlt-workflow.php' ] = $response;
+            }
+
+            return $data;
         }
 
         public function wbw_meeting_update_form($atts = [], $content = null, $tag = '')
