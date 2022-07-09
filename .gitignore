@@ -9,3 +9,4 @@ package-lock.json
 .testcaferc.js
 .userdetails.sh
 /tests/testcafe/setup/blank_bmlt.sql
+logs/

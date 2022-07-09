@@ -2,5 +2,7 @@ composer.json export-ignore
 composer.lock export-ignore
 phpunit.xml export-ignore
 patchwork.json export-ignore
+docker-compose.yml export-ignore
+Dockerfile export-ignore
 /.github export-ignore
 /tests export-ignore
