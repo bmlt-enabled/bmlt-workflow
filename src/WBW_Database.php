@@ -23,30 +23,51 @@ class WBW_Database
     public function wbw_db_upgrade($desired_version, $fresh_install)
     {
 
+        global $wpdb;
+
         // work out which version we're at right now
         $installed_version = $this->WBW_WP_Options->wbw_get_option('wbw_db_version');
 
         // do nothing by default
         $upgrade = false;
+        $fresh_install = false;
 
         if ($installed_version === false) {
             // fresh install
             $fresh_install = true;
             $this->debug_log("no db version found, performing fresh install");
         } else {
-            if (version_compare($desired_version, $installed_version, 'eq')) {
-                $this->debug_log("doing nothing - installed db version " . $installed_version . " is same as desired version " . $desired_version);
-            } else {
-                $upgrade = true;
-                $this->debug_log("db version = " . $installed_version . " - requesting upgrade");
+            // check if our db tables even exist - #73
+            $tblcount = 0;
+            $sql = 'show tables like "' . $this->wbw_service_bodies_access_table_name . "';";
+            $wpdb->query($sql);
+            $tblcount += $wpdb->num_rows;
+            $sql = 'show tables like "' . $this->wbw_submissions_table_name . "';";
+            $wpdb->query($sql);
+            $tblcount += $wpdb->num_rows;
+            $sql = 'show tables like "' . $this->wbw_service_bodies_table_name . "';";
+            $wpdb->query($sql);
+            $tblcount += $wpdb->num_rows;
+            $this->debug_log("we found " . $tblcount . " tables");
+
+            if ($tblcount < 3)
+            {
+                $this->debug_log("tables missing, performing fresh install");
+                $fresh_install = true;
+            }
+            else
+            {
+                if (version_compare($desired_version, $installed_version, 'eq')) {
+                    $this->debug_log("doing nothing - installed db version " . $installed_version . " is same as desired version " . $desired_version);
+                } else {
+                    $upgrade = true;
+                    $this->debug_log("db version = " . $installed_version . " - requesting upgrade");
+                }
             }
         }
 
         if ($fresh_install) {
             $this->debug_log("fresh install");
-
-            // latest version
-            global $wpdb;
 
             $charset_collate = $wpdb->get_charset_collate();
 
