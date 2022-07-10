@@ -1,3 +1,7 @@
+## 0.4.4 (Jul 10, 2022)
+- #72 location_province field not populating with info from meeting (thanks @pjaudiomv !)
+- #73 database tables not created if wbw_db_version found, regardless of whether the tables actually exist (thanks @pjaudiomv !)
+
 ## 0.4.3 (Jun 20, 2022)
 - Multiple css fixes to override Wordpress theming, including a custom select2 theme
 - Testcafe now tests option save, and our 'optional form fields' for nation and province #66
