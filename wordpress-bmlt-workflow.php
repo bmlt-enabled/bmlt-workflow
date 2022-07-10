@@ -63,41 +63,41 @@ if (!class_exists('wbw_plugin')) {
             add_action('user_register', array(&$this,'wbw_add_capability'), 10, 1 );
 
             // auto updates
-            add_filter( 'pre_set_site_transient_update_plugins', array(&$this,'wbw_plugin_update_check' ));
+            // add_filter( 'pre_set_site_transient_update_plugins', array(&$this,'wbw_plugin_update_check' ));
 
             register_activation_hook(__FILE__, array(&$this, 'wbw_install'));
             register_deactivation_hook(__FILE__, array(&$this, 'wbw_uninstall'));
         }
 
-        function wbw_plugin_update_check( $data ) {
+        // function wbw_plugin_update_check( $data ) {
             
-            if ( empty( $data ) ) {
-                return $data;
-            }
+        //     if ( empty( $data ) ) {
+        //         return $data;
+        //     }
 
-            $url = 'https://raw.githubusercontent.com/bmlt-enabled/wordpress-bmlt-workflow/0.4.3-fixes/releases.json?' . time();
+        //     $url = 'https://raw.githubusercontent.com/bmlt-enabled/wordpress-bmlt-workflow/0.4.3-fixes/releases.json?' . time();
 
-            $request = wp_remote_get( $url );
+        //     $request = wp_remote_get( $url );
 
-            if ( is_wp_error( $request ) ) {
-                return $data;
-            }
+        //     if ( is_wp_error( $request ) ) {
+        //         return $data;
+        //     }
 
-            $json = wp_remote_retrieve_body( $request );
-            $response = json_decode( $json );
-            $this->debug_log("got auto update response");
-            $this->debug_log($response);
+        //     $json = wp_remote_retrieve_body( $request );
+        //     $response = json_decode( $json );
+        //     $this->debug_log("got auto update response");
+        //     $this->debug_log($response);
 
-            if ( ! isset( $response->slug ) || ! isset( $response->new_version ) || ! isset( $response->url ) || ! isset( $response->package ) ) {
-                return $data;
-            }
+        //     if ( ! isset( $response->slug ) || ! isset( $response->new_version ) || ! isset( $response->url ) || ! isset( $response->package ) ) {
+        //         return $data;
+        //     }
 
-            if ( version_compare( WBW_PLUGIN_VERSION, $response->new_version, '<' ) ) {
-                $data->response[ 'wordpress-bmlt-workflow/wordpress-bmlt-workflow.php' ] = $response;
-            }
+        //     if ( version_compare( WBW_PLUGIN_VERSION, $response->new_version, '<' ) ) {
+        //         $data->response[ 'wordpress-bmlt-workflow/wordpress-bmlt-workflow.php' ] = $response;
+        //     }
 
-            return $data;
-        }
+        //     return $data;
+        // }
 
         public function wbw_meeting_update_form($atts = [], $content = null, $tag = '')
         {

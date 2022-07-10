@@ -3,19 +3,5 @@
   "new_version": "0.4.4",
   "url": "https://github.com/bmlt-enabled/wordpress-bmlt-workflow/releases/latest",
   "package": "https://github.com/bmlt-enabled/wordpress-bmlt-workflow/releases/download/0.4.4/bmlt-workflow-0.4.4.zip",
-  "tested": "6.0",
-  "icons": [
-    {
-      "svg": "https://github.com/bmlt-enabled/wordpress-bmlt-workflow/blob/main/images/BMLT_Workflow_256-2.png"
-    },
-    {
-      "2x": "https://github.com/bmlt-enabled/wordpress-bmlt-workflow/blob/main/images/BMLT_Workflow_256-2.png"
-    },
-    {
-      "1x": "https://github.com/bmlt-enabled/wordpress-bmlt-workflow/blob/main/images/BMLT_Workflow_256-2.png"
-    },
-    {
-      "default": "https://github.com/bmlt-enabled/wordpress-bmlt-workflow/blob/main/images/BMLT_Workflow_256-2.png"
-    }
-  ]
+  "tested": "6.0"
 }
