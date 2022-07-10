@@ -39,13 +39,13 @@ class WBW_Database
         } else {
             // check if our db tables even exist - #73
             $tblcount = 0;
-            $sql = 'show tables like "' . $this->wbw_service_bodies_access_table_name . "';";
+            $sql = 'show tables like "' . $this->wbw_service_bodies_access_table_name .'";';
             $wpdb->query($sql);
             $tblcount += $wpdb->num_rows;
-            $sql = 'show tables like "' . $this->wbw_submissions_table_name . "';";
+            $sql = 'show tables like "' . $this->wbw_submissions_table_name .'";';
             $wpdb->query($sql);
             $tblcount += $wpdb->num_rows;
-            $sql = 'show tables like "' . $this->wbw_service_bodies_table_name . "';";
+            $sql = 'show tables like "' . $this->wbw_service_bodies_table_name .'";';
             $wpdb->query($sql);
             $tblcount += $wpdb->num_rows;
             $this->debug_log("we found " . $tblcount . " tables");
