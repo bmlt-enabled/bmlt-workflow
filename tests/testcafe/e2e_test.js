@@ -20,6 +20,8 @@ fixture`e2e_test_fixture`
     var http = require("http");
     http.get(userVariables.blank_bmlt);
     http.get(userVariables.blank_submission);
+    // disable state dropdown
+    http.get(userVariables.bmlt_states_off);
   });
 
 test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {

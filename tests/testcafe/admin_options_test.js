@@ -53,7 +53,8 @@ fixture`admin_options_fixture`
   .requestHooks(logger);
 
 test("Backup", async (t) => {
-  console.log(backupurl);
+  
+  // console.log(backupurl);
   await t.click(ao.backup_button);
   const b_elem = Selector("#wbw_backup_filename");
   const state = await b_elem();
@@ -61,6 +62,7 @@ test("Backup", async (t) => {
   downloadedFilePath = getFileDownloadPath(filename);
   await waitForFileDownload(downloadedFilePath);
   var f = JSON.parse(logger.requests[0].response.body.toString());
+  console.log(logger.requests[0].response.body.toString());
   var backup = JSON.parse(f.backup);
 
   await t.expect(f.message).eql("Backup Successful");
