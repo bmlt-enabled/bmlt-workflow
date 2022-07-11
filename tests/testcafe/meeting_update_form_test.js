@@ -20,7 +20,7 @@ fixture`meeting_update_form_fixture`
   http.get(userVariables.blank_bmlt);
   // clean submissions table
   // http.get(userVariables.blank_submission);
-  await t.navigateTo(userVariables.formpage);
+  // await t.navigateTo(userVariables.formpage);
 });
 
 test("Success_New_Meeting_And_Submit", async (t) => {
@@ -113,6 +113,8 @@ test("Success_New_Meeting_And_Submit", async (t) => {
 });
 
 test("Success_Change_Meeting_Name_And_Submit", async (t) => {
+
+  await t.navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
   await t.expect(uf.update_reason.value).eql("reason_change");
@@ -155,6 +157,7 @@ test("Success_Change_Meeting_Name_And_Submit", async (t) => {
 });
 
 test("Success_Close_Meeting_And_Submit", async (t) => {
+  await t.navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_close");
 
   // check our divs are visible
@@ -198,6 +201,7 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
   var http = require("http");
   // disable state dropdown
   http.get(userVariables.bmlt_states_off);
+  await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
@@ -289,6 +293,7 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
 });
 
 test("Change_Nothing_Check_Error", async (t) => {
+  await t.navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
   // check our divs are visible
@@ -318,7 +323,7 @@ test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
   var http = require("http");
   // enable state dropdown
   http.get(userVariables.bmlt_states_on);
-
+  await t.navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
   await t.expect(uf.update_reason.value).eql("reason_change");
