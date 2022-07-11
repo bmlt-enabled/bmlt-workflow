@@ -8,9 +8,12 @@ import { userVariables } from "../../.testcaferc";
 
 fixture`meeting_update_form_fixture`
 .beforeEach(async (t) => {
-  await t.useRole(wbw_admin).navigateTo(userVariables.admin_options_page);
+  await t.useRole(wbw_admin).navigateTo(userVariables.admin_options_page)
+  .typeText(ao.wbw_email_from_address, "testing@test.org.zz", { replace: true });
+
   await select_dropdown_by_text(ao.wbw_optional_location_nation, "Hidden");
   await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Hidden");
+  
   await t.click(ao.submit);
   await ao.settings_updated();
   // log in as noone
@@ -338,7 +341,9 @@ test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
   await t.expect(uf.personal_details.visible).eql(true).expect(uf.meeting_details.visible).eql(true).expect(uf.additional_info_div.visible).eql(true);
 
   await t
-  .expect(uf.location_province.tagName).eql("SELECT")
+  // should be a select element if we have a dropdown
+  .expect(uf.location_province.tagName).eql("select")
+  // should have changed the state to SA which is not the default
   .expect(uf.location_province.value).eql("SA");
 
 });
