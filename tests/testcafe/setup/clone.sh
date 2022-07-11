@@ -14,3 +14,4 @@ cp -R wordpress-bmlt-workflow/* wbw
 cd wbw
 sed -i "s/define('WBW_DEBUG', false);/define('WBW_DEBUG', true);/g" config.php
 /usr/local/bin/composer dumpautoload
+/home/ssm-user/scripts/wp-install.sh
