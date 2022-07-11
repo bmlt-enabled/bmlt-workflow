@@ -24,6 +24,11 @@ fixture`meeting_update_form_fixture`
 });
 
 test("Success_New_Meeting_And_Submit", async (t) => {
+
+  var http = require("http");
+  // disable state dropdown
+  http.get(userVariables.bmlt_states_off);
+
   await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_new");
@@ -189,6 +194,11 @@ test("Success_Close_Meeting_And_Submit", async (t) => {
 });
 
 test("Change_Meeting_Details_Check_Highlighting", async (t) => {
+
+  var http = require("http");
+  // disable state dropdown
+  http.get(userVariables.bmlt_states_off);
+
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
   // check our divs are visible
@@ -301,4 +311,29 @@ test("Change_Nothing_Check_Error", async (t) => {
     .click(uf.submit)
     .expect(uf.error_para.innerText)
     .match(/Nothing\ was\ changed/);
+});
+
+test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
+
+  var http = require("http");
+  // enable state dropdown
+  http.get(userVariables.bmlt_states_on);
+
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+
+  await t.expect(uf.update_reason.value).eql("reason_change");
+
+  debugger;
+  // meeting selector
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "correctmeeting");
+  await t.pressKey("enter");
+
+  // validate form is laid out correctly
+  await t.expect(uf.personal_details.visible).eql(true).expect(uf.meeting_details.visible).eql(true).expect(uf.additional_info_div.visible).eql(true);
+
+  await t
+  .expect(uf.location_province.tagName).eql("SELECT")
+  .expect(uf.location_province.value).eql("SA");
+
 });
