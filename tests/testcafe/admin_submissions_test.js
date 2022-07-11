@@ -1,15 +1,25 @@
 import { as } from "./models/admin_submissions";
 import { ao } from "./models/admin_options";
 
-import { select_dropdown_by_text, click_table_row_column, click_dt_button_by_index, click_dialog_button_by_index, wbw_admin } from "./helpers/helper.js";
+import {
+  configure_service_bodies, 
+  insert_submissions, 
+  reset_bmlt, 
+  select_dropdown_by_text, 
+  click_table_row_column, 
+  click_dt_button_by_index, 
+  click_dialog_button_by_index, 
+  wbw_admin, 
+  basic_options } from "./helpers/helper.js";
+
 import { userVariables } from "../../.testcaferc";
 
 fixture`admin_submissions_fixture`.beforeEach(async (t) => {
-  var http = require("http");
-  // pre fill the submissions
-  http.get(userVariables.admin_submission_reset);
-  // reset bmlt to reasonable state
-  http.get(userVariables.blank_bmlt);
+  await reset_bmlt();
+  await basic_options();
+  await configure_service_bodies();
+  await insert_submissions();
+
   await t.useRole(wbw_admin).navigateTo(userVariables.admin_submissions_page);
 });
 

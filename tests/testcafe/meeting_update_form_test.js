@@ -3,34 +3,32 @@ import { ao } from "./models/admin_options";
 
 import { Role, Selector } from "testcafe";
 
-import { select_dropdown_by_text, select_dropdown_by_value, wbw_admin } from "./helpers/helper.js";
+import { basic_options, 
+  configure_service_bodies, 
+  bmlt_states_off, 
+  reset_bmlt, 
+  bmlt_states_on, 
+  select_dropdown_by_text, 
+  select_dropdown_by_value
+  } from "./helpers/helper.js";
+
 import { userVariables } from "../../.testcaferc";
 
 fixture`meeting_update_form_fixture`
 .beforeEach(async (t) => {
-  await t.useRole(wbw_admin).navigateTo(userVariables.admin_options_page)
-  .typeText(ao.wbw_email_from_address, "testing@test.org.zz", { replace: true });
 
-  await select_dropdown_by_text(ao.wbw_optional_location_nation, "Hidden");
-  await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Hidden");
-  
-  await t.click(ao.submit);
-  await ao.settings_updated();
+  await reset_bmlt();
+  await bmlt_states_off();
+
+  await basic_options();
+  await configure_service_bodies();
+
   // log in as noone
   await t.useRole(Role.anonymous());
-  var http = require("http");
-  // reset bmlt to reasonable state
-  http.get(userVariables.blank_bmlt);
-  // clean submissions table
-  // http.get(userVariables.blank_submission);
-  // await t.navigateTo(userVariables.formpage);
 });
 
 test("Success_New_Meeting_And_Submit", async (t) => {
 
-  var http = require("http");
-  // disable state dropdown
-  http.get(userVariables.bmlt_states_off);
 
   await t.navigateTo(userVariables.formpage);
 
@@ -201,9 +199,6 @@ test("Success_Close_Meeting_And_Submit", async (t) => {
 
 test("Change_Meeting_Details_Check_Highlighting", async (t) => {
 
-  var http = require("http");
-  // disable state dropdown
-  http.get(userVariables.bmlt_states_off);
   await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
@@ -323,9 +318,8 @@ test("Change_Nothing_Check_Error", async (t) => {
 
 test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
 
-  var http = require("http");
-  // enable state dropdown
-  http.get(userVariables.bmlt_states_on);
+  await bmlt_states_on();
+
   await t.navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 

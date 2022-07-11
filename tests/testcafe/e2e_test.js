@@ -4,24 +4,32 @@ import { ct } from "./models/crouton";
 import { ao } from "./models/admin_options";
 import { Selector, Role } from "testcafe";
 
-import { click_table_row_column, click_dt_button_by_index, click_dialog_button_by_index, select_dropdown_by_text, select_dropdown_by_value, wbw_admin } from "./helpers/helper.js";
+import { reset_bmlt, 
+  bmlt_states_off, 
+  configure_service_bodies, 
+  delete_submissions, 
+  click_table_row_column, 
+  click_dt_button_by_index, 
+  click_dialog_button_by_index, 
+  select_dropdown_by_text, 
+  select_dropdown_by_value, 
+  wbw_admin, 
+  basic_options } from "./helpers/helper.js";
+  
 import { userVariables } from "../../.testcaferc";
 
 fixture`e2e_test_fixture`
   // .page(userVariables.admin_submissions_page)
   .beforeEach(async (t) => {
-    // turn off our optional settings
-    await t.useRole(wbw_admin).navigateTo(userVariables.admin_options_page);
-    await select_dropdown_by_text(ao.wbw_optional_location_nation, "Hidden");
-    await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Hidden");
-    await t.click(ao.submit);
-    await ao.settings_updated();
 
-    var http = require("http");
-    http.get(userVariables.blank_bmlt);
-    http.get(userVariables.blank_submission);
-    // disable state dropdown
-    http.get(userVariables.bmlt_states_off);
+    await reset_bmlt();
+    await bmlt_states_off();
+
+    await basic_options();
+    await configure_service_bodies();
+
+    await delete_submissions();
+
   });
 
 test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
