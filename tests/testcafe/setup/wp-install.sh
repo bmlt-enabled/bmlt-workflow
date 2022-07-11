@@ -3,7 +3,7 @@
 # Install script for Latest WordPress on local dev
 
 # Setup
-
+export PATH=/usr/local/bin:$PATH
 # Hardcoded variables that shouldn't change much
 
 # Path to MySQL
