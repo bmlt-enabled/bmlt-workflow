@@ -30,7 +30,6 @@ class WBW_Database
 
         // do nothing by default
         $upgrade = false;
-        $fresh_install = false;
 
         if ($installed_version === false) {
             // fresh install
