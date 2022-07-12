@@ -76,15 +76,15 @@ export async function insert_submissions()
 
 export async function configure_service_bodies()
 {
-    await t.useRole(wbw_admin).navigateTo(userVariables.admin_service_bodies_page);
-    await t.click("#select2-wbw_userlist_id_1-container");
-    await t.pressKey("enter");
-    await t.click("#select2-wbw_userlist_id_2-container");
-    await t.pressKey("enter");
-    await t.click("#select2-wbw_userlist_id_3-container");
-    await t.pressKey("enter");
- 
-    await t.click(asb.wbw_submit);
+    await t.useRole(wbw_admin).navigateTo(userVariables.admin_service_bodies_page)
+    
+    await t.click("ul#select2-wbw_userlist_id_1-container")
+    .pressKey("enter")
+    .click("ul#select2-wbw_userlist_id_2-container")
+    .pressKey("enter")
+    .click("ul#select2-wbw_userlist_id_3-container")
+    .pressKey("enter")
+    .click(asb.wbw_submit);
 
 }
 

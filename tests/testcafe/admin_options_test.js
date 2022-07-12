@@ -14,7 +14,7 @@ import {
   wbw_admin, 
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
-  select_dropdown_by_value } from "./helpers/helper.js";
+  select_dropdown_by_value } from "./helpers/helper";
 
 import fs from "fs";
 import { join as joinPath } from "path";
@@ -54,8 +54,11 @@ fixture`admin_options_fixture`
   .beforeEach(async (t) => {
 
     await reset_bmlt();
+
     await basic_options();
+    
     await configure_service_bodies();
+
     await insert_submissions();
 
     await t.useRole(wbw_admin).navigateTo(userVariables.admin_options_page);
@@ -85,6 +88,7 @@ test("Backup", async (t) => {
 });
 
 test("Restore", async (t) => {
+
   await t
     .setFilesToUpload(ao.wbw_file_selector, ["./uploads/restoretest1.json"])
     // .click(ao.restore_button)
