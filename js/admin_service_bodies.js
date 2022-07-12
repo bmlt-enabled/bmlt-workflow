@@ -106,6 +106,7 @@ jQuery(document).ready(function ($) {
       var userlist = response;
       Object.keys(sblist).forEach((item) => {
         var id = "wbw_userlist_id_" + item;
+        var cbid = "wbw_userlist_checkbox_id_" + item;
         var checked = sblist[item]["show_on_form"] ? "checked" : "";
         var appendstr = "<tr>";
 
@@ -116,7 +117,7 @@ jQuery(document).ready(function ($) {
         appendstr += "<td>" + sblist[item]["name"] + "</td>";
         appendstr += '<td><div class="grow-wrap"><textarea onInput="this.parentNode.dataset.replicatedValue = this.value">' + sblist[item]["description"] + "</textarea></div></td>";
         appendstr += '<td><select class="wbw-userlist" id="' + id + '" style="width: auto"></select></td>';
-        appendstr += '<td class="wbw-center-checkbox"><input type="checkbox" ' + checked + "></td>";
+        appendstr += '<td class="wbw-center-checkbox"><input type="checkbox" id="' + cbid + '" ' + checked + "></td>";
         appendstr += "</tr>";
         $("#wbw-userlist-table tbody").append(appendstr);
         // store metadata away for later

@@ -1,4 +1,4 @@
-import { t, Role } from 'testcafe';
+import { t, Role, Selector } from 'testcafe';
 import { wordpress_login } from '../models/wordpress_login';
 import { userVariables } from "../../../.testcaferc";
 import { ao } from "../models/admin_options";
@@ -77,12 +77,11 @@ export async function insert_submissions()
 export async function configure_service_bodies()
 {
     await t.useRole(wbw_admin).navigateTo(userVariables.admin_service_bodies_page)
-    
-    await t.click("ul#select2-wbw_userlist_id_1-container")
+    .click(Selector('ul#select2-wbw_userlist_id_1-container').parent())
     .pressKey("enter")
-    .click("ul#select2-wbw_userlist_id_2-container")
+    .click(Selector('ul#select2-wbw_userlist_id_2-container').parent())
     .pressKey("enter")
-    .click("ul#select2-wbw_userlist_id_3-container")
+    .click(Selector('ul#select2-wbw_userlist_id_3-container').parent())
     .pressKey("enter")
     .click(asb.wbw_submit);
 
