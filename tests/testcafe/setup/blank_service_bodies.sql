@@ -1,0 +1,2 @@
+delete from wp_wbw_service_bodies;
+delete from wp_wbw_service_bodies_access;
