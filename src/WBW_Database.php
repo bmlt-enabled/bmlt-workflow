@@ -20,6 +20,20 @@ class WBW_Database
 
     }
 
+    public function wbw_drop_tables()
+    {
+        global $wpdb;
+
+        $sql = "DROP TABLE IF EXISTS " . $this->wbw_service_bodies_access_table_name . ";";
+        $wpdb->query($sql);
+        $sql = "DROP TABLE IF EXISTS " . $this->wbw_submissions_table_name . ";";
+        $wpdb->query($sql);
+        $sql = "DROP TABLE IF EXISTS " . $this->wbw_service_bodies_table_name . ";";
+        $wpdb->query($sql);
+        $this->debug_log("tables dropped");
+
+    }
+
     public function wbw_db_upgrade($desired_version, $fresh_install)
     {
 
@@ -71,13 +85,7 @@ class WBW_Database
             $charset_collate = $wpdb->get_charset_collate();
 
             // shouldn't need this but just in case the tables already exist
-            $sql = "DROP TABLE IF EXISTS " . $this->wbw_service_bodies_access_table_name . ";";
-            $wpdb->query($sql);
-            $sql = "DROP TABLE IF EXISTS " . $this->wbw_submissions_table_name . ";";
-            $wpdb->query($sql);
-            $sql = "DROP TABLE IF EXISTS " . $this->wbw_service_bodies_table_name . ";";
-            $wpdb->query($sql);
-            $this->debug_log("fresh install: tables dropped");
+            $this->wbw_drop_tables();
 
             $sql = "CREATE TABLE " . $this->wbw_service_bodies_table_name . " (
             service_body_bigint bigint(20) NOT NULL,
