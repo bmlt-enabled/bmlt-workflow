@@ -14,7 +14,8 @@ import {
   wbw_admin, 
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
-  select_dropdown_by_value } from "./helpers/helper";
+  select_dropdown_by_value, 
+  delete_submissions} from "./helpers/helper";
 
 import fs from "fs";
 import { join as joinPath } from "path";
@@ -56,6 +57,8 @@ fixture`admin_options_fixture`
     await reset_bmlt();
 
     await basic_options();
+    
+    await delete_submissions();
     
     await configure_service_bodies();
 

@@ -17,6 +17,7 @@ import { userVariables } from "../../.testcaferc";
 fixture`admin_submissions_fixture`.beforeEach(async (t) => {
   await reset_bmlt();
   await basic_options();
+  await delete_submissions();
   await configure_service_bodies();
   await insert_submissions();
 

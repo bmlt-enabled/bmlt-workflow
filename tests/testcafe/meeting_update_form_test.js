@@ -21,6 +21,9 @@ fixture`meeting_update_form_fixture`
   await bmlt_states_off();
 
   await basic_options();
+  
+  await delete_submissions();
+
   await configure_service_bodies();
 
   // log in as noone

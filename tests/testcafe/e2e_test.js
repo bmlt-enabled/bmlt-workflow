@@ -26,9 +26,11 @@ fixture`e2e_test_fixture`
     await bmlt_states_off();
 
     await basic_options();
-    await configure_service_bodies();
 
     await delete_submissions();
+
+    await configure_service_bodies();
+
 
   });
 
