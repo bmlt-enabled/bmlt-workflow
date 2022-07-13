@@ -66,7 +66,7 @@ if (!class_exists('wbw_plugin')) {
             // add_filter( 'pre_set_site_transient_update_plugins', array(&$this,'wbw_plugin_update_check' ));
 
             register_activation_hook(__FILE__, array(&$this, 'wbw_install'));
-            register_deactivation_hook(__FILE__, array(&$this, 'wbw_uninstall'));
+            register_uninstall_hook(__FILE__, array(&$this, 'wbw_uninstall'));
         }
 
         // function wbw_plugin_update_check( $data ) {
@@ -859,18 +859,27 @@ if (!class_exists('wbw_plugin')) {
 
         public function wbw_uninstall()
         {
-            global $wpdb;
-
+            foreach ($this->WBW_WP_Options->wbw_options as $key => $value) {
+                $this->debug_log("deleting option " . $value );
+                delete_option($value);
+            }
+            
+            $this->WBW_Database->wbw_drop_tables();
+            $this->debug_log("removed tables");
+            
             // remove custom capability
-
+            
             $this->debug_log("deleting capabilities");
-
+            
             $users = get_users();
             foreach ($users as $user) {
                 $user->remove_cap($this->WBW_WP_Options->wbw_capability_manage_submissions);
             }
-
+            
             remove_role('wbw_trusted_servant');
+            
+            $this->debug_log("uninstall complete");
+            
         }
     }
 
