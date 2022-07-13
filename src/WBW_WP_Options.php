@@ -12,27 +12,22 @@ class WBW_WP_Options
     
         // option list so we can back them up
         $this->wbw_options = array(
-            'wbw_db_version' => 'wbw_db_version',
-            'wbw_bmlt_server_address' => 'wbw_bmlt_server_address',
-            'wbw_bmlt_username' => 'wbw_bmlt_username',
-            'wbw_bmlt_password' => 'wbw_bmlt_password',
-            'wbw_bmlt_test_status' => 'wbw_bmlt_test_status',
-            'wbw_submitter_email_template' => 'wbw_submitter_email_template',
-            'wbw_optional_location_sub_province' => 'wbw_optional_location_sub_province',
-            'wbw_optional_location_nation' => 'wbw_optional_location_nation',
-            'wbw_delete_closed_meetings' => 'wbw_delete_closed_meetings',
-            'wbw_email_from_address' => 'wbw_email_from_address',
-            'wbw_fso_email_template' => 'wbw_fso_email_template',
-            'wbw_fso_email_address' => 'wbw_fso_email_address',
-            'wbw_submitter_email_template' => 'wbw_submitter_email_template',
+            'wbw_db_version',
+            'wbw_bmlt_server_address',
+            'wbw_bmlt_username',
+            'wbw_bmlt_password',
+            'wbw_bmlt_test_status',
+            'wbw_submitter_email_template',
+            'wbw_optional_location_sub_province',
+            'wbw_optional_location_nation',
+            'wbw_delete_closed_meetings',
+            'wbw_email_from_address',
+            'wbw_fso_email_template',
+            'wbw_fso_email_address',
+            'wbw_submitter_email_template',
         );
     }
         
-    public function wbw_get_option($option, $default = false)
-    {
-        return get_option($this->wbw_options[$option], $default);
-    }
-
     public function secrets_encrypt($password, $secret)
     {
 

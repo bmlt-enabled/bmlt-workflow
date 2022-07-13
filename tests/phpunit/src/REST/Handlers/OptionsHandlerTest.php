@@ -98,9 +98,9 @@ Line: $errorLine
         $wpdb->shouldReceive('prepare')->andReturn("SELECT * from anything");
         $wpdb->shouldReceive('get_results')->andReturn($dblookup);
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
+        // $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
+        // /** @var Mockery::mock $WBW_WP_Options test */
+        // Functions\when('\get_option')->justReturn("success");
 
         Functions\when('\wp_load_alloptions')->justReturn(array('wbw_db_version'=> 'testing', 'wbw_crap'=> 'testing', 'shouldntbe' => 'inthebackup'));
         $rest = new OptionsHandler();
@@ -113,6 +113,7 @@ Line: $errorLine
         $backup = json_decode($data['backup'],true);
         $this->assertIsArray($backup['options']);
         $this->assertArrayNotHasKey('wbw_crap',$backup['options']);
+        
         $this->assertEquals($backup['options']['wbw_db_version'],'testing');
         
     }
@@ -157,7 +158,7 @@ Line: $errorLine
 
 //         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
 //         /** @var Mockery::mock $WBW_WP_Options test */
-//         $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
+//         Functions\when('\get_option')->justReturn("success");
 
 //         Functions\when('\wp_load_alloptions')->justReturn(array('wbw_db_version'=> 'testing', 'wbw_crap'=> 'testing', 'shouldntbe' => 'inthebackup'));
 //         $rest = new OptionsHandler();

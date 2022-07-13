@@ -60,7 +60,7 @@ class Integration
     public function retrieve_single_meeting($meeting_id)
     {
 
-        $wbw_bmlt_server_address = $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address');
+        $wbw_bmlt_server_address = get_option('wbw_bmlt_server_address');
         $url = $wbw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
 
         $curl = curl_init($url);
@@ -215,7 +215,7 @@ class Integration
             return $ret;
         }
 
-        $url = $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . "index.php";
+        $url = get_option('wbw_bmlt_server_address') . "index.php";
         // $this->debug_log("*** ADMIN URL ".$url);
 
         $resp = $this->get($url, $this->cookies);
@@ -271,7 +271,7 @@ class Integration
     {
         
         if ($this->cookies == null) {
-            $encrypted = $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_password');
+            $encrypted = get_option('wbw_bmlt_password');
             $this->debug_log("retrieved encrypted bmlt password");
             $this->debug_log(($encrypted));
 
@@ -285,10 +285,10 @@ class Integration
 
             $postargs = array(
                 'admin_action' => 'login',
-                'c_comdef_admin_login' => $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_username'),
+                'c_comdef_admin_login' => get_option('wbw_bmlt_username'),
                 'c_comdef_admin_password' => $decrypted
             );
-            $url = $this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . "index.php";
+            $url = get_option('wbw_bmlt_server_address') . "index.php";
 
             // $this->debug_log("AUTH URL = " . $url);
             $ret = $this->post($url, null, $postargs);
@@ -405,7 +405,7 @@ class Integration
         if (!(is_array($postargs))) {
             return $this->wbw_rest_error("Missing post parameters", "wbw_bmlt_integration");
         }
-        return $this->post($this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . $url, $this->cookies, $postargs);
+        return $this->post(get_option('wbw_bmlt_server_address') . $url, $this->cookies, $postargs);
     }
 
     /**
@@ -420,7 +420,7 @@ class Integration
         if (!(is_array($postargs))) {
             return $this->wbw_rest_error("Missing post parameters", "wbw_bmlt_integration");
         }
-        $val = $this->post($this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . $url, null, $postargs);
+        $val = $this->post(get_option('wbw_bmlt_server_address') . $url, null, $postargs);
         $this->debug_log(($val));
         return $val;
     }
@@ -443,6 +443,6 @@ class Integration
             return $this->wbw_rest_error("Missing post parameters", "wbw_bmlt_integration");
         }
 
-        return $this->postsemantic($this->WBW_WP_Options->wbw_get_option('wbw_bmlt_server_address') . $url, $this->cookies, $postargs);
+        return $this->postsemantic(get_option('wbw_bmlt_server_address') . $url, $this->cookies, $postargs);
     }
 }

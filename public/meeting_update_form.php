@@ -5,7 +5,7 @@ use wbw\WBW_WP_Options;
 
 $WBW_WP_Options = new WBW_WP_Options();
 
-$wbw_bmlt_test_status = $WBW_WP_Options->wbw_get_option('wbw_bmlt_test_status', "failure");
+$wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
 if ($wbw_bmlt_test_status != "success") {
     wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
 }

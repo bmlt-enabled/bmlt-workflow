@@ -79,11 +79,23 @@ export async function configure_service_bodies()
     await t.useRole(wbw_admin).navigateTo(userVariables.admin_service_bodies_page)
     .click(Selector('ul#select2-wbw_userlist_id_1-container').parent())
     .pressKey("enter")
-    .click(Selector('ul#select2-wbw_userlist_id_2-container').parent())
+    if(!Selector("#wbw_userlist_checkbox_id_1").checked)
+    {
+        await t.click("#wbw_userlist_checkbox_id_1");
+    }
+    await t.click(Selector('ul#select2-wbw_userlist_id_2-container').parent())
     .pressKey("enter")
-    .click(Selector('ul#select2-wbw_userlist_id_3-container').parent())
+    if(!Selector("#wbw_userlist_checkbox_id_1").checked)
+    {
+        await t.click("#wbw_userlist_checkbox_id_2");
+    }
+    await t.click(Selector('ul#select2-wbw_userlist_id_3-container').parent())
     .pressKey("enter")
-    .click(asb.wbw_submit);
+    if(!Selector("#wbw_userlist_checkbox_id_1").checked)
+    {
+        await t.click("#wbw_userlist_checkbox_id_3");
+    }
+    await t.click(asb.wbw_submit);
 
 }
 

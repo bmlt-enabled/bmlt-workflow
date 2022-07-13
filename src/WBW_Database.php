@@ -26,7 +26,7 @@ class WBW_Database
         global $wpdb;
 
         // work out which version we're at right now
-        $installed_version = $this->WBW_WP_Options->wbw_get_option('wbw_db_version');
+        $installed_version = get_option('wbw_db_version');
 
         // do nothing by default
         $upgrade = false;

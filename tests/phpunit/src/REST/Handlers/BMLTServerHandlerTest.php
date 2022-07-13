@@ -83,7 +83,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
+        Functions\when('\get_option')->justReturn("success");
 
         $rest = new BMLTServerHandler(null, $WBW_WP_Options);
 
@@ -110,7 +110,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
 
         $rest = new BMLTServerHandler(null,$WBW_WP_Options);
 
@@ -142,7 +142,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
+        Functions\when('\get_option')->justReturn("success");
 
         Functions\when('\update_option')->returnArg(1);
 
@@ -181,7 +181,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
+        Functions\when('\get_option')->justReturn("success");
 
         Functions\when('\update_option')->returnArg(1);
         $rest = new BMLTServerHandler();
@@ -210,7 +210,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
+        Functions\when('\get_option')->justReturn("success");
 
         Functions\when('\update_option')->returnArg(1);
         $rest = new BMLTServerHandler();
@@ -238,7 +238,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("success");
+        Functions\when('\get_option')->justReturn("success");
 
         Functions\when('\update_option')->returnArg(1);
         $rest = new BMLTServerHandler();
