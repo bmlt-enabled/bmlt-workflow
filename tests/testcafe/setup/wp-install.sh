@@ -36,6 +36,7 @@ tar zxf latest.tar.gz
 rm -rf /var/www/html/wordpressdev
 mkdir /var/www/html/wordpressdev
 mv wordpress/* /var/www/html/wordpressdev
+sudo chown -R apache:apache /var/www/html/wordpressdev
 cd /var/www/html/wordpressdev
 
 
