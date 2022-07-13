@@ -1,5 +1,7 @@
 <?php
 
+require 'config.php';
+
 if (file_exists('vendor/autoload.php')) {
     // use composer autoload if we're running under phpunit
     include 'vendor/autoload.php';
@@ -16,20 +18,29 @@ if (file_exists('vendor/autoload.php')) {
 use wbw\WBW_WP_Options;
 use wbw\WBW_Database;
 
+function debug_log($message)
+{
+    if (WBW_DEBUG)
+    {
+        $out = print_r($message, true);
+        error_log(debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] . ": " . $out);
+    }
+}
+
 $WBW_WP_Options = new WBW_WP_Options();
 $WBW_Database = new WBW_Database();
 
 foreach ($WBW_WP_Options->wbw_options as $key => $value) {
-    error_log("deleting option " . $value);
+    debug_log("deleting option " . $value);
     delete_option($value);
 }
 
 $WBW_Database->wbw_drop_tables();
-error_log("removed tables");
+debug_log("removed tables");
 
 // remove custom capability
 
-error_log("deleting capabilities");
+debug_log("deleting capabilities");
 
 $users = get_users();
 foreach ($users as $user) {
@@ -38,4 +49,4 @@ foreach ($users as $user) {
 
 remove_role('wbw_trusted_servant');
 
-error_log("uninstall complete");
+debug_log("uninstall complete");
