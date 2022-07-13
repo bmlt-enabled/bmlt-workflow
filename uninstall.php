@@ -1,7 +1,19 @@
 <?php
 
+if (file_exists('vendor/autoload.php')) {
+    // use composer autoload if we're running under phpunit
+    include 'vendor/autoload.php';
+} else {
+    // custom autoloader if not. only autoloads out of src directory
+    spl_autoload_register(function (string $class) {
+        if (strpos($class, 'wbw\\') === 0) {
+            $class = str_replace('wbw\\', '', $class);
+            require __DIR__ . '/src/' . str_replace('\\', '/', $class) . '.php';
+        }
+    });
+}
+
 use wbw\WBW_WP_Options;
-use wbw\WBW_Debug;
 use wbw\WBW_Database;
 
 $WBW_WP_Options = new WBW_WP_Options();
