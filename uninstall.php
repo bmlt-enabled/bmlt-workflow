@@ -27,7 +27,7 @@ function debug_log($message)
 }
 
 
-function uninstaller()
+function wbw_uninstaller()
 {
     $WBW_WP_Options = new WBW_WP_Options();
     $WBW_Database = new WBW_Database();
@@ -54,4 +54,4 @@ function uninstaller()
     debug_log("uninstall complete");
 }
 
-uninstaller();
+wbw_uninstaller();
