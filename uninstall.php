@@ -20,33 +20,38 @@ use wbw\WBW_Database;
 
 function debug_log($message)
 {
-    if (WBW_DEBUG)
-    {
+    if (WBW_DEBUG) {
         $out = print_r($message, true);
-        error_log(debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] . ": " . $out);
+        error_log(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] . ": " . $out);
     }
 }
 
-$WBW_WP_Options = new WBW_WP_Options();
-$WBW_Database = new WBW_Database();
 
-foreach ($WBW_WP_Options->wbw_options as $key => $value) {
-    debug_log("deleting option " . $value);
-    delete_option($value);
+function uninstaller()
+{
+    $WBW_WP_Options = new WBW_WP_Options();
+    $WBW_Database = new WBW_Database();
+
+    foreach ($WBW_WP_Options->wbw_options as $key => $value) {
+        debug_log("deleting option " . $value);
+        delete_option($value);
+    }
+
+    $WBW_Database->wbw_drop_tables();
+    debug_log("removed tables");
+
+    // remove custom capability
+
+    debug_log("deleting capabilities");
+
+    $users = get_users();
+    foreach ($users as $user) {
+        $user->remove_cap($WBW_WP_Options->wbw_capability_manage_submissions);
+    }
+
+    remove_role('wbw_trusted_servant');
+
+    debug_log("uninstall complete");
 }
 
-$WBW_Database->wbw_drop_tables();
-debug_log("removed tables");
-
-// remove custom capability
-
-debug_log("deleting capabilities");
-
-$users = get_users();
-foreach ($users as $user) {
-    $user->remove_cap($WBW_WP_Options->wbw_capability_manage_submissions);
-}
-
-remove_role('wbw_trusted_servant');
-
-debug_log("uninstall complete");
+uninstaller();
