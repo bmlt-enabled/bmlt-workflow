@@ -1,7 +1,8 @@
-## 0.4.4 (Jul 10, 2022)
+## 0.4.4 (Jul 14, 2022)
 - #72 location_province field not populating with info from meeting (thanks @pjaudiomv !)
 - #73 database tables not created if wbw_db_version found, regardless of whether the tables actually exist (thanks @pjaudiomv !)
 - lots of cleanup to testcafe test cases
+- new phpunit test cases for WBW_Database
 - uninstall now handled cleanly
 
 ## 0.4.3 (Jun 20, 2022)
