@@ -70,8 +70,10 @@ Line: $errorLine
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('query');
         $wpdb->num_rows = 1;
+        $wpdb->prefix = "";
 
         $WBW_Database = new WBW_Database();
+        
         Functions\when('\get_option')->justReturn($WBW_Database->wbw_db_version);
         // nothing should be performed ie return 0
         $this->assertEquals($WBW_Database->wbw_db_upgrade($WBW_Database->wbw_db_version, false), 0);
@@ -85,7 +87,6 @@ Line: $errorLine
     {
         // @return int 0 if nothing was performed, 1 if fresh install was performed, 2 if upgrade was performed
 
-        $WBW_Database = new WBW_Database();
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -93,6 +94,9 @@ Line: $errorLine
         $wpdb->shouldReceive('query');
         $wpdb->shouldReceive('get_charset_collate');
         $wpdb->num_rows = 0;
+        $wpdb->prefix = "";
+
+        $WBW_Database = new WBW_Database();
 
         Functions\expect('\delete_option')->with('wbw_db_version')->once()->andReturn(true);
         Functions\expect('\add_option')->with('wbw_db_version',$WBW_Database->wbw_db_version)->once()->andReturn(true);
@@ -110,7 +114,6 @@ Line: $errorLine
     {
         // @return int 0 if nothing was performed, 1 if fresh install was performed, 2 if upgrade was performed
 
-        $WBW_Database = new WBW_Database();
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -118,6 +121,9 @@ Line: $errorLine
         $wpdb->shouldReceive('query');
         $wpdb->shouldReceive('get_charset_collate');
         $wpdb->num_rows = 1;
+        $wpdb->prefix = "";
+
+        $WBW_Database = new WBW_Database();
 
         Functions\expect('\delete_option')->with('wbw_db_version')->once()->andReturn(true);
         Functions\expect('\add_option')->with('wbw_db_version',$WBW_Database->wbw_db_version)->once()->andReturn(true);
@@ -141,11 +147,13 @@ Line: $errorLine
         $wpdb->shouldReceive('query');
         $wpdb->shouldReceive('get_charset_collate');
         $wpdb->num_rows = 1;
+        $wpdb->prefix = "";
+
+        $WBW_Database = new WBW_Database();
 
         Functions\expect('\delete_option')->once()->andReturn(true);
         Functions\expect('\add_option')->once()->andReturn(true);
 
-        $WBW_Database = new WBW_Database();
         Functions\when('\get_option')->justReturn(false);
         // fresh install should be performed
         $this->assertEquals($WBW_Database->wbw_db_upgrade($WBW_Database->wbw_db_version, false), 1);
@@ -159,7 +167,6 @@ Line: $errorLine
     {
         // @return int 0 if nothing was performed, 1 if fresh install was performed, 2 if upgrade was performed
 
-        $WBW_Database = new WBW_Database();
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -167,6 +174,9 @@ Line: $errorLine
         $wpdb->shouldReceive('query');
         $wpdb->shouldReceive('get_charset_collate');
         $wpdb->num_rows = 1;
+        $wpdb->prefix = "";
+
+        $WBW_Database = new WBW_Database();
 
         Functions\expect('\delete_option')->with('wbw_db_version')->once()->andReturn(true);
         Functions\expect('\add_option')->with('wbw_db_version',$WBW_Database->wbw_db_version)->once()->andReturn(true);
