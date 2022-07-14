@@ -100,9 +100,7 @@ class OptionsHandler
             $this->debug_log("searching for " . $key . " in ");
             $this->debug_log(($this->WBW_WP_Options->wbw_options));
 
-            $found = array_search($key, $this->WBW_WP_Options->wbw_options);
-
-            if ($found == true) {
+            if (in_array($key, $this->WBW_WP_Options->wbw_options)) {
                 $this->debug_log("found " . $key);
                 $saveoptarr[$key] = $value;
             }

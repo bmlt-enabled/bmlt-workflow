@@ -1,11 +1,21 @@
 import { ao } from "./models/admin_options";
 import { as } from "./models/admin_submissions";
+import { asb } from "./models/admin_service_bodies";
 import { uf } from "./models/meeting_update_form";
 
 import { userVariables } from "../../.testcaferc";
 import { t, Selector, Role, RequestLogger } from "testcafe";
 
-import { wbw_admin, click_dialog_button_by_index, select_dropdown_by_text, select_dropdown_by_value } from "./helpers/helper.js";
+import { 
+  reset_bmlt, 
+  basic_options, 
+  configure_service_bodies, 
+  insert_submissions, 
+  wbw_admin, 
+  click_dialog_button_by_index, 
+  select_dropdown_by_text, 
+  select_dropdown_by_value, 
+  delete_submissions} from "./helpers/helper";
 
 import fs from "fs";
 import { join as joinPath } from "path";
@@ -43,24 +53,33 @@ let downloadedFilePath = null;
 
 fixture`admin_options_fixture`
   .beforeEach(async (t) => {
-    var http = require("http");
-    // pre fill the submissions
-    http.get(userVariables.admin_submission_reset);
-    // // reset bmlt to reasonable state
-    // http.get(userVariables.blank_bmlt);
+
+    await reset_bmlt();
+
+    await basic_options();
+    
+    await delete_submissions();
+    
+    await configure_service_bodies();
+
+    await insert_submissions();
+
     await t.useRole(wbw_admin).navigateTo(userVariables.admin_options_page);
   })
   .requestHooks(logger);
 
 test("Backup", async (t) => {
-  console.log(backupurl);
+  
+  // console.log(backupurl);
   await t.click(ao.backup_button);
   const b_elem = Selector("#wbw_backup_filename");
   const state = await b_elem();
   const filename = state.attributes.download;
   downloadedFilePath = getFileDownloadPath(filename);
   await waitForFileDownload(downloadedFilePath);
+  // console.log(logger);
   var f = JSON.parse(logger.requests[0].response.body.toString());
+  // console.log(logger.requests[0].response.body.toString());
   var backup = JSON.parse(f.backup);
 
   await t.expect(f.message).eql("Backup Successful");
@@ -73,6 +92,7 @@ test("Backup", async (t) => {
 });
 
 test("Restore", async (t) => {
+
   await t
     .setFilesToUpload(ao.wbw_file_selector, ["./uploads/restoretest1.json"])
     // .click(ao.restore_button)

@@ -3,27 +3,37 @@ import { ao } from "./models/admin_options";
 
 import { Role, Selector } from "testcafe";
 
-import { select_dropdown_by_text, select_dropdown_by_value, wbw_admin } from "./helpers/helper.js";
+import { basic_options, 
+  configure_service_bodies, 
+  bmlt_states_off, 
+  reset_bmlt, 
+  bmlt_states_on, 
+  delete_submissions,
+  select_dropdown_by_text, 
+  select_dropdown_by_value
+  } from "./helpers/helper.js";
+
 import { userVariables } from "../../.testcaferc";
 
 fixture`meeting_update_form_fixture`
 .beforeEach(async (t) => {
-  await t.useRole(wbw_admin).navigateTo(userVariables.admin_options_page);
-  await select_dropdown_by_text(ao.wbw_optional_location_nation, "Hidden");
-  await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Hidden");
-  await t.click(ao.submit);
-  await ao.settings_updated();
+
+  await reset_bmlt();
+  await bmlt_states_off();
+
+  await basic_options();
+  
+  await delete_submissions();
+
+  await configure_service_bodies();
+
   // log in as noone
   await t.useRole(Role.anonymous());
-  var http = require("http");
-  // reset bmlt to reasonable state
-  http.get(userVariables.blank_bmlt);
-  // clean submissions table
-  // http.get(userVariables.blank_submission);
-  await t.navigateTo(userVariables.formpage);
 });
 
 test("Success_New_Meeting_And_Submit", async (t) => {
+
+
   await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_new");
@@ -108,6 +118,8 @@ test("Success_New_Meeting_And_Submit", async (t) => {
 });
 
 test("Success_Change_Meeting_Name_And_Submit", async (t) => {
+
+  await t.navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
   await t.expect(uf.update_reason.value).eql("reason_change");
@@ -150,6 +162,7 @@ test("Success_Change_Meeting_Name_And_Submit", async (t) => {
 });
 
 test("Success_Close_Meeting_And_Submit", async (t) => {
+  await t.navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_close");
 
   // check our divs are visible
@@ -189,6 +202,9 @@ test("Success_Close_Meeting_And_Submit", async (t) => {
 });
 
 test("Change_Meeting_Details_Check_Highlighting", async (t) => {
+
+  await t.navigateTo(userVariables.formpage);
+
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
   // check our divs are visible
@@ -279,6 +295,7 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
 });
 
 test("Change_Nothing_Check_Error", async (t) => {
+  await t.navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
   // check our divs are visible
@@ -301,4 +318,30 @@ test("Change_Nothing_Check_Error", async (t) => {
     .click(uf.submit)
     .expect(uf.error_para.innerText)
     .match(/Nothing\ was\ changed/);
+});
+
+test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
+
+  await bmlt_states_on();
+
+  await t.navigateTo(userVariables.formpage);
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+
+  await t.expect(uf.update_reason.value).eql("reason_change");
+
+  debugger;
+  // meeting selector
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "correctmeeting");
+  await t.pressKey("enter");
+
+  // validate form is laid out correctly
+  await t.expect(uf.personal_details.visible).eql(true).expect(uf.meeting_details.visible).eql(true).expect(uf.additional_info_div.visible).eql(true);
+
+  await t
+  // should be a select element if we have a dropdown
+  .expect(uf.location_province.tagName).eql("select")
+  // should have changed the state to SA which is not the default
+  .expect(uf.location_province.value).eql("SA");
+
 });

@@ -3,7 +3,7 @@
 # Install script for Latest WordPress on local dev
 
 # Setup
-
+export PATH=/usr/local/bin:$PATH
 # Hardcoded variables that shouldn't change much
 
 # Path to MySQL
@@ -21,7 +21,7 @@ export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 aws ssm put-parameter --overwrite --name wbw_test_wppass --value $wppass --type SecureString --region ap-southeast-2
 export wpemail=nigel.brittain@gmail.com
 export siteurl=54.153.167.239/wordpressdev
-export BRANCH=0.4.0-fixes
+export BRANCH=0.4.3-fixes
 
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
@@ -33,7 +33,7 @@ rm -rf /home/ssm-user/wordpress/wordpress
 rm /home/ssm-user/wordpress/latest.tar.gz
 wget http://wordpress.org/latest.tar.gz
 tar zxf latest.tar.gz
-rm -rf /var/www/html/wordpressdev
+sudo rm -rf /var/www/html/wordpressdev
 mkdir /var/www/html/wordpressdev
 mv wordpress/* /var/www/html/wordpressdev
 cd /var/www/html/wordpressdev
@@ -67,16 +67,21 @@ SALT=$(curl -L https://api.wordpress.org/secret-key/1.1/salt/ | sed -e "s/.*NONC
 STRING='put your unique phrase here'
 printf '%s\n' "g/$STRING/d" a "$SALT" . w | ed -s wp-config.php
 
+sudo chown -R apache:apache /var/www/html/wordpressdev
+
 # Run our install ...
 curl -d "weblog_title=$wptitle&user_name=$wpuser&admin_password=$wppass&admin_password2=$wppass&admin_email=$wpemail" http://$siteurl/wp-admin/install.php?step=2
 
 # install our plugin
 cd /home/ssm-user/wordpress
 git clone https://github.com/bmlt-enabled/wordpress-bmlt-workflow.git
-mv wordpress-bmlt-workflow /var/www/html/wordpressdev/wp-content/plugins
-cd /var/www/html/wordpressdev/wp-content/plugins/wordpress-bmlt-workflow
+cd wordpress-bmlt-workflow
 git switch $BRANCH
 sed -i "s/define('WBW_DEBUG', false);/define('WBW_DEBUG', true);/g" config.php
+cd ..
+sudo mv wordpress-bmlt-workflow /var/www/html/wordpressdev/wp-content/plugins
+sudo chown -R apache:apache /var/www/html/wordpressdev/wp-content/plugins/wordpress-bmlt-workflow
+cd /var/www/html/wordpressdev/wp-content/plugins/wordpress-bmlt-workflow
 # activate plugin
 wp plugin activate --path=/var/www/html/wordpressdev "wordpress-bmlt-workflow"
 wp option --path=/var/www/html/wordpressdev add 'wbw_bmlt_server_address' 'http://54.153.167.239/blank_bmlt/main_server/'

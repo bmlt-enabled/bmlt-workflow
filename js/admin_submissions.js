@@ -458,7 +458,7 @@ jQuery(document).ready(function ($) {
           table += column(col_personal_details, "Relationship to Group", c[key]);
           break;
         case "weekday_tinyint":
-          table += column(col_meeting_details, "Meeting Day", c[key]);
+          table += column(col_meeting_details, "Meeting Day", weekdays[c[key]]);
           break;
         case "starter_kit_postal_address":
           if (c["starter_kit_required"] === "yes")

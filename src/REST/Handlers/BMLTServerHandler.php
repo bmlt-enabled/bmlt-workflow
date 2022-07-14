@@ -56,9 +56,9 @@ class BMLTServerHandler
     {
 
         $this->debug_log('get test results returning');
-        $this->debug_log($this->WBW_WP_Options->wbw_get_option("wbw_bmlt_test_status", "failure"));
+        $this->debug_log(get_option("wbw_bmlt_test_status", "failure"));
 
-        $response = array("wbw_bmlt_test_status" => $this->WBW_WP_Options->wbw_get_option("wbw_bmlt_test_status", "failure"));
+        $response = array("wbw_bmlt_test_status" => get_option("wbw_bmlt_test_status", "failure"));
 
         return $this->handlerCore->wbw_rest_success($response);
     }

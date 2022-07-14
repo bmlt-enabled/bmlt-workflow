@@ -127,7 +127,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
         $WBW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
         $integration = new Integration(null,$WBW_WP_Options);
@@ -149,7 +149,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
         $WBW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
         $integration = new Integration(null, $WBW_WP_Options);
@@ -172,7 +172,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
 
         $integration = new Integration(null,$WBW_WP_Options);
 
@@ -194,7 +194,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
 
         $integration = new Integration(null, $WBW_WP_Options);
 
@@ -215,7 +215,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
 
         $integration = new Integration(null,$WBW_WP_Options);
 
@@ -238,7 +238,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
 
         $integration = new Integration(null,$WBW_WP_Options);
 
@@ -260,7 +260,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
 
         $integration = new Integration(null,$WBW_WP_Options);
 
@@ -281,7 +281,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
 
         $integration = new Integration(null,$WBW_WP_Options);
 
@@ -303,7 +303,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
         $WBW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
         $integration = new Integration(null,$WBW_WP_Options);
@@ -326,7 +326,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
         $WBW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
         $integration = new Integration(null,$WBW_WP_Options);
@@ -349,7 +349,7 @@ Line: $errorLine
         $secretsstub = \Mockery::mock('WP_Options');
         /** @var Mockery::mock $secretsstub test */
         $secretsstub->shouldReceive('secrets_decrypt')->andReturn('true');
-        $secretsstub->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
 
         Functions\when('\is_wp_error')->justReturn(false);
 
@@ -373,7 +373,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
         $WBW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
         $integration = new Integration(null,$WBW_WP_Options);
@@ -396,7 +396,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
         $WBW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
         $integration = new Integration(null,$WBW_WP_Options);
@@ -420,7 +420,7 @@ Line: $errorLine
 
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
         $WBW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
 
@@ -459,7 +459,7 @@ Line: $errorLine
     
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
 
         $integration = new Integration(true,$WBW_WP_Options);
         $response = $integration->geolocateAddress('sydney, australia');
@@ -500,7 +500,7 @@ Line: $errorLine
     
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
 
         $integration = new Integration(true,$WBW_WP_Options);
         $response = $integration->geolocateAddress('junk, junk');
@@ -539,7 +539,7 @@ Line: $errorLine
     
         $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
         /** @var Mockery::mock $WBW_WP_Options test */
-        $WBW_WP_Options->shouldReceive('wbw_get_option')->andReturn("failure");
+        Functions\when('\get_option')->justReturn("failure");
 
         $integration = new Integration(true,$WBW_WP_Options);
         $response = $integration->geolocateAddress('junk, junk');

@@ -1,11 +1,8 @@
 <?php
 
 use wbw\BMLT\Integration;
-use wbw\WBW_WP_Options;
 
-$WBW_WP_Options = new WBW_WP_Options();
-
-$wbw_bmlt_test_status = $WBW_WP_Options->wbw_get_option('wbw_bmlt_test_status', "failure");
+$wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
 if ($wbw_bmlt_test_status != "success") {
     wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
 }
@@ -17,7 +14,7 @@ $bmlt_integration = new Integration();
 $meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
 
 if ($meeting_counties_and_sub_provinces) {
-    $counties = '<select class="meeting-input" name="location_sub_province">';
+    $counties = '<select class="meeting-input" id="location_sub_province" name="location_sub_province">';
     foreach ($meeting_counties_and_sub_provinces as $key) {
         $counties .= '<option value="' . $key . '">' . $key . '</option>';
     }
@@ -31,7 +28,7 @@ EOD;
 $meeting_states_and_provinces = $bmlt_integration->getMeetingStates();
 
 if ($meeting_states_and_provinces) {
-    $states = '<select class="meeting-input" name="location_province">';
+    $states = '<select class="meeting-input" id="location_province" name="location_province">';
     foreach ($meeting_states_and_provinces as $key) {
         $states .= '<option value="' . $key . '">' . $key . '</option>';
     }
