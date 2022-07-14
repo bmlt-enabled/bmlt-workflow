@@ -5,13 +5,12 @@ namespace wbw\REST\Handlers;
 use wbw\BMLT\Integration;
 use wbw\REST\HandlerCore;
 use wbw\WBW_Database;
-use wbw\WBW_WP_Options;
 
 class SubmissionsHandler
 {
     use \wbw\WBW_Debug;
 
-    public function __construct($intstub = null, $optstub = null)
+    public function __construct($intstub = null)
     {
         if (empty($intstub)) {
             $this->bmlt_integration = new Integration();
@@ -22,11 +21,6 @@ class SubmissionsHandler
         $this->handlerCore = new HandlerCore();
         $this->WBW_Database = new WBW_Database();
 
-        if (empty($optstub)) {
-            $this->WBW_WP_Options = new WBW_WP_Options();
-        } else {
-            $this->WBW_WP_Options = $optstub;
-        }
     }
 
     public function get_submissions_handler()

@@ -34,7 +34,6 @@ class SubmissionsHandlerTest_my_wp_user
  * @uses wbw\REST\HandlerCore
  * @uses wbw\BMLT\Integration
  * @uses wbw\WBW_Database
- * @uses wbw\WBW_WP_Options
  */
 final class SubmissionsHandlerTest extends TestCase
 {
@@ -205,11 +204,9 @@ Line: $errorLine
         $this->debug_log(($retrieve_single_response));
 
         $bmlt_input = '';
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->debug_log("TEST RESPONSE");
@@ -252,14 +249,12 @@ Line: $errorLine
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         $resp = '{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"6","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}';
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmlt($resp, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($resp, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
         
         $this->debug_log(($response));
@@ -301,11 +296,9 @@ Line: $errorLine
 
         $bmlt_input = '';
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
-        $handlers = new SubmissionsHandler($this->stub_bmlt($resp, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($resp, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(\WP_Error::class, $response);
@@ -343,14 +336,12 @@ Line: $errorLine
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         $retrieve_single_response = $this->meeting;
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -389,14 +380,12 @@ Line: $errorLine
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         $retrieve_single_response = $this->meeting;
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
         
         $this->debug_log(($response));
@@ -447,14 +436,12 @@ Line: $errorLine
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         $retrieve_single_response = $this->meeting;
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->debug_log(($response));
@@ -575,14 +562,12 @@ Line: $errorLine
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         $retrieve_single_response = $this->meeting;
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input), $WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->debug_log(($response));
@@ -633,12 +618,10 @@ Line: $errorLine
 
         $retrieve_single_response = $this->meeting;
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -674,12 +657,10 @@ Line: $errorLine
 
         $retrieve_single_response = $this->meeting;
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -714,12 +695,10 @@ Line: $errorLine
 
         $retrieve_single_response = $this->meeting;
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -754,12 +733,10 @@ Line: $errorLine
 
         $retrieve_single_response = $this->meeting;
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -794,12 +771,10 @@ Line: $errorLine
 
         $retrieve_single_response = $this->meeting;
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -843,14 +818,12 @@ Line: $errorLine
 
         $retrieve_single_response = $this->meeting;
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         $post_change_response = '[{"id_bigint":"3563"}]';
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
 
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
@@ -901,11 +874,9 @@ Line: $errorLine
         $resp = $this->meeting;
         $bmlt_input = '';
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
-        $handlers = new SubmissionsHandler($this->stub_bmlt($resp, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($resp, $bmlt_input));
 
         $post_change_response = '[{"published":"0", "success":"true"}]';
 
@@ -973,11 +944,9 @@ Line: $errorLine
         $post_change_response = '[{"id_bigint":"3563"}]';
         $bmlt_input = '';
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
 
 
         global $wpdb;
@@ -1045,12 +1014,10 @@ Line: $errorLine
 
         $post_change_response = '[{"id_bigint":"3563"}]';
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -1107,11 +1074,9 @@ Line: $errorLine
 
         $bmlt_input = '';
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
 
         $post_change_response = '[{"id_bigint":"3563"}]';
 
@@ -1172,11 +1137,9 @@ Line: $errorLine
         $bmlt_input = '';
 
 
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
 
         $post_change_response = '[{"id_bigint":"3563"}]';
 
@@ -1236,11 +1199,9 @@ Line: $errorLine
         $retrieve_single_response = $this->meeting;
 
         $bmlt_input = '';
-        $WBW_WP_Options =  Mockery::mock('WBW_WP_Options');
-        /** @var Mockery::mock $WBW_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input),$WBW_WP_Options);
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
 
         $post_change_response = '[{"report":"3563", "success":"true"}]';
 

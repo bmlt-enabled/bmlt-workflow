@@ -16,8 +16,6 @@ class WBW_Database
         $this->wbw_submissions_table_name = $wpdb->prefix . 'wbw_submissions';
         $this->wbw_service_bodies_table_name = $wpdb->prefix . 'wbw_service_bodies';
         $this->wbw_service_bodies_access_table_name = $wpdb->prefix . 'wbw_service_bodies_access';
-        $this->WBW_WP_Options = new WBW_WP_Options();
-
     }
 
     public function wbw_drop_tables()
@@ -33,7 +31,14 @@ class WBW_Database
         $this->debug_log("tables dropped");
 
     }
-
+    
+    /**
+     * wbw_db_upgrade
+     *
+     * @param  mixed $desired_version
+     * @param  mixed $fresh_install
+     * @return int 0 if nothing was performed, 1 if fresh install was performed, 2 if upgrade was performed
+     */
     public function wbw_db_upgrade($desired_version, $fresh_install)
     {
 
@@ -130,13 +135,15 @@ class WBW_Database
             add_option('wbw_db_version', $this->wbw_db_version);
             $this->debug_log("fresh install: db version installed");
 
-            return;
+            return 1; // fresh install performed
         }
 
         if ($upgrade) {
             delete_option('wbw_db_version');
             add_option('wbw_db_version', $this->wbw_db_version);
-            return;
+            return 2; // upgrade performed
         }
+
+        return 0; // nothing performed
     }
 }

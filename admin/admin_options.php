@@ -3,9 +3,6 @@
 if (!defined('ABSPATH')) exit; // die if being called directly
 
 use wbw\WBW_Debug;
-use wbw\WBW_WP_Options;
-
-$WBW_WP_Options = new WBW_WP_Options();
 
 $wbw_submitter_email_template_default = htmlentities(file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
 $wbw_fso_email_template_default = htmlentities(file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html'));

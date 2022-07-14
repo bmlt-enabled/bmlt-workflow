@@ -1,9 +1,6 @@
 <?php
 
 use wbw\BMLT\Integration;
-use wbw\WBW_WP_Options;
-
-$WBW_WP_Options = new WBW_WP_Options();
 
 $wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
 if ($wbw_bmlt_test_status != "success") {
