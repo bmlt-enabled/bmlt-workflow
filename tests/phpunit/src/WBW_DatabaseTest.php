@@ -48,7 +48,6 @@ Line: $errorLine
 
         Brain\Monkey\setUp();
 
-        Functions\when('\unserialize')->returnArg();
     }
 
     protected function tearDown(): void

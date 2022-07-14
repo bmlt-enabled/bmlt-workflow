@@ -4,6 +4,7 @@ import { ao } from "./models/admin_options";
 import {
   configure_service_bodies, 
   insert_submissions, 
+  delete_submissions,
   reset_bmlt, 
   select_dropdown_by_text, 
   click_table_row_column, 

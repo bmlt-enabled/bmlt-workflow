@@ -77,6 +77,7 @@ test("Backup", async (t) => {
   const filename = state.attributes.download;
   downloadedFilePath = getFileDownloadPath(filename);
   await waitForFileDownload(downloadedFilePath);
+  // console.log(logger);
   var f = JSON.parse(logger.requests[0].response.body.toString());
   // console.log(logger.requests[0].response.body.toString());
   var backup = JSON.parse(f.backup);
