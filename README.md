@@ -1,4 +1,4 @@
-# Wordpress-BMLT-workflow (WBW)
+# BMLT Workflow (WBW)
 
 ## Background
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.
@@ -24,7 +24,7 @@ This initial release is specific to the NA Australian Region use case (particula
 Standard wordpress plugin installation procedure. Just copy the contents of this repo to your wp-content/plugins folder.
 
 ## Contact/Issues
-For any other issues you find - please raise an issue here: https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues and/or reach out on BMLT slack #wordpress-BMLT-workflow
+For any other issues you find - please raise an issue here: https://github.com/bmlt-enabled/bmlt-workflow/issues and/or reach out on BMLT slack #wordpress-BMLT-workflow
 
 
 ## Usage

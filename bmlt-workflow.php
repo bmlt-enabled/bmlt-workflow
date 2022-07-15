@@ -19,7 +19,7 @@
 
 /**
  * Plugin Name: BMLT Workflow
- * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
+ * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
  * Version: 0.4.4
  * Requires at least: 5.2
@@ -80,41 +80,8 @@ if (!class_exists('wbw_plugin')) {
             add_filter('plugin_action_links', array(&$this, 'wbw_add_plugin_link'), 10, 2);
             add_action('user_register', array(&$this,'wbw_add_capability'), 10, 1 );
 
-            // auto updates
-            // add_filter( 'pre_set_site_transient_update_plugins', array(&$this,'wbw_plugin_update_check' ));
-
             register_activation_hook(__FILE__, array(&$this, 'wbw_install'));
         }
-
-        // function wbw_plugin_update_check( $data ) {
-            
-        //     if ( empty( $data ) ) {
-        //         return $data;
-        //     }
-
-        //     $url = 'https://raw.githubusercontent.com/bmlt-enabled/wordpress-bmlt-workflow/0.4.3-fixes/releases.json?' . time();
-
-        //     $request = wp_remote_get( $url );
-
-        //     if ( is_wp_error( $request ) ) {
-        //         return $data;
-        //     }
-
-        //     $json = wp_remote_retrieve_body( $request );
-        //     $response = json_decode( $json );
-        //     $this->debug_log("got auto update response");
-        //     $this->debug_log($response);
-
-        //     if ( ! isset( $response->slug ) || ! isset( $response->new_version ) || ! isset( $response->url ) || ! isset( $response->package ) ) {
-        //         return $data;
-        //     }
-
-        //     if ( version_compare( WBW_PLUGIN_VERSION, $response->new_version, '<' ) ) {
-        //         $data->response[ 'wordpress-bmlt-workflow/wordpress-bmlt-workflow.php' ] = $response;
-        //     }
-
-        //     return $data;
-        // }
 
         public function wbw_meeting_update_form($atts = [], $content = null, $tag = '')
         {
@@ -399,7 +366,7 @@ if (!class_exists('wbw_plugin')) {
         {
 
             $new_actions = array();
-            if (basename(plugin_dir_path(__FILE__)) . '/wordpress-bmlt-workflow.php' === $plugin_file) {
+            if (basename(plugin_dir_path(__FILE__)) . '/bmlt-workflow.php' === $plugin_file) {
                 $new_actions['cl_settings'] = sprintf(__('<a href="%s">Settings</a>', 'comment-limiter'), esc_url(admin_url('admin.php?page=wbw-settings')));
             }
 

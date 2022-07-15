@@ -91,16 +91,16 @@ curl -d "weblog_title=$wptitle&user_name=$wpuser&admin_password=$wppass&admin_pa
 
 # install our plugin
 cd /home/ssm-user/wordpress
-git clone https://github.com/bmlt-enabled/wordpress-bmlt-workflow.git
-cd wordpress-bmlt-workflow
+git clone https://github.com/bmlt-enabled/bmlt-workflow.git
+cd bmlt-workflow
 git switch $BRANCH
 sed -i "s/define('WBW_DEBUG', false);/define('WBW_DEBUG', true);/g" config.php
 cd ..
-sudo mv wordpress-bmlt-workflow /var/www/html/wordpressdev/wp-content/plugins
-sudo chown -R apache:apache /var/www/html/wordpressdev/wp-content/plugins/wordpress-bmlt-workflow
-cd /var/www/html/wordpressdev/wp-content/plugins/wordpress-bmlt-workflow
+sudo mv bmlt-workflow /var/www/html/wordpressdev/wp-content/plugins
+sudo chown -R apache:apache /var/www/html/wordpressdev/wp-content/plugins/bmlt-workflow
+cd /var/www/html/wordpressdev/wp-content/plugins/bmlt-workflow
 # activate plugin
-wp plugin activate --path=/var/www/html/wordpressdev "wordpress-bmlt-workflow"
+wp plugin activate --path=/var/www/html/wordpressdev "bmlt-workflow"
 wp option --path=/var/www/html/wordpressdev add 'wbw_bmlt_server_address' 'http://54.153.167.239/blank_bmlt/main_server/'
 wp option --path=/var/www/html/wordpressdev add 'wbw_bmlt_username' 'bmlt-workflow-bot'
 wp option --path=/var/www/html/wordpressdev add 'wbw_bmlt_test_status' 'success'
