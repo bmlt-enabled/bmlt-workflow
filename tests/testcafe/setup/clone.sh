@@ -26,9 +26,9 @@ cp tests/testcafe/setup/*.sh /home/ssm-user/scripts
 cp tests/testcafe/setup/*.sql /home/ssm-user/scripts
 chmod 755 /home/ssm-user/scripts/*.sh
 cd ..
-rm -rf /home/ssm-user/wbw/*
-cp -R bmlt-workflow/* wbw
-cd wbw
+rm -rf /home/ssm-user/bw/*
+cp -R bmlt-workflow/* bw
+cd bw
 sed -i "s/define('WBW_DEBUG', false);/define('WBW_DEBUG', true);/g" config.php
 /usr/local/bin/composer dumpautoload
 /home/ssm-user/scripts/wp-install.sh
