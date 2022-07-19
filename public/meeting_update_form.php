@@ -233,7 +233,7 @@ EOD;
                         <label for="display_format_shared_id_list">Meeting Formats<span class="wbw-required-field"> *</span></label>
                         <select class="display_format_shared_id_list-select2" name="display_format_shared_id_list" id="display_format_shared_id_list" required></select>
                         <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
-                        <div id="virtual_location">
+                        <div id="location_fields">
                             <label for="location_text">Location (eg: a building name)<span class="wbw-required-field"> *</span></label>
                             <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
                             <label for="location_street">Street Address<span class="wbw-required-field"> *</span></label>

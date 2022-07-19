@@ -39,6 +39,8 @@ class SubmissionsHandler
         $this->handlerCore = new HandlerCore();
         $this->WBW_Database = new WBW_Database();
 
+        $this->formats = $this->bmlt_integration->getMeetingFormats();
+
     }
 
     public function get_submissions_handler()
@@ -613,6 +615,7 @@ class SubmissionsHandler
         $reason_other_bool = false;
         $reason_change_bool = false;
         $reason_close_bool = false;
+        $virtual_meeting_bool = false;
 
         // strip blanks
         foreach ($data as $key => $value) {
@@ -627,6 +630,24 @@ class SubmissionsHandler
             $reason_other_bool = ($data['update_reason'] === 'reason_other');
             $reason_change_bool = ($data['update_reason'] === 'reason_change');
             $reason_close_bool = ($data['update_reason'] === 'reason_close');
+            // handle meeting formats
+            if (isset($data['format_shared_id_list']))
+            {
+                $strarr = explode(',', $data['format_shared_id_list']);
+                foreach ($strarr as $key) {
+                    switch($this->formats[$key]["key_string"])
+                    {
+                        case "HY":
+                        case "VM":
+                        case "TC":
+                            $virtual_meeting_bool = true;
+                            break;
+                        default:
+                            break;
+                    }
+                }    
+            }
+
         }
 
         if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_other_bool && !$reason_change_bool && !$reason_close_bool))) {
@@ -644,8 +665,9 @@ class SubmissionsHandler
             "meeting_name" => array("text", $reason_new_bool),
             "start_time" => array("time", $reason_new_bool),
             "duration_time" => array("time", $reason_new_bool),
-            "location_text" => array("text", $reason_new_bool),
-            "location_street" => array("text", $reason_new_bool),
+            // location text and street only required if its not a virtual meeting #75
+            "location_text" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
+            "location_street" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_info" => array("text", false),
             "location_municipality" => array("text", $reason_new_bool),
             "location_province" => array("text", $reason_new_bool),
@@ -1105,7 +1127,7 @@ class SubmissionsHandler
                     $friendlydata = "";
                     $strarr = explode(',', $value);
                     foreach ($strarr as $key) {
-                        $friendlydata .= "(" . $formats[$key]["key_string"] . ")-" . $formats[$key]["name_string"] . " ";
+                        $friendlydata .= "(" . $this->formats[$key]["key_string"] . ")-" . $this->formats[$key]["name_string"] . " ";
                     }
                     $table .= "<tr><td>Meeting Formats:</td><td>" . $friendlydata . '</td></tr>';
                     break;

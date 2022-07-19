@@ -410,22 +410,22 @@ jQuery(document).ready(function ($) {
 
     if (this.value == "none") {
       $("#virtual_meeting_settings").hide();
-      $("#virtual_location").show();
+      $("#location_fields").show();
     } else {
       
       $("#virtual_meeting_settings").show();
       switch (this.value) {
         case "virtual":
           arr.push(virtual_formatid);
-          $("#virtual_location").hide();
+          $("#location_fields").hide();
           break;
         case "hybrid":
           arr.push(hybrid_formatid);
-          $("#virtual_location").show();
+          $("#location_fields").show();
           break;
         case "tempclosure":
           arr.push(tempclosure_formatid);
-          $("#virtual_location").show();
+          $("#location_fields").show();
           break;
       }
     }
