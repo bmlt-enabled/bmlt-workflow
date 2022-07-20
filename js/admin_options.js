@@ -19,6 +19,15 @@
 
 jQuery(document).ready(function ($) {
 
+  // click handler for fso options
+  $("#wbw_fso_enabled").on("change", function () {
+    if (this.value == "hidden") {
+      $("#fso_options").hide();
+    } else {
+      $("#fso_options").show();
+    }
+  });
+
   // click handler for hidden file browser button
   $("#wbw_restore").on("click", function () {
     $("#wbw_file_selector").trigger("click");

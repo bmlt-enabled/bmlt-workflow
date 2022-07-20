@@ -527,9 +527,9 @@ if (!class_exists('wbw_plugin')) {
             );
 
             add_settings_field(
-                'wbw_fso_email_address',
-                'Email address for the FSO (Starter Kit Notifications)',
-                array(&$this, 'wbw_fso_email_address_html'),
+                'wbw_fso_options',
+                'Field Service Office configuration',
+                array(&$this, 'wbw_fso_options_html'),
                 'wbw-settings',
                 'wbw-settings-section-id'
             );
@@ -739,11 +739,24 @@ if (!class_exists('wbw_plugin')) {
         public function wbw_fso_options_html()
         {
             $fso_enabled = get_option('wbw_fso_enabled');
+            switch ($fso_enabled) {
+                case 'hidden':
+                    $hidden = 'selected';
+                    break;
+                case 'display':
+                    $display = 'selected';
+                    break;
+            }
+            echo <<<END
+            <br><label for="wbw_fso_enabled"><b>FSO Options:</b>
+            </label><select id="wbw_fso_enabled" name="wbw_fso_enabled">
+            <option name="hidden" value="hidden" ${hidden}>Enabled</option>
+            <option name="display" value="display" ${display}>Disabled</option>
+            </select>
+            <br><br>
+            END;        
+            echo '<div id="fso_options">';
 
-        }
-
-        public function wbw_fso_email_address_html()
-        {
             $from_address = get_option('wbw_fso_email_address');
             echo <<<END
     <div class="wbw_info_text">
@@ -754,10 +767,6 @@ if (!class_exists('wbw_plugin')) {
 
             echo '<br><label for="wbw_email_from_address"><b>FSO Email Address:</b></label><input type="text" size="50" id="wbw_fso_email_address" name="wbw_fso_email_address" value="' . $from_address . '"/>';
             echo '<br><br>';
-        }
-
-        public function wbw_fso_email_template_html()
-        {
 
             echo <<<END
     <div class="wbw_info_text">
@@ -771,6 +780,7 @@ if (!class_exists('wbw_plugin')) {
             wp_editor($content, $editor_id, array('media_buttons' => false));
             echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
             echo '<br><br>';
+            echo '</div>';
         }
 
         public function wbw_submitter_email_template_html()
