@@ -65,8 +65,10 @@ Message: $errorString
 File: $errorFile
 Line: $errorLine
 ";
+print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         };
         set_error_handler($handler);
+
     }
 
     protected function setUp(): void
@@ -212,6 +214,8 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+        $wpdb->prefix = "";
+
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
 
@@ -263,6 +267,8 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+        $wpdb->prefix = "";
+
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
 
@@ -550,7 +556,16 @@ Line: $errorLine
 
         );
 
-        $handlers = new SubmissionsHandler();
+        Functions\when('\get_option')->justReturn("success");
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->prefix = "";
+
+        $retrieve_single_response = $this->meeting;
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
         $this->assertInstanceOf(WP_Error::class, $response);
     }
@@ -584,7 +599,16 @@ Line: $errorLine
             "add_email" => "yes",
 
         );
-        $handlers = new SubmissionsHandler();
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->prefix = "";
+
+        $retrieve_single_response = $this->meeting;
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
         $this->assertInstanceOf(WP_Error::class, $response);
     }
@@ -629,6 +653,8 @@ Line: $errorLine
         // handle email to service body
         $wpdb->shouldReceive('prepare')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+        $wpdb->prefix = "";
+
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
 
@@ -684,6 +710,8 @@ Line: $errorLine
 
         // handle db insert of submission
         $wpdb->shouldNotReceive('insert');
+        $wpdb->prefix = "";
+
         Functions\expect('wp_mail')->never();
 
         $retrieve_single_response = $this->meeting;
@@ -723,6 +751,8 @@ Line: $errorLine
         /** @var Mockery::mock $wpdb test */
         // handle db insert of submission
         $wpdb->shouldNotReceive('insert');
+        $wpdb->prefix = "";
+
         Functions\expect('wp_mail')->never();
 
         $retrieve_single_response = $this->meeting;
@@ -761,6 +791,8 @@ Line: $errorLine
         /** @var Mockery::mock $wpdb test */
         // handle db insert of submission
         $wpdb->shouldNotReceive('insert');
+        $wpdb->prefix = "";
+
         Functions\expect('wp_mail')->never();
 
         $retrieve_single_response = $this->meeting;
@@ -799,6 +831,8 @@ Line: $errorLine
         /** @var Mockery::mock $wpdb test */
         // handle db insert of submission
         $wpdb->shouldNotReceive('insert');
+        $wpdb->prefix = "";
+
         Functions\expect('wp_mail')->never();
 
         $retrieve_single_response = $this->meeting;
@@ -837,6 +871,8 @@ Line: $errorLine
         /** @var Mockery::mock $wpdb test */
         // handle db insert of submission
         $wpdb->shouldNotReceive('insert');
+        $wpdb->prefix = "";
+
         Functions\expect('wp_mail')->never();
 
         $retrieve_single_response = $this->meeting;
@@ -885,6 +921,7 @@ Line: $errorLine
                 'get_results' => 'nothing'
             ]
         );
+        $wpdb->prefix = "";
 
         $retrieve_single_response = $this->meeting;
 
@@ -941,6 +978,11 @@ Line: $errorLine
             'changes_requested' => '{"group_relationship":"Group Member","add_email":"no","additional_info":"please close this meeting","meeting_name":"Ashfield Exodus NA"}'
         );
 
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->prefix = "";
+
         $resp = $this->meeting;
         $bmlt_input = '';
 
@@ -960,6 +1002,7 @@ Line: $errorLine
                 'get_results' => 'nothing'
             ]
         );
+        $wpdb->prefix = "";
 
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
@@ -1014,6 +1057,11 @@ Line: $errorLine
         $post_change_response = '[{"id_bigint":"3563"}]';
         $bmlt_input = '';
 
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->prefix = "";
+
         Functions\when('\get_option')->justReturn("success");
 
         $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
@@ -1030,7 +1078,8 @@ Line: $errorLine
             ]
         );
 
-        
+        $wpdb->prefix = "";
+
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
@@ -1084,6 +1133,11 @@ Line: $errorLine
 
         $post_change_response = '[{"id_bigint":"3563"}]';
 
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->prefix = "";
+
         Functions\when('\get_option')->justReturn("success");
 
         $bmlt_input = '';
@@ -1099,6 +1153,7 @@ Line: $errorLine
                 'get_results' => 'nothing'
             ]
         );
+        $wpdb->prefix = "";
 
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
@@ -1144,6 +1199,11 @@ Line: $errorLine
 
         $bmlt_input = '';
 
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->prefix = "";
+
         Functions\when('\get_option')->justReturn("success");
 
         $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
@@ -1160,7 +1220,7 @@ Line: $errorLine
                 'get_results' => 'nothing'
             ]
         );
-
+        $wpdb->prefix = "";
 
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
@@ -1206,6 +1266,10 @@ Line: $errorLine
 
         $bmlt_input = '';
 
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->prefix = "";
 
         Functions\when('\get_option')->justReturn("success");
 
@@ -1223,6 +1287,7 @@ Line: $errorLine
                 'get_results' => 'nothing'
             ]
         );
+        $wpdb->prefix = "";
 
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
@@ -1268,6 +1333,11 @@ Line: $errorLine
 
         $retrieve_single_response = $this->meeting;
 
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->prefix = "";
+
         $bmlt_input = '';
         Functions\when('\get_option')->justReturn("success");
 
@@ -1285,7 +1355,7 @@ Line: $errorLine
                 'get_results' => 'nothing'
             ]
         );
-
+        $wpdb->prefix = "";
 
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);

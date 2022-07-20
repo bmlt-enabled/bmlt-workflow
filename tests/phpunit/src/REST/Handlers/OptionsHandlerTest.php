@@ -114,6 +114,7 @@ Line: $errorLine
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('prepare')->andReturn("SELECT * from anything");
         $wpdb->shouldReceive('get_results')->andReturn($dblookup);
+        $wpdb->prefix = "";
 
         // Functions\when('\get_option')->justReturn("success");
 

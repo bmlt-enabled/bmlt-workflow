@@ -635,15 +635,18 @@ class SubmissionsHandler
             {
                 $strarr = explode(',', $data['format_shared_id_list']);
                 foreach ($strarr as $key) {
-                    switch($this->formats[$key]["key_string"])
+                    if(in_array($key, $this->formats))
                     {
-                        case "HY":
-                        case "VM":
-                        case "TC":
-                            $virtual_meeting_bool = true;
-                            break;
-                        default:
-                            break;
+                        switch($this->formats[$key]["key_string"])
+                        {
+                            case "HY":
+                            case "VM":
+                            case "TC":
+                                $virtual_meeting_bool = true;
+                                break;
+                            default:
+                                break;
+                        }    
                     }
                 }    
             }

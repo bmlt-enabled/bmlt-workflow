@@ -122,6 +122,7 @@ Line: $errorLine
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('prepare')->andReturn("SELECT * from anything");
         $wpdb->shouldReceive('get_results')->andReturn($sblookup);
+        $wpdb->prefix = "";
 
 
         $rest = new ServiceBodiesHandler();
