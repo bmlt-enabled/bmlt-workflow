@@ -786,8 +786,6 @@ if (!class_exists('wbw_plugin')) {
             </select>
             <br><br>
             <div id="fso_options">
-            <fieldset>
-            <legend>FSO Options</legend>
             <div class="wbw_info_text">
             <br>The email address to notify the FSO that starter kits are required.
             <br><br>
@@ -809,7 +807,7 @@ if (!class_exists('wbw_plugin')) {
             wp_editor($content, $editor_id, array('media_buttons' => false));
             echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
             echo '<br><br>';
-            echo '</fieldset></div>';
+            echo '</div>';
          }
 
         public function wbw_submitter_email_template_html()
