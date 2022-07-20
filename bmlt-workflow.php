@@ -534,14 +534,22 @@ if (!class_exists('wbw_plugin')) {
                 'wbw-settings-section-id'
             );
 
+            // add_settings_field(
+            //     'wbw_fso_email_address',
+            //     'Email address for the FSO (Starter Kit Notifications)',
+            //     array(&$this, 'wbw_fso_email_address_html'),
+            //     'wbw-settings',
+            //     'wbw-settings-section-id'
+            // );
 
-            add_settings_field(
-                'wbw_fso_email_template',
-                'Email Template for FSO emails (Starter Kit Notifications)',
-                array(&$this, 'wbw_fso_email_template_html'),
-                'wbw-settings',
-                'wbw-settings-section-id'
-            );
+
+            // add_settings_field(
+            //     'wbw_fso_email_template',
+            //     'Email Template for FSO emails (Starter Kit Notifications)',
+            //     array(&$this, 'wbw_fso_email_template_html'),
+            //     'wbw-settings',
+            //     'wbw-settings-section-id'
+            // );
 
             add_settings_field(
                 'wbw_submitter_email_template',
@@ -726,6 +734,12 @@ if (!class_exists('wbw_plugin')) {
     </select>
     <br><br>
     END;
+        }
+
+        public function wbw_fso_options_html()
+        {
+            $fso_enabled = get_option('wbw_fso_enabled');
+
         }
 
         public function wbw_fso_email_address_html()

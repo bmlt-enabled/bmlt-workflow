@@ -466,6 +466,59 @@ Line: $errorLine
         $this->assertEquals(200, $response->get_status());
     }
 
+    /**
+     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     */
+    public function test_can_create_new_with_alpha_postcode(): void
+    {
+        
+        $form_post = array(
+            "update_reason" => "reason_new",
+            "meeting_name" => "testing name change",
+            "meeting_id" => "3277",
+            "start_time" => "10:00:00",
+            "duration_time" => "01:00:00",
+            "location_text" => "test location",
+            "location_street" => "test street",
+            "location_municipality" => "test municipality",
+            "location_province" => "test province",
+            "location_postal_code_1" => "P85 FG02",
+            "weekday_tinyint" => "1",
+            "service_body_bigint" => "99",
+            "format_shared_id_list" => "1",
+            "starter_kit_required" => "no",
+            "first_name" => "joe",
+            "last_name" => "joe",
+            "email_address" => "joe@joe.com",
+            "submit" => "Submit Form",
+            "group_relationship" => "Group Member",
+            "add_email" => "yes",
+
+        );
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        // handle db insert of submission
+        $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
+        // handle email to service body
+        $wpdb->shouldReceive('prepare')->andReturn(true);
+        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
+        Functions\when('wp_mail')->justReturn('true');
+
+        Functions\when('\get_option')->justReturn("success");
+
+        $retrieve_single_response = $this->meeting;
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
+        $this->debug_log(($response));
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+    }
 
     /**
      * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
