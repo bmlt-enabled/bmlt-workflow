@@ -247,7 +247,7 @@ if (!class_exists('wbw_plugin')) {
                     $script .= 'var wbw_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/options/restore') . '; ';
                     $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
                     $script .= 'var wbw_fso_enabled = '. get_option('wbw_fso_enabled').'";';
-                    
+
                     wp_add_inline_script('admin_options_js', $script, 'before');
                     break;
 
@@ -447,6 +447,17 @@ if (!class_exists('wbw_plugin')) {
                     'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html')
                 )
             );
+            register_setting(
+                'wbw-settings-group',
+                'wbw_fso_enabled',
+                array(
+                    'type' => 'string',
+                    'description' => 'wbw_fso_enabled',
+                    'sanitize_callback' => array(&$this, 'wbw_fso_enabled_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'display'
+                )
+            );
 
             register_setting(
                 'wbw-settings-group',
@@ -559,6 +570,20 @@ if (!class_exists('wbw_plugin')) {
                 'wbw-settings',
                 'wbw-settings-section-id'
             );
+        }
+        public function wbw_fso_enabled_sanitize_callback($input)
+        {
+            $this->debug_log("fso_enablde sanitize callback");            
+            $this->debug_log($input);
+
+            $output = get_option('wbw_fso_enabled');
+            switch ($input) {
+                case 'hidden':
+                case 'display':
+                    return $input;
+                }
+            add_settings_error('wbw_fso_enabled','err','Invalid FSO Enabled setting.');
+            return $output;
         }
 
         public function wbw_optional_location_nation_sanitize_callback($input)
