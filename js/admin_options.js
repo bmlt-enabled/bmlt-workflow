@@ -19,7 +19,14 @@
 
 jQuery(document).ready(function ($) {
 
-  // click handler for fso options
+  // click and display handler for fso options
+  if(wbw_fso_enabled == 'hidden')
+  {
+    $("#fso_options").hide();
+  } else {
+    $("#fso_options").show();
+  }
+
   $("#wbw_fso_enabled").on("change", function () {
     if (this.value == "hidden") {
       $("#fso_options").hide();

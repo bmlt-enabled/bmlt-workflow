@@ -246,7 +246,8 @@ if (!class_exists('wbw_plugin')) {
                     $script .= 'var wbw_admin_backup_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/options/backup') . '; ';
                     $script .= 'var wbw_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/options/restore') . '; ';
                     $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
-
+                    $script .= 'var wbw_fso_enabled = '. get_option('wbw_fso_enabled').'";';
+                    
                     wp_add_inline_script('admin_options_js', $script, 'before');
                     break;
 
@@ -738,6 +739,9 @@ if (!class_exists('wbw_plugin')) {
 
         public function wbw_fso_options_html()
         {
+            $hidden = '';
+            $display = '';
+
             $fso_enabled = get_option('wbw_fso_enabled');
             switch ($fso_enabled) {
                 case 'hidden':
@@ -750,8 +754,8 @@ if (!class_exists('wbw_plugin')) {
             echo <<<END
             <br><label for="wbw_fso_enabled"><b>FSO Options:</b>
             </label><select id="wbw_fso_enabled" name="wbw_fso_enabled">
-            <option name="hidden" value="hidden" ${hidden}>Enabled</option>
-            <option name="display" value="display" ${display}>Disabled</option>
+            <option name="hidden" value="hidden" ${hidden}>Disabled</option>
+            <option name="display" value="display" ${display}>Enabled</option>
             </select>
             <br><br>
             END;        
