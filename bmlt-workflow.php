@@ -768,6 +768,8 @@ if (!class_exists('wbw_plugin')) {
             $display = '';
 
             $fso_enabled = get_option('wbw_fso_enabled');
+            $from_address = get_option('wbw_fso_email_address');
+
             switch ($fso_enabled) {
                 case 'hidden':
                     $hidden = 'selected';
@@ -783,34 +785,32 @@ if (!class_exists('wbw_plugin')) {
             <option name="display" value="display" ${display}>Enabled</option>
             </select>
             <br><br>
-            END;        
-            echo '<div id="fso_options">';
-
-            $from_address = get_option('wbw_fso_email_address');
-            echo <<<END
-    <div class="wbw_info_text">
-    <br>The email address to notify the FSO that starter kits are required.
-    <br><br>
-    </div>
-    END;
+            <div id="fso_options">
+            <fieldset>
+            <legend>FSO Options</legend>
+            <div class="wbw_info_text">
+            <br>The email address to notify the FSO that starter kits are required.
+            <br><br>
+            </div>
+            END;
 
             echo '<br><label for="wbw_email_from_address"><b>FSO Email Address:</b></label><input type="text" size="50" id="wbw_fso_email_address" name="wbw_fso_email_address" value="' . $from_address . '"/>';
             echo '<br><br>';
 
             echo <<<END
-    <div class="wbw_info_text">
-    <br>This template will be used when emailing the FSO about starter kit requests.
-    <br><br>
-    </div>
-    END;
+            <div class="wbw_info_text">
+            <br>This template will be used when emailing the FSO about starter kit requests.
+            <br><br>
+            </div>
+            END;
             $content = get_option('wbw_fso_email_template');
             $editor_id = 'wbw_fso_email_template';
 
             wp_editor($content, $editor_id, array('media_buttons' => false));
             echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
             echo '<br><br>';
-            echo '</div>';
-        }
+            echo '</fieldset></div>';
+         }
 
         public function wbw_submitter_email_template_html()
         {
