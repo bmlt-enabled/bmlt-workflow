@@ -246,7 +246,7 @@ if (!class_exists('wbw_plugin')) {
                     $script .= 'var wbw_admin_backup_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/options/backup') . '; ';
                     $script .= 'var wbw_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/options/restore') . '; ';
                     $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
-                    $script .= 'var wbw_fso_enabled = '. get_option('wbw_fso_enabled').'";';
+                    $script .= 'var wbw_fso_enabled = "'. get_option('wbw_fso_enabled').'";';
 
                     wp_add_inline_script('admin_options_js', $script, 'before');
                     break;
