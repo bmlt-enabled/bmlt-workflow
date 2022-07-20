@@ -671,7 +671,8 @@ class SubmissionsHandler
             "location_info" => array("text", false),
             "location_municipality" => array("text", $reason_new_bool),
             "location_province" => array("text", $reason_new_bool),
-            "location_postal_code_1" => array("number", $reason_new_bool),
+            // postcode can be a text format #78
+            "location_postal_code_1" => array("text", $reason_new_bool),
             "weekday_tinyint" => array("weekday", $reason_new_bool),
             "service_body_bigint" => array("bigint", $reason_new_bool),
             "email_address" => array("email", true),
