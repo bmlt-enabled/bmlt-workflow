@@ -20,14 +20,14 @@
 jQuery(document).ready(function ($) {
 
   // click and display handler for fso options
-  if(wbw_fso_enabled == 'hidden')
+  if(wbw_fso_feature == 'hidden')
   {
     $("#fso_options").hide();
   } else {
     $("#fso_options").show();
   }
 
-  $("#wbw_fso_enabled").on("change", function () {
+  $("#wbw_fso_feature").on("change", function () {
     if (this.value == "hidden") {
       $("#fso_options").hide();
     } else {

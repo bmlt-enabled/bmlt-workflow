@@ -547,39 +547,44 @@ class SubmissionsHandler
         $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers,true));
         wp_mail($to_address, $subject, $body, $headers);
 
-        //
-        // send fso email
-        //
+        // only do FSO features if option is enabled
+        if(get_option('wbw_fso_feature')=='display')
+        {
+            //
+            // send FSO email
+            //
 
-        if ($submission_type == "reason_new") {
-            if ((!empty($change['starter_kit_required'])) && ($change['starter_kit_required'] === 'yes') && (!empty($change['starter_kit_postal_address']))) {
-                $this->debug_log("We're sending a starter kit");
-                $template = get_option('wbw_fso_email_template');
-                if (!empty($template)) {
-                    $subject = 'Starter Kit Request';
-                    $to_address = get_option('wbw_fso_email_address');
-                    $fso_subfields = array('first_name', 'last_name', 'meeting_name', 'starter_kit_postal_address');
+            if ($submission_type == "reason_new") {
+                if ((!empty($change['starter_kit_required'])) && ($change['starter_kit_required'] === 'yes') && (!empty($change['starter_kit_postal_address']))) {
+                    $this->debug_log("We're sending a starter kit");
+                    $template = get_option('wbw_fso_email_template');
+                    if (!empty($template)) {
+                        $subject = 'Starter Kit Request';
+                        $to_address = get_option('wbw_fso_email_address');
+                        $fso_subfields = array('first_name', 'last_name', 'meeting_name', 'starter_kit_postal_address');
 
-                    foreach ($fso_subfields as $field) {
-                        $subfield = '{field:' . $field . '}';
-                        if (!empty($change[$field])) {
-                            $subwith = $change[$field];
-                        } else {
-                            $subwith = '(blank)';
+                        foreach ($fso_subfields as $field) {
+                            $subfield = '{field:' . $field . '}';
+                            if (!empty($change[$field])) {
+                                $subwith = $change[$field];
+                            } else {
+                                $subwith = '(blank)';
+                            }
+                            $template = str_replace($subfield, $subwith, $template);
                         }
-                        $template = str_replace($subfield, $subwith, $template);
-                    }
-                    $body = $template;
-                    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-                    $this->debug_log("FSO email");
-                    $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . ($headers));
+                        $body = $template;
+                        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+                        $this->debug_log("FSO email");
+                        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . ($headers));
 
-                    wp_mail($to_address, $subject, $body, $headers);
-                } else {
-                    $this->debug_log("FSO email is empty");
+                        wp_mail($to_address, $subject, $body, $headers);
+                    } else {
+                        $this->debug_log("FSO email is empty");
+                    }
                 }
             }
         }
+
 
         return $this->handlerCore->wbw_rest_success('Approved submission id ' . $change_id);
     }

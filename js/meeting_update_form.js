@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-
 "use strict";
 
 var weekdays = ["none", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -27,6 +26,14 @@ jQuery(document).ready(function ($) {
   var virtual_formatid = "";
   var tempclosure_formatid = "";
 
+  // display handler for fso options
+  if(wbw_fso_feature == 'hidden')
+  {
+    $("#starter_pack").hide();
+  } else {
+    $("#starter_pack").show();
+  }
+  
   Object.keys(wbw_bmlt_formats).forEach((key) => {
     formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
     if (wbw_bmlt_formats[key]["key_string"] === "HY") {
@@ -466,7 +473,10 @@ jQuery(document).ready(function ($) {
           "Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
         );
         // new meeting has a starter pack
-        $("#starter_pack").show();
+        if(wbw_fso_feature == 'display')
+        {
+          $("#starter_pack").show();
+        }
         break;
       case "reason_change":
         // hide this until they've selected a meeting

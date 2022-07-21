@@ -111,6 +111,7 @@ if (!class_exists('wbw_plugin')) {
             // optional fields
             $script .= 'var wbw_optional_location_nation = "' . get_option('wbw_optional_location_nation') . '";';
             $script .= 'var wbw_optional_location_sub_province = "' . get_option('wbw_optional_location_sub_province') . '";';
+            $script .= 'var wbw_fso_feature = "'. get_option('wbw_fso_feature').'";';
 
             // add meeting formats
             $formatarr = $this->bmlt_integration->getMeetingFormats();
@@ -246,7 +247,7 @@ if (!class_exists('wbw_plugin')) {
                     $script .= 'var wbw_admin_backup_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/options/backup') . '; ';
                     $script .= 'var wbw_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/options/restore') . '; ';
                     $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
-                    $script .= 'var wbw_fso_enabled = "'. get_option('wbw_fso_enabled').'";';
+                    $script .= 'var wbw_fso_feature = "'. get_option('wbw_fso_feature').'";';
 
                     wp_add_inline_script('admin_options_js', $script, 'before');
                     break;
@@ -449,11 +450,11 @@ if (!class_exists('wbw_plugin')) {
             );
             register_setting(
                 'wbw-settings-group',
-                'wbw_fso_enabled',
+                'wbw_fso_feature',
                 array(
                     'type' => 'string',
-                    'description' => 'wbw_fso_enabled',
-                    'sanitize_callback' => array(&$this, 'wbw_fso_enabled_sanitize_callback'),
+                    'description' => 'wbw_fso_feature',
+                    'sanitize_callback' => array(&$this, 'wbw_fso_feature_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'display'
                 )
@@ -571,18 +572,18 @@ if (!class_exists('wbw_plugin')) {
                 'wbw-settings-section-id'
             );
         }
-        public function wbw_fso_enabled_sanitize_callback($input)
+        public function wbw_fso_feature_sanitize_callback($input)
         {
             $this->debug_log("fso_enablde sanitize callback");            
             $this->debug_log($input);
 
-            $output = get_option('wbw_fso_enabled');
+            $output = get_option('wbw_fso_feature');
             switch ($input) {
                 case 'hidden':
                 case 'display':
                     return $input;
                 }
-            add_settings_error('wbw_fso_enabled','err','Invalid FSO Enabled setting.');
+            add_settings_error('wbw_fso_feature','err','Invalid FSO Enabled setting.');
             return $output;
         }
 
@@ -767,7 +768,7 @@ if (!class_exists('wbw_plugin')) {
             $hidden = '';
             $display = '';
 
-            $fso_enabled = get_option('wbw_fso_enabled');
+            $fso_enabled = get_option('wbw_fso_feature');
             $from_address = get_option('wbw_fso_email_address');
 
             switch ($fso_enabled) {
@@ -779,8 +780,8 @@ if (!class_exists('wbw_plugin')) {
                     break;
             }
             echo <<<END
-            <br><label for="wbw_fso_enabled"><b>FSO Options:</b>
-            </label><select id="wbw_fso_enabled" name="wbw_fso_enabled">
+            <br><label for="wbw_fso_feature"><b>FSO Features:</b>
+            </label><select id="wbw_fso_feature" name="wbw_fso_feature">
             <option name="hidden" value="hidden" ${hidden}>Disabled</option>
             <option name="display" value="display" ${display}>Enabled</option>
             </select>
@@ -866,6 +867,7 @@ if (!class_exists('wbw_plugin')) {
             add_option('wbw_submitter_email_template',file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
             add_option('wbw_fso_email_template',file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
             add_option('wbw_fso_email_address','example@example.example');
+            add_option('wbw_fso_feature','display');
 
             $this->WBW_Database->wbw_db_upgrade($this->WBW_Database->wbw_db_version, false);
 
