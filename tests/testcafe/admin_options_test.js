@@ -177,26 +177,30 @@ test("Check_Optional_Fields", async (t) => {
     .navigateTo(userVariables.admin_options_page);
   await select_dropdown_by_text(ao.wbw_optional_location_nation, "Hidden");
   await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Hidden");
+  await select_dropdown_by_text(ao.wbw_fso_enabled, "Hidden");
+  
   await t.click(ao.submit);
   await ao.settings_updated();
   await t.useRole(Role.anonymous()).navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 
   await t
-    .expect(uf.optional_location_nation.visible)
-    .eql(false)
-    .expect(uf.optional_location_sub_province.visible)
-    .eql(false)
+    .expect(uf.optional_location_nation.visible).eql(false)
+    .expect(uf.optional_location_sub_province.visible).eql(false)
+    .expect(uf.starter_pack.visible).eql(false)
 
     // test optional fields with 'display' option
     .useRole(wbw_admin)
     .navigateTo(userVariables.admin_options_page);
   await select_dropdown_by_text(ao.wbw_optional_location_nation, "Display");
   await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Display");
+  await select_dropdown_by_text(ao.wbw_fso_enabled, "Display");
   await t.click(ao.submit);
   await ao.settings_updated();
   await t.useRole(Role.anonymous()).navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 
-  await t.expect(uf.optional_location_nation.visible).eql(true).expect(uf.optional_location_sub_province.visible).eql(true);
+  await t.expect(uf.optional_location_nation.visible).eql(true)
+  .expect(uf.optional_location_sub_province.visible).eql(true)
+  .expect(uf.starter_pack.visible).eql(true);
 });
