@@ -1,3 +1,20 @@
+// Copyright (C) 2022 nigel.bmlt@gmail.com
+// 
+// This file is part of bmlt-workflow.
+// 
+// bmlt-workflow is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// bmlt-workflow is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
+
 import { ao } from "./models/admin_options";
 import { as } from "./models/admin_submissions";
 import { asb } from "./models/admin_service_bodies";
@@ -139,9 +156,13 @@ test("Check_Optional_Fields", async (t) => {
   await t.useRole(wbw_admin).navigateTo(userVariables.admin_options_page);
   await select_dropdown_by_text(ao.wbw_optional_location_nation, "Display + Required Field");
   await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Display + Required Field");
+  await select_dropdown_by_text(ao.wbw_optional_postcode, "Display + Required Field");
+  
   await t.click(ao.submit);
   await ao.settings_updated();
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.formpage);
+
+  await t.useRole(Role.anonymous())
+    .navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 
   await t
@@ -153,6 +174,8 @@ test("Check_Optional_Fields", async (t) => {
     .eql("required")
     .expect(uf.location_sub_province.getAttribute("required"))
     .eql("required")
+    .expect(uf.location_postal_code_1.getAttribute("required"))
+    .eql("required")
 
     // test optional fields with 'hidden' option
 
@@ -160,26 +183,36 @@ test("Check_Optional_Fields", async (t) => {
     .navigateTo(userVariables.admin_options_page);
   await select_dropdown_by_text(ao.wbw_optional_location_nation, "Hidden");
   await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Hidden");
+  await select_dropdown_by_text(ao.wbw_fso_feature, "Disabled");
+  await select_dropdown_by_text(ao.wbw_optional_postcode, "Hidden");
+
   await t.click(ao.submit);
   await ao.settings_updated();
   await t.useRole(Role.anonymous()).navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 
   await t
-    .expect(uf.optional_location_nation.visible)
-    .eql(false)
-    .expect(uf.optional_location_sub_province.visible)
-    .eql(false)
+    .expect(uf.optional_location_nation.visible).eql(false)
+    .expect(uf.optional_location_sub_province.visible).eql(false)
+    .expect(uf.starter_pack.visible).eql(false)
+    .expect(uf.location_postal_code_1.visible).eql(false)
 
     // test optional fields with 'display' option
     .useRole(wbw_admin)
     .navigateTo(userVariables.admin_options_page);
   await select_dropdown_by_text(ao.wbw_optional_location_nation, "Display");
   await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Display");
+  await select_dropdown_by_text(ao.wbw_fso_feature, "Enabled");
+  await select_dropdown_by_text(ao.wbw_optional_postcode, "Display");
+  
   await t.click(ao.submit);
   await ao.settings_updated();
   await t.useRole(Role.anonymous()).navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 
-  await t.expect(uf.optional_location_nation.visible).eql(true).expect(uf.optional_location_sub_province.visible).eql(true);
+  await t.expect(uf.optional_location_nation.visible).eql(true)
+  .expect(uf.optional_location_sub_province.visible).eql(true)
+  .expect(uf.starter_pack.visible).eql(true)
+  .expect(uf.location_postal_code_1.visible).eql(true);
+
 });

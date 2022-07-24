@@ -1,4 +1,22 @@
 <?php
+// Copyright (C) 2022 nigel.bmlt@gmail.com
+// 
+// This file is part of bmlt-workflow.
+// 
+// bmlt-workflow is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// bmlt-workflow is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
+
+
 
 namespace wbw\REST\Handlers;
 
@@ -20,6 +38,8 @@ class SubmissionsHandler
 
         $this->handlerCore = new HandlerCore();
         $this->WBW_Database = new WBW_Database();
+
+        $this->formats = $this->bmlt_integration->getMeetingFormats();
 
     }
 
@@ -527,39 +547,44 @@ class SubmissionsHandler
         $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers,true));
         wp_mail($to_address, $subject, $body, $headers);
 
-        //
-        // send fso email
-        //
+        // only do FSO features if option is enabled
+        if(get_option('wbw_fso_feature')=='display')
+        {
+            //
+            // send FSO email
+            //
 
-        if ($submission_type == "reason_new") {
-            if ((!empty($change['starter_kit_required'])) && ($change['starter_kit_required'] === 'yes') && (!empty($change['starter_kit_postal_address']))) {
-                $this->debug_log("We're sending a starter kit");
-                $template = get_option('wbw_fso_email_template');
-                if (!empty($template)) {
-                    $subject = 'Starter Kit Request';
-                    $to_address = get_option('wbw_fso_email_address');
-                    $fso_subfields = array('first_name', 'last_name', 'meeting_name', 'starter_kit_postal_address');
+            if ($submission_type == "reason_new") {
+                if ((!empty($change['starter_kit_required'])) && ($change['starter_kit_required'] === 'yes') && (!empty($change['starter_kit_postal_address']))) {
+                    $this->debug_log("We're sending a starter kit");
+                    $template = get_option('wbw_fso_email_template');
+                    if (!empty($template)) {
+                        $subject = 'Starter Kit Request';
+                        $to_address = get_option('wbw_fso_email_address');
+                        $fso_subfields = array('first_name', 'last_name', 'meeting_name', 'starter_kit_postal_address');
 
-                    foreach ($fso_subfields as $field) {
-                        $subfield = '{field:' . $field . '}';
-                        if (!empty($change[$field])) {
-                            $subwith = $change[$field];
-                        } else {
-                            $subwith = '(blank)';
+                        foreach ($fso_subfields as $field) {
+                            $subfield = '{field:' . $field . '}';
+                            if (!empty($change[$field])) {
+                                $subwith = $change[$field];
+                            } else {
+                                $subwith = '(blank)';
+                            }
+                            $template = str_replace($subfield, $subwith, $template);
                         }
-                        $template = str_replace($subfield, $subwith, $template);
-                    }
-                    $body = $template;
-                    $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-                    $this->debug_log("FSO email");
-                    $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . ($headers));
+                        $body = $template;
+                        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+                        $this->debug_log("FSO email");
+                        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . ($headers));
 
-                    wp_mail($to_address, $subject, $body, $headers);
-                } else {
-                    $this->debug_log("FSO email is empty");
+                        wp_mail($to_address, $subject, $body, $headers);
+                    } else {
+                        $this->debug_log("FSO email is empty");
+                    }
                 }
             }
         }
+
 
         return $this->handlerCore->wbw_rest_success('Approved submission id ' . $change_id);
     }
@@ -595,6 +620,8 @@ class SubmissionsHandler
         $reason_other_bool = false;
         $reason_change_bool = false;
         $reason_close_bool = false;
+        $virtual_meeting_bool = false;
+        $require_postcode = false;
 
         // strip blanks
         foreach ($data as $key => $value) {
@@ -609,6 +636,30 @@ class SubmissionsHandler
             $reason_other_bool = ($data['update_reason'] === 'reason_other');
             $reason_change_bool = ($data['update_reason'] === 'reason_change');
             $reason_close_bool = ($data['update_reason'] === 'reason_close');
+            // handle meeting formats
+            if (isset($data['format_shared_id_list']))
+            {
+                $strarr = explode(',', $data['format_shared_id_list']);
+                foreach ($strarr as $key) {
+                    if(in_array($key, $this->formats))
+                    {
+                        switch($this->formats[$key]["key_string"])
+                        {
+                            case "HY":
+                            case "VM":
+                            case "TC":
+                                $virtual_meeting_bool = true;
+                                break;
+                            default:
+                                break;
+                        }    
+                    }
+                }    
+            }
+            if(($data['update_reason'] === 'reason_new')&&(get_option('wbw_optional_postcode') === 'displayrequired'))
+            {
+                $require_postcode = true;
+            }
         }
 
         if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_other_bool && !$reason_change_bool && !$reason_close_bool))) {
@@ -626,12 +677,14 @@ class SubmissionsHandler
             "meeting_name" => array("text", $reason_new_bool),
             "start_time" => array("time", $reason_new_bool),
             "duration_time" => array("time", $reason_new_bool),
-            "location_text" => array("text", $reason_new_bool),
-            "location_street" => array("text", $reason_new_bool),
+            // location text and street only required if its not a virtual meeting #75
+            "location_text" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
+            "location_street" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_info" => array("text", false),
             "location_municipality" => array("text", $reason_new_bool),
             "location_province" => array("text", $reason_new_bool),
-            "location_postal_code_1" => array("number", $reason_new_bool),
+            // postcode can be a text format #78
+            "location_postal_code_1" => array("text", $require_postcode),
             "weekday_tinyint" => array("weekday", $reason_new_bool),
             "service_body_bigint" => array("bigint", $reason_new_bool),
             "email_address" => array("email", true),
@@ -1087,7 +1140,7 @@ class SubmissionsHandler
                     $friendlydata = "";
                     $strarr = explode(',', $value);
                     foreach ($strarr as $key) {
-                        $friendlydata .= "(" . $formats[$key]["key_string"] . ")-" . $formats[$key]["name_string"] . " ";
+                        $friendlydata .= "(" . $this->formats[$key]["key_string"] . ")-" . $this->formats[$key]["name_string"] . " ";
                     }
                     $table .= "<tr><td>Meeting Formats:</td><td>" . $friendlydata . '</td></tr>';
                     break;

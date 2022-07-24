@@ -10,7 +10,7 @@
         "brain/monkey": "2.*",
         "mockery/mockery": "dev-master"
     },
-    "name": "bmlt-enabled/wordpress-bmlt-workflow",
+    "name": "bmlt-enabled/bmlt-workflow",
     "description": "dev dependencies for bmlt-workflow",
     "license": "MIT"
 }

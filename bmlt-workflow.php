@@ -1,17 +1,35 @@
 <?php
+// Copyright (C) 2022 nigel.bmlt@gmail.com
+// 
+// This file is part of bmlt-workflow.
+// 
+// bmlt-workflow is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// bmlt-workflow is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
+
 
 /**
- * Plugin Name: Wordpress BMLT Workflow
- * Plugin URI: https://github.com/bmlt-enabled/wordpress-bmlt-workflow
+ * Plugin Name: BMLT Workflow
+ * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 0.4.4
+ * Version: 0.4.5
  * Requires at least: 5.2
  * Tested up to: 6.0
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
 
- define('WBW_PLUGIN_VERSION','0.4.4');
+
+ define('WBW_PLUGIN_VERSION','0.4.5');
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
@@ -62,41 +80,8 @@ if (!class_exists('wbw_plugin')) {
             add_filter('plugin_action_links', array(&$this, 'wbw_add_plugin_link'), 10, 2);
             add_action('user_register', array(&$this,'wbw_add_capability'), 10, 1 );
 
-            // auto updates
-            // add_filter( 'pre_set_site_transient_update_plugins', array(&$this,'wbw_plugin_update_check' ));
-
             register_activation_hook(__FILE__, array(&$this, 'wbw_install'));
         }
-
-        // function wbw_plugin_update_check( $data ) {
-            
-        //     if ( empty( $data ) ) {
-        //         return $data;
-        //     }
-
-        //     $url = 'https://raw.githubusercontent.com/bmlt-enabled/wordpress-bmlt-workflow/0.4.3-fixes/releases.json?' . time();
-
-        //     $request = wp_remote_get( $url );
-
-        //     if ( is_wp_error( $request ) ) {
-        //         return $data;
-        //     }
-
-        //     $json = wp_remote_retrieve_body( $request );
-        //     $response = json_decode( $json );
-        //     $this->debug_log("got auto update response");
-        //     $this->debug_log($response);
-
-        //     if ( ! isset( $response->slug ) || ! isset( $response->new_version ) || ! isset( $response->url ) || ! isset( $response->package ) ) {
-        //         return $data;
-        //     }
-
-        //     if ( version_compare( WBW_PLUGIN_VERSION, $response->new_version, '<' ) ) {
-        //         $data->response[ 'wordpress-bmlt-workflow/wordpress-bmlt-workflow.php' ] = $response;
-        //     }
-
-        //     return $data;
-        // }
 
         public function wbw_meeting_update_form($atts = [], $content = null, $tag = '')
         {
@@ -126,6 +111,8 @@ if (!class_exists('wbw_plugin')) {
             // optional fields
             $script .= 'var wbw_optional_location_nation = "' . get_option('wbw_optional_location_nation') . '";';
             $script .= 'var wbw_optional_location_sub_province = "' . get_option('wbw_optional_location_sub_province') . '";';
+            $script .= 'var wbw_optional_postcode = "' . get_option('wbw_optional_postcode') . '";';
+            $script .= 'var wbw_fso_feature = "'. get_option('wbw_fso_feature').'";';
 
             // add meeting formats
             $formatarr = $this->bmlt_integration->getMeetingFormats();
@@ -261,6 +248,7 @@ if (!class_exists('wbw_plugin')) {
                     $script .= 'var wbw_admin_backup_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/options/backup') . '; ';
                     $script .= 'var wbw_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/options/restore') . '; ';
                     $script .= 'var wbw_admin_wbw_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->WBW_Rest->wbw_rest_namespace . '/servicebodies') . '; ';
+                    $script .= 'var wbw_fso_feature = "'. get_option('wbw_fso_feature').'";';
 
                     wp_add_inline_script('admin_options_js', $script, 'before');
                     break;
@@ -311,6 +299,7 @@ if (!class_exists('wbw_plugin')) {
                     // optional fields in quickedit
                     $script .= 'var wbw_optional_location_nation = "' . get_option('wbw_optional_location_nation') . '";';
                     $script .= 'var wbw_optional_location_sub_province = "' . get_option('wbw_optional_location_sub_province') . '";';
+                    $script .= 'var wbw_optional_postcode = "' . get_option('wbw_optional_postcode') . '";';
 
                     wp_add_inline_script('admin_submissions_js', $script, 'before');
 
@@ -381,7 +370,7 @@ if (!class_exists('wbw_plugin')) {
         {
 
             $new_actions = array();
-            if (basename(plugin_dir_path(__FILE__)) . '/wordpress-bmlt-workflow.php' === $plugin_file) {
+            if (basename(plugin_dir_path(__FILE__)) . '/bmlt-workflow.php' === $plugin_file) {
                 $new_actions['cl_settings'] = sprintf(__('<a href="%s">Settings</a>', 'comment-limiter'), esc_url(admin_url('admin.php?page=wbw-settings')));
             }
 
@@ -452,6 +441,18 @@ if (!class_exists('wbw_plugin')) {
 
             register_setting(
                 'wbw-settings-group',
+                'wbw_optional_postcode',
+                array(
+                    'type' => 'string',
+                    'description' => 'optional field for postcode',
+                    'sanitize_callback' => array(&$this, 'wbw_optional_postcode_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'display'
+                )
+            );
+
+            register_setting(
+                'wbw-settings-group',
                 'wbw_submitter_email_template',
                 array(
                     'type' => 'string',
@@ -459,6 +460,17 @@ if (!class_exists('wbw_plugin')) {
                     'sanitize_callback' => null,
                     'show_in_rest' => false,
                     'default' => file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html')
+                )
+            );
+            register_setting(
+                'wbw-settings-group',
+                'wbw_fso_feature',
+                array(
+                    'type' => 'string',
+                    'description' => 'wbw_fso_feature',
+                    'sanitize_callback' => array(&$this, 'wbw_fso_feature_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'display'
                 )
             );
 
@@ -542,21 +554,29 @@ if (!class_exists('wbw_plugin')) {
             );
 
             add_settings_field(
-                'wbw_fso_email_address',
-                'Email address for the FSO (Starter Kit Notifications)',
-                array(&$this, 'wbw_fso_email_address_html'),
+                'wbw_fso_options',
+                'Field Service Office configuration',
+                array(&$this, 'wbw_fso_options_html'),
                 'wbw-settings',
                 'wbw-settings-section-id'
             );
 
+            // add_settings_field(
+            //     'wbw_fso_email_address',
+            //     'Email address for the FSO (Starter Kit Notifications)',
+            //     array(&$this, 'wbw_fso_email_address_html'),
+            //     'wbw-settings',
+            //     'wbw-settings-section-id'
+            // );
 
-            add_settings_field(
-                'wbw_fso_email_template',
-                'Email Template for FSO emails (Starter Kit Notifications)',
-                array(&$this, 'wbw_fso_email_template_html'),
-                'wbw-settings',
-                'wbw-settings-section-id'
-            );
+
+            // add_settings_field(
+            //     'wbw_fso_email_template',
+            //     'Email Template for FSO emails (Starter Kit Notifications)',
+            //     array(&$this, 'wbw_fso_email_template_html'),
+            //     'wbw-settings',
+            //     'wbw-settings-section-id'
+            // );
 
             add_settings_field(
                 'wbw_submitter_email_template',
@@ -565,6 +585,36 @@ if (!class_exists('wbw_plugin')) {
                 'wbw-settings',
                 'wbw-settings-section-id'
             );
+        }
+        public function wbw_fso_feature_sanitize_callback($input)
+        {
+            $this->debug_log("fso_enablde sanitize callback");            
+            $this->debug_log($input);
+
+            $output = get_option('wbw_fso_feature');
+            switch ($input) {
+                case 'hidden':
+                case 'display':
+                    return $input;
+                }
+            add_settings_error('wbw_fso_feature','err','Invalid FSO Enabled setting.');
+            return $output;
+        }
+
+        public function wbw_optional_postcode_sanitize_callback($input)
+        {
+            $this->debug_log("postcode sanitize callback");            
+            $this->debug_log($input);
+
+            $output = get_option('wbw_optional_postcode');
+            switch ($input) {
+                case 'hidden':
+                case 'displayrequired':
+                case 'display':
+                    return $input;
+                }
+            add_settings_error('wbw_optional_postcode','err','Invalid Postcode setting.');
+            return $output;
         }
 
         public function wbw_optional_location_nation_sanitize_callback($input)
@@ -710,6 +760,7 @@ if (!class_exists('wbw_plugin')) {
 
             $this->do_optional_field('wbw_optional_location_nation', 'Nation');
             $this->do_optional_field('wbw_optional_location_sub_province', 'Sub Province');
+            $this->do_optional_field('wbw_optional_postcode', 'Post Code');
         }
 
         private function do_optional_field($option, $friendlyname)
@@ -743,36 +794,60 @@ if (!class_exists('wbw_plugin')) {
     END;
         }
 
-        public function wbw_fso_email_address_html()
+        public function wbw_fso_options_html()
         {
-            $from_address = get_option('wbw_fso_email_address');
+            $hidden = '';
+            $display = '';
+
             echo <<<END
-    <div class="wbw_info_text">
-    <br>The email address to notify the FSO that starter kits are required.
-    <br><br>
-    </div>
-    END;
+            <div class="wbw_info_text">
+            <br>Enable this setting to display the starter kit option in the submission form and to configure the email address for your Field Service Office.
+            <br><br>
+            </div>
+            END;
+
+            $fso_enabled = get_option('wbw_fso_feature');
+            $from_address = get_option('wbw_fso_email_address');
+
+            switch ($fso_enabled) {
+                case 'hidden':
+                    $hidden = 'selected';
+                    break;
+                case 'display':
+                    $display = 'selected';
+                    break;
+            }
+            echo <<<END
+            <br><label for="wbw_fso_feature"><b>FSO Features:</b>
+            </label><select id="wbw_fso_feature" name="wbw_fso_feature">
+            <option name="hidden" value="hidden" ${hidden}>Disabled</option>
+            <option name="display" value="display" ${display}>Enabled</option>
+            </select>
+            <br><br>
+            <div id="fso_options">
+            <div class="wbw_info_text">
+            <br>The email address to notify the FSO that starter kits are required.
+            <br><br>
+            </div>
+            END;
 
             echo '<br><label for="wbw_email_from_address"><b>FSO Email Address:</b></label><input type="text" size="50" id="wbw_fso_email_address" name="wbw_fso_email_address" value="' . $from_address . '"/>';
             echo '<br><br>';
-        }
-
-        public function wbw_fso_email_template_html()
-        {
 
             echo <<<END
-    <div class="wbw_info_text">
-    <br>This template will be used when emailing the FSO about starter kit requests.
-    <br><br>
-    </div>
-    END;
+            <div class="wbw_info_text">
+            <br>This template will be used when emailing the FSO about starter kit requests.
+            <br><br>
+            </div>
+            END;
             $content = get_option('wbw_fso_email_template');
             $editor_id = 'wbw_fso_email_template';
 
             wp_editor($content, $editor_id, array('media_buttons' => false));
             echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
             echo '<br><br>';
-        }
+            echo '</div>';
+         }
 
         public function wbw_submitter_email_template_html()
         {
@@ -827,9 +902,11 @@ if (!class_exists('wbw_plugin')) {
             add_option('wbw_delete_closed_meetings','unpublish');
             add_option('wbw_optional_location_nation','hidden');
             add_option('wbw_optional_location_sub_province','hidden');
+            add_option('wbw_optional_postcode','display');
             add_option('wbw_submitter_email_template',file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
             add_option('wbw_fso_email_template',file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
             add_option('wbw_fso_email_address','example@example.example');
+            add_option('wbw_fso_feature','display');
 
             $this->WBW_Database->wbw_db_upgrade($this->WBW_Database->wbw_db_version, false);
 

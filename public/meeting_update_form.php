@@ -1,4 +1,21 @@
 <?php
+// Copyright (C) 2022 nigel.bmlt@gmail.com
+// 
+// This file is part of bmlt-workflow.
+// 
+// bmlt-workflow is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// bmlt-workflow is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
+
 
 use wbw\BMLT\Integration;
 
@@ -216,7 +233,7 @@ EOD;
                         <label for="display_format_shared_id_list">Meeting Formats<span class="wbw-required-field"> *</span></label>
                         <select class="display_format_shared_id_list-select2" name="display_format_shared_id_list" id="display_format_shared_id_list" required></select>
                         <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
-                        <div id="virtual_location">
+                        <div id="location_fields">
                             <label for="location_text">Location (eg: a building name)<span class="wbw-required-field"> *</span></label>
                             <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
                             <label for="location_street">Street Address<span class="wbw-required-field"> *</span></label>
@@ -232,8 +249,10 @@ EOD;
                         </div>
                         <label for="location_province">State<span class="wbw-required-field"> *</span></label>
                         <?php echo $states ?>
-                        <label for="location_postal_code_1">Postcode<span class="wbw-required-field"> *</span></label>
-                        <input class="meeting-input" type="number" name="location_postal_code_1" size="5" max="99999" id="location_postal_code_1" required>
+                        <div id="optional_postcode">
+                            <label for="location_postal_code_1">Postcode</label>
+                            <input class="meeting-input" type="text" name="location_postal_code_1" id="location_postal_code_1" required>
+                        </div>
                         <div id="optional_location_nation">
                             <label id="location_nation_label" for="location_nation">Nation</label>
                             <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">

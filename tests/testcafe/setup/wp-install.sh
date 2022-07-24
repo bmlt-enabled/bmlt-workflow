@@ -1,4 +1,21 @@
 #!/bin/bash -x
+# Copyright (C) 2022 nigel.bmlt@gmail.com
+# 
+# This file is part of bmlt-workflow.
+# 
+# bmlt-workflow is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+# 
+# bmlt-workflow is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
+
 
 # Install script for Latest WordPress on local dev
 
@@ -21,7 +38,7 @@ export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 aws ssm put-parameter --overwrite --name wbw_test_wppass --value $wppass --type SecureString --region ap-southeast-2
 export wpemail=nigel.brittain@gmail.com
 export siteurl=54.153.167.239/wordpressdev
-export BRANCH=0.4.3-fixes
+export BRANCH=0.4.4-fixes
 
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
@@ -74,16 +91,16 @@ curl -d "weblog_title=$wptitle&user_name=$wpuser&admin_password=$wppass&admin_pa
 
 # install our plugin
 cd /home/ssm-user/wordpress
-git clone https://github.com/bmlt-enabled/wordpress-bmlt-workflow.git
-cd wordpress-bmlt-workflow
+git clone https://github.com/bmlt-enabled/bmlt-workflow.git
+cd bmlt-workflow
 git switch $BRANCH
 sed -i "s/define('WBW_DEBUG', false);/define('WBW_DEBUG', true);/g" config.php
 cd ..
-sudo mv wordpress-bmlt-workflow /var/www/html/wordpressdev/wp-content/plugins
-sudo chown -R apache:apache /var/www/html/wordpressdev/wp-content/plugins/wordpress-bmlt-workflow
-cd /var/www/html/wordpressdev/wp-content/plugins/wordpress-bmlt-workflow
+sudo mv bmlt-workflow /var/www/html/wordpressdev/wp-content/plugins
+sudo chown -R apache:apache /var/www/html/wordpressdev/wp-content/plugins/bmlt-workflow
+cd /var/www/html/wordpressdev/wp-content/plugins/bmlt-workflow
 # activate plugin
-wp plugin activate --path=/var/www/html/wordpressdev "wordpress-bmlt-workflow"
+wp plugin activate --path=/var/www/html/wordpressdev "bmlt-workflow"
 wp option --path=/var/www/html/wordpressdev add 'wbw_bmlt_server_address' 'http://54.153.167.239/blank_bmlt/main_server/'
 wp option --path=/var/www/html/wordpressdev add 'wbw_bmlt_username' 'bmlt-workflow-bot'
 wp option --path=/var/www/html/wordpressdev add 'wbw_bmlt_test_status' 'success'

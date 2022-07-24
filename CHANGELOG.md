@@ -1,3 +1,12 @@
+## 0.4.5 (Jul 24, 2022)
+- #79 Postcode field not a required field, ability to turn off (thanks @rogersearle !) - option for hiding postcode is now provided in the configuration page
+- #78 Postcode/zipcode format is too restrictive (thanks @paulnagle !) - now takes a free text field
+- #77 Starter Kit / FSO issues (thanks @tempsaint !) - option for hiding fso entirely is now provided in the configuration page
+- #75 Virtual Meeting requires location (thanks @kcad !)
+- lots more cleanup to testcafe test cases
+- copyright license headers added to all relevant source files (in prep for wordpress publish)
+- repo renamed to bmlt-workflow (in prep for wordpress publish)
+
 ## 0.4.4 (Jul 14, 2022)
 - #72 location_province field not populating with info from meeting (thanks @pjaudiomv !)
 - #73 database tables not created if wbw_db_version found, regardless of whether the tables actually exist (thanks @pjaudiomv !)
@@ -60,24 +69,24 @@
 - Testcafe user form success tests created (and lots of bugs found already!)
 
 ## 0.3.7-beta (April 9, 2022)
-- Virtual meetings and associated fields now fully supported! https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/25 (thanks @brustar !)
+- Virtual meetings and associated fields now fully supported! https://github.com/bmlt-enabled/bmlt-workflow/issues/25 (thanks @brustar !)
 - BMLT configuration UI rewritten
 - Additional unit tests and coverage reports
 
 ## 0.3.6-beta (April 7, 2022)
-- https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/26 (thanks @brustar !)
+- https://github.com/bmlt-enabled/bmlt-workflow/issues/26 (thanks @brustar !)
 - Refactoring REST code and unit test components
 - Additional unit tests
 
 ## 0.3.5-beta (April 5, 2022)
-- https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/24, https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/23 - highlighting fixes (thanks @rogersearle !)
+- https://github.com/bmlt-enabled/bmlt-workflow/issues/24, https://github.com/bmlt-enabled/bmlt-workflow/issues/23 - highlighting fixes (thanks @rogersearle !)
 - Mini-autoloader to support non composer deploy
 - Nation and Sub-province fields are now optional and configurable (hidden / displayed / displayed and required) through the configuration panel 
 - Select2 updated to 4.1.0-rc0
 
 ## 0.3.4-beta (April 4, 2022)
-- https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/20, https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/19, https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/17 - Accessibility fixes (thanks @kgrimley-bu !)
-- https://github.com/bmlt-enabled/wordpress-bmlt-workflow/issues/16 - Quickedit fixes
+- https://github.com/bmlt-enabled/bmlt-workflow/issues/20, https://github.com/bmlt-enabled/bmlt-workflow/issues/19, https://github.com/bmlt-enabled/bmlt-workflow/issues/17 - Accessibility fixes (thanks @kgrimley-bu !)
+- https://github.com/bmlt-enabled/bmlt-workflow/issues/16 - Quickedit fixes
 - Namespace refactoring
 - Debug changes to handle CI pipeline nicely
 
@@ -105,7 +114,7 @@
 * Many cleanups and bugfixes
 
 ## 0.3-beta (March 26, 2022)
-* Hosting repo on BMLT-Enabled! https://github.com/bmlt-enabled/wordpress-bmlt-workflow
+* Hosting repo on BMLT-Enabled! https://github.com/bmlt-enabled/bmlt-workflow
 * Support for 'Other' and 'Close' meeting management, including publish or delete of closed meetings. This includes a new settings option for the admin to choose which default for Trusted servants.
 * Additional PHPUnit test cases for approval rest interface
 

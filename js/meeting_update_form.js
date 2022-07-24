@@ -1,3 +1,20 @@
+// Copyright (C) 2022 nigel.bmlt@gmail.com
+// 
+// This file is part of bmlt-workflow.
+// 
+// bmlt-workflow is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+// 
+// bmlt-workflow is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
+
 "use strict";
 
 var weekdays = ["none", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -9,6 +26,14 @@ jQuery(document).ready(function ($) {
   var virtual_formatid = "";
   var tempclosure_formatid = "";
 
+  // display handler for fso options
+  if(wbw_fso_feature == 'hidden')
+  {
+    $("#starter_pack").hide();
+  } else {
+    $("#starter_pack").show();
+  }
+  
   Object.keys(wbw_bmlt_formats).forEach((key) => {
     formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
     if (wbw_bmlt_formats[key]["key_string"] === "HY") {
@@ -58,6 +83,22 @@ jQuery(document).ready(function ($) {
       $("#optional_location_sub_province").show();
       $("#location_sub_province").attr("required", true);
       $("#location_sub_province_label").append('<span class="wbw-required-field"> *</span>');
+      break;
+  }
+
+  switch (wbw_optional_postcode) {
+    case "hidden":
+    case "":
+      $("#optional_postcode").hide();
+      break;
+    case "display":
+      $("#optional_postcode").show();
+      $("#location_postal_code_1").attr("required", false);
+      break;
+    case "displayrequired":
+      $("#optional_postcode").show();
+      $("#location_postal_code_1").attr("required", true);
+      $("#location_postal_code_1").append('<span class="wbw-required-field"> *</span>');
       break;
   }
 
@@ -392,22 +433,22 @@ jQuery(document).ready(function ($) {
 
     if (this.value == "none") {
       $("#virtual_meeting_settings").hide();
-      $("#virtual_location").show();
+      $("#location_fields").show();
     } else {
       
       $("#virtual_meeting_settings").show();
       switch (this.value) {
         case "virtual":
           arr.push(virtual_formatid);
-          $("#virtual_location").hide();
+          $("#location_fields").hide();
           break;
         case "hybrid":
           arr.push(hybrid_formatid);
-          $("#virtual_location").show();
+          $("#location_fields").show();
           break;
         case "tempclosure":
           arr.push(tempclosure_formatid);
-          $("#virtual_location").show();
+          $("#location_fields").show();
           break;
       }
     }
@@ -448,7 +489,10 @@ jQuery(document).ready(function ($) {
           "Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
         );
         // new meeting has a starter pack
-        $("#starter_pack").show();
+        if(wbw_fso_feature == 'display')
+        {
+          $("#starter_pack").show();
+        }
         break;
       case "reason_change":
         // hide this until they've selected a meeting
