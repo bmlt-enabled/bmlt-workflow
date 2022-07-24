@@ -600,6 +600,8 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         );
 
+        Functions\when('\get_option')->justReturn("success");
+
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
