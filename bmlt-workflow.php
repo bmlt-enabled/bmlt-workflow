@@ -803,6 +803,7 @@ if (!class_exists('wbw_plugin')) {
             <div class="wbw_info_text">
             <br>Enable this setting to display the starter kit option in the submission form and to configure the email address for your Field Service Office.
             <br><br>
+            </div>
             END;
 
             $fso_enabled = get_option('wbw_fso_feature');

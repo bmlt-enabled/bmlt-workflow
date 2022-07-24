@@ -179,7 +179,7 @@ test("Check_Optional_Fields", async (t) => {
     .navigateTo(userVariables.admin_options_page);
   await select_dropdown_by_text(ao.wbw_optional_location_nation, "Hidden");
   await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Hidden");
-  await select_dropdown_by_text(ao.wbw_fso_feature, "Hidden");
+  await select_dropdown_by_text(ao.wbw_fso_feature, "Disabled");
   
   await t.click(ao.submit);
   await ao.settings_updated();
@@ -196,7 +196,7 @@ test("Check_Optional_Fields", async (t) => {
     .navigateTo(userVariables.admin_options_page);
   await select_dropdown_by_text(ao.wbw_optional_location_nation, "Display");
   await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Display");
-  await select_dropdown_by_text(ao.wbw_fso_feature, "Display");
+  await select_dropdown_by_text(ao.wbw_fso_feature, "Enabled");
   await t.click(ao.submit);
   await ao.settings_updated();
   await t.useRole(Role.anonymous()).navigateTo(userVariables.formpage);
