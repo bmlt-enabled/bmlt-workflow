@@ -43,7 +43,8 @@ class WBW_WP_Options
             'wbw_fso_email_template',
             'wbw_fso_email_address',
             'wbw_submitter_email_template',
-            'wbw_fso_feature'
+            'wbw_fso_feature',
+            'wbw_optional_postcode'
         );
     }
         

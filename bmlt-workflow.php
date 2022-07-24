@@ -111,6 +111,7 @@ if (!class_exists('wbw_plugin')) {
             // optional fields
             $script .= 'var wbw_optional_location_nation = "' . get_option('wbw_optional_location_nation') . '";';
             $script .= 'var wbw_optional_location_sub_province = "' . get_option('wbw_optional_location_sub_province') . '";';
+            $script .= 'var wbw_optional_postcode = "' . get_option('wbw_optional_postcode') . '";';
             $script .= 'var wbw_fso_feature = "'. get_option('wbw_fso_feature').'";';
 
             // add meeting formats
@@ -298,6 +299,7 @@ if (!class_exists('wbw_plugin')) {
                     // optional fields in quickedit
                     $script .= 'var wbw_optional_location_nation = "' . get_option('wbw_optional_location_nation') . '";';
                     $script .= 'var wbw_optional_location_sub_province = "' . get_option('wbw_optional_location_sub_province') . '";';
+                    $script .= 'var wbw_optional_postcode = "' . get_option('wbw_optional_postcode') . '";';
 
                     wp_add_inline_script('admin_submissions_js', $script, 'before');
 
@@ -434,6 +436,18 @@ if (!class_exists('wbw_plugin')) {
                     'sanitize_callback' => array(&$this, 'wbw_optional_location_sub_province_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'hidden'
+                )
+            );
+
+            register_setting(
+                'wbw-settings-group',
+                'wbw_optional_postcode',
+                array(
+                    'type' => 'string',
+                    'description' => 'optional field for postcode',
+                    'sanitize_callback' => array(&$this, 'wbw_optional_postcode_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'display'
                 )
             );
 
@@ -587,6 +601,22 @@ if (!class_exists('wbw_plugin')) {
             return $output;
         }
 
+        public function wbw_optional_postcode_sanitize_callback($input)
+        {
+            $this->debug_log("postcode sanitize callback");            
+            $this->debug_log($input);
+
+            $output = get_option('wbw_optional_postcode');
+            switch ($input) {
+                case 'hidden':
+                case 'displayrequired':
+                case 'display':
+                    return $input;
+                }
+            add_settings_error('wbw_optional_postcode','err','Invalid Nation setting.');
+            return $output;
+        }
+
         public function wbw_optional_location_nation_sanitize_callback($input)
         {
             $this->debug_log("location nation sanitize callback");            
@@ -730,6 +760,7 @@ if (!class_exists('wbw_plugin')) {
 
             $this->do_optional_field('wbw_optional_location_nation', 'Nation');
             $this->do_optional_field('wbw_optional_location_sub_province', 'Sub Province');
+            $this->do_optional_field('wbw_optional_postcode', 'Post Code');
         }
 
         private function do_optional_field($option, $friendlyname)
@@ -767,6 +798,12 @@ if (!class_exists('wbw_plugin')) {
         {
             $hidden = '';
             $display = '';
+
+            echo <<<END
+            <div class="wbw_info_text">
+            <br>Enable this setting to display the starter kit option in the submission form and to configure the email address for your Field Service Office.
+            <br><br>
+            END;
 
             $fso_enabled = get_option('wbw_fso_feature');
             $from_address = get_option('wbw_fso_email_address');
@@ -864,6 +901,7 @@ if (!class_exists('wbw_plugin')) {
             add_option('wbw_delete_closed_meetings','unpublish');
             add_option('wbw_optional_location_nation','hidden');
             add_option('wbw_optional_location_sub_province','hidden');
+            add_option('wbw_optional_postcode','display');
             add_option('wbw_submitter_email_template',file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
             add_option('wbw_fso_email_template',file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
             add_option('wbw_fso_email_address','example@example.example');

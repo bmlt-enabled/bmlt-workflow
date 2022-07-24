@@ -28,7 +28,7 @@ class Admin_Options {
         this.wbw_fso_email_address = Selector("#wbw_fso_email_address");
         this.wbw_optional_location_nation = Selector("#wbw_optional_location_nation");
         this.wbw_optional_location_sub_province = Selector("#wbw_optional_location_sub_province");
-        this.wbw_fso_enabled = Selector("#wbw_fso_enabled");
+        this.wbw_fso_feature = Selector("#wbw_fso_feature");
         this.wbw_delete_closed_meetings = Selector("#wbw_delete_closed_meetings");
         this.wbw_email_from_address = Selector("#wbw_email_from_address");
         this.submit = Selector('#submit');

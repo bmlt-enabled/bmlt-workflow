@@ -86,6 +86,22 @@ jQuery(document).ready(function ($) {
       break;
   }
 
+  switch (wbw_optional_postcode) {
+    case "hidden":
+    case "":
+      $("#optional_postcode").hide();
+      break;
+    case "display":
+      $("#optional_postcode").show();
+      $("#location_postal_code_1").attr("required", false);
+      break;
+    case "displayrequired":
+      $("#optional_postcode").show();
+      $("#location_postal_code_1").attr("required", true);
+      $("#location_postal_code_1").append('<span class="wbw-required-field"> *</span>');
+      break;
+  }
+
   function update_meeting_list(wbw_service_bodies) {
     var search_results_address = wbw_bmlt_server_address + "client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&" + wbw_service_bodies + "recursive=1&sort_keys=meeting_name";
 

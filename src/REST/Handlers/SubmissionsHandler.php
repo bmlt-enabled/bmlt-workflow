@@ -621,6 +621,7 @@ class SubmissionsHandler
         $reason_change_bool = false;
         $reason_close_bool = false;
         $virtual_meeting_bool = false;
+        $require_postcode = false;
 
         // strip blanks
         foreach ($data as $key => $value) {
@@ -655,7 +656,10 @@ class SubmissionsHandler
                     }
                 }    
             }
-
+            if(($data['update_reason'] === 'reason_new')&&(get_option('wbw_optional_postcode') === 'displayrequired'))
+            {
+                $require_postcode = true;
+            }
         }
 
         if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_other_bool && !$reason_change_bool && !$reason_close_bool))) {
@@ -680,7 +684,7 @@ class SubmissionsHandler
             "location_municipality" => array("text", $reason_new_bool),
             "location_province" => array("text", $reason_new_bool),
             // postcode can be a text format #78
-            "location_postal_code_1" => array("text", $reason_new_bool),
+            "location_postal_code_1" => array("text", $require_postcode),
             "weekday_tinyint" => array("weekday", $reason_new_bool),
             "service_body_bigint" => array("bigint", $reason_new_bool),
             "email_address" => array("email", true),
