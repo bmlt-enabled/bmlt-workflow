@@ -1,3 +1,12 @@
+## 0.4.5 (Jul 24, 2022)
+- #79 Postcode field not a required field, ability to turn off (thanks @rogersearle !) - option for hiding postcode is now provided in the configuration page
+- #78 Postcode/zipcode format is too restrictive (thanks @paulnagle !) - now takes a free text field
+- #77 Starter Kit / FSO issues (thanks @tempsaint !) - option for hiding fso entirely is now provided in the configuration page
+- #75 Virtual Meeting requires location (thanks @kcad !)
+- lots more cleanup to testcafe test cases
+- copyright license headers added to all relevant source files (in prep for wordpress publish)
+- repo renamed to bmlt-workflow (in prep for wordpress publish)
+
 ## 0.4.4 (Jul 14, 2022)
 - #72 location_province field not populating with info from meeting (thanks @pjaudiomv !)
 - #73 database tables not created if wbw_db_version found, regardless of whether the tables actually exist (thanks @pjaudiomv !)

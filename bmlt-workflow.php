@@ -21,7 +21,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 0.4.4
+ * Version: 0.4.5
  * Requires at least: 5.2
  * Tested up to: 6.0
  * Author: @nigel-bmlt
@@ -29,7 +29,7 @@
  **/
 
 
- define('WBW_PLUGIN_VERSION','0.4.4');
+ define('WBW_PLUGIN_VERSION','0.4.5');
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
