@@ -156,6 +156,8 @@ test("Check_Optional_Fields", async (t) => {
   await t.useRole(wbw_admin).navigateTo(userVariables.admin_options_page);
   await select_dropdown_by_text(ao.wbw_optional_location_nation, "Display + Required Field");
   await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Display + Required Field");
+  await select_dropdown_by_text(ao.wbw_optional_postcode, "Display + Required Field");
+  
   await t.click(ao.submit);
   await ao.settings_updated();
 
@@ -172,6 +174,8 @@ test("Check_Optional_Fields", async (t) => {
     .eql("required")
     .expect(uf.location_sub_province.getAttribute("required"))
     .eql("required")
+    .expect(uf.location_postal_code_1.getAttribute("required"))
+    .eql("required")
 
     // test optional fields with 'hidden' option
 
@@ -180,7 +184,8 @@ test("Check_Optional_Fields", async (t) => {
   await select_dropdown_by_text(ao.wbw_optional_location_nation, "Hidden");
   await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Hidden");
   await select_dropdown_by_text(ao.wbw_fso_feature, "Disabled");
-  
+  await select_dropdown_by_text(ao.wbw_optional_postcode, "Hidden");
+
   await t.click(ao.submit);
   await ao.settings_updated();
   await t.useRole(Role.anonymous()).navigateTo(userVariables.formpage);
@@ -190,6 +195,7 @@ test("Check_Optional_Fields", async (t) => {
     .expect(uf.optional_location_nation.visible).eql(false)
     .expect(uf.optional_location_sub_province.visible).eql(false)
     .expect(uf.starter_pack.visible).eql(false)
+    .expect(uf.location_postal_code_1.visible).eql(false)
 
     // test optional fields with 'display' option
     .useRole(wbw_admin)
@@ -197,6 +203,7 @@ test("Check_Optional_Fields", async (t) => {
   await select_dropdown_by_text(ao.wbw_optional_location_nation, "Display");
   await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Display");
   await select_dropdown_by_text(ao.wbw_fso_feature, "Enabled");
+  await select_dropdown_by_text(ao.wbw_optional_postcode, "Display");
   await t.click(ao.submit);
   await ao.settings_updated();
   await t.useRole(Role.anonymous()).navigateTo(userVariables.formpage);
@@ -204,5 +211,7 @@ test("Check_Optional_Fields", async (t) => {
 
   await t.expect(uf.optional_location_nation.visible).eql(true)
   .expect(uf.optional_location_sub_province.visible).eql(true)
-  .expect(uf.starter_pack.visible).eql(true);
+  .expect(uf.starter_pack.visible).eql(true)
+  .expect(uf.location_postal_code_1.visible).eql(true);
+
 });

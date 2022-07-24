@@ -613,7 +613,7 @@ if (!class_exists('wbw_plugin')) {
                 case 'display':
                     return $input;
                 }
-            add_settings_error('wbw_optional_postcode','err','Invalid Nation setting.');
+            add_settings_error('wbw_optional_postcode','err','Invalid Postcode setting.');
             return $output;
         }
 

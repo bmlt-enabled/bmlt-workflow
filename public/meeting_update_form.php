@@ -250,7 +250,7 @@ EOD;
                         <label for="location_province">State<span class="wbw-required-field"> *</span></label>
                         <?php echo $states ?>
                         <div id="optional_postcode">
-                            <label for="location_postal_code_1">Postcode<span class="wbw-required-field"> *</span></label>
+                            <label for="location_postal_code_1">Postcode</label>
                             <input class="meeting-input" type="text" name="location_postal_code_1" id="location_postal_code_1" required>
                         </div>
                         <div id="optional_location_nation">
