@@ -114,13 +114,15 @@ export async function configure_service_bodies()
 // set a from email address, turn off the optional settings and submit
 export async function basic_options()
 {
+    
     await t.useRole(wbw_admin).navigateTo(userVariables.admin_options_page)
     .typeText(ao.wbw_email_from_address, "testing@test.org.zz", { replace: true })
     .typeText(ao.wbw_fso_email_address, "testing@test.org.zz", { replace: true });
     
     await select_dropdown_by_text(ao.wbw_optional_location_nation, "Hidden");
     await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Hidden");
-    
+    await select_dropdown_by_text(ao.wbw_optional_postcode, "Display");
+
     await t.click(ao.submit);
     await ao.settings_updated();  
 }

@@ -204,6 +204,7 @@ test("Check_Optional_Fields", async (t) => {
   await select_dropdown_by_text(ao.wbw_optional_location_sub_province, "Display");
   await select_dropdown_by_text(ao.wbw_fso_feature, "Enabled");
   await select_dropdown_by_text(ao.wbw_optional_postcode, "Display");
+  
   await t.click(ao.submit);
   await ao.settings_updated();
   await t.useRole(Role.anonymous()).navigateTo(userVariables.formpage);
