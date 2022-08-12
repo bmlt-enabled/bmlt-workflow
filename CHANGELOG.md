@@ -1,5 +1,6 @@
 ## 1.0.0 (Aug 12, 2022)
 - Version number bump and rename of tables and options for wordpess publish
+
 ## 0.4.5 (Jul 24, 2022)
 - #79 Postcode field not a required field, ability to turn off (thanks @rogersearle !) - option for hiding postcode is now provided in the configuration page
 - #78 Postcode/zipcode format is too restrictive (thanks @paulnagle !) - now takes a free text field
