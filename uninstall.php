@@ -25,36 +25,36 @@ if (file_exists('vendor/autoload.php')) {
 } else {
     // custom autoloader if not. only autoloads out of src directory
     spl_autoload_register(function (string $class) {
-        if (strpos($class, 'wbw\\') === 0) {
-            $class = str_replace('wbw\\', '', $class);
+        if (strpos($class, 'bw\\') === 0) {
+            $class = str_replace('bw\\', '', $class);
             require __DIR__ . '/src/' . str_replace('\\', '/', $class) . '.php';
         }
     });
 }
 
-use wbw\WBW_WP_Options;
-use wbw\WBW_Database;
+use bw\BW_WP_Options;
+use bw\BW_Database;
 
 function debug_log($message)
 {
-    if (WBW_DEBUG) {
+    if (BW_DEBUG) {
         $out = print_r($message, true);
         error_log(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] . ": " . $out);
     }
 }
 
 
-function wbw_uninstaller()
+function bw_uninstaller()
 {
-    $WBW_WP_Options = new WBW_WP_Options();
-    $WBW_Database = new WBW_Database();
+    $BW_WP_Options = new BW_WP_Options();
+    $BW_Database = new BW_Database();
 
-    foreach ($WBW_WP_Options->wbw_options as $key => $value) {
+    foreach ($BW_WP_Options->bw_options as $key => $value) {
         debug_log("deleting option " . $value);
         delete_option($value);
     }
 
-    $WBW_Database->wbw_drop_tables();
+    $BW_Database->bw_drop_tables();
     debug_log("removed tables");
 
     // remove custom capability
@@ -63,12 +63,12 @@ function wbw_uninstaller()
 
     $users = get_users();
     foreach ($users as $user) {
-        $user->remove_cap($WBW_WP_Options->wbw_capability_manage_submissions);
+        $user->remove_cap($BW_WP_Options->bw_capability_manage_submissions);
     }
 
-    remove_role('wbw_trusted_servant');
+    remove_role('bw_trusted_servant');
 
     debug_log("uninstall complete");
 }
 
-wbw_uninstaller();
+bw_uninstaller();

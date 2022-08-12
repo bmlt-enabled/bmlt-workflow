@@ -18,16 +18,16 @@
 
 
 
-namespace wbw\REST\Handlers;
+namespace bw\REST\Handlers;
 
-use wbw\BMLT\Integration;
-use wbw\REST\HandlerCore;
-use wbw\WBW_WP_Options;
+use bw\BMLT\Integration;
+use bw\REST\HandlerCore;
+use bw\BW_WP_Options;
 
 class BMLTServerHandler
 {
 
-    use \wbw\WBW_Debug;
+    use \bw\BW_Debug;
 
     public function __construct($intstub = null, $wpoptionssstub = null)
     {
@@ -38,9 +38,9 @@ class BMLTServerHandler
         }
 
         if (empty($wpoptionssstub)) {
-            $this->WBW_WP_Options = new WBW_WP_Options();
+            $this->BW_WP_Options = new BW_WP_Options();
         } else {
-            $this->WBW_WP_Options = $wpoptionssstub;
+            $this->BW_WP_Options = $wpoptionssstub;
         }
 
         $this->handlerCore = new HandlerCore();
@@ -55,16 +55,16 @@ class BMLTServerHandler
         // $this->debug_log((empty($password)));
 
         if (empty($username)) {
-            return $this->handlerCore->wbw_rest_error('Empty BMLT username parameter', 422);
+            return $this->handlerCore->bw_rest_error('Empty BMLT username parameter', 422);
         }
         if (empty($password)) {
-            return $this->handlerCore->wbw_rest_error('Empty BMLT password parameter', 422);
+            return $this->handlerCore->bw_rest_error('Empty BMLT password parameter', 422);
         }
         if (empty($server)) {
-            return $this->handlerCore->wbw_rest_error('Empty BMLT server parameter', 422);
+            return $this->handlerCore->bw_rest_error('Empty BMLT server parameter', 422);
         }
         if (substr($server, -1) !== '/') {
-            return $this->handlerCore->wbw_rest_error('BMLT Server address missing trailiing /', 422);
+            return $this->handlerCore->bw_rest_error('BMLT Server address missing trailiing /', 422);
         }
 
         return true;
@@ -74,30 +74,30 @@ class BMLTServerHandler
     {
 
         $this->debug_log('get test results returning');
-        $this->debug_log(get_option("wbw_bmlt_test_status", "failure"));
+        $this->debug_log(get_option("bw_bmlt_test_status", "failure"));
 
-        $response = array("wbw_bmlt_test_status" => get_option("wbw_bmlt_test_status", "failure"));
+        $response = array("bw_bmlt_test_status" => get_option("bw_bmlt_test_status", "failure"));
 
-        return $this->handlerCore->wbw_rest_success($response);
+        return $this->handlerCore->bw_rest_success($response);
     }
 
     // This is for testing username/password/server combination
     public function post_bmltserver_handler($request)
     {
 
-        $username = $request['wbw_bmlt_username'];
-        $password = $request['wbw_bmlt_password'];
-        $server = $request['wbw_bmlt_server_address'];
+        $username = $request['bw_bmlt_username'];
+        $password = $request['bw_bmlt_password'];
+        $server = $request['bw_bmlt_server_address'];
 
         $data = array();
 
         $result = $this->check_bmltserver_parameters($username, $password, $server);
         if ($result !== true) {
 
-            $r = update_option("wbw_bmlt_test_status", "failure");
+            $r = update_option("bw_bmlt_test_status", "failure");
 
             // $result is a WP_Error
-            $data["wbw_bmlt_test_status"] = "failure";
+            $data["bw_bmlt_test_status"] = "failure";
             $result->add_data($data);
 
             return $result;
@@ -107,26 +107,26 @@ class BMLTServerHandler
 
         if (is_wp_error($ret)) {
 
-            $r = update_option("wbw_bmlt_test_status", "failure");
-            $data["wbw_bmlt_test_status"] = "failure";
-            return $this->handlerCore->wbw_rest_error_with_data('Server and Authentication test failed - ' . $ret->get_error_message(), 500, $data);
+            $r = update_option("bw_bmlt_test_status", "failure");
+            $data["bw_bmlt_test_status"] = "failure";
+            return $this->handlerCore->bw_rest_error_with_data('Server and Authentication test failed - ' . $ret->get_error_message(), 500, $data);
  
         } else {
 
-            $r = update_option("wbw_bmlt_test_status", "success");
-            $data["wbw_bmlt_test_status"] = "success";
+            $r = update_option("bw_bmlt_test_status", "success");
+            $data["bw_bmlt_test_status"] = "success";
             $data["message"] = "BMLT Server and Authentication test succeeded.";
 
-            return $this->handlerCore->wbw_rest_success($data);
+            return $this->handlerCore->bw_rest_success($data);
         }
     }
 
     public function patch_bmltserver_handler($request)
     {
 
-        $username = $request['wbw_bmlt_username'];
-        $password = $request['wbw_bmlt_password'];
-        $server = $request['wbw_bmlt_server_address'];
+        $username = $request['bw_bmlt_username'];
+        $password = $request['bw_bmlt_password'];
+        $server = $request['bw_bmlt_server_address'];
 
         $result = $this->check_bmltserver_parameters($username, $password, $server);
         $this->debug_log("check_bmltserver returned " . $result);
@@ -136,20 +136,20 @@ class BMLTServerHandler
             return $result;
         }
 
-        update_option('wbw_bmlt_username', $username);
+        update_option('bw_bmlt_username', $username);
 
         $this->debug_log("encrypting BMLT password");
 
-        $encrypted = $this->WBW_WP_Options->secrets_encrypt(NONCE_SALT, $password);
+        $encrypted = $this->BW_WP_Options->secrets_encrypt(NONCE_SALT, $password);
 
         if (!is_array($encrypted)) {
-            return $this->handlerCore->wbw_rest_failure('Error encrypting password.');
+            return $this->handlerCore->bw_rest_failure('Error encrypting password.');
         }
 
-        update_option('wbw_bmlt_password', $encrypted);
-        update_option('wbw_bmlt_server_address', $server);
+        update_option('bw_bmlt_password', $encrypted);
+        update_option('bw_bmlt_server_address', $server);
 
-        return $this->handlerCore->wbw_rest_success('BMLT Server and Authentication details updated.');
+        return $this->handlerCore->bw_rest_success('BMLT Server and Authentication details updated.');
     }
 
     public function get_bmltserver_geolocate_handler($request)
@@ -158,7 +158,7 @@ class BMLTServerHandler
         $address = $request->get_param('address');
 
         if (empty($address)) {
-            return $this->handlerCore->wbw_rest_error('Empty address parameter', 422);
+            return $this->handlerCore->bw_rest_error('Empty address parameter', 422);
         }
 
         $location = $this->bmlt_integration->geolocateAddress($address);

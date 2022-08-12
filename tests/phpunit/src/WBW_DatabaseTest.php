@@ -19,7 +19,7 @@
 
 declare(strict_types=1);
 
-use wbw\WBW_Database;
+use bw\BW_Database;
 
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
@@ -28,12 +28,12 @@ use function Patchwork\{redefine, getFunction, always};
 require_once('config_phpunit.php');
 
 /**
- * @covers wbw\WBW_Database
- * @uses wbw\WBW_Debug
+ * @covers bw\BW_Database
+ * @uses bw\BW_Debug
  */
-final class WBW_DatabaseTest extends TestCase
+final class BW_DatabaseTest extends TestCase
 {
-    use \wbw\WBW_Debug;
+    use \bw\BW_Debug;
 
     protected function setVerboseErrorHandler()
     {
@@ -72,11 +72,11 @@ Line: $errorLine
         Brain\Monkey\tearDown();
         parent::tearDown();
         Mockery::close();
-        unset($this->wbw_dbg);
+        unset($this->bw_dbg);
     }
 
     /**
-     * @covers wbw\WBW_Database\wbw_db_upgrade
+     * @covers bw\BW_Database\bw_db_upgrade
      */
     public function test_database_upgrade_from_current_without_fresh_install_does_nothing(): void
     {
@@ -89,16 +89,16 @@ Line: $errorLine
         $wpdb->num_rows = 1;
         $wpdb->prefix = "";
 
-        $WBW_Database = new WBW_Database();
+        $BW_Database = new BW_Database();
         
-        Functions\when('\get_option')->justReturn($WBW_Database->wbw_db_version);
+        Functions\when('\get_option')->justReturn($BW_Database->bw_db_version);
         // nothing should be performed ie return 0
-        $this->assertEquals($WBW_Database->wbw_db_upgrade($WBW_Database->wbw_db_version, false), 0);
+        $this->assertEquals($BW_Database->bw_db_upgrade($BW_Database->bw_db_version, false), 0);
         
     }
 
     /**
-     * @covers wbw\WBW_Database\wbw_db_upgrade
+     * @covers bw\BW_Database\bw_db_upgrade
      */
     public function test_database_upgrade_missing_tables_does_fresh_install(): void
     {
@@ -113,19 +113,19 @@ Line: $errorLine
         $wpdb->num_rows = 0;
         $wpdb->prefix = "";
 
-        $WBW_Database = new WBW_Database();
+        $BW_Database = new BW_Database();
 
-        Functions\expect('\delete_option')->with('wbw_db_version')->once()->andReturn(true);
-        Functions\expect('\add_option')->with('wbw_db_version',$WBW_Database->wbw_db_version)->once()->andReturn(true);
+        Functions\expect('\delete_option')->with('bw_db_version')->once()->andReturn(true);
+        Functions\expect('\add_option')->with('bw_db_version',$BW_Database->bw_db_version)->once()->andReturn(true);
 
-        Functions\when('\get_option')->justReturn($WBW_Database->wbw_db_version);
+        Functions\when('\get_option')->justReturn($BW_Database->bw_db_version);
         // fresh install should be performed
-        $this->assertEquals($WBW_Database->wbw_db_upgrade($WBW_Database->wbw_db_version, false), 1);
+        $this->assertEquals($BW_Database->bw_db_upgrade($BW_Database->bw_db_version, false), 1);
         
     }
 
     /**
-     * @covers wbw\WBW_Database\wbw_db_upgrade
+     * @covers bw\BW_Database\bw_db_upgrade
      */
     public function test_database_upgrade_performs_upgrade_with_low_version(): void
     {
@@ -140,19 +140,19 @@ Line: $errorLine
         $wpdb->num_rows = 1;
         $wpdb->prefix = "";
 
-        $WBW_Database = new WBW_Database();
+        $BW_Database = new BW_Database();
 
-        Functions\expect('\delete_option')->with('wbw_db_version')->once()->andReturn(true);
-        Functions\expect('\add_option')->with('wbw_db_version',$WBW_Database->wbw_db_version)->once()->andReturn(true);
+        Functions\expect('\delete_option')->with('bw_db_version')->once()->andReturn(true);
+        Functions\expect('\add_option')->with('bw_db_version',$BW_Database->bw_db_version)->once()->andReturn(true);
 
         Functions\when('\get_option')->justReturn("0.0.1");
         // upgrade should be performed
-        $this->assertEquals($WBW_Database->wbw_db_upgrade($WBW_Database->wbw_db_version, false), 2);
+        $this->assertEquals($BW_Database->bw_db_upgrade($BW_Database->bw_db_version, false), 2);
         
     }
 
     /**
-     * @covers wbw\WBW_Database\wbw_db_upgrade
+     * @covers bw\BW_Database\bw_db_upgrade
      */
     public function test_database_upgrade_no_version_does_fresh_install(): void
     {
@@ -166,19 +166,19 @@ Line: $errorLine
         $wpdb->num_rows = 1;
         $wpdb->prefix = "";
 
-        $WBW_Database = new WBW_Database();
+        $BW_Database = new BW_Database();
 
         Functions\expect('\delete_option')->once()->andReturn(true);
         Functions\expect('\add_option')->once()->andReturn(true);
 
         Functions\when('\get_option')->justReturn(false);
         // fresh install should be performed
-        $this->assertEquals($WBW_Database->wbw_db_upgrade($WBW_Database->wbw_db_version, false), 1);
+        $this->assertEquals($BW_Database->bw_db_upgrade($BW_Database->bw_db_version, false), 1);
     }
 
 
     /**
-     * @covers wbw\WBW_Database\wbw_db_upgrade
+     * @covers bw\BW_Database\bw_db_upgrade
      */
     public function test_database_upgrade_fresh_install_requested_does_fresh_install(): void
     {
@@ -193,14 +193,14 @@ Line: $errorLine
         $wpdb->num_rows = 1;
         $wpdb->prefix = "";
 
-        $WBW_Database = new WBW_Database();
+        $BW_Database = new BW_Database();
 
-        Functions\expect('\delete_option')->with('wbw_db_version')->once()->andReturn(true);
-        Functions\expect('\add_option')->with('wbw_db_version',$WBW_Database->wbw_db_version)->once()->andReturn(true);
+        Functions\expect('\delete_option')->with('bw_db_version')->once()->andReturn(true);
+        Functions\expect('\add_option')->with('bw_db_version',$BW_Database->bw_db_version)->once()->andReturn(true);
 
         Functions\when('\get_option')->justReturn(false);
         // fresh install should be performed
-        $this->assertEquals($WBW_Database->wbw_db_upgrade($WBW_Database->wbw_db_version, true), 1);
+        $this->assertEquals($BW_Database->bw_db_upgrade($BW_Database->bw_db_version, true), 1);
     }
 
 }

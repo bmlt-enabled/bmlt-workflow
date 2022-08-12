@@ -18,17 +18,18 @@
 
 
 
-namespace wbw;
+namespace bw;
 
-trait WBW_Debug 
+class BW_Rest
 {
-    public function debug_log($message)
+
+    public function __construct($stub = null)
     {
-        if (WBW_DEBUG)
-        {
-            $out = print_r($message, true);
-            error_log(debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] . ": " . $out);
-        }
+        // our rest namespace
+        $this->bw_rest_namespace = 'bw/v1';
+        $this->bw_submissions_rest_base = 'submissions';
+        $this->bw_service_bodies_rest_base = 'servicebodies';
+        $this->bw_bmltserver_rest_base = 'bmltserver';
+        $this->bw_options_rest_base = 'options';
     }
-    
 }

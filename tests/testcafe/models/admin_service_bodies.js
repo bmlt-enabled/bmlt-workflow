@@ -19,7 +19,7 @@ import { Selector } from 'testcafe';
 
 class Admin_Service_Bodies {
     constructor () {
-        this.wbw_submit = Selector('#wbw_submit');
+        this.bw_submit = Selector('#bw_submit');
     }
 }
 

@@ -33,9 +33,9 @@ export mysqluser=wpdevuser
 export mysqlpass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 export wptitle=devsite
 export wpuser=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name wbw_test_wpuser --value $wpuser --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bw_test_wpuser --value $wpuser --type SecureString --region ap-southeast-2
 export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name wbw_test_wppass --value $wppass --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bw_test_wppass --value $wppass --type SecureString --region ap-southeast-2
 export wpemail=nigel.brittain@gmail.com
 export siteurl=54.153.167.239/wordpressdev
 export BRANCH=0.4.4-fixes
@@ -94,18 +94,18 @@ cd /home/ssm-user/wordpress
 git clone https://github.com/bmlt-enabled/bmlt-workflow.git
 cd bmlt-workflow
 git switch $BRANCH
-sed -i "s/define('WBW_DEBUG', false);/define('WBW_DEBUG', true);/g" config.php
+sed -i "s/define('BW_DEBUG', false);/define('BW_DEBUG', true);/g" config.php
 cd ..
 sudo mv bmlt-workflow /var/www/html/wordpressdev/wp-content/plugins
 sudo chown -R apache:apache /var/www/html/wordpressdev/wp-content/plugins/bmlt-workflow
 cd /var/www/html/wordpressdev/wp-content/plugins/bmlt-workflow
 # activate plugin
 wp plugin activate --path=/var/www/html/wordpressdev "bmlt-workflow"
-wp option --path=/var/www/html/wordpressdev add 'wbw_bmlt_server_address' 'http://54.153.167.239/blank_bmlt/main_server/'
-wp option --path=/var/www/html/wordpressdev add 'wbw_bmlt_username' 'bmlt-workflow-bot'
-wp option --path=/var/www/html/wordpressdev add 'wbw_bmlt_test_status' 'success'
-wp option --path=/var/www/html/wordpressdev add 'wbw_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
+wp option --path=/var/www/html/wordpressdev add 'bw_bmlt_server_address' 'http://54.153.167.239/blank_bmlt/main_server/'
+wp option --path=/var/www/html/wordpressdev add 'bw_bmlt_username' 'bmlt-workflow-bot'
+wp option --path=/var/www/html/wordpressdev add 'bw_bmlt_test_status' 'success'
+wp option --path=/var/www/html/wordpressdev add 'bw_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
 # create our test page
-wp post create --path=/var/www/html/wordpressdev --post_type=page --post_title='testpage' --post_content='[wbw-meeting-update-form]' --post_status='publish' --post_name='testpage'
+wp post create --path=/var/www/html/wordpressdev --post_type=page --post_title='testpage' --post_content='[bw-meeting-update-form]' --post_status='publish' --post_name='testpage'
 # Tidy up
 exit

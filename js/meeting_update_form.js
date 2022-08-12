@@ -27,20 +27,20 @@ jQuery(document).ready(function ($) {
   var tempclosure_formatid = "";
 
   // display handler for fso options
-  if(wbw_fso_feature == 'hidden')
+  if(bw_fso_feature == 'hidden')
   {
     $("#starter_pack").hide();
   } else {
     $("#starter_pack").show();
   }
   
-  Object.keys(wbw_bmlt_formats).forEach((key) => {
-    formatdata.push({ text: "(" + wbw_bmlt_formats[key]["key_string"] + ")-" + wbw_bmlt_formats[key]["name_string"], id: key });
-    if (wbw_bmlt_formats[key]["key_string"] === "HY") {
+  Object.keys(bw_bmlt_formats).forEach((key) => {
+    formatdata.push({ text: "(" + bw_bmlt_formats[key]["key_string"] + ")-" + bw_bmlt_formats[key]["name_string"], id: key });
+    if (bw_bmlt_formats[key]["key_string"] === "HY") {
       hybrid_formatid = key;
-    } else if (wbw_bmlt_formats[key]["key_string"] === "VM") {
+    } else if (bw_bmlt_formats[key]["key_string"] === "VM") {
       virtual_formatid = key;
-    } else if (wbw_bmlt_formats[key]["key_string"] === "TC") {
+    } else if (bw_bmlt_formats[key]["key_string"] === "TC") {
       tempclosure_formatid = key;
     }
   });
@@ -50,11 +50,11 @@ jQuery(document).ready(function ($) {
     multiple: true,
     data: formatdata,
     width: "100%",
-    theme: 'wbw_select2_theme',
+    theme: 'bw_select2_theme',
   });
 
   // hide / show / required our optional fields
-  switch (wbw_optional_location_nation) {
+  switch (bw_optional_location_nation) {
     case "hidden":
     case "":
       $("#optional_location_nation").hide();
@@ -66,11 +66,11 @@ jQuery(document).ready(function ($) {
     case "displayrequired":
       $("#optional_location_nation").show();
       $("#location_nation").attr("required", true);
-      $("#location_nation_label").append('<span class="wbw-required-field"> *</span>');
+      $("#location_nation_label").append('<span class="bw-required-field"> *</span>');
       break;
   }
 
-  switch (wbw_optional_location_sub_province) {
+  switch (bw_optional_location_sub_province) {
     case "hidden":
     case "":
       $("#optional_location_sub_province").hide();
@@ -82,11 +82,11 @@ jQuery(document).ready(function ($) {
     case "displayrequired":
       $("#optional_location_sub_province").show();
       $("#location_sub_province").attr("required", true);
-      $("#location_sub_province_label").append('<span class="wbw-required-field"> *</span>');
+      $("#location_sub_province_label").append('<span class="bw-required-field"> *</span>');
       break;
   }
 
-  switch (wbw_optional_postcode) {
+  switch (bw_optional_postcode) {
     case "hidden":
     case "":
       $("#optional_postcode").hide();
@@ -98,30 +98,30 @@ jQuery(document).ready(function ($) {
     case "displayrequired":
       $("#optional_postcode").show();
       $("#location_postal_code_1").attr("required", true);
-      $("#location_postal_code_1").append('<span class="wbw-required-field"> *</span>');
+      $("#location_postal_code_1").append('<span class="bw-required-field"> *</span>');
       break;
   }
 
-  function update_meeting_list(wbw_service_bodies) {
-    var search_results_address = wbw_bmlt_server_address + "client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&" + wbw_service_bodies + "recursive=1&sort_keys=meeting_name";
+  function update_meeting_list(bw_service_bodies) {
+    var search_results_address = bw_bmlt_server_address + "client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&" + bw_service_bodies + "recursive=1&sort_keys=meeting_name";
 
     fetchJsonp(search_results_address)
       .then((response) => response.json())
       .then((mdata) => create_meeting_searcher(mdata));
   }
 
-  var wbw_service_bodies_querystr = "";
+  var bw_service_bodies_querystr = "";
 
-  Object.keys(wbw_service_bodies).forEach((item) => {
+  Object.keys(bw_service_bodies).forEach((item) => {
     // console.log(response);
     var service_body_bigint = item;
-    var service_body_name = wbw_service_bodies[item]["name"];
+    var service_body_name = bw_service_bodies[item]["name"];
     var opt = new Option(service_body_name, service_body_bigint, false, false);
     $("#service_body_bigint").append(opt);
-    wbw_service_bodies_querystr += "services[]=" + service_body_bigint + "&";
+    bw_service_bodies_querystr += "services[]=" + service_body_bigint + "&";
   });
 
-  update_meeting_list(wbw_service_bodies_querystr);
+  update_meeting_list(bw_service_bodies_querystr);
 
   $("#meeting_update_form").validate({
     submitHandler: function () {
@@ -194,7 +194,7 @@ jQuery(document).ready(function ($) {
       allowClear: true,
       dropdownAutoWidth: true,
       matcher: matchCustom,
-      theme: 'wbw_select2_theme',
+      theme: 'bw_select2_theme',
       width: 'auto',
       // selectionCssClass: "meeting-searcher-custom",
     });
@@ -295,21 +295,21 @@ jQuery(document).ready(function ($) {
 
   function disable_and_clear_highlighting() {
     // disable the highlighting triggers
-    $(".meeting-input").off("input.wbw-highlight");
-    $("#display_format_shared_id_list").off("change.wbw-highlight");
+    $(".meeting-input").off("input.bw-highlight");
+    $("#display_format_shared_id_list").off("change.bw-highlight");
     // remove the highlighting css
-    $(".meeting-input").removeClass("wbw-changed");
-    $(".select2-selection--multiple").removeClass("wbw-changed");
+    $(".meeting-input").removeClass("bw-changed");
+    $(".select2-selection--multiple").removeClass("bw-changed");
   }
 
   function enable_highlighting() {
     // add highlighting trigger for general input fields
-    $(".meeting-input").on("input.wbw-highlight", function () {
-      $(this).addClass("wbw-changed");
+    $(".meeting-input").on("input.bw-highlight", function () {
+      $(this).addClass("bw-changed");
     });
     // add highlighting trigger for select2
-    $("#display_format_shared_id_list").on("change.wbw-highlight", function () {
-      $(".select2-selection--multiple").addClass("wbw-changed");
+    $("#display_format_shared_id_list").on("change.bw-highlight", function () {
+      $(".select2-selection--multiple").addClass("bw-changed");
     });
   }
 
@@ -489,7 +489,7 @@ jQuery(document).ready(function ($) {
           "Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
         );
         // new meeting has a starter pack
-        if(wbw_fso_feature == 'display')
+        if(bw_fso_feature == 'display')
         {
           $("#starter_pack").show();
         }
@@ -571,24 +571,24 @@ jQuery(document).ready(function ($) {
 
 
     $.ajax({
-      url: wbw_form_submit_url,
+      url: bw_form_submit_url,
       method: "POST",
       data: JSON.stringify($("#meeting_update_form").serializeObject()),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       processData: false,
       beforeSend: function (xhr) {
-        turn_on_spinner("#wbw-submit-spinner");
+        turn_on_spinner("#bw-submit-spinner");
       },
     })
       .done(function (response) {
-        turn_off_spinner("#wbw-submit-spinner");
-        // notice_success(response,"wbw-error-message");
+        turn_off_spinner("#bw-submit-spinner");
+        // notice_success(response,"bw-error-message");
         $("#form_replace").replaceWith(response.form_html);
       })
       .fail(function (xhr) {
-        turn_off_spinner("#wbw-submit-spinner");
-        notice_error(xhr, "wbw-error-message");
+        turn_off_spinner("#bw-submit-spinner");
+        notice_error(xhr, "bw-error-message");
       });
   }
 });

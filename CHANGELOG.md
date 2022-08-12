@@ -1,3 +1,5 @@
+## 1.0.0 (Aug 12, 2022)
+- Version number bump and rename of tables and options for wordpess publish
 ## 0.4.5 (Jul 24, 2022)
 - #79 Postcode field not a required field, ability to turn off (thanks @rogersearle !) - option for hiding postcode is now provided in the configuration page
 - #78 Postcode/zipcode format is too restrictive (thanks @paulnagle !) - now takes a free text field
@@ -9,9 +11,9 @@
 
 ## 0.4.4 (Jul 14, 2022)
 - #72 location_province field not populating with info from meeting (thanks @pjaudiomv !)
-- #73 database tables not created if wbw_db_version found, regardless of whether the tables actually exist (thanks @pjaudiomv !)
+- #73 database tables not created if bw_db_version found, regardless of whether the tables actually exist (thanks @pjaudiomv !)
 - lots of cleanup to testcafe test cases
-- new phpunit test cases for WBW_Database
+- new phpunit test cases for BW_Database
 - uninstall now handled cleanly
 
 ## 0.4.3 (Jun 20, 2022)
@@ -26,8 +28,8 @@
 ## 0.4.1 (Jun 16, 2022)
 - Lots of bugfixes from clean site testing
 - Testcafe now has a fresh wordpress site constructor, with plugin install, activation and setup
-- #62 wbw_capability_manage_submissions capabilities not being added correctly on plugin activation (thanks @tempsaint !)
-- #61 wbw_capability_manage_submissions capabilities not being added correctly to new users (thanks @tempsaint !)
+- #62 bw_capability_manage_submissions capabilities not being added correctly on plugin activation (thanks @tempsaint !)
+- #61 bw_capability_manage_submissions capabilities not being added correctly to new users (thanks @tempsaint !)
 - #60 default settings not being added with register_setting on new installation (thanks @californiasteve kevinC)
 
 ## 0.4.0 (Jun 10, 2022)

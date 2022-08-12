@@ -21,7 +21,7 @@
 declare(strict_types=1);
 
 
-use wbw\REST\Handlers\SubmissionsHandler;
+use bw\REST\Handlers\SubmissionsHandler;
 
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
@@ -46,15 +46,15 @@ class SubmissionsHandlerTest_my_wp_user
     }
 }
 /**
- * @covers wbw\REST\Handlers\SubmissionsHandler
- * @uses wbw\WBW_Debug
- * @uses wbw\REST\HandlerCore
- * @uses wbw\BMLT\Integration
- * @uses wbw\WBW_Database
+ * @covers bw\REST\Handlers\SubmissionsHandler
+ * @uses bw\BW_Debug
+ * @uses bw\REST\HandlerCore
+ * @uses bw\BMLT\Integration
+ * @uses bw\BW_Database
  */
 final class SubmissionsHandlerTest extends TestCase
 {
-    use \wbw\WBW_Debug;
+    use \bw\BW_Debug;
 
     protected function setVerboseErrorHandler()
     {
@@ -151,18 +151,18 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         parent::tearDown();
         Mockery::close();
 
-        unset($this->wbw_dbg);
+        unset($this->bw_dbg);
     }
 
     private function generate_approve_request($test_submission_id, $body)
     {
         $json_post = json_encode($body);
 
-        $request   = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/wbw/v1/submissions/{$test_submission_id}/approve");
+        $request   = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bw/v1/submissions/{$test_submission_id}/approve");
         $request->set_header('content-type', 'application/json');
         $request->set_body($json_post);
         $request->set_url_params(array('id' => $test_submission_id));
-        $request->set_route("/wbw/v1/submissions/{$test_submission_id}/approve");
+        $request->set_route("/bw/v1/submissions/{$test_submission_id}/approve");
         $request->set_method('POST');
 
         return $request;
@@ -172,7 +172,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     {
         $resp = $json_meeting;
         $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
-        // $bmlt = Mockery::mock('overload:wbw\BMLT\Integration');
+        // $bmlt = Mockery::mock('overload:bw\BMLT\Integration');
         $bmlt = \Mockery::mock('Integration');
 
         /** @var Mockery::mock $bmlt test */
@@ -186,7 +186,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_close(): void
     {
@@ -240,7 +240,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_change_meeting_name(): void
     {
@@ -286,7 +286,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_service_body(): void
     {
@@ -328,7 +328,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_change_meeting_format(): void
     {
@@ -372,7 +372,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_change_if_meeting_format_has_leading_or_trailing_commas(): void
     {
@@ -419,7 +419,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_create_new_with_no_starter_kit_requested(): void
     {
@@ -473,7 +473,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_create_new_with_alpha_postcode(): void
     {
@@ -527,7 +527,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_create_new_with_bad_start_time(): void
     {
@@ -571,7 +571,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
         /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_create_new_with_bad_duration_ime(): void
     {
@@ -616,7 +616,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_create_new_with_starter_kit_requested(): void
     {
@@ -678,7 +678,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     //
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_create_new_if_starter_kit_answer_missing(): void
     {
@@ -729,7 +729,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_if_format_list_has_garbage(): void
     {
@@ -769,7 +769,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_if_weekday_is_too_big(): void
     {
@@ -809,7 +809,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_if_weekday_is_zero(): void
     {
@@ -849,7 +849,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_if_weekday_is_garbage(): void
     {
@@ -889,7 +889,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * @covers bw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
     public function test_can_approve_change_meeting(): void
     {
@@ -954,7 +954,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * @covers bw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_can_approve_close_meeting_with_unpublish(): void
@@ -1030,7 +1030,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * @covers bw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_can_approve_close_meeting_with_delete(): void
@@ -1106,7 +1106,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     //
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * @covers bw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_approve_change_meeting_sends_email_to_submitter(): void
@@ -1172,7 +1172,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * @covers bw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_approve_change_meeting_sends_email_to_submitter_with_action_message(): void
@@ -1239,7 +1239,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * @covers bw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_approve_close_meeting_sends_email_to_submitter_with_delete(): void
@@ -1308,7 +1308,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers wbw\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * @covers bw\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_approve_close_meeting_sends_email_to_submitter_with_unpublish(): void
