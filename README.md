@@ -1,4 +1,4 @@
-# BMLT Workflow (WBW)
+# BMLT Workflow (BW)
 
 ## Background
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.
