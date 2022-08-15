@@ -18,18 +18,18 @@
 
 
 
-namespace bw;
+namespace bmltwf;
 
-class BW_Rest
+class BMLTWF_Rest
 {
 
     public function __construct($stub = null)
     {
         // our rest namespace
-        $this->bw_rest_namespace = 'bw/v1';
-        $this->bw_submissions_rest_base = 'submissions';
-        $this->bw_service_bodies_rest_base = 'servicebodies';
-        $this->bw_bmltserver_rest_base = 'bmltserver';
-        $this->bw_options_rest_base = 'options';
+        $this->bmltwf_rest_namespace = 'bmwf/v1';
+        $this->bmltwf_submissions_rest_base = 'submissions';
+        $this->bmltwf_service_bodies_rest_base = 'servicebodies';
+        $this->bmltwf_bmltserver_rest_base = 'bmltserver';
+        $this->bmltwf_options_rest_base = 'options';
     }
 }

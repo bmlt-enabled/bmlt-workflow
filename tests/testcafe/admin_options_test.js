@@ -28,7 +28,7 @@ import {
   basic_options, 
   configure_service_bodies, 
   insert_submissions, 
-  bw_admin, 
+  bmltwf_admin, 
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
@@ -81,7 +81,7 @@ fixture`admin_options_fixture`
 
     await insert_submissions(t);
 
-    await t.useRole(bw_admin).navigateTo(userVariables.admin_options_page);
+    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_options_page);
   })
   .requestHooks(logger);
 
@@ -89,7 +89,7 @@ test("Backup", async (t) => {
   
   // console.log(backupurl);
   await t.click(ao.backup_button);
-  const b_elem = Selector("#bw_backup_filename");
+  const b_elem = Selector("#bmltwf_backup_filename");
   const state = await b_elem();
   const filename = state.attributes.download;
   downloadedFilePath = getFileDownloadPath(filename);
@@ -101,7 +101,7 @@ test("Backup", async (t) => {
 
   await t.expect(f.message).eql("Backup Successful");
 
-  await t.expect(backup.options.bw_db_version).eql("0.4.0").expect(backup.options.bw_bmlt_server_address).eql("http://54.153.167.239/blank_bmlt/main_server/");
+  await t.expect(backup.options.bmltwf_db_version).eql("0.4.0").expect(backup.options.bmltwf_bmlt_server_address).eql("http://54.153.167.239/blank_bmlt/main_server/");
   // find a specific meeting
   let obj = backup.submissions.find((o) => o.id === "94");
 
@@ -111,7 +111,7 @@ test("Backup", async (t) => {
 test("Restore", async (t) => {
 
   await t
-    .setFilesToUpload(ao.bw_file_selector, ["./uploads/restoretest1.json"])
+    .setFilesToUpload(ao.bmltwf_file_selector, ["./uploads/restoretest1.json"])
     // .click(ao.restore_button)
     // .debug()
     .expect(ao.restore_warning_dialog_parent.visible)
@@ -134,18 +134,18 @@ test("Options_Save", async (t) => {
   const testfso = randstr() + "@" + randstr() + ".com";
   const testfrom = randstr() + "@" + randstr() + ".com";
   await t
-    .typeText(ao.bw_fso_email_address, testfso, { replace: true })
-    .expect(ao.bw_fso_email_address.value)
+    .typeText(ao.bmltwf_fso_email_address, testfso, { replace: true })
+    .expect(ao.bmltwf_fso_email_address.value)
     .eql(testfso)
-    .typeText(ao.bw_email_from_address, testfrom, { replace: true })
-    .expect(ao.bw_email_from_address.value)
+    .typeText(ao.bmltwf_email_from_address, testfrom, { replace: true })
+    .expect(ao.bmltwf_email_from_address.value)
     .eql(testfrom);
-  await select_dropdown_by_text(ao.bw_optional_location_nation, "Display + Required Field");
-  await select_dropdown_by_text(ao.bw_optional_location_sub_province, "Display Only");
-  await select_dropdown_by_text(ao.bw_delete_closed_meetings, "Delete");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display + Required Field");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display Only");
+  await select_dropdown_by_text(ao.bmltwf_delete_closed_meetings, "Delete");
   await t.click(ao.submit);
   await ao.settings_updated();
-  await t.expect(ao.bw_fso_email_address.value).eql(testfso).expect(ao.bw_email_from_address.value).eql(testfrom);
+  await t.expect(ao.bmltwf_fso_email_address.value).eql(testfso).expect(ao.bmltwf_email_from_address.value).eql(testfrom);
 
   // .expect(ao.settings_updated.exists).eql(true);
 });
@@ -153,10 +153,10 @@ test("Options_Save", async (t) => {
 test("Check_Optional_Fields", async (t) => {
   // test optional fields with 'display and required' option
 
-  await t.useRole(bw_admin).navigateTo(userVariables.admin_options_page);
-  await select_dropdown_by_text(ao.bw_optional_location_nation, "Display + Required Field");
-  await select_dropdown_by_text(ao.bw_optional_location_sub_province, "Display + Required Field");
-  await select_dropdown_by_text(ao.bw_optional_postcode, "Display + Required Field");
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_options_page);
+  await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display + Required Field");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display + Required Field");
+  await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display + Required Field");
   
   await t.click(ao.submit);
   await ao.settings_updated();
@@ -179,12 +179,12 @@ test("Check_Optional_Fields", async (t) => {
 
     // test optional fields with 'hidden' option
 
-    .useRole(bw_admin)
+    .useRole(bmltwf_admin)
     .navigateTo(userVariables.admin_options_page);
-  await select_dropdown_by_text(ao.bw_optional_location_nation, "Hidden");
-  await select_dropdown_by_text(ao.bw_optional_location_sub_province, "Hidden");
-  await select_dropdown_by_text(ao.bw_fso_feature, "Disabled");
-  await select_dropdown_by_text(ao.bw_optional_postcode, "Hidden");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
+  await select_dropdown_by_text(ao.bmltwf_fso_feature, "Disabled");
+  await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Hidden");
 
   await t.click(ao.submit);
   await ao.settings_updated();
@@ -198,12 +198,12 @@ test("Check_Optional_Fields", async (t) => {
     .expect(uf.location_postal_code_1.visible).eql(false)
 
     // test optional fields with 'display' option
-    .useRole(bw_admin)
+    .useRole(bmltwf_admin)
     .navigateTo(userVariables.admin_options_page);
-  await select_dropdown_by_text(ao.bw_optional_location_nation, "Display");
-  await select_dropdown_by_text(ao.bw_optional_location_sub_province, "Display");
-  await select_dropdown_by_text(ao.bw_fso_feature, "Enabled");
-  await select_dropdown_by_text(ao.bw_optional_postcode, "Display");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display");
+  await select_dropdown_by_text(ao.bmltwf_fso_feature, "Enabled");
+  await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display");
   
   await t.click(ao.submit);
   await ao.settings_updated();

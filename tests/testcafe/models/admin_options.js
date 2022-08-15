@@ -19,19 +19,19 @@ import { Selector } from 'testcafe';
 
 class Admin_Options {
     constructor () {
-        this.backup_button = Selector("#bw_backup");
-        this.restore_button = Selector("#bw_restore");
-        this.bw_file_selector = Selector("#bw_file_selector");
+        this.backup_button = Selector("#bmltwf_backup");
+        this.restore_button = Selector("#bmltwf_restore");
+        this.bmltwf_file_selector = Selector("#bmltwf_file_selector");
         // dialogs
-        this.restore_warning_dialog = Selector("#bw_restore_warning_dialog");
+        this.restore_warning_dialog = Selector("#bmltwf_restore_warning_dialog");
         this.restore_warning_dialog_parent = this.restore_warning_dialog.parent();
-        this.bw_fso_email_address = Selector("#bw_fso_email_address");
-        this.bw_optional_location_nation = Selector("#bw_optional_location_nation");
-        this.bw_optional_location_sub_province = Selector("#bw_optional_location_sub_province");
-        this.bw_optional_postcode = Selector("#bw_optional_postcode");
-        this.bw_fso_feature = Selector("#bw_fso_feature");
-        this.bw_delete_closed_meetings = Selector("#bw_delete_closed_meetings");
-        this.bw_email_from_address = Selector("#bw_email_from_address");
+        this.bmltwf_fso_email_address = Selector("#bmltwf_fso_email_address");
+        this.bmltwf_optional_location_nation = Selector("#bmltwf_optional_location_nation");
+        this.bmltwf_optional_location_sub_province = Selector("#bmltwf_optional_location_sub_province");
+        this.bmltwf_optional_postcode = Selector("#bmltwf_optional_postcode");
+        this.bmltwf_fso_feature = Selector("#bmltwf_fso_feature");
+        this.bmltwf_delete_closed_meetings = Selector("#bmltwf_delete_closed_meetings");
+        this.bmltwf_email_from_address = Selector("#bmltwf_email_from_address");
         this.submit = Selector('#submit');
         this.settings_updated = Selector("#setting-error-settings_updated");
     }

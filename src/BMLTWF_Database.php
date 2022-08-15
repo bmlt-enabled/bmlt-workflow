@@ -18,52 +18,52 @@
 
 
 
-namespace bw;
+namespace bmltwf;
 
-class BW_Database
+class BMLTWF_Database
 {
-    use \bw\BW_Debug;
+    use \bmltwf\BMLTWF_Debug;
 
     public function __construct($stub = null)
     {
         global $wpdb;
 
-        $this->bw_db_version = '0.4.0';
+        $this->bmltwf_db_version = '0.4.0';
 
         // database tables
-        $this->bw_submissions_table_name = $wpdb->prefix . 'bw_submissions';
-        $this->bw_service_bodies_table_name = $wpdb->prefix . 'bw_service_bodies';
-        $this->bw_service_bodies_access_table_name = $wpdb->prefix . 'bw_service_bodies_access';
+        $this->bmltwf_submissions_table_name = $wpdb->prefix . 'bmltwf_submissions';
+        $this->bmltwf_service_bodies_table_name = $wpdb->prefix . 'bmltwf_service_bodies';
+        $this->bmltwf_service_bodies_access_table_name = $wpdb->prefix . 'bmltwf_service_bodies_access';
     }
 
-    public function bw_drop_tables()
+    public function bmltwf_drop_tables()
     {
         global $wpdb;
 
-        $sql = "DROP TABLE IF EXISTS " . $this->bw_service_bodies_access_table_name . ";";
+        $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_service_bodies_access_table_name . ";";
         $wpdb->query($sql);
-        $sql = "DROP TABLE IF EXISTS " . $this->bw_submissions_table_name . ";";
+        $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_submissions_table_name . ";";
         $wpdb->query($sql);
-        $sql = "DROP TABLE IF EXISTS " . $this->bw_service_bodies_table_name . ";";
+        $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_service_bodies_table_name . ";";
         $wpdb->query($sql);
         $this->debug_log("tables dropped");
 
     }
     
     /**
-     * bw_db_upgrade
+     * bmltwf_db_upgrade
      *
      * @param  mixed $desired_version
      * @param  mixed $fresh_install
      * @return int 0 if nothing was performed, 1 if fresh install was performed, 2 if upgrade was performed
      */
-    public function bw_db_upgrade($desired_version, $fresh_install)
+    public function bmltwf_db_upgrade($desired_version, $fresh_install)
     {
 
         global $wpdb;
 
         // work out which version we're at right now
-        $installed_version = get_option('bw_db_version');
+        $installed_version = get_option('bmltwf_db_version');
 
         // do nothing by default
         $upgrade = false;
@@ -75,13 +75,13 @@ class BW_Database
         } else {
             // check if our db tables even exist - #73
             $tblcount = 0;
-            $sql = 'show tables like "' . $this->bw_service_bodies_access_table_name .'";';
+            $sql = 'show tables like "' . $this->bmltwf_service_bodies_access_table_name .'";';
             $wpdb->query($sql);
             $tblcount += $wpdb->num_rows;
-            $sql = 'show tables like "' . $this->bw_submissions_table_name .'";';
+            $sql = 'show tables like "' . $this->bmltwf_submissions_table_name .'";';
             $wpdb->query($sql);
             $tblcount += $wpdb->num_rows;
-            $sql = 'show tables like "' . $this->bw_service_bodies_table_name .'";';
+            $sql = 'show tables like "' . $this->bmltwf_service_bodies_table_name .'";';
             $wpdb->query($sql);
             $tblcount += $wpdb->num_rows;
             $this->debug_log("we found " . $tblcount . " tables");
@@ -108,9 +108,9 @@ class BW_Database
             $charset_collate = $wpdb->get_charset_collate();
 
             // shouldn't need this but just in case the tables already exist
-            $this->bw_drop_tables();
+            $this->bmltwf_drop_tables();
 
-            $sql = "CREATE TABLE " . $this->bw_service_bodies_table_name . " (
+            $sql = "CREATE TABLE " . $this->bmltwf_service_bodies_table_name . " (
             service_body_bigint bigint(20) NOT NULL,
             service_body_name tinytext NOT NULL,
             service_body_description text,
@@ -120,15 +120,15 @@ class BW_Database
 
             $wpdb->query($sql);
 
-            $sql = "CREATE TABLE " . $this->bw_service_bodies_access_table_name . " (
+            $sql = "CREATE TABLE " . $this->bmltwf_service_bodies_access_table_name . " (
             service_body_bigint bigint(20) NOT NULL,
             wp_uid bigint(20) unsigned  NOT NULL,
-            FOREIGN KEY (service_body_bigint) REFERENCES " . $this->bw_service_bodies_table_name . "(service_body_bigint) 
+            FOREIGN KEY (service_body_bigint) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(service_body_bigint) 
         ) $charset_collate;";
 
             $wpdb->query($sql);
 
-            $sql = "CREATE TABLE " . $this->bw_submissions_table_name . " (
+            $sql = "CREATE TABLE " . $this->bmltwf_submissions_table_name . " (
             id bigint(20) NOT NULL AUTO_INCREMENT,
             submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
             change_time datetime DEFAULT '0000-00-00 00:00:00',
@@ -142,23 +142,23 @@ class BW_Database
             changes_requested varchar(2048),
             action_message varchar(1024),
             PRIMARY KEY (id),
-            FOREIGN KEY (service_body_bigint) REFERENCES " . $this->bw_service_bodies_table_name . "(service_body_bigint) 
+            FOREIGN KEY (service_body_bigint) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(service_body_bigint) 
         ) $charset_collate;";
 
             $wpdb->query($sql);
 
             $this->debug_log("fresh install: tables created");
 
-            delete_option('bw_db_version');
-            add_option('bw_db_version', $this->bw_db_version);
+            delete_option('bmltwf_db_version');
+            add_option('bmltwf_db_version', $this->bmltwf_db_version);
             $this->debug_log("fresh install: db version installed");
 
             return 1; // fresh install performed
         }
 
         if ($upgrade) {
-            delete_option('bw_db_version');
-            add_option('bw_db_version', $this->bw_db_version);
+            delete_option('bmltwf_db_version');
+            add_option('bmltwf_db_version', $this->bmltwf_db_version);
             return 2; // upgrade performed
         }
 

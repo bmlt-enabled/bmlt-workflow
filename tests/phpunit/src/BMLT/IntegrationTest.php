@@ -19,7 +19,7 @@
 
 declare(strict_types=1);
 
-use bw\BMLT\Integration;
+use bmltwf\BMLT\Integration;
 
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
@@ -28,13 +28,13 @@ use function Patchwork\{redefine, getFunction, always};
 require_once('config_phpunit.php');
 
 /**
- * @covers bw\BMLT\Integration
- * @uses bw\BW_Debug
- * @uses bw\BW_WP_Options
+ * @covers bmltwf\BMLT\Integration
+ * @uses bmltwf\BMLTWF_Debug
+ * @uses bmltwf\BMLTWF_WP_Options
  */
 final class IntegrationTest extends TestCase
 {
-    use \bw\BW_Debug;
+    use \bmltwf\BMLTWF_Debug;
 
     protected function setVerboseErrorHandler()
     {
@@ -75,11 +75,11 @@ Line: $errorLine
         Brain\Monkey\tearDown();
         parent::tearDown();
         Mockery::close();
-        unset($this->bw_dbg);
+        unset($this->bmltwf_dbg);
     }
 
     /**
-     * @covers bw\BMLT\Integration::testServerAndAuth
+     * @covers bmltwf\BMLT\Integration::testServerAndAuth
      */
     public function test_can_call_testServerAndAuth_with_success(): void
     {
@@ -96,7 +96,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers bw\BMLT\Integration::testServerAndAuth
+     * @covers bmltwf\BMLT\Integration::testServerAndAuth
      */
     public function test_cant_call_testServerAndAuth_with_invalid_server(): void
     {
@@ -113,7 +113,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers bw\BMLT\Integration::testServerAndAuth
+     * @covers bmltwf\BMLT\Integration::testServerAndAuth
      */
     public function test_cant_call_testServerAndAuth_with_invalid_login(): void
     {
@@ -130,7 +130,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers bw\BMLT\Integration::getMeetingFormats
+     * @covers bmltwf\BMLT\Integration::getMeetingFormats
      */
     public function test_can_call_getMeetingFormats(): void
     {
@@ -142,19 +142,19 @@ Line: $errorLine
         Functions\when('wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
-        $BW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
+        $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
-        $integration = new Integration(null,$BW_WP_Options);
+        $integration = new Integration(null,$BMLTWF_WP_Options);
 
         $response = $integration->getMeetingFormats();
         $this->assertIsArray($response);
     }
 
     /**
-     * @covers bw\BMLT\Integration::getMeetingFormats
+     * @covers bmltwf\BMLT\Integration::getMeetingFormats
      */
     public function test_cant_call_getMeetingFormats_with_invalid_bmlt_details(): void
     {
@@ -164,19 +164,19 @@ Line: $errorLine
 
         Functions\when('wp_safe_remote_post')->justReturn(new \WP_Error(1));
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
-        $BW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
+        $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
-        $integration = new Integration(null, $BW_WP_Options);
+        $integration = new Integration(null, $BMLTWF_WP_Options);
 
         $response = $integration->getMeetingFormats();
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
     /**
-     * @covers bw\BMLT\Integration::getMeetingStates
+     * @covers bmltwf\BMLT\Integration::getMeetingStates
      */
     public function test_can_call_getMeetingStates_with_states_defined(): void
     {
@@ -187,18 +187,18 @@ Line: $errorLine
 
         Functions\when('wp_safe_remote_post')->returnArg();
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(null,$BW_WP_Options);
+        $integration = new Integration(null,$BMLTWF_WP_Options);
 
         $response = $integration->getMeetingStates();
         $this->assertIsArray($response);
         $this->assertEquals(array("MA", "ME", "NH", "RI", "VT"), $response);
     }
     /**
-     * @covers bw\BMLT\Integration::getMeetingStates
+     * @covers bmltwf\BMLT\Integration::getMeetingStates
      */
     public function test_can_call_getMeetingStates_with_no_states_defined(): void
     {
@@ -209,18 +209,18 @@ Line: $errorLine
 
         Functions\when('wp_safe_remote_post')->returnArg();
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(null, $BW_WP_Options);
+        $integration = new Integration(null, $BMLTWF_WP_Options);
 
         $response = $integration->getMeetingStates();
         $this->assertFalse($response);
     }
 
     /**
-     * @covers bw\BMLT\Integration::getMeetingStates
+     * @covers bmltwf\BMLT\Integration::getMeetingStates
      */
     public function test_cant_call_getMeetingStates_with_invalid_bmlt_details(): void
     {
@@ -230,11 +230,11 @@ Line: $errorLine
 
         Functions\when('wp_safe_remote_post')->justReturn(new \WP_Error(1));
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(null,$BW_WP_Options);
+        $integration = new Integration(null,$BMLTWF_WP_Options);
 
         $response = $integration->getMeetingStates();
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -242,7 +242,7 @@ Line: $errorLine
 
 
     /**
-     * @covers bw\BMLT\Integration::getMeetingCounties
+     * @covers bmltwf\BMLT\Integration::getMeetingCounties
      */
     public function test_can_call_getMeetingCounties_with_counties_defined(): void
     {
@@ -253,18 +253,18 @@ Line: $errorLine
 
         Functions\when('wp_safe_remote_post')->returnArg();
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(null,$BW_WP_Options);
+        $integration = new Integration(null,$BMLTWF_WP_Options);
 
         $response = $integration->getMeetingCounties();
         $this->assertIsArray($response);
         $this->assertEquals("Androscoggin", $response[0]);
     }
     /**
-     * @covers bw\BMLT\Integration::getMeetingCounties
+     * @covers bmltwf\BMLT\Integration::getMeetingCounties
      */
     public function test_can_call_getMeetingCounties_with_no_counties_defined(): void
     {
@@ -275,18 +275,18 @@ Line: $errorLine
 
         Functions\when('wp_safe_remote_post')->returnArg();
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(null,$BW_WP_Options);
+        $integration = new Integration(null,$BMLTWF_WP_Options);
 
         $response = $integration->getMeetingCounties();
         $this->assertFalse($response);
     }
 
     /**
-     * @covers bw\BMLT\Integration::getMeetingCounties
+     * @covers bmltwf\BMLT\Integration::getMeetingCounties
      */
     public function test_cant_call_getMeetingCounties_with_invalid_bmlt_details(): void
     {
@@ -296,18 +296,18 @@ Line: $errorLine
 
         Functions\when('wp_safe_remote_post')->justReturn(new \WP_Error(1));
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(null,$BW_WP_Options);
+        $integration = new Integration(null,$BMLTWF_WP_Options);
 
         $response = $integration->getMeetingCounties();
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
     /**
-     * @covers bw\BMLT\Integration::postAuthenticatedRootServerRequest
+     * @covers bmltwf\BMLT\Integration::postAuthenticatedRootServerRequest
      */
     public function test_can_call_postAuthenticatedRootServerRequest_with_valid_auth(): void
     {
@@ -318,19 +318,19 @@ Line: $errorLine
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
-        $BW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
+        $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
-        $integration = new Integration(null,$BW_WP_Options);
+        $integration = new Integration(null,$BMLTWF_WP_Options);
 
         $response = $integration->postAuthenticatedRootServerRequest('test', array('args'=>'args'));
         $this->assertIsString($response);
     }
 
     /**
-     * @covers bw\BMLT\Integration::postAuthenticatedRootServerRequest
+     * @covers bmltwf\BMLT\Integration::postAuthenticatedRootServerRequest
      */
     public function test_cant_call_postAuthenticatedRootServerRequest_with_valid_auth_no_args(): void
     {
@@ -341,19 +341,19 @@ Line: $errorLine
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
-        $BW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
+        $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
-        $integration = new Integration(null,$BW_WP_Options);
+        $integration = new Integration(null,$BMLTWF_WP_Options);
 
         $response = $integration->postAuthenticatedRootServerRequest('test', null);
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
     /**
-     * @covers bw\BMLT\Integration::postAuthenticatedRootServerRequest
+     * @covers bmltwf\BMLT\Integration::postAuthenticatedRootServerRequest
      */
     public function test_cant_call_postAuthenticatedRootServerRequest_with_invalid_bmlt_details(): void
     {
@@ -377,7 +377,7 @@ Line: $errorLine
     }
 
         /**
-     * @covers bw\BMLT\Integration::postAuthenticatedRootServerRequestSemantic
+     * @covers bmltwf\BMLT\Integration::postAuthenticatedRootServerRequestSemantic
      */
     public function test_can_call_postAuthenticatedRootServerRequestSemantic_with_valid_auth(): void
     {
@@ -388,19 +388,19 @@ Line: $errorLine
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
-        $BW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
+        $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
-        $integration = new Integration(null,$BW_WP_Options);
+        $integration = new Integration(null,$BMLTWF_WP_Options);
 
         $response = $integration->postAuthenticatedRootServerRequestSemantic('test', array('args'=>'args'));
         $this->assertIsString($response);
     }
 
     /**
-     * @covers bw\BMLT\Integration::postAuthenticatedRootServerRequestSemantic
+     * @covers bmltwf\BMLT\Integration::postAuthenticatedRootServerRequestSemantic
      */
     public function test_cant_call_postAuthenticatedRootServerRequestSemantic_with_valid_auth_no_args(): void
     {
@@ -411,19 +411,19 @@ Line: $errorLine
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
-        $BW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
+        $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
-        $integration = new Integration(null,$BW_WP_Options);
+        $integration = new Integration(null,$BMLTWF_WP_Options);
 
         $response = $integration->postAuthenticatedRootServerRequestSemantic('test', null);
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
     /**
-     * @covers bw\BMLT\Integration::postAuthenticatedRootServerRequestSemantic
+     * @covers bmltwf\BMLT\Integration::postAuthenticatedRootServerRequestSemantic
      */
     public function test_cant_call_postAuthenticatedRootServerRequestSemantic_with_invalid_bmlt_details(): void
     {
@@ -435,26 +435,26 @@ Line: $errorLine
         Functions\when('wp_remote_retrieve_body')->justReturn('[{}]');
 
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
-        $BW_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
+        $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
 
         Functions\when('\is_wp_error')->justReturn(false);
 
-        $integration = new Integration(null, $BW_WP_Options);
+        $integration = new Integration(null, $BMLTWF_WP_Options);
 
         $response = $integration->postAuthenticatedRootServerRequestSemantic('test', array("arg1" => "args1"));
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
     /**
-     * @covers bw\BMLT\Integration::geolocateAddress
-     * @covers bw\BMLT\Integration::getGmapsKey
-     * @covers bw\BMLT\Integration::AuthenticateRootServer
-     * @covers bw\BMLT\Integration::post
-     * @covers bw\BMLT\Integration::get
+     * @covers bmltwf\BMLT\Integration::geolocateAddress
+     * @covers bmltwf\BMLT\Integration::getGmapsKey
+     * @covers bmltwf\BMLT\Integration::AuthenticateRootServer
+     * @covers bmltwf\BMLT\Integration::post
+     * @covers bmltwf\BMLT\Integration::get
      */
     public function test_can_call_geolocateAddress_with_valid_address(): void
     {
@@ -474,11 +474,11 @@ Line: $errorLine
         Functions\when('curl_setopt')->returnArg();
         Functions\when('curl_close')->returnArg();
     
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(true,$BW_WP_Options);
+        $integration = new Integration(true,$BMLTWF_WP_Options);
         $response = $integration->geolocateAddress('sydney, australia');
         
         $this->debug_log("*** GEO RESPONSE");
@@ -490,11 +490,11 @@ Line: $errorLine
     }
 
         /**
-     * @covers bw\BMLT\Integration::geolocateAddress
-     * @covers bw\BMLT\Integration::getGmapsKey
-     * @covers bw\BMLT\Integration::AuthenticateRootServer
-     * @covers bw\BMLT\Integration::post
-     * @covers bw\BMLT\Integration::get
+     * @covers bmltwf\BMLT\Integration::geolocateAddress
+     * @covers bmltwf\BMLT\Integration::getGmapsKey
+     * @covers bmltwf\BMLT\Integration::AuthenticateRootServer
+     * @covers bmltwf\BMLT\Integration::post
+     * @covers bmltwf\BMLT\Integration::get
      */
     public function test_cant_call_geolocateAddress_with_invalid_address(): void
     {
@@ -515,11 +515,11 @@ Line: $errorLine
         Functions\when('curl_setopt')->returnArg();
         Functions\when('curl_close')->returnArg();
     
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(true,$BW_WP_Options);
+        $integration = new Integration(true,$BMLTWF_WP_Options);
         $response = $integration->geolocateAddress('junk, junk');
         
         $this->debug_log("*** GEO RESPONSE");
@@ -529,11 +529,11 @@ Line: $errorLine
     }
 
        /**
-     * @covers bw\BMLT\Integration::geolocateAddress
-     * @covers bw\BMLT\Integration::getGmapsKey
-     * @covers bw\BMLT\Integration::AuthenticateRootServer
-     * @covers bw\BMLT\Integration::post
-     * @covers bw\BMLT\Integration::get
+     * @covers bmltwf\BMLT\Integration::geolocateAddress
+     * @covers bmltwf\BMLT\Integration::getGmapsKey
+     * @covers bmltwf\BMLT\Integration::AuthenticateRootServer
+     * @covers bmltwf\BMLT\Integration::post
+     * @covers bmltwf\BMLT\Integration::get
      */
     public function test_error_when_gmaps_call_returns_trash(): void
     {
@@ -554,11 +554,11 @@ Line: $errorLine
         Functions\when('curl_setopt')->returnArg();
         Functions\when('curl_close')->returnArg();
     
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(true,$BW_WP_Options);
+        $integration = new Integration(true,$BMLTWF_WP_Options);
         $response = $integration->geolocateAddress('junk, junk');
         
         $this->debug_log("*** GEO RESPONSE");

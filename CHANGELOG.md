@@ -12,9 +12,9 @@
 
 ## 0.4.4 (Jul 14, 2022)
 - #72 location_province field not populating with info from meeting (thanks @pjaudiomv !)
-- #73 database tables not created if bw_db_version found, regardless of whether the tables actually exist (thanks @pjaudiomv !)
+- #73 database tables not created if bmltwf_db_version found, regardless of whether the tables actually exist (thanks @pjaudiomv !)
 - lots of cleanup to testcafe test cases
-- new phpunit test cases for BW_Database
+- new phpunit test cases for BMLTWF_Database
 - uninstall now handled cleanly
 
 ## 0.4.3 (Jun 20, 2022)
@@ -29,8 +29,8 @@
 ## 0.4.1 (Jun 16, 2022)
 - Lots of bugfixes from clean site testing
 - Testcafe now has a fresh wordpress site constructor, with plugin install, activation and setup
-- #62 bw_capability_manage_submissions capabilities not being added correctly on plugin activation (thanks @tempsaint !)
-- #61 bw_capability_manage_submissions capabilities not being added correctly to new users (thanks @tempsaint !)
+- #62 bmltwf_capability_manage_submissions capabilities not being added correctly on plugin activation (thanks @tempsaint !)
+- #61 bmltwf_capability_manage_submissions capabilities not being added correctly to new users (thanks @tempsaint !)
 - #60 default settings not being added with register_setting on new installation (thanks @californiasteve kevinC)
 
 ## 0.4.0 (Jun 10, 2022)

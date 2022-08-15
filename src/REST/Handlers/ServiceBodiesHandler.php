@@ -17,16 +17,16 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 
-namespace bw\REST\Handlers;
+namespace bmltwf\REST\Handlers;
 
-use bw\BMLT\Integration;
-use bw\REST\HandlerCore;
-use bw\BW_Database;
-use bw\BW_WP_Options;
+use bmltwf\BMLT\Integration;
+use bmltwf\REST\HandlerCore;
+use bmltwf\BMLTWF_Database;
+use bmltwf\BMLTWF_WP_Options;
 
 class ServiceBodiesHandler
 {
-    use \bw\BW_Debug;
+    use \bmltwf\BMLTWF_Debug;
 
     public function __construct($intstub = null, $optstub = null)
     {
@@ -41,15 +41,15 @@ class ServiceBodiesHandler
 
         if (empty($optstub))
         {
-            $this->BW_WP_Options = new BW_WP_Options();
+            $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
         }
         else
         {
-            $this->BW_WP_Options = $optstub;
+            $this->BMLTWF_WP_Options = $optstub;
         }
 
         $this->handlerCore = new HandlerCore();
-        $this->BW_Database = new BW_Database();
+        $this->BMLTWF_Database = new BMLTWF_Database();
     }
 
     public function get_service_bodies_handler($request)
@@ -70,7 +70,7 @@ class ServiceBodiesHandler
 
             $response = $this->bmlt_integration->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServiceBodies', $req);
             if (is_wp_error($response)) {
-                return $this->handlerCore->bw_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+                return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
             }
 
             $arr = json_decode($response['body'], 1);
@@ -81,7 +81,7 @@ class ServiceBodiesHandler
 
             // make our list of service bodies
             foreach ($arr as $key => $value) {
-                // $bw_dbg->debug_log("looping key = " . $key);
+                // $bmltwf_dbg->debug_log("looping key = " . $key);
                 if ((!empty($value['id']))&&(!empty($value['name']))) {
                     $sbid = $value['id'];
                     $idlist[] = $sbid;
@@ -96,29 +96,29 @@ class ServiceBodiesHandler
             }
 
             // update our service body list in the database in case there have been some new ones added
-            $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $this->BW_Database->bw_service_bodies_table_name . ';', 0);
+            $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ';', 0);
 
             $missing = array_diff($idlist, $sqlresult);
 
             foreach ($missing as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $this->BW_Database->bw_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['name'], $sblist[$value]['description'],$value);
+                $sql = $wpdb->prepare('INSERT into ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['name'], $sblist[$value]['description'],$value);
                 $wpdb->query($sql);
             }
             // update any values that may have changed since last time we looked
             foreach ($idlist as $value) {
-                $sql = $wpdb->prepare('UPDATE ' . $this->BW_Database->bw_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s" where service_body_bigint="%d"', $sblist[$value]['name'], $sblist[$value]['description'], $value);
+                $sql = $wpdb->prepare('UPDATE ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s" where service_body_bigint="%d"', $sblist[$value]['name'], $sblist[$value]['description'], $value);
                 $wpdb->query($sql);
             }
         
             // make our group membership lists
             foreach ($sblist as $key => $value) {
                 $this->debug_log("getting memberships for " . $key);
-                $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $this->BW_Database->bw_service_bodies_access_table_name . ' where service_body_bigint = "%d"', $key);
+                $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' where service_body_bigint = "%d"', $key);
                 $result = $wpdb->get_col($sql, 0);
                 $sblist[$key]['membership'] = implode(',', $result);
             }
             // get the form display settings
-            $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $this->BW_Database->bw_service_bodies_table_name, ARRAY_A);
+            $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name, ARRAY_A);
 
             foreach ($sqlresult as $key => $value) {
                 $bool = $value['show_on_form'] ? (true) : (false);
@@ -127,14 +127,14 @@ class ServiceBodiesHandler
         } else {
             // simple list
             $sblist = array();
-            $result = $wpdb->get_results('SELECT * from ' . $this->BW_Database->bw_service_bodies_table_name . ' where show_on_form != "0"', ARRAY_A);
+            $result = $wpdb->get_results('SELECT * from ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' where show_on_form != "0"', ARRAY_A);
             $this->debug_log(($result));
             // create simple service area list (names of service areas that are enabled by admin with show_on_form)
             foreach ($result as $key => $value) {
                 $sblist[$value['service_body_bigint']]['name'] = $value['service_body_name'];
             }
         }
-        return $this->handlerCore->bw_rest_success($sblist);
+        return $this->handlerCore->bmltwf_rest_success($sblist);
 
     }
 
@@ -146,13 +146,13 @@ class ServiceBodiesHandler
         $this->debug_log(($request->get_json_params()));
         $permissions = $request->get_json_params();
         // clear out our old permissions
-        $wpdb->query('DELETE from ' . $this->BW_Database->bw_service_bodies_access_table_name);
+        $wpdb->query('DELETE from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name);
         // insert new permissions from form
         if(!is_array($permissions))
         {
             $this->debug_log("error not array");
 
-            return $this->handlerCore->bw_rest_error('Invalid service bodies post',422);
+            return $this->handlerCore->bmltwf_rest_error('Invalid service bodies post',422);
         }
         foreach ($permissions as $sb => $arr) {
             if((!is_array($arr))||(!array_key_exists('membership',$arr))||(!array_key_exists('show_on_form',$arr)))
@@ -167,36 +167,36 @@ class ServiceBodiesHandler
                 //     $this->debug_log($sb . " error show_on_form");
                 // }
 
-                return $this->handlerCore->bw_rest_error('Invalid service bodies post',422);
+                return $this->handlerCore->bmltwf_rest_error('Invalid service bodies post',422);
             }
             $members = $arr['membership'];
             foreach ($members as $member) {
-                $sql = $wpdb->prepare('INSERT into ' . $this->BW_Database->bw_service_bodies_access_table_name . ' SET wp_uid = "%d", service_body_bigint="%d"', $member, $sb);
+                $sql = $wpdb->prepare('INSERT into ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' SET wp_uid = "%d", service_body_bigint="%d"', $member, $sb);
                 $wpdb->query($sql);
             }
             // update show/hide
             $show_on_form = $arr['show_on_form'];
-            $sql = $wpdb->prepare('UPDATE ' . $this->BW_Database->bw_service_bodies_table_name . ' SET show_on_form = "%d" where service_body_bigint="%d"', $show_on_form, $sb);
+            $sql = $wpdb->prepare('UPDATE ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' SET show_on_form = "%d" where service_body_bigint="%d"', $show_on_form, $sb);
             $wpdb->query($sql);
         }
 
         // add / remove user capabilities
         $users = get_users();
-        $result = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $this->BW_Database->bw_service_bodies_access_table_name, 0);
+        $result = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name, 0);
         // $this->debug_log(($sql));
         // $this->debug_log(($result));
         foreach ($users as $user) {
             $this->debug_log("checking user id " . $user->get('ID'));
             if (in_array($user->get('ID'), $result)) {
-                $user->add_cap($this->BW_WP_Options->bw_capability_manage_submissions);
+                $user->add_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
                 $this->debug_log("adding cap");
             } else {
-                $user->remove_cap($this->BW_WP_Options->bw_capability_manage_submissions);
+                $user->remove_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
                 $this->debug_log("removing cap");
             }
         }
 
-        return $this->handlerCore->bw_rest_success('Updated Service Bodies');
+        return $this->handlerCore->bmltwf_rest_success('Updated Service Bodies');
     }
 
     
@@ -208,20 +208,20 @@ class ServiceBodiesHandler
         $this->debug_log(($params));
         // only an admin can get the service bodies detail (permissions) information
         if ((!empty($params['checked'])) && ($params['checked'] == "true") && (current_user_can('manage_options'))) {
-            $result = $wpdb->query('DELETE from ' . $this->BW_Database->bw_submissions_table_name);
+            $result = $wpdb->query('DELETE from ' . $this->BMLTWF_Database->bmltwf_submissions_table_name);
             $this->debug_log("Delete submissions");
             $this->debug_log(($result));
-            $result = $wpdb->query('DELETE from ' . $this->BW_Database->bw_service_bodies_access_table_name);
+            $result = $wpdb->query('DELETE from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name);
             $this->debug_log("Delete service bodies access");
             $this->debug_log(($result));
-            $result = $wpdb->query('DELETE from ' . $this->BW_Database->bw_service_bodies_table_name);
+            $result = $wpdb->query('DELETE from ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name);
             $this->debug_log("Delete service bodies");
             $this->debug_log(($result));
-            return $this->handlerCore->bw_rest_success('Deleted Service Bodies');
+            return $this->handlerCore->bmltwf_rest_success('Deleted Service Bodies');
         }
         else
         {
-            return $this->handlerCore->bw_rest_success('Nothing was performed');
+            return $this->handlerCore->bmltwf_rest_success('Nothing was performed');
         }
 
     }

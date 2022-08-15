@@ -19,7 +19,7 @@
 
 declare(strict_types=1);
 
-use bw\BW_Database;
+use bmltwf\BMLTWF_Database;
 
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
@@ -28,12 +28,12 @@ use function Patchwork\{redefine, getFunction, always};
 require_once('config_phpunit.php');
 
 /**
- * @covers bw\BW_Database
- * @uses bw\BW_Debug
+ * @covers bmltwf\BMLTWF_Database
+ * @uses bmltwf\BMLTWF_Debug
  */
-final class BW_DatabaseTest extends TestCase
+final class BMLTWF_DatabaseTest extends TestCase
 {
-    use \bw\BW_Debug;
+    use \bmltwf\BMLTWF_Debug;
 
     protected function setVerboseErrorHandler()
     {
@@ -72,11 +72,11 @@ Line: $errorLine
         Brain\Monkey\tearDown();
         parent::tearDown();
         Mockery::close();
-        unset($this->bw_dbg);
+        unset($this->bmltwf_dbg);
     }
 
     /**
-     * @covers bw\BW_Database\bw_db_upgrade
+     * @covers bmltwf\BMLTWF_Database\bmltwf_db_upgrade
      */
     public function test_database_upgrade_from_current_without_fresh_install_does_nothing(): void
     {
@@ -89,16 +89,16 @@ Line: $errorLine
         $wpdb->num_rows = 1;
         $wpdb->prefix = "";
 
-        $BW_Database = new BW_Database();
+        $BMLTWF_Database = new BMLTWF_Database();
         
-        Functions\when('\get_option')->justReturn($BW_Database->bw_db_version);
+        Functions\when('\get_option')->justReturn($BMLTWF_Database->bmltwf_db_version);
         // nothing should be performed ie return 0
-        $this->assertEquals($BW_Database->bw_db_upgrade($BW_Database->bw_db_version, false), 0);
+        $this->assertEquals($BMLTWF_Database->bmltwf_db_upgrade($BMLTWF_Database->bmltwf_db_version, false), 0);
         
     }
 
     /**
-     * @covers bw\BW_Database\bw_db_upgrade
+     * @covers bmltwf\BMLTWF_Database\bmltwf_db_upgrade
      */
     public function test_database_upgrade_missing_tables_does_fresh_install(): void
     {
@@ -113,19 +113,19 @@ Line: $errorLine
         $wpdb->num_rows = 0;
         $wpdb->prefix = "";
 
-        $BW_Database = new BW_Database();
+        $BMLTWF_Database = new BMLTWF_Database();
 
-        Functions\expect('\delete_option')->with('bw_db_version')->once()->andReturn(true);
-        Functions\expect('\add_option')->with('bw_db_version',$BW_Database->bw_db_version)->once()->andReturn(true);
+        Functions\expect('\delete_option')->with('bmltwf_db_version')->once()->andReturn(true);
+        Functions\expect('\add_option')->with('bmltwf_db_version',$BMLTWF_Database->bmltwf_db_version)->once()->andReturn(true);
 
-        Functions\when('\get_option')->justReturn($BW_Database->bw_db_version);
+        Functions\when('\get_option')->justReturn($BMLTWF_Database->bmltwf_db_version);
         // fresh install should be performed
-        $this->assertEquals($BW_Database->bw_db_upgrade($BW_Database->bw_db_version, false), 1);
+        $this->assertEquals($BMLTWF_Database->bmltwf_db_upgrade($BMLTWF_Database->bmltwf_db_version, false), 1);
         
     }
 
     /**
-     * @covers bw\BW_Database\bw_db_upgrade
+     * @covers bmltwf\BMLTWF_Database\bmltwf_db_upgrade
      */
     public function test_database_upgrade_performs_upgrade_with_low_version(): void
     {
@@ -140,19 +140,19 @@ Line: $errorLine
         $wpdb->num_rows = 1;
         $wpdb->prefix = "";
 
-        $BW_Database = new BW_Database();
+        $BMLTWF_Database = new BMLTWF_Database();
 
-        Functions\expect('\delete_option')->with('bw_db_version')->once()->andReturn(true);
-        Functions\expect('\add_option')->with('bw_db_version',$BW_Database->bw_db_version)->once()->andReturn(true);
+        Functions\expect('\delete_option')->with('bmltwf_db_version')->once()->andReturn(true);
+        Functions\expect('\add_option')->with('bmltwf_db_version',$BMLTWF_Database->bmltwf_db_version)->once()->andReturn(true);
 
         Functions\when('\get_option')->justReturn("0.0.1");
         // upgrade should be performed
-        $this->assertEquals($BW_Database->bw_db_upgrade($BW_Database->bw_db_version, false), 2);
+        $this->assertEquals($BMLTWF_Database->bmltwf_db_upgrade($BMLTWF_Database->bmltwf_db_version, false), 2);
         
     }
 
     /**
-     * @covers bw\BW_Database\bw_db_upgrade
+     * @covers bmltwf\BMLTWF_Database\bmltwf_db_upgrade
      */
     public function test_database_upgrade_no_version_does_fresh_install(): void
     {
@@ -166,19 +166,19 @@ Line: $errorLine
         $wpdb->num_rows = 1;
         $wpdb->prefix = "";
 
-        $BW_Database = new BW_Database();
+        $BMLTWF_Database = new BMLTWF_Database();
 
         Functions\expect('\delete_option')->once()->andReturn(true);
         Functions\expect('\add_option')->once()->andReturn(true);
 
         Functions\when('\get_option')->justReturn(false);
         // fresh install should be performed
-        $this->assertEquals($BW_Database->bw_db_upgrade($BW_Database->bw_db_version, false), 1);
+        $this->assertEquals($BMLTWF_Database->bmltwf_db_upgrade($BMLTWF_Database->bmltwf_db_version, false), 1);
     }
 
 
     /**
-     * @covers bw\BW_Database\bw_db_upgrade
+     * @covers bmltwf\BMLTWF_Database\bmltwf_db_upgrade
      */
     public function test_database_upgrade_fresh_install_requested_does_fresh_install(): void
     {
@@ -193,14 +193,14 @@ Line: $errorLine
         $wpdb->num_rows = 1;
         $wpdb->prefix = "";
 
-        $BW_Database = new BW_Database();
+        $BMLTWF_Database = new BMLTWF_Database();
 
-        Functions\expect('\delete_option')->with('bw_db_version')->once()->andReturn(true);
-        Functions\expect('\add_option')->with('bw_db_version',$BW_Database->bw_db_version)->once()->andReturn(true);
+        Functions\expect('\delete_option')->with('bmltwf_db_version')->once()->andReturn(true);
+        Functions\expect('\add_option')->with('bmltwf_db_version',$BMLTWF_Database->bmltwf_db_version)->once()->andReturn(true);
 
         Functions\when('\get_option')->justReturn(false);
         // fresh install should be performed
-        $this->assertEquals($BW_Database->bw_db_upgrade($BW_Database->bw_db_version, true), 1);
+        $this->assertEquals($BMLTWF_Database->bmltwf_db_upgrade($BMLTWF_Database->bmltwf_db_version, true), 1);
     }
 
 }

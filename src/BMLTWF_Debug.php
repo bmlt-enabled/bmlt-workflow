@@ -18,13 +18,13 @@
 
 
 
-namespace bw;
+namespace bmltwf;
 
-trait BW_Debug 
+trait BMLTWF_Debug 
 {
     public function debug_log($message)
     {
-        if (BW_DEBUG)
+        if (BMLTWF_DEBUG)
         {
             $out = print_r($message, true);
             error_log(debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] . ": " . $out);

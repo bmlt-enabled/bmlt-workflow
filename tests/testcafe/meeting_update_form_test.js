@@ -159,7 +159,7 @@ test("Success_Change_Meeting_Name_And_Submit", async (t) => {
 
     .typeText(uf.meeting_name, "update")
     // make sure highlighting is present
-    .expect(uf.meeting_name.hasClass("bw-changed"))
+    .expect(uf.meeting_name.hasClass("bmltwf-changed"))
     .ok();
 
   // email dropdown
@@ -244,7 +244,7 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
 
     .typeText(uf.meeting_name, "update")
     // make sure highlighting is present
-    .expect(uf.meeting_name.hasClass("bw-changed"))
+    .expect(uf.meeting_name.hasClass("bmltwf-changed"))
     .ok();
 
   // virtual meeting settings
@@ -260,13 +260,13 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
     .eql(true);
   await t
     .typeText(uf.phone_meeting_number, "+61 1800 253430 code #8303782669")
-    .expect(uf.phone_meeting_number.hasClass("bw-changed"))
+    .expect(uf.phone_meeting_number.hasClass("bmltwf-changed"))
     .ok()
     .typeText(uf.virtual_meeting_link, "https://us02web.zoom.us/j/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09")
-    .expect(uf.virtual_meeting_link.hasClass("bw-changed"))
+    .expect(uf.virtual_meeting_link.hasClass("bmltwf-changed"))
     .ok()
     .typeText(uf.virtual_meeting_additional_info, "Zoom ID 83037287669 Passcode: testing")
-    .expect(uf.virtual_meeting_additional_info.hasClass("bw-changed"))
+    .expect(uf.virtual_meeting_additional_info.hasClass("bmltwf-changed"))
     .ok();
 
   // meeting settings
@@ -274,40 +274,40 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
   // weekday
   await select_dropdown_by_text(uf.weekday_tinyint, "Wednesday");
   await t
-    .expect(uf.weekday_tinyint.hasClass("bw-changed"))
+    .expect(uf.weekday_tinyint.hasClass("bmltwf-changed"))
     .ok()
     // start time
     .typeText(uf.start_time, "10:40")
-    .expect(uf.start_time.hasClass("bw-changed"))
+    .expect(uf.start_time.hasClass("bmltwf-changed"))
     .ok();
 
   // duration
   await select_dropdown_by_value(uf.duration_hours, "09");
-  await t.expect(uf.duration_hours.hasClass("bw-changed")).ok();
+  await t.expect(uf.duration_hours.hasClass("bmltwf-changed")).ok();
   await select_dropdown_by_value(uf.duration_minutes, "35");
-  await t.expect(uf.duration_minutes.hasClass("bw-changed")).ok();
+  await t.expect(uf.duration_minutes.hasClass("bmltwf-changed")).ok();
 
   // format list
-  await t.click(uf.format_list_clickable).pressKey("g u i d enter").expect(uf.format_list_clickable.hasClass("bw-changed")).ok();
+  await t.click(uf.format_list_clickable).pressKey("g u i d enter").expect(uf.format_list_clickable.hasClass("bmltwf-changed")).ok();
 
   await t
     .typeText(uf.location_text, "my location")
-    .expect(uf.format_list_clickable.hasClass("bw-changed"))
+    .expect(uf.format_list_clickable.hasClass("bmltwf-changed"))
     .ok()
     .typeText(uf.location_street, "110 Avoca Street")
-    .expect(uf.location_street.hasClass("bw-changed"))
+    .expect(uf.location_street.hasClass("bmltwf-changed"))
     .ok()
     .typeText(uf.location_info, "info")
-    .expect(uf.location_info.hasClass("bw-changed"))
+    .expect(uf.location_info.hasClass("bmltwf-changed"))
     .ok()
     .typeText(uf.location_municipality, "Randwick")
-    .expect(uf.location_municipality.hasClass("bw-changed"))
+    .expect(uf.location_municipality.hasClass("bmltwf-changed"))
     .ok()
     .typeText(uf.location_province, "NSW")
-    .expect(uf.location_province.hasClass("bw-changed"))
+    .expect(uf.location_province.hasClass("bmltwf-changed"))
     .ok()
     .typeText(uf.location_postal_code_1, "2031")
-    .expect(uf.location_postal_code_1.hasClass("bw-changed"))
+    .expect(uf.location_postal_code_1.hasClass("bmltwf-changed"))
     .ok();
 });
 

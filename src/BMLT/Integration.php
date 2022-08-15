@@ -18,16 +18,16 @@
 
 
 
-namespace bw\BMLT;
+namespace bmltwf\BMLT;
 
-//  use bw\BW_Debug;
-use bw\BW_WP_Options;
-use bw\REST\HandlerCore;
+//  use bmltwf\BMLTWF_Debug;
+use bmltwf\BMLTWF_WP_Options;
+use bmltwf\REST\HandlerCore;
 
 class Integration
 {
 
-    use \bw\BW_Debug;
+    use \bmltwf\BMLTWF_Debug;
     protected $cookies = null; // our authentication cookies
 
     public function __construct($cookies = null, $wpoptionssstub = null)
@@ -37,20 +37,20 @@ class Integration
         }
 
         if (empty($wpoptionssstub)) {
-            $this->BW_WP_Options = new BW_WP_Options();
+            $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
         } else {
-            $this->BW_WP_Options = $wpoptionssstub;
+            $this->BMLTWF_WP_Options = $wpoptionssstub;
         }
     }
 
-    private function bw_rest_error($message, $code)
+    private function bmltwf_rest_error($message, $code)
     {
-        return new \WP_Error('bw_error', $message, array('status' => $code));
+        return new \WP_Error('bmltwf_error', $message, array('status' => $code));
     }
 
 
     // accepts raw string or array
-    private function bw_rest_success($message)
+    private function bmltwf_rest_success($message)
     {
         if (is_array($message)) {
             $data = $message;
@@ -63,10 +63,10 @@ class Integration
         return $response;
     }
 
-    private function bw_rest_error_with_data($message, $code, array $data)
+    private function bmltwf_rest_error_with_data($message, $code, array $data)
     {
         $data['status'] = $code;
-        return new \WP_Error('bw_error', $message, $data);
+        return new \WP_Error('bmltwf_error', $message, $data);
     }
 
     /**
@@ -78,8 +78,8 @@ class Integration
     public function retrieve_single_meeting($meeting_id)
     {
 
-        $bw_bmlt_server_address = get_option('bw_bmlt_server_address');
-        $url = $bw_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
+        $bmltwf_bmlt_server_address = get_option('bmltwf_bmlt_server_address');
+        $url = $bmltwf_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
 
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -92,19 +92,19 @@ class Integration
 
         $resp = curl_exec($curl);
         if (!$resp) {
-            return $this->bw_rest_error('Server error retrieving meeting', 500);
+            return $this->bmltwf_rest_error('Server error retrieving meeting', 500);
         }
         curl_close($curl);
         $meetingarr = json_decode($resp, true);
         if (empty($meetingarr[0])) {
-            return $this->bw_rest_error('Server error retrieving meeting', 500);
+            return $this->bmltwf_rest_error('Server error retrieving meeting', 500);
         }
         $meeting = $meetingarr[0];
         $this->debug_log("SINGLE MEETING");
         $this->debug_log(($meeting));
         // how possibly can we get a meeting that is not the same as we asked for
         if ($meeting['id_bigint'] != $meeting_id) {
-            return $this->bw_rest_error('Server error retrieving meeting', 500);
+            return $this->bmltwf_rest_error('Server error retrieving meeting', 500);
         }
         return $meeting;
     }
@@ -125,11 +125,11 @@ class Integration
         $response_code = \wp_remote_retrieve_response_code($ret);
 
         if ($response_code != 200) {
-            return new \WP_Error('bw', 'check BMLT server address');
+            return new \WP_Error('bmltwf', 'check BMLT server address');
         }
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
-            return new \WP_Error('bw', 'check username and password details');
+            return new \WP_Error('bmltwf', 'check username and password details');
         }
         return true;
     }
@@ -144,12 +144,12 @@ class Integration
         // get an xml for a workaround
         $response = $this->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
         if (is_wp_error($response)) {
-            return new \WP_Error('bw', 'BMLT Configuration Error - Unable to retrieve meeting formats');
+            return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
 
         // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetFormats', array());
         // if (is_wp_error($response)) {
-        //     return new \WP_Error('bw','BMLT Configuration Error - Unable to retrieve meeting formats');
+        //     return new \WP_Error('bmltwf','BMLT Configuration Error - Unable to retrieve meeting formats');
         // }
 
         $this->debug_log(wp_remote_retrieve_body($response));
@@ -182,7 +182,7 @@ class Integration
     {
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         if (is_wp_error($response)) {
-            return new \WP_Error('bw', 'BMLT Configuration Error - Unable to retrieve meeting formats');
+            return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
         // $this->debug_log(wp_remote_retrieve_body($response));  
         $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
@@ -202,7 +202,7 @@ class Integration
     {
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         if (is_wp_error($response)) {
-            return new \WP_Error('bw', 'BMLT Configuration Error - Unable to retrieve server info');
+            return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve server info');
         }
         // $this->debug_log(wp_remote_retrieve_body($response));  
         $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
@@ -233,7 +233,7 @@ class Integration
             return $ret;
         }
 
-        $url = get_option('bw_bmlt_server_address') . "index.php";
+        $url = get_option('bmltwf_bmlt_server_address') . "index.php";
         // $this->debug_log("*** ADMIN URL ".$url);
 
         $resp = $this->get($url, $this->cookies);
@@ -264,7 +264,7 @@ class Integration
         $resp = curl_exec($curl);
 
         if (!$resp) {
-            return new \WP_Error('bw', 'Server error geolocating address');
+            return new \WP_Error('bmltwf', 'Server error geolocating address');
         }
 
         curl_close($curl);
@@ -273,10 +273,10 @@ class Integration
 
         $geo = json_decode($resp, true);
         if ((empty($geo)) || (empty($geo['status']))) {
-            return new \WP_Error('bw', 'Server error geolocating address');
+            return new \WP_Error('bmltwf', 'Server error geolocating address');
         }
         if (($geo['status'] === "ZERO_RESULTS") || empty($geo['results'][0]['geometry']['location']['lat']) || empty($geo['results'][0]['geometry']['location']['lng'])) {
-            return new \WP_Error('bw', 'Could not geolocate meeting address. Please try amending the address with additional/correct details.');
+            return new \WP_Error('bmltwf', 'Could not geolocate meeting address. Please try amending the address with additional/correct details.');
         } else {
             $location = array();
             $location['latitude'] = $geo['results'][0]['geometry']['location']['lat'];
@@ -289,36 +289,36 @@ class Integration
     {
         
         if ($this->cookies == null) {
-            $encrypted = get_option('bw_bmlt_password');
+            $encrypted = get_option('bmltwf_bmlt_password');
             $this->debug_log("retrieved encrypted bmlt password");
             $this->debug_log(($encrypted));
 
             if ($encrypted === false) {
-                return new \WP_Error('bw', 'Error unpacking password.');
+                return new \WP_Error('bmltwf', 'Error unpacking password.');
             }
-            $decrypted = $this->BW_WP_Options->secrets_decrypt(NONCE_SALT, $encrypted);
+            $decrypted = $this->BMLTWF_WP_Options->secrets_decrypt(NONCE_SALT, $encrypted);
             if ($decrypted === false) {
-                return new \WP_Error('bw', 'Error decrypting password.');
+                return new \WP_Error('bmltwf', 'Error decrypting password.');
             }
 
             $postargs = array(
                 'admin_action' => 'login',
-                'c_comdef_admin_login' => get_option('bw_bmlt_username'),
+                'c_comdef_admin_login' => get_option('bmltwf_bmlt_username'),
                 'c_comdef_admin_password' => $decrypted
             );
-            $url = get_option('bw_bmlt_server_address') . "index.php";
+            $url = get_option('bmltwf_bmlt_server_address') . "index.php";
 
             // $this->debug_log("AUTH URL = " . $url);
             $ret = $this->post($url, null, $postargs);
 
             if (is_wp_error($ret)) {
-                return new \WP_Error('bw', 'authenticateRootServer: Server Failure');
+                return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
             }
 
             if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
             {
                 $this->cookies = null;
-                return new \WP_Error('bw', 'authenticateRootServer: Authentication Failure');
+                return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
             }
 
             $this->cookies = \wp_remote_retrieve_cookies($ret);
@@ -421,9 +421,9 @@ class Integration
             return $ret;
         }
         if (!(is_array($postargs))) {
-            return $this->bw_rest_error("Missing post parameters", "bw_bmlt_integration");
+            return $this->bmltwf_rest_error("Missing post parameters", "bmltwf_bmlt_integration");
         }
-        return $this->post(get_option('bw_bmlt_server_address') . $url, $this->cookies, $postargs);
+        return $this->post(get_option('bmltwf_bmlt_server_address') . $url, $this->cookies, $postargs);
     }
 
     /**
@@ -436,9 +436,9 @@ class Integration
     public function postUnauthenticatedRootServerRequest($url, $postargs)
     {
         if (!(is_array($postargs))) {
-            return $this->bw_rest_error("Missing post parameters", "bw_bmlt_integration");
+            return $this->bmltwf_rest_error("Missing post parameters", "bmltwf_bmlt_integration");
         }
-        $val = $this->post(get_option('bw_bmlt_server_address') . $url, null, $postargs);
+        $val = $this->post(get_option('bmltwf_bmlt_server_address') . $url, null, $postargs);
         $this->debug_log(($val));
         return $val;
     }
@@ -458,9 +458,9 @@ class Integration
             return $ret;
         }
         if (!(is_array($postargs))) {
-            return $this->bw_rest_error("Missing post parameters", "bw_bmlt_integration");
+            return $this->bmltwf_rest_error("Missing post parameters", "bmltwf_bmlt_integration");
         }
 
-        return $this->postsemantic(get_option('bw_bmlt_server_address') . $url, $this->cookies, $postargs);
+        return $this->postsemantic(get_option('bmltwf_bmlt_server_address') . $url, $this->cookies, $postargs);
     }
 }

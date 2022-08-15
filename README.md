@@ -1,4 +1,4 @@
-# BMLT Workflow (BW)
+# BMLT Workflow (BMLTWF)
 
 ## Background
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.
@@ -34,7 +34,7 @@ If you get a tick, then save settings. Update the 'From Address' to an address t
 
 You should now be able to see the **BMLT Workflow->Service Bodies** menu option. Service bodies are retrieved from BMlT, without hierarchy. By default, none of them are available for meeting updates using the system. You can enable them using the checkboxes, then add yourself under 'Wordpress Users with Access' in any/all service bodies.
 
-Create a new page, and add the shortcode `[bw-meeting-update-form]`.  The form will be available, with searches populated from any service bodies that you've configured in the service body menu. 
+Create a new page, and add the shortcode `[bmltwf-meeting-update-form]`.  The form will be available, with searches populated from any service bodies that you've configured in the service body menu. 
 
 Use the form and submit a meeting change request. Following form submission, you should see the request in the **BMLT Workflow->Workflow Submissions** menu.
 
@@ -45,7 +45,7 @@ A role `BMLT Workflow Trusted Servant` is created as part of plugin installation
 Create wordpress users for your trusted servants and assign them this role. Then within the service bodies page assign your wordpress users to the service bodies you would like them to manage.
 The email address of these wordpress users will be used to send notifications when new submissions are received to their service body.
 ### Shortcode
-Use a shortcode with the form `[bw-meeting-update-form]` substituting your service areas from BMLT in the parameters
+Use a shortcode with the form `[bmltwf-meeting-update-form]` substituting your service areas from BMLT in the parameters
 
 ### Email template field substitution
 You can add fields to the email templates to substitute content from the form submission

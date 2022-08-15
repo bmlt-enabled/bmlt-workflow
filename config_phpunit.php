@@ -1,5 +1,5 @@
 <?php
-define('BW_DEBUG', true);
+define('BMLTWF_DEBUG', true);
 // required for secrets test cases
 define('NONCE_SALT', 99999999);
 // get us through the header

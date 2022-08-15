@@ -18,24 +18,24 @@
 
 
 
-namespace bw\REST\Handlers;
+namespace bmltwf\REST\Handlers;
 
-use bw\REST\HandlerCore;
-use bw\BW_Database;
-use bw\BW_WP_Options;
+use bmltwf\REST\HandlerCore;
+use bmltwf\BMLTWF_Database;
+use bmltwf\BMLTWF_WP_Options;
 
 class OptionsHandler
 {
-    use \bw\BW_Debug;
+    use \bmltwf\BMLTWF_Debug;
 
     public function __construct()
     {
         $this->handlerCore = new HandlerCore();
-        $this->BW_Database = new BW_Database();
-        $this->BW_WP_Options = new BW_WP_Options();
+        $this->BMLTWF_Database = new BMLTWF_Database();
+        $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
     }
 
-    public function post_bw_restore_handler($request)
+    public function post_bmltwf_restore_handler($request)
     {
         global $wpdb;
         
@@ -46,16 +46,16 @@ class OptionsHandler
         $params = $request->get_json_params();
 
         // create the database as the revision in the backup file
-        $this->BW_Database->bw_db_upgrade($params['options']['bw_db_version'], true);
+        $this->BMLTWF_Database->bmltwf_db_upgrade($params['options']['bmltwf_db_version'], true);
 
         // restore all the options
-        foreach ($this->BW_WP_Options->bw_options as $key => $value) {
+        foreach ($this->BMLTWF_WP_Options->bmltwf_options as $key => $value) {
             $option_name = $value;
-            delete_option($this->BW_WP_Options->bw_options[$option_name]);
+            delete_option($this->BMLTWF_WP_Options->bmltwf_options[$option_name]);
             $this->debug_log("deleted option: " . $option_name);
             // check if we have an option in our restore that matches the options array
             if (array_key_exists($option_name, $params['options'])) {
-                if($option_name === 'bw_bmlt_password')
+                if($option_name === 'bmltwf_bmlt_password')
                 {
                     if(is_serialized($params['options'][$option_name]))
                     {
@@ -72,7 +72,7 @@ class OptionsHandler
         // service bodies table
         $cnt = 0;
         foreach ($params['service_bodies'] as $row => $value) {
-            $rows = $wpdb->insert($this->BW_Database->bw_service_bodies_table_name, $params['service_bodies'][$row]);
+            $rows = $wpdb->insert($this->BMLTWF_Database->bmltwf_service_bodies_table_name, $params['service_bodies'][$row]);
             $cnt += $rows;
         }
         $this->debug_log("service_bodies rows inserted :" . $cnt);
@@ -80,7 +80,7 @@ class OptionsHandler
         // service bodies access table
         $cnt = 0;
         foreach ($params['service_bodies_access'] as $row => $value) {
-            $wpdb->insert($this->BW_Database->bw_service_bodies_access_table_name, $params['service_bodies_access'][$row]);
+            $wpdb->insert($this->BMLTWF_Database->bmltwf_service_bodies_access_table_name, $params['service_bodies_access'][$row]);
             $cnt += $rows;
         }
         $this->debug_log("service_bodies_access rows inserted :" . $cnt);
@@ -88,19 +88,19 @@ class OptionsHandler
         // submissions table
         $cnt = 0;
         foreach ($params['submissions'] as $row => $value) {
-            $rows = $wpdb->insert($this->BW_Database->bw_submissions_table_name, $params['submissions'][$row]);
+            $rows = $wpdb->insert($this->BMLTWF_Database->bmltwf_submissions_table_name, $params['submissions'][$row]);
             $cnt += $rows;
         }
         $this->debug_log("submissions rows inserted :" . $cnt);
 
 
         // update the database to the latest version
-        $this->BW_Database->bw_db_upgrade($this->BW_Database->bw_db_version, false);
+        $this->BMLTWF_Database->bmltwf_db_upgrade($this->BMLTWF_Database->bmltwf_db_version, false);
 
-        return $this->handlerCore->bw_rest_success('Restore Successful');
+        return $this->handlerCore->bmltwf_rest_success('Restore Successful');
     }
 
-    public function post_bw_backup_handler($request)
+    public function post_bmltwf_backup_handler($request)
     {
         
 
@@ -116,9 +116,9 @@ class OptionsHandler
         $saveoptarr = array();
         foreach ($optarr as $key => $value) {
             $this->debug_log("searching for " . $key . " in ");
-            $this->debug_log(($this->BW_WP_Options->bw_options));
+            $this->debug_log(($this->BMLTWF_WP_Options->bmltwf_options));
 
-            if (in_array($key, $this->BW_WP_Options->bw_options)) {
+            if (in_array($key, $this->BMLTWF_WP_Options->bmltwf_options)) {
                 $this->debug_log("found " . $key);
                 $saveoptarr[$key] = $value;
             }
@@ -126,15 +126,15 @@ class OptionsHandler
         $save['options'] = $saveoptarr;
 
         // get submissions
-        $result = $wpdb->get_results("SELECT * from " . $this->BW_Database->bw_submissions_table_name);
+        $result = $wpdb->get_results("SELECT * from " . $this->BMLTWF_Database->bmltwf_submissions_table_name);
         $save['submissions'] = $result;
 
         // get service bodies
-        $result = $wpdb->get_results("SELECT * from " . $this->BW_Database->bw_service_bodies_table_name);
+        $result = $wpdb->get_results("SELECT * from " . $this->BMLTWF_Database->bmltwf_service_bodies_table_name);
         $save['service_bodies'] = $result;
 
         // get service bodies access
-        $result = $wpdb->get_results("SELECT * from " . $this->BW_Database->bw_service_bodies_access_table_name);
+        $result = $wpdb->get_results("SELECT * from " . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name);
         $save['service_bodies_access'] = $result;
         $contents = json_encode($save, JSON_PRETTY_PRINT);
         $this->debug_log('backup file generated');
@@ -142,6 +142,6 @@ class OptionsHandler
         $dateTime = new \DateTime();
         $fname = $dateTime->format(\DateTimeInterface::RFC3339_EXTENDED);
         $save['backupdetails'] = $fname;
-        return $this->handlerCore->bw_rest_success(array('message' => 'Backup Successful', 'backup' => $contents));
+        return $this->handlerCore->bmltwf_rest_success(array('message' => 'Backup Successful', 'backup' => $contents));
     }
 }
