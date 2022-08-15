@@ -77,24 +77,21 @@ export async function click_dialog_button_by_index(element, index) {
     .click(g);
 };
 
-export async function reset_bmlt()
+export async function reset_bmlt(t)
 {
-    var http = require("http");
     // reset bmlt to reasonable state
-    http.get(userVariables.blank_bmlt);
+    await t.request(userVariables.blank_bmlt);
 }
 
 export async function insert_submissions()
 {
-    var http = require("http");
     // pre fill the submissions
-    http.get(userVariables.admin_submission_reset);
+    await t.request(userVariables.admin_submission_reset);
 }
 
-export async function configure_service_bodies()
+export async function configure_service_bodies(t)
 {
-    var http = require("http");
-    http.get(userVariables.blank_service_bodies);
+    await t.request(userVariables.blank_service_bodies);
 
     await t.useRole(bw_admin).navigateTo(userVariables.admin_service_bodies_page)
     
@@ -127,24 +124,21 @@ export async function basic_options()
     await ao.settings_updated();  
 }
 
-export async function bmlt_states_off()
+export async function bmlt_states_off(t)
 {
-    var http = require("http");
     // disable state dropdown
-    http.get(userVariables.bmlt_states_off);
+    await t.request(userVariables.bmlt_states_off);
   
 }
 
-export async function bmlt_states_on()
+export async function bmlt_states_on(t)
 {
-    var http = require("http");
     // enable state dropdown
-    http.get(userVariables.bmlt_states_on);
+    await t.request(userVariables.bmlt_states_on);
   
 }
 
-export async function delete_submissions()
+export async function delete_submissions(t)
 {
-    var http = require("http");
-    http.get(userVariables.blank_submission);
+    await t.request(userVariables.blank_submission);
 }

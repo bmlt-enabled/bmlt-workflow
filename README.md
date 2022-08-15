@@ -17,7 +17,7 @@ This initial release is specific to the NA Australian Region use case (particula
 - Admin - Email template for mail to the submitter, and for an email to the fso for starter kit requests. Fields can be inserted from the form submission
 - Admin - Shortcode configuration of the meeting form
 - Admin - Configurable BMLT service areas for use within the workflow submission page, including access control
-- Admin - Optional Nation and SubProvince fields depending on your BMLT usage
+- Admin - Optional FSO, Nation and SubProvince fields depending on your BMLT usage
 - Trusted Servants - Full featured approve/reject workflow and automatic insertion of changes into BMLT
 - Trusted Servants - Notification will be sent to the wordpress email of trusted servants for any new submissions they are permitted to manage
 ## Installation
@@ -25,7 +25,7 @@ Standard wordpress plugin installation procedure. Just copy the contents of this
 
 ## Contact/Issues
 For any other issues you find - please raise an issue here: https://github.com/bmlt-enabled/bmlt-workflow/issues and/or reach out on BMLT slack #wordpress-BMLT-workflow
-
+You can always find the latest version of this code at: https://github.com/bmlt-enabled/bmlt-workflow/
 
 ## Usage
 Locate **BMLT Workflow -> Configuration** in your Wordpress Admin page. You'll need to put in a valid BMLT server address, username and password and press the Test Server button.

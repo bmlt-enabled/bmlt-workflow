@@ -33,11 +33,11 @@ import {
 import { userVariables } from "../../.testcaferc";
 
 fixture`admin_submissions_fixture`.beforeEach(async (t) => {
-  await reset_bmlt();
-  await basic_options();
-  await delete_submissions();
-  await configure_service_bodies();
-  await insert_submissions();
+  await reset_bmlt(t);
+  await basic_options(t);
+  await delete_submissions(t);
+  await configure_service_bodies(t);
+  await insert_submissions(t);
 
   await t.useRole(bw_admin).navigateTo(userVariables.admin_submissions_page);
 });

@@ -35,14 +35,14 @@ import { userVariables } from "../../.testcaferc";
 fixture`meeting_update_form_fixture`
 .beforeEach(async (t) => {
 
-  await reset_bmlt();
-  await bmlt_states_off();
+  await reset_bmlt(t);
+  await bmlt_states_off(t);
 
-  await basic_options();
+  await basic_options(t);
   
-  await delete_submissions();
+  await delete_submissions(t);
 
-  await configure_service_bodies();
+  await configure_service_bodies(t);
 
   // log in as noone
   await t.useRole(Role.anonymous());
@@ -339,7 +339,7 @@ test("Change_Nothing_Check_Error", async (t) => {
 
 test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
 
-  await bmlt_states_on();
+  await bmlt_states_on(t);
 
   await t.navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_change");

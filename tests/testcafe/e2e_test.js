@@ -39,14 +39,14 @@ fixture`e2e_test_fixture`
   // .page(userVariables.admin_submissions_page)
   .beforeEach(async (t) => {
 
-    await reset_bmlt();
-    await bmlt_states_off();
+    await reset_bmlt(t);
+    await bmlt_states_off(t);
 
-    await basic_options();
+    await basic_options(t);
 
-    await delete_submissions();
+    await delete_submissions(t);
 
-    await configure_service_bodies();
+    await configure_service_bodies(t);
 
 
   });
