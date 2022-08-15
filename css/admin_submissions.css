@@ -17,7 +17,7 @@
  * along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-.wbw_info_text {
+.bw_info_text {
   padding-left: 15px;
   background: #f8f8f8;
   border-left: 5px solid lightblue;
@@ -77,11 +77,11 @@
   width: 30%;
 }
 
-.form-grid .wbw-changed {
+.form-grid .bw-changed {
   background: #e7f478;
 }
 
-.select2-selection--multiple.quickedit_format_shared_id_list-select2.wbw-changed {
+.select2-selection--multiple.quickedit_format_shared_id_list-select2.bw-changed {
   background: #e7f478;
 }
 
@@ -243,7 +243,7 @@
   word-wrap: break-word;
 }
 
-hr.wbw-error-message 
+hr.bw-error-message 
 {
   border: none;
 }

@@ -19,46 +19,46 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-use wbw\WBW_Debug;
+use bw\BW_Debug;
 
-$wbw_submitter_email_template_default = htmlentities(file_get_contents(WBW_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
-$wbw_fso_email_template_default = htmlentities(file_get_contents(WBW_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
+$bw_submitter_email_template_default = htmlentities(file_get_contents(BW_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
+$bw_fso_email_template_default = htmlentities(file_get_contents(BW_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
 
-echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="wbw_submitter_email_template_default">' . $wbw_submitter_email_template_default . '</textarea></div>';
-echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="wbw_fso_email_template_default">' . $wbw_fso_email_template_default . '</textarea></div>';
-echo '<div class="wbw_banner"></div>';
+echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bw_submitter_email_template_default">' . $bw_submitter_email_template_default . '</textarea></div>';
+echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bw_fso_email_template_default">' . $bw_fso_email_template_default . '</textarea></div>';
+echo '<div class="bw_banner"></div>';
 
 wp_nonce_field('wp_rest', '_wprestnonce');
-echo '<hr class="wbw-error-message">';
+echo '<hr class="bw-error-message">';
 echo '<div class="wrap">';
 echo '<form method="post" action="options.php">';
 settings_errors();
 
-settings_fields('wbw-settings-group');
-do_settings_sections('wbw-settings');
+settings_fields('bw-settings-group');
+do_settings_sections('bw-settings');
 
 submit_button();
 
 echo '</form></div>';
 ?>
 
-<div id="wbw_bmlt_configuration_dialog" class="hidden" style="max-width:800px">
-    <div class="options_dialog_wbw_error_message"></div>
+<div id="bw_bmlt_configuration_dialog" class="hidden" style="max-width:800px">
+    <div class="options_dialog_bw_error_message"></div>
     <br>
-    <div class="options_dialog_wbw_info_text">
+    <div class="options_dialog_bw_info_text">
         <br>Enter your BMLT server address, and a BMLT username and password.
         <br>
         <br>
     </div>
 
-    <br><label for="wbw_bmlt_server_address"><b>Server Address:</b></label>
-    <input type="url" size="50" id="wbw_bmlt_server_address" name="wbw_bmlt_server_address" value="<?php echo get_option('wbw_bmlt_server_address') ?>" />
-    <br><label for="wbw_bmlt_username"><b>BMLT Username:</b></label>
-    <input type="text" size="50" id="wbw_bmlt_username" name="wbw_bmlt_username" value="<?php echo get_option('wbw_bmlt_username') ?>" />
-    <br><label for="wbw_bmlt_password"><b>BMLT Password:</b></label>
-    <input type="password" size="50" id="wbw_bmlt_password" name="wbw_bmlt_password" />
+    <br><label for="bw_bmlt_server_address"><b>Server Address:</b></label>
+    <input type="url" size="50" id="bw_bmlt_server_address" name="bw_bmlt_server_address" value="<?php echo get_option('bw_bmlt_server_address') ?>" />
+    <br><label for="bw_bmlt_username"><b>BMLT Username:</b></label>
+    <input type="text" size="50" id="bw_bmlt_username" name="bw_bmlt_username" value="<?php echo get_option('bw_bmlt_username') ?>" />
+    <br><label for="bw_bmlt_password"><b>BMLT Password:</b></label>
+    <input type="password" size="50" id="bw_bmlt_password" name="bw_bmlt_password" />
     <br><br>
-    <div class="options_dialog_wbw_info_text">
+    <div class="options_dialog_bw_info_text">
         <br>The BMLT username and password is used to action meeting approvals/rejections as well as perform any BMLT related actions on the Wordpress users behalf.
         <br><br>This user must be configured as a service body administrator and have access within BMLT to edit all service bodies that are used in WBW form submissions.
         <br>
@@ -68,17 +68,17 @@ echo '</form></div>';
     </div>
 </div>
 
-<div id="wbw_restore_warning_dialog" class="hidden" style="max-width:800px">
-    <div class="options_dialog_wbw_error_message"></div>
+<div id="bw_restore_warning_dialog" class="hidden" style="max-width:800px">
+    <div class="options_dialog_bw_error_message"></div>
     <br>
-    <div class="options_dialog_wbw_warning_text">
+    <div class="options_dialog_bw_warning_text">
         <br>WARNING: If you proceed with the restore, your existing plugin configuration, settings and service bodies will be removed.
         <br><br>Are you sure you wish to do this?
         <br><br>
     </div>
     
-<div id="wbw_bmlt_change_server_warning_dialog" class="hidden" style="max-width:800px">
-<div class="options_dialog_wbw_warning_text">
+<div id="bw_bmlt_change_server_warning_dialog" class="hidden" style="max-width:800px">
+<div class="options_dialog_bw_warning_text">
 
     <br>WARNING: Changing the BMLT Server settings will remove your service body configuration and existing submissions within the plugin.
     <br><br>Use the BACKUP option before pressing Ok if you do not wish to lose your submissions.

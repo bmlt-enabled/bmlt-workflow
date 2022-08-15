@@ -30,7 +30,7 @@ import { reset_bmlt,
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
-  wbw_admin, 
+  bw_admin, 
   basic_options } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
@@ -39,14 +39,14 @@ fixture`e2e_test_fixture`
   // .page(userVariables.admin_submissions_page)
   .beforeEach(async (t) => {
 
-    await reset_bmlt();
-    await bmlt_states_off();
+    await reset_bmlt(t);
+    await bmlt_states_off(t);
 
-    await basic_options();
+    await basic_options(t);
 
-    await delete_submissions();
+    await delete_submissions(t);
 
-    await configure_service_bodies();
+    await configure_service_bodies(t);
 
 
   });
@@ -157,7 +157,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(wbw_admin).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bw_admin).navigateTo(userVariables.admin_submissions_page);
 
   // new meeting = row 0
   var row = 0;
@@ -233,7 +233,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
 
     .typeText(uf.meeting_name, "update")
     // make sure highlighting is present
-    .expect(uf.meeting_name.hasClass("wbw-changed"))
+    .expect(uf.meeting_name.hasClass("bw-changed"))
     .ok();
 
   // email dropdown
@@ -248,11 +248,11 @@ test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
 
   await t
     .click(uf.submit)
-    .expect(Selector("#wbw_response_message").innerText)
+    .expect(Selector("#bw_response_message").innerText)
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(wbw_admin).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bw_admin).navigateTo(userVariables.admin_submissions_page);
 
   // new meeting = row 0
   var row = 0;

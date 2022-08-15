@@ -27,19 +27,19 @@ import {
   click_table_row_column, 
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
-  wbw_admin, 
+  bw_admin, 
   basic_options } from "./helpers/helper.js";
 
 import { userVariables } from "../../.testcaferc";
 
 fixture`admin_submissions_fixture`.beforeEach(async (t) => {
-  await reset_bmlt();
-  await basic_options();
-  await delete_submissions();
-  await configure_service_bodies();
-  await insert_submissions();
+  await reset_bmlt(t);
+  await basic_options(t);
+  await delete_submissions(t);
+  await configure_service_bodies(t);
+  await insert_submissions(t);
 
-  await t.useRole(wbw_admin).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bw_admin).navigateTo(userVariables.admin_submissions_page);
 });
 
 test("Approve_New_Meeting", async (t) => {
@@ -85,7 +85,7 @@ test("Approve_Close_Meeting_With_Unpublish", async (t) => {
 
   // set it to unpublish
   await t.navigateTo(userVariables.admin_options_page);
-  await select_dropdown_by_text(ao.wbw_delete_closed_meetings, "Unpublish");
+  await select_dropdown_by_text(ao.bw_delete_closed_meetings, "Unpublish");
   await t.click(ao.submit);
   await ao.settings_updated();
   await t.navigateTo(userVariables.admin_submissions_page);
@@ -112,7 +112,7 @@ test("Approve_Close_Meeting_With_Delete", async (t) => {
 
   // set it to delete
   await t.navigateTo(userVariables.admin_options_page);
-  await select_dropdown_by_text(ao.wbw_delete_closed_meetings, "Delete");
+  await select_dropdown_by_text(ao.bw_delete_closed_meetings, "Delete");
   await t.click(ao.submit);
   await ao.settings_updated();
   await t.navigateTo(userVariables.admin_submissions_page);
@@ -268,7 +268,7 @@ test("Submission_Buttons_Active_correctly", async (t) => {
 
 // test('Quickedit_New_Meeting', async t => {
 
-// await t.useRole(wbw_admin);
+// await t.useRole(bw_admin);
 
 //     // new meeting = row 0
 //     var row = 0;

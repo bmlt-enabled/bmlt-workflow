@@ -1,1 +1,1 @@
-delete from wp_wbw_submissions;
+delete from wp_bw_submissions;

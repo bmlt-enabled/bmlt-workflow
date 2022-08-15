@@ -19,8 +19,8 @@
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
-use wbw\WBW_Debug;
-use wbw\BMLT\Integration;
+use bw\BW_Debug;
+use bw\BMLT\Integration;
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
@@ -56,20 +56,20 @@ EOD;
 
 ?>
 <!-- Approve dialog -->
-<div id="wbw_submission_approve_dialog" class="hidden" style="max-width:800px">
-    <label class='dialog_label' for="wbw_submission_approve_dialog_textarea">Approval note:</label>
+<div id="bw_submission_approve_dialog" class="hidden" style="max-width:800px">
+    <label class='dialog_label' for="bw_submission_approve_dialog_textarea">Approval note:</label>
     <div class="grow-wrap">
-        <textarea class='dialog_textarea' id="wbw_submission_approve_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
+        <textarea class='dialog_textarea' id="bw_submission_approve_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
     </div>
     <p>You can use the quickedit function to make any extra changes before approval.</p>
     <p>Are you sure you would like to approve the submission?</p>
 </div>
 
 <!-- Approve dialog -->
-<div id="wbw_submission_approve_close_dialog" class="hidden" style="max-width:800px">
-    <label class='dialog_label' for="wbw_submission_approve_close_dialog_textarea">Approval note:</label>
+<div id="bw_submission_approve_close_dialog" class="hidden" style="max-width:800px">
+    <label class='dialog_label' for="bw_submission_approve_close_dialog_textarea">Approval note:</label>
     <div class="grow-wrap">
-        <textarea class='dialog_textarea' id="wbw_submission_approve_close_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
+        <textarea class='dialog_textarea' id="bw_submission_approve_close_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
     </div>
     <p>Choose whether you'd like the meeting to be deleted from BMLT, or marked as unpublished.</p>
     <input type='radio' name='close_action' id='close_unpublish'><label for='close_unpublish'>Unpublish</label>
@@ -77,25 +77,25 @@ EOD;
 </div>
 
 <!-- Delete dialog -->
-<div id="wbw_submission_delete_dialog" class="hidden" style="max-width:800px">
+<div id="bw_submission_delete_dialog" class="hidden" style="max-width:800px">
     <p>This change cannot be undone. Use this to remove an entirely unwanted submission from the list.</p>
     <p>Are you sure you would like to delete this submission completely?</p>
 </div>
 
 <!-- Reject dialog -->
-<div id="wbw_submission_reject_dialog" class="hidden" style="max-width:800px">
-    <label class='dialog_label' for="wbw_submission_reject_dialog_textarea">Rejection note:</label>
+<div id="bw_submission_reject_dialog" class="hidden" style="max-width:800px">
+    <label class='dialog_label' for="bw_submission_reject_dialog_textarea">Rejection note:</label>
     <div class="grow-wrap">
-        <textarea class='dialog_textarea' id="wbw_submission_reject_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this reject for the submitter'></textarea>
+        <textarea class='dialog_textarea' id="bw_submission_reject_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this reject for the submitter'></textarea>
     </div>
     <p>Are you sure you would like to reject this submission?</p>
 </div>
 
 <!-- Quickedit dialog -->
-<div id="wbw_submission_quickedit_dialog" class="hidden">
+<div id="bw_submission_quickedit_dialog" class="hidden">
     <div class="form-grid">
         <div class="form-grid-top">
-            <div class="wbw_info_text">
+            <div class="bw_info_text">
                 <br>Highlighted fields are from the user submission and your changes and will be stored when the QuickEdit is saved.
                 <br><br>
             </div>
@@ -188,10 +188,10 @@ EOD;
                 <?php echo $counties ?>
             </div>
 
-            <label for="quickedit_location_province">State<span class="wbw-required-field"> *</span></label>
+            <label for="quickedit_location_province">State<span class="bw-required-field"> *</span></label>
             <?php echo $states ?>
 
-            <label for="quickedit_location_postal_code_1">Postcode<span class="wbw-required-field"> *</span></label>
+            <label for="quickedit_location_postal_code_1">Postcode<span class="bw-required-field"> *</span></label>
             <input class="meeting-input" type="number" name="quickedit_location_postal_code_1" size="5" max="99999" id="quickedit_location_postal_code_1" required>
 
             <div id="optional_location_nation">
@@ -213,7 +213,7 @@ EOD;
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
     <h2>Meeting Submissions</h2>
-    <hr class="wbw-error-message">
+    <hr class="bw-error-message">
 
     <div class="dt-container">
         <table id="dt-submission" class="display" style="width:90%">

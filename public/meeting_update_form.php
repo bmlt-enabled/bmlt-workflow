@@ -17,10 +17,10 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 
-use wbw\BMLT\Integration;
+use bw\BMLT\Integration;
 
-$wbw_bmlt_test_status = get_option('wbw_bmlt_test_status', "failure");
-if ($wbw_bmlt_test_status != "success") {
+$bw_bmlt_test_status = get_option('bw_bmlt_test_status', "failure");
+if ($bw_bmlt_test_status != "success") {
     wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
 }
 
@@ -57,7 +57,7 @@ EOD;
 }
 ?>
 
-<div id="form_replace" class="wbw_wide_form">
+<div id="form_replace" class="bw_wide_form">
     <form action="#" method="post" id="meeting_update_form">
         <div>
             <label for="update_reason">Reason For Update:</label>
@@ -90,11 +90,11 @@ EOD;
             <div id="personal_details" class="form-grid-col2-1">
                 <fieldset>
                     <legend>Personal Details</legend>
-                    <label for="first_name">First Name<span class="wbw-required-field">*</span></label>
+                    <label for="first_name">First Name<span class="bw-required-field">*</span></label>
                     <input type="text" name="first_name" size="20" id="first_name" required>
-                    <label for="last_name">Last Name<span class="wbw-required-field">*</span></label>
+                    <label for="last_name">Last Name<span class="bw-required-field">*</span></label>
                     <input type="text" name="last_name" size="20" id="last_name" required>
-                    <label for="email_address">Email Address<span class="wbw-required-field">*</span></label>
+                    <label for="email_address">Email Address<span class="bw-required-field">*</span></label>
                     <input type="email" name="email_address" id="email_address" size="50" required>
                     <label for="add_email" class="add_email">Add this email as a contact
                         address for the group</label>
@@ -104,7 +104,7 @@ EOD;
                     </select>
                     <label for="contact_number_confidential">Contact Number (Confidential)</label>
                     <input type="number" name="contact_number_confidential" id="contact_number_confidential">
-                    <label for="group_relationship">Relationship to group<span class="wbw-required-field">*</span></label>
+                    <label for="group_relationship">Relationship to group<span class="bw-required-field">*</span></label>
                     <select name="group_relationship" id="group_relationship" required>
                         <option value="" disabled selected hidden>Select one</option>
                         <option value="Group Member">Group Member</option>
@@ -169,9 +169,9 @@ EOD;
                     <legend>Meeting Details</legend>
 
                     <div class="form-grid-col1">
-                        <label for="meeting_name">Group Name<span class="wbw-required-field"> *</span></label>
+                        <label for="meeting_name">Group Name<span class="bw-required-field"> *</span></label>
                         <input class="meeting-input" type="text" name="meeting_name" size="50" id="meeting_name" required>
-                        <label for="weekday_tinyint">Meeting Day:<span class="wbw-required-field"> *</span></label>
+                        <label for="weekday_tinyint">Meeting Day:<span class="bw-required-field"> *</span></label>
                         <select class="meeting-input" name="weekday_tinyint" id="weekday_tinyint">
                             <option value=1>Sunday</option>
                             <option value=2>Monday</option>
@@ -183,7 +183,7 @@ EOD;
                         </select>
                         <div class="grid-flex-container">
                             <div class="grid-flex-item">
-                                <label for="start_time">Start Time<span class="wbw-required-field"> *</span></label>
+                                <label for="start_time">Start Time<span class="bw-required-field"> *</span></label>
                                 <input class="meeting-input" type="time" name="start_time" size="10" id="start_time" required>
                             </div>
                             <div class="grid-flex-item">
@@ -230,24 +230,24 @@ EOD;
                         </div>
                         <input type="hidden" name="duration_time" size="10" id="duration_time" required>
 
-                        <label for="display_format_shared_id_list">Meeting Formats<span class="wbw-required-field"> *</span></label>
+                        <label for="display_format_shared_id_list">Meeting Formats<span class="bw-required-field"> *</span></label>
                         <select class="display_format_shared_id_list-select2" name="display_format_shared_id_list" id="display_format_shared_id_list" required></select>
                         <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
                         <div id="location_fields">
-                            <label for="location_text">Location (eg: a building name)<span class="wbw-required-field"> *</span></label>
+                            <label for="location_text">Location (eg: a building name)<span class="bw-required-field"> *</span></label>
                             <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
-                            <label for="location_street">Street Address<span class="wbw-required-field"> *</span></label>
+                            <label for="location_street">Street Address<span class="bw-required-field"> *</span></label>
                             <input class="meeting-input" type="text" name="location_street" size="50" id="location_street" required>
                             <label for="location_info">Extra Location Info (eg: Near the park)</label>
                             <input class="meeting-input" type="text" name="location_info" size="50" id="location_info">
                         </div>
-                        <label for="location_municipality">City/Town/Suburb<span class="wbw-required-field"> *</span></label>
+                        <label for="location_municipality">City/Town/Suburb<span class="bw-required-field"> *</span></label>
                         <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
                         <div id="optional_location_sub_province">
                             <label id="location_sub_province_label" for="location_sub_province">Sub Province</label>
                             <?php echo $counties ?>
                         </div>
-                        <label for="location_province">State<span class="wbw-required-field"> *</span></label>
+                        <label for="location_province">State<span class="bw-required-field"> *</span></label>
                         <?php echo $states ?>
                         <div id="optional_postcode">
                             <label for="location_postal_code_1">Postcode</label>
@@ -289,15 +289,15 @@ EOD;
                                 <option value="no" id="starter_kit_required_no">No</option>
                             </select>
                             <div id="starter_kit_postal_address_div">
-                                <label for="starter_kit_postal_address">Starter Kit Postal Address<span class="wbw-required-field"> *</span></label>
+                                <label for="starter_kit_postal_address">Starter Kit Postal Address<span class="bw-required-field"> *</span></label>
                                 <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" maxlength="512" rows="5" cols="50"></textarea>
                             </div>
                         </div>
                     </fieldset>
                 </div>
-                <hr class="wbw-error-message">
+                <hr class="bw-error-message">
 
-                <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"><span class="spinner" id="wbw-submit-spinner"></span>
+                <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"><span class="spinner" id="bw-submit-spinner"></span>
             </div>
         </div>
 

@@ -18,52 +18,52 @@
 
 
 
-namespace wbw;
+namespace bw;
 
-class WBW_Database
+class BW_Database
 {
-    use \wbw\WBW_Debug;
+    use \bw\BW_Debug;
 
     public function __construct($stub = null)
     {
         global $wpdb;
 
-        $this->wbw_db_version = '0.4.0';
+        $this->bw_db_version = '0.4.0';
 
         // database tables
-        $this->wbw_submissions_table_name = $wpdb->prefix . 'wbw_submissions';
-        $this->wbw_service_bodies_table_name = $wpdb->prefix . 'wbw_service_bodies';
-        $this->wbw_service_bodies_access_table_name = $wpdb->prefix . 'wbw_service_bodies_access';
+        $this->bw_submissions_table_name = $wpdb->prefix . 'bw_submissions';
+        $this->bw_service_bodies_table_name = $wpdb->prefix . 'bw_service_bodies';
+        $this->bw_service_bodies_access_table_name = $wpdb->prefix . 'bw_service_bodies_access';
     }
 
-    public function wbw_drop_tables()
+    public function bw_drop_tables()
     {
         global $wpdb;
 
-        $sql = "DROP TABLE IF EXISTS " . $this->wbw_service_bodies_access_table_name . ";";
+        $sql = "DROP TABLE IF EXISTS " . $this->bw_service_bodies_access_table_name . ";";
         $wpdb->query($sql);
-        $sql = "DROP TABLE IF EXISTS " . $this->wbw_submissions_table_name . ";";
+        $sql = "DROP TABLE IF EXISTS " . $this->bw_submissions_table_name . ";";
         $wpdb->query($sql);
-        $sql = "DROP TABLE IF EXISTS " . $this->wbw_service_bodies_table_name . ";";
+        $sql = "DROP TABLE IF EXISTS " . $this->bw_service_bodies_table_name . ";";
         $wpdb->query($sql);
         $this->debug_log("tables dropped");
 
     }
     
     /**
-     * wbw_db_upgrade
+     * bw_db_upgrade
      *
      * @param  mixed $desired_version
      * @param  mixed $fresh_install
      * @return int 0 if nothing was performed, 1 if fresh install was performed, 2 if upgrade was performed
      */
-    public function wbw_db_upgrade($desired_version, $fresh_install)
+    public function bw_db_upgrade($desired_version, $fresh_install)
     {
 
         global $wpdb;
 
         // work out which version we're at right now
-        $installed_version = get_option('wbw_db_version');
+        $installed_version = get_option('bw_db_version');
 
         // do nothing by default
         $upgrade = false;
@@ -75,13 +75,13 @@ class WBW_Database
         } else {
             // check if our db tables even exist - #73
             $tblcount = 0;
-            $sql = 'show tables like "' . $this->wbw_service_bodies_access_table_name .'";';
+            $sql = 'show tables like "' . $this->bw_service_bodies_access_table_name .'";';
             $wpdb->query($sql);
             $tblcount += $wpdb->num_rows;
-            $sql = 'show tables like "' . $this->wbw_submissions_table_name .'";';
+            $sql = 'show tables like "' . $this->bw_submissions_table_name .'";';
             $wpdb->query($sql);
             $tblcount += $wpdb->num_rows;
-            $sql = 'show tables like "' . $this->wbw_service_bodies_table_name .'";';
+            $sql = 'show tables like "' . $this->bw_service_bodies_table_name .'";';
             $wpdb->query($sql);
             $tblcount += $wpdb->num_rows;
             $this->debug_log("we found " . $tblcount . " tables");
@@ -108,9 +108,9 @@ class WBW_Database
             $charset_collate = $wpdb->get_charset_collate();
 
             // shouldn't need this but just in case the tables already exist
-            $this->wbw_drop_tables();
+            $this->bw_drop_tables();
 
-            $sql = "CREATE TABLE " . $this->wbw_service_bodies_table_name . " (
+            $sql = "CREATE TABLE " . $this->bw_service_bodies_table_name . " (
             service_body_bigint bigint(20) NOT NULL,
             service_body_name tinytext NOT NULL,
             service_body_description text,
@@ -120,15 +120,15 @@ class WBW_Database
 
             $wpdb->query($sql);
 
-            $sql = "CREATE TABLE " . $this->wbw_service_bodies_access_table_name . " (
+            $sql = "CREATE TABLE " . $this->bw_service_bodies_access_table_name . " (
             service_body_bigint bigint(20) NOT NULL,
             wp_uid bigint(20) unsigned  NOT NULL,
-            FOREIGN KEY (service_body_bigint) REFERENCES " . $this->wbw_service_bodies_table_name . "(service_body_bigint) 
+            FOREIGN KEY (service_body_bigint) REFERENCES " . $this->bw_service_bodies_table_name . "(service_body_bigint) 
         ) $charset_collate;";
 
             $wpdb->query($sql);
 
-            $sql = "CREATE TABLE " . $this->wbw_submissions_table_name . " (
+            $sql = "CREATE TABLE " . $this->bw_submissions_table_name . " (
             id bigint(20) NOT NULL AUTO_INCREMENT,
             submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
             change_time datetime DEFAULT '0000-00-00 00:00:00',
@@ -142,23 +142,23 @@ class WBW_Database
             changes_requested varchar(2048),
             action_message varchar(1024),
             PRIMARY KEY (id),
-            FOREIGN KEY (service_body_bigint) REFERENCES " . $this->wbw_service_bodies_table_name . "(service_body_bigint) 
+            FOREIGN KEY (service_body_bigint) REFERENCES " . $this->bw_service_bodies_table_name . "(service_body_bigint) 
         ) $charset_collate;";
 
             $wpdb->query($sql);
 
             $this->debug_log("fresh install: tables created");
 
-            delete_option('wbw_db_version');
-            add_option('wbw_db_version', $this->wbw_db_version);
+            delete_option('bw_db_version');
+            add_option('bw_db_version', $this->bw_db_version);
             $this->debug_log("fresh install: db version installed");
 
             return 1; // fresh install performed
         }
 
         if ($upgrade) {
-            delete_option('wbw_db_version');
-            add_option('wbw_db_version', $this->wbw_db_version);
+            delete_option('bw_db_version');
+            add_option('bw_db_version', $this->bw_db_version);
             return 2; // upgrade performed
         }
 

@@ -18,9 +18,9 @@
 
 
 
-namespace wbw\REST;
+namespace bw\REST;
 
-use wbw\BMLT\Integration;
+use bw\BMLT\Integration;
 
 class HandlerCore
 {
@@ -38,7 +38,7 @@ class HandlerCore
     }
 
     // accepts raw string or array
-    public function wbw_rest_success($message)
+    public function bw_rest_success($message)
     {
         if (is_array($message)) {
             $data = $message;
@@ -51,15 +51,15 @@ class HandlerCore
         return $response;
     }
 
-    public function wbw_rest_error($message, $code)
+    public function bw_rest_error($message, $code)
     {
-        return new \WP_Error('wbw_error', $message, array('status' => $code));
+        return new \WP_Error('bw_error', $message, array('status' => $code));
     }
 
-    public function wbw_rest_error_with_data($message, $code, array $data)
+    public function bw_rest_error_with_data($message, $code, array $data)
     {
         $data['status'] = $code;
-        return new \WP_Error('wbw_error', $message, $data);
+        return new \WP_Error('bw_error', $message, $data);
     }
 
   

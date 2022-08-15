@@ -29,6 +29,6 @@ cd ..
 rm -rf /home/ssm-user/bw/*
 cp -R bmlt-workflow/* bw
 cd bw
-sed -i "s/define('WBW_DEBUG', false);/define('WBW_DEBUG', true);/g" config.php
+sed -i "s/define('BW_DEBUG', false);/define('BW_DEBUG', true);/g" config.php
 /usr/local/bin/composer dumpautoload
 /home/ssm-user/scripts/wp-install.sh

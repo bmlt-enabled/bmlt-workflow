@@ -18,33 +18,33 @@
 
 
 
-namespace wbw;
+namespace bw;
 
-class WBW_WP_Options
+class BW_WP_Options
 {
 
     public function __construct($stub = null)
     {
     // capability for managing submissions
-        $this->wbw_capability_manage_submissions = 'wbw_manage_submissions';
+        $this->bw_capability_manage_submissions = 'bw_manage_submissions';
     
         // option list so we can back them up
-        $this->wbw_options = array(
-            'wbw_db_version',
-            'wbw_bmlt_server_address',
-            'wbw_bmlt_username',
-            'wbw_bmlt_password',
-            'wbw_bmlt_test_status',
-            'wbw_submitter_email_template',
-            'wbw_optional_location_sub_province',
-            'wbw_optional_location_nation',
-            'wbw_delete_closed_meetings',
-            'wbw_email_from_address',
-            'wbw_fso_email_template',
-            'wbw_fso_email_address',
-            'wbw_submitter_email_template',
-            'wbw_fso_feature',
-            'wbw_optional_postcode'
+        $this->bw_options = array(
+            'bw_db_version',
+            'bw_bmlt_server_address',
+            'bw_bmlt_username',
+            'bw_bmlt_password',
+            'bw_bmlt_test_status',
+            'bw_submitter_email_template',
+            'bw_optional_location_sub_province',
+            'bw_optional_location_nation',
+            'bw_delete_closed_meetings',
+            'bw_email_from_address',
+            'bw_fso_email_template',
+            'bw_fso_email_address',
+            'bw_submitter_email_template',
+            'bw_fso_feature',
+            'bw_optional_postcode'
         );
     }
         
