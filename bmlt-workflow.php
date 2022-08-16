@@ -189,8 +189,8 @@ if (!class_exists('bmltwf_plugin')) {
 
         private function register_select2()
         {
-            wp_register_style('select2css', 'thirdparty/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
-            wp_register_script('select2', 'thirdparty/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
+            wp_register_style('select2css', plugin_dir_url(__FILE__) . '/thirdparty/select2@4.1.0-rc.0/dist/css/select2.min.css', false, '1.0', 'all');
+            wp_register_script('select2', plugin_dir_url(__FILE__) . '/thirdparty/select2@4.1.0-rc.0/dist/js/select2.min.js', array('jquery'), '1.0', true);
         }
 
         private function enqueue_select2()
@@ -210,8 +210,8 @@ if (!class_exists('bmltwf_plugin')) {
         {
 
             $this->register_select2();
-            wp_register_script('jqueryvalidate', 'thirdparty/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
-            wp_register_script('jqueryvalidateadditional', 'thirdparty/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jqueryvalidate'), '1.0', true);
+            wp_register_script('jqueryvalidate', plugin_dir_url(__FILE__) . '/thirdparty/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
+            wp_register_script('jqueryvalidateadditional', plugin_dir_url(__FILE__) . '/thirdparty/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jqueryvalidate'), '1.0', true);
             $this->prevent_cache_register_script('bmltwf-general-js', array('jquery'), 'js/script_includes.js');
             $this->prevent_cache_register_script('bmltwf-meeting-update-form-js', array('jquery', 'jqueryvalidate', 'jqueryvalidateadditional'), 'js/meeting_update_form.js');
             $this->prevent_cache_register_style('bmltwf-meeting-update-form-css', false, 'css/meeting_update_form.css');
@@ -262,8 +262,8 @@ if (!class_exists('bmltwf_plugin')) {
                     $this->enqueue_jquery_dialog();
 
                     // datatables
-                    wp_register_style('dtcss', 'thirdparty/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.css', false, '1.0', 'all');
-                    wp_register_script('dt', 'thirdparty/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
+                    wp_register_style('dtcss', plugin_dir_url(__FILE__) . '/thirdparty/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.css', false, '1.0', 'all');
+                    wp_register_script('dt', plugin_dir_url(__FILE__) . '/thirdparty/dt/dt-1.11.5/b-2.2.2/r-2.2.9/sl-1.3.4/datatables.min.js', array('jquery'), '1.0', true);
                     wp_enqueue_style('dtcss');
                     wp_enqueue_script('dt');
 
