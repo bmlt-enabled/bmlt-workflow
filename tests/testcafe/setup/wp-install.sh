@@ -38,7 +38,7 @@ export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 aws ssm put-parameter --overwrite --name bmltwf_test_wppass --value $wppass --type SecureString --region ap-southeast-2
 export wpemail=nigel.brittain@gmail.com
 export siteurl=54.153.167.239/wordpressdev
-export BRANCH=1.0.0
+export BRANCH=1.0.1-fixes
 
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User

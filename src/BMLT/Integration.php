@@ -85,6 +85,8 @@ class Integration
         );
 
         $resp = wp_remote_get($url, array('headers'=>$headers));
+        $this->debug_log("WP_REMOTE_GET RETURNS");
+        $this->debug_log(($resp));
 
         if ((!is_array( $resp )) ||  is_wp_error( $resp )) {
             return $this->bmltwf_rest_error('Server error retrieving meeting', 500);

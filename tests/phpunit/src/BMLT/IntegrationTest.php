@@ -466,14 +466,8 @@ Line: $errorLine
 
         $json = '{ "results" : [ { "address_components" : [ { "long_name" : "Sydney", "short_name" : "Sydney", "types" : [ "colloquial_area", "locality", "political" ] }, { "long_name" : "New South Wales", "short_name" : "NSW", "types" : [ "administrative_area_level_1", "political" ] }, { "long_name" : "Australia", "short_name" : "AU", "types" : [ "country", "political" ] } ], "formatted_address" : "Sydney NSW, Australia", "geometry" : { "bounds" : { "northeast" : { "lat" : -33.5781409, "lng" : 151.3430209 }, "southwest" : { "lat" : -34.118347, "lng" : 150.5209286 } }, "location" : { "lat" : -33.8688197, "lng" : 151.2092955 }, "location_type" : "APPROXIMATE", "viewport" : { "northeast" : { "lat" : -33.5781409, "lng" : 151.3430209 }, "southwest" : { "lat" : -34.118347, "lng" : 150.5209286 } } }, "partial_match" : true, "place_id" : "ChIJP3Sa8ziYEmsRUKgyFmh9AQM", "types" : [ "colloquial_area", "locality", "political" ] } ], "status" : "OK" }';
 
-        Functions\when('curl_exec')->justReturn($json);
-        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=sydney%2C+australia&key=googlemapstestkey";
+        Functions\when('wp_remote_get')->justReturn($json);
 
-        Functions\expect('curl_init')->once()->with($url);
-        // Functions\expect('curl_init')->once();
-        Functions\when('curl_setopt')->returnArg();
-        Functions\when('curl_close')->returnArg();
-    
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
         /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
@@ -484,6 +478,7 @@ Line: $errorLine
         $this->debug_log("*** GEO RESPONSE");
         $this->debug_log(($response));
 
+        $this->assertNotInstanceOf(WP_Error::class, $response);
         $this->assertIsNumeric($response['latitude']);
         $this->assertIsNumeric($response['longitude']);
 
@@ -499,7 +494,6 @@ Line: $errorLine
     public function test_cant_call_geolocateAddress_with_invalid_address(): void
     {
 
-
         Functions\when('wp_safe_remote_get')->returnArg();
         Functions\when('wp_safe_remote_post')->returnArg();
         Functions\when('wp_remote_retrieve_cookies')->returnArg();
@@ -507,13 +501,8 @@ Line: $errorLine
 
         $json = ' { "results" : [], "status" : "ZERO_RESULTS" }';
        
-        Functions\when('curl_exec')->justReturn($json);
+        Functions\when('wp_remote_get')->justReturn($json);
         $url = "https://maps.googleapis.com/maps/api/geocode/json?address=junk%2C+junk&key=googlemapstestkey";
-
-        Functions\expect('curl_init')->once()->with($url);
-        // Functions\expect('curl_init')->once();
-        Functions\when('curl_setopt')->returnArg();
-        Functions\when('curl_close')->returnArg();
     
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
         /** @var Mockery::mock $BMLTWF_WP_Options test */
@@ -538,7 +527,6 @@ Line: $errorLine
     public function test_error_when_gmaps_call_returns_trash(): void
     {
 
-
         Functions\when('wp_safe_remote_get')->returnArg();
         Functions\when('wp_safe_remote_post')->returnArg();
         Functions\when('wp_remote_retrieve_cookies')->returnArg();
@@ -546,13 +534,8 @@ Line: $errorLine
 
         $json = ' { "junk" : "junk" }';
        
-        Functions\when('curl_exec')->justReturn($json);
+        Functions\when('wp_remote_get')->justReturn($json);
         $url = "https://maps.googleapis.com/maps/api/geocode/json?address=junk%2C+junk&key=googlemapstestkey";
-
-        Functions\expect('curl_init')->once()->with($url);
-        // Functions\expect('curl_init')->once();
-        Functions\when('curl_setopt')->returnArg();
-        Functions\when('curl_close')->returnArg();
     
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
         /** @var Mockery::mock $BMLTWF_WP_Options test */
