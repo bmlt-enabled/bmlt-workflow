@@ -80,22 +80,19 @@ class Integration
 
         $bmltwf_bmlt_server_address = get_option('bmltwf_bmlt_server_address');
         $url = $bmltwf_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
-
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
         $headers = array(
             "Accept: */*",
         );
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
-        $resp = curl_exec($curl);
-        if (!$resp) {
+        $resp = wp_remote_get($url, array('headers'=>$headers));
+
+        if ((!is_array( $resp )) ||  is_wp_error( $resp )) {
             return $this->bmltwf_rest_error('Server error retrieving meeting', 500);
         }
-        curl_close($curl);
-        $meetingarr = json_decode($resp, true);
+
+        $body = wp_remote_retrieve_body($resp);
+
+        $meetingarr = json_decode($body, true);
         if (empty($meetingarr[0])) {
             return $this->bmltwf_rest_error('Server error retrieving meeting', 500);
         }
@@ -252,26 +249,27 @@ class Integration
         
         $this->debug_log("*** GMAPS URL");
         $this->debug_log($url);
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
         $headers = array(
             "Accept: */*",
         );
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
 
-        $resp = curl_exec($curl);
+        $resp = wp_remote_get($url, array('headers'=>$headers));
 
-        if (!$resp) {
+        if ((!is_array( $resp )) ||  is_wp_error( $resp )) {
+            return $this->bmltwf_rest_error('Server error geolocating address', 500);
+        }
+
+        $body = wp_remote_retrieve_body($resp);
+
+        if (!$body) {
             return new \WP_Error('bmltwf', 'Server error geolocating address');
         }
 
-        curl_close($curl);
         $this->debug_log("*** GMAPS RESPONSE");
-        $this->debug_log($resp);
+        $this->debug_log($body);
 
-        $geo = json_decode($resp, true);
+        $geo = json_decode($body, true);
         if ((empty($geo)) || (empty($geo['status']))) {
             return new \WP_Error('bmltwf', 'Server error geolocating address');
         }
