@@ -24,8 +24,8 @@ use bmltwf\BMLTWF_Debug;
 $bmltwf_submitter_email_template_default = htmlentities(file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
 $bmltwf_fso_email_template_default = htmlentities(file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
 
-echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_submitter_email_template_default">' . $bmltwf_submitter_email_template_default . '</textarea></div>';
-echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_fso_email_template_default">' . $bmltwf_fso_email_template_default . '</textarea></div>';
+echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_submitter_email_template_default">' . esc_textarea($bmltwf_submitter_email_template_default) . '</textarea></div>';
+echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_fso_email_template_default">' . esc_textarea($bmltwf_fso_email_template_default) . '</textarea></div>';
 echo '<div class="bmltwf_banner"></div>';
 
 wp_nonce_field('wp_rest', '_wprestnonce');
@@ -52,9 +52,9 @@ echo '</form></div>';
     </div>
 
     <br><label for="bmltwf_bmlt_server_address"><b>Server Address:</b></label>
-    <input type="url" size="50" id="bmltwf_bmlt_server_address" name="bmltwf_bmlt_server_address" value="<?php echo get_option('bmltwf_bmlt_server_address') ?>" />
+    <input type="url" size="50" id="bmltwf_bmlt_server_address" name="bmltwf_bmlt_server_address" value="<?php echo esc_url_raw(get_option('bmltwf_bmlt_server_address')) ?>" />
     <br><label for="bmltwf_bmlt_username"><b>BMLT Username:</b></label>
-    <input type="text" size="50" id="bmltwf_bmlt_username" name="bmltwf_bmlt_username" value="<?php echo get_option('bmltwf_bmlt_username') ?>" />
+    <input type="text" size="50" id="bmltwf_bmlt_username" name="bmltwf_bmlt_username" value="<?php echo esc_attr('bmltwf_bmlt_username') ?>" />
     <br><label for="bmltwf_bmlt_password"><b>BMLT Password:</b></label>
     <input type="password" size="50" id="bmltwf_bmlt_password" name="bmltwf_bmlt_password" />
     <br><br>

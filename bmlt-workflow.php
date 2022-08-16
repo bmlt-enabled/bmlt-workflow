@@ -702,26 +702,22 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_shortcode_html()
         {
-            echo <<<END
-    <div class="bmltwf_info_text">
-    <br>You can use the shortcode <code>[bmltwf-meeting-update-form]</code> to list the appropriate meetings and service areas in your update form.
-    <br><br>
-    </div>
-    END;
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>You can use the shortcode <code>[bmltwf-meeting-update-form]</code> to list the appropriate meetings and service areas in your update form.';
+            echo '<br><br>';
+            echo '</div>';
         }
 
         public function bmltwf_email_from_address_html()
         {
 
             $from_address = get_option('bmltwf_email_from_address');
-            echo <<<END
-    <div class="bmltwf_info_text">
-    <br>The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form <code>Display Name &lt;example@example.com&gt;</code> or just a standard email address.
-    <br><br>
-    </div>
-    END;
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form <code>Display Name &lt;example@example.com&gt;</code> or just a standard email address.';
+            echo '<br><br>';
+            echo '</div>';
 
-            echo '<br><label for="bmltwf_email_from_address"><b>From Address:</b></label><input id="bmltwf_email_from_address" type="text" size="50" name="bmltwf_email_from_address" value="' . $from_address . '"/>';
+            echo '<br><label for="bmltwf_email_from_address"><b>From Address:</b></label><input id="bmltwf_email_from_address" type="text" size="50" name="bmltwf_email_from_address" value="' . esc_attr($from_address) . '"/>';
             echo '<br><br>';
         }
 
@@ -737,12 +733,10 @@ if (!class_exists('bmltwf_plugin')) {
                 $unpublish = 'selected';
             }
 
-            echo <<<END
-    <div class="bmltwf_info_text">
-    <br>Trusted servants approving a 'Close Meeting' request can choose to either Delete or Unpublish. This option selects the default for all trusted servants.
-    <br><br>
-    </div>
-    END;
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>Trusted servants approving a "Close Meeting" request can choose to either Delete or Unpublish. This option selects the default for all trusted servants.';
+            echo '<br><br>';
+            echo '</div>';
 
             echo '<br><label for="bmltwf_delete_closed_meetings"><b>Close meeting default:</b></label><select id="bmltwf_delete_closed_meetings" name="bmltwf_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>Unpublish</option><option name="delete" value="delete" ' . $delete . '>Delete</option>';
             echo '<br><br>';
@@ -751,12 +745,10 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_optional_form_fields_html()
         {
-            echo <<<END
-    <div class="bmltwf_info_text">
-    <br>Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users.
-    <br><br>
-    </div>
-    END;
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users.';
+            echo '<br><br>';
+            echo '</div>';
 
             $this->do_optional_field('bmltwf_optional_location_nation', 'Nation');
             $this->do_optional_field('bmltwf_optional_location_sub_province', 'Sub Province');
@@ -783,15 +775,14 @@ if (!class_exists('bmltwf_plugin')) {
                     $display = 'selected';
                     break;
             }
-            echo <<<END
-    <br><label for="${option}"><b>${friendlyname}:</b>
-    </label><select id="${option}" name="${option}">
-    <option name="hidden" value="hidden" ${hidden}>Hidden</option>
-    <option name="displayrequired" value="displayrequired" ${displayrequired}>Display + Required Field</option>
-    <option name="display" value="display" ${display}>Display Only</option>
-    </select>
-    <br><br>
-    END;
+
+            echo '<br><label for="' . esc_attr($option) . '"><b>' . esc_attr($friendlyname) . ':</b>';
+            echo '</label><select id="' . esc_attr($option) .'" name="' . esc_attr($option).'">';
+            echo '<option name="hidden" value="hidden" ' . esc_attr($hidden).'>Hidden</option>';
+            echo '<option name="displayrequired" value="displayrequired" '. esc_attr($displayrequired) . '>Display + Required Field</option>';
+            echo '<option name="display" value="display" '. esc_attr($display) . '>Display Only</option>';
+            echo '</select>';
+            echo '<br><br>';
         }
 
         public function bmltwf_fso_options_html()
@@ -799,12 +790,10 @@ if (!class_exists('bmltwf_plugin')) {
             $hidden = '';
             $display = '';
 
-            echo <<<END
-            <div class="bmltwf_info_text">
-            <br>Enable this setting to display the starter kit option in the submission form and to configure the email address for your Field Service Office.
-            <br><br>
-            </div>
-            END;
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>Enable this setting to display the starter kit option in the submission form and to configure the email address for your Field Service Office.';
+            echo '<br><br>';
+            echo '</div>';
 
             $fso_enabled = get_option('bmltwf_fso_feature');
             $from_address = get_option('bmltwf_fso_email_address');
@@ -817,34 +806,33 @@ if (!class_exists('bmltwf_plugin')) {
                     $display = 'selected';
                     break;
             }
-            echo <<<END
-            <br><label for="bmltwf_fso_feature"><b>FSO Features:</b>
-            </label><select id="bmltwf_fso_feature" name="bmltwf_fso_feature">
-            <option name="hidden" value="hidden" ${hidden}>Disabled</option>
-            <option name="display" value="display" ${display}>Enabled</option>
-            </select>
-            <br><br>
-            <div id="fso_options">
-            <div class="bmltwf_info_text">
-            <br>The email address to notify the FSO that starter kits are required.
-            <br><br>
-            </div>
-            END;
 
-            echo '<br><label for="bmltwf_email_from_address"><b>FSO Email Address:</b></label><input type="text" size="50" id="bmltwf_fso_email_address" name="bmltwf_fso_email_address" value="' . $from_address . '"/>';
+            echo '<br><label for="bmltwf_fso_feature"><b>FSO Features:</b>';
+            echo '</label><select id="bmltwf_fso_feature" name="bmltwf_fso_feature">';
+            echo '<option name="hidden" value="hidden" '. esc_attr($hidden) . '>Disabled</option>';
+            echo '<option name="display" value="display" ' . esc_attr($display) . '>Enabled</option>';
+            echo '</select>';
+            echo '<br><br>';
+            echo '<div id="fso_options">';
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>The email address to notify the FSO that starter kits are required.';
+            echo '<br><br>';
+            echo '</div>';
+
+            
+            echo '<br><label for="bmltwf_email_from_address"><b>FSO Email Address:</b></label><input type="text" size="50" id="bmltwf_fso_email_address" name="bmltwf_fso_email_address" value="' . esc_attr($from_address) . '"/>';
             echo '<br><br>';
 
-            echo <<<END
-            <div class="bmltwf_info_text">
-            <br>This template will be used when emailing the FSO about starter kit requests.
-            <br><br>
-            </div>
-            END;
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>This template will be used when emailing the FSO about starter kit requests.';
+            echo '<br><br>';
+            echo '</div>';
+
             $content = get_option('bmltwf_fso_email_template');
             $editor_id = 'bmltwf_fso_email_template';
 
             wp_editor($content, $editor_id, array('media_buttons' => false));
-            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
+            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . esc_attr($editor_id) . '_default">Copy default template to clipboard</button>';
             echo '<br><br>';
             echo '</div>';
          }
@@ -852,17 +840,16 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_submitter_email_template_html()
         {
 
-            echo <<<END
-    <div class="bmltwf_info_text">
-    <br>This template will be used when emailing a submitter about the meeting change they've requested.
-    <br><br>
-    </div>
-    END;
+            echo '<div class="bmltwf_info_text">';
+            echo "<br>This template will be used when emailing a submitter about the meeting change they've requested.";
+            echo '<br><br>';
+            echo '</div>';
+
             $content = get_option('bmltwf_submitter_email_template');
             $editor_id = 'bmltwf_submitter_email_template';
 
             wp_editor($content, $editor_id, array('media_buttons' => false));
-            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . $editor_id . '_default">Copy default template to clipboard</button>';
+            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . esc_attr($editor_id) . '_default">Copy default template to clipboard</button>';
             echo '<br><br>';
         }
 
