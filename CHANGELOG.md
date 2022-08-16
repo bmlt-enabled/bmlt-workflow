@@ -1,3 +1,6 @@
+## 1.0.1 (Aug 16, 2022)
+- Lots of code changes to support wordpress publish guidelines
+
 ## 1.0.0 (Aug 12, 2022)
 - Version number bump and rename of tables and options for wordpess publish
 
