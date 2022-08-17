@@ -16,20 +16,18 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-
 /**
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.0.1
+ * Version: 1.0.2
  * Requires at least: 5.2
  * Tested up to: 6.0
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
 
-
- define('BMLTWF_PLUGIN_VERSION','1.0.0');
+ define('BMLTWF_PLUGIN_VERSION','1.0.2');
 
 if (!defined('ABSPATH')) exit; // die if being called directly
 
