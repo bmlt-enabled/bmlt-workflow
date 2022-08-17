@@ -37,9 +37,7 @@ if ($meeting_counties_and_sub_provinces) {
     }
     $counties .= '</select>';
 } else {
-    $counties = <<<EOD
-    <input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">
-EOD;
+    $counties = '<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">';
 }
 
 $meeting_states_and_provinces = $bmlt_integration->getMeetingStates();
@@ -51,9 +49,7 @@ if ($meeting_states_and_provinces) {
     }
     $states .= '</select>';
 } else {
-    $states = <<<EOD
-    <input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>
-EOD;
+    $states = '<input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>';
 }
 ?>
 
