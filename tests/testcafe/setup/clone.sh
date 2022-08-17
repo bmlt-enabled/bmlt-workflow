@@ -26,7 +26,7 @@ cp tests/testcafe/setup/*.sh /home/ssm-user/scripts
 cp tests/testcafe/setup/*.sql /home/ssm-user/scripts
 chmod 755 /home/ssm-user/scripts/*.sh
 cd ..
-rm -rf /home/ssm-user/bmwf/*
+rm -rf /home/ssm-user/bmltwf/*
 cp -R bmlt-workflow/* bmltwf
 cd bmltwf
 sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" config.php
