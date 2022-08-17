@@ -260,8 +260,8 @@ if (!class_exists('bmltwf_plugin')) {
                     $this->enqueue_jquery_dialog();
 
                     // datatables
-                    wp_register_style('dtcss', plugin_dir_url(__FILE__) . '/thirdparty/Datatables/datatables.min.css', false, '1.0', 'all');
-                    wp_register_script('dt', plugin_dir_url(__FILE__) . '/thirdparty/Datatables/datatables.min.js', array('jquery'), '1.0', true);
+                    wp_register_style('dtcss', plugin_dir_url(__FILE__) . '/thirdparty/DataTables/datatables.min.css', false, '1.0', 'all');
+                    wp_register_script('dt', plugin_dir_url(__FILE__) . '/thirdparty/DataTables/datatables.min.js', array('jquery'), '1.0', true);
                     wp_enqueue_style('dtcss');
                     wp_enqueue_script('dt');
 
