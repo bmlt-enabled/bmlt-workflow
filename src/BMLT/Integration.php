@@ -23,7 +23,7 @@ namespace bmltwf\BMLT;
 //  use bmltwf\BMLTWF_Debug;
 use bmltwf\BMLTWF_WP_Options;
 
-if ((!defined('ABSPATH')||(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
+if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
 class Integration
 {

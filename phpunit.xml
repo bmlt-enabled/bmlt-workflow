@@ -12,6 +12,9 @@
          failOnRisky="true"
          failOnWarning="true"
          verbose="true">
+<php>
+         <ini name="display_errors" value="true"/>
+    </php>
     <testsuites>
         <testsuite name="default">
             <directory>tests/phpunit</directory>

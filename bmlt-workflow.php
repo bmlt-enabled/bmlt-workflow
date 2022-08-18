@@ -29,7 +29,7 @@
 
  define('BMLTWF_PLUGIN_VERSION','1.0.2');
 
-if ((!defined('ABSPATH')||(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
+if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
 require 'config.php';
 
