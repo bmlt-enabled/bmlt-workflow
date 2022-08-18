@@ -112,11 +112,11 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     {
         $json_post = json_encode($body);
 
-        $request   = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmwf/v1/submissions/{$test_submission_id}/approve");
+        $request   = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/submissions/{$test_submission_id}/approve");
         $request->set_header('content-type', 'application/json');
         $request->set_body($json_post);
         $request->set_url_params(array('id' => $test_submission_id));
-        $request->set_route("/bmwf/v1/submissions/{$test_submission_id}/approve");
+        $request->set_route("/bmltwf/v1/submissions/{$test_submission_id}/approve");
         $request->set_method('POST');
 
         return $request;

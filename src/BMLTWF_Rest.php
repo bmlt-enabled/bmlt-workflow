@@ -26,7 +26,7 @@ class BMLTWF_Rest
     public function __construct($stub = null)
     {
         // our rest namespace
-        $this->bmltwf_rest_namespace = 'bmwf/v1';
+        $this->bmltwf_rest_namespace = 'bmltwf/v1';
         $this->bmltwf_submissions_rest_base = 'submissions';
         $this->bmltwf_service_bodies_rest_base = 'servicebodies';
         $this->bmltwf_bmltserver_rest_base = 'bmltserver';

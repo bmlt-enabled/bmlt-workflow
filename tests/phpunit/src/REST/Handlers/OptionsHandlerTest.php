@@ -86,9 +86,9 @@ Line: $errorLine
     {
 
         
-        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmwf/v1/options/backup");
+        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/options/backup");
         $request->set_header('content-type', 'application/json');
-        $request->set_route("/bmwf/v1/options/backup");
+        $request->set_route("/bmltwf/v1/options/backup");
         $request->set_method('POST');
 
         $dblookup = array(
@@ -143,9 +143,9 @@ Line: $errorLine
 //     {
 
         
-//         $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmwf/v1/options/restore");
+//         $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/options/restore");
 //         $request->set_header('content-type', 'application/json');
-//         $request->set_route("/bmwf/v1/options/restore");
+//         $request->set_route("/bmltwf/v1/options/restore");
 //         $request->set_method('POST');
 
 //         $dblookup = array(

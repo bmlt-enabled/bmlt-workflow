@@ -94,9 +94,9 @@ Line: $errorLine
     {
 
         
-        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmwf/v1/servicebodies");
+        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/servicebodies");
         $request->set_header('content-type', 'application/json');
-        $request->set_route("/bmwf/v1/servicebodies");
+        $request->set_route("/bmltwf/v1/servicebodies");
         $request->set_method('GET');
 
         $sblookup = array(
@@ -144,9 +144,9 @@ Line: $errorLine
     // {
 
         
-    //     $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmwf/v1/servicebodies");
+    //     $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/servicebodies");
     //     $request->set_header('content-type', 'application/json');
-    //     $request->set_route("/bmwf/v1/servicebodies");
+    //     $request->set_route("/bmltwf/v1/servicebodies");
     //     $request->set_method('GET');
     //     $request->set_param('detail','true');
 
