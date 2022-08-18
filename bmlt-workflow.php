@@ -854,30 +854,17 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function display_bmltwf_admin_options_page()
         {
-            // $content = '';
-            // ob_start();
-            // include('admin/admin_options.php');
-            // $content = ob_get_clean();
-            // echo $content;
             include_once('admin/admin_options.php');
         }
 
         public function display_bmltwf_admin_submissions_page()
         {
-            $content = '';
-            ob_start();
-            include('admin/admin_submissions.php');
-            $content = ob_get_clean();
-            echo $content;
+            include_once('admin/admin_submissions.php');
         }
 
         public function display_bmltwf_admin_service_bodies_page()
         {
-            $content = '';
-            ob_start();
-            include('admin/admin_service_bodies.php');
-            $content = ob_get_clean();
-            echo $content;
+            include_once('admin/admin_service_bodies.php');
         }
 
         public function bmltwf_install()
