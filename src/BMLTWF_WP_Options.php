@@ -16,9 +16,9 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-
-
 namespace bmltwf;
+
+if ((!defined('ABSPATH')||(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
 class BMLTWF_WP_Options
 {

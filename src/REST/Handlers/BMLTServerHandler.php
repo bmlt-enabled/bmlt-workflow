@@ -140,7 +140,16 @@ class BMLTServerHandler
 
         $this->debug_log("encrypting BMLT password");
 
-        $encrypted = $this->BMLTWF_WP_Options->secrets_encrypt(NONCE_SALT, $password);
+        if(defined('BMLTWF_RUNNING_UNDER_PHPUNIT'))
+        {
+            $nonce_salt = BMLTWF_PHPUNIT_NONCE_SALT;
+        }
+        else
+        {
+            $nonce_salt = NONCE_SALT;
+        }
+
+        $encrypted = $this->BMLTWF_WP_Options->secrets_encrypt($nonce_salt, $password);
 
         if (!is_array($encrypted)) {
             return $this->handlerCore->bmltwf_rest_failure('Error encrypting password.');

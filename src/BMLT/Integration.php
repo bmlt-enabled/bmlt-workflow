@@ -22,7 +22,8 @@ namespace bmltwf\BMLT;
 
 //  use bmltwf\BMLTWF_Debug;
 use bmltwf\BMLTWF_WP_Options;
-use bmltwf\REST\HandlerCore;
+
+if ((!defined('ABSPATH')||(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
 class Integration
 {
@@ -296,7 +297,17 @@ class Integration
             if ($encrypted === false) {
                 return new \WP_Error('bmltwf', 'Error unpacking password.');
             }
-            $decrypted = $this->BMLTWF_WP_Options->secrets_decrypt(NONCE_SALT, $encrypted);
+
+            if(defined('BMLTWF_RUNNING_UNDER_PHPUNIT'))
+            {
+                $nonce_salt = BMLTWF_PHPUNIT_NONCE_SALT;
+            }
+            else
+            {
+                $nonce_salt = NONCE_SALT;
+            }
+
+            $decrypted = $this->BMLTWF_WP_Options->secrets_decrypt($nonce_salt, $encrypted);
             if ($decrypted === false) {
                 return new \WP_Error('bmltwf', 'Error decrypting password.');
             }

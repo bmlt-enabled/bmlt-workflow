@@ -19,7 +19,6 @@
 
 namespace bmltwf\REST;
 
-if (!defined('ABSPATH')) exit; // die if being called directly
 
 use bmltwf\REST\Handlers\BMLTServerHandler;
 use bmltwf\REST\Handlers\ServiceBodiesHandler;
@@ -27,6 +26,8 @@ use bmltwf\REST\Handlers\SubmissionsHandler;
 use bmltwf\REST\Handlers\OptionsHandler;
 use bmltwf\BMLTWF_Rest;
 use bmltwf\BMLTWF_WP_Options;
+
+if ((!defined('ABSPATH')||(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
 class Controller extends \WP_REST_Controller
 {

@@ -17,7 +17,7 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 
-if (!defined('ABSPATH')) exit; // die if being called directly
+if ((!defined('ABSPATH')||(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
 use bmltwf\BMLTWF_Debug;
 
