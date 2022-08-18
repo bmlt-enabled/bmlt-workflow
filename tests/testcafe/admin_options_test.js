@@ -87,16 +87,16 @@ fixture`admin_options_fixture`
 
 test("Backup", async (t) => {
   
-  console.log(backupurl);
+  // console.log(backupurl);
   await t.click(ao.backup_button);
   const b_elem = Selector("#bmltwf_backup_filename");
   const state = await b_elem();
   const filename = state.attributes.download;
   downloadedFilePath = getFileDownloadPath(filename);
   await waitForFileDownload(downloadedFilePath);
-  console.log(logger);
+  // console.log(logger);
   var f = JSON.parse(logger.requests[0].response.body.toString());
-  console.log(logger.requests[0].response.body.toString());
+  // console.log(logger.requests[0].response.body.toString());
   var backup = JSON.parse(f.backup);
 
   await t.expect(f.message).eql("Backup Successful");

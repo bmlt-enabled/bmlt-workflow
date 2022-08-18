@@ -27,29 +27,18 @@ if ($bmltwf_bmlt_test_status != "success") {
 wp_nonce_field('wp_rest', '_wprestnonce');
 
 $bmlt_integration = new Integration();
-
+$bmltwf_do_counties_and_sub_provinces = false;
 $meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
 
 if ($meeting_counties_and_sub_provinces) {
-    $counties = '<select class="meeting-input" id="location_sub_province" name="location_sub_province">';
-    foreach ($meeting_counties_and_sub_provinces as $key) {
-        $counties .= '<option value="' . $key . '">' . $key . '</option>';
-    }
-    $counties .= '</select>';
-} else {
-    $counties = '<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">';
+    $bmltwf_do_counties_and_sub_provinces = true;
 }
 
+$bmltwf_do_states_and_provinces = false;
 $meeting_states_and_provinces = $bmlt_integration->getMeetingStates();
 
 if ($meeting_states_and_provinces) {
-    $states = '<select class="meeting-input" id="location_province" name="location_province">';
-    foreach ($meeting_states_and_provinces as $key) {
-        $states .= '<option value="' . $key . '">' . $key . '</option>';
-    }
-    $states .= '</select>';
-} else {
-    $states = '<input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>';
+    $bmltwf_do_states_and_provinces = true;
 }
 ?>
 
@@ -241,10 +230,35 @@ if ($meeting_states_and_provinces) {
                         <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
                         <div id="optional_location_sub_province">
                             <label id="location_sub_province_label" for="location_sub_province">Sub Province</label>
-                            <?php echo $counties ?>
+
+<?php
+if ($bmltwf_do_counties_and_sub_provinces) {
+    echo'<select class="meeting-input" id="location_sub_province" name="location_sub_province">';
+    foreach ($meeting_counties_and_sub_provinces as $key) {
+        echo '<option value="' . $key . '">' . $key . '</option>';
+    }
+    echo '</select>';
+} else {
+    echo'<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">';
+}
+
+?>
                         </div>
                         <label for="location_province">State<span class="bmltwf-required-field"> *</span></label>
-                        <?php echo $states ?>
+<?php
+
+if ($bmltwf_do_states_and_provinces) {
+    echo '<select class="meeting-input" id="location_province" name="location_province">';
+    foreach ($meeting_states_and_provinces as $key) {
+        echo '<option value="' . $key . '">' . $key . '</option>';
+    }
+    echo '</select>';
+} else {
+    echo '<input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>';
+}
+
+?>
+
                         <div id="optional_postcode">
                             <label for="location_postal_code_1">Postcode</label>
                             <input class="meeting-input" type="text" name="location_postal_code_1" id="location_postal_code_1" required>

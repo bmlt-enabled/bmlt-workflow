@@ -26,28 +26,18 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
 $bmlt_integration = new Integration();
 
+$bmltwf_do_counties_and_sub_provinces = false;
 $meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
 
 if ($meeting_counties_and_sub_provinces) {
-    $counties = '<select class="meeting-input" name="quickedit_location_sub_province">';
-    foreach ($meeting_counties_and_sub_provinces as $key) {
-        $counties .= '<option value="' . esc_attr($key) . '">' . esc_attr($key) . '</option>';
-    }
-    $counties .= '</select>';
-} else {
-    $counties = '<input class="meeting-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">';
+    $bmltwf_do_counties_and_sub_provinces = true;
 }
 
+$bmltwf_do_states_and_provinces = false;
 $meeting_states_and_provinces = $bmlt_integration->getMeetingStates();
 
 if ($meeting_states_and_provinces) {
-    $states = '<select class="meeting-input" name="quickedit_location_province">';
-    foreach ($meeting_states_and_provinces as $key) {
-        $states .= '<option value="' . esc_attr($key) . '">' . esc_attr($key) . '</option>';
-    }
-    $states .= '</select>';
-} else {
-    $states = '<input class="meeting-input" type="text" name="quickedit_location_province" size="50" id="quickedit_location_province" required>';
+    $bmltwf_do_states_and_provinces = true;
 }
 
 ?>
@@ -181,11 +171,32 @@ if ($meeting_states_and_provinces) {
 
             <div id="optional_location_sub_province">
                 <label for="quickedit_location_sub_province">Sub Province</label>
-                <?php echo $counties ?>
+<?php 
+if($bmltwf_do_counties_and_sub_provinces){
+    echo '<select class="meeting-input" name="quickedit_location_sub_province">';
+    foreach ($meeting_counties_and_sub_provinces as $key) {
+        echo '<option value="' . esc_attr($key) . '">' . esc_attr($key) . '</option>';
+    }
+    echo '</select>';
+} else {
+    echo '<input class="meeting-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">';
+}
+?>
             </div>
 
             <label for="quickedit_location_province">State<span class="bmltwf-required-field"> *</span></label>
-            <?php echo $states ?>
+<?php 
+if ($bmltwf_do_states_and_provinces) {
+    echo '<select class="meeting-input" name="quickedit_location_province">';
+    foreach ($meeting_states_and_provinces as $key) {
+        echo '<option value="' . esc_attr($key) . '">' . esc_attr($key) . '</option>';
+    }
+    echo '</select>';
+} else {
+    echo'<input class="meeting-input" type="text" name="quickedit_location_province" size="50" id="quickedit_location_province" required>';
+}
+
+?>
 
             <label for="quickedit_location_postal_code_1">Postcode<span class="bmltwf-required-field"> *</span></label>
             <input class="meeting-input" type="number" name="quickedit_location_postal_code_1" size="5" max="99999" id="quickedit_location_postal_code_1" required>
