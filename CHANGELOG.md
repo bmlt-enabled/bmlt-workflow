@@ -1,3 +1,6 @@
+## 1.0.2 (Aug 19, 2022)
+- First release pushed to wordpress.org!
+
 ## 1.0.1 (Aug 16, 2022)
 - Lots of code changes to support wordpress publish guidelines
 
