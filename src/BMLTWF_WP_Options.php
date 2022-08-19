@@ -16,35 +16,35 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace bmltwf;
 
+if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
-namespace bw;
-
-class BW_WP_Options
+class BMLTWF_WP_Options
 {
 
     public function __construct($stub = null)
     {
     // capability for managing submissions
-        $this->bw_capability_manage_submissions = 'bw_manage_submissions';
+        $this->bmltwf_capability_manage_submissions = 'bmltwf_manage_submissions';
     
         // option list so we can back them up
-        $this->bw_options = array(
-            'bw_db_version',
-            'bw_bmlt_server_address',
-            'bw_bmlt_username',
-            'bw_bmlt_password',
-            'bw_bmlt_test_status',
-            'bw_submitter_email_template',
-            'bw_optional_location_sub_province',
-            'bw_optional_location_nation',
-            'bw_delete_closed_meetings',
-            'bw_email_from_address',
-            'bw_fso_email_template',
-            'bw_fso_email_address',
-            'bw_submitter_email_template',
-            'bw_fso_feature',
-            'bw_optional_postcode'
+        $this->bmltwf_options = array(
+            'bmltwf_db_version',
+            'bmltwf_bmlt_server_address',
+            'bmltwf_bmlt_username',
+            'bmltwf_bmlt_password',
+            'bmltwf_bmlt_test_status',
+            'bmltwf_submitter_email_template',
+            'bmltwf_optional_location_sub_province',
+            'bmltwf_optional_location_nation',
+            'bmltwf_delete_closed_meetings',
+            'bmltwf_email_from_address',
+            'bmltwf_fso_email_template',
+            'bmltwf_fso_email_address',
+            'bmltwf_submitter_email_template',
+            'bmltwf_fso_feature',
+            'bmltwf_optional_postcode'
         );
     }
         

@@ -21,7 +21,7 @@ import { userVariables } from "../../../.testcaferc";
 import { ao } from "../models/admin_options";
 import { asb } from "../models/admin_service_bodies";
 
-export const bw_admin = Role(userVariables.admin_logon_page, async t => {
+export const bmltwf_admin = Role(userVariables.admin_logon_page, async t => {
     await t
     .typeText(wordpress_login.user_login, userVariables.admin_logon)
     .typeText(wordpress_login.user_pass, userVariables.admin_password)
@@ -93,18 +93,18 @@ export async function configure_service_bodies(t)
 {
     await t.request(userVariables.blank_service_bodies);
 
-    await t.useRole(bw_admin).navigateTo(userVariables.admin_service_bodies_page)
+    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_service_bodies_page)
     
-    .click(Selector('ul#select2-bw_userlist_id_1-container').parent())
+    .click(Selector('ul#select2-bmltwf_userlist_id_1-container').parent())
     .pressKey("enter")
-    .click("#bw_userlist_checkbox_id_1")
-    .click(Selector('ul#select2-bw_userlist_id_2-container').parent())
+    .click("#bmltwf_userlist_checkbox_id_1")
+    .click(Selector('ul#select2-bmltwf_userlist_id_2-container').parent())
     .pressKey("enter")
-    .click("#bw_userlist_checkbox_id_2")
-    .click(Selector('ul#select2-bw_userlist_id_3-container').parent())
+    .click("#bmltwf_userlist_checkbox_id_2")
+    .click(Selector('ul#select2-bmltwf_userlist_id_3-container').parent())
     .pressKey("enter")
-    .click("#bw_userlist_checkbox_id_3")
-    .click(asb.bw_submit);
+    .click("#bmltwf_userlist_checkbox_id_3")
+    .click(asb.bmltwf_submit);
 
 }
 
@@ -112,13 +112,13 @@ export async function configure_service_bodies(t)
 export async function basic_options()
 {
     
-    await t.useRole(bw_admin).navigateTo(userVariables.admin_options_page)
-    .typeText(ao.bw_email_from_address, "testing@test.org.zz", { replace: true })
-    .typeText(ao.bw_fso_email_address, "testing@test.org.zz", { replace: true });
+    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_options_page)
+    .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
+    .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
     
-    await select_dropdown_by_text(ao.bw_optional_location_nation, "Hidden");
-    await select_dropdown_by_text(ao.bw_optional_location_sub_province, "Hidden");
-    await select_dropdown_by_text(ao.bw_optional_postcode, "Display");
+    await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
+    await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
+    await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display");
 
     await t.click(ao.submit);
     await ao.settings_updated();  

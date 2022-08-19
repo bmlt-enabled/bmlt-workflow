@@ -10,3 +10,4 @@ package-lock.json
 .userdetails.sh
 /tests/testcafe/setup/blank_bmlt.sql
 logs/
+/releases

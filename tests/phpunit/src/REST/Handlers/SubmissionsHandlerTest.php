@@ -21,7 +21,7 @@
 declare(strict_types=1);
 
 
-use bw\REST\Handlers\SubmissionsHandler;
+use bmltwf\REST\Handlers\SubmissionsHandler;
 
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
@@ -46,15 +46,15 @@ class SubmissionsHandlerTest_my_wp_user
     }
 }
 /**
- * @covers bw\REST\Handlers\SubmissionsHandler
- * @uses bw\BW_Debug
- * @uses bw\REST\HandlerCore
- * @uses bw\BMLT\Integration
- * @uses bw\BW_Database
+ * @covers bmltwf\REST\Handlers\SubmissionsHandler
+ * @uses bmltwf\BMLTWF_Debug
+ * @uses bmltwf\REST\HandlerCore
+ * @uses bmltwf\BMLT\Integration
+ * @uses bmltwf\BMLTWF_Database
  */
 final class SubmissionsHandlerTest extends TestCase
 {
-    use \bw\BW_Debug;
+    use \bmltwf\BMLTWF_Debug;
 
     protected function setVerboseErrorHandler()
     {
@@ -95,53 +95,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('wp_json_encode')->justReturn('{"contact_number_confidential":"12345","group_relationship":"Group Member","add_email":"yes","service_body_bigint":2,"additional_info":"my additional info","meeting_name":"virtualmeeting randwick","weekday_tinyint":"2","start_time":"20:30:00"}');
         Functions\when('get_site_url')->justReturn('http://127.0.0.1/wordpress');
 
-        $this->meeting = <<<EOD
-    {
-        "id_bigint": "3563",
-        "worldid_mixed": "",
-        "shared_group_id_bigint": "",
-        "service_body_bigint": "3",
-        "weekday_tinyint": "2",
-        "venue_type": "1",
-        "start_time": "19:00:00",
-        "duration_time": "01:15:00",
-        "time_zone": "",
-        "formats": "BT",
-        "lang_enum": "en",
-        "longitude": "0",
-        "latitude": "0",
-        "distance_in_km": "",
-        "distance_in_miles": "",
-        "email_contact": "",
-        "meeting_name": "Test Monday Night Meeting",
-        "location_text": "Glebe Town Hall",
-        "location_info": "",
-        "location_street": "160 Johns Road",
-        "location_city_subsection": "",
-        "location_neighborhood": "",
-        "location_municipality": "Glebe",
-        "location_sub_province": "",
-        "location_province": "NSW",
-        "location_postal_code_1": "NSW",
-        "location_nation": "",
-        "comments": "",
-        "train_lines": "",
-        "bus_lines": "",
-        "contact_phone_2": "",
-        "contact_email_2": "",
-        "contact_name_2": "",
-        "contact_phone_1": "",
-        "contact_email_1": "",
-        "contact_name_1": "",
-        "zone": "",
-        "phone_meeting_number": "",
-        "virtual_meeting_link": "",
-        "virtual_meeting_additional_info": "",
-        "published": "1",
-        "root_server_uri": "http:",
-        "format_shared_id_list": "3"
-    }
-    EOD;
+        $this->meeting = ' { "id_bigint": "3563", "worldid_mixed": "", "shared_group_id_bigint": "", "service_body_bigint": "3", "weekday_tinyint": "2", "venue_type": "1", "start_time": "19:00:00", "duration_time": "01:15:00", "time_zone": "", "formats": "BT", "lang_enum": "en", "longitude": "0", "latitude": "0", "distance_in_km": "", "distance_in_miles": "", "email_contact": "", "meeting_name": "Test Monday Night Meeting", "location_text": "Glebe Town Hall", "location_info": "", "location_street": "160 Johns Road", "location_city_subsection": "", "location_neighborhood": "", "location_municipality": "Glebe", "location_sub_province": "", "location_province": "NSW", "location_postal_code_1": "NSW", "location_nation": "", "comments": "", "train_lines": "", "bus_lines": "", "contact_phone_2": "", "contact_email_2": "", "contact_name_2": "", "contact_phone_1": "", "contact_email_1": "", "contact_name_1": "", "zone": "", "phone_meeting_number": "", "virtual_meeting_link": "", "virtual_meeting_additional_info": "", "published": "1", "root_server_uri": "http:", "format_shared_id_list": "3" } ';
 
     }
 
@@ -151,18 +105,18 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         parent::tearDown();
         Mockery::close();
 
-        unset($this->bw_dbg);
+        unset($this->bmltwf_dbg);
     }
 
     private function generate_approve_request($test_submission_id, $body)
     {
         $json_post = json_encode($body);
 
-        $request   = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bw/v1/submissions/{$test_submission_id}/approve");
+        $request   = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/submissions/{$test_submission_id}/approve");
         $request->set_header('content-type', 'application/json');
         $request->set_body($json_post);
         $request->set_url_params(array('id' => $test_submission_id));
-        $request->set_route("/bw/v1/submissions/{$test_submission_id}/approve");
+        $request->set_route("/bmltwf/v1/submissions/{$test_submission_id}/approve");
         $request->set_method('POST');
 
         return $request;
@@ -172,7 +126,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     {
         $resp = $json_meeting;
         $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
-        // $bmlt = Mockery::mock('overload:bw\BMLT\Integration');
+        // $bmlt = Mockery::mock('overload:bmltwf\BMLT\Integration');
         $bmlt = \Mockery::mock('Integration');
 
         /** @var Mockery::mock $bmlt test */
@@ -186,7 +140,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_close(): void
     {
@@ -240,7 +194,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_change_meeting_name(): void
     {
@@ -286,7 +240,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_service_body(): void
     {
@@ -328,7 +282,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_change_meeting_format(): void
     {
@@ -372,7 +326,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_change_if_meeting_format_has_leading_or_trailing_commas(): void
     {
@@ -419,7 +373,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_create_new_with_no_starter_kit_requested(): void
     {
@@ -473,7 +427,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_create_new_with_alpha_postcode(): void
     {
@@ -527,7 +481,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_create_new_with_bad_start_time(): void
     {
@@ -571,7 +525,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
         /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_create_new_with_bad_duration_ime(): void
     {
@@ -616,7 +570,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_create_new_with_starter_kit_requested(): void
     {
@@ -678,7 +632,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     //
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_create_new_if_starter_kit_answer_missing(): void
     {
@@ -729,7 +683,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_if_format_list_has_garbage(): void
     {
@@ -769,7 +723,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_if_weekday_is_too_big(): void
     {
@@ -809,7 +763,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_if_weekday_is_zero(): void
     {
@@ -849,7 +803,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_if_weekday_is_garbage(): void
     {
@@ -889,7 +843,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
     public function test_can_approve_change_meeting(): void
     {
@@ -954,7 +908,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_can_approve_close_meeting_with_unpublish(): void
@@ -1030,7 +984,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_can_approve_close_meeting_with_delete(): void
@@ -1106,7 +1060,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     //
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_approve_change_meeting_sends_email_to_submitter(): void
@@ -1172,7 +1126,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_approve_change_meeting_sends_email_to_submitter_with_action_message(): void
@@ -1239,7 +1193,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_approve_close_meeting_sends_email_to_submitter_with_delete(): void
@@ -1308,7 +1262,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
     /**
-     * @covers bw\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
 
     public function test_approve_close_meeting_sends_email_to_submitter_with_unpublish(): void

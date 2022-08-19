@@ -17,13 +17,13 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 
-if (!defined('ABSPATH')) exit; // die if being called directly
+if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
-use bw\BW_Debug;
+use bmltwf\BMLTWF_Debug;
 
-$bw_bmlt_test_status = get_option('bw_bmlt_test_status', "failure");
-if ($bw_bmlt_test_status != "success") {
-    wp_die("<h4>WBW Plugin Error: BMLT Server not configured and tested.</h4>");
+$bmltwf_bmlt_test_status = get_option('bmltwf_bmlt_test_status', "failure");
+if ($bmltwf_bmlt_test_status != "success") {
+    wp_die("<h4>BMLTWF Plugin Error: BMLT Server not configured and tested.</h4>");
 }
 
 wp_nonce_field('wp_rest', '_wprestnonce');
@@ -33,8 +33,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
     <h2>Service Body Configuration</h2>
-    <hr class="bw-error-message">
-    <div class="bw_info_text">
+    <hr class="bmltwf-error-message">
+    <div class="bmltwf_info_text">
         <br>Service bodies are retrieved from BMLT using the BMLT details configured on the option page.
         <br><br>You can configure which service areas are visible to the end-users using the <code>Display on end-user Form</code> checkbox.
         <br><br>You can select users from your Wordpress userlist and grant them access to your service areas in the <code>Wordpress Users with Access</code> column.
@@ -43,18 +43,18 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         <br><br>
     </div>
     <br>
-    <span class="spinner" id="bw-form-spinner"></span>
-    <table class="bw-userlist-table" id="bw-userlist-table" style="display: none;">
+    <span class="spinner" id="bmltwf-form-spinner"></span>
+    <table class="bmltwf-userlist-table" id="bmltwf-userlist-table" style="display: none;">
         <thead>
             <tr>
-                <th class="bw-userlist-header">Service Body</th>
-                <th class="bw-userlist-header">Description</th>
-                <th class="bw-userlist-header">Wordpress Users with Access</th>
-                <th class="bw-userlist-header">Display on end-user Form</th>
+                <th class="bmltwf-userlist-header">Service Body</th>
+                <th class="bmltwf-userlist-header">Description</th>
+                <th class="bmltwf-userlist-header">Wordpress Users with Access</th>
+                <th class="bmltwf-userlist-header">Display on end-user Form</th>
             </tr>
         </thead>
         <tbody>
         </tbody>
     </table>
-    <button id="bw_submit" style="display: none;">Save Settings</button><span class="spinner" id="bw-submit-spinner"></span>
+    <button id="bmltwf_submit" style="display: none;">Save Settings</button><span class="spinner" id="bmltwf-submit-spinner"></span>
 </div>

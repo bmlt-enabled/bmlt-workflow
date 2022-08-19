@@ -16,20 +16,19 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace bmltwf;
 
+if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
-namespace bw;
-
-class BW_Rest
+trait BMLTWF_Debug 
 {
-
-    public function __construct($stub = null)
+    public function debug_log($message)
     {
-        // our rest namespace
-        $this->bw_rest_namespace = 'bw/v1';
-        $this->bw_submissions_rest_base = 'submissions';
-        $this->bw_service_bodies_rest_base = 'servicebodies';
-        $this->bw_bmltserver_rest_base = 'bmltserver';
-        $this->bw_options_rest_base = 'options';
+        if (BMLTWF_DEBUG)
+        {
+            $out = print_r($message, true);
+            error_log(debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] . ": " . $out);
+        }
     }
+    
 }

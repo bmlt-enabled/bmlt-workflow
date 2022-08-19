@@ -16,11 +16,11 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace bmltwf\REST;
 
+use bmltwf\BMLT\Integration;
 
-namespace bw\REST;
-
-use bw\BMLT\Integration;
+if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
 class HandlerCore
 {
@@ -38,7 +38,7 @@ class HandlerCore
     }
 
     // accepts raw string or array
-    public function bw_rest_success($message)
+    public function bmltwf_rest_success($message)
     {
         if (is_array($message)) {
             $data = $message;
@@ -51,15 +51,15 @@ class HandlerCore
         return $response;
     }
 
-    public function bw_rest_error($message, $code)
+    public function bmltwf_rest_error($message, $code)
     {
-        return new \WP_Error('bw_error', $message, array('status' => $code));
+        return new \WP_Error('bmltwf_error', $message, array('status' => $code));
     }
 
-    public function bw_rest_error_with_data($message, $code, array $data)
+    public function bmltwf_rest_error_with_data($message, $code, array $data)
     {
         $data['status'] = $code;
-        return new \WP_Error('bw_error', $message, $data);
+        return new \WP_Error('bmltwf_error', $message, $data);
     }
 
   

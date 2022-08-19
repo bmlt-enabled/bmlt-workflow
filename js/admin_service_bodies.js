@@ -51,7 +51,7 @@ jQuery(document).ready(function ($) {
 
   function create_service_area_permission_post() {
     ret = {};
-    $(".bw-userlist").each(function () {
+    $(".bmltwf-userlist").each(function () {
       // console.log("got real id " + $(this).data("id"));
       id = $(this).data("id");
       // console.log("got name " + $(this).data("name"));
@@ -66,8 +66,8 @@ jQuery(document).ready(function ($) {
     return ret;
   }
 
-  $("#bw_submit").on("click", function () {
-    $("#bw-userlist-table tbody tr").each(function () {
+  $("#bmltwf_submit").on("click", function () {
+    $("#bmltwf-userlist-table tbody tr").each(function () {
       tr = $(this);
       checked = $(tr).find("input:checkbox").prop("checked");
       select = $(tr).find("select");
@@ -78,25 +78,25 @@ jQuery(document).ready(function ($) {
     clear_notices();
 
     $.ajax({
-      url: bw_admin_bw_service_bodies_rest_url,
+      url: bmltwf_admin_bmltwf_service_bodies_rest_url,
       method: "POST",
       data: JSON.stringify(post),
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       processData: false,
       beforeSend: function (xhr) {
-        turn_on_spinner("#bw-submit-spinner");
+        turn_on_spinner("#bmltwf-submit-spinner");
 
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
     })
       .done(function (response) {
-        turn_off_spinner("#bw-submit-spinner");
-        notice_success(response, "bw-error-message");
+        turn_off_spinner("#bmltwf-submit-spinner");
+        notice_success(response, "bmltwf-error-message");
       })
       .fail(function (xhr) {
-        turn_off_spinner("#bw-submit-spinner");
-        notice_error(xhr, "bw-error-message");
+        turn_off_spinner("#bmltwf-submit-spinner");
+        notice_error(xhr, "bmltwf-error-message");
       });
   });
 
@@ -104,11 +104,11 @@ jQuery(document).ready(function ($) {
   var parameters = { detail: "true" };
 
   $.ajax({
-    url:bw_admin_bw_service_bodies_rest_url,
+    url:bmltwf_admin_bmltwf_service_bodies_rest_url,
     dataType: "json",
     data: parameters,
     beforeSend: function (xhr) {
-      turn_on_spinner("#bw-form-spinner");
+      turn_on_spinner("#bmltwf-form-spinner");
       xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
     },
   }).done(function (response) {
@@ -124,26 +124,26 @@ jQuery(document).ready(function ($) {
       var sblist = this.sblist;
       var userlist = response;
       Object.keys(sblist).forEach((item) => {
-        var id = "bw_userlist_id_" + item;
-        var cbid = "bw_userlist_checkbox_id_" + item;
+        var id = "bmltwf_userlist_id_" + item;
+        var cbid = "bmltwf_userlist_checkbox_id_" + item;
         var checked = sblist[item]["show_on_form"] ? "checked" : "";
         var appendstr = "<tr>";
 
         //     <div class="grow-wrap">
-        //     <textarea class='dialog_textarea' id="bw_submission_approve_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
+        //     <textarea class='dialog_textarea' id="bmltwf_submission_approve_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
         // </div>
 
         appendstr += "<td>" + sblist[item]["name"] + "</td>";
         appendstr += '<td><div class="grow-wrap"><textarea onInput="this.parentNode.dataset.replicatedValue = this.value">' + sblist[item]["description"] + "</textarea></div></td>";
-        appendstr += '<td><select class="bw-userlist" id="' + id + '" style="width: auto"></select></td>';
-        appendstr += '<td class="bw-center-checkbox"><input type="checkbox" id="' + cbid + '" ' + checked + "></td>";
+        appendstr += '<td><select class="bmltwf-userlist" id="' + id + '" style="width: auto"></select></td>';
+        appendstr += '<td class="bmltwf-center-checkbox"><input type="checkbox" id="' + cbid + '" ' + checked + "></td>";
         appendstr += "</tr>";
-        $("#bw-userlist-table tbody").append(appendstr);
+        $("#bmltwf-userlist-table tbody").append(appendstr);
         // store metadata away for later
         $("#" + id).data("id", item);
         $("#" + id).data("name", sblist[item]["name"]);
 
-        $(".bw-userlist").select2({
+        $(".bmltwf-userlist").select2({
           multiple: true,
           width: "100%",
         });
@@ -154,10 +154,10 @@ jQuery(document).ready(function ($) {
       $(".grow-wrap textarea").trigger("input");
 
       // turn off spinner
-      turn_off_spinner("#bw-form-spinner");
+      turn_off_spinner("#bmltwf-form-spinner");
       // turn on table
-      $("#bw-userlist-table").show();
-      $("#bw_submit").show();
+      $("#bmltwf-userlist-table").show();
+      $("#bmltwf_submit").show();
     });
   });
 });

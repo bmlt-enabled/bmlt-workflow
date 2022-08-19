@@ -18,19 +18,19 @@
  */
 
 
-.bw_info_text {
+.bmltwf_info_text {
     padding-left: 15px;
     background: #fff;
     border-left: 5px solid lightblue;
 }
 
-.options_dialog_bw_info_text {
+.options_dialog_bmltwf_info_text {
   padding-left: 15px;
   background: #f8f8f8;
   border-left: 5px solid lightblue;
 }
 
-.options_dialog_bw_warning_text {
+.options_dialog_bmltwf_warning_text {
   padding-left: 15px;
   background: #f8f8f8;
   border-left: 5px solid red;
@@ -45,7 +45,7 @@ input {
   display: inline-flex;
 }
 
-.bw_banner {
+.bmltwf_banner {
     background-image: url('../images/Banner_Trimmed.png'),  url('../images/Banner_1px.png');
     background-repeat: no-repeat, repeat-x;
     background-size: auto 130px;
@@ -59,7 +59,7 @@ input {
     width: 100%;
 }
 
-hr.bw-error-message 
+hr.bmltwf-error-message 
 {
   border: none;
 }

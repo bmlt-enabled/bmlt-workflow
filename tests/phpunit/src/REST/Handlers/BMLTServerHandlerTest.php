@@ -19,7 +19,7 @@
 
 declare(strict_types=1);
 
-use bw\REST\Handlers\BMLTServerHandler;
+use bmltwf\REST\Handlers\BMLTServerHandler;
 
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
@@ -28,15 +28,15 @@ require_once('config_phpunit.php');
 
 
 /**
- * @covers bw\REST\Handlers\BMLTServerHandler
- * @uses bw\BW_Debug
- * @uses bw\REST\HandlerCore
- * @uses bw\BMLT\Integration
- * @uses bw\BW_WP_Options
+ * @covers bmltwf\REST\Handlers\BMLTServerHandler
+ * @uses bmltwf\BMLTWF_Debug
+ * @uses bmltwf\REST\HandlerCore
+ * @uses bmltwf\BMLT\Integration
+ * @uses bmltwf\BMLTWF_WP_Options
  */
 final class BMLTServerHandlerTest extends TestCase
 {
-    use \bw\BW_Debug;
+    use \bmltwf\BMLTWF_Debug;
 
     protected function setVerboseErrorHandler()
     {
@@ -83,26 +83,26 @@ Line: $errorLine
         parent::tearDown();
         Mockery::close();
 
-        unset($this->bw_dbg);
+        unset($this->bmltwf_dbg);
     }
 
 // test for GET bmltserver (get server test settings)
     /**
-     * @covers bw\REST\Handlers\BMLTServerHandler::get_bmltserver_handler
+     * @covers bmltwf\REST\Handlers\BMLTServerHandler::get_bmltserver_handler
      */
     public function test_can_get_bmltserver_with_success(): void
     {
         
-        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bw/v1/bmltserver");
+        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
-        $request->set_route("/bw/v1/bmltserver");
+        $request->set_route("/bmltwf/v1/bmltserver");
         $request->set_method('GET');
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
-        $rest = new BMLTServerHandler(null, $BW_WP_Options);
+        $rest = new BMLTServerHandler(null, $BMLTWF_WP_Options);
 
         $response = $rest->get_bmltserver_handler($request);
 
@@ -110,26 +110,26 @@ Line: $errorLine
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
 
-        $this->assertEquals($response->get_data()['bw_bmlt_test_status'], 'success');
+        $this->assertEquals($response->get_data()['bmltwf_bmlt_test_status'], 'success');
     }
 
     // test for GET bmltserver (get server test settings)
     /**
-     * @covers bw\REST\Handlers\BMLTServerHandler::get_bmltserver_handler
+     * @covers bmltwf\REST\Handlers\BMLTServerHandler::get_bmltserver_handler
      */
     public function test_can_get_bmltserver_with_failure(): void
     {
 
-        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bw/v1/bmltserver");
+        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
-        $request->set_route("/bw/v1/bmltserver");
+        $request->set_route("/bmltwf/v1/bmltserver");
         $request->set_method('GET');
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $rest = new BMLTServerHandler(null,$BW_WP_Options);
+        $rest = new BMLTServerHandler(null,$BMLTWF_WP_Options);
 
         $response = $rest->get_bmltserver_handler($request);
 
@@ -138,27 +138,27 @@ Line: $errorLine
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
 
-        $this->assertEquals($response->get_data()['bw_bmlt_test_status'], 'failure');
+        $this->assertEquals($response->get_data()['bmltwf_bmlt_test_status'], 'failure');
     }
 
     // test for POST bmltserver
     /**
-     * @covers bw\REST\Handlers\BMLTServerHandler::post_bmltserver_handler
+     * @covers bmltwf\REST\Handlers\BMLTServerHandler::post_bmltserver_handler
      */
 
     public function test_can_post_bmltserver_with_valid_parameters(): void
     {
 
-        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bw/v1/bmltserver");
+        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
-        $request->set_route("/bw/v1/bmltserver");
+        $request->set_route("/bmltwf/v1/bmltserver");
         $request->set_method('POST');
-        $request->set_param('bw_bmlt_server_address', 'http://1.1.1.1/main_server/');
-        $request->set_param('bw_bmlt_username', 'test');
-        $request->set_param('bw_bmlt_password', 'test');
+        $request->set_param('bmltwf_bmlt_server_address', 'http://1.1.1.1/main_server/');
+        $request->set_param('bmltwf_bmlt_username', 'test');
+        $request->set_param('bmltwf_bmlt_password', 'test');
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         Functions\when('\update_option')->returnArg(1);
@@ -178,26 +178,26 @@ Line: $errorLine
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
 
-        $this->assertEquals($response->get_data()['bw_bmlt_test_status'], 'success');
+        $this->assertEquals($response->get_data()['bmltwf_bmlt_test_status'], 'success');
     }
 
     // test for POST bmltserver
 
     /**
-     * @covers bw\REST\Handlers\BMLTServerHandler::post_bmltserver_handler
+     * @covers bmltwf\REST\Handlers\BMLTServerHandler::post_bmltserver_handler
      */
     public function test_cant_post_bmltserver_with_invalid_server(): void
     {
-        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bw/v1/bmltserver");
+        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
-        $request->set_route("/bw/v1/bmltserver");
+        $request->set_route("/bmltwf/v1/bmltserver");
         $request->set_method('POST');
-        $request->set_param('bw_bmlt_server_address', 'test');
-        $request->set_param('bw_bmlt_username', 'test');
-        $request->set_param('bw_bmlt_password', 'test');
+        $request->set_param('bmltwf_bmlt_server_address', 'test');
+        $request->set_param('bmltwf_bmlt_username', 'test');
+        $request->set_param('bmltwf_bmlt_password', 'test');
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         Functions\when('\update_option')->returnArg(1);
@@ -209,24 +209,24 @@ Line: $errorLine
         $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_Error::class, $response);
-        $this->assertEquals($response->get_error_data()['bw_bmlt_test_status'], 'failure');
+        $this->assertEquals($response->get_error_data()['bmltwf_bmlt_test_status'], 'failure');
     }
 
     /**
-     * @covers bw\REST\Handlers\BMLTServerHandler::post_bmltserver_handler
+     * @covers bmltwf\REST\Handlers\BMLTServerHandler::post_bmltserver_handler
      */
     public function test_cant_post_bmltserver_with_blank_username(): void
     {
-        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bw/v1/bmltserver");
+        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
-        $request->set_route("/bw/v1/bmltserver");
+        $request->set_route("/bmltwf/v1/bmltserver");
         $request->set_method('POST');
-        $request->set_param('bw_bmlt_server_address', 'test');
-        $request->set_param('bw_bmlt_username', '');
-        $request->set_param('bw_bmlt_password', 'test');
+        $request->set_param('bmltwf_bmlt_server_address', 'test');
+        $request->set_param('bmltwf_bmlt_username', '');
+        $request->set_param('bmltwf_bmlt_password', 'test');
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         Functions\when('\update_option')->returnArg(1);
@@ -237,24 +237,24 @@ Line: $errorLine
         $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_Error::class, $response);
-        $this->assertEquals($response->get_error_data()['bw_bmlt_test_status'], 'failure');
+        $this->assertEquals($response->get_error_data()['bmltwf_bmlt_test_status'], 'failure');
     }
 
     /**
-     * @covers bw\REST\Handlers\BMLTServerHandler::post_bmltserver_handler
+     * @covers bmltwf\REST\Handlers\BMLTServerHandler::post_bmltserver_handler
      */
     public function test_cant_post_bmltserver_with_blank_password(): void
     {
-        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bw/v1/bmltserver");
+        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
-        $request->set_route("/bw/v1/bmltserver");
+        $request->set_route("/bmltwf/v1/bmltserver");
         $request->set_method('POST');
-        $request->set_param('bw_bmlt_server_address', 'test');
-        $request->set_param('bw_bmlt_username', 'test');
-        $request->set_param('bw_bmlt_password', '');
+        $request->set_param('bmltwf_bmlt_server_address', 'test');
+        $request->set_param('bmltwf_bmlt_username', 'test');
+        $request->set_param('bmltwf_bmlt_password', '');
 
-        $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-        /** @var Mockery::mock $BW_WP_Options test */
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
         Functions\when('\update_option')->returnArg(1);
@@ -266,6 +266,6 @@ Line: $errorLine
         $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_Error::class, $response);
-        $this->assertEquals($response->get_error_data()['bw_bmlt_test_status'], 'failure');
+        $this->assertEquals($response->get_error_data()['bmltwf_bmlt_test_status'], 'failure');
     }
 }

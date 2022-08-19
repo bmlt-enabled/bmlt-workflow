@@ -32,13 +32,13 @@ function mysql2localdate(data) {
   return ds;
 }
 
-var bw_changedata = {};
+var bmltwf_changedata = {};
 
 jQuery(document).ready(function ($) {
   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   // hide / show / required our optional fields
-  switch (bw_optional_location_nation) {
+  switch (bmltwf_optional_location_nation) {
     case "hidden":
     case "":
       $("#optional_location_nation").hide();
@@ -49,7 +49,7 @@ jQuery(document).ready(function ($) {
       break;
   }
 
-  switch (bw_optional_location_sub_province) {
+  switch (bmltwf_optional_location_sub_province) {
     case "hidden":
     case "":
       $("#optional_location_sub_province").hide();
@@ -60,9 +60,9 @@ jQuery(document).ready(function ($) {
       break;
   }
 
-  function add_highlighted_changes_to_quickedit(bw_requested) {
+  function add_highlighted_changes_to_quickedit(bmltwf_requested) {
     // fill in and highlight the changes - use extend to clone
-    changes_requested = $.extend(true, {}, bw_requested);
+    changes_requested = $.extend(true, {}, bmltwf_requested);
 
     if ("format_shared_id_list" in changes_requested) {
       changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
@@ -81,20 +81,20 @@ jQuery(document).ready(function ($) {
     Object.keys(changes_requested).forEach((element) => {
       if ($("#quickedit_" + element).length) {
         if (element === "format_shared_id_list") {
-          $(".quickedit_format_shared_id_list-select2").addClass("bw-changed");
+          $(".quickedit_format_shared_id_list-select2").addClass("bmltwf-changed");
         } else {
-          $("#quickedit_" + element).addClass("bw-changed");
+          $("#quickedit_" + element).addClass("bmltwf-changed");
         }
         $("#quickedit_" + element).val(changes_requested[element]);
         $("#quickedit_" + element).trigger("change");
       }
     });
     // trigger adding of highlights when input changes
-    $(".quickedit-input").on("input.bw-highlight", function () {
-      $(this).addClass("bw-changed");
+    $(".quickedit-input").on("input.bmltwf-highlight", function () {
+      $(this).addClass("bmltwf-changed");
     });
-    $("#quickedit_format_shared_id_list").on("change.bw-highlight", function () {
-      $(".quickedit_format_shared_id_list-select2").addClass("bw-changed");
+    $("#quickedit_format_shared_id_list").on("change.bmltwf-highlight", function () {
+      $(".quickedit_format_shared_id_list-select2").addClass("bmltwf-changed");
     });
   }
 
@@ -102,11 +102,11 @@ jQuery(document).ready(function ($) {
     // clear quickedit
 
     // remove our change handler
-    $(".quickedit-input").off("input.bw-highlight");
-    $("#quickedit_format_shared_id_list").off("change.bw-highlight");
+    $(".quickedit-input").off("input.bmltwf-highlight");
+    $("#quickedit_format_shared_id_list").off("change.bmltwf-highlight");
     // remove the highlighting
-    $(".quickedit-input").removeClass("bw-changed");
-    $(".quickedit_format_shared_id_list-select2").removeClass("bw-changed");
+    $(".quickedit-input").removeClass("bmltwf-changed");
+    $(".quickedit_format_shared_id_list-select2").removeClass("bmltwf-changed");
 
     // remove any content from the input fields
     $(".quickedit-input").val("");
@@ -114,10 +114,10 @@ jQuery(document).ready(function ($) {
     // fill quickedit
 
     // if it's a meeting change, fill from bmlt first
-    if (bw_changedata[id].submission_type == "reason_change") {
-      var meeting_id = bw_changedata[id]["meeting_id"];
+    if (bmltwf_changedata[id].submission_type == "reason_change") {
+      var meeting_id = bmltwf_changedata[id]["meeting_id"];
       var search_results_address =
-        bw_bmlt_server_address + "client_interface/jsonp/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" + meeting_id + "&lang_enum=en&&recursive=1&sort_keys=start_time";
+        bmltwf_bmlt_server_address + "client_interface/jsonp/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" + meeting_id + "&lang_enum=en&&recursive=1&sort_keys=start_time";
 
       fetchJsonp(search_results_address)
         .then((response) => response.json())
@@ -128,7 +128,7 @@ jQuery(document).ready(function ($) {
             var a = {};
             a["responseJSON"] = {};
             a["responseJSON"]["message"] = "Error retrieving BMLT data";
-            notice_error(a, "bw-error-message");
+            notice_error(a, "bmltwf-error-message");
           } else {
             // split up the duration so we can use it in the select
             if ("duration_time" in item) {
@@ -150,13 +150,13 @@ jQuery(document).ready(function ($) {
                 $("#quickedit_" + element).trigger("change");
               }
             });
-            add_highlighted_changes_to_quickedit(bw_changedata[id].changes_requested);
-            $("#bw_submission_quickedit_dialog").data("id", id).dialog("open");
+            add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
+            $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
           }
         });
-    } else if (bw_changedata[id].submission_type == "reason_new") {
-      add_highlighted_changes_to_quickedit(bw_changedata[id].changes_requested);
-      $("#bw_submission_quickedit_dialog").data("id", id).dialog("open");
+    } else if (bmltwf_changedata[id].submission_type == "reason_new") {
+      add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
+      $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
     }
   }
 
@@ -167,15 +167,15 @@ jQuery(document).ready(function ($) {
   // }
 
   // default close meeting radio button
-  if (bw_default_closed_meetings === "delete") {
+  if (bmltwf_default_closed_meetings === "delete") {
     $("#close_delete").prop("checked", true);
   } else {
     $("#close_unpublish").prop("checked", true);
   }
 
   var formatdata = [];
-  Object.keys(bw_bmlt_formats).forEach((key) => {
-    formatdata.push({ text: "(" + bw_bmlt_formats[key]["key_string"] + ")-" + bw_bmlt_formats[key]["name_string"], id: key });
+  Object.keys(bmltwf_bmlt_formats).forEach((key) => {
+    formatdata.push({ text: "(" + bmltwf_bmlt_formats[key]["key_string"] + ")-" + bmltwf_bmlt_formats[key]["name_string"], id: key });
   });
 
   $("#quickedit_format_shared_id_list").select2({
@@ -184,7 +184,7 @@ jQuery(document).ready(function ($) {
     width: "100%",
     data: formatdata,
     selectionCssClass: ":all:",
-    dropdownParent: $("#bw_submission_quickedit_dialog"),
+    dropdownParent: $("#bmltwf_submission_quickedit_dialog"),
   });
   $("#quickedit_format_shared_id_list").trigger("change");
 
@@ -203,12 +203,12 @@ jQuery(document).ready(function ($) {
           var reason = dt.row(".selected").data()["submission_type"];
           if (reason === "reason_close") {
             // clear text area from before
-            $("#bw_submission_approve_close_dialog_textarea").val("");
-            $("#bw_submission_approve_close_dialog").data("id", id).dialog("open");
+            $("#bmltwf_submission_approve_close_dialog_textarea").val("");
+            $("#bmltwf_submission_approve_close_dialog").data("id", id).dialog("open");
           } else {
             // clear text area from before
-            $("#bw_submission_approve_dialog_textarea").val("");
-            $("#bw_submission_approve_dialog").data("id", id).dialog("open");
+            $("#bmltwf_submission_approve_dialog_textarea").val("");
+            $("#bmltwf_submission_approve_dialog").data("id", id).dialog("open");
           }
         },
       },
@@ -219,8 +219,8 @@ jQuery(document).ready(function ($) {
         action: function (e, dt, button, config) {
           var id = dt.row(".selected").data()["id"];
           // clear text area from before
-          $("#bw_submission_reject_dialog_textarea").val("");
-          $("#bw_submission_reject_dialog").data("id", id).dialog("open");
+          $("#bmltwf_submission_reject_dialog_textarea").val("");
+          $("#bmltwf_submission_reject_dialog").data("id", id).dialog("open");
         },
       },
       {
@@ -238,21 +238,21 @@ jQuery(document).ready(function ($) {
         extend: "selected",
         action: function (e, dt, button, config) {
           var id = dt.row(".selected").data()["id"];
-          $("#bw_submission_delete_dialog").data("id", id).dialog("open");
+          $("#bmltwf_submission_delete_dialog").data("id", id).dialog("open");
         },
       },
     ],
     ajax: {
-      url: bw_admin_submissions_rest_url,
+      url: bmltwf_admin_submissions_rest_url,
       beforeSend: function (xhr) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
       dataSrc: function (json) {
-        bw_changedata = {};
+        bmltwf_changedata = {};
         for (var i = 0, ien = json.length; i < ien; i++) {
           json[i]["changes_requested"]["submission_type"] = json[i]["submission_type"];
           // store the json for us to use in quick editor
-          bw_changedata[json[i]["id"]] = json[i];
+          bmltwf_changedata[json[i]["id"]] = json[i];
         }
         return json;
       },
@@ -274,7 +274,7 @@ jQuery(document).ready(function ($) {
         name: "service_body_bigint",
         data: "service_body_bigint",
         render: function (data, type, row) {
-          return bw_admin_bw_service_bodies[data]["name"];
+          return bmltwf_admin_bmltwf_service_bodies[data]["name"];
         },
       },
       {
@@ -515,7 +515,7 @@ jQuery(document).ready(function ($) {
           friendlydata = "";
           strarr = d["changes_requested"]["format_shared_id_list"].split(",");
           strarr.forEach((element) => {
-            friendlydata += "(" + bw_bmlt_formats[element]["key_string"] + ")-" + bw_bmlt_formats[element]["name_string"] + " ";
+            friendlydata += "(" + bmltwf_bmlt_formats[element]["key_string"] + ")-" + bmltwf_bmlt_formats[element]["name_string"] + " ";
           });
           table += column(col_meeting_details, "Meeting Formats", friendlydata);
 
@@ -542,7 +542,7 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  function bw_create_generic_modal(dialogid, title, width, maxwidth) {
+  function bmltwf_create_generic_modal(dialogid, title, width, maxwidth) {
     $("#" + dialogid).dialog({
       title: title,
       autoOpen: false,
@@ -579,7 +579,7 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  function bw_create_quickedit_modal(dialogid, title, width, maxwidth) {
+  function bmltwf_create_quickedit_modal(dialogid, title, width, maxwidth) {
     $("#" + dialogid).dialog({
       title: title,
       classes: { "ui-dialog-content": "quickedit" },
@@ -619,29 +619,29 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  bw_create_generic_modal("bw_submission_delete_dialog", "Delete Submission", "auto", "auto");
-  bw_create_generic_modal("bw_submission_approve_dialog", "Approve Submission", "auto", "auto");
-  bw_create_generic_modal("bw_submission_approve_close_dialog", "Approve Submission", "auto", "auto");
-  bw_create_generic_modal("bw_submission_reject_dialog", "Reject Submission", "auto", "auto");
-  bw_create_quickedit_modal("bw_submission_quickedit_dialog", "Submission QuickEdit", "auto", "auto");
+  bmltwf_create_generic_modal("bmltwf_submission_delete_dialog", "Delete Submission", "auto", "auto");
+  bmltwf_create_generic_modal("bmltwf_submission_approve_dialog", "Approve Submission", "auto", "auto");
+  bmltwf_create_generic_modal("bmltwf_submission_approve_close_dialog", "Approve Submission", "auto", "auto");
+  bmltwf_create_generic_modal("bmltwf_submission_reject_dialog", "Reject Submission", "auto", "auto");
+  bmltwf_create_quickedit_modal("bmltwf_submission_quickedit_dialog", "Submission QuickEdit", "auto", "auto");
 
-  bw_submission_approve_dialog_ok = function (id) {
+  bmltwf_submission_approve_dialog_ok = function (id) {
     clear_notices();
-    generic_approve_handler(id, "POST", "/approve", "bw_submission_approve");
+    generic_approve_handler(id, "POST", "/approve", "bmltwf_submission_approve");
   };
 
-  bw_submission_approve_close_dialog_ok = function (id) {
+  bmltwf_submission_approve_close_dialog_ok = function (id) {
     clear_notices();
-    generic_approve_handler(id, "POST", "/approve", "bw_submission_approve_close");
+    generic_approve_handler(id, "POST", "/approve", "bmltwf_submission_approve_close");
   };
 
-  bw_submission_reject_dialog_ok = function (id) {
+  bmltwf_submission_reject_dialog_ok = function (id) {
     clear_notices();
-    generic_approve_handler(id, "POST", "/reject", "bw_submission_reject");
+    generic_approve_handler(id, "POST", "/reject", "bmltwf_submission_reject");
   };
-  bw_submission_delete_dialog_ok = function (id) {
+  bmltwf_submission_delete_dialog_ok = function (id) {
     clear_notices();
-    generic_approve_handler(id, "DELETE", "", "bw_submission_delete");
+    generic_approve_handler(id, "DELETE", "", "bmltwf_submission_delete");
   };
 
   function generic_approve_handler(id, action, url, slug) {
@@ -656,7 +656,7 @@ jQuery(document).ready(function ($) {
     }
 
     // delete/unpublish handling on the approve+close dialog
-    if (slug === "bw_submission_approve_close") {
+    if (slug === "bmltwf_submission_approve_close") {
       option = $("#" + slug + '_dialog input[name="close_action"]:checked').attr("id");
       if (option === "close_delete") {
         parameters["delete"] = true;
@@ -666,7 +666,7 @@ jQuery(document).ready(function ($) {
     }
 
     $.ajax({
-      url: bw_admin_submissions_rest_url + id + url,
+      url: bmltwf_admin_submissions_rest_url + id + url,
       type: action,
       dataType: "json",
       contentType: "application/json",
@@ -676,14 +676,14 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        notice_success(response, "bw-error-message");
+        notice_success(response, "bmltwf-error-message");
         // reload the table to pick up any changes
         $("#dt-submission").DataTable().ajax.reload();
         // reset the buttons correctly
         $("#dt-submission").DataTable().rows().deselect();
       })
       .fail(function (xhr) {
-        notice_error(xhr, "bw-error-message");
+        notice_error(xhr, "bmltwf-error-message");
       });
     $("#" + slug + "_dialog").dialog("close");
   }
@@ -713,7 +713,7 @@ jQuery(document).ready(function ($) {
     var address = "address=" + locdata.join(",");
 
     $.ajax({
-      url: bw_bmltserver_geolocate_rest_url,
+      url: bmltwf_bmltserver_geolocate_rest_url,
       type: "GET",
       dataType: "json",
       contentType: "application/json",
@@ -725,10 +725,10 @@ jQuery(document).ready(function ($) {
       .done(function (response) {
         $("#quickedit_latitude").val(response["latitude"]);
         $("#quickedit_longitude").val(response["longitude"]);
-        notice_success(response, "bw-error-message");
+        notice_success(response, "bmltwf-error-message");
       })
       .fail(function (xhr) {
-        notice_error(xhr, "bw-error-message");
+        notice_error(xhr, "bmltwf-error-message");
       });
   }
 
@@ -742,7 +742,7 @@ jQuery(document).ready(function ($) {
     var duration_minutes = "00";
 
     // pull out all the changed elements
-    $(".bw-changed").each(function () {
+    $(".bmltwf-changed").each(function () {
       if ($(this).is("textarea,select,input")) {
         var short_id = $(this).attr("id").replace("quickedit_", "");
         // turn the format list into a comma seperated array
@@ -765,7 +765,7 @@ jQuery(document).ready(function ($) {
     parameters["changes_requested"] = quickedit_changes_requested;
 
     $.ajax({
-      url: bw_admin_submissions_rest_url + id,
+      url: bmltwf_admin_submissions_rest_url + id,
       type: "PATCH",
       dataType: "json",
       contentType: "application/json",
@@ -775,7 +775,7 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        notice_success(response, "bw-error-message");
+        notice_success(response, "bmltwf-error-message");
 
         // reload the table to pick up any changes
         $("#dt-submission").DataTable().ajax.reload();
@@ -783,8 +783,8 @@ jQuery(document).ready(function ($) {
         $("#dt-submission").DataTable().rows().deselect();
       })
       .fail(function (xhr) {
-        notice_error(xhr, "bw-error-message");
+        notice_error(xhr, "bmltwf-error-message");
       });
-    $("#bw_submission_quickedit_dialog").dialog("close");
+    $("#bmltwf_submission_quickedit_dialog").dialog("close");
   }
 });

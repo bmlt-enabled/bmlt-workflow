@@ -19,7 +19,7 @@
 
 declare(strict_types=1);
 
-use bw\REST\Handlers\ServiceBodiesHandler;
+use bmltwf\REST\Handlers\ServiceBodiesHandler;
 
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
@@ -29,16 +29,16 @@ require_once('config_phpunit.php');
 
 
 /**
- * @covers bw\REST\Handlers\ServiceBodiesHandler
- * @uses bw\BW_Debug
- * @uses bw\REST\HandlerCore
- * @uses bw\BMLT\Integration
- * @uses bw\BW_Database
- * @uses bw\BW_WP_Options
+ * @covers bmltwf\REST\Handlers\ServiceBodiesHandler
+ * @uses bmltwf\BMLTWF_Debug
+ * @uses bmltwf\REST\HandlerCore
+ * @uses bmltwf\BMLT\Integration
+ * @uses bmltwf\BMLTWF_Database
+ * @uses bmltwf\BMLTWF_WP_Options
  */
 final class ServiceBodiesHandlerTest extends TestCase
 {
-    use \bw\BW_Debug;
+    use \bmltwf\BMLTWF_Debug;
 
     protected function setVerboseErrorHandler()
     {
@@ -84,19 +84,19 @@ Line: $errorLine
         parent::tearDown();
         Mockery::close();
 
-        unset($this->bw_dbg);
+        unset($this->bmltwf_dbg);
     }
 
     /**
-     * @covers bw\REST\Handlers\ServiceBodiesHandler::get_service_bodies_handler
+     * @covers bmltwf\REST\Handlers\ServiceBodiesHandler::get_service_bodies_handler
      */
     public function test_can_get_service_bodies_simple_with_success(): void
     {
 
         
-        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bw/v1/servicebodies");
+        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/servicebodies");
         $request->set_header('content-type', 'application/json');
-        $request->set_route("/bw/v1/servicebodies");
+        $request->set_route("/bmltwf/v1/servicebodies");
         $request->set_method('GET');
 
         $sblookup = array(
@@ -138,15 +138,15 @@ Line: $errorLine
 
 
     // /**
-    //  * @covers bw\REST\Handlers\ServiceBodiesHandler::get_service_bodies_handler
+    //  * @covers bmltwf\REST\Handlers\ServiceBodiesHandler::get_service_bodies_handler
     //  */
     // public function test_can_get_service_bodies_detail_with_success(): void
     // {
 
         
-    //     $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bw/v1/servicebodies");
+    //     $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/servicebodies");
     //     $request->set_header('content-type', 'application/json');
-    //     $request->set_route("/bw/v1/servicebodies");
+    //     $request->set_route("/bmltwf/v1/servicebodies");
     //     $request->set_method('GET');
     //     $request->set_param('detail','true');
 
@@ -178,15 +178,15 @@ Line: $errorLine
     //     ->shouldReceive('prepare')->andreturn(array("1","2"))
     //     ->shouldReceive('query')->andreturn(array("1","2"))
 
-    //     $BW_WP_Options =  Mockery::mock('BW_WP_Options');
-    //     /** @var Mockery::mock $BW_WP_Options test */
+    //     $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+    //     /** @var Mockery::mock $BMLTWF_WP_Options test */
     //     Functions\when('\get_option')->justReturn("success");
     //     $sblist = array('body'=>'[{"id":"1","parent_id":"0","name":"toplevel","description":"","type":"AS"},{"id":"2","parent_id":"1","name":"a-level1","description":"","type":"AS"},{"id":"3","parent_id":"1","name":"b-level1","description":"","type":"AS"},{"id":"4","parent_id":"1","name":"c-level","description":"test c level","type":"AS"},{"id":"5","parent_id":"4","name":"d-level","description":"d-level test","type":"AS"}]');
     //     $Intstub = \Mockery::mock('Integration');
     //     /** @var Mockery::mock $Intstub test */
     //     $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
 
-    //     $rest = new ServiceBodiesHandler($Intstub, $BW_WP_Options);
+    //     $rest = new ServiceBodiesHandler($Intstub, $BMLTWF_WP_Options);
 
     //     $response = $rest->get_service_bodies_handler($request);
 

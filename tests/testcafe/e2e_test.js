@@ -30,7 +30,7 @@ import { reset_bmlt,
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
-  bw_admin, 
+  bmltwf_admin, 
   basic_options } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
@@ -157,7 +157,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bw_admin).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page);
 
   // new meeting = row 0
   var row = 0;
@@ -233,7 +233,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
 
     .typeText(uf.meeting_name, "update")
     // make sure highlighting is present
-    .expect(uf.meeting_name.hasClass("bw-changed"))
+    .expect(uf.meeting_name.hasClass("bmltwf-changed"))
     .ok();
 
   // email dropdown
@@ -248,11 +248,11 @@ test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
 
   await t
     .click(uf.submit)
-    .expect(Selector("#bw_response_message").innerText)
+    .expect(Selector("#bmltwf_response_message").innerText)
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bw_admin).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page);
 
   // new meeting = row 0
   var row = 0;
