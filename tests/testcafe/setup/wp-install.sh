@@ -166,9 +166,41 @@ define( 'SCRIPT_DEBUG', true );
 /* Multisite */
 define( 'WP_ALLOW_MULTISITE', true );
 
+define( 'MULTISITE', true );
+define( 'SUBDOMAIN_INSTALL', false );
+define( 'DOMAIN_CURRENT_SITE', '54.153.167.239' );
+define( 'PATH_CURRENT_SITE', '/wordpressmultidev/' );
+define( 'SITE_ID_CURRENT_SITE', 1 );
+define( 'BLOG_ID_CURRENT_SITE', 1 );
+
 EOF
 cat wp-config-sample.php | tr -d '\r' | sed -e "s/localhost/"$mysqlhost"/" -e "s/database_name_here/"$mysqldb"/" -e "s/username_here/"$mysqluser"/" -e "s/password_here/"$mysqlpass"/" | sed -e '/\/\* Add any custom values between this line and the "stop editing" line. \*\//r./insert' > wp-config.php
 rm insert
+
+cat > .htaccess << EOF
+# BEGIN WordPress
+# The directives (lines) between "BEGIN WordPress" and "END WordPress" are
+# dynamically generated, and should only be modified via WordPress filters.
+# Any changes to the directives between these markers will be overwritten.
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteBase /wordpressmultidev/
+RewriteRule ^index\.php$ - [L]
+
+# add a trailing slash to /wp-admin
+RewriteRule ^([_0-9a-zA-Z-]+/)?wp-admin$ $1wp-admin/ [R=301,L]
+
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+RewriteRule ^([_0-9a-zA-Z-]+/)?(wp-(content|admin|includes).*) $2 [L]
+RewriteRule ^([_0-9a-zA-Z-]+/)?(.*\.php)$ $2 [L]
+RewriteRule . index.php [L]
+</IfModule>
+
+# END WordPress
+EOF
 
 # Grab our Salt Keys
 SALT=$(curl -L https://api.wordpress.org/secret-key/1.1/salt/ | sed -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa');/")
@@ -190,6 +222,9 @@ cd ..
 sudo mv bmlt-workflow $sitelocalpath/wp-content/plugins
 sudo chown -R apache:apache $sitelocalpath/wp-content/plugins/bmlt-workflow
 cd $sitelocalpath/wp-content/plugins/bmlt-workflow
+
+wp core multisite-convert
+
 # activate plugin
 wp plugin activate --path=$sitelocalpath "bmlt-workflow"
 wp option --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://54.153.167.239/blank_bmlt/main_server/'
