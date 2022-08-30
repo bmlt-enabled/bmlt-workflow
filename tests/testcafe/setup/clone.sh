@@ -28,8 +28,8 @@ chmod 755 /home/ssm-user/scripts/*.sh
 cd ..
 sudo rm -rf /home/ssm-user/bmltwf/*
 sudo cp -R bmlt-workflow/* bmltwf
-sudo chown -R apache:apache /home/ssm-user/bmltwf/*
 cd bmltwf
 sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" config.php
 /usr/local/bin/composer dumpautoload
+sudo chown -R apache:apache /home/ssm-user/bmltwf/*
 /home/ssm-user/scripts/wp-install.sh
