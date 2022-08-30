@@ -16,15 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-
-# Install script for Latest WordPress on local dev
-
-# Setup
 export PATH=/usr/local/bin:$PATH
-# Hardcoded variables that shouldn't change much
-
-# Path to MySQL
-MYSQL='/usr/bin/mysql'
+export MYSQL='/usr/bin/mysql'
 
 export BRANCH=1.0.2-fixes
 
@@ -42,20 +35,16 @@ export sitename=wordpressdev
 export siteurl=54.153.167.239/$sitename
 export sitelocalpath=/var/www/html/$sitename
 
+sudo rm -rf $sitelocalpath
 
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
 $MYSQL -e "CREATE DATABASE IF NOT EXISTS $mysqldb; GRANT ALL ON $mysqldb.* TO '$mysqluser'@'$mysqlhost' IDENTIFIED BY '$mysqlpass'; FLUSH PRIVILEGES "
 
-# Download latest WordPress and uncompress
-cd /home/ssm-user/wordpress
-rm -rf /home/ssm-user/wordpress/wordpress
-rm /home/ssm-user/wordpress/latest.tar.gz
-wget http://wordpress.org/latest.tar.gz
-tar zxf latest.tar.gz
-sudo rm -rf $sitelocalpath
-mkdir $sitelocalpath
-mv wordpress/* $sitelocalpath
+wp core download --path=$sitelocalpath
+wp config create --path=$sitelocalpath --dbname=$mysqldb --dbuser=$mysqluser --dbpass=$mysqlpass
+wp core install --title="hi" --admin_user=$wpuser --admin_password=$wppass --admin_email=$wpemail --path=$sitelocalpath
+
 cd $sitelocalpath
 
 # Build our wp-config.php file
@@ -78,18 +67,14 @@ define( 'SCRIPT_DEBUG', true );
 @ini_set('sendmail_path','/home/ssm-user/maillog.py'); // path to server-writable log file
 
 EOF
-cat wp-config-sample.php | tr -d '\r' | sed -e "s/localhost/"$mysqlhost"/" -e "s/database_name_here/"$mysqldb"/" -e "s/username_here/"$mysqluser"/" -e "s/password_here/"$mysqlpass"/" | sed -e '/\/\* Add any custom values between this line and the "stop editing" line. \*\//r./insert' > wp-config.php
+sed -i -e '/\/\* Add any custom values between this line and the "stop editing" line. \*\//r./insert' wp-config.php
 rm insert
+sed -i -e "/define( 'WP_DEBUG', false );/d" wp-config.php
 
 # Grab our Salt Keys
-SALT=$(curl -L https://api.wordpress.org/secret-key/1.1/salt/ | sed -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa');/")
-STRING='put your unique phrase here'
-printf '%s\n' "g/$STRING/d" a "$SALT" . w | ed -s wp-config.php
+sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa');/" wp-config.php
 
 sudo chown -R apache:apache $sitelocalpath
-
-# Run our install ...
-curl -d "weblog_title=$wptitle&user_name=$wpuser&admin_password=$wppass&admin_password2=$wppass&admin_email=$wpemail" http://$siteurl/wp-admin/install.php?step=2
 
 # install our plugin
 cd /home/ssm-user/wordpress
@@ -101,6 +86,7 @@ cd ..
 sudo mv bmlt-workflow $sitelocalpath/wp-content/plugins
 sudo chown -R apache:apache $sitelocalpath/wp-content/plugins/bmlt-workflow
 cd $sitelocalpath/wp-content/plugins/bmlt-workflow
+
 # activate plugin
 wp plugin activate --path=$sitelocalpath "bmlt-workflow"
 wp option --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://54.153.167.239/blank_bmlt/main_server/'
@@ -109,9 +95,6 @@ wp option --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
 wp option --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
 # create our test page
 wp post create --path=$sitelocalpath --post_type=page --post_title='testpage' --post_content='[bmltwf-meeting-update-form]' --post_status='publish' --post_name='testpage'
-
-
-
 
 ## MULTI SITE INSTALLER
 
@@ -129,19 +112,16 @@ export sitename=wordpressmultidev
 export siteurl=54.153.167.239/$sitename
 export sitelocalpath=/var/www/html/$sitename
 
+sudo rm -rf $sitelocalpath
+
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
 $MYSQL -e "CREATE DATABASE IF NOT EXISTS $mysqldb; GRANT ALL ON $mysqldb.* TO '$mysqluser'@'$mysqlhost' IDENTIFIED BY '$mysqlpass'; FLUSH PRIVILEGES "
 
-# Download latest WordPress and uncompress
-cd /home/ssm-user/wordpress
-rm -rf /home/ssm-user/wordpress/wordpress
-rm /home/ssm-user/wordpress/latest.tar.gz
-wget http://wordpress.org/latest.tar.gz
-tar zxf latest.tar.gz
-sudo rm -rf $sitelocalpath
-mkdir $sitelocalpath
-mv wordpress/* $sitelocalpath
+wp core download --path=$sitelocalpath
+wp config create --path=$sitelocalpath --dbname=$mysqldb --dbuser=$mysqluser --dbpass=$mysqlpass
+wp core multisite-install --title="hi" --admin_user=$wpuser --admin_password=$wppass --admin_email=$wpemail --path=$sitelocalpath
+
 cd $sitelocalpath
 
 # Build our wp-config.php file
@@ -163,19 +143,10 @@ define( 'SCRIPT_DEBUG', true );
 @ini_set('mail.log','/home/ssm-user/mail.log'); // path to server-writable log file
 @ini_set('sendmail_path','/home/ssm-user/maillog.py'); // path to server-writable log file
 
-/* Multisite */
-define( 'WP_ALLOW_MULTISITE', true );
-
-define( 'MULTISITE', true );
-define( 'SUBDOMAIN_INSTALL', false );
-define( 'DOMAIN_CURRENT_SITE', '54.153.167.239' );
-define( 'PATH_CURRENT_SITE', '/wordpressmultidev/' );
-define( 'SITE_ID_CURRENT_SITE', 1 );
-define( 'BLOG_ID_CURRENT_SITE', 1 );
-
 EOF
-cat wp-config-sample.php | tr -d '\r' | sed -e "s/localhost/"$mysqlhost"/" -e "s/database_name_here/"$mysqldb"/" -e "s/username_here/"$mysqluser"/" -e "s/password_here/"$mysqlpass"/" | sed -e '/\/\* Add any custom values between this line and the "stop editing" line. \*\//r./insert' > wp-config.php
+sed -i -e '/\/\* Add any custom values between this line and the "stop editing" line. \*\//r./insert' wp-config.php
 rm insert
+sed -i -e "/define( 'WP_DEBUG', false );/d" wp-config.php
 
 cat > .htaccess << EOF
 # BEGIN WordPress
@@ -203,14 +174,9 @@ RewriteRule . index.php [L]
 EOF
 
 # Grab our Salt Keys
-SALT=$(curl -L https://api.wordpress.org/secret-key/1.1/salt/ | sed -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa');/")
-STRING='put your unique phrase here'
-printf '%s\n' "g/$STRING/d" a "$SALT" . w | ed -s wp-config.php
+sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa');/" wp-config.php
 
 sudo chown -R apache:apache $sitelocalpath
-
-# Run our install ...
-curl -d "weblog_title=$wptitle&user_name=$wpuser&admin_password=$wppass&admin_password2=$wppass&admin_email=$wpemail" http://$siteurl/wp-admin/install.php?step=2
 
 # install our plugin
 cd /home/ssm-user/wordpress
@@ -222,8 +188,6 @@ cd ..
 sudo mv bmlt-workflow $sitelocalpath/wp-content/plugins
 sudo chown -R apache:apache $sitelocalpath/wp-content/plugins/bmlt-workflow
 cd $sitelocalpath/wp-content/plugins/bmlt-workflow
-
-wp core multisite-convert
 
 # activate plugin
 wp plugin activate --path=$sitelocalpath "bmlt-workflow"
