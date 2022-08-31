@@ -32,7 +32,7 @@ export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 aws ssm put-parameter --overwrite --name bmltwf_test_wppass --value $wppass --type SecureString --region ap-southeast-2
 export wpemail=nigel.brittain@gmail.com
 export sitename=wordpressdev
-export siteurl=54.153.167.239/$sitename
+export siteurl=http://54.153.167.239/$sitename
 export sitelocalpath=/var/www/html/$sitename
 
 sudo rm -rf $sitelocalpath
@@ -109,7 +109,7 @@ export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 aws ssm put-parameter --overwrite --name multi_bmltwf_test_wppass --value $wppass --type SecureString --region ap-southeast-2
 export wpemail=nigel.brittain@gmail.com
 export sitename=wordpressmultidev
-export siteurl=54.153.167.239/$sitename
+export siteurl=http://54.153.167.239/$sitename/
 export sitelocalpath=/var/www/html/$sitename
 
 sudo rm -rf $sitelocalpath
@@ -120,7 +120,8 @@ $MYSQL -e "CREATE DATABASE IF NOT EXISTS $mysqldb; GRANT ALL ON $mysqldb.* TO '$
 
 wp core download --path=$sitelocalpath
 wp config create --path=$sitelocalpath --dbname=$mysqldb --dbuser=$mysqluser --dbpass=$mysqlpass
-wp core multisite-install --url=$siteurl --title="hi" --admin_user=$wpuser --admin_password=$wppass --admin_email=$wpemail --path=$sitelocalpath
+wp core multisite-install --base=/$sitename/ --url=$siteurl --title="hi" --admin_user=$wpuser --admin_password=$wppass --admin_email=$wpemail --path=$sitelocalpath
+#wp core install --url=$siteurl --title="hi" --admin_user=$wpuser --admin_password=$wppass --admin_email=$wpemail --path=$sitelocalpath
 
 cd $sitelocalpath
 
@@ -146,31 +147,25 @@ define( 'SCRIPT_DEBUG', true );
 EOF
 sed -i -e '/\/\* Add any custom values between this line and the "stop editing" line. \*\//r./insert' wp-config.php
 rm insert
+
 sed -i -e "/define( 'WP_DEBUG', false );/d" wp-config.php
+#sed -i -e "s/.*PATH_CURRENT_SITE.*/define( 'PATH_CURRENT_SITE','\/wordpressmultidev\/');/" wp-config.php
 
 cat > .htaccess << EOF
-# BEGIN WordPress
-# The directives (lines) between "BEGIN WordPress" and "END WordPress" are
-# dynamically generated, and should only be modified via WordPress filters.
-# Any changes to the directives between these markers will be overwritten.
-<IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 RewriteBase /wordpressmultidev/
 RewriteRule ^index\.php$ - [L]
 
 # add a trailing slash to /wp-admin
-RewriteRule ^([_0-9a-zA-Z-]+/)?wp-admin$ $1wp-admin/ [R=301,L]
+RewriteRule ^([_0-9a-zA-Z-]+/)?wp-admin$ \$1wp-admin/ [R=301,L]
 
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
-RewriteRule ^([_0-9a-zA-Z-]+/)?(wp-(content|admin|includes).*) $2 [L]
-RewriteRule ^([_0-9a-zA-Z-]+/)?(.*\.php)$ $2 [L]
+RewriteRule ^([_0-9a-zA-Z-]+/)?(wp-(content|admin|includes).*) \$2 [L]
+RewriteRule ^([_0-9a-zA-Z-]+/)?(.*\.php)$ \$2 [L]
 RewriteRule . index.php [L]
-</IfModule>
-
-# END WordPress
 EOF
 
 # Grab our Salt Keys
@@ -189,11 +184,14 @@ sudo mv bmlt-workflow $sitelocalpath/wp-content/plugins
 sudo chown -R apache:apache $sitelocalpath/wp-content/plugins/bmlt-workflow
 cd $sitelocalpath/wp-content/plugins/bmlt-workflow
 
+wp --path=$sitelocalpath site create --slug=plugin
+wp --path=$sitelocalpath site create --slug=noplugin
+export pluginsite=${siteurl}plugin
 # activate plugin
-wp plugin activate --path=$sitelocalpath "bmlt-workflow"
-wp option --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://54.153.167.239/blank_bmlt/main_server/'
-wp option --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
-wp option --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
-wp option --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
+wp plugin activate --url=$pluginsite --path=$sitelocalpath "bmlt-workflow"
+wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://54.153.167.239/blank_bmlt/main_server/'
+wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
+wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
+wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
 # create our test page
-wp post create --path=$sitelocalpath --post_type=page --post_title='testpage' --post_content='[bmltwf-meeting-update-form]' --post_status='publish' --post_name='testpage'
+wp post create --url=$pluginsite --path=$sitelocalpath --post_type=page --post_title='testpage' --post_content='[bmltwf-meeting-update-form]' --post_status='publish' --post_name='testpage'
