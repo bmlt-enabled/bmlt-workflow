@@ -886,7 +886,7 @@ if (!class_exists('bmltwf_plugin')) {
             // give all 'manage_options" users the capability so they are able to see the submission menu
             $users = get_users();
             foreach ($users as $user) {
-                $this->bmltwf_add_capability_to_user($user);
+                $this->bmltwf_add_capability_to_manage_options_user($user);
             }
             // add a custom role just for trusted servants
             add_role('bmltwf_trusted_servant', 'BMLT Workflow Trusted Servant');
@@ -909,10 +909,10 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_add_capability($user_id)
         {
             // give all 'manage_options" users the capability on create so they are able to see the submission menu
-            $this->bmltwf_add_capability_to_user(get_user_by('id', $user_id));
+            $this->bmltwf_add_capability_to_manage_options_user(get_user_by('id', $user_id));
         }
 
-        private function bmltwf_add_capability_to_user($user)
+        private function bmltwf_add_capability_to_manage_options_user($user)
         {
             if ($user->has_cap('manage_options')) {
                 $user->add_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
