@@ -77,11 +77,6 @@ if (!class_exists('bmltwf_plugin')) {
             add_shortcode('bmltwf-meeting-update-form', array(&$this, 'bmltwf_meeting_update_form'));
             add_filter('plugin_action_links', array(&$this, 'bmltwf_add_plugin_link'), 10, 2);
             add_action('user_register', array(&$this, 'bmltwf_add_capability'), 10, 1);
-            function activate($networkwide)
-            {
-                if (is_multisite() && $networkwide)
-                    die('This plugin can\'t be activated networkwide');
-            }
 
             register_activation_hook(__FILE__, array(&$this, 'bmltwf_install'));
         }
@@ -872,10 +867,33 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_install($networkwide)
         {
-            if (is_multisite() && $networkwide) {
-                die("This plugin cannot be activated networkwide");
-            }
+            global $wpdb;
 
+            if (is_multisite()) {
+                if (is_plugin_active_for_network(__FILE__)) {
+                    $blogids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
+                    foreach ($blogids as $blog_id) {
+                        switch_to_blog($blog_id);
+                        $this->bmltwf_add_default_options();
+                        $this->BMLTWF_Database->bmltwf_db_upgrade($this->BMLTWF_Database->bmltwf_db_version, false);
+                        restore_current_blog();
+                    }
+                }
+            } else {
+                $this->bmltwf_add_default_options();
+                $this->BMLTWF_Database->bmltwf_db_upgrade($this->BMLTWF_Database->bmltwf_db_version, false);
+            }
+            // give all 'manage_options" users the capability so they are able to see the submission menu
+            $users = get_users();
+            foreach ($users as $user) {
+                $this->bmltwf_add_capability_to_user($user);
+            }
+            // add a custom role just for trusted servants
+            add_role('bmltwf_trusted_servant', 'BMLT Workflow Trusted Servant');
+        }
+
+        private function bmltwf_add_default_options()
+        {
             // install all our default options (if they arent set already)
             add_option('bmltwf_email_from_address', 'example@example');
             add_option('bmltwf_delete_closed_meetings', 'unpublish');
@@ -886,28 +904,19 @@ if (!class_exists('bmltwf_plugin')) {
             add_option('bmltwf_fso_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
             add_option('bmltwf_fso_email_address', 'example@example.example');
             add_option('bmltwf_fso_feature', 'display');
-
-            $this->BMLTWF_Database->bmltwf_db_upgrade($this->BMLTWF_Database->bmltwf_db_version, false);
-
-            // give all 'manage_options" users the capability so they are able to see the submission menu
-            $users = get_users();
-            foreach ($users as $user) {
-                if ($user->has_cap('manage_options')) {
-                    $user->add_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
-                }
-            }
-            // add a custom role just for trusted servants
-            add_role('bmltwf_trusted_servant', 'BMLT Workflow Trusted Servant');
         }
 
         public function bmltwf_add_capability($user_id)
         {
-
             // give all 'manage_options" users the capability on create so they are able to see the submission menu
-            $user = get_user_by('id', $user_id);
+            $this->bmltwf_add_capability_to_user(get_user_by('id', $user_id));
+        }
+
+        private function bmltwf_add_capability_to_user($user)
+        {
             if ($user->has_cap('manage_options')) {
                 $user->add_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
-                $this->debug_log("adding capabilities to new user");
+                $this->debug_log("adding capabilities to user " . $user->get('id'));
             }
         }
     }
