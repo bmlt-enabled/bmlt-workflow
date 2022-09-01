@@ -916,7 +916,7 @@ if (!class_exists('bmltwf_plugin')) {
         {
             if ($user->has_cap('manage_options')) {
                 $user->add_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
-                $this->debug_log("adding capabilities to user " . $user->get('id'));
+                $this->debug_log("adding capabilities to user " . $user->get('ID'));
             }
         }
     }
