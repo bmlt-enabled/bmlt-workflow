@@ -3,7 +3,11 @@
 const sitejsonurl = "/wp-json"
 const admin_submissions_page = "/wp-admin/admin.php?page=bmltwf-submissions";
 const admin_service_bodies_page = "/wp-admin/admin.php?page=bmltwf-service-bodies";
-const admin_options_page = "/wp-admin/admin.php?page=bmltwf-settings";
+const admin_settings_page = "/wp-admin/admin.php?page=bmltwf-settings";
+const admin_options_page = "/wp-admin/options.php";
+const multisite_plugin = "/plugin";
+const multisite_noplugin = "/noplugin";
+const multisite_plugin2 = "/plugin2";
 const admin_logon_page = "/wp-admin/admin.php";
 const formpage = "/index.php/testpage/";
 const admin_backup_json = "/bmltwf/v1/options/backup";
@@ -37,6 +41,7 @@ module.exports =
         "admin_logon_page": siteurl_dev + admin_logon_page,
         "admin_submissions_page": siteurl_dev + admin_submissions_page,
         "admin_service_bodies_page": siteurl_dev + admin_service_bodies_page,
+        "admin_settings_page": siteurl_dev + admin_settings_page,
         "admin_options_page": siteurl_dev + admin_options_page,
         "admin_logon": username_dev,
         "admin_password": password_dev,
@@ -46,7 +51,11 @@ module.exports =
         "admin_logon_page_multidev": siteurl_multidev + admin_logon_page,
         "admin_submissions_page_multidev": siteurl_multidev + admin_submissions_page,
         "admin_service_bodies_page_multidev": siteurl_multidev + admin_service_bodies_page,
+        "admin_settings_page_multidev_plugin": siteurl_multidev + multisite_plugin + admin_settings_page,
+        "admin_settings_page_multidev_noplugin": siteurl_multidev + multisite_noplugin + admin_settings_page,
         "admin_options_page_multidev": siteurl_multidev + admin_options_page,
+        "admin_options_page_multidev_plugin": siteurl_multidev + multisite_plugin + admin_options_page,
+        "admin_options_page_multidev_noplugin": siteurl_multidev + multisite_noplugin + admin_options_page,
         "admin_logon_multidev": username_multidev,
         "admin_password_multidev": password_multidev,
         "admin_backup_json_multidev" : siteurl_multidev + backuppath,
@@ -55,7 +64,12 @@ module.exports =
         "admin_logon_page_multinetworkdev": siteurl_multinetworkdev + admin_logon_page,
         "admin_submissions_page_multinetworkdev": siteurl_multinetworkdev + admin_submissions_page,
         "admin_service_bodies_page_multinetworkdev": siteurl_multinetworkdev + admin_service_bodies_page,
+        "admin_settings_page_multinetworkdev": siteurl_multinetworkdev + admin_settings_page,
+        "admin_settings_page_multidev_plugin": siteurl_multidev + multisite_plugin + admin_settings_page,
+        "admin_settings_page_multidev_plugin2": siteurl_multidev + multisite_plugin2 + admin_settings_page,
         "admin_options_page_multinetworkdev": siteurl_multinetworkdev + admin_options_page,
+        "admin_options_page_multinetworkdev_plugin": siteurl_multidev + multisite_plugin + admin_options_page,
+        "admin_options_page_multinetworkdev_plugin2": siteurl_multidev + multisite_plugin2 + admin_options_page,
         "admin_logon_multinetworkdev": username_multinetworkdev,
         "admin_password_multinetworkdev": password_multinetworkdev,
         "admin_backup_json_multinetworkdev" : siteurl_multinetworkdev + backuppath,

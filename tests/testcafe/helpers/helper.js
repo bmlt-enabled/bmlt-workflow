@@ -28,6 +28,20 @@ export const bmltwf_admin = Role(userVariables.admin_logon_page, async t => {
     .click(wordpress_login.wp_submit);
 });
 
+export const bmltwf_admin_multidev = Role(userVariables.admin_logon_page_multidev, async t => {
+    await t
+    .typeText(wordpress_login.user_login, userVariables.admin_logon_multidev)
+    .typeText(wordpress_login.user_pass, userVariables.admin_password_multidev)
+    .click(wordpress_login.wp_submit);
+});
+
+export const bmltwf_admin_multinetworkdev = Role(userVariables.admin_logon_page_multinetworkdev, async t => {
+    await t
+    .typeText(wordpress_login.user_login, userVariables.admin_logon_multinetworkdev)
+    .typeText(wordpress_login.user_pass, userVariables.admin_password_multinetworkdev)
+    .click(wordpress_login.wp_submit);
+});
+
 export async function select_dropdown_by_id(element, id) {
     await t
     .click(element)
@@ -112,7 +126,7 @@ export async function configure_service_bodies(t)
 export async function basic_options()
 {
     
-    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_options_page)
+    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page)
     .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
     .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
     
