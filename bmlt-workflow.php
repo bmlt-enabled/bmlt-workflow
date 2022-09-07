@@ -869,15 +869,14 @@ if (!class_exists('bmltwf_plugin')) {
         {
             global $wpdb;
 
-            if (is_multisite()) {
-                if (is_plugin_active_for_network(__FILE__)) {
-                    $blogids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
-                    foreach ($blogids as $blog_id) {
-                        switch_to_blog($blog_id);
-                        $this->bmltwf_add_default_options();
-                        $this->BMLTWF_Database->bmltwf_db_upgrade($this->BMLTWF_Database->bmltwf_db_version, false);
-                        restore_current_blog();
-                    }
+            if ((is_multisite()) && (is_plugin_active_for_network(__FILE__))) {
+                // multi site and network activation, so iterate through all blogs
+                $blogids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
+                foreach ($blogids as $blog_id) {
+                    switch_to_blog($blog_id);
+                    $this->bmltwf_add_default_options();
+                    $this->BMLTWF_Database->bmltwf_db_upgrade($this->BMLTWF_Database->bmltwf_db_version, false);
+                    restore_current_blog();
                 }
             } else {
                 $this->bmltwf_add_default_options();
