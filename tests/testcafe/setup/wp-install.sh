@@ -16,8 +16,8 @@
 # You should have received a copy of the GNU General Public License
 # along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-
-aws ssm put-parameter --overwrite --name bmltwf_test_hostip --value `curl http://169.254.169.254/latest/meta-data/public-ipv4` --type SecureString --region ap-southeast-2
+export MYIP=`curl http://169.254.169.254/latest/meta-data/public-ipv4`
+aws ssm put-parameter --overwrite --name bmltwf_test_hostip --value $MYIP --type SecureString --region ap-southeast-2
 
 export PATH=/usr/local/bin:$PATH
 export MYSQL='/usr/bin/mysql'
@@ -30,12 +30,12 @@ export mysqluser=wpdevuser
 export mysqlpass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 export wptitle=devsite
 export wpuser=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name bmltwf_test_wpuser --value $wpuser --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wpuser_dev --value $wpuser --type SecureString --region ap-southeast-2
 export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name bmltwf_test_wppass --value $wppass --type SecureString --region ap-southeast-2
-export wpemail=nigel.brittain@gmail.com
+aws ssm put-parameter --overwrite --name bmltwf_test_wppass_dev --value $wppass --type SecureString --region ap-southeast-2
+export wpemail=nigel.bmlt@gmail.com
 export sitename=wordpressdev
-export siteurl=http://54.153.167.239/$sitename
+export siteurl=http://$MYIP/$sitename
 export sitelocalpath=/var/www/html/$sitename
 
 sudo rm -rf $sitelocalpath
@@ -92,7 +92,7 @@ cd $sitelocalpath/wp-content/plugins/bmlt-workflow
 
 # activate plugin
 wp plugin activate --path=$sitelocalpath "bmlt-workflow"
-wp option --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://54.153.167.239/blank_bmlt/main_server/'
+wp option --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'$MYIP'/blank_bmlt/main_server/'
 wp option --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
 wp option --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
 wp option --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
@@ -107,12 +107,12 @@ export mysqluser=wpmultidevuser
 export mysqlpass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 export wptitle=multidevsite
 export wpuser=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name multi_bmltwf_test_wpuser --value $wpuser --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name multi_bmltwf_test_wpuser_multidev --value $wpuser --type SecureString --region ap-southeast-2
 export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name multi_bmltwf_test_wppass --value $wppass --type SecureString --region ap-southeast-2
-export wpemail=nigel.brittain@gmail.com
+aws ssm put-parameter --overwrite --name multi_bmltwf_test_wppass_multidev --value $wppass --type SecureString --region ap-southeast-2
+export wpemail=nigel.bmlt@gmail.com
 export sitename=wordpressmultidev
-export siteurl=http://54.153.167.239/$sitename/
+export siteurl=http://$MYIP/$sitename/
 export sitelocalpath=/var/www/html/$sitename
 
 sudo rm -rf $sitelocalpath
@@ -192,7 +192,7 @@ wp --path=$sitelocalpath site create --slug=noplugin
 export pluginsite=${siteurl}plugin
 # activate plugin
 wp plugin activate --url=$pluginsite --path=$sitelocalpath "bmlt-workflow"
-wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://54.153.167.239/blank_bmlt/main_server/'
+wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'$MYIP'/blank_bmlt/main_server/'
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
@@ -207,12 +207,12 @@ export mysqluser=wpmultinetworkdevuser
 export mysqlpass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 export wptitle=multinetworkdevsite
 export wpuser=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name multi_bmltwf_test_wpuser --value $wpuser --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name multi_bmltwf_test_wpuser_multinetworkdev --value $wpuser --type SecureString --region ap-southeast-2
 export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name multi_bmltwf_test_wppass --value $wppass --type SecureString --region ap-southeast-2
-export wpemail=nigel.brittain@gmail.com
+aws ssm put-parameter --overwrite --name multi_bmltwf_test_wppass_multinetworkdev --value $wppass --type SecureString --region ap-southeast-2
+export wpemail=nigel.bmlt@gmail.com
 export sitename=wordpressmultinetworkdev
-export siteurl=http://54.153.167.239/$sitename/
+export siteurl=http://$MYIP/$sitename/
 export sitelocalpath=/var/www/html/$sitename
 
 sudo rm -rf $sitelocalpath
@@ -292,7 +292,7 @@ wp --path=$sitelocalpath site create --slug=noplugin
 export pluginsite=${siteurl}plugin
 # network activate plugin
 wp plugin activate --network --path=$sitelocalpath "bmlt-workflow"
-wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://54.153.167.239/blank_bmlt/main_server/'
+wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'$MYIP'/blank_bmlt/main_server/'
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
