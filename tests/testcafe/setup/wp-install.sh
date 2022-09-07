@@ -107,9 +107,9 @@ export mysqluser=wpmultidevuser
 export mysqlpass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 export wptitle=multidevsite
 export wpuser=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name multi_bmltwf_test_wpuser_multidev --value $wpuser --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wpuser_multidev --value $wpuser --type SecureString --region ap-southeast-2
 export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name multi_bmltwf_test_wppass_multidev --value $wppass --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wppass_multidev --value $wppass --type SecureString --region ap-southeast-2
 export wpemail=nigel.bmlt@gmail.com
 export sitename=wordpressmultidev
 export siteurl=http://$MYIP/$sitename/
@@ -207,9 +207,9 @@ export mysqluser=wpmultinetworkdevuser
 export mysqlpass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 export wptitle=multinetworkdevsite
 export wpuser=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name multi_bmltwf_test_wpuser_multinetworkdev --value $wpuser --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wpuser_multinetworkdev --value $wpuser --type SecureString --region ap-southeast-2
 export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name multi_bmltwf_test_wppass_multinetworkdev --value $wppass --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wppass_multinetworkdev --value $wppass --type SecureString --region ap-southeast-2
 export wpemail=nigel.bmlt@gmail.com
 export sitename=wordpressmultinetworkdev
 export siteurl=http://$MYIP/$sitename/
