@@ -16,6 +16,9 @@
 # You should have received a copy of the GNU General Public License
 # along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
+
+aws ssm put-parameter --overwrite --name bmltwf_test_hostip --value `curl http://169.254.169.254/latest/meta-data/public-ipv4` --type SecureString --region ap-southeast-2
+
 export PATH=/usr/local/bin:$PATH
 export MYSQL='/usr/bin/mysql'
 
