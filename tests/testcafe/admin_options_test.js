@@ -17,7 +17,6 @@
 
 import { ao } from "./models/admin_options";
 import { as } from "./models/admin_submissions";
-import { asb } from "./models/admin_service_bodies";
 import { uf } from "./models/meeting_update_form";
 
 import { userVariables } from "../../.testcaferc";
@@ -87,7 +86,7 @@ fixture`admin_options_fixture`
 
 test("Backup", async (t) => {
   
-  // console.log(backupurl);
+  console.log(backupurl);
   await t.click(ao.backup_button);
   const b_elem = Selector("#bmltwf_backup_filename");
   const state = await b_elem();

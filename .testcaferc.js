@@ -7,12 +7,12 @@ const admin_options_page = "/wp-admin/admin.php?page=bmltwf-settings";
 const admin_logon_page = "/wp-admin/admin.php";
 const formpage = "/index.php/testpage/";
 const admin_backup_json = "/bmltwf/v1/options/backup";
-
+const backuppath = "/index.php" + sitejsonurl + admin_backup_json;
 
 const execSync = require('child_process').execSync;
 
 // web addresses
-const test_ip = execSync('aws ssm get-parameter --name bmltwf_test_hostip --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
+const test_ip = execSync('aws ssm get-parameter --name bmltwf_test_hostip --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }).trim(); 
 const siteurl_dev = "http://"+ test_ip + "/wordpressdev";
 const siteurl_multidev = "http://"+test_ip+"/wordpressmultidev";
 const siteurl_multinetworkdev = "http://"+test_ip+"/wordpressmultinetworkdev";
@@ -40,7 +40,7 @@ module.exports =
         "admin_options_page": siteurl_dev + admin_options_page,
         "admin_logon": username_dev,
         "admin_password": password_dev,
-        "admin_backup_json" : siteurl_dev + sitejsonurl + admin_backup_json,
+        "admin_backup_json" : siteurl_dev + backuppath,
 // multisite
         "formpage_multidev": siteurl_multidev +formpage,
         "admin_logon_page_multidev": siteurl_multidev + admin_logon_page,
@@ -49,7 +49,7 @@ module.exports =
         "admin_options_page_multidev": siteurl_multidev + admin_options_page,
         "admin_logon_multidev": username_multidev,
         "admin_password_multidev": password_multidev,
-        "admin_backup_json_multidev" : siteurl_multidev + sitejsonurl + admin_backup_json,
+        "admin_backup_json_multidev" : siteurl_multidev + backuppath,
 // multisite network install
         "formpage_multinetworkdev": siteurl_multinetworkdev + formpage,
         "admin_logon_page_multinetworkdev": siteurl_multinetworkdev + admin_logon_page,
@@ -58,7 +58,7 @@ module.exports =
         "admin_options_page_multinetworkdev": siteurl_multinetworkdev + admin_options_page,
         "admin_logon_multinetworkdev": username_multinetworkdev,
         "admin_password_multinetworkdev": password_multinetworkdev,
-        "admin_backup_json_multinetworkdev" : siteurl_multinetworkdev + sitejsonurl + admin_backup_json,
+        "admin_backup_json_multinetworkdev" : siteurl_multinetworkdev + backuppath,
 // test case resetters
         "admin_submission_reset": "http://"+test_ip+"/github/db_submissions.php",
         "blank_bmlt": "http://"+test_ip+"/github/blank_bmlt.php",
