@@ -18,14 +18,14 @@ const siteurl_multidev = "http://"+test_ip+"/wordpressmultidev";
 const siteurl_multinetworkdev = "http://"+test_ip+"/wordpressmultinetworkdev";
 
 // usernames and passwords
-const username_dev = execSync('aws ssm get-parameter --name bmltwf_test_wpuser --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
-const password_dev = execSync('aws ssm get-parameter --name bmltwf_test_wppass --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
+const username_dev = execSync('aws ssm get-parameter --name bmltwf_test_wpuser_dev --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
+const password_dev = execSync('aws ssm get-parameter --name bmltwf_test_wppass_dev --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
 
-const username_multidev = execSync('aws ssm get-parameter --name bmltwf_test_wpuser --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
-const password_multidev = execSync('aws ssm get-parameter --name bmltwf_test_wppass --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
+const username_multidev = execSync('aws ssm get-parameter --name bmltwf_test_wpuser_multidev --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
+const password_multidev = execSync('aws ssm get-parameter --name bmltwf_test_wppass_multidev --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
 
-const username_multinetworkdev = execSync('aws ssm get-parameter --name bmltwf_test_wpuser --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
-const password_multinetworkdev = execSync('aws ssm get-parameter --name bmltwf_test_wppass --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
+const username_multinetworkdev = execSync('aws ssm get-parameter --name bmltwf_test_wpuser_multinetworkdev --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
+const password_multinetworkdev = execSync('aws ssm get-parameter --name bmltwf_test_wppass_multinetworkdev --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
 
 
 module.exports = 
