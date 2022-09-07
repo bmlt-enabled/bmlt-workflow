@@ -252,12 +252,12 @@ sed -i -e '/\/\* Add any custom values between this line and the "stop editing" 
 rm insert
 
 sed -i -e "/define( 'WP_DEBUG', false );/d" wp-config.php
-#sed -i -e "s/.*PATH_CURRENT_SITE.*/define( 'PATH_CURRENT_SITE','\/wordpressmultidev\/');/" wp-config.php
+#sed -i -e "s/.*PATH_CURRENT_SITE.*/define( 'PATH_CURRENT_SITE','\/wordpressmultinetworkdev\/');/" wp-config.php
 
 cat > .htaccess << EOF
 RewriteEngine On
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-RewriteBase /wordpressmultidev/
+RewriteBase /wordpressmultinetworkdev/
 RewriteRule ^index\.php$ - [L]
 
 # add a trailing slash to /wp-admin
