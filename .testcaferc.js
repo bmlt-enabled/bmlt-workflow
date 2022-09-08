@@ -17,13 +17,13 @@ const execSync = require('child_process').execSync;
 
 // web addresses
 const test_ip = execSync('aws ssm get-parameter --name bmltwf_test_hostip --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }).trim(); 
-const siteurl_dev = "http://"+ test_ip + "/wordpressdev";
+const siteurl_single = "http://"+ test_ip + "/wordpresssingle";
 const siteurl_multisingle = "http://"+test_ip+"/wordpressmultisingle";
 const siteurl_multinetwork = "http://"+test_ip+"/wordpressmultinetwork";
 
 // usernames and passwords
-const username_dev = execSync('aws ssm get-parameter --name bmltwf_test_wpuser_dev --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
-const password_dev = execSync('aws ssm get-parameter --name bmltwf_test_wppass_dev --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
+const username_single = execSync('aws ssm get-parameter --name bmltwf_test_wpuser_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
+const password_single = execSync('aws ssm get-parameter --name bmltwf_test_wppass_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
 
 const username_multisingle = execSync('aws ssm get-parameter --name bmltwf_test_wpuser_multisingle --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
 const password_multisingle = execSync('aws ssm get-parameter --name bmltwf_test_wppass_multisingle --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
@@ -37,15 +37,15 @@ module.exports =
     "browsers": "chrome",
     "userVariables": {
 
-        "formpage": siteurl_dev + formpage,
-        "admin_logon_page": siteurl_dev + admin_logon_page,
-        "admin_submissions_page": siteurl_dev + admin_submissions_page,
-        "admin_service_bodies_page": siteurl_dev + admin_service_bodies_page,
-        "admin_settings_page": siteurl_dev + admin_settings_page,
-        "admin_options_page": siteurl_dev + admin_options_page,
-        "admin_logon": username_dev,
-        "admin_password": password_dev,
-        "admin_backup_json" : siteurl_dev + backuppath,
+        "formpage": siteurl_single + formpage,
+        "admin_logon_page": siteurl_single + admin_logon_page,
+        "admin_submissions_page": siteurl_single + admin_submissions_page,
+        "admin_service_bodies_page": siteurl_single + admin_service_bodies_page,
+        "admin_settings_page": siteurl_single + admin_settings_page,
+        "admin_options_page": siteurl_single + admin_options_page,
+        "admin_logon": username_single,
+        "admin_password": password_single,
+        "admin_backup_json" : siteurl_single + backuppath,
 // multisite
         "formpage_multisingle": siteurl_multisingle +formpage,
         "admin_logon_page_multisingle": siteurl_multisingle + admin_logon_page,

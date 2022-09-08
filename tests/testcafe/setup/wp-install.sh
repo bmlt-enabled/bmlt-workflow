@@ -25,16 +25,16 @@ export MYSQL='/usr/bin/mysql'
 export BRANCH=1.0.2-fixes
 
 export mysqlhost=localhost
-export mysqldb=wpdevdb
-export mysqluser=wpdevuser
+export mysqldb=wpsingledb
+export mysqluser=wpsingleuser
 export mysqlpass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-export wptitle=devsite
+export wptitle=singlesite
 export wpuser=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name bmltwf_test_wpuser_dev --value $wpuser --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wpuser_single --value $wpuser --type SecureString --region ap-southeast-2
 export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name bmltwf_test_wppass_dev --value $wppass --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wppass_single --value $wppass --type SecureString --region ap-southeast-2
 export wpemail=nigel.bmlt@gmail.com
-export sitename=wordpressdev
+export sitename=wordpresssingle
 export siteurl=http://$MYIP/$sitename
 export sitelocalpath=/var/www/html/$sitename
 
