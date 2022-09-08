@@ -28,17 +28,17 @@ export const bmltwf_admin = Role(userVariables.admin_logon_page, async t => {
     .click(wordpress_login.wp_submit);
 });
 
-export const bmltwf_admin_multidev = Role(userVariables.admin_logon_page_multidev, async t => {
+export const bmltwf_admin_multisingle = Role(userVariables.admin_logon_page_multisingle, async t => {
     await t
-    .typeText(wordpress_login.user_login, userVariables.admin_logon_multidev)
-    .typeText(wordpress_login.user_pass, userVariables.admin_password_multidev)
+    .typeText(wordpress_login.user_login, userVariables.admin_logon_multisingle)
+    .typeText(wordpress_login.user_pass, userVariables.admin_password_multisingle)
     .click(wordpress_login.wp_submit);
 });
 
-export const bmltwf_admin_multinetworkdev = Role(userVariables.admin_logon_page_multinetworkdev, async t => {
+export const bmltwf_admin_multinetwork = Role(userVariables.admin_logon_page_multinetwork, async t => {
     await t
-    .typeText(wordpress_login.user_login, userVariables.admin_logon_multinetworkdev)
-    .typeText(wordpress_login.user_pass, userVariables.admin_password_multinetworkdev)
+    .typeText(wordpress_login.user_login, userVariables.admin_logon_multinetwork)
+    .typeText(wordpress_login.user_pass, userVariables.admin_password_multinetwork)
     .click(wordpress_login.wp_submit);
 });
 

@@ -18,18 +18,18 @@ const execSync = require('child_process').execSync;
 // web addresses
 const test_ip = execSync('aws ssm get-parameter --name bmltwf_test_hostip --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }).trim(); 
 const siteurl_dev = "http://"+ test_ip + "/wordpressdev";
-const siteurl_multidev = "http://"+test_ip+"/wordpressmultidev";
-const siteurl_multinetworkdev = "http://"+test_ip+"/wordpressmultinetworkdev";
+const siteurl_multisingle = "http://"+test_ip+"/wordpressmultisingle";
+const siteurl_multinetwork = "http://"+test_ip+"/wordpressmultinetwork";
 
 // usernames and passwords
 const username_dev = execSync('aws ssm get-parameter --name bmltwf_test_wpuser_dev --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
 const password_dev = execSync('aws ssm get-parameter --name bmltwf_test_wppass_dev --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
 
-const username_multidev = execSync('aws ssm get-parameter --name bmltwf_test_wpuser_multidev --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
-const password_multidev = execSync('aws ssm get-parameter --name bmltwf_test_wppass_multidev --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
+const username_multisingle = execSync('aws ssm get-parameter --name bmltwf_test_wpuser_multisingle --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
+const password_multisingle = execSync('aws ssm get-parameter --name bmltwf_test_wppass_multisingle --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
 
-const username_multinetworkdev = execSync('aws ssm get-parameter --name bmltwf_test_wpuser_multinetworkdev --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
-const password_multinetworkdev = execSync('aws ssm get-parameter --name bmltwf_test_wppass_multinetworkdev --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
+const username_multinetwork = execSync('aws ssm get-parameter --name bmltwf_test_wpuser_multinetwork --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
+const password_multinetwork = execSync('aws ssm get-parameter --name bmltwf_test_wppass_multinetwork --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r', { encoding: 'utf-8' }); 
 
 
 module.exports = 
@@ -47,32 +47,32 @@ module.exports =
         "admin_password": password_dev,
         "admin_backup_json" : siteurl_dev + backuppath,
 // multisite
-        "formpage_multidev": siteurl_multidev +formpage,
-        "admin_logon_page_multidev": siteurl_multidev + admin_logon_page,
-        "admin_submissions_page_multidev": siteurl_multidev + admin_submissions_page,
-        "admin_service_bodies_page_multidev": siteurl_multidev + admin_service_bodies_page,
-        "admin_settings_page_multidev_plugin": siteurl_multidev + multisite_plugin + admin_settings_page,
-        "admin_settings_page_multidev_noplugin": siteurl_multidev + multisite_noplugin + admin_settings_page,
-        "admin_options_page_multidev": siteurl_multidev + admin_options_page,
-        "admin_options_page_multidev_plugin": siteurl_multidev + multisite_plugin + admin_options_page,
-        "admin_options_page_multidev_noplugin": siteurl_multidev + multisite_noplugin + admin_options_page,
-        "admin_logon_multidev": username_multidev,
-        "admin_password_multidev": password_multidev,
-        "admin_backup_json_multidev" : siteurl_multidev + backuppath,
+        "formpage_multisingle": siteurl_multisingle +formpage,
+        "admin_logon_page_multisingle": siteurl_multisingle + admin_logon_page,
+        "admin_submissions_page_multisingle": siteurl_multisingle + admin_submissions_page,
+        "admin_service_bodies_page_multisingle": siteurl_multisingle + admin_service_bodies_page,
+        "admin_settings_page_multisingle_plugin": siteurl_multisingle + multisite_plugin + admin_settings_page,
+        "admin_settings_page_multisingle_noplugin": siteurl_multisingle + multisite_noplugin + admin_settings_page,
+        "admin_options_page_multisingle": siteurl_multisingle + admin_options_page,
+        "admin_options_page_multisingle_plugin": siteurl_multisingle + multisite_plugin + admin_options_page,
+        "admin_options_page_multisingle_noplugin": siteurl_multisingle + multisite_noplugin + admin_options_page,
+        "admin_logon_multisingle": username_multisingle,
+        "admin_password_multisingle": password_multisingle,
+        "admin_backup_json_multisingle" : siteurl_multisingle + backuppath,
 // multisite network install
-        "formpage_multinetworkdev": siteurl_multinetworkdev + formpage,
-        "admin_logon_page_multinetworkdev": siteurl_multinetworkdev + admin_logon_page,
-        "admin_submissions_page_multinetworkdev": siteurl_multinetworkdev + admin_submissions_page,
-        "admin_service_bodies_page_multinetworkdev": siteurl_multinetworkdev + admin_service_bodies_page,
-        "admin_settings_page_multinetworkdev": siteurl_multinetworkdev + admin_settings_page,
-        "admin_settings_page_multidev_plugin": siteurl_multidev + multisite_plugin + admin_settings_page,
-        "admin_settings_page_multidev_plugin2": siteurl_multidev + multisite_plugin2 + admin_settings_page,
-        "admin_options_page_multinetworkdev": siteurl_multinetworkdev + admin_options_page,
-        "admin_options_page_multinetworkdev_plugin": siteurl_multidev + multisite_plugin + admin_options_page,
-        "admin_options_page_multinetworkdev_plugin2": siteurl_multidev + multisite_plugin2 + admin_options_page,
-        "admin_logon_multinetworkdev": username_multinetworkdev,
-        "admin_password_multinetworkdev": password_multinetworkdev,
-        "admin_backup_json_multinetworkdev" : siteurl_multinetworkdev + backuppath,
+        "formpage_multinetwork": siteurl_multinetwork + formpage,
+        "admin_logon_page_multinetwork": siteurl_multinetwork + admin_logon_page,
+        "admin_submissions_page_multinetwork": siteurl_multinetwork + admin_submissions_page,
+        "admin_service_bodies_page_multinetwork": siteurl_multinetwork + admin_service_bodies_page,
+        "admin_settings_page_multinetwork": siteurl_multinetwork + admin_settings_page,
+        "admin_settings_page_multisingle_plugin": siteurl_multisingle + multisite_plugin + admin_settings_page,
+        "admin_settings_page_multisingle_plugin2": siteurl_multisingle + multisite_plugin2 + admin_settings_page,
+        "admin_options_page_multinetwork": siteurl_multinetwork + admin_options_page,
+        "admin_options_page_multinetwork_plugin": siteurl_multisingle + multisite_plugin + admin_options_page,
+        "admin_options_page_multinetwork_plugin2": siteurl_multisingle + multisite_plugin2 + admin_options_page,
+        "admin_logon_multinetwork": username_multinetwork,
+        "admin_password_multinetwork": password_multinetwork,
+        "admin_backup_json_multinetwork" : siteurl_multinetwork + backuppath,
 // test case resetters
         "admin_submission_reset": "http://"+test_ip+"/github/db_submissions.php",
         "blank_bmlt": "http://"+test_ip+"/github/blank_bmlt.php",

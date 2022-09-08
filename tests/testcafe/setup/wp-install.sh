@@ -102,16 +102,16 @@ wp post create --path=$sitelocalpath --post_type=page --post_title='testpage' --
 ## MULTI SITE INSTALLER (single site test)
 
 export mysqlhost=localhost
-export mysqldb=wpmultidevdb
-export mysqluser=wpmultidevuser
+export mysqldb=wpmultisingledb
+export mysqluser=wpmultisingleuser
 export mysqlpass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-export wptitle=multidevsite
+export wptitle=multisinglesite
 export wpuser=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name bmltwf_test_wpuser_multidev --value $wpuser --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wpuser_multisingle --value $wpuser --type SecureString --region ap-southeast-2
 export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name bmltwf_test_wppass_multidev --value $wppass --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wppass_multisingle --value $wppass --type SecureString --region ap-southeast-2
 export wpemail=nigel.bmlt@gmail.com
-export sitename=wordpressmultidev
+export sitename=wordpressmultisingle
 export siteurl=http://$MYIP/$sitename/
 export sitelocalpath=/var/www/html/$sitename
 
@@ -152,12 +152,12 @@ sed -i -e '/\/\* Add any custom values between this line and the "stop editing" 
 rm insert
 
 sed -i -e "/define( 'WP_DEBUG', false );/d" wp-config.php
-#sed -i -e "s/.*PATH_CURRENT_SITE.*/define( 'PATH_CURRENT_SITE','\/wordpressmultidev\/');/" wp-config.php
+#sed -i -e "s/.*PATH_CURRENT_SITE.*/define( 'PATH_CURRENT_SITE','\/wordpressmultisingle\/');/" wp-config.php
 
 cat > .htaccess << EOF
 RewriteEngine On
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-RewriteBase /wordpressmultidev/
+RewriteBase /wordpressmultisingle/
 RewriteRule ^index\.php$ - [L]
 
 # add a trailing slash to /wp-admin
@@ -202,16 +202,16 @@ wp post create --url=$pluginsite --path=$sitelocalpath --post_type=page --post_t
 ## MULTI SITE INSTALLER (network wide install test)
 
 export mysqlhost=localhost
-export mysqldb=wpmultinetworkdevdb
-export mysqluser=wpmultinetworkdevuser
+export mysqldb=wpmultinetworkdb
+export mysqluser=wpmultinetworkuser
 export mysqlpass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-export wptitle=multinetworkdevsite
+export wptitle=multinetworksite
 export wpuser=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name bmltwf_test_wpuser_multinetworkdev --value $wpuser --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wpuser_multinetwork --value $wpuser --type SecureString --region ap-southeast-2
 export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name bmltwf_test_wppass_multinetworkdev --value $wppass --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wppass_multinetwork --value $wppass --type SecureString --region ap-southeast-2
 export wpemail=nigel.bmlt@gmail.com
-export sitename=wordpressmultinetworkdev
+export sitename=wordpressmultinetwork
 export siteurl=http://$MYIP/$sitename/
 export sitelocalpath=/var/www/html/$sitename
 
@@ -252,12 +252,12 @@ sed -i -e '/\/\* Add any custom values between this line and the "stop editing" 
 rm insert
 
 sed -i -e "/define( 'WP_DEBUG', false );/d" wp-config.php
-#sed -i -e "s/.*PATH_CURRENT_SITE.*/define( 'PATH_CURRENT_SITE','\/wordpressmultinetworkdev\/');/" wp-config.php
+#sed -i -e "s/.*PATH_CURRENT_SITE.*/define( 'PATH_CURRENT_SITE','\/wordpressmultinetwork\/');/" wp-config.php
 
 cat > .htaccess << EOF
 RewriteEngine On
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-RewriteBase /wordpressmultinetworkdev/
+RewriteBase /wordpressmultinetwork/
 RewriteRule ^index\.php$ - [L]
 
 # add a trailing slash to /wp-admin
