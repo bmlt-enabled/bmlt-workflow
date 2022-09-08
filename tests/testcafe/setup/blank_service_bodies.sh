@@ -16,4 +16,4 @@
 # You should have received a copy of the GNU General Public License
 # along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-mysql -D wpdevdb -ussm-user < /home/ssm-user/scripts/blank_service_bodies.sql
+mysql -D wpsingledb -ussm-user < /home/ssm-user/scripts/blank_service_bodies.sql
