@@ -22,31 +22,30 @@ import { Selector, Role } from "testcafe";
 
 import { reset_bmlt, 
   bmlt_states_off, 
-  configure_service_bodies, 
-  delete_submissions, 
   click_table_row_column, 
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
-  bmltwf_admin, 
-  basic_options } from "./helpers/helper.js";
+  bmltwf_admin_multisingle, 
+  basic_options_multisingle,
+  configure_service_bodies_multisingle,
+  delete_submissions_multisingle } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
 
-fixture`e2e_test_fixture`
+fixture`multisingle_e2e_test_fixture`
   // .page(userVariables.admin_submissions_page)
   .beforeEach(async (t) => {
 
     await reset_bmlt(t);
     await bmlt_states_off(t);
 
-    await basic_options(t);
+    await basic_options_multisingle(t);
 
-    await delete_submissions(t);
+    await delete_submissions_multisingle(t);
 
-    await configure_service_bodies(t);
-
+    await configure_service_bodies_multisingle(t);
 
   });
 
@@ -59,6 +58,7 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => 
     location_province: "nsw",
     location_postal_code_1: "2032",
   };
+  console.log(userVariables.formpage_multisingle);
 
   await t.navigateTo(userVariables.formpage_multisingle);
 
@@ -156,7 +156,7 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => 
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_multisingle);
+  await t.useRole(bmltwf_admin_multisingle).navigateTo(userVariables.admin_submissions_page_multisingle);
 
   // new meeting = row 0
   var row = 0;
@@ -251,7 +251,7 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) 
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_multisingle);
+  await t.useRole(bmltwf_admin_multisingle).navigateTo(userVariables.admin_submissions_page_multisingle);
 
   // new meeting = row 0
   var row = 0;

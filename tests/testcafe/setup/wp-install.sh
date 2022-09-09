@@ -199,7 +199,12 @@ wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"
 # create our test page
 wp post create --url=$pluginsite --path=$sitelocalpath --post_type=page --post_title='testpage' --post_content='[bmltwf-meeting-update-form]' --post_status='publish' --post_name='testpage'
 
+
+
+##
 ## MULTI SITE INSTALLER (network wide install test)
+##
+
 
 export mysqlhost=localhost
 export mysqldb=wpmultinetworkdb

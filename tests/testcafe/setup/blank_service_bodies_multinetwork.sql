@@ -1,0 +1,4 @@
+delete from wp_2_bmltwf_service_bodies_access;
+delete from wp_2_bmltwf_service_bodies;
+delete from wp_3_bmltwf_service_bodies_access;
+delete from wp_3_bmltwf_service_bodies;

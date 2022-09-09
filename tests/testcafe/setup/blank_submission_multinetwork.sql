@@ -1,0 +1,2 @@
+delete from wp_2_bmltwf_submissions;
+delete from wp_3_bmltwf_submissions;
