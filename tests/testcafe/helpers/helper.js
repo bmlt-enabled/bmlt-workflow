@@ -134,7 +134,7 @@ export async function configure_service_bodies_multinetwork(t) {
 
   await t
     .useRole(bmltwf_admin_multinetwork)
-    .navigateTo(userVariables.admin_service_bodies_page_multinetwork)
+    .navigateTo(userVariables.admin_service_bodies_page_multinetwork_plugin)
 
     .click(Selector("ul#select2-bmltwf_userlist_id_1-container").parent())
     .pressKey("enter")
@@ -183,6 +183,17 @@ export async function basic_options_multinetwork() {
   await t
     .useRole(bmltwf_admin_multinetwork)
     .navigateTo(userVariables.admin_settings_page_multinetwork_plugin)
+    .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
+    .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
+
+  await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
+  await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display");
+
+  await t.click(ao.submit);
+  await ao.settings_updated();
+  await t
+    .navigateTo(userVariables.admin_settings_page_multinetwork_plugin2)
     .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
     .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
 

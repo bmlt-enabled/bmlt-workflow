@@ -294,9 +294,15 @@ cd $sitelocalpath/wp-content/plugins/bmlt-workflow
 
 wp --path=$sitelocalpath site create --slug=plugin1
 wp --path=$sitelocalpath site create --slug=plugin2
-export pluginsite=${siteurl}plugin
 # network activate plugin
 wp plugin activate --network --path=$sitelocalpath "bmlt-workflow"
+
+export pluginsite=${siteurl}plugin
+wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'$MYIP'/blank_bmlt/main_server/'
+wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
+wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
+wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
+export pluginsite=${siteurl}plugin2
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'$MYIP'/blank_bmlt/main_server/'
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
