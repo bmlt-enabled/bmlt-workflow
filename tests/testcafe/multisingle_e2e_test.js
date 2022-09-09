@@ -156,7 +156,7 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => 
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin_multisingle).navigateTo(userVariables.admin_submissions_page_multisingle);
+  await t.useRole(bmltwf_admin_multisingle).navigateTo(userVariables.admin_submissions_page_multisingle_plugin);
 
   // new meeting = row 0
   var row = 0;
@@ -251,7 +251,7 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) 
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin_multisingle).navigateTo(userVariables.admin_submissions_page_multisingle);
+  await t.useRole(bmltwf_admin_multisingle).navigateTo(userVariables.admin_submissions_page_multisingle_plugin);
 
   // new meeting = row 0
   var row = 0;
