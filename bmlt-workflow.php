@@ -871,22 +871,27 @@ if (!class_exists('bmltwf_plugin')) {
 
             if ((is_multisite()) && (is_plugin_active_for_network(__FILE__))) {
                 // multi site and network activation, so iterate through all blogs
+                $this->debug_log('Multisite Network Activation');
                 $blogids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
                 foreach ($blogids as $blog_id) {
+                    $this->debug_log('Installing on blog id ' + $blog_id);
                     switch_to_blog($blog_id);
                     $this->bmltwf_add_default_options();
                     $this->BMLTWF_Database->bmltwf_db_upgrade($this->BMLTWF_Database->bmltwf_db_version, false);
                     restore_current_blog();
                 }
             } else {
+                $this->debug_log('Single Site Activation');
                 $this->bmltwf_add_default_options();
                 $this->BMLTWF_Database->bmltwf_db_upgrade($this->BMLTWF_Database->bmltwf_db_version, false);
             }
+
             // give all 'manage_options" users the capability so they are able to see the submission menu
             $users = get_users();
             foreach ($users as $user) {
                 $this->bmltwf_add_capability_to_manage_options_user($user);
             }
+
             // add a custom role just for trusted servants
             add_role('bmltwf_trusted_servant', 'BMLT Workflow Trusted Servant');
         }
