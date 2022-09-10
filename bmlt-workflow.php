@@ -868,7 +868,8 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_install($networkwide)
         {
             global $wpdb;
-
+            $this->debug_log("is_multisite = " + is_multisite());
+            $this->debug_log("is_plugin_active_for_network = " + is_plugin_active_for_network(__FILE__));
             if ((is_multisite()) && (is_plugin_active_for_network(__FILE__))) {
                 // multi site and network activation, so iterate through all blogs
                 $this->debug_log('Multisite Network Activation');
