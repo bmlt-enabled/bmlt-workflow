@@ -41,7 +41,7 @@ const password_multinetwork = execSync("aws ssm get-parameter --name bmltwf_test
 module.exports = {
   browsers: "chrome",
   userVariables: {
-    formpage: siteurl_single + formpage,
+    formpage: siteurl_single + '/index.php' + formpage,
     admin_logon_page: siteurl_single + admin_logon_page,
     admin_submissions_page: siteurl_single + admin_submissions_page,
     admin_service_bodies_page: siteurl_single + admin_service_bodies_page,

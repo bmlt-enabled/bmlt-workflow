@@ -102,7 +102,6 @@ test("MultiSite_Network_Check_Plugin_Doesnt_Touch_Plugin2", async (t) => {
     .click(asb.bmltwf_submit)
     .navigateTo(userVariables.admin_settings_page_multinetwork_plugin2)
     .navigateTo(userVariables.admin_service_bodies_page_multinetwork_plugin2)
-    .debug()
     .expect(Selector("#bmltwf_userlist_checkbox_id_1").checked)
     .eql(false)
     .expect(Selector("#bmltwf_userlist_checkbox_id_2").checked)
