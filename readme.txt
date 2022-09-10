@@ -4,7 +4,7 @@ Requires at least: 5.2
 Tested up to: 6.0
 Requires PHP: 5.2
 License: GPLv2
-Stable tag: 1.0.2
+Stable tag: 1.0.3
 Contributors: nigelbmlt
 
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.
@@ -22,5 +22,5 @@ For admins, modification of email templates, service committees and email contac
 This initial release is specific to the NA Australian Region use case (particularly the FSO/Starter Kit email) but the code is written such that templates are relatively easy to adjust based on feedback from other regions.
 
 == Installation ==
-Copy to wordpress plugins directory
+Via wordpress download
 
