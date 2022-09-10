@@ -86,7 +86,7 @@ fixture`admin_options_fixture`
 
 test("Backup", async (t) => {
   
-  console.log(backupurl);
+  // console.log(backupurl);
   await t.click(ao.backup_button);
   const b_elem = Selector("#bmltwf_backup_filename");
   const state = await b_elem();

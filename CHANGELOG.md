@@ -1,3 +1,7 @@
+## 1.0.3 (Sep 10, 2022)
+- Updated with multisite support and test cases
+- Updated icons for wordpress publish(thanks KevinC !)
+
 ## 1.0.2 (Aug 19, 2022)
 - First release pushed to wordpress.org!
 

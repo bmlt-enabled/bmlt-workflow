@@ -58,7 +58,7 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => 
     location_province: "nsw",
     location_postal_code_1: "2032",
   };
-  console.log(userVariables.formpage_multisingle);
+  // console.log(userVariables.formpage_multisingle);
 
   await t.navigateTo(userVariables.formpage_multisingle);
 

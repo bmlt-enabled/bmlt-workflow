@@ -85,7 +85,7 @@ test("MultiSite_Network_Check_Plugin_Doesnt_Touch_Plugin2", async (t) => {
   await basic_options_multinetwork(t);
 
   // update the service bodies in plugin1 and check they dont show in plugin2
-  console.log(userVariables.blank_service_bodies_multinetwork);
+  // console.log(userVariables.blank_service_bodies_multinetwork);
   await t.request(userVariables.blank_service_bodies_multinetwork);
   await t
     .useRole(bmltwf_admin_multinetwork)
