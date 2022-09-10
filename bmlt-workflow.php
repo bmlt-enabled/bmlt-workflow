@@ -871,7 +871,7 @@ if (!class_exists('bmltwf_plugin')) {
             $this->debug_log("is_multisite = " . var_export(is_multisite(),true));
             $this->debug_log("is_plugin_active_for_network = " . var_export(is_plugin_active_for_network(__FILE__),true));
             $this->debug_log("networkwide = " . var_export($networkwide,true));
-            if ((is_multisite()) && (is_plugin_active_for_network(__FILE__))) {
+            if ((is_multisite()) && ($networkwide === true)) {
                 // multi site and network activation, so iterate through all blogs
                 $this->debug_log('Multisite Network Activation');
                 $blogids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
