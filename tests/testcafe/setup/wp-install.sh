@@ -283,7 +283,7 @@ sudo mv bmlt-workflow $sitelocalpath/wp-content/plugins
 sudo chown -R apache:apache $sitelocalpath/wp-content/plugins/bmlt-workflow
 cd $sitelocalpath/wp-content/plugins/bmlt-workflow
 
-wp --path=$sitelocalpath site create --slug=plugin1
+wp --path=$sitelocalpath site create --slug=plugin
 wp --path=$sitelocalpath site create --slug=plugin2
 # network activate plugin
 wp plugin activate --network --path=$sitelocalpath "bmlt-workflow"

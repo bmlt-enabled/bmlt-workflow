@@ -292,7 +292,7 @@ class Integration
         if ($this->cookies == null) {
             $encrypted = get_option('bmltwf_bmlt_password');
             $this->debug_log("retrieved encrypted bmlt password");
-            $this->debug_log(($encrypted));
+            // $this->debug_log(($encrypted));
 
             if ($encrypted === false) {
                 return new \WP_Error('bmltwf', 'Error unpacking password.');
