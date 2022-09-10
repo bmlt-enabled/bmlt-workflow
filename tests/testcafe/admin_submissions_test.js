@@ -84,7 +84,7 @@ test("Approve_Modify_Meeting", async (t) => {
 test("Approve_Close_Meeting_With_Unpublish", async (t) => {
 
   // set it to unpublish
-  await t.navigateTo(userVariables.admin_options_page);
+  await t.navigateTo(userVariables.admin_settings_page);
   await select_dropdown_by_text(ao.bmltwf_delete_closed_meetings, "Unpublish");
   await t.click(ao.submit);
   await ao.settings_updated();
@@ -111,7 +111,7 @@ test("Approve_Close_Meeting_With_Unpublish", async (t) => {
 test("Approve_Close_Meeting_With_Delete", async (t) => {
 
   // set it to delete
-  await t.navigateTo(userVariables.admin_options_page);
+  await t.navigateTo(userVariables.admin_settings_page);
   await select_dropdown_by_text(ao.bmltwf_delete_closed_meetings, "Delete");
   await t.click(ao.submit);
   await ao.settings_updated();

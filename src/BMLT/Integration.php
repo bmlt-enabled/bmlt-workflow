@@ -152,14 +152,14 @@ class Integration
         //     return new \WP_Error('bmltwf','BMLT Configuration Error - Unable to retrieve meeting formats');
         // }
 
-        $this->debug_log(wp_remote_retrieve_body($response));
+        // $this->debug_log(wp_remote_retrieve_body($response));
         // $formatarr = json_decode(wp_remote_retrieve_body($response), true);
         $xml = simplexml_load_string(wp_remote_retrieve_body($response));
-        $this->debug_log("XML RESPONSE");
-        $this->debug_log(wp_remote_retrieve_body($response));
+        // $this->debug_log("XML RESPONSE");
+        // $this->debug_log(wp_remote_retrieve_body($response));
         $formatarr = json_decode(json_encode($xml), 1);
 
-        $this->debug_log(($formatarr));
+        // $this->debug_log(($formatarr));
 
         $newformat = array();
         foreach ($formatarr['row'] as $key => $value) {
@@ -167,8 +167,8 @@ class Integration
             unset($value['id']);
             $newformat[$formatid] = $value;
         }
-        $this->debug_log("NEWFORMAT");
-        $this->debug_log(($newformat));
+        // $this->debug_log("NEWFORMAT");
+        // $this->debug_log(($newformat));
 
         return $newformat;
     }
@@ -292,7 +292,7 @@ class Integration
         if ($this->cookies == null) {
             $encrypted = get_option('bmltwf_bmlt_password');
             $this->debug_log("retrieved encrypted bmlt password");
-            $this->debug_log(($encrypted));
+            // $this->debug_log(($encrypted));
 
             if ($encrypted === false) {
                 return new \WP_Error('bmltwf', 'Error unpacking password.');
@@ -411,9 +411,9 @@ class Integration
         if ($newargs != '') {
             // chop trailing &
             $newargs = substr($newargs, 0, -1);
-            $this->debug_log("our post body is " . $newargs);
+            // $this->debug_log("our post body is " . $newargs);
             $ret = \wp_safe_remote_post($url, $this->set_args($cookies, $newargs));
-            $this->debug_log(($ret));
+            // $this->debug_log(($ret));
             return $ret;
         }
     }

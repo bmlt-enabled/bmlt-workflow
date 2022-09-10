@@ -21,7 +21,7 @@ This initial release is specific to the NA Australian Region use case (particula
 - Trusted Servants - Full featured approve/reject workflow and automatic insertion of changes into BMLT
 - Trusted Servants - Notification will be sent to the wordpress email of trusted servants for any new submissions they are permitted to manage
 ## Installation
-Standard wordpress plugin installation procedure. Just copy the contents of this repo to your wp-content/plugins folder.
+Via wordpress plugin download. Can be installed either as a multisite network activation, multisite single site activation or on a single site.
 
 ## Contact/Issues
 For any other issues you find - please raise an issue here: https://github.com/bmlt-enabled/bmlt-workflow/issues and/or reach out on BMLT slack #wordpress-BMLT-workflow

@@ -17,7 +17,6 @@
 
 import { ao } from "./models/admin_options";
 import { as } from "./models/admin_submissions";
-import { asb } from "./models/admin_service_bodies";
 import { uf } from "./models/meeting_update_form";
 
 import { userVariables } from "../../.testcaferc";
@@ -81,7 +80,7 @@ fixture`admin_options_fixture`
 
     await insert_submissions(t);
 
-    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_options_page);
+    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page);
   })
   .requestHooks(logger);
 
@@ -153,7 +152,7 @@ test("Options_Save", async (t) => {
 test("Check_Optional_Fields", async (t) => {
   // test optional fields with 'display and required' option
 
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_options_page);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page);
   await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display + Required Field");
   await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display + Required Field");
   await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display + Required Field");
@@ -180,7 +179,7 @@ test("Check_Optional_Fields", async (t) => {
     // test optional fields with 'hidden' option
 
     .useRole(bmltwf_admin)
-    .navigateTo(userVariables.admin_options_page);
+    .navigateTo(userVariables.admin_settings_page);
   await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
   await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
   await select_dropdown_by_text(ao.bmltwf_fso_feature, "Disabled");
@@ -199,7 +198,7 @@ test("Check_Optional_Fields", async (t) => {
 
     // test optional fields with 'display' option
     .useRole(bmltwf_admin)
-    .navigateTo(userVariables.admin_options_page);
+    .navigateTo(userVariables.admin_settings_page);
   await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display");
   await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display");
   await select_dropdown_by_text(ao.bmltwf_fso_feature, "Enabled");

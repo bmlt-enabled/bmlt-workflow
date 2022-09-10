@@ -20,16 +20,16 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.0.2
+ * Version: 1.0.3
  * Requires at least: 5.2
  * Tested up to: 6.0
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
 
- define('BMLTWF_PLUGIN_VERSION','1.0.2');
+define('BMLTWF_PLUGIN_VERSION', '1.0.3');
 
-if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
+if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
 require 'config.php';
 
@@ -76,7 +76,7 @@ if (!class_exists('bmltwf_plugin')) {
             add_action('rest_api_init', array(&$this, 'bmltwf_rest_controller'));
             add_shortcode('bmltwf-meeting-update-form', array(&$this, 'bmltwf_meeting_update_form'));
             add_filter('plugin_action_links', array(&$this, 'bmltwf_add_plugin_link'), 10, 2);
-            add_action('user_register', array(&$this,'bmltwf_add_capability'), 10, 1 );
+            add_action('user_register', array(&$this, 'bmltwf_add_capability'), 10, 1);
 
             register_activation_hook(__FILE__, array(&$this, 'bmltwf_install'));
         }
@@ -110,7 +110,7 @@ if (!class_exists('bmltwf_plugin')) {
             $script .= 'var bmltwf_optional_location_nation = "' . get_option('bmltwf_optional_location_nation') . '";';
             $script .= 'var bmltwf_optional_location_sub_province = "' . get_option('bmltwf_optional_location_sub_province') . '";';
             $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
-            $script .= 'var bmltwf_fso_feature = "'. get_option('bmltwf_fso_feature').'";';
+            $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
 
             // add meeting formats
             $formatarr = $this->bmlt_integration->getMeetingFormats();
@@ -246,7 +246,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_admin_backup_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/options/backup') . '; ';
                     $script .= 'var bmltwf_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/options/restore') . '; ';
                     $script .= 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/servicebodies') . '; ';
-                    $script .= 'var bmltwf_fso_feature = "'. get_option('bmltwf_fso_feature').'";';
+                    $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
 
                     wp_add_inline_script('admin_options_js', $script, 'before');
                     break;
@@ -522,7 +522,7 @@ if (!class_exists('bmltwf_plugin')) {
             add_settings_field(
                 'bmltwf_shortcode',
                 'Meeting Update Form Shortcode',
-                array(&$this,'bmltwf_shortcode_html'),
+                array(&$this, 'bmltwf_shortcode_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
             );
@@ -530,7 +530,7 @@ if (!class_exists('bmltwf_plugin')) {
             add_settings_field(
                 'bmltwf_email_from_address',
                 'Email From Address',
-                array(&$this,'bmltwf_email_from_address_html'),
+                array(&$this, 'bmltwf_email_from_address_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
             );
@@ -586,7 +586,7 @@ if (!class_exists('bmltwf_plugin')) {
         }
         public function bmltwf_fso_feature_sanitize_callback($input)
         {
-            $this->debug_log("fso_enablde sanitize callback");            
+            $this->debug_log("fso_enablde sanitize callback");
             $this->debug_log($input);
 
             $output = get_option('bmltwf_fso_feature');
@@ -594,14 +594,14 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'hidden':
                 case 'display':
                     return $input;
-                }
-            add_settings_error('bmltwf_fso_feature','err','Invalid FSO Enabled setting.');
+            }
+            add_settings_error('bmltwf_fso_feature', 'err', 'Invalid FSO Enabled setting.');
             return $output;
         }
 
         public function bmltwf_optional_postcode_sanitize_callback($input)
         {
-            $this->debug_log("postcode sanitize callback");            
+            $this->debug_log("postcode sanitize callback");
             $this->debug_log($input);
 
             $output = get_option('bmltwf_optional_postcode');
@@ -610,14 +610,14 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'displayrequired':
                 case 'display':
                     return $input;
-                }
-            add_settings_error('bmltwf_optional_postcode','err','Invalid Postcode setting.');
+            }
+            add_settings_error('bmltwf_optional_postcode', 'err', 'Invalid Postcode setting.');
             return $output;
         }
 
         public function bmltwf_optional_location_nation_sanitize_callback($input)
         {
-            $this->debug_log("location nation sanitize callback");            
+            $this->debug_log("location nation sanitize callback");
             $this->debug_log($input);
 
             $output = get_option('bmltwf_optional_location_nation');
@@ -626,8 +626,8 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'displayrequired':
                 case 'display':
                     return $input;
-                }
-            add_settings_error('bmltwf_optional_location_nation','err','Invalid Nation setting.');
+            }
+            add_settings_error('bmltwf_optional_location_nation', 'err', 'Invalid Nation setting.');
             return $output;
         }
 
@@ -639,8 +639,8 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'displayrequired':
                 case 'display':
                     return $input;
-                }
-            add_settings_error('bmltwf_optional_location_sub_province','err','Invalid Sub Province setting.');
+            }
+            add_settings_error('bmltwf_optional_location_sub_province', 'err', 'Invalid Sub Province setting.');
             return $output;
         }
 
@@ -648,9 +648,8 @@ if (!class_exists('bmltwf_plugin')) {
         {
             $output = get_option('bmltwf_email_from_address');
             $sanitized_email = sanitize_email($input);
-            if (!is_email($sanitized_email))
-            {
-                add_settings_error('bmltwf_email_from_address','err','Invalid email from address.');
+            if (!is_email($sanitized_email)) {
+                add_settings_error('bmltwf_email_from_address', 'err', 'Invalid email from address.');
                 return $output;
             }
             return $sanitized_email;
@@ -660,9 +659,8 @@ if (!class_exists('bmltwf_plugin')) {
         {
             $output = get_option('bmltwf_fso_email_address');
             $sanitized_email = sanitize_email($input);
-            if (!is_email($sanitized_email))
-            {
-                add_settings_error('bmltwf_fso_email_address','err','Invalid FSO email address.');
+            if (!is_email($sanitized_email)) {
+                add_settings_error('bmltwf_fso_email_address', 'err', 'Invalid FSO email address.');
                 return $output;
             }
             return $sanitized_email;
@@ -676,8 +674,8 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'delete':
                 case 'unpublish':
                     return $input;
-                }
-            add_settings_error('bmltwf_delete_closed_meetings','err','Invalid delete closed meetings  setting.');
+            }
+            add_settings_error('bmltwf_delete_closed_meetings', 'err', 'Invalid delete closed meetings  setting.');
             return $output;
         }
 
@@ -775,10 +773,10 @@ if (!class_exists('bmltwf_plugin')) {
             }
 
             echo '<br><label for="' . esc_attr($option) . '"><b>' . esc_attr($friendlyname) . ':</b>';
-            echo '</label><select id="' . esc_attr($option) .'" name="' . esc_attr($option).'">';
-            echo '<option name="hidden" value="hidden" ' . esc_attr($hidden).'>Hidden</option>';
-            echo '<option name="displayrequired" value="displayrequired" '. esc_attr($displayrequired) . '>Display + Required Field</option>';
-            echo '<option name="display" value="display" '. esc_attr($display) . '>Display Only</option>';
+            echo '</label><select id="' . esc_attr($option) . '" name="' . esc_attr($option) . '">';
+            echo '<option name="hidden" value="hidden" ' . esc_attr($hidden) . '>Hidden</option>';
+            echo '<option name="displayrequired" value="displayrequired" ' . esc_attr($displayrequired) . '>Display + Required Field</option>';
+            echo '<option name="display" value="display" ' . esc_attr($display) . '>Display Only</option>';
             echo '</select>';
             echo '<br><br>';
         }
@@ -807,7 +805,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             echo '<br><label for="bmltwf_fso_feature"><b>FSO Features:</b>';
             echo '</label><select id="bmltwf_fso_feature" name="bmltwf_fso_feature">';
-            echo '<option name="hidden" value="hidden" '. esc_attr($hidden) . '>Disabled</option>';
+            echo '<option name="hidden" value="hidden" ' . esc_attr($hidden) . '>Disabled</option>';
             echo '<option name="display" value="display" ' . esc_attr($display) . '>Enabled</option>';
             echo '</select>';
             echo '<br><br>';
@@ -817,7 +815,7 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br><br>';
             echo '</div>';
 
-            
+
             echo '<br><label for="bmltwf_email_from_address"><b>FSO Email Address:</b></label><input type="text" size="50" id="bmltwf_fso_email_address" name="bmltwf_fso_email_address" value="' . esc_attr($from_address) . '"/>';
             echo '<br><br>';
 
@@ -833,7 +831,7 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . esc_attr($editor_id) . '_default">Copy default template to clipboard</button>';
             echo '<br><br>';
             echo '</div>';
-         }
+        }
 
         public function bmltwf_submitter_email_template_html()
         {
@@ -867,45 +865,67 @@ if (!class_exists('bmltwf_plugin')) {
             include_once('admin/admin_service_bodies.php');
         }
 
-        public function bmltwf_install()
+        public function bmltwf_install($networkwide)
         {
-
-            // install all our default options (if they arent set already)
-            add_option('bmltwf_email_from_address','example@example');
-            add_option('bmltwf_delete_closed_meetings','unpublish');
-            add_option('bmltwf_optional_location_nation','hidden');
-            add_option('bmltwf_optional_location_sub_province','hidden');
-            add_option('bmltwf_optional_postcode','display');
-            add_option('bmltwf_submitter_email_template',file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
-            add_option('bmltwf_fso_email_template',file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
-            add_option('bmltwf_fso_email_address','example@example.example');
-            add_option('bmltwf_fso_feature','display');
-
-            $this->BMLTWF_Database->bmltwf_db_upgrade($this->BMLTWF_Database->bmltwf_db_version, false);
+            global $wpdb;
+            $this->debug_log("is_multisite = " . var_export(is_multisite(),true));
+            $this->debug_log("is_plugin_active_for_network = " . var_export(is_plugin_active_for_network(__FILE__),true));
+            $this->debug_log("networkwide = " . var_export($networkwide,true));
+            if ((is_multisite()) && ($networkwide === true)) {
+                // multi site and network activation, so iterate through all blogs
+                $this->debug_log('Multisite Network Activation');
+                $blogids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
+                foreach ($blogids as $blog_id) {
+                    $this->debug_log('Installing on blog id ' . $blog_id);
+                    switch_to_blog($blog_id);
+                    $this->bmltwf_add_default_options();
+                    $blogdb = new BMLTWF_Database();
+                    $blogdb->bmltwf_db_upgrade($blogdb->bmltwf_db_version, false);
+                    restore_current_blog();
+                }
+            } else {
+                $this->debug_log('Single Site Activation');
+                $this->bmltwf_add_default_options();
+                $this->BMLTWF_Database->bmltwf_db_upgrade($this->BMLTWF_Database->bmltwf_db_version, false);
+            }
 
             // give all 'manage_options" users the capability so they are able to see the submission menu
             $users = get_users();
             foreach ($users as $user) {
-                if($user->has_cap('manage_options'))
-                {
-                    $user->add_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
-                }
+                $this->bmltwf_add_capability_to_manage_options_user($user);
             }
+
             // add a custom role just for trusted servants
             add_role('bmltwf_trusted_servant', 'BMLT Workflow Trusted Servant');
         }
 
-        public function bmltwf_add_capability( $user_id ) {
-
-            // give all 'manage_options" users the capability on create so they are able to see the submission menu
-            $user = get_user_by('id',$user_id);
-                if($user->has_cap('manage_options'))
-                {
-                    $user->add_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
-                    $this->debug_log("adding capabilities to new user");
-                }           
+        private function bmltwf_add_default_options()
+        {
+            // install all our default options (if they arent set already)
+            add_option('bmltwf_email_from_address', 'example@example');
+            add_option('bmltwf_delete_closed_meetings', 'unpublish');
+            add_option('bmltwf_optional_location_nation', 'hidden');
+            add_option('bmltwf_optional_location_sub_province', 'hidden');
+            add_option('bmltwf_optional_postcode', 'display');
+            add_option('bmltwf_submitter_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
+            add_option('bmltwf_fso_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
+            add_option('bmltwf_fso_email_address', 'example@example.example');
+            add_option('bmltwf_fso_feature', 'display');
         }
 
+        public function bmltwf_add_capability($user_id)
+        {
+            // give all 'manage_options" users the capability on create so they are able to see the submission menu
+            $this->bmltwf_add_capability_to_manage_options_user(get_user_by('id', $user_id));
+        }
+
+        private function bmltwf_add_capability_to_manage_options_user($user)
+        {
+            if ($user->has_cap('manage_options')) {
+                $user->add_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
+                $this->debug_log("adding capabilities to user " . $user->get('ID'));
+            }
+        }
     }
 
     $start_plugin = new bmltwf_plugin();

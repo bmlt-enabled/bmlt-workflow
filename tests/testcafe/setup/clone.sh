@@ -18,6 +18,7 @@
 # git clone https://github.com/bmlt-enabled/bmlt-workflow.git
 #
 #
+export PLUGINDIR=/var/www/html/flop/wp-content/plugins/bmlt-workflow
 cd /home/ssm-user
 cd bmlt-workflow
 git pull
@@ -26,9 +27,12 @@ cp tests/testcafe/setup/*.sh /home/ssm-user/scripts
 cp tests/testcafe/setup/*.sql /home/ssm-user/scripts
 chmod 755 /home/ssm-user/scripts/*.sh
 cd ..
-rm -rf /home/ssm-user/bmltwf/*
-cp -R bmlt-workflow/* bmltwf
-cd bmltwf
+sudo rm -rf $PLUGINDIR
+sudo mkdir $PLUGINDIR
+sudo chown ssm-user:ssm-user $PLUGINDIR
+sudo cp -R bmlt-workflow/* $PLUGINDIR
+cd $PLUGINDIR
 sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" config.php
 /usr/local/bin/composer dumpautoload
+sudo chown -R apache:apache $PLUGINDIR
 /home/ssm-user/scripts/wp-install.sh
