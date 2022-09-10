@@ -159,7 +159,7 @@ class Integration
         // $this->debug_log(wp_remote_retrieve_body($response));
         $formatarr = json_decode(json_encode($xml), 1);
 
-        $this->debug_log(($formatarr));
+        // $this->debug_log(($formatarr));
 
         $newformat = array();
         foreach ($formatarr['row'] as $key => $value) {
@@ -167,8 +167,8 @@ class Integration
             unset($value['id']);
             $newformat[$formatid] = $value;
         }
-        $this->debug_log("NEWFORMAT");
-        $this->debug_log(($newformat));
+        // $this->debug_log("NEWFORMAT");
+        // $this->debug_log(($newformat));
 
         return $newformat;
     }
