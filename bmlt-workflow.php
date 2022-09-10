@@ -880,7 +880,7 @@ if (!class_exists('bmltwf_plugin')) {
                     switch_to_blog($blog_id);
                     $this->bmltwf_add_default_options();
                     $blogdb = new BMLTWF_Database();
-                    $blogdb->bmltwf_db_upgrade($blogdb->BMLTWF_Database->bmltwf_db_version, false);
+                    $blogdb->bmltwf_db_upgrade($blogdb->bmltwf_db_version, false);
                     restore_current_blog();
                 }
             } else {
