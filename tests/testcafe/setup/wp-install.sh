@@ -55,9 +55,6 @@ cat > insert << EOF
 // Enable WP_DEBUG mode
 define( 'WP_DEBUG', true );
 
-// Enable Debug logging to the /wp-content/debug.log file
-define( 'WP_DEBUG_LOG', true );
-
 // Disable display of errors and warnings
 define( 'WP_DEBUG_DISPLAY', true );
 define( 'WP_DEBUG_LOG', '/home/ssm-user/php-errors.log' );
@@ -132,9 +129,6 @@ cd $sitelocalpath
 cat > insert << EOF
 // Enable WP_DEBUG mode
 define( 'WP_DEBUG', true );
-
-// Enable Debug logging to the /wp-content/debug.log file
-define( 'WP_DEBUG_LOG', true );
 
 // Disable display of errors and warnings
 define( 'WP_DEBUG_DISPLAY', true );
@@ -237,9 +231,6 @@ cd $sitelocalpath
 cat > insert << EOF
 // Enable WP_DEBUG mode
 define( 'WP_DEBUG', true );
-
-// Enable Debug logging to the /wp-content/debug.log file
-define( 'WP_DEBUG_LOG', true );
 
 // Disable display of errors and warnings
 define( 'WP_DEBUG_DISPLAY', true );

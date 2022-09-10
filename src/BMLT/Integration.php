@@ -152,11 +152,11 @@ class Integration
         //     return new \WP_Error('bmltwf','BMLT Configuration Error - Unable to retrieve meeting formats');
         // }
 
-        $this->debug_log(wp_remote_retrieve_body($response));
+        // $this->debug_log(wp_remote_retrieve_body($response));
         // $formatarr = json_decode(wp_remote_retrieve_body($response), true);
         $xml = simplexml_load_string(wp_remote_retrieve_body($response));
-        $this->debug_log("XML RESPONSE");
-        $this->debug_log(wp_remote_retrieve_body($response));
+        // $this->debug_log("XML RESPONSE");
+        // $this->debug_log(wp_remote_retrieve_body($response));
         $formatarr = json_decode(json_encode($xml), 1);
 
         $this->debug_log(($formatarr));
@@ -411,9 +411,9 @@ class Integration
         if ($newargs != '') {
             // chop trailing &
             $newargs = substr($newargs, 0, -1);
-            $this->debug_log("our post body is " . $newargs);
+            // $this->debug_log("our post body is " . $newargs);
             $ret = \wp_safe_remote_post($url, $this->set_args($cookies, $newargs));
-            $this->debug_log(($ret));
+            // $this->debug_log(($ret));
             return $ret;
         }
     }
