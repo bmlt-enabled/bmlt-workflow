@@ -47,34 +47,64 @@ jobs:
           channel: '#wordpress-bmlt-workflow'
         if: failure()
 
-  package:
+  deploy-bmlt-workflow-latest:
     runs-on: ubuntu-latest
-   # needs: [ lint ] # tmp let job run if tests fail
+    permissions:
+      id-token: write
+      contents: write
+    env:
+      WORDPRESS_USERNAME: ${{ secrets.BMLTWF_WORDPRESS_USERNAME }}
+      WORDPRESS_PASSWORD: ${{ secrets.BMLTWF_WORDPRESS_PASSWORD }}
+      BUILD_DIR: build
+      DIST_DIR_S3: dist/s3
+      DIST_DIR_GITHUB: dist/github
+      GITHUB_RELEASE_FILENAME: bmlt-workflow.zip
+      S3_KEY: bmlt-workflow
+      PLUGIN: bmlt-workflow
+      MAINFILE: bmlt-workflow.php
     steps:
       - uses: actions/checkout@v2
         id: code-checkout
 
-      - name: Build package
-        id: build-package
+      - name: Validate composer.json and composer.lock
+        id: composer-validate
+        run: composer validate
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        id: install-dependencies
+        run: composer install --no-dev --prefer-dist --no-progress --no-suggest
+
+      - name: Prepare zip file
         run: |
-          export ARTIFACT_FILE=bmlt-workflow-${GITHUB_REF##*/}
-          export ARTIFACT_FILENAME=${ARTIFACT_FILE}.zip
-          git archive --format=zip --output=${ARTIFACT_FILENAME} --prefix=${ARTIFACT_FILE}/ HEAD
-          unzip ${ARTIFACT_FILENAME}
-          rm ${ARTIFACT_FILENAME}
-          echo ${GITHUB_SHA} > ${ARTIFACT_FILE}/build.txt
-          find ./${ARTIFACT_FILE} -type d | xargs chmod 755
-          find ./${ARTIFACT_FILE} -name '*.php' | xargs chmod 644
-          zip -r -9 ${ARTIFACT_FILENAME} ${ARTIFACT_FILE}
-          curl -LO https://raw.githubusercontent.com/bmlt-enabled/release-notes-tool/master/gh-release-notes.sh
+          export ZIP_FILENAME=${S3_KEY}-build${GITHUB_RUN_NUMBER}-${GITHUB_SHA}.zip
+          echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
+          echo "GITHUB_RELEASE_FILENAME=${GITHUB_RELEASE_FILENAME}" >> $GITHUB_ENV
+          echo "GITHUB_RELEASE_PATH=${DIST_DIR_GITHUB}/${GITHUB_RELEASE_FILENAME}" >> $GITHUB_ENV
+          zip -r $ZIP_FILENAME ./ -x "*.git*" -x "*.editorconfig*" -x "*vendor*" -x "composer.*" -x "*.github*" -x "*assets*" -x "*.gitattributes"
+          mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
+          mkdir -p $DIST_DIR_S3 && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_S3/$ZIP_FILENAME
+          mkdir -p $DIST_DIR_GITHUB && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
+          curl -LO https://raw.githubusercontent.com/bmlt-enabled/bmlt-wordpress-deploy/master/deploy-wordpress.sh
+          chmod +x deploy-wordpress.sh
+          curl -sLO https://raw.githubusercontent.com/bmlt-enabled/release-notes-tool/master/gh-release-notes.sh
           chmod +x gh-release-notes.sh
-          ./gh-release-notes.sh CHANGELOG.md "##"
+          ./gh-release-notes.sh readme.txt "wp"
 
       - name: Prepare artifact metadata
         id: prepare_artifact_metadata
         run: |
-          echo ::set-output name=ARTIFACT_PATH::./bmlt-workflow-${GITHUB_REF##*/}.zip
-          echo ::set-output name=ARTIFACT_NAME::bmlt-workflow-${GITHUB_REF##*/}.zip
+          echo ::set-output name=ARTIFACT_PATH::./${GITHUB_RELEASE_PATH}
+          echo ::set-output name=ARTIFACT_NAME::${GITHUB_RELEASE_FILENAME}
 
       - name: Release beta
         if: contains(github.ref, 'beta')
@@ -85,13 +115,12 @@ jobs:
         with:
           tag_name: ${{ github.ref }}
           release_name: ${{ github.ref }}
-          body_path: "changelog.txt"
           prerelease: true
           draft: false
 
       - name: Upload Beta Asset
         if: contains(github.ref, 'beta')
-        id: beta-release-asset
+        id: beta-release-asset-wp
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -114,9 +143,9 @@ jobs:
           prerelease: false
           draft: false
 
-      - name: Upload Stable Asset
+      - name: Upload Stable Asset WP
         if: "!contains(github.ref, 'beta')"
-        id: stable-release-asset
+        id: stable-release-asset-wp
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -125,6 +154,12 @@ jobs:
           asset_path: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_PATH }}
           asset_name: ${{ steps.prepare_artifact_metadata.outputs.ARTIFACT_NAME }}
           asset_content_type: application/zip
+
+      - name: Publish Release to WP
+        if: "!contains(github.ref, 'beta')"
+        id: publish-release-wp
+        run: |
+          ./deploy-wordpress.sh
 
       - uses: act10ns/slack@v1
         with:
