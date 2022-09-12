@@ -146,8 +146,12 @@ class ServiceBodiesHandler
             $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name, ARRAY_A);
 
             foreach ($sqlresult as $key => $value) {
-                $bool = $value['show_on_form'] ? (true) : (false);
-                $sblist[$value['service_body_bigint']]['show_on_form'] = $bool;
+                $is_visible = $visible[$value] ?? false;
+                if ($is_visible)
+                {
+                    $bool = $value['show_on_form'] ? (true) : (false);
+                    $sblist[$value['service_body_bigint']]['show_on_form'] = $bool;
+                }
             }
         } else {
             // simple list
