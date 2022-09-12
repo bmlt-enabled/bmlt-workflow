@@ -382,7 +382,7 @@ class SubmissionsHandler
                 $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                 if (is_wp_error($response)) {
-                    return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+                    return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
                 }
 
                 break;
@@ -421,7 +421,7 @@ class SubmissionsHandler
                 $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                 if (is_wp_error($response)) {
-                    return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+                    return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
                 }
                 $this->debug_log("response");
                 $this->debug_log(($response));
@@ -452,7 +452,7 @@ class SubmissionsHandler
                     $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                     if (is_wp_error($response)) {
-                        return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+                        return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
                     }
 
                     $json = wp_remote_retrieve_body($response);

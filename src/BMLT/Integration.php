@@ -147,10 +147,6 @@ class Integration
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
 
-        // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetFormats', array());
-        // if (is_wp_error($response)) {
-        //     return new \WP_Error('bmltwf','BMLT Configuration Error - Unable to retrieve meeting formats');
-        // }
 
         // $this->debug_log(wp_remote_retrieve_body($response));
         // $formatarr = json_decode(wp_remote_retrieve_body($response), true);

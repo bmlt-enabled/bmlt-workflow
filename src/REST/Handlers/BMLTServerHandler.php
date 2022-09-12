@@ -61,10 +61,10 @@ class BMLTServerHandler
             return $this->handlerCore->bmltwf_rest_error('Empty BMLT password parameter', 422);
         }
         if (empty($server)) {
-            return $this->handlerCore->bmltwf_rest_error('Empty BMLT server parameter', 422);
+            return $this->handlerCore->bmltwf_rest_error('Empty BMLT Root server parameter', 422);
         }
         if (substr($server, -1) !== '/') {
-            return $this->handlerCore->bmltwf_rest_error('BMLT Server address missing trailiing /', 422);
+            return $this->handlerCore->bmltwf_rest_error('BMLT Root Server address missing trailiing /', 422);
         }
 
         return true;
@@ -109,13 +109,13 @@ class BMLTServerHandler
 
             $r = update_option("bmltwf_bmlt_test_status", "failure");
             $data["bmltwf_bmlt_test_status"] = "failure";
-            return $this->handlerCore->bmltwf_rest_error_with_data('Server and Authentication test failed - ' . $ret->get_error_message(), 500, $data);
+            return $this->handlerCore->bmltwf_rest_error_with_data('Root Server and Authentication test failed - ' . $ret->get_error_message(), 500, $data);
  
         } else {
 
             $r = update_option("bmltwf_bmlt_test_status", "success");
             $data["bmltwf_bmlt_test_status"] = "success";
-            $data["message"] = "BMLT Server and Authentication test succeeded.";
+            $data["message"] = "BMLT Root Server and Authentication test succeeded.";
 
             return $this->handlerCore->bmltwf_rest_success($data);
         }
@@ -158,7 +158,7 @@ class BMLTServerHandler
         update_option('bmltwf_bmlt_password', $encrypted);
         update_option('bmltwf_bmlt_server_address', $server);
 
-        return $this->handlerCore->bmltwf_rest_success('BMLT Server and Authentication details updated.');
+        return $this->handlerCore->bmltwf_rest_success('BMLT Root Server and Authentication details updated.');
     }
 
     public function get_bmltserver_geolocate_handler($request)

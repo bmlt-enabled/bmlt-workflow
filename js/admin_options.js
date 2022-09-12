@@ -166,7 +166,7 @@ jQuery(document).ready(function ($) {
   var clipboard = new ClipboardJS(".clipboard-button");
 
   $("#bmltwf_bmlt_change_server_warning_dialog").dialog({
-    title: "BMLT Configuration Change Warning",
+    title: "BMLT Root Server Configuration Change Warning",
     autoOpen: false,
     draggable: false,
     width: "auto",
@@ -209,7 +209,7 @@ jQuery(document).ready(function ($) {
   });
 
   $("#bmltwf_bmlt_configuration_dialog").dialog({
-    title: "BMLT Configuration",
+    title: "BMLT Root Server Configuration",
     autoOpen: false,
     draggable: false,
     width: "auto",

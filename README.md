@@ -28,7 +28,7 @@ For any other issues you find - please raise an issue here: https://github.com/b
 You can always find the latest version of this code at: https://github.com/bmlt-enabled/bmlt-workflow/
 
 ## Usage
-Locate **BMLT Workflow -> Configuration** in your Wordpress Admin page. You'll need to put in a valid BMLT server address, username and password and press the Test Server button.
+Locate **BMLT Workflow -> Configuration** in your Wordpress Admin page. You'll need to put in a valid BMLT Root Server address, username and password and press the Test Server button.
 The username and password is a BMLT user who is configured as a **BMLT Service Body Administrator**. This user will be used to make changes to the service bodies they are configured as a **Full meeting list editor**. 
 If you get a tick, then save settings. Update the 'From Address' to an address that your mailer is permitted to send from.
 
@@ -45,7 +45,7 @@ A role `BMLT Workflow Trusted Servant` is created as part of plugin installation
 Create wordpress users for your trusted servants and assign them this role. Then within the service bodies page assign your wordpress users to the service bodies you would like them to manage.
 The email address of these wordpress users will be used to send notifications when new submissions are received to their service body.
 ### Shortcode
-Use a shortcode with the form `[bmltwf-meeting-update-form]` substituting your service areas from BMLT in the parameters
+Use a shortcode with the form `[bmltwf-meeting-update-form]`
 
 ### Email template field substitution
 You can add fields to the email templates to substitute content from the form submission

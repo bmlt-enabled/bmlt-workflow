@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Copyright (C) 2022 nigel.bmlt@gmail.com
 // 
 // This file is part of bmlt-workflow.
@@ -30,21 +30,15 @@ class ServiceBodiesHandler
 
     public function __construct($intstub = null, $optstub = null)
     {
-        if (empty($intstub))
-        {
+        if (empty($intstub)) {
             $this->bmlt_integration = new Integration();
-        }
-        else
-        {
+        } else {
             $this->bmlt_integration = $intstub;
         }
 
-        if (empty($optstub))
-        {
+        if (empty($optstub)) {
             $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
-        }
-        else
-        {
+        } else {
             $this->BMLTWF_WP_Options = $optstub;
         }
 
@@ -56,7 +50,7 @@ class ServiceBodiesHandler
     {
 
         global $wpdb;
-        
+
         $params = $request->get_params();
         $this->debug_log(($params));
         // only an admin can get the service bodies detail (permissions) information
@@ -65,30 +59,57 @@ class ServiceBodiesHandler
             $sblist = array();
 
             $req = array();
+            $req['admin_action'] = 'get_permissions';
+
+            $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('local_server/server_admin/json.php', $req);
+            if (is_wp_error($response)) {
+                return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
+            }
+
+            $arr = json_decode($response['body'], 1);
+            if (empty($arr['service_body'])) {
+                return $this->handlerCore->bmltwf_rest_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);
+            }
+
+            $visible = array();
+            foreach ($arr['service_body'] as $key => $sb) {
+                $permissions = $sb['permissions'] ?? 0;
+                $id = $sb['id'] ?? 0;
+
+                if ($id) {
+                    if (($permissions === 2) || ($permissions === 3)) {
+                        $visible[$id] = true;
+                    }
+                }
+            }
+
+            $req = array();
             $req['admin_action'] = 'get_service_body_info';
-            $req['flat'] = '';
 
             $response = $this->bmlt_integration->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServiceBodies', $req);
             if (is_wp_error($response)) {
-                return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+                return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
             }
+            // POST /blank_bmlt/main_server/local_server/server_admin/json.php?admin_action=get_permissions
 
             $arr = json_decode($response['body'], 1);
 
             $idlist = array();
-            $this->debug_log("SERVICE BODY JSON");            
+            $this->debug_log("SERVICE BODY JSON");
             $this->debug_log(($arr));
 
             // make our list of service bodies
             foreach ($arr as $key => $value) {
+                $id = $value['id'] ?? 0;
+                $name = $value['name'] ?? 0;
+                $description = $value['description'] ?? '';
                 // $bmltwf_dbg->debug_log("looping key = " . $key);
-                if ((!empty($value['id']))&&(!empty($value['name']))) {
-                    $sbid = $value['id'];
-                    $idlist[] = $sbid;
-                    $sblist[$sbid] = array('name' => $value['name'], 'description' => '');
-                    if (!empty($value['description'])) {
-                        $sblist[$sbid]['description'] = $value['description'];
-                    }
+                if ($id && $name) {
+                    $sbid = $id;
+                    // check we can see the service body from permissions above
+                    if (!$visible[$id])
+                        $idlist[] = $sbid;
+                    $sblist[$sbid] = array('name' => $name, 'description' => $description);
                 } else {
                     // we need a name and id at minimum
                     break;
@@ -101,7 +122,7 @@ class ServiceBodiesHandler
             $missing = array_diff($idlist, $sqlresult);
 
             foreach ($missing as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['name'], $sblist[$value]['description'],$value);
+                $sql = $wpdb->prepare('INSERT into ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['name'], $sblist[$value]['description'], $value);
                 $wpdb->query($sql);
             }
             // update any values that may have changed since last time we looked
@@ -109,7 +130,7 @@ class ServiceBodiesHandler
                 $sql = $wpdb->prepare('UPDATE ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s" where service_body_bigint="%d"', $sblist[$value]['name'], $sblist[$value]['description'], $value);
                 $wpdb->query($sql);
             }
-        
+
             // make our group membership lists
             foreach ($sblist as $key => $value) {
                 $this->debug_log("getting memberships for " . $key);
@@ -135,28 +156,25 @@ class ServiceBodiesHandler
             }
         }
         return $this->handlerCore->bmltwf_rest_success($sblist);
-
     }
 
     public function post_service_bodies_handler($request)
     {
         global $wpdb;
-        
+
         $this->debug_log("request body");
         $this->debug_log(($request->get_json_params()));
         $permissions = $request->get_json_params();
         // clear out our old permissions
         $wpdb->query('DELETE from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name);
         // insert new permissions from form
-        if(!is_array($permissions))
-        {
+        if (!is_array($permissions)) {
             $this->debug_log("error not array");
 
-            return $this->handlerCore->bmltwf_rest_error('Invalid service bodies post',422);
+            return $this->handlerCore->bmltwf_rest_error('Invalid service bodies post', 422);
         }
         foreach ($permissions as $sb => $arr) {
-            if((!is_array($arr))||(!array_key_exists('membership',$arr))||(!array_key_exists('show_on_form',$arr)))
-            {
+            if ((!is_array($arr)) || (!array_key_exists('membership', $arr)) || (!array_key_exists('show_on_form', $arr))) {
                 // if(empty($arr['membership']))
                 // {
                 //     $this->debug_log($sb . " error membership");
@@ -167,7 +185,7 @@ class ServiceBodiesHandler
                 //     $this->debug_log($sb . " error show_on_form");
                 // }
 
-                return $this->handlerCore->bmltwf_rest_error('Invalid service bodies post',422);
+                return $this->handlerCore->bmltwf_rest_error('Invalid service bodies post', 422);
             }
             $members = $arr['membership'];
             foreach ($members as $member) {
@@ -199,7 +217,7 @@ class ServiceBodiesHandler
         return $this->handlerCore->bmltwf_rest_success('Updated Service Bodies');
     }
 
-    
+
     public function delete_service_bodies_handler($request)
     {
         global $wpdb;
@@ -218,14 +236,8 @@ class ServiceBodiesHandler
             $this->debug_log("Delete service bodies");
             $this->debug_log(($result));
             return $this->handlerCore->bmltwf_rest_success('Deleted Service Bodies');
-        }
-        else
-        {
+        } else {
             return $this->handlerCore->bmltwf_rest_success('Nothing was performed');
         }
-
     }
-
-
-            
 }

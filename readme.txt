@@ -15,7 +15,7 @@ It is designed to reduce the current complex and heavy manual processing of form
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.
 It is designed to reduce the current complex and heavy manual processing of forms by both the form submitter and the service body trusted servants.
 
-For trusted servants, there is now one place that you can see submitted requests and action them, without data reentry into the BMLT admin console.
+For trusted servants, there is now one place that you can see submitted requests and action them, without data reentry into the BMLT Root Server admin console.
 
 For admins, modification of email templates, service committees and email contact details can now be done in the same place, without complex logic in a form builder.
 
