@@ -66,7 +66,8 @@ class ServiceBodiesHandler
                 return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
             }
 
-            $arr = json_decode($response['body'], 1);
+            $arr = json_decode(wp_remote_retrieve_body($response),1);
+
             if (empty($arr['service_body'])) {
                 return $this->handlerCore->bmltwf_rest_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);
             }
@@ -74,6 +75,7 @@ class ServiceBodiesHandler
             // create an array of the service bodies that we are able to see
             $editable = array();
             foreach ($arr['service_body'] as $key => $sb) {
+
                 $permissions = $sb['permissions'] ?? 0;
                 $id = $sb['id'] ?? 0;
 
@@ -92,31 +94,29 @@ class ServiceBodiesHandler
                 return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
             }
 
-            $arr = json_decode($response['body'], 1);
+            $arr = json_decode(wp_remote_retrieve_body($response),1);
 
             $idlist = array();
             // $this->debug_log("SERVICE BODY JSON");
             // $this->debug_log(($arr));
 
-            // make our list of service bodies
+            // make our list of editable service bodies
             foreach ($arr as $key => $value) {
+
                 $id = $value['id'] ?? 0;
                 $name = $value['name'] ?? 0;
                 $description = $value['description'] ?? '';
-                // $bmltwf_dbg->debug_log("looping key = " . $key);
+
+                // must have an id and name
                 if ($id && $name) {
                     $sbid = $id;
                     // check we can see the service body from permissions above
                     $is_editable = $editable[$id] ?? false;
                     if ($is_editable)
                     {
-                        $this->debug_log($name . " is editable");
                         $idlist[] = $sbid;
                         $sblist[$sbid] = array('name' => $name, 'description' => $description);
                     }
-                } else {
-                    // we need a name and id at minimum
-                    break;
                 }
             }
 
@@ -138,10 +138,12 @@ class ServiceBodiesHandler
             // make our group membership lists
             foreach ($sblist as $key => $value) {
                 $this->debug_log("getting memberships for " . $key);
+
                 $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' where service_body_bigint = "%d"', $key);
                 $result = $wpdb->get_col($sql, 0);
                 $sblist[$key]['membership'] = implode(',', $result);
             }
+
             // get the form display settings
             $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name, ARRAY_A);
 
@@ -157,7 +159,7 @@ class ServiceBodiesHandler
             // simple list
             $sblist = array();
             $result = $wpdb->get_results('SELECT * from ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' where show_on_form != "0"', ARRAY_A);
-            $this->debug_log(($result));
+
             // create simple service area list (names of service areas that are enabled by admin with show_on_form)
             foreach ($result as $key => $value) {
                 $sblist[$value['service_body_bigint']]['name'] = $value['service_body_name'];
