@@ -109,13 +109,12 @@ class ServiceBodiesHandler
 
                 // must have an id and name
                 if ($id && $name) {
-                    $sbid = $id;
                     // check we can see the service body from permissions above
                     $is_editable = $editable[$id] ?? false;
                     if ($is_editable)
                     {
-                        $idlist[] = $sbid;
-                        $sblist[$sbid] = array('name' => $name, 'description' => $description);
+                        $idlist[] = $id;
+                        $sblist[$id] = array('name' => $name, 'description' => $description);
                     }
                 }
             }
@@ -129,6 +128,7 @@ class ServiceBodiesHandler
                 $sql = $wpdb->prepare('INSERT into ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['name'], $sblist[$value]['description'], $value);
                 $wpdb->query($sql);
             }
+            
             // update any values that may have changed since last time we looked
             foreach ($idlist as $value) {
                 $sql = $wpdb->prepare('UPDATE ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s" where service_body_bigint="%d"', $sblist[$value]['name'], $sblist[$value]['description'], $value);
