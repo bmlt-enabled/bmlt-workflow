@@ -107,9 +107,12 @@ class ServiceBodiesHandler
                 if ($id && $name) {
                     $sbid = $id;
                     // check we can see the service body from permissions above
-                    if (!$visible[$id])
+                    $is_visible = $visible[$id]??0;
+                    if ($is_visible)
+                    {
                         $idlist[] = $sbid;
-                    $sblist[$sbid] = array('name' => $name, 'description' => $description);
+                        $sblist[$sbid] = array('name' => $name, 'description' => $description);
+                    }
                 } else {
                     // we need a name and id at minimum
                     break;
