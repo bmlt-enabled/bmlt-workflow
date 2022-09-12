@@ -146,9 +146,9 @@ class ServiceBodiesHandler
             $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name, ARRAY_A);
 
             foreach ($sqlresult as $key => $value) {
-                $this->debug_log("getting visibility for " . $key);
+                $this->debug_log("getting visibility for " . $value['service_body_bigint']);
 
-                $is_visible = $visible[$value] ?? false;
+                $is_visible = $visible[$value['service_body_bigint']] ?? false;
                 $this->debug_log("visibil? " . $is_visible);
                 if ($is_visible)
                 {
