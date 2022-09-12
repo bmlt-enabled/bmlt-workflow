@@ -107,9 +107,10 @@ class ServiceBodiesHandler
                 if ($id && $name) {
                     $sbid = $id;
                     // check we can see the service body from permissions above
-                    $is_visible = $visible[$id]??0;
+                    $is_visible = $visible[$id] ?? false;
                     if ($is_visible)
                     {
+                        $this->debug_log($name . " is visible");
                         $idlist[] = $sbid;
                         $sblist[$sbid] = array('name' => $name, 'description' => $description);
                     }
