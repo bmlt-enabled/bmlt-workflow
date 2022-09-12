@@ -71,14 +71,15 @@ class ServiceBodiesHandler
                 return $this->handlerCore->bmltwf_rest_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);
             }
 
-            $visible = array();
+            // create an array of the service bodies that we are able to see
+            $editable = array();
             foreach ($arr['service_body'] as $key => $sb) {
                 $permissions = $sb['permissions'] ?? 0;
                 $id = $sb['id'] ?? 0;
 
                 if ($id) {
                     if (($permissions === 2) || ($permissions === 3)) {
-                        $visible[$id] = true;
+                        $editable[$id] = true;
                     }
                 }
             }
@@ -90,13 +91,12 @@ class ServiceBodiesHandler
             if (is_wp_error($response)) {
                 return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
             }
-            // POST /blank_bmlt/main_server/local_server/server_admin/json.php?admin_action=get_permissions
 
             $arr = json_decode($response['body'], 1);
 
             $idlist = array();
-            $this->debug_log("SERVICE BODY JSON");
-            $this->debug_log(($arr));
+            // $this->debug_log("SERVICE BODY JSON");
+            // $this->debug_log(($arr));
 
             // make our list of service bodies
             foreach ($arr as $key => $value) {
@@ -107,10 +107,10 @@ class ServiceBodiesHandler
                 if ($id && $name) {
                     $sbid = $id;
                     // check we can see the service body from permissions above
-                    $is_visible = $visible[$id] ?? false;
-                    if ($is_visible)
+                    $is_editable = $editable[$id] ?? false;
+                    if ($is_editable)
                     {
-                        $this->debug_log($name . " is visible");
+                        $this->debug_log($name . " is editable");
                         $idlist[] = $sbid;
                         $sblist[$sbid] = array('name' => $name, 'description' => $description);
                     }
@@ -146,11 +146,8 @@ class ServiceBodiesHandler
             $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name, ARRAY_A);
 
             foreach ($sqlresult as $key => $value) {
-                $this->debug_log("getting visibility for " . $value['service_body_bigint']);
-
-                $is_visible = $visible[$value['service_body_bigint']] ?? false;
-                $this->debug_log("visibil? " . $is_visible);
-                if ($is_visible)
+                $is_editable = $editable[$value['service_body_bigint']] ?? false;
+                if ($is_editable)
                 {
                     $bool = $value['show_on_form'] ? (true) : (false);
                     $sblist[$value['service_body_bigint']]['show_on_form'] = $bool;
