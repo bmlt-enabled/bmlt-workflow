@@ -21,7 +21,7 @@ use bmltwf\BMLT\Integration;
 
 $bmltwf_bmlt_test_status = get_option('bmltwf_bmlt_test_status', "failure");
 if ($bmltwf_bmlt_test_status != "success") {
-    wp_die("<h4>BMLTWF Plugin Error: BMLT Server not configured and tested.</h4>");
+    wp_die("<h4>BMLTWF Plugin Error: BMLT Root Server not configured and tested.</h4>");
 }
 
 wp_nonce_field('wp_rest', '_wprestnonce');

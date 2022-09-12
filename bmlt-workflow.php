@@ -20,14 +20,14 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.0.3
+ * Version: 1.0.4
  * Requires at least: 5.2
  * Tested up to: 6.0
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
 
-define('BMLTWF_PLUGIN_VERSION', '1.0.3');
+define('BMLTWF_PLUGIN_VERSION', '1.0.4');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -86,7 +86,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             $bmltwf_bmlt_test_status = get_option('bmltwf_bmlt_test_status', "failure");
             if ($bmltwf_bmlt_test_status != "success") {
-                wp_die("<h4>BMLTWF Plugin Error: BMLT Server not configured and tested.</h4>");
+                wp_die("<h4>BMLTWF Plugin Error: BMLT Root Server not configured and tested.</h4>");
             }
 
             // base css and js for this page
@@ -505,7 +505,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_bmlt_server_address',
-                'BMLT Configuration',
+                'BMLT Root Server Configuration',
                 array(&$this, 'bmltwf_bmlt_server_address_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
@@ -681,12 +681,12 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_bmlt_server_address_html()
         {
-            echo '<div id="bmltwf_bmlt_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your BMLT details are successfully configured.</div>';
-            echo '<div id="bmltwf_bmlt_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Your BMLT details are not configured correctly.</div>';
+            echo '<div id="bmltwf_bmlt_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your BMLT Root Server details are successfully configured.</div>';
+            echo '<div id="bmltwf_bmlt_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Your BMLT Root Server details are not configured correctly.</div>';
             echo '<div id="bmltwf_servicebodies_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your service bodies are successfully configured.</div>';
             echo '<div id="bmltwf_servicebodies_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Your service bodies are not configured and saved correctly. <a href="?bmltwf-submissions">Fix</a></div>';
             echo '<br>';
-            echo '<button type="button" id="bmltwf_configure_bmlt_server">Update BMLT Configuration</button>';
+            echo '<button type="button" id="bmltwf_configure_bmlt_server">Update BMLT Root Server Configuration</button>';
             echo '<br>';
         }
 

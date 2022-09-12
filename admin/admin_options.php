@@ -46,23 +46,23 @@ echo '</form></div>';
     <div class="options_dialog_bmltwf_error_message"></div>
     <br>
     <div class="options_dialog_bmltwf_info_text">
-        <br>Enter your BMLT server address, and a BMLT username and password.
+        <br>Enter your BMLT Root Server address, and a BMLT Root Server username and password.
         <br>
         <br>
     </div>
 
-    <br><label for="bmltwf_bmlt_server_address"><b>Server Address:</b></label>
+    <br><label for="bmltwf_bmlt_server_address"><b>BMLT Root Server Address:</b></label>
     <input type="url" size="50" id="bmltwf_bmlt_server_address" name="bmltwf_bmlt_server_address" value="<?php echo esc_url_raw(get_option('bmltwf_bmlt_server_address')) ?>" />
-    <br><label for="bmltwf_bmlt_username"><b>BMLT Username:</b></label>
+    <br><label for="bmltwf_bmlt_username"><b>Username:</b></label>
     <input type="text" size="50" id="bmltwf_bmlt_username" name="bmltwf_bmlt_username" value="<?php echo esc_attr('bmltwf_bmlt_username') ?>" />
-    <br><label for="bmltwf_bmlt_password"><b>BMLT Password:</b></label>
+    <br><label for="bmltwf_bmlt_password"><b>Password:</b></label>
     <input type="password" size="50" id="bmltwf_bmlt_password" name="bmltwf_bmlt_password" />
     <br><br>
     <div class="options_dialog_bmltwf_info_text">
-        <br>The BMLT username and password is used to action meeting approvals/rejections as well as perform any BMLT related actions on the Wordpress users behalf.
-        <br><br>This user must be configured as a service body administrator and have access within BMLT to edit all service bodies that are used in BMLTWF form submissions.
+        <br>The BMLT root server username and password is used to action meeting approvals/rejections as well as perform any BMLT related actions on the Wordpress users behalf.
+        <br><br>This user must be configured as a service body administrator and have access within the BMLT Root Server to edit all service bodies that are used in BMLTWF form submissions.
         <br>
-        <br>The server address is the full URL to your server installation. For example: <code>https://na.test.zzz/main_server/</code>
+        <br>The server address is the full URL to your BMLT Root Server installation. For example: <code>https://na.test.zzz/main_server/</code>
         <br>
         <br>
     </div>
@@ -80,7 +80,7 @@ echo '</form></div>';
 <div id="bmltwf_bmlt_change_server_warning_dialog" class="hidden" style="max-width:800px">
 <div class="options_dialog_bmltwf_warning_text">
 
-    <br>WARNING: Changing the BMLT Server settings will remove your service body configuration and existing submissions within the plugin.
+    <br>WARNING: Changing the BMLT Root Server settings will remove your service body configuration and existing submissions within the plugin.
     <br><br>Use the BACKUP option before pressing Ok if you do not wish to lose your submissions.
     <br><br>If you press Ok, your service bodies, service body permissions and ALL SUBMISSIONS will be removed.
     <br><br>Are you sure you wish to do this?

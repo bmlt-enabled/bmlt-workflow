@@ -1,3 +1,8 @@
+## 1.0.4 (Sep 12, 2022)
+- #81 Change language in settings from BMLT to BMLT Root Server (thanks @tempsaint !)
+- #59 filter visible service bodies based on the bot user permissions, rather than all service bodies (thanks @pjaudiomv !)
+- Updated test cases and new wordpress deployer (thanks @pjaudiomv !)
+
 ## 1.0.3 (Sep 10, 2022)
 - Updated with multisite support and test cases
 - Updated icons for wordpress publish(thanks KevinC !)

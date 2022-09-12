@@ -23,7 +23,7 @@ use bmltwf\BMLTWF_Debug;
 
 $bmltwf_bmlt_test_status = get_option('bmltwf_bmlt_test_status', "failure");
 if ($bmltwf_bmlt_test_status != "success") {
-    wp_die("<h4>BMLTWF Plugin Error: BMLT Server not configured and tested.</h4>");
+    wp_die("<h4>BMLTWF Plugin Error: BMLT Root Server not configured and tested.</h4>");
 }
 
 wp_nonce_field('wp_rest', '_wprestnonce');
@@ -35,7 +35,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <h2>Service Body Configuration</h2>
     <hr class="bmltwf-error-message">
     <div class="bmltwf_info_text">
-        <br>Service bodies are retrieved from BMLT using the BMLT details configured on the option page.
+        <br>Service bodies are retrieved from BMLT Root Server using the BMLT Root Server details configured on the option page.
         <br><br>You can configure which service areas are visible to the end-users using the <code>Display on end-user Form</code> checkbox.
         <br><br>You can select users from your Wordpress userlist and grant them access to your service areas in the <code>Wordpress Users with Access</code> column.
         These users will only be given access to the submission admin page, and only submissions from their service areas will be visible to approve.
