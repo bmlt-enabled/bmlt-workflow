@@ -485,7 +485,7 @@ jQuery(document).ready(function ($) {
         $("#virtual_meeting_settings").hide();
         // display form instructions
         $("#instructions").html(
-          "Please fill in the details of your new meeting, and then submit your update. <b>Note:</b> If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
+          "Please fill in the details of your new meeting, and then submit your update. <br><b>Note:</b> If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
         );
         // new meeting has a starter pack
         if(bmltwf_fso_feature == 'display')
