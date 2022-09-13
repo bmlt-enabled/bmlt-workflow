@@ -474,7 +474,6 @@ jQuery(document).ready(function ($) {
     enable_edits();
     // enable items as required
     var reason = $(this).val();
-    // <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
 
     clear_form();
     switch (reason) {
@@ -486,7 +485,7 @@ jQuery(document).ready(function ($) {
         $("#virtual_meeting_settings").hide();
         // display form instructions
         $("#instructions").html(
-          "Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
+          "Please fill in the details of your new meeting, and then submit your update. <b>Note:</b> If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
         );
         // new meeting has a starter pack
         if(bmltwf_fso_feature == 'display')
