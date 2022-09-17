@@ -23,6 +23,21 @@ div#form_replace.bmltwf_wide_form {
   margin-right: auto;
 }
 
+div#form_replace.bmltwf_wide_form legend {
+  font-size: 1em;
+}
+
+div#form_replace.bmltwf_wide_form fieldset {
+  border-width: 2px;
+  border-style: groove;
+  border-color: rgb(192, 192, 192);
+  padding-block-start: 0.35em;
+  padding-inline-start: 0.75em;
+  padding-inline-end: 0.75em;
+  padding-block-end: 0.625em;
+}
+
+
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -56,7 +71,7 @@ body {
   margin: 40px;
 }
 
-.form-grid {
+div#meeting_content.form-grid {
   display: grid;
   grid-gap: 10px;
   width: 1170px;
@@ -92,9 +107,16 @@ body {
   grid-row: row 5;
 }
 
-.form-grid input,
-.form-grid textarea:not(.select2-search__field),
-.form-grid select,
+.grid-flex-item .inline {
+  display: inline;
+}
+
+div#meeting_content.form-grid input,
+div#meeting_content.form-grid input[type='text'],
+div#meeting_content.form-grid input[type='number'],
+div#meeting_content.form-grid input[type='email'],
+div#meeting_content.form-grid textarea:not(.select2-search__field),
+div#meeting_content.form-grid select,
 select.update-form-select,
 input#submit.button
 {
@@ -110,7 +132,9 @@ input#submit.button
   border-color: rgb(204, 204, 204);
   border-width: 1px;
   font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-  font-size: 1.2rem
+  font-size: 1.2rem;
+  background-color: rgb(255,255,255);
+  color: rgb(102,102,102);
 }
 
 input#submit.button {
@@ -118,21 +142,26 @@ input#submit.button {
   color: rgba(0, 0, 0, 0.8);
 }
 
-.form-grid input {
+div#meeting_content.form-grid input {
   height: 3rem;
 }
 
-.form-grid textarea:not(.select2-search__field) {
+div#meeting_content.form-grid textarea:not(.select2-search__field) {
   height: 6rem;
 }
 
-.form-grid select,
+div#meeting_content.form-grid select,
+div #update_reason.update-form-select,
 select.update-form-select {
   padding-top: 0;
   padding-bottom: 0;
   height: 3rem;
   border-radius: 8px;
   border-width: 2px;
+  -webkit-appearance: menulist;
+  background-image: none;
+  background-color: rgb(255,255,255);
+  color: rgb(102,102,102);
 }
 
 select.update-form-select {
@@ -157,6 +186,7 @@ select.update-form-select {
   box-sizing: border-box;
   font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size: 1rem;
+  font-weight: normal;
 }
 
 .form-grid .inline label {
@@ -644,11 +674,19 @@ span.select2-container--bmltwf_select2_theme .select2-selection--single {
 	-webkit-appearance: textfield;
 }
 
+#meeting_details .select2-container--bmltwf_select2_theme .select2-search--inline textarea.select2-search__field,
 .select2-container--bmltwf_select2_theme .select2-search--inline textarea.select2-search__field {
   padding-bottom: .5rem;
   padding-top: .3rem;
   line-height: 1;
   height: 1.6rem;
+  display: inline-block;
+  border: none;
+  min-height: unset;
+  margin-bottom: 0px;
+  margin-left: 5px;
+  margin-top: 0px;
+  margin-right: 5px;
 }
 
 .select2-container--bmltwf_select2_theme .select2-results > .select2-results__options {
