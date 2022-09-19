@@ -195,8 +195,7 @@ jQuery(document).ready(function ($) {
       dropdownAutoWidth: true,
       matcher: matchCustom,
       theme: 'bmltwf_select2_theme',
-      width: 'auto',
-      // selectionCssClass: "meeting-searcher-custom",
+      // width: 'auto',
     });
 
     $("#meeting-searcher").on("select2:open", function (e) {
