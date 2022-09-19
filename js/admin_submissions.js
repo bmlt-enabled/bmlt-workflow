@@ -306,9 +306,6 @@ jQuery(document).ready(function ($) {
               meeting_time = data["original_start_time"];
               original = "Original ";
               break;
-            case "reason_other":
-              submission_type = "Other Request";
-              break;
             default:
               submission_type = data["submission_type"];
           }
@@ -379,7 +376,7 @@ jQuery(document).ready(function ($) {
         var change_made = $("#dt-submission").DataTable().row({ selected: true }).data()["change_made"];
         var submission_type = $("#dt-submission").DataTable().row({ selected: true }).data()["submission_type"];
         var actioned = change_made === "approved" || change_made === "rejected";
-        var cantquickedit = change_made === "approved" || change_made === "rejected" || submission_type === "reason_close" || submission_type === "reason_other";
+        var cantquickedit = change_made === "approved" || change_made === "rejected" || submission_type === "reason_close";
         $("#dt-submission").DataTable().button("approve:name").enable(!actioned);
         $("#dt-submission").DataTable().button("reject:name").enable(!actioned);
         $("#dt-submission").DataTable().button("quickedit:name").enable(!cantquickedit);

@@ -421,7 +421,7 @@ jQuery(document).ready(function ($) {
   $("#meeting_content").hide();
   $("#other_reason_div").hide();
   $("#other_reason").prop("required", false);
-  $("#personal_details").attr("class", "form-grid-col2-1");
+  $("#personal_details").attr("class", "form-grid-col2-2");
 
   $("#virtual_hybrid_select").on("change", function () {
     // show and hide the virtual meeting settings, and adjust formats as required
@@ -461,7 +461,6 @@ jQuery(document).ready(function ($) {
     $("#reason_new_text").hide();
     $("#reason_change_text").hide();
     $("#reason_close_text").hide();
-    $("#reason_other_text").hide();
     $("#starter_pack").hide();
     $("#meeting_selector").hide();
     // enable the meeting form
@@ -469,7 +468,7 @@ jQuery(document).ready(function ($) {
     $("#other_reason_div").hide();
     $("#other_reason").prop("required", false);
     $("#additional_info").prop("required", false);
-    $("#personal_details").attr("class", "form-grid-col2-1");
+    $("#personal_details").attr("class", "form-grid-col2-2");
     disable_and_clear_highlighting();
     enable_edits();
     // enable items as required
@@ -515,18 +514,6 @@ jQuery(document).ready(function ($) {
         $("#meeting_selector").show();
         $("#additional_info").prop("required", true);
 
-        break;
-      case "reason_other":
-        // display form instructions
-        $("#instructions").html("");
-        // other reason has a textarea
-        $("#other_reason_div").show();
-        $("#meeting_content").show();
-        $("#personal_details").attr("class", "form-grid-col1");
-        $("#personal_details").show();
-        $("#meeting_details").hide();
-        $("#other_reason").prop("required", true);
-        $("#additional_info_div").hide();
         break;
     }
   });
