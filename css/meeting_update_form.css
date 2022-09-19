@@ -81,7 +81,7 @@ div#meeting_content.form-grid {
   margin-left: auto;
   margin-right: auto;
   grid-template-columns: [col] 1fr;
-  grid-template-rows: repeat(5, [row] auto);
+  grid-template-rows: repeat(7, [row] auto);
   box-sizing: border-box;
 }
 
@@ -97,17 +97,17 @@ div#meeting_content.form-grid {
 
 .form-grid-col2-1 {
   grid-column: col;
-  grid-row: row 2;
+  grid-row: row 5;
 }
 
 .form-grid-col2-2 {
   grid-column: col;
-  grid-row: row 3;
+  grid-row: row 6;
 }
 
 .form-grid-bottom {
   grid-column: col / span 2;
-  grid-row: row 5;
+  grid-row: row 7;
 }
 }
 
