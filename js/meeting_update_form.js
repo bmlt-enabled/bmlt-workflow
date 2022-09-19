@@ -419,7 +419,6 @@ jQuery(document).ready(function ($) {
   // meeting logic before selection is made
   $("#meeting_selector").hide();
   $("#meeting_content").hide();
-  $("#other_reason_div").hide();
   $("#other_reason").prop("required", false);
 
   $("#virtual_hybrid_select").on("change", function () {
@@ -464,7 +463,6 @@ jQuery(document).ready(function ($) {
     $("#meeting_selector").hide();
     // enable the meeting form
     $("#meeting_content").hide();
-    $("#other_reason_div").hide();
     $("#other_reason").prop("required", false);
     $("#additional_info").prop("required", false);
     disable_and_clear_highlighting();
