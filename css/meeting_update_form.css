@@ -83,6 +83,8 @@ div#meeting_content.form-grid {
   grid-template-columns: [col] 1fr;
   grid-template-rows: repeat(7, [row] auto);
   box-sizing: border-box;
+  padding-left: 1em;
+  padding-right: 3em;
 }
 
 .form-grid-top {
@@ -123,7 +125,9 @@ div#meeting_content.form-grid {
     grid-template-columns: repeat(2, [col] 1fr);
     grid-template-rows: repeat(5, [row] auto);
     box-sizing: border-box;
-  }
+    padding-left: 1em;
+    padding-right: 3em;
+    }
   
   .form-grid-top {
     grid-column: col / span 2;
