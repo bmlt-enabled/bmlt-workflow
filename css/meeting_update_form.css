@@ -168,16 +168,16 @@ select.update-form-select {
   width: auto;
 }
 
-.form-grid select {
+div#meeting_content.form-grid select {
   width: 100%;
 }
 
-.form-grid .inline select {
+div#meeting_content.form-grid .inline select {
   display: inline;
   width: auto;
 }
 
-.form-grid label {
+div#meeting_content.form-grid label {
   width: 100%;
   display: block;
   padding: 10px 5px 5px 2px;
@@ -189,7 +189,7 @@ select.update-form-select {
   font-weight: normal;
 }
 
-.form-grid .inline label {
+div#meeting_content.form-grid .inline label {
   display: inline;
 }
 
