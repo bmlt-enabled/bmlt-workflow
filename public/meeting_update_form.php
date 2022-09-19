@@ -60,6 +60,7 @@ if ($meeting_states_and_provinces) {
         <div id="meeting_selector">
             <br>
             <label for="meeting-searcher">Search For Meeting:</label>
+            <br>
             <select name="meeting-searcher" class="meeting-searcher" id="meeting-searcher">
                 <option></option>
             </select>
