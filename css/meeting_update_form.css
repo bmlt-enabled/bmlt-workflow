@@ -71,13 +71,16 @@ body {
   margin: 40px;
 }
 
+
+@media all and (min-width: 576px) {
+
 div#meeting_content.form-grid {
   display: grid;
   grid-gap: 10px;
-  width: 1170px;
+  width: calc(100% + 2rem);
   margin-left: auto;
   margin-right: auto;
-  grid-template-columns: repeat(2, [col] 1fr);
+  grid-template-columns: [col] 1fr;
   grid-template-rows: repeat(5, [row] auto);
   box-sizing: border-box;
 }
@@ -93,12 +96,12 @@ div#meeting_content.form-grid {
 }
 
 .form-grid-col2-1 {
-  grid-column: col 2;
+  grid-column: col;
   grid-row: row 2;
 }
 
 .form-grid-col2-2 {
-  grid-column: col 2;
+  grid-column: col;
   grid-row: row 3;
 }
 
@@ -106,6 +109,47 @@ div#meeting_content.form-grid {
   grid-column: col / span 2;
   grid-row: row 5;
 }
+}
+
+
+@media all and (min-width: 992px) {
+
+  div#meeting_content.form-grid {
+    display: grid;
+    grid-gap: 10px;
+    width: calc(100% + 2rem);
+    margin-left: auto;
+    margin-right: auto;
+    grid-template-columns: repeat(2, [col] 1fr);
+    grid-template-rows: repeat(5, [row] auto);
+    box-sizing: border-box;
+  }
+  
+  .form-grid-top {
+    grid-column: col / span 2;
+    grid-row: row;
+  }
+  
+  .form-grid-col1 {
+    grid-column: col;
+    grid-row: row 2 / span 3;
+  }
+  
+  .form-grid-col2-1 {
+    grid-column: col 2;
+    grid-row: row 2;
+  }
+  
+  .form-grid-col2-2 {
+    grid-column: col 2;
+    grid-row: row 3;
+  }
+  
+  .form-grid-bottom {
+    grid-column: col / span 2;
+    grid-row: row 5;
+  }
+  }
 
 .grid-flex-item .inline {
   display: inline;
