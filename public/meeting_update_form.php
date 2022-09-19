@@ -71,36 +71,9 @@ if ($meeting_states_and_provinces) {
                 <p id="instructions"></p>
             </div>
 
-            <!-- personal details -->
-            <div id="personal_details" class="form-grid-col2-1">
-                <fieldset>
-                    <legend>Personal Details</legend>
-                    <label for="first_name">First Name<span class="bmltwf-required-field">*</span></label>
-                    <input type="text" name="first_name" size="20" id="first_name" required>
-                    <label for="last_name">Last Name<span class="bmltwf-required-field">*</span></label>
-                    <input type="text" name="last_name" size="20" id="last_name" required>
-                    <label for="email_address">Email Address<span class="bmltwf-required-field">*</span></label>
-                    <input type="email" name="email_address" id="email_address" size="50" required>
-                    <label for="add_email" class="add_email">Add this email as a contact
-                        address for the group</label>
-                    <select name="add_email" id="add_email">
-                        <option value="yes">Yes</option>
-                        <option value="no" selected>No</option>
-                    </select>
-                    <label for="contact_number_confidential">Contact Number (Confidential)</label>
-                    <input type="number" name="contact_number_confidential" id="contact_number_confidential">
-                    <label for="group_relationship">Relationship to group<span class="bmltwf-required-field">*</span></label>
-                    <select name="group_relationship" id="group_relationship" required>
-                        <option value="" disabled selected hidden>Select one</option>
-                        <option value="Group Member">Group Member</option>
-                        <option value="Area Trusted Servant">Area Trusted Servant</option>
-                        <option value="Regional Trusted Servant">Regional Trusted Servant</option>
-                        <option value="NA Member">NA Member</option>
-                        <option value="Not A Member">Not A Member</option>
-                    </select>
-                </fieldset>
-            </div>
-            <div id="virtual_meeting_options" class="form-grid-col2-2">
+            <!-- virtual meeting settings -->
+
+            <div id="virtual_meeting_options" class="form-grid-col2-1">
                 <fieldset>
                     <legend>Virtual Meeting Options</legend>
                     <label for="virtual_hybrid_select">Is this a virtual, hybrid or temporarily closed in person meeting?</label>
@@ -148,6 +121,38 @@ if ($meeting_states_and_provinces) {
                     </div>
                 </fieldset>
             </div>
+
+
+            <!-- personal details -->
+            <div id="personal_details" class="form-grid-col2-2">
+                <fieldset>
+                    <legend>Personal Details</legend>
+                    <label for="first_name">First Name<span class="bmltwf-required-field">*</span></label>
+                    <input type="text" name="first_name" size="20" id="first_name" required>
+                    <label for="last_name">Last Name<span class="bmltwf-required-field">*</span></label>
+                    <input type="text" name="last_name" size="20" id="last_name" required>
+                    <label for="email_address">Email Address<span class="bmltwf-required-field">*</span></label>
+                    <input type="email" name="email_address" id="email_address" size="50" required>
+                    <label for="add_email" class="add_email">Add this email as a contact
+                        address for the group</label>
+                    <select name="add_email" id="add_email">
+                        <option value="yes">Yes</option>
+                        <option value="no" selected>No</option>
+                    </select>
+                    <label for="contact_number_confidential">Contact Number (Confidential)</label>
+                    <input type="number" name="contact_number_confidential" id="contact_number_confidential">
+                    <label for="group_relationship">Relationship to group<span class="bmltwf-required-field">*</span></label>
+                    <select name="group_relationship" id="group_relationship" required>
+                        <option value="" disabled selected hidden>Select one</option>
+                        <option value="Group Member">Group Member</option>
+                        <option value="Area Trusted Servant">Area Trusted Servant</option>
+                        <option value="Regional Trusted Servant">Regional Trusted Servant</option>
+                        <option value="NA Member">NA Member</option>
+                        <option value="Not A Member">Not A Member</option>
+                    </select>
+                </fieldset>
+            </div>
+
             <!-- meeting details -->
             <div id="meeting_details" class="form-grid-col1">
                 <fieldset>
@@ -231,33 +236,33 @@ if ($meeting_states_and_provinces) {
                         <div id="optional_location_sub_province">
                             <label id="location_sub_province_label" for="location_sub_province">Sub Province</label>
 
-<?php
-if ($bmltwf_do_counties_and_sub_provinces) {
-    echo'<select class="meeting-input" id="location_sub_province" name="location_sub_province">';
-    foreach ($meeting_counties_and_sub_provinces as $key) {
-        echo '<option value="' . $key . '">' . $key . '</option>';
-    }
-    echo '</select>';
-} else {
-    echo'<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">';
-}
+                            <?php
+                            if ($bmltwf_do_counties_and_sub_provinces) {
+                                echo '<select class="meeting-input" id="location_sub_province" name="location_sub_province">';
+                                foreach ($meeting_counties_and_sub_provinces as $key) {
+                                    echo '<option value="' . $key . '">' . $key . '</option>';
+                                }
+                                echo '</select>';
+                            } else {
+                                echo '<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">';
+                            }
 
-?>
+                            ?>
                         </div>
                         <label for="location_province">State<span class="bmltwf-required-field"> *</span></label>
-<?php
+                        <?php
 
-if ($bmltwf_do_states_and_provinces) {
-    echo '<select class="meeting-input" id="location_province" name="location_province">';
-    foreach ($meeting_states_and_provinces as $key) {
-        echo '<option value="' . $key . '">' . $key . '</option>';
-    }
-    echo '</select>';
-} else {
-    echo '<input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>';
-}
+                        if ($bmltwf_do_states_and_provinces) {
+                            echo '<select class="meeting-input" id="location_province" name="location_province">';
+                            foreach ($meeting_states_and_provinces as $key) {
+                                echo '<option value="' . $key . '">' . $key . '</option>';
+                            }
+                            echo '</select>';
+                        } else {
+                            echo '<input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>';
+                        }
 
-?>
+                        ?>
 
                         <div id="optional_postcode">
                             <label for="location_postal_code_1">Postcode</label>
