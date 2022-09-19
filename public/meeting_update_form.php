@@ -69,87 +69,6 @@ if ($meeting_states_and_provinces) {
                 <p id="instructions"></p>
             </div>
 
-            <!-- virtual meeting settings -->
-
-            <div id="virtual_meeting_options" class="form-grid-col2-1">
-                <fieldset>
-                    <legend>Virtual Meeting Options</legend>
-                    <label for="virtual_hybrid_select">Is this a virtual, hybrid or temporarily closed in person meeting?</label>
-                    <select name="virtual_hybrid_select" id="virtual_hybrid_select">
-                        <option value="" disabled selected hidden>Select one</option>
-                        <option value="none">No</option>
-                        <option value="virtual">Yes - Virtual only</option>
-                        <option value="hybrid"">Yes - Hybrid (Virtual and Face to Face)</option>
-                            <option value=" tempclosure"">Yes -Temporary Face to Face Closure</option>
-                    </select>
-                    <div id="virtual_meeting_settings">
-                        <div class="tooltip" tabindex="0">
-                            <label for="virtual_meeting_link">Online Meeting Link
-                                <span class="dashicons dashicons-info-outline"></span>
-                            </label>
-                            <div class="left">
-                                A URL for the virtual meeting eg:
-                                <br>https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1
-                                <i></i>
-                            </div>
-                        </div>
-                        <textarea class="meeting-input" type="url" name="virtual_meeting_link" maxlength="128" size="128" id="virtual_meeting_link"></textarea>
-                        <div class="tooltip" tabindex="0">
-                            <label for="virtual_meeting_additional_info">Virtual Meeting Additional Info
-                                <span class="dashicons dashicons-info-outline"></span>
-                            </label>
-                            <div class="left">
-                                Additional information, such as a meeting ID and Password eg:
-                                <br>Zoom ID: 456 033 8613, Passcode: 1953
-                                <i></i>
-                            </div>
-                        </div>
-                        <textarea class="meeting-input" type="text" name="virtual_meeting_additional_info" maxlength="128" size="128" id="virtual_meeting_additional_info"></textarea>
-                        <div class="tooltip" tabindex="0">
-                            <label for="phone_meeting_number">Phone Meeting Dial-in Number
-                                <span class="dashicons dashicons-info-outline" style="color: cornflowerblue;"></span>
-                            </label>
-
-                            <div class="left">
-                                Any phone dialin details for this virtual meeting.
-                                <i></i>
-                            </div>
-                        </div>
-                        <textarea class="meeting-input" type="text" name="phone_meeting_number" maxlength="128" size="128" id="phone_meeting_number"></textarea>
-                    </div>
-                </fieldset>
-            </div>
-
-            <!-- personal details -->
-            <div id="personal_details" class="form-grid-col2-2">
-                <fieldset>
-                    <legend>Personal Details</legend>
-                    <label for="first_name">First Name<span class="bmltwf-required-field">*</span></label>
-                    <input type="text" name="first_name" size="20" id="first_name" required>
-                    <label for="last_name">Last Name<span class="bmltwf-required-field">*</span></label>
-                    <input type="text" name="last_name" size="20" id="last_name" required>
-                    <label for="email_address">Email Address<span class="bmltwf-required-field">*</span></label>
-                    <input type="email" name="email_address" id="email_address" size="50" required>
-                    <label for="add_email" class="add_email">Add this email as a contact
-                        address for the group</label>
-                    <select name="add_email" id="add_email">
-                        <option value="yes">Yes</option>
-                        <option value="no" selected>No</option>
-                    </select>
-                    <label for="contact_number_confidential">Contact Number (Confidential)</label>
-                    <input type="number" name="contact_number_confidential" id="contact_number_confidential">
-                    <label for="group_relationship">Relationship to group<span class="bmltwf-required-field">*</span></label>
-                    <select name="group_relationship" id="group_relationship" required>
-                        <option value="" disabled selected hidden>Select one</option>
-                        <option value="Group Member">Group Member</option>
-                        <option value="Area Trusted Servant">Area Trusted Servant</option>
-                        <option value="Regional Trusted Servant">Regional Trusted Servant</option>
-                        <option value="NA Member">NA Member</option>
-                        <option value="Not A Member">Not A Member</option>
-                    </select>
-                </fieldset>
-            </div>
-
             <!-- meeting details -->
             <div id="meeting_details" class="form-grid-col1">
                 <fieldset>
@@ -287,6 +206,89 @@ if ($meeting_states_and_provinces) {
                     </div>
                 </fieldset>
             </div>
+
+            <!-- virtual meeting settings -->
+
+            <div id="virtual_meeting_options" class="form-grid-col2-1">
+                <fieldset>
+                    <legend>Virtual Meeting Options</legend>
+                    <label for="virtual_hybrid_select">Is this a virtual, hybrid or temporarily closed in person meeting?</label>
+                    <select name="virtual_hybrid_select" id="virtual_hybrid_select">
+                        <option value="" disabled selected hidden>Select one</option>
+                        <option value="none">No</option>
+                        <option value="virtual">Yes - Virtual only</option>
+                        <option value="hybrid"">Yes - Hybrid (Virtual and Face to Face)</option>
+                            <option value=" tempclosure"">Yes -Temporary Face to Face Closure</option>
+                    </select>
+                    <div id="virtual_meeting_settings">
+                        <div class="tooltip" tabindex="0">
+                            <label for="virtual_meeting_link">Online Meeting Link
+                                <span class="dashicons dashicons-info-outline"></span>
+                            </label>
+                            <div class="left">
+                                A URL for the virtual meeting eg:
+                                <br>https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1
+                                <i></i>
+                            </div>
+                        </div>
+                        <textarea class="meeting-input" type="url" name="virtual_meeting_link" maxlength="128" size="128" id="virtual_meeting_link"></textarea>
+                        <div class="tooltip" tabindex="0">
+                            <label for="virtual_meeting_additional_info">Virtual Meeting Additional Info
+                                <span class="dashicons dashicons-info-outline"></span>
+                            </label>
+                            <div class="left">
+                                Additional information, such as a meeting ID and Password eg:
+                                <br>Zoom ID: 456 033 8613, Passcode: 1953
+                                <i></i>
+                            </div>
+                        </div>
+                        <textarea class="meeting-input" type="text" name="virtual_meeting_additional_info" maxlength="128" size="128" id="virtual_meeting_additional_info"></textarea>
+                        <div class="tooltip" tabindex="0">
+                            <label for="phone_meeting_number">Phone Meeting Dial-in Number
+                                <span class="dashicons dashicons-info-outline" style="color: cornflowerblue;"></span>
+                            </label>
+
+                            <div class="left">
+                                Any phone dialin details for this virtual meeting.
+                                <i></i>
+                            </div>
+                        </div>
+                        <textarea class="meeting-input" type="text" name="phone_meeting_number" maxlength="128" size="128" id="phone_meeting_number"></textarea>
+                    </div>
+                </fieldset>
+            </div>
+
+            <!-- personal details -->
+            <div id="personal_details" class="form-grid-col2-2">
+                <fieldset>
+                    <legend>Personal Details</legend>
+                    <label for="first_name">First Name<span class="bmltwf-required-field">*</span></label>
+                    <input type="text" name="first_name" size="20" id="first_name" required>
+                    <label for="last_name">Last Name<span class="bmltwf-required-field">*</span></label>
+                    <input type="text" name="last_name" size="20" id="last_name" required>
+                    <label for="email_address">Email Address<span class="bmltwf-required-field">*</span></label>
+                    <input type="email" name="email_address" id="email_address" size="50" required>
+                    <label for="add_email" class="add_email">Add this email as a contact
+                        address for the group</label>
+                    <select name="add_email" id="add_email">
+                        <option value="yes">Yes</option>
+                        <option value="no" selected>No</option>
+                    </select>
+                    <label for="contact_number_confidential">Contact Number (Confidential)</label>
+                    <input type="number" name="contact_number_confidential" id="contact_number_confidential">
+                    <label for="group_relationship">Relationship to group<span class="bmltwf-required-field">*</span></label>
+                    <select name="group_relationship" id="group_relationship" required>
+                        <option value="" disabled selected hidden>Select one</option>
+                        <option value="Group Member">Group Member</option>
+                        <option value="Area Trusted Servant">Area Trusted Servant</option>
+                        <option value="Regional Trusted Servant">Regional Trusted Servant</option>
+                        <option value="NA Member">NA Member</option>
+                        <option value="Not A Member">Not A Member</option>
+                    </select>
+                </fieldset>
+            </div>
+
+
             <!-- other details -->
             <div class="form-grid-bottom">
                 <div id="additional_info_div">
