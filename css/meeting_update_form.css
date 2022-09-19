@@ -17,6 +17,11 @@
  * along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+ div#meeting_update_form_header {
+  padding-left: 1em;
+  padding-right: 3em;
+}
+
 div#form_replace.bmltwf_wide_form {
   max-width: 1170px;
   margin-left: auto;
@@ -112,7 +117,6 @@ div#meeting_content.form-grid {
   grid-row: row 7;
 }
 }
-
 
 @media all and (min-width: 992px) {
 

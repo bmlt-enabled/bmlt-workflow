@@ -44,27 +44,25 @@ if ($meeting_states_and_provinces) {
 
 <div id="form_replace" class="bmltwf_wide_form">
     <form action="#" method="post" id="meeting_update_form">
-        <div>
-            <label for="update_reason">Reason For Update:</label>
-            <select class="update-form-select" name="update_reason" id="update_reason">
-                <option disabled="null" selected="null">Select Reason...</option>
-                <option value="reason_new">New Meeting</option>
-                <option value="reason_change">Change Existing Meeting</option>
-                <option value="reason_close">Close Meeting</option>
-            </select>
-        </div>
-        <div id="other_reason_div">
-            <label for="other_reason">Other Reason</label>
-            <textarea name="other_reason" id="other_reason" maxlength="512" rows="5" cols="50" placeholder="Provide as much detail about your meeting change request as you can and we'll endeavour to help"></textarea>
-        </div>
-        <div id="meeting_selector">
-            <br>
-            <label for="meeting-searcher">Search For Meeting:</label>
-            <br>
-            <select name="meeting-searcher" class="meeting-searcher" id="meeting-searcher">
-                <option></option>
-            </select>
-            <input type="hidden" name="meeting_id" id="meeting_id" value="">
+        <div id="meeting_update_form_header">
+            <div>
+                <label for="update_reason">Reason For Update:</label>
+                <select class="update-form-select" name="update_reason" id="update_reason">
+                    <option disabled="null" selected="null">Select Reason...</option>
+                    <option value="reason_new">New Meeting</option>
+                    <option value="reason_change">Change Existing Meeting</option>
+                    <option value="reason_close">Close Meeting</option>
+                </select>
+            </div>
+            <div id="meeting_selector">
+                <br>
+                <label for="meeting-searcher">Search For Meeting:</label>
+                <br>
+                <select name="meeting-searcher" class="meeting-searcher" id="meeting-searcher">
+                    <option></option>
+                </select>
+                <input type="hidden" name="meeting_id" id="meeting_id" value="">
+            </div>
         </div>
         <div id="meeting_content" class="form-grid">
             <div class="form-grid-top">
