@@ -421,7 +421,6 @@ jQuery(document).ready(function ($) {
   $("#meeting_content").hide();
   $("#other_reason_div").hide();
   $("#other_reason").prop("required", false);
-  $("#personal_details").attr("class", "form-grid-col2-2");
 
   $("#virtual_hybrid_select").on("change", function () {
     // show and hide the virtual meeting settings, and adjust formats as required
@@ -468,7 +467,6 @@ jQuery(document).ready(function ($) {
     $("#other_reason_div").hide();
     $("#other_reason").prop("required", false);
     $("#additional_info").prop("required", false);
-    $("#personal_details").attr("class", "form-grid-col2-2");
     disable_and_clear_highlighting();
     enable_edits();
     // enable items as required
