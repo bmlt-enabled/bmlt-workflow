@@ -17,11 +17,31 @@
  * along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+ div#meeting_update_form_header {
+  padding-left: 1em;
+  padding-right: 3em;
+}
+
 div#form_replace.bmltwf_wide_form {
   max-width: 1170px;
   margin-left: auto;
   margin-right: auto;
 }
+
+div#form_replace.bmltwf_wide_form legend {
+  font-size: 1em;
+}
+
+div#form_replace.bmltwf_wide_form fieldset {
+  border-width: 2px;
+  border-style: groove;
+  border-color: rgb(192, 192, 192);
+  padding-block-start: 0.35em;
+  padding-inline-start: 0.75em;
+  padding-inline-end: 0.75em;
+  padding-block-end: 0.625em;
+}
+
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
@@ -56,15 +76,20 @@ body {
   margin: 40px;
 }
 
-.form-grid {
+
+@media all and (min-width: 576px) {
+
+div#meeting_content.form-grid {
   display: grid;
   grid-gap: 10px;
-  width: 1170px;
+  width: calc(100% + 2rem);
   margin-left: auto;
   margin-right: auto;
-  grid-template-columns: repeat(2, [col] 1fr);
-  grid-template-rows: repeat(5, [row] auto);
+  grid-template-columns: [col] 1fr;
+  grid-template-rows: repeat(7, [row] auto);
   box-sizing: border-box;
+  padding-left: 1em;
+  padding-right: 3em;
 }
 
 .form-grid-top {
@@ -78,23 +103,72 @@ body {
 }
 
 .form-grid-col2-1 {
-  grid-column: col 2;
-  grid-row: row 2;
+  grid-column: col;
+  grid-row: row 5;
 }
 
 .form-grid-col2-2 {
-  grid-column: col 2;
-  grid-row: row 3;
+  grid-column: col;
+  grid-row: row 6;
 }
 
 .form-grid-bottom {
   grid-column: col / span 2;
-  grid-row: row 5;
+  grid-row: row 7;
+}
 }
 
-.form-grid input,
-.form-grid textarea:not(.select2-search__field),
-.form-grid select,
+@media all and (min-width: 992px) {
+
+  div#meeting_content.form-grid {
+    display: grid;
+    grid-gap: 10px;
+    width: calc(100% + 2rem);
+    margin-left: auto;
+    margin-right: auto;
+    grid-template-columns: repeat(2, [col] 1fr);
+    grid-template-rows: repeat(5, [row] auto);
+    box-sizing: border-box;
+    padding-left: 1em;
+    padding-right: 3em;
+    }
+  
+  .form-grid-top {
+    grid-column: col / span 2;
+    grid-row: row;
+  }
+  
+  .form-grid-col1 {
+    grid-column: col;
+    grid-row: row 2 / span 3;
+  }
+  
+  .form-grid-col2-1 {
+    grid-column: col 2;
+    grid-row: row 2;
+  }
+  
+  .form-grid-col2-2 {
+    grid-column: col 2;
+    grid-row: row 3;
+  }
+  
+  .form-grid-bottom {
+    grid-column: col / span 2;
+    grid-row: row 5;
+  }
+  }
+
+.grid-flex-item .inline {
+  display: inline;
+}
+
+div#meeting_content.form-grid input,
+div#meeting_content.form-grid input[type='text'],
+div#meeting_content.form-grid input[type='number'],
+div#meeting_content.form-grid input[type='email'],
+div#meeting_content.form-grid textarea:not(.select2-search__field),
+div#meeting_content.form-grid select,
 select.update-form-select,
 input#submit.button
 {
@@ -110,7 +184,9 @@ input#submit.button
   border-color: rgb(204, 204, 204);
   border-width: 1px;
   font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-  font-size: 1.2rem
+  font-size: 1.2rem;
+  background-color: rgb(255,255,255);
+  color: rgb(102,102,102);
 }
 
 input#submit.button {
@@ -118,37 +194,42 @@ input#submit.button {
   color: rgba(0, 0, 0, 0.8);
 }
 
-.form-grid input {
+div#meeting_content.form-grid input {
   height: 3rem;
 }
 
-.form-grid textarea:not(.select2-search__field) {
+div#meeting_content.form-grid textarea:not(.select2-search__field) {
   height: 6rem;
 }
 
-.form-grid select,
+div#meeting_content.form-grid select,
+div #update_reason.update-form-select,
 select.update-form-select {
   padding-top: 0;
   padding-bottom: 0;
   height: 3rem;
   border-radius: 8px;
   border-width: 2px;
+  -webkit-appearance: menulist;
+  background-image: none;
+  background-color: rgb(255,255,255);
+  color: rgb(102,102,102);
 }
 
 select.update-form-select {
   width: auto;
 }
 
-.form-grid select {
+div#meeting_content.form-grid select {
   width: 100%;
 }
 
-.form-grid .inline select {
+div#meeting_content.form-grid .inline select {
   display: inline;
   width: auto;
 }
 
-.form-grid label {
+div#meeting_content.form-grid label {
   width: 100%;
   display: block;
   padding: 10px 5px 5px 2px;
@@ -157,9 +238,10 @@ select.update-form-select {
   box-sizing: border-box;
   font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
   font-size: 1rem;
+  font-weight: normal;
 }
 
-.form-grid .inline label {
+div#meeting_content.form-grid .inline label {
   display: inline;
 }
 
@@ -644,11 +726,19 @@ span.select2-container--bmltwf_select2_theme .select2-selection--single {
 	-webkit-appearance: textfield;
 }
 
+#meeting_details .select2-container--bmltwf_select2_theme .select2-search--inline textarea.select2-search__field,
 .select2-container--bmltwf_select2_theme .select2-search--inline textarea.select2-search__field {
   padding-bottom: .5rem;
   padding-top: .3rem;
   line-height: 1;
   height: 1.6rem;
+  display: inline-block;
+  border: none;
+  min-height: unset;
+  margin-bottom: 0px;
+  margin-left: 5px;
+  margin-top: 0px;
+  margin-right: 5px;
 }
 
 .select2-container--bmltwf_select2_theme .select2-results > .select2-results__options {

@@ -507,9 +507,6 @@ class SubmissionsHandler
                 }
 
                 break;
-            case 'reason_other': {
-                    break;
-                }
 
             default:
                 return $this->handlerCore->bmltwf_rest_error("This change type ({$submission_type}) cannot be approved", 422);
@@ -617,7 +614,6 @@ class SubmissionsHandler
         $this->debug_log("in rest handler");
         $this->debug_log(($data));
         $reason_new_bool = false;
-        $reason_other_bool = false;
         $reason_change_bool = false;
         $reason_close_bool = false;
         $virtual_meeting_bool = false;
@@ -633,7 +629,6 @@ class SubmissionsHandler
         if (isset($data['update_reason'])) {
             // we use these to enforce required parameters in the next section
             $reason_new_bool = ($data['update_reason'] === 'reason_new');
-            $reason_other_bool = ($data['update_reason'] === 'reason_other');
             $reason_change_bool = ($data['update_reason'] === 'reason_change');
             $reason_close_bool = ($data['update_reason'] === 'reason_close');
             // handle meeting formats
@@ -662,7 +657,7 @@ class SubmissionsHandler
             }
         }
 
-        if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_other_bool && !$reason_change_bool && !$reason_close_bool))) {
+        if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_change_bool && !$reason_close_bool))) {
             return $this->handlerCore->bmltwf_rest_error('No valid meeting update reason provided', 422);
         }
 
@@ -693,7 +688,6 @@ class SubmissionsHandler
             "additional_info" => array("textarea", $reason_close_bool),
             "starter_kit_postal_address" => array("textarea", false),
             "starter_kit_required" => array("text", $reason_new_bool),
-            "other_reason" => array("textarea", $reason_other_bool),
             "location_sub_province" => array("text", false),
             "location_nation" => array("text", false),
             "group_relationship" => array("text", true),
@@ -781,9 +775,7 @@ class SubmissionsHandler
 
         if (empty($sanitised_fields['service_body_bigint'])) {
             // we should never have a blank service body unless it is 'other' request
-            if ($reason !== 'reason_other') {
-                return $this->handlerCore->bmltwf_rest_error('Form field "service_body_bigint" is required.', 422);
-            }
+            return $this->handlerCore->bmltwf_rest_error('Form field "service_body_bigint" is required.', 422);
         }
 
         // main switch for meeting change type
@@ -946,24 +938,7 @@ class SubmissionsHandler
                 $submission['start_time'] = $bmlt_meeting['start_time'];
 
                 break;
-            case ('reason_other'):
-                // $subject = 'Other notification';
 
-                // form fields allowed in changes_requested for this change type
-                $allowed_fields = array(
-                    "contact_number_confidential",
-                    "group_relationship",
-                    "add_email",
-                    "other_reason",
-                    "service_body_bigint",
-                );
-
-                foreach ($allowed_fields as $item) {
-                    if (isset($sanitised_fields[$item])) {
-                        $submission[$item] = $sanitised_fields[$item];
-                    }
-                }
-                break;
             default:
                 return $this->handlerCore->bmltwf_rest_error('Invalid meeting change', 422);
         }
@@ -1028,9 +1003,6 @@ class SubmissionsHandler
                 break;
             case "reason_change":
                 $submission_type = "Modify Meeting";
-                break;
-            case "reason_other":
-                $submission_type = "Other Request";
                 break;
         }
 

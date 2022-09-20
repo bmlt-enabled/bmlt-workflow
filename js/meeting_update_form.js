@@ -195,8 +195,7 @@ jQuery(document).ready(function ($) {
       dropdownAutoWidth: true,
       matcher: matchCustom,
       theme: 'bmltwf_select2_theme',
-      width: 'auto',
-      // selectionCssClass: "meeting-searcher-custom",
+      width: '100%',
     });
 
     $("#meeting-searcher").on("select2:open", function (e) {
@@ -419,9 +418,7 @@ jQuery(document).ready(function ($) {
   // meeting logic before selection is made
   $("#meeting_selector").hide();
   $("#meeting_content").hide();
-  $("#other_reason_div").hide();
   $("#other_reason").prop("required", false);
-  $("#personal_details").attr("class", "form-grid-col2-1");
 
   $("#virtual_hybrid_select").on("change", function () {
     // show and hide the virtual meeting settings, and adjust formats as required
@@ -461,20 +458,16 @@ jQuery(document).ready(function ($) {
     $("#reason_new_text").hide();
     $("#reason_change_text").hide();
     $("#reason_close_text").hide();
-    $("#reason_other_text").hide();
     $("#starter_pack").hide();
     $("#meeting_selector").hide();
     // enable the meeting form
     $("#meeting_content").hide();
-    $("#other_reason_div").hide();
     $("#other_reason").prop("required", false);
     $("#additional_info").prop("required", false);
-    $("#personal_details").attr("class", "form-grid-col2-1");
     disable_and_clear_highlighting();
     enable_edits();
     // enable items as required
     var reason = $(this).val();
-    // <p id="reason_close_text" style="display: none;">We've retrieved the details below from our system. Please add any other information and your contact details and then submit your update.
 
     clear_form();
     switch (reason) {
@@ -486,7 +479,7 @@ jQuery(document).ready(function ($) {
         $("#virtual_meeting_settings").hide();
         // display form instructions
         $("#instructions").html(
-          "Please fill in the details of your new meeting, and whether your new meeting needs a starter kit provided, and then submit your update. Note: If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
+          "Please fill in the details of your new meeting, and then submit your update. <br><b>Note:</b> If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
         );
         // new meeting has a starter pack
         if(bmltwf_fso_feature == 'display')
@@ -516,18 +509,6 @@ jQuery(document).ready(function ($) {
         $("#meeting_selector").show();
         $("#additional_info").prop("required", true);
 
-        break;
-      case "reason_other":
-        // display form instructions
-        $("#instructions").html("");
-        // other reason has a textarea
-        $("#other_reason_div").show();
-        $("#meeting_content").show();
-        $("#personal_details").attr("class", "form-grid-col1");
-        $("#personal_details").show();
-        $("#meeting_details").hide();
-        $("#other_reason").prop("required", true);
-        $("#additional_info_div").hide();
         break;
     }
   });

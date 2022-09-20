@@ -20,15 +20,14 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.0.4
+ * Version: 1.0.5
  * Requires at least: 5.2
  * Tested up to: 6.0
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
 
- 
-define('BMLTWF_PLUGIN_VERSION', '1.0.4');
+define('BMLTWF_PLUGIN_VERSION', '1.0.5');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -693,6 +692,11 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_backup_restore_html()
         {
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>Backup and Restore the entire plugin configuration, including all submission entries and plugin settings.';
+            echo '<br><br>';
+            echo '</div>';
+            echo '<br>';
             echo '<button type="button" id="bmltwf_backup">Backup Configuration</button>   <button type="button" id="bmltwf_restore">Restore Configuration</button><input type="file" id="bmltwf_file_selector" accept=".json,application/json" style="display:none">';
             echo '<span class="spinner" id="bmltwf-backup-spinner"></span><br>';
         }
@@ -700,7 +704,7 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_shortcode_html()
         {
             echo '<div class="bmltwf_info_text">';
-            echo '<br>You can use the shortcode <code>[bmltwf-meeting-update-form]</code> to list the appropriate meetings and service areas in your update form.';
+            echo '<br>Use the shortcode <code>[bmltwf-meeting-update-form]</code> to generate a form. The form will be associated with service bodies configured on the Service Bodies configuration page.';
             echo '<br><br>';
             echo '</div>';
         }
