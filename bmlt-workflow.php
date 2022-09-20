@@ -696,6 +696,7 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br>Backup and Restore the entire plugin configuration, including all submission entries and plugin settings.';
             echo '<br><br>';
             echo '</div>';
+            echo '<br>';
             echo '<button type="button" id="bmltwf_backup">Backup Configuration</button>   <button type="button" id="bmltwf_restore">Restore Configuration</button><input type="file" id="bmltwf_file_selector" accept=".json,application/json" style="display:none">';
             echo '<span class="spinner" id="bmltwf-backup-spinner"></span><br>';
         }
