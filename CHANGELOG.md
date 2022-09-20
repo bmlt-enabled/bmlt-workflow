@@ -1,3 +1,10 @@
+## 1.0.5 (Sep 20, 2022)
+- #84 CSS fixes for Enfold theme
+- #88 CSS fixes for single column mobile display
+- #87 shortcode descriptive text is not clear ( thanks adamh !)
+- #86 backup and restore has no descriptive text ( thanks adamh !)
+- #83 don't mention starter kit in subtext when fso disabled ( thanks @pjaudiomv !)
+
 ## 1.0.4 (Sep 12, 2022)
 - #81 Change language in settings from BMLT to BMLT Root Server (thanks @tempsaint !)
 - #59 filter visible service bodies based on the bot user permissions, rather than all service bodies (thanks @pjaudiomv !)
