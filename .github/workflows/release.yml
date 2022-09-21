@@ -98,7 +98,7 @@ jobs:
           chmod +x deploy-wordpress.sh
           curl -sLO https://raw.githubusercontent.com/bmlt-enabled/release-notes-tool/master/gh-release-notes.sh
           chmod +x gh-release-notes.sh
-          ./gh-release-notes.sh readme.txt "wp"
+          ./gh-release-notes.sh CHANGELOG.md "##"
 
       - name: Prepare artifact metadata
         id: prepare_artifact_metadata
