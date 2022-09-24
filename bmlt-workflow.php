@@ -383,11 +383,11 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_register_setting()
         {
 
-            $this->debug_log("registering settings");
-
             if (!current_user_can('activate_plugins')) {
-                wp_die("This page cannot be accessed");
+                return;
             }
+
+            $this->debug_log("registering settings");
 
             register_setting(
                 'bmltwf-settings-group',
@@ -559,23 +559,6 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf-settings-section-id'
             );
 
-            // add_settings_field(
-            //     'bmltwf_fso_email_address',
-            //     'Email address for the FSO (Starter Kit Notifications)',
-            //     array(&$this, 'bmltwf_fso_email_address_html'),
-            //     'bmltwf-settings',
-            //     'bmltwf-settings-section-id'
-            // );
-
-
-            // add_settings_field(
-            //     'bmltwf_fso_email_template',
-            //     'Email Template for FSO emails (Starter Kit Notifications)',
-            //     array(&$this, 'bmltwf_fso_email_template_html'),
-            //     'bmltwf-settings',
-            //     'bmltwf-settings-section-id'
-            // );
-
             add_settings_field(
                 'bmltwf_submitter_email_template',
                 'Email Template for New Meeting',
@@ -584,6 +567,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf-settings-section-id'
             );
         }
+
         public function bmltwf_fso_feature_sanitize_callback($input)
         {
             $this->debug_log("fso_enablde sanitize callback");
