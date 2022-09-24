@@ -328,7 +328,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'BMLT Workflow',
                 $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
                 // 'manage_options',
-                'bmltwf-toplevel',
+                'bmltwf-settings',
                 '',
                 'dashicons-analytics',
                 null
