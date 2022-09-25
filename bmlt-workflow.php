@@ -227,6 +227,7 @@ if (!class_exists('bmltwf_plugin')) {
             }
 
             $this->prevent_cache_enqueue_script('bmltwfjs', array('jquery'), 'js/script_includes.js');
+            $this->debug_log(("hi2"));
 
             switch ($hook) {
 
