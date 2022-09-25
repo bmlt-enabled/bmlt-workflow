@@ -104,8 +104,8 @@ wp option --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"M
 # create our test page
 wp post create --path=$sitelocalpath --post_type=page --post_title='testpage' --post_content='[bmltwf-meeting-update-form]' --post_status='publish' --post_name='testpage'
 # create our test users
-wp user create $wp_submission_user aa123@a.com --user_pass=$wp_submission_pass
-wp user create $wp_nopriv_user aa456@a.com --user_pass=$wp_nopriv_pass
+wp user create --path=$sitelocalpath $wp_submission_user aa123@a.com --user_pass=$wp_submission_pass
+wp user create --path=$sitelocalpath $wp_nopriv_user aa456@a.com --user_pass=$wp_nopriv_pass
 
 ## MULTI SITE INSTALLER (single site test)
 
