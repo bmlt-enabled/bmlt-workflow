@@ -253,7 +253,7 @@ if (!class_exists('bmltwf_plugin')) {
 
                 case ('bmlt-workflow_page_bmltwf-submissions'):
                 case ('toplevel_page_bmltwf-submissions'):
-
+$this->debug_log(("hi"));
                     // base css and scripts for this page
                     $this->prevent_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
                     $this->prevent_cache_enqueue_style('bmltwf-admin-submissions-css', false, 'css/admin_submissions.css');
