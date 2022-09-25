@@ -277,9 +277,9 @@ if (!class_exists('bmltwf_plugin')) {
 
                     // add meeting formats
                     $formatarr = $this->bmlt_integration->getMeetingFormats();
-                    $this->debug_log("FORMATS");
-                    $this->debug_log(($formatarr));
-                    $this->debug_log(json_encode($formatarr));
+                    // $this->debug_log("FORMATS");
+                    // $this->debug_log(($formatarr));
+                    // $this->debug_log(json_encode($formatarr));
                     $script .= 'var bmltwf_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
                     // do a one off lookup for our servicebodies
@@ -323,7 +323,9 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_menu_pages()
         {
 
-            if (current_user_can('manage_options')) {
+        $this->debug_log("manage_options ".current_user_can('manage_options')?"true":"false");
+        $this->debug_log("manage submissions ".current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)?"true":"false");
+
                 add_menu_page(
                     'BMLT Workflow',
                     'BMLT Workflow',
@@ -364,20 +366,7 @@ if (!class_exists('bmltwf_plugin')) {
                     array(&$this, 'display_bmltwf_admin_service_bodies_page'),
                     2
                 );
-            }
 
-            elseif (current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)) {
-                add_menu_page(
-                    'BMLT Workflow',
-                    'BMLT Workflow',
-                    $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
-                    'bmltwf-settings',
-                    array(&$this, 'display_bmltwf_admin_submissions_page'),
-                    'dashicons-analytics',
-                    null
-                );
-            };
-            
         }
 
         public function bmltwf_add_plugin_link($plugin_actions, $plugin_file)

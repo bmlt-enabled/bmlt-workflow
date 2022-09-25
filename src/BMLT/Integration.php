@@ -446,7 +446,7 @@ class Integration
             return $this->bmltwf_rest_error("Missing post parameters", "bmltwf_bmlt_integration");
         }
         $val = $this->post(get_option('bmltwf_bmlt_server_address') . $url, null, $postargs);
-        $this->debug_log(($val));
+        // $this->debug_log(($val));
         return $val;
     }
 
