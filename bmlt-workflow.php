@@ -324,34 +324,20 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_menu_pages()
         {
-        $m = "manage_options ". (current_user_can('manage_options')?"true":"false");
-        $this->debug_log($m);
-        $m = "manage submissions " . (current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)?"true":"false");
-        $this->debug_log($m);
         
         $toplevelslug = 'bmltwf-settings';
 
+        // if we're just a submission editor, make our submissions page the landing page
         if(!current_user_can('manage_options')&&(current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)))
         {
-            // add_menu_page(
-            //     'BMLT Workflow',
-            //     'BMLT Workflow',
-            //     $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
-            //     // 'manage_options',
-            //     'bmltwf-submissions',
-            //     '',
-            //     'dashicons-analytics',
-            //     null
-            // );
             $toplevelslug = 'bmltwf-submissions';
         }
+
         $this->debug_log("slug = ".$toplevelslug);
                 add_menu_page(
                     'BMLT Workflow',
                     'BMLT Workflow',
                     $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
-                    // 'manage_options',
-                    // 'bmltwf-settings',
                     $toplevelslug,
                     '',
                     'dashicons-analytics',
