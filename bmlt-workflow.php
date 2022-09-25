@@ -220,7 +220,7 @@ if (!class_exists('bmltwf_plugin')) {
         {
 
 
-            // $this->debug_log($hook);
+            $this->debug_log($hook);
 
             if (($hook != 'toplevel_page_bmltwf-settings') && ($hook != 'bmlt-workflow_page_bmltwf-submissions') && ($hook != 'bmlt-workflow_page_bmltwf-service-bodies')) {
                 return;
