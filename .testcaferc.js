@@ -23,6 +23,10 @@ const siteurl_multinetwork = "http://" + test_ip + "/wordpressmultinetwork";
 // usernames and passwords
 const username_single = execSync("aws ssm get-parameter --name bmltwf_test_wpuser_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" });
 const password_single = execSync("aws ssm get-parameter --name bmltwf_test_wppass_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" });
+const username_submission_single = execSync("aws ssm get-parameter --name bmltwf_test_wp_submission_user_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" });
+const password_submission_single = execSync("aws ssm get-parameter --name bmltwf_test_wp_submission_pass_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" });
+const username_nopriv_single = execSync("aws ssm get-parameter --name bmltwf_test_wp_nopriv_user_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" });
+const password_nopriv_single = execSync("aws ssm get-parameter --name bmltwf_test_wp_nopriv_pass_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" });
 
 const username_multisingle = execSync("aws ssm get-parameter --name bmltwf_test_wpuser_multisingle --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", {
   encoding: "utf-8",
