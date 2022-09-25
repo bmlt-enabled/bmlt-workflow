@@ -322,9 +322,10 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_menu_pages()
         {
-
-        $this->debug_log("manage_options ".current_user_can('manage_options')?"true":"false");
-        $this->debug_log("manage submissions ".current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)?"true":"false");
+        $m = "manage_options ". (current_user_can('manage_options')?"true":"false");
+        $this->debug_log($m);
+        $m = "manage submissions " . (current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)?"true":"false");
+        $this->debug_log($m);
 
                 add_menu_page(
                     'BMLT Workflow',
