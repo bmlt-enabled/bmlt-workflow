@@ -88,7 +88,7 @@ if (!class_exists('bmltwf_plugin')) {
             if ($bmltwf_bmlt_test_status != "success") {
                 wp_die("<h4>BMLTWF Plugin Error: BMLT Root Server not configured and tested.</h4>");
             }
-
+            $this->debug_log(("inside shortcode setup"));
             // base css and js for this page
             $this->prevent_cache_enqueue_script('bmltwf-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
             $this->prevent_cache_enqueue_style('bmltwf-meeting-update-form-css', false, 'css/meeting_update_form.css');
