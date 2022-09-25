@@ -33,14 +33,14 @@ export wpuser=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 aws ssm put-parameter --overwrite --name bmltwf_test_wpuser_single --value $wpuser --type SecureString --region ap-southeast-2
 export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 aws ssm put-parameter --overwrite --name bmltwf_test_wppass_single --value $wppass --type SecureString --region ap-southeast-2
-export wp_submission_user=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name bmltwf_test_wp_submission_user_single --value $wpuser --type SecureString --region ap-southeast-2
+export wp_submission_user=aa$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
+aws ssm put-parameter --overwrite --name bmltwf_test_wp_submission_user_single --value $wp_submission_user --type SecureString --region ap-southeast-2
 export wp_submission_pass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name bmltwf_test_wp_submission_pass_single --value $wppass --type SecureString --region ap-southeast-2
-export wp_nopriv_user=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name bmltwf_test_wp_nopriv_user_single --value $wpuser --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wp_submission_pass_single --value $wp_submission_pass --type SecureString --region ap-southeast-2
+export wp_nopriv_user=aa$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
+aws ssm put-parameter --overwrite --name bmltwf_test_wp_nopriv_user_single --value $wp_nopriv_user --type SecureString --region ap-southeast-2
 export wp_nopriv_pass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name bmltwf_test_wp_nopriv_pass_single --value $wppass --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wp_nopriv_pass_single --value $wp_nopriv_pass --type SecureString --region ap-southeast-2
 export wpemail=nigel.bmlt@gmail.com
 export sitename=wordpresssingle
 export siteurl=http://$MYIP/$sitename
@@ -104,8 +104,8 @@ wp option --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"M
 # create our test page
 wp post create --path=$sitelocalpath --post_type=page --post_title='testpage' --post_content='[bmltwf-meeting-update-form]' --post_status='publish' --post_name='testpage'
 # create our test users
-wp user create user $wp_submission_user aa123@a.com --user_pass=$wp_submission_pass
-wp user create user $wp_nopriv_user aa456@a.com --user_pass=$wp_nopriv_pass
+wp user create $wp_submission_user aa123@a.com --user_pass=$wp_submission_pass
+wp user create $wp_nopriv_user aa456@a.com --user_pass=$wp_nopriv_pass
 
 ## MULTI SITE INSTALLER (single site test)
 
