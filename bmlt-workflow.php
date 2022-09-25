@@ -323,46 +323,61 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_menu_pages()
         {
 
-            add_menu_page(
-                'BMLT Workflow',
-                'BMLT Workflow',
-                $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
-                // 'manage_options',
-                'bmltwf-settings',
-                '',
-                'dashicons-analytics',
-                null
-            );
+            if (current_user_can('manage_options')) {
+                add_menu_page(
+                    'BMLT Workflow',
+                    'BMLT Workflow',
+                    $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
+                    // 'manage_options',
+                    'bmltwf-settings',
+                    '',
+                    'dashicons-analytics',
+                    null
+                );
 
-            add_submenu_page(
-                'bmltwf-settings',
-                'Configuration',
-                'Configuration',
-                'manage_options',
-                'bmltwf-settings',
-                array(&$this, 'display_bmltwf_admin_options_page'),
-                2
-            );
+                add_submenu_page(
+                    'bmltwf-settings',
+                    'Configuration',
+                    'Configuration',
+                    'manage_options',
+                    'bmltwf-settings',
+                    array(&$this, 'display_bmltwf_admin_options_page'),
+                    2
+                );
 
-            add_submenu_page(
-                'bmltwf-settings',
-                'Workflow Submissions',
-                'Workflow Submissions',
-                $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
-                'bmltwf-submissions',
-                array(&$this, 'display_bmltwf_admin_submissions_page'),
-                2
-            );
+                add_submenu_page(
+                    'bmltwf-settings',
+                    'Workflow Submissions',
+                    'Workflow Submissions',
+                    $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
+                    'bmltwf-submissions',
+                    array(&$this, 'display_bmltwf_admin_submissions_page'),
+                    2
+                );
 
-            add_submenu_page(
-                'bmltwf-settings',
-                'Service Bodies',
-                'Service Bodies',
-                'manage_options',
-                'bmltwf-service-bodies',
-                array(&$this, 'display_bmltwf_admin_service_bodies_page'),
-                2
-            );
+                add_submenu_page(
+                    'bmltwf-settings',
+                    'Service Bodies',
+                    'Service Bodies',
+                    'manage_options',
+                    'bmltwf-service-bodies',
+                    array(&$this, 'display_bmltwf_admin_service_bodies_page'),
+                    2
+                );
+            }
+
+            elseif (current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)) {
+                add_menu_page(
+                    'BMLT Workflow',
+                    'BMLT Workflow',
+                    $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
+                    'bmltwf-settings',
+                    array(&$this, 'display_bmltwf_admin_submissions_page'),
+                    'dashicons-analytics',
+                    null
+                );
+            };
+            
         }
 
         public function bmltwf_add_plugin_link($plugin_actions, $plugin_file)
@@ -858,9 +873,9 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_install($networkwide)
         {
             global $wpdb;
-            $this->debug_log("is_multisite = " . var_export(is_multisite(),true));
-            $this->debug_log("is_plugin_active_for_network = " . var_export(is_plugin_active_for_network(__FILE__),true));
-            $this->debug_log("networkwide = " . var_export($networkwide,true));
+            $this->debug_log("is_multisite = " . var_export(is_multisite(), true));
+            $this->debug_log("is_plugin_active_for_network = " . var_export(is_plugin_active_for_network(__FILE__), true));
+            $this->debug_log("networkwide = " . var_export($networkwide, true));
             if ((is_multisite()) && ($networkwide === true)) {
                 // multi site and network activation, so iterate through all blogs
                 $this->debug_log('Multisite Network Activation');
