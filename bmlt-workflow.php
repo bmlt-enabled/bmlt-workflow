@@ -367,7 +367,12 @@ if (!class_exists('bmltwf_plugin')) {
                     array(&$this, 'display_bmltwf_admin_service_bodies_page'),
                     2
                 );
-
+                global $submenu;
+                error_log(print_r($submenu, true));
+                if(!current_user_can('manage_options')&&(current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)))
+                {
+                    // remove_menu_page()
+                }
         }
 
         public function bmltwf_add_plugin_link($plugin_actions, $plugin_file)
