@@ -222,7 +222,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             $this->debug_log($hook);
 
-            if (($hook != 'toplevel_page_bmltwf-settings') && ($hook != 'bmlt-workflow_page_bmltwf-submissions') && ($hook != 'bmlt-workflow_page_bmltwf-service-bodies')) {
+            if (($hook != 'toplevel_page_bmltwf-settings') && (!$hook != 'toplevel_page_bmltwf-submissions') && ($hook != 'bmlt-workflow_page_bmltwf-submissions') && ($hook != 'bmlt-workflow_page_bmltwf-service-bodies')) {
                 return;
             }
 
@@ -252,6 +252,8 @@ if (!class_exists('bmltwf_plugin')) {
                     break;
 
                 case ('bmlt-workflow_page_bmltwf-submissions'):
+                case ('toplevel_page_bmltwf-submissions'):
+
                     // base css and scripts for this page
                     $this->prevent_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
                     $this->prevent_cache_enqueue_style('bmltwf-admin-submissions-css', false, 'css/admin_submissions.css');
