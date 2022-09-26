@@ -1,3 +1,6 @@
+## 1.0.6 (Sep 26, 2022)
+- Fixed menu bug for unprivileged users and updated test cases to support
+
 ## 1.0.5 (Sep 20, 2022)
 - #84 CSS fixes for Enfold theme
 - #88 CSS fixes for single column mobile display
