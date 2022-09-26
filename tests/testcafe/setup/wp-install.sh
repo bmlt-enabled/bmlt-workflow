@@ -33,7 +33,7 @@ export wpuser=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 aws ssm put-parameter --overwrite --name bmltwf_test_wpuser_single --value $wpuser --type SecureString --region ap-southeast-2
 export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 aws ssm put-parameter --overwrite --name bmltwf_test_wppass_single --value $wppass --type SecureString --region ap-southeast-2
-export wp_submission_user=aa$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
+export wp_submission_user=submitpriv$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 aws ssm put-parameter --overwrite --name bmltwf_test_wp_submission_user_single --value $wp_submission_user --type SecureString --region ap-southeast-2
 export wp_submission_pass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 aws ssm put-parameter --overwrite --name bmltwf_test_wp_submission_pass_single --value $wp_submission_pass --type SecureString --region ap-southeast-2

@@ -53,6 +53,10 @@ module.exports = {
     admin_options_page: siteurl_single + admin_options_page,
     admin_logon: username_single,
     admin_password: password_single,
+    submission_reviewer_user: username_submission_single,
+    submission_reviewer_pass: password_submission_single,
+    submission_reviewer_nopriv_user: username_nopriv_single,
+    submission_reviewer_nopriv_pass: password_nopriv_single,
     admin_backup_json: siteurl_single + backuppath,
     // multisite
     formpage_multisingle: siteurl_multisingle + multisite_plugin + formpage,
