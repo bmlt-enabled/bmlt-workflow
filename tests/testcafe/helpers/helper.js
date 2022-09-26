@@ -108,11 +108,20 @@ export async function configure_service_bodies(t) {
 
     .click(Selector("ul#select2-bmltwf_userlist_id_1-container").parent())
     .pressKey("enter")
+    .click(Selector("ul#select2-bmltwf_userlist_id_1-container").parent())
+    .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_1-results"]'), "submitpriv")
+    .pressKey("enter")
     .click("#bmltwf_userlist_checkbox_id_1")
     .click(Selector("ul#select2-bmltwf_userlist_id_2-container").parent())
     .pressKey("enter")
+    .click(Selector("ul#select2-bmltwf_userlist_id_2-container").parent())
+    .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_2-results"]'), "submitpriv")
+    .pressKey("enter")
     .click("#bmltwf_userlist_checkbox_id_2")
     .click(Selector("ul#select2-bmltwf_userlist_id_3-container").parent())
+    .pressKey("enter")
+    .click(Selector("ul#select2-bmltwf_userlist_id_3-container").parent())
+    .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_3-results"]'), "submitpriv")
     .pressKey("enter")
     .click("#bmltwf_userlist_checkbox_id_3")
     .click(asb.bmltwf_submit);
@@ -127,9 +136,11 @@ export async function configure_service_bodies_multisingle(t) {
 
     .click(Selector("ul#select2-bmltwf_userlist_id_1-container").parent())
     .pressKey("enter")
+
     .click("#bmltwf_userlist_checkbox_id_1")
     .click(Selector("ul#select2-bmltwf_userlist_id_2-container").parent())
     .pressKey("enter")
+
     .click("#bmltwf_userlist_checkbox_id_2")
     .click(Selector("ul#select2-bmltwf_userlist_id_3-container").parent())
     .pressKey("enter")
