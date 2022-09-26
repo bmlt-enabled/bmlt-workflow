@@ -88,7 +88,7 @@ if (!class_exists('bmltwf_plugin')) {
             if ($bmltwf_bmlt_test_status != "success") {
                 wp_die("<h4>BMLTWF Plugin Error: BMLT Root Server not configured and tested.</h4>");
             }
-
+            $this->debug_log(("inside shortcode setup"));
             // base css and js for this page
             $this->prevent_cache_enqueue_script('bmltwf-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
             $this->prevent_cache_enqueue_style('bmltwf-meeting-update-form-css', false, 'css/meeting_update_form.css');
@@ -220,9 +220,9 @@ if (!class_exists('bmltwf_plugin')) {
         {
 
 
-            // $this->debug_log($hook);
+            $this->debug_log($hook);
 
-            if (($hook != 'toplevel_page_bmltwf-settings') && ($hook != 'bmlt-workflow_page_bmltwf-submissions') && ($hook != 'bmlt-workflow_page_bmltwf-service-bodies')) {
+            if (($hook != 'toplevel_page_bmltwf-settings') && ($hook != 'toplevel_page_bmltwf-submissions') && ($hook != 'bmlt-workflow_page_bmltwf-submissions') && ($hook != 'bmlt-workflow_page_bmltwf-service-bodies')) {
                 return;
             }
 
@@ -252,6 +252,8 @@ if (!class_exists('bmltwf_plugin')) {
                     break;
 
                 case ('bmlt-workflow_page_bmltwf-submissions'):
+                case ('toplevel_page_bmltwf-submissions'):
+
                     // base css and scripts for this page
                     $this->prevent_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
                     $this->prevent_cache_enqueue_style('bmltwf-admin-submissions-css', false, 'css/admin_submissions.css');
@@ -277,9 +279,9 @@ if (!class_exists('bmltwf_plugin')) {
 
                     // add meeting formats
                     $formatarr = $this->bmlt_integration->getMeetingFormats();
-                    $this->debug_log("FORMATS");
-                    $this->debug_log(($formatarr));
-                    $this->debug_log(json_encode($formatarr));
+                    // $this->debug_log("FORMATS");
+                    // $this->debug_log(($formatarr));
+                    // $this->debug_log(json_encode($formatarr));
                     $script .= 'var bmltwf_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
                     // do a one off lookup for our servicebodies
@@ -322,46 +324,62 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_menu_pages()
         {
+        
+        $toplevelslug = 'bmltwf-settings';
 
-            add_menu_page(
-                'BMLT Workflow',
-                'BMLT Workflow',
-                'manage_options',
-                'bmltwf-settings',
-                '',
-                'dashicons-analytics',
-                null
-            );
+        // if we're just a submission editor, make our submissions page the landing page
+        if(!current_user_can('manage_options')&&(current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)))
+        {
+            $toplevelslug = 'bmltwf-submissions';
+        }
 
-            add_submenu_page(
-                'bmltwf-settings',
-                'Configuration',
-                'Configuration',
-                'manage_options',
-                'bmltwf-settings',
-                array(&$this, 'display_bmltwf_admin_options_page'),
-                2
-            );
+        $this->debug_log("slug = ".$toplevelslug);
+                add_menu_page(
+                    'BMLT Workflow',
+                    'BMLT Workflow',
+                    $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
+                    $toplevelslug,
+                    '',
+                    'dashicons-analytics',
+                    null
+                );
 
-            add_submenu_page(
-                'bmltwf-settings',
-                'Workflow Submissions',
-                'Workflow Submissions',
-                $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
-                'bmltwf-submissions',
-                array(&$this, 'display_bmltwf_admin_submissions_page'),
-                2
-            );
+                add_submenu_page(
+                    'bmltwf-settings',
+                    'Configuration',
+                    'Configuration',
+                    'manage_options',
+                    'bmltwf-settings',
+                    array(&$this, 'display_bmltwf_admin_options_page'),
+                    2
+                );
 
-            add_submenu_page(
-                'bmltwf-settings',
-                'Service Bodies',
-                'Service Bodies',
-                'manage_options',
-                'bmltwf-service-bodies',
-                array(&$this, 'display_bmltwf_admin_service_bodies_page'),
-                2
-            );
+                add_submenu_page(
+                    'bmltwf-settings',
+                    'Workflow Submissions',
+                    'Workflow Submissions',
+                    $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
+                    'bmltwf-submissions',
+                    array(&$this, 'display_bmltwf_admin_submissions_page'),
+                    2
+                );
+
+                add_submenu_page(
+                    'bmltwf-settings',
+                    'Service Bodies',
+                    'Service Bodies',
+                    'manage_options',
+                    'bmltwf-service-bodies',
+                    array(&$this, 'display_bmltwf_admin_service_bodies_page'),
+                    2
+                );
+                if(!current_user_can('manage_options')&&(current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)))
+                {
+                    remove_menu_page('bmltwf-settings');
+                }
+                global $submenu;
+                error_log(print_r($submenu, true));
+
         }
 
         public function bmltwf_add_plugin_link($plugin_actions, $plugin_file)
@@ -383,11 +401,11 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_register_setting()
         {
 
-            $this->debug_log("registering settings");
-
             if (!current_user_can('activate_plugins')) {
-                wp_die("This page cannot be accessed");
+                return;
             }
+
+            $this->debug_log("registering settings");
 
             register_setting(
                 'bmltwf-settings-group',
@@ -559,23 +577,6 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf-settings-section-id'
             );
 
-            // add_settings_field(
-            //     'bmltwf_fso_email_address',
-            //     'Email address for the FSO (Starter Kit Notifications)',
-            //     array(&$this, 'bmltwf_fso_email_address_html'),
-            //     'bmltwf-settings',
-            //     'bmltwf-settings-section-id'
-            // );
-
-
-            // add_settings_field(
-            //     'bmltwf_fso_email_template',
-            //     'Email Template for FSO emails (Starter Kit Notifications)',
-            //     array(&$this, 'bmltwf_fso_email_template_html'),
-            //     'bmltwf-settings',
-            //     'bmltwf-settings-section-id'
-            // );
-
             add_settings_field(
                 'bmltwf_submitter_email_template',
                 'Email Template for New Meeting',
@@ -584,6 +585,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf-settings-section-id'
             );
         }
+
         public function bmltwf_fso_feature_sanitize_callback($input)
         {
             $this->debug_log("fso_enablde sanitize callback");
@@ -873,9 +875,9 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_install($networkwide)
         {
             global $wpdb;
-            $this->debug_log("is_multisite = " . var_export(is_multisite(),true));
-            $this->debug_log("is_plugin_active_for_network = " . var_export(is_plugin_active_for_network(__FILE__),true));
-            $this->debug_log("networkwide = " . var_export($networkwide,true));
+            $this->debug_log("is_multisite = " . var_export(is_multisite(), true));
+            $this->debug_log("is_plugin_active_for_network = " . var_export(is_plugin_active_for_network(__FILE__), true));
+            $this->debug_log("networkwide = " . var_export($networkwide, true));
             if ((is_multisite()) && ($networkwide === true)) {
                 // multi site and network activation, so iterate through all blogs
                 $this->debug_log('Multisite Network Activation');

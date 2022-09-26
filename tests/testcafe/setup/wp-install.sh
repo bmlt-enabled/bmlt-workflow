@@ -22,7 +22,7 @@ aws ssm put-parameter --overwrite --name bmltwf_test_hostip --value $MYIP --type
 export PATH=/usr/local/bin:$PATH
 export MYSQL='/usr/bin/mysql'
 
-export BRANCH=1.0.2-fixes
+export BRANCH=1.0.5-fixes
 
 export mysqlhost=localhost
 export mysqldb=wpsingledb
@@ -33,6 +33,14 @@ export wpuser=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 aws ssm put-parameter --overwrite --name bmltwf_test_wpuser_single --value $wpuser --type SecureString --region ap-southeast-2
 export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 aws ssm put-parameter --overwrite --name bmltwf_test_wppass_single --value $wppass --type SecureString --region ap-southeast-2
+export wp_submission_user=submitpriv$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
+aws ssm put-parameter --overwrite --name bmltwf_test_wp_submission_user_single --value $wp_submission_user --type SecureString --region ap-southeast-2
+export wp_submission_pass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
+aws ssm put-parameter --overwrite --name bmltwf_test_wp_submission_pass_single --value $wp_submission_pass --type SecureString --region ap-southeast-2
+export wp_nopriv_user=aa$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
+aws ssm put-parameter --overwrite --name bmltwf_test_wp_nopriv_user_single --value $wp_nopriv_user --type SecureString --region ap-southeast-2
+export wp_nopriv_pass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
+aws ssm put-parameter --overwrite --name bmltwf_test_wp_nopriv_pass_single --value $wp_nopriv_pass --type SecureString --region ap-southeast-2
 export wpemail=nigel.bmlt@gmail.com
 export sitename=wordpresssingle
 export siteurl=http://$MYIP/$sitename
@@ -95,6 +103,9 @@ wp option --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
 wp option --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
 # create our test page
 wp post create --path=$sitelocalpath --post_type=page --post_title='testpage' --post_content='[bmltwf-meeting-update-form]' --post_status='publish' --post_name='testpage'
+# create our test users
+wp user create --path=$sitelocalpath $wp_submission_user aa123@a.com --user_pass=$wp_submission_pass
+wp user create --path=$sitelocalpath $wp_nopriv_user aa456@a.com --user_pass=$wp_nopriv_pass
 
 ## MULTI SITE INSTALLER (single site test)
 
