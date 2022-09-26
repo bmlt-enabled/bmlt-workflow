@@ -30,7 +30,7 @@ export const bmltwf_submission_reviewer = Role(userVariables.admin_logon_page, a
 });
 
 export const bmltwf_submission_nopriv = Role(userVariables.admin_logon_page, async (t) => {
-  await t.typeText(wordpress_login.user_login, userVariables.submission_reviewer_nopriv_user).typeText(wordpress_login.submission_reviewer_nopriv_pass, userVariables.admin_password).click(wordpress_login.wp_submit);
+  await t.typeText(wordpress_login.user_login, userVariables.submission_reviewer_nopriv_user).typeText(wordpress_login.user_pass, userVariables.submission_reviewer_nopriv_pass).click(wordpress_login.wp_submit);
 });
 
 export const bmltwf_admin_multisingle = Role(userVariables.admin_logon_page_multisingle, async (t) => {

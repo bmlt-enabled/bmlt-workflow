@@ -28,24 +28,24 @@ import {
 
 import { userVariables } from "../../.testcaferc";
 
-fixture`admin_submissions_fixture`.beforeEach(async (t) => {
+fixture`admin_submissions_permissions_fixture`.beforeEach(async (t) => {
   await reset_bmlt(t);
   await delete_submissions(t);
   await configure_service_bodies(t);
   await insert_submissions(t);
 });
 
-test("Can_View_As_Non_Admin", async (t) => {
+test("Can_View_Submissions_As_Priv_User", async (t) => {
   
   await t.useRole(bmltwf_submission_reviewer).navigateTo(userVariables.admin_submissions_page)
-  .debug()
-  .expect(as.reject_dialog_parent.visible).eql(true);
+  // .debug()
+  .expect(as.dt_submission_wrapper.visible).eql(true);
 
 });
 
-test("Cant_View_As_Non_User", async (t) => {
+test("Cant_View_Submissions_As_Non_Priv", async (t) => {
 
   await t.useRole(bmltwf_submission_nopriv).navigateTo(userVariables.admin_submissions_page)
-  .expect(as.reject_dialog_parent.visible).eql(true);
+  .expect(as.dt_submission_wrapper.visible).eql(false);
 
 });
