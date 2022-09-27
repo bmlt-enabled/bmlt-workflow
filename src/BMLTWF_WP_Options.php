@@ -44,7 +44,8 @@ class BMLTWF_WP_Options
             'bmltwf_fso_email_address',
             'bmltwf_submitter_email_template',
             'bmltwf_fso_feature',
-            'bmltwf_optional_postcode'
+            'bmltwf_optional_postcode',
+            'bmltwf_trusted_servants_can_delete_submissions'
         );
     }
         

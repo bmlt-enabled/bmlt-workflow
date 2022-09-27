@@ -235,6 +235,7 @@ jQuery(document).ready(function ($) {
       {
         name: "delete",
         text: "Delete",
+        enabled: bmltwf_datatables_delete_enabled,
         extend: "selected",
         action: function (e, dt, button, config) {
           var id = dt.row(".selected").data()["id"];

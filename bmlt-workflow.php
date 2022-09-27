@@ -279,9 +279,6 @@ if (!class_exists('bmltwf_plugin')) {
 
                     // add meeting formats
                     $formatarr = $this->bmlt_integration->getMeetingFormats();
-                    // $this->debug_log("FORMATS");
-                    // $this->debug_log(($formatarr));
-                    // $this->debug_log(json_encode($formatarr));
                     $script .= 'var bmltwf_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
                     // do a one off lookup for our servicebodies
@@ -300,6 +297,18 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_optional_location_nation = "' . get_option('bmltwf_optional_location_nation') . '";';
                     $script .= 'var bmltwf_optional_location_sub_province = "' . get_option('bmltwf_optional_location_sub_province') . '";';
                     $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
+
+                    // can current user use the delete button?
+                    $show_delete = "false";
+                    if (get_option('bmltwf_trusted_servants_can_delete_submissions')=='true')
+                    {
+                        $show_delete = "true";
+                    }
+                    else if(current_user_can('manage_options'))
+                    {
+                        $show_delete = "true";
+                    }
+                    $script .= 'var bmltwf_datatables_delete_enabled = "' . $show_delete . '";';
 
                     wp_add_inline_script('admin_submissions_js', $script, 'before');
 
@@ -428,6 +437,18 @@ if (!class_exists('bmltwf_plugin')) {
                     'sanitize_callback' => array(&$this, 'bmltwf_delete_closed_meetings_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'unpublish'
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_trusted_servants_can_delete_submissions',
+                array(
+                    'type' => 'string',
+                    'description' => 'Non admins can delete submissions',
+                    'sanitize_callback' => array(&$this, 'bmltwf_trusted_servants_can_delete_submissions_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'true'
                 )
             );
 
@@ -562,6 +583,14 @@ if (!class_exists('bmltwf_plugin')) {
             );
 
             add_settings_field(
+                'bmltwf_trusted_servants_can_delete_submissions',
+                'Trusted servants can delete submissions',
+                array(&$this, 'bmltwf_trusted_servants_can_delete_submissions_html'),
+                'bmltwf-settings',
+                'bmltwf-settings-section-id'
+            );
+
+            add_settings_field(
                 'bmltwf_optional_form_fields',
                 'Optional form fields',
                 array(&$this, 'bmltwf_optional_form_fields_html'),
@@ -677,8 +706,22 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'unpublish':
                     return $input;
             }
-            add_settings_error('bmltwf_delete_closed_meetings', 'err', 'Invalid delete closed meetings  setting.');
+            add_settings_error('bmltwf_delete_closed_meetings', 'err', 'Invalid delete closed meetings setting.');
             return $output;
+        }
+
+        public function bmltwf_trusted_servants_can_delete_submissions_sanitize_callback($input)
+        {
+            $output = get_option('bmltwf_trusted_servants_can_delete_submissions');
+
+            switch ($input) {
+                case 'true':
+                case 'false':
+                    return $input;
+            }
+            add_settings_error('bmltwf_trusted_servants_can_delete_submissions', 'err', 'Invalid "non admins can delete submissions" setting.');
+            return $output;
+
         }
 
         public function bmltwf_bmlt_server_address_html()
@@ -742,6 +785,28 @@ if (!class_exists('bmltwf_plugin')) {
             echo '</div>';
 
             echo '<br><label for="bmltwf_delete_closed_meetings"><b>Close meeting default:</b></label><select id="bmltwf_delete_closed_meetings" name="bmltwf_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>Unpublish</option><option name="delete" value="delete" ' . $delete . '>Delete</option>';
+            echo '<br><br>';
+        }
+
+        public function bmltwf_trusted_servants_can_delete_submissions_html()
+        {
+
+            $selection = get_option('bmltwf_trusted_servants_can_delete_submissions');
+            $can_delete = '';
+            $cannot_delete = '';
+            if ($selection === 'true') {
+                $can_delete = 'selected';
+            } else {
+                $cannot_delete = 'selected';
+            }
+
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>This option determines whether trusted servants are able to delete submissions from the submissions list.';
+            echo '<br>If this is set to false, then only Wordpress administrators with will have delete submission functionality';
+            echo '<br><br>';
+            echo '</div>';
+
+            echo '<br><label for="bmltwf_trusted_servants_can_delete_submissions"><b>Non admins can delete submissions:</b></label><select id="bmltwf_trusted_servants_can_delete_submissions" name="bmltwf_trusted_servants_can_delete_submissions"><option name="True" value="true" ' . $can_delete . '>True</option><option name="False" value="false" ' . $cannot_delete . '>False</option>';
             echo '<br><br>';
         }
 

@@ -305,11 +305,22 @@ class Controller extends \WP_REST_Controller
 
 	public function delete_submission_permissions_check($request)
 	{
-		// delete submissions is limited to admin
+		// delete submissions is limited based on bmltwf_trusted_servants_can_delete_submissions option
+
+		$can_delete = false;
 		
+		$bmltwf_trusted_servants_can_delete_submissions = get_option('bmltwf_trusted_servants_can_delete_submissions');
+		if($bmltwf_trusted_servants_can_delete_submissions == "true")
+		{
+			$can_delete = current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
+		}
+		else
+		{
+			$can_delete = current_user_can('manage_options');
+		}
 
 		$this->debug_log("delete submission current user " . get_current_user_id());
-		if (!current_user_can('manage_options')) {
+		if (!$can_delete) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot delete this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
