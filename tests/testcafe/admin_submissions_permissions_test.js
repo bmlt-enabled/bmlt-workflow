@@ -16,14 +16,19 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 import { as } from "./models/admin_submissions";
+import { ao } from "./models/admin_options";
 
 import {
+  randstr,
   configure_service_bodies, 
   insert_submissions, 
   delete_submissions,
   reset_bmlt, 
   bmltwf_submission_reviewer,
-  bmltwf_submission_nopriv
+  bmltwf_submission_nopriv,
+  bmltwf_admin,
+  select_dropdown_by_text,
+  click_table_row_column
  } from "./helpers/helper.js";
 
 import { userVariables } from "../../.testcaferc";
@@ -49,3 +54,103 @@ test("Cant_View_Submissions_As_Non_Priv", async (t) => {
   .expect(as.dt_submission_wrapper.visible).eql(false);
 
 });
+
+test("Cant_Delete_Submissions_As_Trusted_Servant", async (t) => {
+
+  await t.useRole(bmltwf_admin)
+  .navigateTo(userVariables.admin_settings_page);
+
+  // let us save successfully
+  const testfso = randstr() + "@" + randstr() + ".com";
+  const testfrom = randstr() + "@" + randstr() + ".com";
+  await t
+    .typeText(ao.bmltwf_fso_email_address, testfso, { replace: true })
+    .expect(ao.bmltwf_fso_email_address.value)
+    .eql(testfso)
+    .typeText(ao.bmltwf_email_from_address, testfrom, { replace: true })
+    .expect(ao.bmltwf_email_from_address.value)
+    .eql(testfrom);
+
+  // change option to False
+  await select_dropdown_by_text(ao.bmltwf_trusted_servants_can_delete_submissions, "False");
+  await t.click(ao.submit);
+  await ao.settings_updated();
+
+  await t.useRole(bmltwf_submission_reviewer).navigateTo(userVariables.admin_submissions_page);
+  // check delete button is disabled
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 0);
+
+  // delete
+  var g = as.dt_submission_wrapper.find("button").nth(3);
+  await t.expect(g.hasAttribute("disabled")).ok();
+  
+});
+
+
+test("Can_Delete_Submissions_As_Admin", async (t) => {
+
+  await t.useRole(bmltwf_admin)
+  .navigateTo(userVariables.admin_settings_page);
+
+  // let us save successfully
+  const testfso = randstr() + "@" + randstr() + ".com";
+  const testfrom = randstr() + "@" + randstr() + ".com";
+  await t
+    .typeText(ao.bmltwf_fso_email_address, testfso, { replace: true })
+    .expect(ao.bmltwf_fso_email_address.value)
+    .eql(testfso)
+    .typeText(ao.bmltwf_email_from_address, testfrom, { replace: true })
+    .expect(ao.bmltwf_email_from_address.value)
+    .eql(testfrom);
+
+  // change option to False
+  await select_dropdown_by_text(ao.bmltwf_trusted_servants_can_delete_submissions, "False");
+  await t.click(ao.submit);
+  await ao.settings_updated();
+
+  await t.navigateTo(userVariables.admin_submissions_page);
+  // check delete button is enabled
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 0);
+
+  // delete
+  var g = as.dt_submission_wrapper.find("button").nth(3);
+  // await t.debug();
+  await t.expect(g.hasAttribute("disabled")).notOk();
+  
+});
+
+test("Can_Delete_Submissions_As_Trusted_Servant", async (t) => {
+
+  await t.useRole(bmltwf_admin)
+  .navigateTo(userVariables.admin_settings_page);
+
+  // let us save successfully
+  const testfso = randstr() + "@" + randstr() + ".com";
+  const testfrom = randstr() + "@" + randstr() + ".com";
+  await t
+    .typeText(ao.bmltwf_fso_email_address, testfso, { replace: true })
+    .expect(ao.bmltwf_fso_email_address.value)
+    .eql(testfso)
+    .typeText(ao.bmltwf_email_from_address, testfrom, { replace: true })
+    .expect(ao.bmltwf_email_from_address.value)
+    .eql(testfrom);
+
+  // change option to False
+  await select_dropdown_by_text(ao.bmltwf_trusted_servants_can_delete_submissions, "True");
+  await t.click(ao.submit);
+  await ao.settings_updated();
+
+  await t.useRole(bmltwf_submission_reviewer).navigateTo(userVariables.admin_submissions_page);
+  // check delete button is enabled
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 0);
+
+  // delete
+  var g = as.dt_submission_wrapper.find("button").nth(3);
+  await t.expect(g.hasAttribute("disabled")).notOk();
+
+});
+
+

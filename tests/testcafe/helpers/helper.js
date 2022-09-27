@@ -21,6 +21,11 @@ import { userVariables } from "../../../.testcaferc";
 import { ao } from "../models/admin_options";
 import { asb } from "../models/admin_service_bodies";
 
+export function randstr()
+{
+  return Math.random().toString(36).replace(/[^a-z]+/g, "") .substr(0, 9);
+}
+
 export const bmltwf_admin = Role(userVariables.admin_logon_page, async (t) => {
   await t.typeText(wordpress_login.user_login, userVariables.admin_logon).typeText(wordpress_login.user_pass, userVariables.admin_password).click(wordpress_login.wp_submit);
 });

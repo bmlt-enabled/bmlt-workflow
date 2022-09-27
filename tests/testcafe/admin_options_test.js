@@ -23,6 +23,7 @@ import { userVariables } from "../../.testcaferc";
 import { t, Selector, Role, RequestLogger } from "testcafe";
 
 import { 
+  randstr,
   reset_bmlt, 
   basic_options, 
   configure_service_bodies, 
@@ -60,10 +61,6 @@ function getFileDownloadPath(download) {
   return joinPath(os.homedir(), "Downloads", download);
 }
 
-function randstr()
-{
-  return Math.random().toString(36).replace(/[^a-z]+/g, "") .substr(0, 9);
-}
 
 let downloadedFilePath = null;
 
@@ -146,7 +143,6 @@ test("Options_Save", async (t) => {
   await ao.settings_updated();
   await t.expect(ao.bmltwf_fso_email_address.value).eql(testfso).expect(ao.bmltwf_email_from_address.value).eql(testfrom);
 
-  // .expect(ao.settings_updated.exists).eql(true);
 });
 
 test("Check_Optional_Fields", async (t) => {

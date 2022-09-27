@@ -32,6 +32,7 @@ class Admin_Options {
         this.bmltwf_fso_feature = Selector("#bmltwf_fso_feature");
         this.bmltwf_delete_closed_meetings = Selector("#bmltwf_delete_closed_meetings");
         this.bmltwf_email_from_address = Selector("#bmltwf_email_from_address");
+        this.bmltwf_trusted_servants_can_delete_submissions = Selector("#bmltwf_trusted_servants_can_delete_submissions");
         this.submit = Selector('#submit');
         this.settings_updated = Selector("#setting-error-settings_updated");
     }
