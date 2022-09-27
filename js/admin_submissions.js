@@ -373,6 +373,9 @@ jQuery(document).ready(function ($) {
     .DataTable()
     .on("select deselect", function () {
       var actioned = true;
+      // handle optional delete
+      $("#dt-submission").DataTable().button("delete:name").enable(bmltwf_datatables_delete_enabled);
+
       if ($("#dt-submission").DataTable().row({ selected: true }).count()) {
         var change_made = $("#dt-submission").DataTable().row({ selected: true }).data()["change_made"];
         var submission_type = $("#dt-submission").DataTable().row({ selected: true }).data()["submission_type"];
