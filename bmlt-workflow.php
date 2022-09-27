@@ -445,7 +445,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_trusted_servants_can_delete_submissions',
                 array(
                     'type' => 'string',
-                    'description' => 'Non admins can delete submissions',
+                    'description' => 'Trusted servants can delete submissions',
                     'sanitize_callback' => array(&$this, 'bmltwf_trusted_servants_can_delete_submissions_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'true'
@@ -801,8 +801,7 @@ if (!class_exists('bmltwf_plugin')) {
             }
 
             echo '<div class="bmltwf_info_text">';
-            echo '<br>This option determines whether trusted servants are able to delete submissions from the submissions list.';
-            echo '<br>If this is set to false, then only Wordpress administrators with will have delete submission functionality';
+            echo '<br>This option determines whether trusted servants are able to delete submissions from the submissions list. If this is set to false, then only Wordpress administrators with will have delete submission functionality';
             echo '<br><br>';
             echo '</div>';
 
