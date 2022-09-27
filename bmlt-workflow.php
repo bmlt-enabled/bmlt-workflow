@@ -308,7 +308,7 @@ if (!class_exists('bmltwf_plugin')) {
                     {
                         $show_delete = "true";
                     }
-                    $script .= 'var bmltwf_datatables_delete_enabled = "' . $show_delete . '";';
+                    $script .= 'var bmltwf_datatables_delete_enabled = ' . $show_delete . ';';
 
                     wp_add_inline_script('admin_submissions_js', $script, 'before');
 
@@ -802,7 +802,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             echo '<div class="bmltwf_info_text">';
             echo '<br>This option determines whether trusted servants are able to delete submissions from the submissions list.';
-            echo '<br>If this is set to false, then only Wordpress administrators with will have delete submission functionality';
+            echo '<br><br>If this is set to false, then only Wordpress administrators with will have delete submission functionality';
             echo '<br><br>';
             echo '</div>';
 
