@@ -15,12 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-# git clone https://github.com/bmlt-enabled/bmlt-workflow.git
-#
-#
 export PLUGINDIR=/var/www/html/flop/wp-content/plugins/bmlt-workflow
+export BRANCH=1.0.6-fixes
+
 cd /home/ssm-user
+git clone https://github.com/bmlt-enabled/bmlt-workflow.git
 cd bmlt-workflow
+git switch $BRANCH
 git pull
 cp tests/testcafe/setup/github/* /var/www/html/github
 cp tests/testcafe/setup/*.sh /home/ssm-user/scripts
