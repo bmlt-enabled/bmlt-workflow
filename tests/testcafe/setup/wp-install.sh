@@ -22,7 +22,7 @@ aws ssm put-parameter --overwrite --name bmltwf_test_hostip --value $MYIP --type
 export PATH=/usr/local/bin:$PATH
 export MYSQL='/usr/bin/mysql'
 
-export BRANCH=1.0.5-fixes
+export BRANCH=1.0.6-fixes
 
 export mysqlhost=localhost
 export mysqldb=wpsingledb
