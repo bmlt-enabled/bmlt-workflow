@@ -258,7 +258,7 @@ div#meeting_content.form-grid .inline label {
   width: 70%;
 }
 
-div#meeting_content.bmltwf-changed.bmltwf-changed {
+div#meeting_content .bmltwf-changed.bmltwf-changed {
   background: #e7f478;
 }
 
