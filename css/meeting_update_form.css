@@ -258,11 +258,11 @@ div#meeting_content.form-grid .inline label {
   width: 70%;
 }
 
-.bmltwf-changed.bmltwf-changed {
+div#form_replace.bmltwf-changed.bmltwf-changed {
   background: #e7f478;
 }
 
-span.select2-selection--multiple.bmltwf-changed {
+div#form_replace span.select2-selection--multiple.bmltwf-changed {
   background: #e7f478;
 }
 
