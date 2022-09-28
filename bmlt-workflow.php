@@ -486,9 +486,10 @@ if (!class_exists('bmltwf_plugin')) {
                     'description' => 'optional field for location_province',
                     'sanitize_callback' => array(&$this, 'bmltwf_optional_location_province_sanitize_callback'),
                     'show_in_rest' => false,
-                    'default' => 'hidden'
+                    'default' => 'display'
                 )
             );
+
 
             register_setting(
                 'bmltwf-settings-group',
@@ -699,7 +700,7 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'display':
                     return $input;
             }
-            add_settings_error('bmltwf_optional_location_province', 'err', 'Invalid Province setting '.$input);
+            add_settings_error('bmltwf_optional_location_province', 'err', 'Invalid Province setting.');
             return $output;
         }
 
