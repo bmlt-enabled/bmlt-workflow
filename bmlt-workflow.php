@@ -852,9 +852,9 @@ if (!class_exists('bmltwf_plugin')) {
             echo '</div>';
 
             $this->do_optional_field('bmltwf_optional_location_nation', 'Nation');
+            $this->do_optional_field('bmltwf_optional_location_province', 'State');
             $this->do_optional_field('bmltwf_optional_location_sub_province', 'Sub Province');
             $this->do_optional_field('bmltwf_optional_postcode', 'Post Code');
-            $this->do_optional_field('bmltwf_optional_province', 'State');
         }
 
         private function do_optional_field($option, $friendlyname)
