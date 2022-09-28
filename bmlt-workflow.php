@@ -692,7 +692,6 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_optional_location_province_sanitize_callback($input)
         {
-
             $output = get_option('bmltwf_optional_location_province');
             switch ($input) {
                 case 'hidden':
