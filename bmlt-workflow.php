@@ -692,6 +692,8 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_optional_location_province_sanitize_callback($input)
         {
+            global $new_allowed_options;
+            $this->debug_log($new_allowed_options);
             $output = get_option('bmltwf_optional_location_province');
             switch ($input) {
                 case 'hidden':
