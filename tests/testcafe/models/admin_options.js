@@ -28,6 +28,7 @@ class Admin_Options {
         this.bmltwf_fso_email_address = Selector("#bmltwf_fso_email_address");
         this.bmltwf_optional_location_nation = Selector("#bmltwf_optional_location_nation");
         this.bmltwf_optional_location_sub_province = Selector("#bmltwf_optional_location_sub_province");
+        this.bmltwf_optional_location_province = Selector("#bmltwf_optional_location_province");
         this.bmltwf_optional_postcode = Selector("#bmltwf_optional_postcode");
         this.bmltwf_fso_feature = Selector("#bmltwf_fso_feature");
         this.bmltwf_delete_closed_meetings = Selector("#bmltwf_delete_closed_meetings");

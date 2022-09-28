@@ -58,6 +58,7 @@ class Meeting_Update_Form {
         this.location_info = Selector('#location_info');
         this.location_municipality = Selector('#location_municipality');
         this.optional_location_sub_province = Selector('#optional_location_sub_province');
+        this.optional_location_province = Selector('#optional_location_province');
         this.location_sub_province = Selector('#location_sub_province');
         this.location_province = Selector('#location_province');
         this.location_postal_code_1 = Selector('#location_postal_code_1');

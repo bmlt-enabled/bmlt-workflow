@@ -37,6 +37,7 @@ class BMLTWF_WP_Options
             'bmltwf_bmlt_test_status',
             'bmltwf_submitter_email_template',
             'bmltwf_optional_location_sub_province',
+            'bmltwf_optional_location_province',
             'bmltwf_optional_location_nation',
             'bmltwf_delete_closed_meetings',
             'bmltwf_email_from_address',

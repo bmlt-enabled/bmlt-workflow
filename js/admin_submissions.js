@@ -60,6 +60,17 @@ jQuery(document).ready(function ($) {
       break;
   }
 
+  switch (bmltwf_optional_location_province) {
+    case "hidden":
+    case "":
+      $("#optional_location_province").hide();
+      break;
+    case "display":
+    case "displayrequired":
+      $("#optional_location_province").show();
+      break;
+  }
+
   function add_highlighted_changes_to_quickedit(bmltwf_requested) {
     // fill in and highlight the changes - use extend to clone
     changes_requested = $.extend(true, {}, bmltwf_requested);

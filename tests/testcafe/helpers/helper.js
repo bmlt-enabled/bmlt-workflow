@@ -181,6 +181,7 @@ export async function basic_options() {
     .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
 
   await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display");
   await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
   await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display");
 
@@ -196,6 +197,7 @@ export async function basic_options_multisingle() {
     .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
 
   await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display");
   await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
   await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display");
 
@@ -211,6 +213,7 @@ export async function basic_options_multinetwork() {
     .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
 
   await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display");
   await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
   await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display");
 
@@ -222,6 +225,7 @@ export async function basic_options_multinetwork() {
     .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
 
   await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display");
   await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
   await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display");
 

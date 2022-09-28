@@ -17,7 +17,7 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 
-if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
+if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
 use bmltwf\BMLTWF_Debug;
 use bmltwf\BMLT\Integration;
@@ -171,33 +171,34 @@ if ($meeting_states_and_provinces) {
 
             <div id="optional_location_sub_province">
                 <label for="quickedit_location_sub_province">Sub Province</label>
-<?php 
-if($bmltwf_do_counties_and_sub_provinces){
-    echo '<select class="meeting-input" name="quickedit_location_sub_province">';
-    foreach ($meeting_counties_and_sub_provinces as $key) {
-        echo '<option value="' . esc_attr($key) . '">' . esc_attr($key) . '</option>';
-    }
-    echo '</select>';
-} else {
-    echo '<input class="meeting-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">';
-}
-?>
+                <?php
+                if ($bmltwf_do_counties_and_sub_provinces) {
+                    echo '<select class="meeting-input" name="quickedit_location_sub_province">';
+                    foreach ($meeting_counties_and_sub_provinces as $key) {
+                        echo '<option value="' . esc_attr($key) . '">' . esc_attr($key) . '</option>';
+                    }
+                    echo '</select>';
+                } else {
+                    echo '<input class="meeting-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">';
+                }
+                ?>
             </div>
+            <div id="optional_location_province">
 
-            <label for="quickedit_location_province">State<span class="bmltwf-required-field"> *</span></label>
-<?php 
-if ($bmltwf_do_states_and_provinces) {
-    echo '<select class="meeting-input" name="quickedit_location_province">';
-    foreach ($meeting_states_and_provinces as $key) {
-        echo '<option value="' . esc_attr($key) . '">' . esc_attr($key) . '</option>';
-    }
-    echo '</select>';
-} else {
-    echo'<input class="meeting-input" type="text" name="quickedit_location_province" size="50" id="quickedit_location_province" required>';
-}
+                <label for="quickedit_location_province">State<span class="bmltwf-required-field"> *</span></label>
+                <?php
+                if ($bmltwf_do_states_and_provinces) {
+                    echo '<select class="meeting-input" name="quickedit_location_province">';
+                    foreach ($meeting_states_and_provinces as $key) {
+                        echo '<option value="' . esc_attr($key) . '">' . esc_attr($key) . '</option>';
+                    }
+                    echo '</select>';
+                } else {
+                    echo '<input class="meeting-input" type="text" name="quickedit_location_province" size="50" id="quickedit_location_province" required>';
+                }
 
-?>
-
+                ?>
+            </div>
             <label for="quickedit_location_postal_code_1">Postcode<span class="bmltwf-required-field"> *</span></label>
             <input class="meeting-input" type="number" name="quickedit_location_postal_code_1" size="5" max="99999" id="quickedit_location_postal_code_1" required>
 

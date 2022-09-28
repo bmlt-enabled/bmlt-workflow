@@ -109,6 +109,7 @@ if (!class_exists('bmltwf_plugin')) {
             // optional fields
             $script .= 'var bmltwf_optional_location_nation = "' . get_option('bmltwf_optional_location_nation') . '";';
             $script .= 'var bmltwf_optional_location_sub_province = "' . get_option('bmltwf_optional_location_sub_province') . '";';
+            $script .= 'var bmltwf_optional_location_province = "' . get_option('bmltwf_optional_location_province') . '";';
             $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
             $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
 
@@ -296,6 +297,7 @@ if (!class_exists('bmltwf_plugin')) {
                     // optional fields in quickedit
                     $script .= 'var bmltwf_optional_location_nation = "' . get_option('bmltwf_optional_location_nation') . '";';
                     $script .= 'var bmltwf_optional_location_sub_province = "' . get_option('bmltwf_optional_location_sub_province') . '";';
+                    $script .= 'var bmltwf_optional_location_province = "' . get_option('bmltwf_optional_location_province') . '";';
                     $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
 
                     // can current user use the delete button?
@@ -471,6 +473,18 @@ if (!class_exists('bmltwf_plugin')) {
                     'type' => 'string',
                     'description' => 'optional field for location_sub_province',
                     'sanitize_callback' => array(&$this, 'bmltwf_optional_location_sub_province_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'hidden'
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_optional_location_province',
+                array(
+                    'type' => 'string',
+                    'description' => 'optional field for location_province',
+                    'sanitize_callback' => array(&$this, 'bmltwf_optional_location_province_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'hidden'
                 )
@@ -675,6 +689,19 @@ if (!class_exists('bmltwf_plugin')) {
             return $output;
         }
 
+        public function bmltwf_optional_location_province_sanitize_callback($input)
+        {
+            $output = get_option('bmltwf_optional_location_province');
+            switch ($input) {
+                case 'hidden':
+                case 'displayrequired':
+                case 'display':
+                    return $input;
+            }
+            add_settings_error('bmltwf_optional_location_province', 'err', 'Invalid Province setting.');
+            return $output;
+        }
+
         public function bmltwf_email_from_address_sanitize_callback($input)
         {
             $output = get_option('bmltwf_email_from_address');
@@ -821,6 +848,7 @@ if (!class_exists('bmltwf_plugin')) {
             $this->do_optional_field('bmltwf_optional_location_nation', 'Nation');
             $this->do_optional_field('bmltwf_optional_location_sub_province', 'Sub Province');
             $this->do_optional_field('bmltwf_optional_postcode', 'Post Code');
+            $this->do_optional_field('bmltwf_optional_province', 'State');
         }
 
         private function do_optional_field($option, $friendlyname)
@@ -978,6 +1006,7 @@ if (!class_exists('bmltwf_plugin')) {
             add_option('bmltwf_delete_closed_meetings', 'unpublish');
             add_option('bmltwf_optional_location_nation', 'hidden');
             add_option('bmltwf_optional_location_sub_province', 'hidden');
+            add_option('bmltwf_optional_location_province', 'display');
             add_option('bmltwf_optional_postcode', 'display');
             add_option('bmltwf_submitter_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
             add_option('bmltwf_fso_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html'));

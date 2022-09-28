@@ -137,6 +137,7 @@ test("Options_Save", async (t) => {
     .expect(ao.bmltwf_email_from_address.value)
     .eql(testfrom);
   await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display + Required Field");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display + Required Field");
   await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display Only");
   await select_dropdown_by_text(ao.bmltwf_delete_closed_meetings, "Delete");
   await t.click(ao.submit);
@@ -151,6 +152,7 @@ test("Check_Optional_Fields", async (t) => {
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page);
   await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display + Required Field");
   await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display + Required Field");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display + Required Field");
   await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display + Required Field");
   
   await t.click(ao.submit);
@@ -169,6 +171,8 @@ test("Check_Optional_Fields", async (t) => {
     .eql("required")
     .expect(uf.location_sub_province.getAttribute("required"))
     .eql("required")
+    .expect(uf.location_province.getAttribute("required"))
+    .eql("required")
     .expect(uf.location_postal_code_1.getAttribute("required"))
     .eql("required")
 
@@ -178,6 +182,7 @@ test("Check_Optional_Fields", async (t) => {
     .navigateTo(userVariables.admin_settings_page);
   await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
   await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Hidden");
   await select_dropdown_by_text(ao.bmltwf_fso_feature, "Disabled");
   await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Hidden");
 
@@ -189,6 +194,7 @@ test("Check_Optional_Fields", async (t) => {
   await t
     .expect(uf.optional_location_nation.visible).eql(false)
     .expect(uf.optional_location_sub_province.visible).eql(false)
+    .expect(uf.optional_location_province.visible).eql(false)
     .expect(uf.starter_pack.visible).eql(false)
     .expect(uf.location_postal_code_1.visible).eql(false)
 
@@ -197,6 +203,7 @@ test("Check_Optional_Fields", async (t) => {
     .navigateTo(userVariables.admin_settings_page);
   await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display");
   await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display");
+  await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display");
   await select_dropdown_by_text(ao.bmltwf_fso_feature, "Enabled");
   await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display");
   
@@ -207,6 +214,7 @@ test("Check_Optional_Fields", async (t) => {
 
   await t.expect(uf.optional_location_nation.visible).eql(true)
   .expect(uf.optional_location_sub_province.visible).eql(true)
+  .expect(uf.optional_location_province.visible).eql(true)
   .expect(uf.starter_pack.visible).eql(true)
   .expect(uf.location_postal_code_1.visible).eql(true);
 
