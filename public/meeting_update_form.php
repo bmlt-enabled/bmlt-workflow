@@ -167,7 +167,7 @@ if ($meeting_states_and_provinces) {
 
                         </div>
                         <div id="optional_location_province">
-                            <label for="location_province">State<span class="bmltwf-required-field"> *</span></label>
+                            <label for="location_province">State</label>
 
                             <?php
                             if ($bmltwf_do_states_and_provinces) {
