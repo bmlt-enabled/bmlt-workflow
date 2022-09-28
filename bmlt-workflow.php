@@ -695,6 +695,8 @@ if (!class_exists('bmltwf_plugin')) {
             global $new_allowed_options;
             $this->debug_log("allowed options");
             $this->debug_log($new_allowed_options);
+            $this->debug_log("allowed input");
+            $this->debug_log($input);
             $output = get_option('bmltwf_optional_location_province');
             switch ($input) {
                 case 'hidden':
