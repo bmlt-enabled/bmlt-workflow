@@ -919,38 +919,27 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<td>' . $friendlyname . '</td>';
             $value = get_option($option);
             $displayname = get_option($option."_displayname");
-            // $this->debug_log($value);
             $disabled = '';
-            $displayrequired = '';
-            $display = '';
 
             switch ($value) {
                 case 'hidden':
                     $disabled = 'disabled';
-                    echo '<td><input type="checkbox" id="yesimsure" name="fieldname"></td><td><input type="checkbox" id="yesimsure" name="showonform" checked '.$disabled.'></td>';
+                    echo '<td><input type="checkbox" id="yesimsure" name="fieldname" class="bmltwf_optional_hidden_checkbox"></td><td><input type="checkbox" id="yesimsure" name="showonform" class="bmltwf_optional_hidden_disable" checked '.$disabled.'></td>';
                     // $hidden = 'selected';
                     break;
                 case 'displayrequired':
-                    echo '<td><input type="checkbox" id="yesimsure" name="yesimsure" checked></td><td><input type="checkbox" id="yesimsure" name="yesimsure" checked></td>';
+                    echo '<td><input type="checkbox" id="yesimsure" name="yesimsure" class="bmltwf_optional_hidden_checkbox" checked></td><td><input type="checkbox" id="yesimsure" name="yesimsure" class="bmltwf_optional_hidden_disable" checked></td>';
                     // $displayrequired = 'selected';
                     break;
                 case 'display':
-                    echo '<td><input type="checkbox" id="yesimsure" name="yesimsure" checked></td><td><input type="checkbox" id="yesimsure" name="yesimsure"></td>';
+                    echo '<td><input type="checkbox" id="yesimsure" name="yesimsure" class="bmltwf_optional_hidden_checkbox" checked></td><td><input type="checkbox" id="yesimsure" name="yesimsure" class="bmltwf_optional_hidden_disable"></td>';
                     // $display = 'selected';
                     break;
             }
 
-            echo '<td><input type="text" value="'.sanitize_text_field($displayname).' " '.$disabled.'></td>';
+            echo '<td><input type="text" class="bmltwf_optional_hidden_disable" value="'.sanitize_text_field($displayname).' " '.$disabled.' ></td>';
             echo '</tr>';
 
-            // echo '<br><b>' . esc_attr($friendlyname) . ':</b>    <label for="yesimsure">Hidden?</label> <input type="checkbox" id="yesimsure" name="yesimsure"> <label for="requiredfield">Required Field?</label> <input type="checkbox" id="requiredfield" name="requiredfield" disabled>';
-            // echo '<br><label for="' . esc_attr($option) . '"><b>' . esc_attr($friendlyname) . ':</b>';
-            // echo '</label><select id="' . esc_attr($option) . '" name="' . esc_attr($option) . '">';
-            // echo '<option name="hidden" value="hidden" ' . esc_attr($hidden) . '>Hidden</option>';
-            // echo '<option name="displayrequired" value="displayrequired" ' . esc_attr($displayrequired) . '>Display + Required Field</option>';
-            // echo '<option name="display" value="display" ' . esc_attr($display) . '>Display Only</option>';
-            // echo '</select>';
-            // echo '<br><br>';
         }
 
         public function bmltwf_fso_options_html()
