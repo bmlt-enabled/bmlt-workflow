@@ -23,7 +23,7 @@ jQuery(document).ready(function ($) {
     $('input[type=hidden]').each(function (i, el) {
       if(el.name.startsWith("bmltwf_optional"))
       {
-        console.log(el.id)
+        console.log(el.name)
 
       }
   });
