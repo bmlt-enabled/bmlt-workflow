@@ -28,8 +28,13 @@ jQuery(document).ready(function ($) {
   }
 
   // class="bmltwf_optional_hidden_checkbox" checked></td><td><input type="checkbox" id="yesimsure" name="yesimsure" class="bmltwf_optional_hidden_disable"
-  $(".bmltwf_optional_hidden_checkbox").on("click"), function(){
-    $(".bmltwf_optional_hidden_disable").prop("disabled", true);
+  $(".bmltwf_optional_hidden_checkbox").on("change"), function(){
+    if (this.checked) {
+      $(".bmltwf_optional_hidden_disable").prop("disabled", true);
+    }
+  else {
+    $(".bmltwf_optional_hidden_disable").prop("disabled", false);
+  }
   }
 
   $("#bmltwf_fso_feature").on("change", function () {
