@@ -31,7 +31,7 @@ echo '<div class="bmltwf_banner"></div>';
 wp_nonce_field('wp_rest', '_wprestnonce');
 echo '<hr class="bmltwf-error-message">';
 echo '<div class="wrap">';
-echo '<form method="post" action="options.php">';
+echo '<form id="bmltwf_options_form" method="post" action="options.php">';
 settings_errors();
 
 settings_fields('bmltwf-settings-group');
