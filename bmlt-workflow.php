@@ -927,11 +927,11 @@ if (!class_exists('bmltwf_plugin')) {
             switch ($value) {
                 case 'hidden':
                     $disabled = 'disabled';
-                    echo '<td><input type="checkbox" id="yesimsure" name="fieldname" checked></td><td><input type="checkbox" id="yesimsure" name="showonform" checked '.$disabled.'></td>';
+                    echo '<td><input type="checkbox" id="yesimsure" name="fieldname"></td><td><input type="checkbox" id="yesimsure" name="showonform" checked '.$disabled.'></td>';
                     // $hidden = 'selected';
                     break;
                 case 'displayrequired':
-                    echo '<td><input type="checkbox" id="yesimsure" name="yesimsure"></td><td><input type="checkbox" id="yesimsure" name="yesimsure" checked></td>';
+                    echo '<td><input type="checkbox" id="yesimsure" name="yesimsure" checked></td><td><input type="checkbox" id="yesimsure" name="yesimsure" checked></td>';
                     // $displayrequired = 'selected';
                     break;
                 case 'display':
