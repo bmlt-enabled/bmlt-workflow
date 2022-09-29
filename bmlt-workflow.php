@@ -900,7 +900,7 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_optional_form_fields_html()
         {
             echo '<div class="bmltwf_info_text">';
-            echo '<br>Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users.';
+            echo '<br>Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users. You can also change the way they are labelled on the form.';
             echo '<br><br>';
             echo '</div>';
 
@@ -924,15 +924,15 @@ if (!class_exists('bmltwf_plugin')) {
             switch ($value) {
                 case 'hidden':
                     $disabled = 'disabled';
-                    echo '<td><input type="checkbox" id="yesimsure" name="fieldname" class="bmltwf_optional_hidden_checkbox"></td><td><input type="checkbox" id="yesimsure" name="showonform" class="bmltwf_optional_hidden_disable" checked '.$disabled.'></td>';
+                    echo '<td><input type="checkbox" id="'.$option.'_visible_checkbox" name="'.$option.'_visible_checkbox" class="bmltwf_optional_hidden_checkbox"></td><td><input type="checkbox" id="'.$option.'_required_checkbox" name="'.$option.'_required_checkbox" class="bmltwf_optional_hidden_disable" checked '.$disabled.'></td>';
                     // $hidden = 'selected';
                     break;
                 case 'displayrequired':
-                    echo '<td><input type="checkbox" id="yesimsure" name="yesimsure" class="bmltwf_optional_hidden_checkbox" checked></td><td><input type="checkbox" id="yesimsure" name="yesimsure" class="bmltwf_optional_hidden_disable" checked></td>';
+                    echo '<td><input type="checkbox" id="'.$option.'_visible_checkbox" name="'.$option.'_visible_checkbox" class="bmltwf_optional_hidden_checkbox" checked></td><td><input type="checkbox" id="'.$option.'_required_checkbox" name="'.$option.'_required_checkbox" class="bmltwf_optional_hidden_disable" checked></td>';
                     // $displayrequired = 'selected';
                     break;
                 case 'display':
-                    echo '<td><input type="checkbox" id="yesimsure" name="yesimsure" class="bmltwf_optional_hidden_checkbox" checked></td><td><input type="checkbox" id="yesimsure" name="yesimsure" class="bmltwf_optional_hidden_disable"></td>';
+                    echo '<td><input type="checkbox" id="'.$option.'_visible_checkbox" name="'.$option.'_visible_checkbox" class="bmltwf_optional_hidden_checkbox" checked></td><td><input type="checkbox" id="'.$option.'_required_checkbox" name="'.$option.'_required_checkbox" class="bmltwf_optional_hidden_disable"></td>';
                     // $display = 'selected';
                     break;
             }
