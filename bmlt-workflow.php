@@ -938,7 +938,7 @@ if (!class_exists('bmltwf_plugin')) {
                     // $display = 'selected';
                     break;
             }
-            echo '<td><input type="text">'.sanitize_text_field($displayname).'</td>';
+            echo '<td><input type="text" value="'.sanitize_text_field($displayname).'"></td>';
             echo '</tr>';
 
             // echo '<br><b>' . esc_attr($friendlyname) . ':</b>    <label for="yesimsure">Hidden?</label> <input type="checkbox" id="yesimsure" name="yesimsure"> <label for="requiredfield">Required Field?</label> <input type="checkbox" id="requiredfield" name="requiredfield" disabled>';
