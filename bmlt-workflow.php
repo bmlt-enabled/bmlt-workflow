@@ -900,7 +900,7 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_optional_form_fields_html()
         {
             echo '<div class="bmltwf_info_text">';
-            echo '<br>Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users. You can also change the way they are labelled on the form.';
+            echo '<br>Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users. You can also change the way the fields are labelled on the form.';
             echo '<br><br>';
             echo '</div>';
 
