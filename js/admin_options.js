@@ -26,13 +26,15 @@ jQuery(document).ready(function ($) {
   } else {
     $("#fso_options").show();
   }
-
-  $("#bmltwf_optional_location_nation_visible_checkbox").on("change", function(){
+  // class="bmltwf_'.$option.'_disable"
+  $(".bmltwf_optional_location_nation_visible_checkbox").on("change", function(){
+    // bmltwf_optional_postcode
+    disableclass = '.' + this.id.slice(0,-('_visible_checkbox'.length)) + "_hidden_disable";
     if (this.checked) {
-      $(".bmltwf_optional_hidden_disable").prop("disabled", true);
+      $(disableclass).prop("disabled", true);
     }
   else {
-    $(".bmltwf_optional_hidden_disable").prop("disabled", false);
+    $(disableclass).prop("disabled", false);
   }
   });
 
