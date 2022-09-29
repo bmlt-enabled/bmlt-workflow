@@ -27,7 +27,7 @@ jQuery(document).ready(function ($) {
     $("#fso_options").show();
   }
 
-  $(".bmltwf_optional_visible_checkbox").on("change"), function(){
+  $("#bmltwf_optional_location_nation_visible_checkbox").on("change"), function(){
     if (this.checked) {
       $(".bmltwf_optional_hidden_disable").prop("disabled", true);
     }
