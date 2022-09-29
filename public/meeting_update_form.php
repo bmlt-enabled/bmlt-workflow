@@ -150,7 +150,7 @@ if ($meeting_states_and_provinces) {
                         <label for="location_municipality">City/Town/Suburb<span class="bmltwf-required-field"> *</span></label>
                         <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
                         <div id="optional_location_sub_province">
-                            <label id="location_sub_province_label" for="location_sub_province"><?php sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname'))?></label>
+                            <label id="location_sub_province_label" for="location_sub_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname'))?></label>
 
                             <?php
                             if ($bmltwf_do_counties_and_sub_provinces) {
@@ -167,7 +167,7 @@ if ($meeting_states_and_provinces) {
 
                         </div>
                         <div id="optional_location_province">
-                            <label id="location_province_label" for="location_province"><?php sanitize_text_field(get_option('bmltwf_optional_location_province_displayname'))?></label>
+                            <label id="location_province_label" for="location_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_province_displayname'))?></label>
 
                             <?php
                             if ($bmltwf_do_states_and_provinces) {
@@ -184,11 +184,11 @@ if ($meeting_states_and_provinces) {
 
                         </div>
                         <div id="optional_postcode">
-                            <label for="location_postal_code_1"><?php sanitize_text_field(get_option('bmltwf_optional_postcode_displayname'))?></label>
+                            <label for="location_postal_code_1"><?php echo sanitize_text_field(get_option('bmltwf_optional_postcode_displayname'))?></label>
                             <input class="meeting-input" type="text" name="location_postal_code_1" id="location_postal_code_1" required>
                         </div>
                         <div id="optional_location_nation">
-                            <label id="location_nation_label" for="location_nation"><?php sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname'))?></label>
+                            <label id="location_nation_label" for="location_nation"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname'))?></label>
                             <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
                         </div>
                         <div class="tooltip" tabindex="0">
