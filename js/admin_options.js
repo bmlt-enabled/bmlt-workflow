@@ -19,7 +19,7 @@ jQuery(document).ready(function ($) {
 
   // form submit handler to massage form content before sending
 
-  $("bmltwf_options_form").submit(function( event ) {
+  $("#bmltwf_options_form").submit(function( event ) {
     $('input[type=hidden])').each(function (i, el) {
 console.log(el.id)
   });
