@@ -906,7 +906,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             echo '<table><thead><tr><th>BMLT Field Name</th><th>Show on form</th><th>Required Field</th><th>Change displayname to:</th></tr></thead><tbody>';
             $this->do_optional_field('bmltwf_optional_location_nation', 'Nation');
-            $this->do_optional_field('bmltwf_optional_location_province', 'State');
+            $this->do_optional_field('bmltwf_optional_location_province', 'Province');
             $this->do_optional_field('bmltwf_optional_location_sub_province', 'Sub Province');
             $this->do_optional_field('bmltwf_optional_postcode', 'Post Code');
             echo '</tbody></table>';
