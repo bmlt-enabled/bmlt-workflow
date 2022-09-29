@@ -920,13 +920,14 @@ if (!class_exists('bmltwf_plugin')) {
             $value = get_option($option);
             $displayname = get_option($option."_displayname");
             // $this->debug_log($value);
-            $hidden = '';
+            $disabled = '';
             $displayrequired = '';
             $display = '';
 
             switch ($value) {
                 case 'hidden':
-                    echo '<td><input type="checkbox" id="yesimsure" name="yesimsure" checked></td><td><input type="checkbox" id="yesimsure" name="yesimsure" checked disabled></td>';
+                    $disabled = 'disabled';
+                    echo '<td><input type="checkbox" id="yesimsure" name="fieldname" checked></td><td><input type="checkbox" id="yesimsure" name="showonform" checked '.$disabled.'></td>';
                     // $hidden = 'selected';
                     break;
                 case 'displayrequired':
@@ -938,7 +939,8 @@ if (!class_exists('bmltwf_plugin')) {
                     // $display = 'selected';
                     break;
             }
-            echo '<td><input type="text" value="'.sanitize_text_field($displayname).'"></td>';
+
+            echo '<td><input type="text" value="'.sanitize_text_field($displayname).' '.$disabled.'"></td>';
             echo '</tr>';
 
             // echo '<br><b>' . esc_attr($friendlyname) . ':</b>    <label for="yesimsure">Hidden?</label> <input type="checkbox" id="yesimsure" name="yesimsure"> <label for="requiredfield">Required Field?</label> <input type="checkbox" id="requiredfield" name="requiredfield" disabled>';
