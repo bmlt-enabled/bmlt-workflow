@@ -29,7 +29,7 @@ jQuery(document).ready(function ($) {
   // class="bmltwf_'.$option.'_disable"
   $(".bmltwf_optional_visible_checkbox").on("change", function(){
     // bmltwf_optional_postcode
-    disableclass = '.' + this.id.slice(0,-('_visible_checkbox'.length)) + "_hidden_disable";
+    disableclass = '.' + this.id.slice(0,-('_visible_checkbox'.length)) + "_disable";
     if (this.checked) {
       $(disableclass).prop("disabled", true);
     }
