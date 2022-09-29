@@ -851,15 +851,19 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br><br>';
             echo '</div>';
 
+            echo '<table><thead><tr><th>Field Name</th><th>Show on form</th><th>Required Field</th><th>Change displayname to</th></tr></thead><tbody>';
             $this->do_optional_field('bmltwf_optional_location_nation', 'Nation');
             $this->do_optional_field('bmltwf_optional_location_province', 'State');
             $this->do_optional_field('bmltwf_optional_location_sub_province', 'Sub Province');
             $this->do_optional_field('bmltwf_optional_postcode', 'Post Code');
+            echo '</tbody></table>';
+            
         }
 
         private function do_optional_field($option, $friendlyname)
         {
-
+            echo '<tr>';
+            echo '<td>' . $friendlyname . '</td>';
             $value = get_option($option);
             $this->debug_log($value);
             $hidden = '';
@@ -868,23 +872,29 @@ if (!class_exists('bmltwf_plugin')) {
 
             switch ($value) {
                 case 'hidden':
-                    $hidden = 'selected';
+                    echo '<td><input type="checkbox" id="yesimsure" name="yesimsure" checked></td><td><input type="checkbox" id="yesimsure" name="yesimsure" checked disabled></td>';
+                    // $hidden = 'selected';
                     break;
                 case 'displayrequired':
-                    $displayrequired = 'selected';
+                    echo '<td><input type="checkbox" id="yesimsure" name="yesimsure"></td><td><input type="checkbox" id="yesimsure" name="yesimsure" checked></td>';
+
+                    // $displayrequired = 'selected';
                     break;
                 case 'display':
-                    $display = 'selected';
+                    echo '<td><input type="checkbox" id="yesimsure" name="yesimsure" checked></td><td><input type="checkbox" id="yesimsure" name="yesimsure"></td>';
+
+                    // $display = 'selected';
                     break;
             }
 
-            echo '<br><label for="' . esc_attr($option) . '"><b>' . esc_attr($friendlyname) . ':</b>';
-            echo '</label><select id="' . esc_attr($option) . '" name="' . esc_attr($option) . '">';
-            echo '<option name="hidden" value="hidden" ' . esc_attr($hidden) . '>Hidden</option>';
-            echo '<option name="displayrequired" value="displayrequired" ' . esc_attr($displayrequired) . '>Display + Required Field</option>';
-            echo '<option name="display" value="display" ' . esc_attr($display) . '>Display Only</option>';
-            echo '</select>';
-            echo '<br><br>';
+            // echo '<br><b>' . esc_attr($friendlyname) . ':</b>    <label for="yesimsure">Hidden?</label> <input type="checkbox" id="yesimsure" name="yesimsure"> <label for="requiredfield">Required Field?</label> <input type="checkbox" id="requiredfield" name="requiredfield" disabled>';
+            // echo '<br><label for="' . esc_attr($option) . '"><b>' . esc_attr($friendlyname) . ':</b>';
+            // echo '</label><select id="' . esc_attr($option) . '" name="' . esc_attr($option) . '">';
+            // echo '<option name="hidden" value="hidden" ' . esc_attr($hidden) . '>Hidden</option>';
+            // echo '<option name="displayrequired" value="displayrequired" ' . esc_attr($displayrequired) . '>Display + Required Field</option>';
+            // echo '<option name="display" value="display" ' . esc_attr($display) . '>Display Only</option>';
+            // echo '</select>';
+            // echo '<br><br>';
         }
 
         public function bmltwf_fso_options_html()
