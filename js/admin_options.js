@@ -21,7 +21,11 @@ jQuery(document).ready(function ($) {
 
   $("#bmltwf_options_form").submit(function( event ) {
     $('input[type=hidden]').each(function (i, el) {
-console.log(el.id)
+      if(el.name.startsWith("bmltwf_optional"))
+      {
+        console.log(el.id)
+
+      }
   });
   });
 
