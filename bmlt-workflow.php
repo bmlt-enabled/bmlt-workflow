@@ -468,6 +468,18 @@ if (!class_exists('bmltwf_plugin')) {
 
             register_setting(
                 'bmltwf-settings-group',
+                'bmltwf_optional_location_nation_displayname',
+                array(
+                    'type' => 'string',
+                    'description' => 'optional field for location_nation',
+                    'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'Nation'
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
                 'bmltwf_optional_location_sub_province',
                 array(
                     'type' => 'string',
@@ -475,6 +487,18 @@ if (!class_exists('bmltwf_plugin')) {
                     'sanitize_callback' => array(&$this, 'bmltwf_optional_location_sub_province_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'hidden'
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_optional_location_sub_province_displayname',
+                array(
+                    'type' => 'string',
+                    'description' => 'optional field for location_sub_province',
+                    'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'Sub Province'
                 )
             );
 
@@ -490,6 +514,17 @@ if (!class_exists('bmltwf_plugin')) {
                 )
             );
 
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_optional_location_province_displayname',
+                array(
+                    'type' => 'string',
+                    'description' => 'optional field for location_province',
+                    'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'Province'
+                )
+            );
 
             register_setting(
                 'bmltwf-settings-group',
@@ -505,6 +540,18 @@ if (!class_exists('bmltwf_plugin')) {
 
             register_setting(
                 'bmltwf-settings-group',
+                'bmltwf_optional_postcode_displayname',
+                array(
+                    'type' => 'string',
+                    'description' => 'optional field for postcode',
+                    'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'Postcode'
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
                 'bmltwf_submitter_email_template',
                 array(
                     'type' => 'string',
@@ -514,6 +561,7 @@ if (!class_exists('bmltwf_plugin')) {
                     'default' => file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html')
                 )
             );
+
             register_setting(
                 'bmltwf-settings-group',
                 'bmltwf_fso_feature',
@@ -708,6 +756,11 @@ if (!class_exists('bmltwf_plugin')) {
             return $output;
         }
 
+        public function bmltwf_textstring_sanitize_callback($input)
+        {
+            return sanitize_text_field($input);
+        }
+
         public function bmltwf_email_from_address_sanitize_callback($input)
         {
             $output = get_option('bmltwf_email_from_address');
@@ -865,7 +918,8 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<tr>';
             echo '<td>' . $friendlyname . '</td>';
             $value = get_option($option);
-            $this->debug_log($value);
+            $displayname = get_option($option."_displayname");
+            // $this->debug_log($value);
             $hidden = '';
             $displayrequired = '';
             $display = '';
@@ -877,16 +931,14 @@ if (!class_exists('bmltwf_plugin')) {
                     break;
                 case 'displayrequired':
                     echo '<td><input type="checkbox" id="yesimsure" name="yesimsure"></td><td><input type="checkbox" id="yesimsure" name="yesimsure" checked></td>';
-
                     // $displayrequired = 'selected';
                     break;
                 case 'display':
                     echo '<td><input type="checkbox" id="yesimsure" name="yesimsure" checked></td><td><input type="checkbox" id="yesimsure" name="yesimsure"></td>';
-
                     // $display = 'selected';
                     break;
             }
-            echo '<td><input type="text"></td>';
+            echo '<td><input type="text">'.sanitize_text_field($displayname).'</td>';
             echo '</tr>';
 
             // echo '<br><b>' . esc_attr($friendlyname) . ':</b>    <label for="yesimsure">Hidden?</label> <input type="checkbox" id="yesimsure" name="yesimsure"> <label for="requiredfield">Required Field?</label> <input type="checkbox" id="requiredfield" name="requiredfield" disabled>';
@@ -1023,9 +1075,13 @@ if (!class_exists('bmltwf_plugin')) {
             add_option('bmltwf_email_from_address', 'example@example');
             add_option('bmltwf_delete_closed_meetings', 'unpublish');
             add_option('bmltwf_optional_location_nation', 'hidden');
+            add_option('bmltwf_optional_location_nation_displayname', 'Nation');
             add_option('bmltwf_optional_location_sub_province', 'hidden');
+            add_option('bmltwf_optional_location_sub_province_displayname', 'Sub Province');
             add_option('bmltwf_optional_location_province', 'display');
+            add_option('bmltwf_optional_location_province_displayname', 'Province');
             add_option('bmltwf_optional_postcode', 'display');
+            add_option('bmltwf_optional_postcode_displayname', 'Postcode');
             add_option('bmltwf_submitter_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
             add_option('bmltwf_fso_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
             add_option('bmltwf_fso_email_address', 'example@example.example');
