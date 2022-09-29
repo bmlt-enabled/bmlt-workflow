@@ -23,8 +23,20 @@ jQuery(document).ready(function ($) {
     $('input[type=hidden]').each(function (i, el) {
       if(el.name.startsWith("bmltwf_optional"))
       {
-        console.log(el.name)
-
+        hidden = $(el.name + '_visible_checkbox').checked;
+        required = $(el.name + '_required_checkbox').checked;
+        if(hidden)
+        {
+          el.val("hidden");
+        }
+        else if(required)
+        {
+          el.val("displayrequired");
+        }
+        else
+        {
+          el.val("display");
+        }
       }
   });
   });
