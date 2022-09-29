@@ -27,7 +27,7 @@ jQuery(document).ready(function ($) {
     $("#fso_options").show();
   }
   // class="bmltwf_'.$option.'_disable"
-  $(".bmltwf_optional_location_nation_visible_checkbox").on("change", function(){
+  $(".bmltwf_optional_visible_checkbox").on("change", function(){
     // bmltwf_optional_postcode
     disableclass = '.' + this.id.slice(0,-('_visible_checkbox'.length)) + "_hidden_disable";
     if (this.checked) {
