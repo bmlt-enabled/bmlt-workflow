@@ -16,6 +16,15 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 jQuery(document).ready(function ($) {
+
+  // form submit handler to massage form content before sending
+
+  $( "form" ).submit(function( event ) {
+    $('input[type=hidden])').each(function (i, el) {
+console.log(el.id)
+  });
+  });
+
   // click and display handler for fso options
   if (bmltwf_fso_feature == "hidden") {
     $("#fso_options").hide();
