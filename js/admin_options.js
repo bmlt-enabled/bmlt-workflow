@@ -27,15 +27,15 @@ jQuery(document).ready(function ($) {
         required = $('input[name="' + el.name + '_required_checkbox"]')[0].checked;
         if(hidden)
         {
-          el.val("hidden");
+          $(el).val("hidden");
         }
         else if(required)
         {
-          el.val("displayrequired");
+          $(el).val("displayrequired");
         }
         else
         {
-          el.val("display");
+          $(el).val("display");
         }
       }
   });
