@@ -23,7 +23,7 @@ jQuery(document).ready(function ($) {
     $('input[type=hidden]').each(function (i, el) {
       if(el.name.startsWith("bmltwf_optional"))
       {
-        hidden = $('input[name="' + el.name + '_visible_checkbox"]')[0].checked;
+        hidden = !($('input[name="' + el.name + '_visible_checkbox"]')[0].checked);
         required = $('input[name="' + el.name + '_required_checkbox"]')[0].checked;
         if(hidden)
         {
