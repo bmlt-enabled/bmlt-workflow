@@ -184,7 +184,7 @@ if ($meeting_states_and_provinces) {
 
                         </div>
                         <div id="optional_postcode">
-                            <label for="location_postal_code_1"><?php echo sanitize_text_field(get_option('bmltwf_optional_postcode_displayname'))?></label>
+                            <label id="location_postal_code_1" for="location_postal_code_1"><?php echo sanitize_text_field(get_option('bmltwf_optional_postcode_displayname'))?></label>
                             <input class="meeting-input" type="text" name="location_postal_code_1" id="location_postal_code_1" required>
                         </div>
                         <div id="optional_location_nation">
