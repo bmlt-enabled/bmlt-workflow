@@ -937,7 +937,7 @@ if (!class_exists('bmltwf_plugin')) {
                     break;
             }
 
-            echo '<td><input type="text" class="'.$option.'_disable" name="'.$option.'_displayname" value="'.sanitize_text_field($displayname).' " '.$disabled.' ></td>';
+            echo '<td><input type="text" class="'.$option.'_disable" id="'.$option.'_displayname" name="'.$option.'_displayname" value="'.sanitize_text_field($displayname).' " '.$disabled.' ></td>';
             echo '</tr>';
             echo '<input type="hidden" name="'.$option.'">';
 
