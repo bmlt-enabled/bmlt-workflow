@@ -114,7 +114,7 @@ jQuery(document).ready(function ($) {
     case "displayrequired":
       $("#optional_postcode").show();
       $("#location_postal_code_1").attr("required", true);
-      $("#location_postal_code_1").append('<span class="bmltwf-required-field"> *</span>');
+      $("#location_postal_code_1_label").append('<span class="bmltwf-required-field"> *</span>');
       break;
   }
 

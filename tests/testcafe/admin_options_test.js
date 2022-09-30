@@ -175,10 +175,10 @@ test("Check_Optional_Fields", async (t) => {
   const testsubprovincedisplay= randstr();
   const testpostcodedisplay = randstr();
 
-  await t.typeText(ao.bmltwf_optional_location_nation_displayname, testnationdisplay)
-  .typeText(ao.bmltwf_optional_location_province_displayname, testprovincedisplay)
-  .typeText(ao.bmltwf_optional_location_sub_province_displayname, testsubprovincedisplay)
-  .typeText(ao.bmltwf_optional_postcode_displayname, testpostcodedisplay)
+  await t.typeText(ao.bmltwf_optional_location_nation_displayname, testnationdisplay, { replace: true })
+  .typeText(ao.bmltwf_optional_location_province_displayname, testprovincedisplay, { replace: true })
+  .typeText(ao.bmltwf_optional_location_sub_province_displayname, testsubprovincedisplay, { replace: true })
+  .typeText(ao.bmltwf_optional_postcode_displayname, testpostcodedisplay, { replace: true })
   .click(ao.submit);
   await ao.settings_updated();
 
@@ -199,10 +199,10 @@ test("Check_Optional_Fields", async (t) => {
     .eql("required")
     .expect(uf.location_postal_code_1.getAttribute("required"))
     .eql("required")
-    .expect(uf.location_nation.value).eql(testnationdisplay)
-    .expect(uf.location_province_label.value).eql(testprovincedisplay)
-    .expect(uf.location_sub_province_label.value).eql(testsubprovincedisplay)
-    .expect(uf.location_postal_code_1_label.value).eql(testpostcodedisplay)
+    .expect(uf.location_nation_label.innerText).eql(testnationdisplay+" *")
+    .expect(uf.location_province_label.innerText).eql(testprovincedisplay+" *")
+    .expect(uf.location_sub_province_label.innerText).eql(testsubprovincedisplay+" *")
+    .expect(uf.location_postal_code_1_label.innerText).eql(testpostcodedisplay+" *")
 
     // test optional fields with 'hidden' option
 
