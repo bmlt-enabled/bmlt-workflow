@@ -234,7 +234,6 @@ $MYSQL -e "CREATE DATABASE IF NOT EXISTS $mysqldb; GRANT ALL ON $mysqldb.* TO '$
 wp core download --path=$sitelocalpath
 wp config create --path=$sitelocalpath --dbname=$mysqldb --dbuser=$mysqluser --dbpass=$mysqlpass
 wp core multisite-install --base=/$sitename/ --url=$siteurl --title="hi" --admin_user=$wpuser --admin_password=$wppass --admin_email=$wpemail --path=$sitelocalpath
-#wp core install --url=$siteurl --title="hi" --admin_user=$wpuser --admin_password=$wppass --admin_email=$wpemail --path=$sitelocalpath
 
 cd $sitelocalpath
 
@@ -259,7 +258,6 @@ sed -i -e '/\/\* Add any custom values between this line and the "stop editing" 
 rm insert
 
 sed -i -e "/define( 'WP_DEBUG', false );/d" wp-config.php
-#sed -i -e "s/.*PATH_CURRENT_SITE.*/define( 'PATH_CURRENT_SITE','\/wordpressmultinetwork\/');/" wp-config.php
 
 cat > .htaccess << EOF
 RewriteEngine On

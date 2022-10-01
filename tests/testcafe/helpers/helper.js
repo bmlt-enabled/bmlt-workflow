@@ -180,10 +180,6 @@ export async function basic_options() {
     .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
     .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
 
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display");
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
-  // await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display");
   await uncheck_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
   await uncheck_checkbox(t,ao.bmltwf_optional_location_province_required_checkbox);
@@ -203,14 +199,10 @@ export async function basic_options_multisingle() {
     .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
     .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
 
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display");
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
-  // await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display");
   await uncheck_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
   await uncheck_checkbox(t,ao.bmltwf_optional_location_province_required_checkbox);
-  await check_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
   await uncheck_checkbox(t,ao.bmltwf_optional_postcode_required_checkbox);
 
@@ -225,10 +217,6 @@ export async function basic_options_multinetwork() {
     .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
     .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
 
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display");
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
-  // await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display");
   await uncheck_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
   await uncheck_checkbox(t,ao.bmltwf_optional_location_province_required_checkbox);
@@ -243,10 +231,6 @@ export async function basic_options_multinetwork() {
     .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
     .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
 
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display");
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
-  // await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display");
   await uncheck_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
   await uncheck_checkbox(t,ao.bmltwf_optional_location_province_required_checkbox);

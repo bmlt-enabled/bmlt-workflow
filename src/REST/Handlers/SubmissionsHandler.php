@@ -582,10 +582,51 @@ class SubmissionsHandler
             }
         }
 
+        // wip for #89
+        
+        // if(get_option('bmltwf_service_body_contact_notify')==='true')
+        // {
+        //     /*
+        //     * Send acknowledgement email to the service body email
+        //     */
+
+
+        //     $to_address = $submitter_email;
+        //     $subject = "NA Meeting Change Request Acknowledgement - " . $this->submission_type_to_friendlyname($submission_type);
+
+        //     $template = get_option('bmltwf_service_body_contact_email_template');
+
+        //     $subfield = '{field:submission}';
+        //     $subwith = $this->submission_format($change);
+        //     $template = str_replace($subfield, $subwith, $template);
+
+        //     $body = $template;
+
+        //     $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+        //     $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers,true));
+        //     wp_mail($to_address, $subject, $body, $headers);
+        // }
+
 
         return $this->handlerCore->bmltwf_rest_success('Approved submission id ' . $change_id);
     }
 
+
+    private function submission_type_to_friendlyname($reason)
+    {
+        switch ($reason) {
+            case "reason_new":
+                $submission_type = "New Meeting";
+                break;
+            case "reason_close":
+                $submission_type = "Close Meeting";
+                break;
+            case "reason_change":
+                $submission_type = "Modify Meeting";
+                break;
+        }
+        return $submission_type;
+    }
 
     private function get_emails_by_servicebody_id($id)
     {
@@ -994,17 +1035,7 @@ class SubmissionsHandler
         * Send a notification to the configured trusted servants for the correct service body
         */
 
-        switch ($reason) {
-            case "reason_new":
-                $submission_type = "New Meeting";
-                break;
-            case "reason_close":
-                $submission_type = "Close Meeting";
-                break;
-            case "reason_change":
-                $submission_type = "Modify Meeting";
-                break;
-        }
+        $submission_type = $this->submission_type_to_friendlyname($reason);
 
         $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['service_body_bigint']);
         $subject = '[bmlt-workflow] ' . $submission_type . ' request received - ID ' . $insert_id;

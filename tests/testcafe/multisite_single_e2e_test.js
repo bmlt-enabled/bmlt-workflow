@@ -34,7 +34,7 @@ import { reset_bmlt,
   
 import { userVariables } from "../../.testcaferc";
 
-fixture`multisingle_e2e_test_fixture`
+fixture`multisite_single_e2e_test_fixture`
   // .page(userVariables.admin_submissions_page)
   .beforeEach(async (t) => {
 
