@@ -24,6 +24,8 @@ use bmltwf\BMLT\Integration;
 use bmltwf\REST\HandlerCore;
 use bmltwf\BMLTWF_Database;
 
+use function Patchwork\CodeManipulation\Actions\Generic\injectFalseExpressionAtBeginnings;
+
 class SubmissionsHandler
 {
     use \bmltwf\BMLTWF_Debug;
@@ -658,7 +660,6 @@ class SubmissionsHandler
         $reason_change_bool = false;
         $reason_close_bool = false;
         $virtual_meeting_bool = false;
-        $require_postcode = false;
 
         // strip blanks
         foreach ($data as $key => $value) {
@@ -692,10 +693,37 @@ class SubmissionsHandler
                     }
                 }    
             }
-            if(($data['update_reason'] === 'reason_new')&&(get_option('bmltwf_optional_postcode') === 'displayrequired'))
+
+            $require_postcode = false;
+            if(get_option('bmltwf_optional_postcode') === 'displayrequired')
             {
                 $require_postcode = true;
             }
+
+            $require_nation = false;
+            if(get_option('bmltwf_optional_location_nation') === 'displayrequired')
+            {
+                $require_nation = true;
+            }
+
+            $require_province = false;
+            if(get_option('bmltwf_optional_location_province') === 'displayrequired')
+            {
+                $require_province = true;
+            }
+
+            $require_sub_province = false;
+            if(get_option('bmltwf_optional_location_sub_province') === 'displayrequired')
+            {
+                $require_sub_province = true;
+            }
+
+            $require_meeting_formats = false;
+            if(get_option('bmltwf_required_meeting_formats') === 'true')
+            {
+                $require_meeting_formats = true;
+            }
+
         }
 
         if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_change_bool && !$reason_close_bool))) {
@@ -718,19 +746,20 @@ class SubmissionsHandler
             "location_street" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_info" => array("text", false),
             "location_municipality" => array("text", $reason_new_bool),
-            "location_province" => array("text", $reason_new_bool),
-            // postcode can be a text format #78
-            "location_postal_code_1" => array("text", $require_postcode),
             "weekday_tinyint" => array("weekday", $reason_new_bool),
             "service_body_bigint" => array("bigint", $reason_new_bool),
             "email_address" => array("email", true),
             "contact_number_confidential" => array("text", false),
-            "format_shared_id_list" => array("commaseperatednumbers",  $reason_new_bool),
+            // optional #93
+            "format_shared_id_list" => array("commaseperatednumbers",  $reason_new_bool && $require_meeting_formats),
             "additional_info" => array("textarea", $reason_close_bool),
             "starter_kit_postal_address" => array("textarea", false),
             "starter_kit_required" => array("text", $reason_new_bool),
-            "location_sub_province" => array("text", false),
-            "location_nation" => array("text", false),
+            "location_nation" => array("text", $require_nation),
+            "location_province" => array("text", $reason_new_bool && $require_province),
+            "location_sub_province" => array("text", $require_sub_province),
+            // postcode can be a text format #78
+            "location_postal_code_1" => array("text", $reason_new_bool && $require_postcode),
             "group_relationship" => array("text", true),
             "add_email" => array("yesno", true),
             "virtual_meeting_additional_info" => array("text", false),
