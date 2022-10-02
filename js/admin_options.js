@@ -38,6 +38,19 @@ jQuery(document).ready(function ($) {
           $(el).val("display");
         }
       }
+      else if(el.name.startsWith("bmltwf_required"))
+      {
+        required = $('input[name="' + el.name + '_required_checkbox"]')[0].checked;
+        if(required)
+        {
+          $(el).val("true");
+        }
+        else
+        {
+          $(el).val("false");
+        }
+      }
+
   });
   });
 

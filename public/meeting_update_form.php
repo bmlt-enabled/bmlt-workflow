@@ -136,7 +136,13 @@ if ($meeting_states_and_provinces) {
                         </div>
                         <input type="hidden" name="duration_time" size="10" id="duration_time" required>
 
-                        <label for="display_format_shared_id_list">Meeting Formats<span class="bmltwf-required-field"> *</span></label>
+                        <label for="display_format_shared_id_list">Meeting Formats
+                            <?php if (get_option('bmltwf_required_meeting_formats')==='true')
+                            {
+                                echo '<span class="bmltwf-required-field"> *</span>';
+                            }
+                            ?>
+                            </label>
                         <select class="display_format_shared_id_list-select2" name="display_format_shared_id_list" id="display_format_shared_id_list" required></select>
                         <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
                         <div id="location_fields">

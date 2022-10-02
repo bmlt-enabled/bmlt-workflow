@@ -900,17 +900,39 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_optional_form_fields_html()
         {
             echo '<div class="bmltwf_info_text">';
-            echo '<br>Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users. You can also change the way the fields are labelled on the form.';
+            echo '<br>Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users. You can also change the way some fields are labelled on the meeting change form.';
             echo '<br><br>';
             echo '</div>';
 
             echo '<table><thead><tr><th>BMLT Field Name</th><th>Show on form</th><th>Required Field</th><th>Change displayname to:</th></tr></thead><tbody>';
+            $this->do_required_field('bmltwf_required_meeting_formats', 'Meeting Formats');
             $this->do_optional_field('bmltwf_optional_location_nation', 'Nation');
             $this->do_optional_field('bmltwf_optional_location_province', 'Province');
             $this->do_optional_field('bmltwf_optional_location_sub_province', 'Sub Province');
             $this->do_optional_field('bmltwf_optional_postcode', 'Post Code');
             echo '</tbody></table>';
             
+        }
+
+        private function do_required_field($option, $friendlyname)
+        {
+            echo '<tr>';
+            echo '<td>' . $friendlyname . '</td>';
+            $value = get_option($option);
+            $disabled = '';
+
+            switch ($value) {
+                case 'true':
+                    echo '<td></td><td><input type="checkbox" id="'.$option.'_required_checkbox" name="'.$option.'_required_checkbox" checked></td>';
+                    break;
+                case 'false':
+                    echo '<td><td><input type="checkbox" id="'.$option.'_required_checkbox" name="'.$option.'_required_checkbox"></td>';
+                    break;
+            }
+
+            echo '<td></td>';
+            echo '</tr>';
+            echo '<input type="hidden" name="'.$option.'">';
         }
 
         private function do_optional_field($option, $friendlyname)
@@ -925,15 +947,12 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'hidden':
                     $disabled = 'disabled';
                     echo '<td><input type="checkbox" id="'.$option.'_visible_checkbox" name="'.$option.'_visible_checkbox" class="bmltwf_optional_visible_checkbox"></td><td><input type="checkbox" id="'.$option.'_required_checkbox" name="'.$option.'_required_checkbox" class="'.$option.'_disable" checked '.$disabled.'></td>';
-                    // $hidden = 'selected';
                     break;
                 case 'displayrequired':
                     echo '<td><input type="checkbox" id="'.$option.'_visible_checkbox" name="'.$option.'_visible_checkbox" class="bmltwf_optional_visible_checkbox" checked></td><td><input type="checkbox" id="'.$option.'_required_checkbox" name="'.$option.'_required_checkbox" class="'.$option.'_disable" checked></td>';
-                    // $displayrequired = 'selected';
                     break;
                 case 'display':
                     echo '<td><input type="checkbox" id="'.$option.'_visible_checkbox" name="'.$option.'_visible_checkbox" class="bmltwf_optional_visible_checkbox" checked></td><td><input type="checkbox" id="'.$option.'_required_checkbox" name="'.$option.'_required_checkbox" class="'.$option.'_disable"></td>';
-                    // $display = 'selected';
                     break;
             }
 
@@ -1074,6 +1093,7 @@ if (!class_exists('bmltwf_plugin')) {
             add_option('bmltwf_optional_location_province_displayname', 'Province');
             add_option('bmltwf_optional_postcode', 'display');
             add_option('bmltwf_optional_postcode_displayname', 'Postcode');
+            add_option('bmltwf_required_meeting_formats', 'true');
             add_option('bmltwf_submitter_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
             add_option('bmltwf_fso_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
             add_option('bmltwf_fso_email_address', 'example@example.example');
