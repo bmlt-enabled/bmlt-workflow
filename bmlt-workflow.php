@@ -549,6 +549,18 @@ if (!class_exists('bmltwf_plugin')) {
                     'default' => 'Postcode'
                 )
             );
+            
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_required_meeting_formats',
+                array(
+                    'type' => 'string',
+                    'description' => 'required field for meeting format',
+                    'sanitize_callback' => array(&$this, 'bmltwf_required_meeting_formats_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'true'
+                )
+            );
 
             register_setting(
                 'bmltwf-settings-group',
@@ -794,6 +806,21 @@ if (!class_exists('bmltwf_plugin')) {
             }
             add_settings_error('bmltwf_delete_closed_meetings', 'err', 'Invalid delete closed meetings setting.');
             return $output;
+        }
+        
+
+        public function bmltwf_required_meeting_formats_sanitize_callback($input)
+        {
+            $output = get_option('bmltwf_required_meeting_formats');
+
+            switch ($input) {
+                case 'true':
+                case 'false':
+                    return $input;
+            }
+            add_settings_error('bmltwf_required_meeting_formats', 'err', 'Invalid "meeting formats" setting.');
+            return $output;
+
         }
 
         public function bmltwf_trusted_servants_can_delete_submissions_sanitize_callback($input)
