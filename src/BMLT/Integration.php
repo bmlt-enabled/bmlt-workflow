@@ -212,7 +212,7 @@ class Integration
                 }
             }
             $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/servicebodies';
-            $response = \wp_safe_remote_get($url, $this->set_args(array("Authorization"=>"Bearer ". $this->v3_token)));
+            $response = \wp_safe_remote_get($url, $this->set_args(array(null, null, "Authorization"=>"Bearer ". $this->v3_token)));
             $this->debug_log("v3 API RESPONSE");
             $this->debug_log(wp_remote_retrieve_body($response));
 
@@ -471,16 +471,21 @@ class Integration
         return true;
     }
 
-    private function set_args($cookies, $body = null)
+    private function set_args($cookies, $body = null, $headers = null)
     {
         {
+            $newheaders =  array(
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36',
+                'Accept' => 'application/json'
+            );
+            if($headers)
+            {
+                $newheaders = array_merge($headers,$newheaders);
+            }
 
             $args = array(
                 'timeout' => '120',
-                'headers' => array(
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36',
-                    'Accept' => 'application/json'
-                ),
+                'headers' => $newheaders,
                 'cookies' => isset($cookies) ? $cookies : null,
                 'body' => isset($body) ? $body : null
 
@@ -503,7 +508,7 @@ class Integration
                     return $ret;
                 }
             }
-            $ret = \wp_safe_remote_get($url, $this->set_args(array("Authorization"=>"Bearer ". $this->v3_token)));
+            $ret = \wp_safe_remote_get($url, $this->set_args(null, null, array("Authorization"=>"Bearer ". $this->v3_token)));
             return $ret;
         } else {
             $ret = \wp_safe_remote_get($url, $this->set_args($cookies));
@@ -532,7 +537,7 @@ class Integration
                     return $ret;
                 }
             }
-            $ret = \wp_safe_remote_post($url, $this->set_args(array("Authorization"=>"Bearer ". $this->v3_token), http_build_query($postargs)));
+            $ret = \wp_safe_remote_post($url, $this->set_args(null, null, array("Authorization"=>"Bearer ". $this->v3_token), http_build_query($postargs)));
             return $ret;
         } else {
             $this->debug_log("POSTING URL = " . $url);
