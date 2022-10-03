@@ -58,15 +58,11 @@ class ServiceBodiesHandler
             // detail list
             $sblist = array();
 
-            $req = array();
-            $req['admin_action'] = 'get_permissions';
+            $response = $this->bmlt_integration->getServiceBodiesPermission();
 
-            $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('local_server/server_admin/json.php', $req);
             if (is_wp_error($response)) {
                 return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
             }
-
-            $arr = json_decode(wp_remote_retrieve_body($response),1);
 
             if (empty($arr['service_body'])) {
                 return $this->handlerCore->bmltwf_rest_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);

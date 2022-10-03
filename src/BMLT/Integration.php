@@ -201,38 +201,91 @@ class Integration
         return true;
     }
 
+    public function getServiceBodiesPermission()
+    {
+        if ($this->bmltwf_use_v3_auth()) {
+            $this->debug_log("inside getServiceBodiesPermission v3 auth");
+            if (!$this->v3_token) {
+                $ret =  $this->authenticateRootServer();
+                if (is_wp_error($ret)) {
+                    return $ret;
+                }
+            }
+            $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/servicebodies';
+            $response = \wp_safe_remote_get($url, $this->set_args($this->v3_token));
+            $this->debug_log("v3 API RESPONSE");
+            $this->debug_log(wp_remote_retrieve_body($response));
+
+            if (\wp_remote_retrieve_response_code($response) != 200) {
+                return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
+            }
+
+            $arr = json_decode(wp_remote_retrieve_body($response), 1);
+
+        } else {
+            $req = array();
+            $req['admin_action'] = 'get_permissions';
+
+            $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('local_server/server_admin/json.php', $req);
+            if (is_wp_error($response)) {
+                return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
+            }
+
+            $arr = json_decode(wp_remote_retrieve_body($response), 1);
+        }
+        return $arr;
+    }
+
     public function getMeetingFormats()
     {
 
-        $req = array();
-        $req['admin_action'] = 'get_format_info';
+        // if ($this->bmltwf_use_v3_auth()) {
+        //     $this->debug_log("inside getMeetingFormats v3 auth");
 
-        // get an xml for a workaround
-        $response = $this->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
-        if (is_wp_error($response)) {
-            return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
+        //     if (!$this->v3_token) {
+        //         $ret =  $this->authenticateRootServer();
+        //         if (is_wp_error($ret)) {
+        //             return $ret;
+        //         }
+        //     }
+        //     $url = get_option('bmltwf_bmlt_server_address') . ''
+
+        //     $ret = \wp_safe_remote_post($url, $this->set_args($this->v3_token, http_build_query($postargs)));
+        //     return $ret;
+        // }
+        // else
+        {
+
+            $req = array();
+            $req['admin_action'] = 'get_format_info';
+
+            // get an xml for a workaround
+            $response = $this->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
+            if (is_wp_error($response)) {
+                return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
+            }
+
+
+            // $this->debug_log(wp_remote_retrieve_body($response));
+            // $formatarr = json_decode(wp_remote_retrieve_body($response), true);
+            $xml = simplexml_load_string(wp_remote_retrieve_body($response));
+            // $this->debug_log("XML RESPONSE");
+            // $this->debug_log(wp_remote_retrieve_body($response));
+            $formatarr = json_decode(json_encode($xml), 1);
+
+            // $this->debug_log(($formatarr));
+
+            $newformat = array();
+            foreach ($formatarr['row'] as $key => $value) {
+                $formatid = $value['id'];
+                unset($value['id']);
+                $newformat[$formatid] = $value;
+            }
+            // $this->debug_log("NEWFORMAT");
+            // $this->debug_log(($newformat));
+
+            return $newformat;
         }
-
-
-        // $this->debug_log(wp_remote_retrieve_body($response));
-        // $formatarr = json_decode(wp_remote_retrieve_body($response), true);
-        $xml = simplexml_load_string(wp_remote_retrieve_body($response));
-        // $this->debug_log("XML RESPONSE");
-        // $this->debug_log(wp_remote_retrieve_body($response));
-        $formatarr = json_decode(json_encode($xml), 1);
-
-        // $this->debug_log(($formatarr));
-
-        $newformat = array();
-        foreach ($formatarr['row'] as $key => $value) {
-            $formatid = $value['id'];
-            unset($value['id']);
-            $newformat[$formatid] = $value;
-        }
-        // $this->debug_log("NEWFORMAT");
-        // $this->debug_log(($newformat));
-
-        return $newformat;
     }
 
     /**
