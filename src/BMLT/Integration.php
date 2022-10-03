@@ -212,7 +212,7 @@ class Integration
                 }
             }
             $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/servicebodies';
-            $response = \wp_safe_remote_get($url, $this->set_args($this->v3_token));
+            $response = \wp_safe_remote_get($url, $this->set_args(array('token'=>$this->v3_token)));
             $this->debug_log("v3 API RESPONSE");
             $this->debug_log(wp_remote_retrieve_body($response));
 
@@ -250,7 +250,7 @@ class Integration
         //     }
         //     $url = get_option('bmltwf_bmlt_server_address') . ''
 
-        //     $ret = \wp_safe_remote_post($url, $this->set_args($this->v3_token, http_build_query($postargs)));
+        //     $ret = \wp_safe_remote_post($url, $this->set_args(array('token'=>$this->v3_token), http_build_query($postargs)));
         //     return $ret;
         // }
         // else
@@ -531,7 +531,7 @@ class Integration
                     return $ret;
                 }
             }
-            $ret = \wp_safe_remote_post($url, $this->set_args($this->v3_token, http_build_query($postargs)));
+            $ret = \wp_safe_remote_post($url, $this->set_args(array('token'=>$this->v3_token), http_build_query($postargs)));
             return $ret;
         } else {
             $this->debug_log("POSTING URL = " . $url);
