@@ -20,14 +20,14 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.0.6
+ * Version: 1.0.7
  * Requires at least: 5.2
  * Tested up to: 6.0
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
 
-define('BMLTWF_PLUGIN_VERSION', '1.0.6');
+define('BMLTWF_PLUGIN_VERSION', '1.0.7');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -109,6 +109,7 @@ if (!class_exists('bmltwf_plugin')) {
             // optional fields
             $script .= 'var bmltwf_optional_location_nation = "' . get_option('bmltwf_optional_location_nation') . '";';
             $script .= 'var bmltwf_optional_location_sub_province = "' . get_option('bmltwf_optional_location_sub_province') . '";';
+            $script .= 'var bmltwf_optional_location_province = "' . get_option('bmltwf_optional_location_province') . '";';
             $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
             $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
 
@@ -279,9 +280,6 @@ if (!class_exists('bmltwf_plugin')) {
 
                     // add meeting formats
                     $formatarr = $this->bmlt_integration->getMeetingFormats();
-                    // $this->debug_log("FORMATS");
-                    // $this->debug_log(($formatarr));
-                    // $this->debug_log(json_encode($formatarr));
                     $script .= 'var bmltwf_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
                     // do a one off lookup for our servicebodies
@@ -299,7 +297,20 @@ if (!class_exists('bmltwf_plugin')) {
                     // optional fields in quickedit
                     $script .= 'var bmltwf_optional_location_nation = "' . get_option('bmltwf_optional_location_nation') . '";';
                     $script .= 'var bmltwf_optional_location_sub_province = "' . get_option('bmltwf_optional_location_sub_province') . '";';
+                    $script .= 'var bmltwf_optional_location_province = "' . get_option('bmltwf_optional_location_province') . '";';
                     $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
+
+                    // can current user use the delete button?
+                    $show_delete = "false";
+                    if (get_option('bmltwf_trusted_servants_can_delete_submissions')=='true')
+                    {
+                        $show_delete = "true";
+                    }
+                    else if(current_user_can('manage_options'))
+                    {
+                        $show_delete = "true";
+                    }
+                    $script .= 'var bmltwf_datatables_delete_enabled = ' . $show_delete . ';';
 
                     wp_add_inline_script('admin_submissions_js', $script, 'before');
 
@@ -433,6 +444,18 @@ if (!class_exists('bmltwf_plugin')) {
 
             register_setting(
                 'bmltwf-settings-group',
+                'bmltwf_trusted_servants_can_delete_submissions',
+                array(
+                    'type' => 'string',
+                    'description' => 'Trusted servants can delete submissions',
+                    'sanitize_callback' => array(&$this, 'bmltwf_trusted_servants_can_delete_submissions_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'true'
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
                 'bmltwf_optional_location_nation',
                 array(
                     'type' => 'string',
@@ -440,6 +463,18 @@ if (!class_exists('bmltwf_plugin')) {
                     'sanitize_callback' => array(&$this, 'bmltwf_optional_location_nation_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'hidden'
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_optional_location_nation_displayname',
+                array(
+                    'type' => 'string',
+                    'description' => 'optional field for location_nation',
+                    'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'Nation'
                 )
             );
 
@@ -457,6 +492,42 @@ if (!class_exists('bmltwf_plugin')) {
 
             register_setting(
                 'bmltwf-settings-group',
+                'bmltwf_optional_location_sub_province_displayname',
+                array(
+                    'type' => 'string',
+                    'description' => 'optional field for location_sub_province',
+                    'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'Sub Province'
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_optional_location_province',
+                array(
+                    'type' => 'string',
+                    'description' => 'optional field for location_province',
+                    'sanitize_callback' => array(&$this, 'bmltwf_optional_location_province_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'display'
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_optional_location_province_displayname',
+                array(
+                    'type' => 'string',
+                    'description' => 'optional field for location_province',
+                    'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'Province'
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
                 'bmltwf_optional_postcode',
                 array(
                     'type' => 'string',
@@ -464,6 +535,30 @@ if (!class_exists('bmltwf_plugin')) {
                     'sanitize_callback' => array(&$this, 'bmltwf_optional_postcode_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'display'
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_optional_postcode_displayname',
+                array(
+                    'type' => 'string',
+                    'description' => 'optional field for postcode',
+                    'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'Postcode'
+                )
+            );
+            
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_required_meeting_formats',
+                array(
+                    'type' => 'string',
+                    'description' => 'required field for meeting format',
+                    'sanitize_callback' => array(&$this, 'bmltwf_required_meeting_formats_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'true'
                 )
             );
 
@@ -478,6 +573,7 @@ if (!class_exists('bmltwf_plugin')) {
                     'default' => file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html')
                 )
             );
+
             register_setting(
                 'bmltwf-settings-group',
                 'bmltwf_fso_feature',
@@ -557,6 +653,14 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_delete_closed_meetings',
                 'Default for close meeting submission',
                 array(&$this, 'bmltwf_delete_closed_meetings_html'),
+                'bmltwf-settings',
+                'bmltwf-settings-section-id'
+            );
+
+            add_settings_field(
+                'bmltwf_trusted_servants_can_delete_submissions',
+                'Trusted servants can delete submissions',
+                array(&$this, 'bmltwf_trusted_servants_can_delete_submissions_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
             );
@@ -646,6 +750,29 @@ if (!class_exists('bmltwf_plugin')) {
             return $output;
         }
 
+        public function bmltwf_optional_location_province_sanitize_callback($input)
+        {
+            global $new_allowed_options;
+            $this->debug_log("allowed options");
+            $this->debug_log($new_allowed_options);
+            $this->debug_log("allowed input");
+            $this->debug_log($input);
+            $output = get_option('bmltwf_optional_location_province');
+            switch ($input) {
+                case 'hidden':
+                case 'displayrequired':
+                case 'display':
+                    return $input;
+            }
+            add_settings_error('bmltwf_optional_location_province', 'err', 'Invalid Province setting.');
+            return $output;
+        }
+
+        public function bmltwf_textstring_sanitize_callback($input)
+        {
+            return sanitize_text_field($input);
+        }
+
         public function bmltwf_email_from_address_sanitize_callback($input)
         {
             $output = get_option('bmltwf_email_from_address');
@@ -677,8 +804,37 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'unpublish':
                     return $input;
             }
-            add_settings_error('bmltwf_delete_closed_meetings', 'err', 'Invalid delete closed meetings  setting.');
+            add_settings_error('bmltwf_delete_closed_meetings', 'err', 'Invalid delete closed meetings setting.');
             return $output;
+        }
+        
+
+        public function bmltwf_required_meeting_formats_sanitize_callback($input)
+        {
+            $output = get_option('bmltwf_required_meeting_formats');
+
+            switch ($input) {
+                case 'true':
+                case 'false':
+                    return $input;
+            }
+            add_settings_error('bmltwf_required_meeting_formats', 'err', 'Invalid "meeting formats" setting.');
+            return $output;
+
+        }
+
+        public function bmltwf_trusted_servants_can_delete_submissions_sanitize_callback($input)
+        {
+            $output = get_option('bmltwf_trusted_servants_can_delete_submissions');
+
+            switch ($input) {
+                case 'true':
+                case 'false':
+                    return $input;
+            }
+            add_settings_error('bmltwf_trusted_servants_can_delete_submissions', 'err', 'Invalid "non admins can delete submissions" setting.');
+            return $output;
+
         }
 
         public function bmltwf_bmlt_server_address_html()
@@ -745,47 +901,92 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br><br>';
         }
 
+        public function bmltwf_trusted_servants_can_delete_submissions_html()
+        {
+
+            $selection = get_option('bmltwf_trusted_servants_can_delete_submissions');
+            $can_delete = '';
+            $cannot_delete = '';
+            if ($selection === 'true') {
+                $can_delete = 'selected';
+            } else {
+                $cannot_delete = 'selected';
+            }
+
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>This option determines whether trusted servants are able to delete submissions from the submissions list.';
+            echo '<br><br>If this is set to false, then only Wordpress administrators with will have delete submission functionality';
+            echo '<br><br>';
+            echo '</div>';
+
+            echo '<br><label for="bmltwf_trusted_servants_can_delete_submissions"><b>Trusted servants  can delete submissions:</b></label><select id="bmltwf_trusted_servants_can_delete_submissions" name="bmltwf_trusted_servants_can_delete_submissions"><option name="True" value="true" ' . $can_delete . '>True</option><option name="False" value="false" ' . $cannot_delete . '>False</option>';
+            echo '<br><br>';
+        }
+
 
         public function bmltwf_optional_form_fields_html()
         {
             echo '<div class="bmltwf_info_text">';
-            echo '<br>Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users.';
+            echo '<br>Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users. You can also change the way some fields are labelled on the meeting change form.';
             echo '<br><br>';
             echo '</div>';
 
+            echo '<table><thead><tr><th>BMLT Field Name</th><th>Show on form</th><th>Required Field</th><th>Change displayname to:</th></tr></thead><tbody>';
+            $this->do_required_field('bmltwf_required_meeting_formats', 'Meeting Formats');
             $this->do_optional_field('bmltwf_optional_location_nation', 'Nation');
+            $this->do_optional_field('bmltwf_optional_location_province', 'Province');
             $this->do_optional_field('bmltwf_optional_location_sub_province', 'Sub Province');
             $this->do_optional_field('bmltwf_optional_postcode', 'Post Code');
+            echo '</tbody></table>';
+            
+        }
+
+        private function do_required_field($option, $friendlyname)
+        {
+            echo '<tr>';
+            echo '<td>' . $friendlyname . '</td>';
+            $value = get_option($option);
+            $disabled = '';
+
+            switch ($value) {
+                case 'true':
+                    echo '<td></td><td><input type="checkbox" id="'.$option.'_required_checkbox" name="'.$option.'_required_checkbox" checked></td>';
+                    break;
+                case 'false':
+                    echo '<td><td><input type="checkbox" id="'.$option.'_required_checkbox" name="'.$option.'_required_checkbox"></td>';
+                    break;
+            }
+
+            echo '<td></td>';
+            echo '</tr>';
+            echo '<input type="hidden" name="'.$option.'">';
         }
 
         private function do_optional_field($option, $friendlyname)
         {
-
+            echo '<tr>';
+            echo '<td>' . $friendlyname . '</td>';
             $value = get_option($option);
-            $this->debug_log($value);
-            $hidden = '';
-            $displayrequired = '';
-            $display = '';
+            $displayname = get_option($option."_displayname");
+            $disabled = '';
 
             switch ($value) {
                 case 'hidden':
-                    $hidden = 'selected';
+                    $disabled = 'disabled';
+                    echo '<td><input type="checkbox" id="'.$option.'_visible_checkbox" name="'.$option.'_visible_checkbox" class="bmltwf_optional_visible_checkbox"></td><td><input type="checkbox" id="'.$option.'_required_checkbox" name="'.$option.'_required_checkbox" class="'.$option.'_disable" checked '.$disabled.'></td>';
                     break;
                 case 'displayrequired':
-                    $displayrequired = 'selected';
+                    echo '<td><input type="checkbox" id="'.$option.'_visible_checkbox" name="'.$option.'_visible_checkbox" class="bmltwf_optional_visible_checkbox" checked></td><td><input type="checkbox" id="'.$option.'_required_checkbox" name="'.$option.'_required_checkbox" class="'.$option.'_disable" checked></td>';
                     break;
                 case 'display':
-                    $display = 'selected';
+                    echo '<td><input type="checkbox" id="'.$option.'_visible_checkbox" name="'.$option.'_visible_checkbox" class="bmltwf_optional_visible_checkbox" checked></td><td><input type="checkbox" id="'.$option.'_required_checkbox" name="'.$option.'_required_checkbox" class="'.$option.'_disable"></td>';
                     break;
             }
 
-            echo '<br><label for="' . esc_attr($option) . '"><b>' . esc_attr($friendlyname) . ':</b>';
-            echo '</label><select id="' . esc_attr($option) . '" name="' . esc_attr($option) . '">';
-            echo '<option name="hidden" value="hidden" ' . esc_attr($hidden) . '>Hidden</option>';
-            echo '<option name="displayrequired" value="displayrequired" ' . esc_attr($displayrequired) . '>Display + Required Field</option>';
-            echo '<option name="display" value="display" ' . esc_attr($display) . '>Display Only</option>';
-            echo '</select>';
-            echo '<br><br>';
+            echo '<td><input type="text" class="'.$option.'_disable" id="'.$option.'_displayname" name="'.$option.'_displayname" value="'.sanitize_text_field($displayname).' " '.$disabled.' ></td>';
+            echo '</tr>';
+            echo '<input type="hidden" name="'.$option.'">';
+
         }
 
         public function bmltwf_fso_options_html()
@@ -912,8 +1113,14 @@ if (!class_exists('bmltwf_plugin')) {
             add_option('bmltwf_email_from_address', 'example@example');
             add_option('bmltwf_delete_closed_meetings', 'unpublish');
             add_option('bmltwf_optional_location_nation', 'hidden');
+            add_option('bmltwf_optional_location_nation_displayname', 'Nation');
             add_option('bmltwf_optional_location_sub_province', 'hidden');
+            add_option('bmltwf_optional_location_sub_province_displayname', 'Sub Province');
+            add_option('bmltwf_optional_location_province', 'display');
+            add_option('bmltwf_optional_location_province_displayname', 'Province');
             add_option('bmltwf_optional_postcode', 'display');
+            add_option('bmltwf_optional_postcode_displayname', 'Postcode');
+            add_option('bmltwf_required_meeting_formats', 'true');
             add_option('bmltwf_submitter_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
             add_option('bmltwf_fso_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
             add_option('bmltwf_fso_email_address', 'example@example.example');

@@ -27,7 +27,7 @@ use bmltwf\REST\Handlers\OptionsHandler;
 use bmltwf\BMLTWF_Rest;
 use bmltwf\BMLTWF_WP_Options;
 
-if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
+if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
 class Controller extends \WP_REST_Controller
 {
@@ -37,23 +37,26 @@ class Controller extends \WP_REST_Controller
 	protected $namespace;
 	protected $rest_base;
 
-	public function __construct()
+	public function __construct($stub = null)
 	{
+		if ($stub === null) {
+			$this->BMLTServerHandler = new BMLTServerHandler();
+			$this->ServiceBodiesHandler = new ServiceBodiesHandler();
+			$this->SubmissionsHandler = new SubmissionsHandler();
+			$this->OptionsHandler = new OptionsHandler();
+			$this->BMLTWF_Rest = new BMLTWF_Rest();
+			$this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
 
-
-		$this->BMLTServerHandler = new BMLTServerHandler();
-		$this->ServiceBodiesHandler = new ServiceBodiesHandler();
-		$this->SubmissionsHandler = new SubmissionsHandler();
-		$this->OptionsHandler = new OptionsHandler();
-		$this->BMLTWF_Rest = new BMLTWF_Rest();
-		$this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
-
-		$this->namespace = $this->BMLTWF_Rest->bmltwf_rest_namespace;
-		$this->submissions_rest_base = $this->BMLTWF_Rest->bmltwf_submissions_rest_base;
-		$this->service_bodies_rest_base = $this->BMLTWF_Rest->bmltwf_service_bodies_rest_base;
-		$this->bmltserver_rest_base = $this->BMLTWF_Rest->bmltwf_bmltserver_rest_base;
-		$this->options_rest_base = $this->BMLTWF_Rest->bmltwf_options_rest_base;
-
+			$this->namespace = $this->BMLTWF_Rest->bmltwf_rest_namespace;
+			$this->submissions_rest_base = $this->BMLTWF_Rest->bmltwf_submissions_rest_base;
+			$this->service_bodies_rest_base = $this->BMLTWF_Rest->bmltwf_service_bodies_rest_base;
+			$this->bmltserver_rest_base = $this->BMLTWF_Rest->bmltwf_bmltserver_rest_base;
+			$this->options_rest_base = $this->BMLTWF_Rest->bmltwf_options_rest_base;
+		}
+		else
+		{
+			$this->BMLTWF_WP_Options = $stub;
+		}
 	}
 
 	public function register_routes()
@@ -73,7 +76,7 @@ class Controller extends \WP_REST_Controller
 				'permission_callback' => array($this, 'post_submissions_permissions_check'),
 			),
 		));
-		
+
 		// GET submissions/<id>
 		register_rest_route(
 			$this->namespace,
@@ -110,7 +113,7 @@ class Controller extends \WP_REST_Controller
 				'action_message' => [
 					'required' => false,
 					'type'     => 'string',
-					'sanitize_callback' => function($param, $request, $key) {
+					'sanitize_callback' => function ($param, $request, $key) {
 						return (sanitize_text_field($param));
 					}
 				],
@@ -125,7 +128,7 @@ class Controller extends \WP_REST_Controller
 				'action_message' => [
 					'required' => false,
 					'type'     => 'string',
-					'sanitize_callback' => function($param, $request, $key) {
+					'sanitize_callback' => function ($param, $request, $key) {
 						return (sanitize_text_field($param));
 					}
 				],
@@ -144,11 +147,11 @@ class Controller extends \WP_REST_Controller
 					'detail' => [
 						'required' => false,
 						'type'     => 'string',
-						'validate_callback' => function($param, $request, $key) {
-							return ($param==='true'||$param==='false');
+						'validate_callback' => function ($param, $request, $key) {
+							return ($param === 'true' || $param === 'false');
 						}
 					],
-				],	
+				],
 			),
 		);
 
@@ -177,14 +180,14 @@ class Controller extends \WP_REST_Controller
 					'checked' => [
 						'required' => false,
 						'type'     => 'string',
-						'validate_callback' => function($param, $request, $key) {
-							return ($param==='true'||$param==='false');
+						'validate_callback' => function ($param, $request, $key) {
+							return ($param === 'true' || $param === 'false');
 						}
 					],
-				],	
+				],
 			),
 		);
-		
+
 		// GET bmltserver
 		register_rest_route(
 			$this->namespace,
@@ -196,7 +199,7 @@ class Controller extends \WP_REST_Controller
 				'permission_callback' => array($this, 'get_bmltserver_permissions_check'),
 			),
 		);
-		
+
 		// POST bmltserver
 		register_rest_route(
 			$this->namespace,
@@ -220,11 +223,11 @@ class Controller extends \WP_REST_Controller
 				'permission_callback' => array($this, 'patch_bmltserver_permissions_check'),
 			),
 		);
-		
+
 		// GET bmltserver/geolocate
 		register_rest_route(
 			$this->namespace,
-			'/' . $this->bmltserver_rest_base.'/geolocate',
+			'/' . $this->bmltserver_rest_base . '/geolocate',
 			array(
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_bmltserver_geolocate'),
@@ -245,7 +248,6 @@ class Controller extends \WP_REST_Controller
 			'callback'            => array($this, 'post_bmltwf_restore'),
 			'permission_callback' => array($this, 'post_bmltwf_restore_permissions_check'),
 		));
-		
 	}
 
 	private function authorization_status_code()
@@ -261,7 +263,7 @@ class Controller extends \WP_REST_Controller
 
 	public function get_submissions_permissions_check($request)
 	{
-		
+
 
 		$this->debug_log("get submissions current user " . get_current_user_id());
 		if (!current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)) {
@@ -272,7 +274,7 @@ class Controller extends \WP_REST_Controller
 
 	public function get_submission_permissions_check($request)
 	{
-		
+
 		$this->debug_log("get submissions current user " . get_current_user_id());
 		if (!current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view a submission.'), array('status' => $this->authorization_status_code()));
@@ -283,7 +285,7 @@ class Controller extends \WP_REST_Controller
 	public function approve_submission_action_permissions_check($request)
 	{
 
-		
+
 
 		$this->debug_log("approve submission current user " . get_current_user_id());
 		if (!current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)) {
@@ -294,7 +296,7 @@ class Controller extends \WP_REST_Controller
 
 	public function reject_submission_action_permissions_check($request)
 	{
-		
+
 
 		$this->debug_log("reject submission current user " . get_current_user_id());
 		if (!current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)) {
@@ -305,11 +307,19 @@ class Controller extends \WP_REST_Controller
 
 	public function delete_submission_permissions_check($request)
 	{
-		// delete submissions is limited to admin
-		
+		// delete submissions is limited based on bmltwf_trusted_servants_can_delete_submissions option
+
+		$can_delete = false;
+
+		$bmltwf_trusted_servants_can_delete_submissions = get_option('bmltwf_trusted_servants_can_delete_submissions');
+		if ($bmltwf_trusted_servants_can_delete_submissions == "true") {
+			$can_delete = current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
+		} else {
+			$can_delete = current_user_can('manage_options');
+		}
 
 		$this->debug_log("delete submission current user " . get_current_user_id());
-		if (!current_user_can('manage_options')) {
+		if (!$can_delete) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot delete this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -317,7 +327,6 @@ class Controller extends \WP_REST_Controller
 
 	public function patch_submission_permissions_check($request)
 	{
-		
 
 		$this->debug_log("patch submission current user " . get_current_user_id());
 		if (!current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)) {
@@ -336,7 +345,7 @@ class Controller extends \WP_REST_Controller
 
 	public function post_service_bodies_permissions_check($request)
 	{
-		
+
 
 		$this->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
@@ -357,7 +366,7 @@ class Controller extends \WP_REST_Controller
 
 	public function post_bmltserver_permissions_check($request)
 	{
-		
+
 
 		$this->debug_log("post_bmltserver " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
@@ -368,7 +377,7 @@ class Controller extends \WP_REST_Controller
 
 	public function get_bmltserver_permissions_check($request)
 	{
-		
+
 
 		$this->debug_log("get_bmltserver " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
@@ -379,7 +388,7 @@ class Controller extends \WP_REST_Controller
 
 	public function patch_bmltserver_permissions_check($request)
 	{
-		
+
 
 		$this->debug_log("patch_bmltserver " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
@@ -390,7 +399,7 @@ class Controller extends \WP_REST_Controller
 
 	public function get_bmltserver_geolocate_permissions_check($request)
 	{
-		
+
 
 		$this->debug_log("patch_bmltserver " . get_current_user_id());
 		if (!current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)) {
@@ -401,7 +410,7 @@ class Controller extends \WP_REST_Controller
 
 	public function post_bmltwf_backup_permissions_check($request)
 	{
-		
+
 
 		$this->debug_log("post_bmltwf_Backup_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
@@ -412,7 +421,7 @@ class Controller extends \WP_REST_Controller
 
 	public function post_bmltwf_restore_permissions_check($request)
 	{
-		
+
 
 		$this->debug_log("post_bmltwf_restore_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
@@ -420,7 +429,7 @@ class Controller extends \WP_REST_Controller
 		}
 		return true;
 	}
-	
+
 	public function post_submissions_permissions_check($request)
 	{
 		// Anyone can post a form submission
@@ -525,5 +534,4 @@ class Controller extends \WP_REST_Controller
 		$result = $this->OptionsHandler->post_bmltwf_restore_handler($request);
 		return rest_ensure_response($result);
 	}
-
 }

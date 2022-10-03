@@ -24,6 +24,8 @@ use bmltwf\BMLT\Integration;
 use bmltwf\REST\HandlerCore;
 use bmltwf\BMLTWF_Database;
 
+use function Patchwork\CodeManipulation\Actions\Generic\injectFalseExpressionAtBeginnings;
+
 class SubmissionsHandler
 {
     use \bmltwf\BMLTWF_Debug;
@@ -582,10 +584,51 @@ class SubmissionsHandler
             }
         }
 
+        // wip for #89
+        
+        // if(get_option('bmltwf_service_body_contact_notify')==='true')
+        // {
+        //     /*
+        //     * Send acknowledgement email to the service body email
+        //     */
+
+
+        //     $to_address = $submitter_email;
+        //     $subject = "NA Meeting Change Request Acknowledgement - " . $this->submission_type_to_friendlyname($submission_type);
+
+        //     $template = get_option('bmltwf_service_body_contact_email_template');
+
+        //     $subfield = '{field:submission}';
+        //     $subwith = $this->submission_format($change);
+        //     $template = str_replace($subfield, $subwith, $template);
+
+        //     $body = $template;
+
+        //     $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+        //     $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers,true));
+        //     wp_mail($to_address, $subject, $body, $headers);
+        // }
+
 
         return $this->handlerCore->bmltwf_rest_success('Approved submission id ' . $change_id);
     }
 
+
+    private function submission_type_to_friendlyname($reason)
+    {
+        switch ($reason) {
+            case "reason_new":
+                $submission_type = "New Meeting";
+                break;
+            case "reason_close":
+                $submission_type = "Close Meeting";
+                break;
+            case "reason_change":
+                $submission_type = "Modify Meeting";
+                break;
+        }
+        return $submission_type;
+    }
 
     private function get_emails_by_servicebody_id($id)
     {
@@ -617,7 +660,6 @@ class SubmissionsHandler
         $reason_change_bool = false;
         $reason_close_bool = false;
         $virtual_meeting_bool = false;
-        $require_postcode = false;
 
         // strip blanks
         foreach ($data as $key => $value) {
@@ -651,10 +693,43 @@ class SubmissionsHandler
                     }
                 }    
             }
-            if(($data['update_reason'] === 'reason_new')&&(get_option('bmltwf_optional_postcode') === 'displayrequired'))
+
+            $require_postcode = false;
+            if(get_option('bmltwf_optional_postcode') === 'displayrequired')
             {
                 $require_postcode = true;
             }
+
+            $require_nation = false;
+            if(get_option('bmltwf_optional_location_nation') === 'displayrequired')
+            {
+                $require_nation = true;
+            }
+
+            $require_province = false;
+            if(get_option('bmltwf_optional_location_province') === 'displayrequired')
+            {
+                $require_province = true;
+            }
+
+            $require_sub_province = false;
+            if(get_option('bmltwf_optional_location_sub_province') === 'displayrequired')
+            {
+                $require_sub_province = true;
+            }
+
+            $require_meeting_formats = false;
+            if(get_option('bmltwf_required_meeting_formats') === 'true')
+            {
+                $require_meeting_formats = true;
+            }
+
+            $fso_feature = false;
+            if(get_option('bmltwf_fso_feature') === 'display')
+            {
+                $fso_feature = true;
+            }
+
         }
 
         if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_change_bool && !$reason_close_bool))) {
@@ -677,19 +752,20 @@ class SubmissionsHandler
             "location_street" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_info" => array("text", false),
             "location_municipality" => array("text", $reason_new_bool),
-            "location_province" => array("text", $reason_new_bool),
-            // postcode can be a text format #78
-            "location_postal_code_1" => array("text", $require_postcode),
             "weekday_tinyint" => array("weekday", $reason_new_bool),
             "service_body_bigint" => array("bigint", $reason_new_bool),
             "email_address" => array("email", true),
             "contact_number_confidential" => array("text", false),
-            "format_shared_id_list" => array("commaseperatednumbers",  $reason_new_bool),
+            // optional #93
+            "format_shared_id_list" => array("commaseperatednumbers",  $reason_new_bool && $require_meeting_formats),
             "additional_info" => array("textarea", $reason_close_bool),
             "starter_kit_postal_address" => array("textarea", false),
-            "starter_kit_required" => array("text", $reason_new_bool),
-            "location_sub_province" => array("text", false),
-            "location_nation" => array("text", false),
+            "starter_kit_required" => array("text", $reason_new_bool && $fso_feature),
+            "location_nation" => array("text", $require_nation),
+            "location_province" => array("text", $reason_new_bool && $require_province),
+            "location_sub_province" => array("text", $require_sub_province),
+            // postcode can be a text format #78
+            "location_postal_code_1" => array("text", $reason_new_bool && $require_postcode),
             "group_relationship" => array("text", true),
             "add_email" => array("yesno", true),
             "virtual_meeting_additional_info" => array("text", false),
@@ -994,17 +1070,7 @@ class SubmissionsHandler
         * Send a notification to the configured trusted servants for the correct service body
         */
 
-        switch ($reason) {
-            case "reason_new":
-                $submission_type = "New Meeting";
-                break;
-            case "reason_close":
-                $submission_type = "Close Meeting";
-                break;
-            case "reason_change":
-                $submission_type = "Modify Meeting";
-                break;
-        }
+        $submission_type = $this->submission_type_to_friendlyname($reason);
 
         $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['service_body_bigint']);
         $subject = '[bmlt-workflow] ' . $submission_type . ' request received - ID ' . $insert_id;

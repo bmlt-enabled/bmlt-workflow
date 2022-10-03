@@ -136,9 +136,22 @@ if ($meeting_states_and_provinces) {
                         </div>
                         <input type="hidden" name="duration_time" size="10" id="duration_time" required>
 
-                        <label for="display_format_shared_id_list">Meeting Formats<span class="bmltwf-required-field"> *</span></label>
-                        <select class="display_format_shared_id_list-select2" name="display_format_shared_id_list" id="display_format_shared_id_list" required></select>
-                        <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
+                        <label id="display_format_shared_id_list_label" for="display_format_shared_id_list">Meeting Formats
+                            <?php 
+                            $req = get_option('bmltwf_required_meeting_formats')==='true';
+                            if ($req)
+                            {
+                                echo '<span class="bmltwf-required-field"> *</span>';
+                            }
+                            echo '</label>';
+                            echo '<select class="display_format_shared_id_list-select2" name="display_format_shared_id_list" id="display_format_shared_id_list"';
+                            if ($req)
+                            {
+                                echo ' required';
+                            }                     
+                            ?>
+                    </select>
+                <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
                         <div id="location_fields">
                             <label for="location_text">Location (eg: a building name)<span class="bmltwf-required-field"> *</span></label>
                             <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
@@ -150,7 +163,7 @@ if ($meeting_states_and_provinces) {
                         <label for="location_municipality">City/Town/Suburb<span class="bmltwf-required-field"> *</span></label>
                         <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
                         <div id="optional_location_sub_province">
-                            <label id="location_sub_province_label" for="location_sub_province">Sub Province</label>
+                            <label id="location_sub_province_label" for="location_sub_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname'))?></label>
 
                             <?php
                             if ($bmltwf_do_counties_and_sub_provinces) {
@@ -164,28 +177,31 @@ if ($meeting_states_and_provinces) {
                             }
 
                             ?>
+
                         </div>
-                        <label for="location_province">State<span class="bmltwf-required-field"> *</span></label>
-                        <?php
+                        <div id="optional_location_province">
+                            <label id="location_province_label" for="location_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_province_displayname'))?></label>
 
-                        if ($bmltwf_do_states_and_provinces) {
-                            echo '<select class="meeting-input" id="location_province" name="location_province">';
-                            foreach ($meeting_states_and_provinces as $key) {
-                                echo '<option value="' . $key . '">' . $key . '</option>';
+                            <?php
+                            if ($bmltwf_do_states_and_provinces) {
+                                echo '<select class="meeting-input" id="location_province" name="location_province">';
+                                foreach ($meeting_states_and_provinces as $key) {
+                                    echo '<option value="' . $key . '">' . $key . '</option>';
+                                }
+                                echo '</select>';
+                            } else {
+                                echo '<input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>';
                             }
-                            echo '</select>';
-                        } else {
-                            echo '<input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>';
-                        }
 
-                        ?>
+                            ?>
 
+                        </div>
                         <div id="optional_postcode">
-                            <label for="location_postal_code_1">Postcode</label>
+                            <label id="location_postal_code_1_label" for="location_postal_code_1"><?php echo sanitize_text_field(get_option('bmltwf_optional_postcode_displayname'))?></label>
                             <input class="meeting-input" type="text" name="location_postal_code_1" id="location_postal_code_1" required>
                         </div>
                         <div id="optional_location_nation">
-                            <label id="location_nation_label" for="location_nation">Nation</label>
+                            <label id="location_nation_label" for="location_nation"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname'))?></label>
                             <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
                         </div>
                         <div class="tooltip" tabindex="0">

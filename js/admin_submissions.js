@@ -60,6 +60,17 @@ jQuery(document).ready(function ($) {
       break;
   }
 
+  switch (bmltwf_optional_location_province) {
+    case "hidden":
+    case "":
+      $("#optional_location_province").hide();
+      break;
+    case "display":
+    case "displayrequired":
+      $("#optional_location_province").show();
+      break;
+  }
+
   function add_highlighted_changes_to_quickedit(bmltwf_requested) {
     // fill in and highlight the changes - use extend to clone
     changes_requested = $.extend(true, {}, bmltwf_requested);
@@ -235,6 +246,7 @@ jQuery(document).ready(function ($) {
       {
         name: "delete",
         text: "Delete",
+        enabled: bmltwf_datatables_delete_enabled,
         extend: "selected",
         action: function (e, dt, button, config) {
           var id = dt.row(".selected").data()["id"];
@@ -372,6 +384,9 @@ jQuery(document).ready(function ($) {
     .DataTable()
     .on("select deselect", function () {
       var actioned = true;
+      // handle optional delete
+      $("#dt-submission").DataTable().button("delete:name").enable(bmltwf_datatables_delete_enabled);
+
       if ($("#dt-submission").DataTable().row({ selected: true }).count()) {
         var change_made = $("#dt-submission").DataTable().row({ selected: true }).data()["change_made"];
         var submission_type = $("#dt-submission").DataTable().row({ selected: true }).data()["submission_type"];

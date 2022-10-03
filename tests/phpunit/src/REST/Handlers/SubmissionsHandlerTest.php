@@ -575,7 +575,6 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     public function test_can_create_new_with_starter_kit_requested(): void
     {
         
-
         $form_post = array(
             "update_reason" => "reason_new",
             "meeting_name" => "testing name change",
@@ -631,55 +630,54 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     // FAILURE TESTING
     //
 
-    /**
-     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
-     */
-    public function test_cant_create_new_if_starter_kit_answer_missing(): void
-    {
+    // /**
+    //  * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+    //  */
+    // public function test_cant_create_new_if_starter_kit_answer_missing(): void
+    // {
 
-        $form_post = array(
-            "update_reason" => "reason_new",
-            "meeting_name" => "testing name change",
-            "meeting_id" => "3277",
-            "start_time" => "10:00:00",
-            "duration_time" => "01:00:00",
-            "location_text" => "test location",
-            "location_street" => "test street",
-            "location_municipality" => "test municipality",
-            "location_province" => "test province",
-            "location_postal_code_1" => "12345",
-            "weekday_tinyint" => "1",
-            "service_body_bigint" => "99",
-            "format_shared_id_list" => "1",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_email" => "yes",
+    //     $form_post = array(
+    //         "update_reason" => "reason_new",
+    //         "meeting_name" => "testing name change",
+    //         "meeting_id" => "3277",
+    //         "start_time" => "10:00:00",
+    //         "duration_time" => "01:00:00",
+    //         "location_text" => "test location",
+    //         "location_street" => "test street",
+    //         "location_municipality" => "test municipality",
+    //         "location_province" => "test province",
+    //         "location_postal_code_1" => "12345",
+    //         "weekday_tinyint" => "1",
+    //         "service_body_bigint" => "99",
+    //         "format_shared_id_list" => "1",
+    //         "first_name" => "joe",
+    //         "last_name" => "joe",
+    //         "email_address" => "joe@joe.com",
+    //         "submit" => "Submit Form",
+    //         "group_relationship" => "Group Member",
+    //         "add_email" => "yes",
+    //     );
 
-        );
+    //     global $wpdb;
+    //     $wpdb = Mockery::mock('wpdb');
+    //     /** @var Mockery::mock $wpdb test */
 
-        global $wpdb;
-        $wpdb = Mockery::mock('wpdb');
-        /** @var Mockery::mock $wpdb test */
+    //     // handle db insert of submission
+    //     $wpdb->shouldNotReceive('insert');
+    //     $wpdb->prefix = "";
 
-        // handle db insert of submission
-        $wpdb->shouldNotReceive('insert');
-        $wpdb->prefix = "";
+    //     Functions\expect('wp_mail')->never();
 
-        Functions\expect('wp_mail')->never();
+    //     $retrieve_single_response = $this->meeting;
 
-        $retrieve_single_response = $this->meeting;
+    //     Functions\when('\get_option')->justReturn("success");
 
-        Functions\when('\get_option')->justReturn("success");
+    //     $bmlt_input = '';
+    //     $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
+    //     $response = $handlers->meeting_update_form_handler_rest($form_post);
 
-        $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmlt($retrieve_single_response, $bmlt_input));
-        $response = $handlers->meeting_update_form_handler_rest($form_post);
-
-        $this->assertInstanceOf(WP_Error::class, $response);
-    }
+    //     $this->assertInstanceOf(WP_Error::class, $response);
+    // }
 
 
     /**

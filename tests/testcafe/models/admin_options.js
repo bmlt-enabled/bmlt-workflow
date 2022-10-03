@@ -26,12 +26,23 @@ class Admin_Options {
         this.restore_warning_dialog = Selector("#bmltwf_restore_warning_dialog");
         this.restore_warning_dialog_parent = this.restore_warning_dialog.parent();
         this.bmltwf_fso_email_address = Selector("#bmltwf_fso_email_address");
-        this.bmltwf_optional_location_nation = Selector("#bmltwf_optional_location_nation");
-        this.bmltwf_optional_location_sub_province = Selector("#bmltwf_optional_location_sub_province");
-        this.bmltwf_optional_postcode = Selector("#bmltwf_optional_postcode");
+        this.bmltwf_optional_location_nation_displayname = Selector("#bmltwf_optional_location_nation_displayname");
+        this.bmltwf_optional_location_nation_visible_checkbox = Selector("#bmltwf_optional_location_nation_visible_checkbox");
+        this.bmltwf_optional_location_nation_required_checkbox = Selector("#bmltwf_optional_location_nation_required_checkbox");
+        this.bmltwf_optional_location_sub_province_displayname = Selector("#bmltwf_optional_location_sub_province_displayname");
+        this.bmltwf_optional_location_sub_province_visible_checkbox = Selector("#bmltwf_optional_location_sub_province_visible_checkbox");
+        this.bmltwf_optional_location_sub_province_required_checkbox = Selector("#bmltwf_optional_location_sub_province_required_checkbox");
+        this.bmltwf_optional_location_province_displayname = Selector("#bmltwf_optional_location_province_displayname");
+        this.bmltwf_optional_location_province_visible_checkbox = Selector("#bmltwf_optional_location_province_visible_checkbox");
+        this.bmltwf_optional_location_province_required_checkbox = Selector("#bmltwf_optional_location_province_required_checkbox");
+        this.bmltwf_optional_postcode_displayname = Selector("#bmltwf_optional_postcode_displayname");
+        this.bmltwf_optional_postcode_visible_checkbox = Selector("#bmltwf_optional_postcode_visible_checkbox");
+        this.bmltwf_optional_postcode_required_checkbox = Selector("#bmltwf_optional_postcode_required_checkbox");
+        this.bmltwf_required_meeting_formats_required_checkbox = Selector("#bmltwf_required_meeting_formats_required_checkbox");
         this.bmltwf_fso_feature = Selector("#bmltwf_fso_feature");
         this.bmltwf_delete_closed_meetings = Selector("#bmltwf_delete_closed_meetings");
         this.bmltwf_email_from_address = Selector("#bmltwf_email_from_address");
+        this.bmltwf_trusted_servants_can_delete_submissions = Selector("#bmltwf_trusted_servants_can_delete_submissions");
         this.submit = Selector('#submit');
         this.settings_updated = Selector("#setting-error-settings_updated");
     }

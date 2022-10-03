@@ -86,6 +86,22 @@ jQuery(document).ready(function ($) {
       break;
   }
 
+  switch (bmltwf_optional_location_province) {
+    case "hidden":
+    case "":
+      $("#optional_location_province").hide();
+      break;
+    case "display":
+      $("#optional_location_province").show();
+      $("#location_province").attr("required", false);
+      break;
+    case "displayrequired":
+      $("#optional_location_province").show();
+      $("#location_province").attr("required", true);
+      $("#location_province_label").append('<span class="bmltwf-required-field"> *</span>');
+      break;
+  }
+
   switch (bmltwf_optional_postcode) {
     case "hidden":
     case "":
@@ -98,7 +114,7 @@ jQuery(document).ready(function ($) {
     case "displayrequired":
       $("#optional_postcode").show();
       $("#location_postal_code_1").attr("required", true);
-      $("#location_postal_code_1").append('<span class="bmltwf-required-field"> *</span>');
+      $("#location_postal_code_1_label").append('<span class="bmltwf-required-field"> *</span>');
       break;
   }
 

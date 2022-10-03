@@ -23,6 +23,7 @@ import { userVariables } from "../../.testcaferc";
 import { t, Selector, Role, RequestLogger } from "testcafe";
 
 import { 
+  randstr,
   reset_bmlt, 
   basic_options, 
   configure_service_bodies, 
@@ -31,7 +32,9 @@ import {
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
-  delete_submissions} from "./helpers/helper";
+  delete_submissions,
+  check_checkbox,
+  uncheck_checkbox} from "./helpers/helper";
 
 import fs from "fs";
 import { join as joinPath } from "path";
@@ -60,10 +63,6 @@ function getFileDownloadPath(download) {
   return joinPath(os.homedir(), "Downloads", download);
 }
 
-function randstr()
-{
-  return Math.random().toString(36).replace(/[^a-z]+/g, "") .substr(0, 9);
-}
 
 let downloadedFilePath = null;
 
@@ -139,25 +138,46 @@ test("Options_Save", async (t) => {
     .typeText(ao.bmltwf_email_from_address, testfrom, { replace: true })
     .expect(ao.bmltwf_email_from_address.value)
     .eql(testfrom);
-  await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display + Required Field");
-  await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display Only");
+  await check_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_location_nation_required_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_location_province_required_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_required_checkbox);
+  // await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display + Required Field");
+  // await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display + Required Field");
+  // await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display Only");
   await select_dropdown_by_text(ao.bmltwf_delete_closed_meetings, "Delete");
   await t.click(ao.submit);
   await ao.settings_updated();
   await t.expect(ao.bmltwf_fso_email_address.value).eql(testfso).expect(ao.bmltwf_email_from_address.value).eql(testfrom);
 
-  // .expect(ao.settings_updated.exists).eql(true);
 });
 
 test("Check_Optional_Fields", async (t) => {
   // test optional fields with 'display and required' option
 
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page);
-  await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display + Required Field");
-  await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display + Required Field");
-  await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display + Required Field");
-  
-  await t.click(ao.submit);
+  await check_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_location_nation_required_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_location_province_required_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_location_sub_province_required_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_postcode_required_checkbox);
+  await check_checkbox(t,ao.bmltwf_required_meeting_formats_required_checkbox);
+
+  const testnationdisplay = randstr();
+  const testprovincedisplay = randstr();
+  const testsubprovincedisplay= randstr();
+  const testpostcodedisplay = randstr();
+
+  await t.typeText(ao.bmltwf_optional_location_nation_displayname, testnationdisplay, { replace: true })
+  .typeText(ao.bmltwf_optional_location_province_displayname, testprovincedisplay, { replace: true })
+  .typeText(ao.bmltwf_optional_location_sub_province_displayname, testsubprovincedisplay, { replace: true })
+  .typeText(ao.bmltwf_optional_postcode_displayname, testpostcodedisplay, { replace: true })
+  .click(ao.submit);
   await ao.settings_updated();
 
   await t.useRole(Role.anonymous())
@@ -173,18 +193,29 @@ test("Check_Optional_Fields", async (t) => {
     .eql("required")
     .expect(uf.location_sub_province.getAttribute("required"))
     .eql("required")
+    .expect(uf.location_province.getAttribute("required"))
+    .eql("required")
     .expect(uf.location_postal_code_1.getAttribute("required"))
     .eql("required")
+    .expect(uf.display_format_shared_id_list.getAttribute("required"))
+    .eql('')
+    .expect(uf.location_nation_label.innerText).eql(testnationdisplay+" *")
+    .expect(uf.location_province_label.innerText).eql(testprovincedisplay+" *")
+    .expect(uf.location_sub_province_label.innerText).eql(testsubprovincedisplay+" *")
+    .expect(uf.location_postal_code_1_label.innerText).eql(testpostcodedisplay+" *")
 
     // test optional fields with 'hidden' option
 
     .useRole(bmltwf_admin)
     .navigateTo(userVariables.admin_settings_page);
-  await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
-  await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
-  await select_dropdown_by_text(ao.bmltwf_fso_feature, "Disabled");
-  await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Hidden");
 
+  await select_dropdown_by_text(ao.bmltwf_fso_feature, "Disabled");
+
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
+  
   await t.click(ao.submit);
   await ao.settings_updated();
   await t.useRole(Role.anonymous()).navigateTo(userVariables.formpage);
@@ -193,17 +224,26 @@ test("Check_Optional_Fields", async (t) => {
   await t
     .expect(uf.optional_location_nation.visible).eql(false)
     .expect(uf.optional_location_sub_province.visible).eql(false)
+    .expect(uf.optional_location_province.visible).eql(false)
     .expect(uf.starter_pack.visible).eql(false)
     .expect(uf.location_postal_code_1.visible).eql(false)
 
     // test optional fields with 'display' option
     .useRole(bmltwf_admin)
     .navigateTo(userVariables.admin_settings_page);
-  await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display");
-  await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display");
+
   await select_dropdown_by_text(ao.bmltwf_fso_feature, "Enabled");
-  await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display");
   
+  await check_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_nation_required_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_province_required_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_required_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_postcode_required_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_required_meeting_formats_required_checkbox);
+
   await t.click(ao.submit);
   await ao.settings_updated();
   await t.useRole(Role.anonymous()).navigateTo(userVariables.formpage);
@@ -211,7 +251,11 @@ test("Check_Optional_Fields", async (t) => {
 
   await t.expect(uf.optional_location_nation.visible).eql(true)
   .expect(uf.optional_location_sub_province.visible).eql(true)
+  .expect(uf.optional_location_province.visible).eql(true)
   .expect(uf.starter_pack.visible).eql(true)
-  .expect(uf.location_postal_code_1.visible).eql(true);
+  .expect(uf.location_postal_code_1.visible).eql(true)
+  .expect(uf.display_format_shared_id_list.getAttribute("required"))
+  .eql(null);
+
 
 });
