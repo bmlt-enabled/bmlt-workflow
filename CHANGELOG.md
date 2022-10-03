@@ -1,3 +1,11 @@
+## 1.0.7 (Oct 3, 2022)
+- #95 css highlighting on form change broken in 1.0.6
+- #94 'delete' button in submission form not working correctly for non wordpress admin - Now implemented as an option
+- Revamped the admin options page to add support for more optional fields
+- #93 Feature Request: Allow Meeting Formats to be left blank (thanks @paulnagle !)
+- #92 Feature Request: Allow "State" to be an optional form field (thanks @paulnagle !)
+- #91 Feature Request: Allow the location fields to be renamed (thanks @paulnagle !)
+
 ## 1.0.6 (Sep 26, 2022)
 - Fixed menu bug for unprivileged users and updated test cases to support
 
