@@ -478,7 +478,8 @@ class Integration
             $args = array(
                 'timeout' => '120',
                 'headers' => array(
-                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36'
+                    'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36',
+                    'Accept' => 'application/json'
                 ),
                 'cookies' => isset($cookies) ? $cookies : null,
                 'body' => isset($body) ? $body : null
