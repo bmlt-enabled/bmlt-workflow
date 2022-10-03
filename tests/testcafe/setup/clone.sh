@@ -16,7 +16,7 @@
 # along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 export PLUGINDIR=/var/www/html/flop/wp-content/plugins/bmlt-workflow
-export BRANCH=1.0.7-fixes
+export BRANCH=bmlt-3.x-testing
 
 cd /home/ssm-user
 git clone https://github.com/bmlt-enabled/bmlt-workflow.git
