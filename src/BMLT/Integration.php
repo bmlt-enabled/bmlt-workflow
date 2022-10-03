@@ -478,11 +478,15 @@ class Integration
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36',
                 'Accept' => 'application/json'
             );
+
             if($headers)
             {
                 $newheaders = array_merge($headers,$newheaders);
             }
-
+            $this->debug_log('SET_ARGS headers');
+            $this->debug_log($headers);
+            $this->debug_log('SET_ARGS merged headers');
+            $this->debug_log($newheaders);
             $args = array(
                 'timeout' => '120',
                 'headers' => $newheaders,
