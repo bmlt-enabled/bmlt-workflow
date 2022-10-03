@@ -98,16 +98,6 @@ class Integration
 
             return($xml->serverVersion->readableString->__toString());
         }
-        // $arr = simplexml_load_string($xml);
-        // return($xml->serverVersion->readableString->__toString());
-        // if(version_compare(($arr->serverVersion->readableString->__toString()),"3.0.0","lt"))
-        // {
-        //     echo "less than";
-        // }
-        // else
-        // {
-        //     echo "greater than";
-        // }
     }
     /**
      * retrieve_single_meeting
@@ -180,7 +170,7 @@ class Integration
             'password' => $password
         );
 
-        $url = $server . "/api/v1/auth/token";
+        $url = $server . "api/v1/auth/token";
         $this->debug_log($url);
         $response = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
         $this->debug_log(($response));
