@@ -502,7 +502,7 @@ class Integration
                     return $ret;
                 }
             }
-            $ret = \wp_safe_remote_get($url, $this->set_args($this->v3_token));
+            $ret = \wp_safe_remote_get($url, $this->set_args(array("token"=>$this->v3_token)));
             return $ret;
         } else {
             $ret = \wp_safe_remote_get($url, $this->set_args($cookies));
