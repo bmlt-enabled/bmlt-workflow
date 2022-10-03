@@ -136,7 +136,7 @@ if ($meeting_states_and_provinces) {
                         </div>
                         <input type="hidden" name="duration_time" size="10" id="duration_time" required>
 
-                        <label for="display_format_shared_id_list">Meeting Formats
+                        <label id="display_format_shared_id_list_label" for="display_format_shared_id_list">Meeting Formats
                             <?php 
                             $req = get_option('bmltwf_required_meeting_formats')==='true';
                             if ($req)

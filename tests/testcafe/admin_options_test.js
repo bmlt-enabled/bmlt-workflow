@@ -158,10 +158,6 @@ test("Check_Optional_Fields", async (t) => {
   // test optional fields with 'display and required' option
 
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page);
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display + Required Field");
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display + Required Field");
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display + Required Field");
-  // await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display + Required Field");
   await check_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_nation_required_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
@@ -170,6 +166,8 @@ test("Check_Optional_Fields", async (t) => {
   await check_checkbox(t,ao.bmltwf_optional_location_sub_province_required_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_postcode_required_checkbox);
+  await check_checkbox(t,ao.bmltwf_required_meeting_formats_required_checkbox);
+
   const testnationdisplay = randstr();
   const testprovincedisplay = randstr();
   const testsubprovincedisplay= randstr();
@@ -199,6 +197,8 @@ test("Check_Optional_Fields", async (t) => {
     .eql("required")
     .expect(uf.location_postal_code_1.getAttribute("required"))
     .eql("required")
+    .expect(uf.display_format_shared_id_list_label.getAttribute("required"))
+    .eql("required")
     .expect(uf.location_nation_label.innerText).eql(testnationdisplay+" *")
     .expect(uf.location_province_label.innerText).eql(testprovincedisplay+" *")
     .expect(uf.location_sub_province_label.innerText).eql(testsubprovincedisplay+" *")
@@ -208,10 +208,6 @@ test("Check_Optional_Fields", async (t) => {
 
     .useRole(bmltwf_admin)
     .navigateTo(userVariables.admin_settings_page);
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Hidden");
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Hidden");
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Hidden");
-  // await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Hidden");
 
   await select_dropdown_by_text(ao.bmltwf_fso_feature, "Disabled");
 
@@ -219,7 +215,7 @@ test("Check_Optional_Fields", async (t) => {
   await uncheck_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
   await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
   await uncheck_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
-
+  
   await t.click(ao.submit);
   await ao.settings_updated();
   await t.useRole(Role.anonymous()).navigateTo(userVariables.formpage);
@@ -236,11 +232,6 @@ test("Check_Optional_Fields", async (t) => {
     .useRole(bmltwf_admin)
     .navigateTo(userVariables.admin_settings_page);
 
-  //   await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display");
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display");
-  // await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display");
-  // await select_dropdown_by_text(ao.bmltwf_optional_postcode, "Display");
-
   await select_dropdown_by_text(ao.bmltwf_fso_feature, "Enabled");
   
   await check_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
@@ -251,6 +242,7 @@ test("Check_Optional_Fields", async (t) => {
   await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_required_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
   await uncheck_checkbox(t,ao.bmltwf_optional_postcode_required_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_required_meeting_formats_required_checkbox);
 
   await t.click(ao.submit);
   await ao.settings_updated();
@@ -261,6 +253,9 @@ test("Check_Optional_Fields", async (t) => {
   .expect(uf.optional_location_sub_province.visible).eql(true)
   .expect(uf.optional_location_province.visible).eql(true)
   .expect(uf.starter_pack.visible).eql(true)
-  .expect(uf.location_postal_code_1.visible).eql(true);
+  .expect(uf.location_postal_code_1.visible).eql(true)
+  .expect(uf.display_format_shared_id_list_label.getAttribute("required"))
+  .notOk();
+
 
 });

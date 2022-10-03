@@ -38,6 +38,7 @@ class Admin_Options {
         this.bmltwf_optional_postcode_displayname = Selector("#bmltwf_optional_postcode_displayname");
         this.bmltwf_optional_postcode_visible_checkbox = Selector("#bmltwf_optional_postcode_visible_checkbox");
         this.bmltwf_optional_postcode_required_checkbox = Selector("#bmltwf_optional_postcode_required_checkbox");
+        this.bmltwf_required_meeting_formats_required_checkbox = Selector("#bmltwf_required_meeting_formats_required_checkbox");
         this.bmltwf_fso_feature = Selector("#bmltwf_fso_feature");
         this.bmltwf_delete_closed_meetings = Selector("#bmltwf_delete_closed_meetings");
         this.bmltwf_email_from_address = Selector("#bmltwf_email_from_address");
