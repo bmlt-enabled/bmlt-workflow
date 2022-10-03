@@ -208,11 +208,12 @@ class Integration
             if (!$this->v3_token) {
                 $ret =  $this->authenticateRootServer();
                 if (is_wp_error($ret)) {
+                    $this->debug_log("exiting getServiceBodiesPermission authenticateRootServer failed");
                     return $ret;
                 }
             }
             $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/servicebodies';
-            $response = \wp_safe_remote_get($url, $this->set_args(array(null, null, "Authorization"=>"Bearer ". $this->v3_token)));
+            $response = \wp_safe_remote_get($url, $this->set_args(null, null, array( "Authorization"=>"Bearer ". $this->v3_token)));
             $this->debug_log("v3 API RESPONSE");
             $this->debug_log(wp_remote_retrieve_body($response));
 
