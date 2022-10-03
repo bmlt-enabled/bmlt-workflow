@@ -74,13 +74,14 @@ class Integration
     {
 
         $url = $server . "/client_interface/serverInfo.xml";
+        $this->debug_log("url = ".$url);
         $headers = array(
             "Accept: */*",
         );
 
         $resp = wp_remote_get($url, array('headers'=>$headers));
-        // $this->debug_log("WP_REMOTE_GET RETURNS");
-        // $this->debug_log(($resp));
+        $this->debug_log("WP_REMOTE_GET RETURNS");
+        $this->debug_log(($resp));
 
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string(wp_remote_retrieve_body($resp));

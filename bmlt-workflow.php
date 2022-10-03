@@ -344,7 +344,7 @@ if (!class_exists('bmltwf_plugin')) {
             $toplevelslug = 'bmltwf-submissions';
         }
 
-        $this->debug_log("slug = ".$toplevelslug);
+        // $this->debug_log("slug = ".$toplevelslug);
                 add_menu_page(
                     'BMLT Workflow',
                     'BMLT Workflow',
