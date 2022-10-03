@@ -197,8 +197,8 @@ test("Check_Optional_Fields", async (t) => {
     .eql("required")
     .expect(uf.location_postal_code_1.getAttribute("required"))
     .eql("required")
-    .expect(uf.display_format_shared_id_list_label.getAttribute("required"))
-    .eql("required")
+    .expect(uf.display_format_shared_id_list.getAttribute("required"))
+    .eql('')
     .expect(uf.location_nation_label.innerText).eql(testnationdisplay+" *")
     .expect(uf.location_province_label.innerText).eql(testprovincedisplay+" *")
     .expect(uf.location_sub_province_label.innerText).eql(testsubprovincedisplay+" *")
@@ -254,8 +254,8 @@ test("Check_Optional_Fields", async (t) => {
   .expect(uf.optional_location_province.visible).eql(true)
   .expect(uf.starter_pack.visible).eql(true)
   .expect(uf.location_postal_code_1.visible).eql(true)
-  .expect(uf.display_format_shared_id_list_label.getAttribute("required"))
-  .notOk();
+  .expect(uf.display_format_shared_id_list.getAttribute("required"))
+  .eql(null);
 
 
 });

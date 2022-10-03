@@ -575,7 +575,6 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     public function test_can_create_new_with_starter_kit_requested(): void
     {
         
-
         $form_post = array(
             "update_reason" => "reason_new",
             "meeting_name" => "testing name change",

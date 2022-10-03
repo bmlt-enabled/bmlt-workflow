@@ -724,6 +724,12 @@ class SubmissionsHandler
                 $require_meeting_formats = true;
             }
 
+            $fso_feature = false;
+            if(get_option('bmltwf_fso_feature') === 'display')
+            {
+                $fso_feature = true;
+            }
+
         }
 
         if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_change_bool && !$reason_close_bool))) {
@@ -754,7 +760,7 @@ class SubmissionsHandler
             "format_shared_id_list" => array("commaseperatednumbers",  $reason_new_bool && $require_meeting_formats),
             "additional_info" => array("textarea", $reason_close_bool),
             "starter_kit_postal_address" => array("textarea", false),
-            "starter_kit_required" => array("text", $reason_new_bool),
+            "starter_kit_required" => array("text", $reason_new_bool && $fso_feature),
             "location_nation" => array("text", $require_nation),
             "location_province" => array("text", $reason_new_bool && $require_province),
             "location_sub_province" => array("text", $require_sub_province),
