@@ -678,7 +678,7 @@ class SubmissionsHandler
             {
                 $strarr = explode(',', $data['format_shared_id_list']);
                 foreach ($strarr as $key) {
-                    if(in_array($key, $this->formats))
+                    if(array_key_exists($key, $this->formats))
                     {
                         switch($this->formats[$key]["key_string"])
                         {
