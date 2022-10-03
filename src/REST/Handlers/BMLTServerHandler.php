@@ -23,6 +23,7 @@ namespace bmltwf\REST\Handlers;
 use bmltwf\BMLT\Integration;
 use bmltwf\REST\HandlerCore;
 use bmltwf\BMLTWF_WP_Options;
+use WP_Error;
 
 class BMLTServerHandler
 {
@@ -103,7 +104,22 @@ class BMLTServerHandler
             return $result;
         }
 
-        $ret = $this->bmlt_integration->testServerAndAuth($username, $password, $server);
+        $version = $this->bmlt_integration->getServerVersion();
+        if($version)
+        {
+            if(version_compare($version,"3.0.0","lt"))
+            {
+                $ret = $this->bmlt_integration->testServerAndAuth2x($username, $password, $server);
+            }
+            else
+            {
+                $ret = $this->bmlt_integration->testServerAndAuth3x($username, $password, $server);
+            }
+        }
+        else
+        {
+            $ret = new WP_Error("InvalidResponse", "Invalid response from BMLT Root Server");
+        }
 
         if (is_wp_error($ret)) {
 

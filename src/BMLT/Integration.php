@@ -70,6 +70,45 @@ class Integration
         return new \WP_Error('bmltwf_error', $message, $data);
     }
 
+    public function getServerVersion()
+    {
+
+        $bmltwf_bmlt_server_address = get_option('bmltwf_bmlt_server_address');
+        $url = $bmltwf_bmlt_server_address . "/client_interface/serverInfo.xml";
+        $headers = array(
+            "Accept: */*",
+        );
+
+        $resp = wp_remote_get($url, array('headers'=>$headers));
+        // $this->debug_log("WP_REMOTE_GET RETURNS");
+        // $this->debug_log(($resp));
+
+        libxml_use_internal_errors(true);
+        $xml = simplexml_load_string(wp_remote_retrieve_body($resp));
+        if($xml === false)
+        {
+            return false;
+        }
+        else
+        {
+            if(!($xml->serverVersion->readableString instanceOf \SimpleXMLElement))
+            {
+                return false;
+            }
+
+            return($xml->serverVersion->readableString->__toString());
+        }
+        // $arr = simplexml_load_string($xml);
+        // return($xml->serverVersion->readableString->__toString());
+        // if(version_compare(($arr->serverVersion->readableString->__toString()),"3.0.0","lt"))
+        // {
+        //     echo "less than";
+        // }
+        // else
+        // {
+        //     echo "greater than";
+        // }
+    }
     /**
      * retrieve_single_meeting
      *
@@ -109,7 +148,7 @@ class Integration
         return $meeting;
     }
 
-    public function testServerAndAuth($username, $password, $server)
+    public function testServerAndAuth2x($username, $password, $server)
     {
         $postargs = array(
             'admin_action' => 'login',
@@ -131,6 +170,30 @@ class Integration
         {
             return new \WP_Error('bmltwf', 'check username and password details');
         }
+        return true;
+    }
+
+    public function testServerAndAuth3x($username, $password, $server)
+    {
+        $postargs = array(
+            'username' => $username,
+            'password' => $password
+        );
+
+        $url = $server . "/api/v1/auth/token";
+        $this->debug_log($url);
+        $response = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
+        $this->debug_log(($response));
+
+        $response_code = \wp_remote_retrieve_response_code($response);
+
+        if ($response_code != 200) {
+            return new \WP_Error('bmltwf', 'check BMLT server address');
+        }
+
+        $auth_details = json_decode(wp_remote_retrieve_body($response), true);
+        $this->debug_log($auth_details['token']);
+
         return true;
     }
 

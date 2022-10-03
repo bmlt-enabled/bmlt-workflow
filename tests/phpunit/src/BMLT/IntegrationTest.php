@@ -83,7 +83,7 @@ Line: $errorLine
      */
     public function test_can_call_testServerAndAuth_with_success(): void
     {
-        // testServerAndAuth($username, $password, $server)
+        // testServerAndAuth2x($username, $password, $server)
 
         Functions\when('wp_safe_remote_post')->returnArg();
         Functions\when('wp_remote_retrieve_response_code')->justReturn('200');
@@ -91,7 +91,7 @@ Line: $errorLine
         Functions\when('http_build_query')->justReturn(1);
 
         $integration = new Integration();
-        $response = $integration->testServerAndAuth("user", "pass", "server");
+        $response = $integration->testServerAndAuth2x("user", "pass", "server");
         $this->assertTrue($response);
     }
 
@@ -100,7 +100,7 @@ Line: $errorLine
      */
     public function test_cant_call_testServerAndAuth_with_invalid_server(): void
     {
-        // testServerAndAuth($username, $password, $server)
+        // testServerAndAuth2x($username, $password, $server)
 
         Functions\when('wp_safe_remote_post')->returnArg();
         Functions\when('wp_remote_retrieve_response_code')->justReturn('403');
@@ -108,7 +108,7 @@ Line: $errorLine
         Functions\when('http_build_query')->justReturn(1);
 
         $integration = new Integration();
-        $response = $integration->testServerAndAuth("user", "pass", "server");
+        $response = $integration->testServerAndAuth2x("user", "pass", "server");
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
@@ -117,7 +117,7 @@ Line: $errorLine
      */
     public function test_cant_call_testServerAndAuth_with_invalid_login(): void
     {
-        // testServerAndAuth($username, $password, $server)
+        // testServerAndAuth2x($username, $password, $server)
 
         Functions\when('wp_safe_remote_post')->returnArg();
         Functions\when('wp_remote_retrieve_response_code')->justReturn('200');
@@ -125,7 +125,7 @@ Line: $errorLine
         Functions\when('http_build_query')->justReturn(1);
 
         $integration = new Integration();
-        $response = $integration->testServerAndAuth("user", "pass", "server");
+        $response = $integration->testServerAndAuth2x("user", "pass", "server");
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
