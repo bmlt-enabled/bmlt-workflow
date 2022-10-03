@@ -105,6 +105,7 @@ class BMLTServerHandler
         }
 
         $version = $this->bmlt_integration->getServerVersion();
+        $this->debug_log("getServerVersion version returns ".$version);
         if($version)
         {
             if(version_compare($version,"3.0.0","lt"))
