@@ -73,7 +73,7 @@ class Integration
     public function getServerVersion($server)
     {
 
-        $url = $server . "/client_interface/serverInfo.xml";
+        $url = $server . "client_interface/serverInfo.xml";
         $this->debug_log("url = ".$url);
         $headers = array(
             "Accept: */*",
