@@ -23,13 +23,15 @@ namespace bmltwf\BMLT;
 //  use bmltwf\BMLTWF_Debug;
 use bmltwf\BMLTWF_WP_Options;
 
-if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
+if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
 class Integration
 {
 
     use \bmltwf\BMLTWF_Debug;
     protected $cookies = null; // our authentication cookies
+    protected $bmlt_root_server_version = null; // the version of bmlt root server we're authing against
+    protected $v3_token = null; // v3 auth token
 
     public function __construct($cookies = null, $wpoptionssstub = null)
     {
@@ -42,6 +44,8 @@ class Integration
         } else {
             $this->BMLTWF_WP_Options = $wpoptionssstub;
         }
+
+        $this->bmltwf_set_server_version($this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address')));
     }
 
     private function bmltwf_rest_error($message, $code)
@@ -49,6 +53,10 @@ class Integration
         return new \WP_Error('bmltwf_error', $message, array('status' => $code));
     }
 
+    public function bmltwf_set_server_version($version)
+    {
+        $this->bmlt_root_server_version = $version;
+    }
 
     // accepts raw string or array
     private function bmltwf_rest_success($message)
@@ -70,33 +78,39 @@ class Integration
         return new \WP_Error('bmltwf_error', $message, $data);
     }
 
-    public function getServerVersion($server)
+    private function bmltwf_use_v3_auth()
+    {
+        if (version_compare($this->bmlt_root_server_version, "3.0.0", "lt")) {
+            return false;
+        } else {
+            $this->debug_log("using v3 auth");
+            return true;
+        }
+    }
+
+    public function bmltwf_get_remote_server_version($server)
     {
 
         $url = $server . "client_interface/serverInfo.xml";
-        $this->debug_log("url = ".$url);
+        $this->debug_log("url = " . $url);
         $headers = array(
             "Accept: */*",
         );
 
-        $resp = wp_remote_get($url, array('headers'=>$headers));
+        $resp = wp_remote_get($url, array('headers' => $headers));
         $this->debug_log("WP_REMOTE_GET RETURNS");
         $this->debug_log(($resp));
 
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string(wp_remote_retrieve_body($resp));
-        if($xml === false)
-        {
+        if ($xml === false) {
             return false;
-        }
-        else
-        {
-            if(!($xml->serverVersion->readableString instanceOf \SimpleXMLElement))
-            {
+        } else {
+            if (!($xml->serverVersion->readableString instanceof \SimpleXMLElement)) {
                 return false;
             }
 
-            return($xml->serverVersion->readableString->__toString());
+            return ($xml->serverVersion->readableString->__toString());
         }
     }
     /**
@@ -114,11 +128,11 @@ class Integration
             "Accept: */*",
         );
 
-        $resp = wp_remote_get($url, array('headers'=>$headers));
+        $resp = wp_remote_get($url, array('headers' => $headers));
         $this->debug_log("WP_REMOTE_GET RETURNS");
         $this->debug_log(($resp));
 
-        if ((!is_array( $resp )) ||  is_wp_error( $resp )) {
+        if ((!is_array($resp)) ||  is_wp_error($resp)) {
             return $this->bmltwf_rest_error('Server error retrieving meeting', 500);
         }
 
@@ -189,7 +203,6 @@ class Integration
 
     public function getMeetingFormats()
     {
-        
 
         $req = array();
         $req['admin_action'] = 'get_format_info';
@@ -274,7 +287,7 @@ class Integration
      */
     public function getGmapsKey()
     {
-        
+
         $ret = $this->authenticateRootServer();
         if (is_wp_error($ret)) {
             // $this->debug_log("*** AUTH ERROR");
@@ -298,7 +311,7 @@ class Integration
         $key = $this->getGmapsKey();
 
         $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($address) . "&key=" . $key;
-        
+
         $this->debug_log("*** GMAPS URL");
         $this->debug_log($url);
 
@@ -306,9 +319,9 @@ class Integration
             "Accept: */*",
         );
 
-        $resp = wp_remote_get($url, array('headers'=>$headers));
+        $resp = wp_remote_get($url, array('headers' => $headers));
 
-        if ((!is_array( $resp )) ||  is_wp_error( $resp )) {
+        if ((!is_array($resp)) ||  is_wp_error($resp)) {
             return $this->bmltwf_rest_error('Server error geolocating address', 500);
         }
 
@@ -337,7 +350,7 @@ class Integration
 
     private function authenticateRootServer()
     {
-        
+
         if ($this->cookies == null) {
             $encrypted = get_option('bmltwf_bmlt_password');
             $this->debug_log("retrieved encrypted bmlt password");
@@ -347,12 +360,9 @@ class Integration
                 return new \WP_Error('bmltwf', 'Error unpacking password.');
             }
 
-            if(defined('BMLTWF_RUNNING_UNDER_PHPUNIT'))
-            {
+            if (defined('BMLTWF_RUNNING_UNDER_PHPUNIT')) {
                 $nonce_salt = BMLTWF_PHPUNIT_NONCE_SALT;
-            }
-            else
-            {
+            } else {
                 $nonce_salt = NONCE_SALT;
             }
 
@@ -361,27 +371,49 @@ class Integration
                 return new \WP_Error('bmltwf', 'Error decrypting password.');
             }
 
-            $postargs = array(
-                'admin_action' => 'login',
-                'c_comdef_admin_login' => get_option('bmltwf_bmlt_username'),
-                'c_comdef_admin_password' => $decrypted
-            );
-            $url = get_option('bmltwf_bmlt_server_address') . "index.php";
+            if ($this->bmltwf_use_v3_auth()) {
+                $postargs = array(
+                    'username' => get_option('bmltwf_bmlt_username'),
+                    'password' => $decrypted
+                );
+                $this->debug_log("inside authenticateRootServer v3 auth");
+                $url = get_option('bmltwf_bmlt_server_address') . "api/v1/auth/token";
+                $this->debug_log($url);
+                $response = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
+                $this->debug_log(($response));
 
-            // $this->debug_log("AUTH URL = " . $url);
-            $ret = $this->post($url, null, $postargs);
+                $response_code = \wp_remote_retrieve_response_code($response);
 
-            if (is_wp_error($ret)) {
-                return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
+                if ($response_code != 200) {
+                    return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
+                }
+
+                $auth_details = json_decode(wp_remote_retrieve_body($response), true);
+                $this->v3_token = $auth_details['token'];
+            } else {
+                // legacy auth
+                $postargs = array(
+                    'admin_action' => 'login',
+                    'c_comdef_admin_login' => get_option('bmltwf_bmlt_username'),
+                    'c_comdef_admin_password' => $decrypted
+                );
+                $url = get_option('bmltwf_bmlt_server_address') . "index.php";
+
+                // $this->debug_log("AUTH URL = " . $url);
+                $ret = $this->post($url, null, $postargs);
+
+                if (is_wp_error($ret)) {
+                    return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
+                }
+
+                if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
+                {
+                    $this->cookies = null;
+                    return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
+                }
+
+                $this->cookies = \wp_remote_retrieve_cookies($ret);
             }
-
-            if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
-            {
-                $this->cookies = null;
-                return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
-            }
-
-            $this->cookies = \wp_remote_retrieve_cookies($ret);
         }
         return true;
     }
@@ -402,44 +434,69 @@ class Integration
 
     private function get($url, $cookies = null)
     {
-        $ret = \wp_safe_remote_get($url, $this->set_args($cookies));
-        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
-        {
-            $ret =  $this->authenticateRootServer();
-            if (is_wp_error($ret)) {
-                return $ret;
+        if ($this->bmltwf_use_v3_auth()) {
+            $this->debug_log("inside get v3 auth");
+
+            if (!$this->v3_token) {
+                $ret =  $this->authenticateRootServer();
+                if (is_wp_error($ret)) {
+                    return $ret;
+                }
             }
-            // try once more in case it was a session timeout
-            $ret = wp_safe_remote_get($url, $this->set_args($cookies));
+            $ret = \wp_safe_remote_get($url, $this->set_args($this->v3_token));
+            return $ret;
+        } else {
+            $ret = \wp_safe_remote_get($url, $this->set_args($cookies));
+            if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
+            {
+                $ret =  $this->authenticateRootServer();
+                if (is_wp_error($ret)) {
+                    return $ret;
+                }
+                // try once more in case it was a session timeout
+                $ret = wp_safe_remote_get($url, $this->set_args($cookies));
+            }
+            return $ret;
         }
-        return $ret;
     }
 
     private function post($url, $cookies = null, $postargs)
     {
-        
 
-        $this->debug_log("POSTING URL = " . $url);
-        // $this->debug_log(($this->set_args($cookies, http_build_query($postargs))));
-        // $this->debug_log("*********");
-        $ret = \wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
+        if ($this->bmltwf_use_v3_auth()) {
+            $this->debug_log("inside post v3 auth");
 
-        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
-        {
-            $ret =  $this->authenticateRootServer();
-            if (is_wp_error($ret)) {
-                return $ret;
+            if (!$this->v3_token) {
+                $ret =  $this->authenticateRootServer();
+                if (is_wp_error($ret)) {
+                    return $ret;
+                }
             }
-
-            // try once more in case it was a session timeout
+            $ret = \wp_safe_remote_post($url, $this->set_args($this->v3_token, http_build_query($postargs)));
+            return $ret;
+        } else {
+            $this->debug_log("POSTING URL = " . $url);
+            // $this->debug_log(($this->set_args($cookies, http_build_query($postargs))));
+            // $this->debug_log("*********");
             $ret = \wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
+
+            if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
+            {
+                $ret =  $this->authenticateRootServer();
+                if (is_wp_error($ret)) {
+                    return $ret;
+                }
+
+                // try once more in case it was a session timeout
+                $ret = \wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
+            }
+            return $ret;
         }
-        return $ret;
     }
 
     private function postsemantic($url, $cookies = null, $postargs)
     {
-        
+
 
         $this->debug_log("POSTING SEMANTIC URL = " . $url);
         // $this->debug_log(($this->set_args($cookies, http_build_query($postargs))));

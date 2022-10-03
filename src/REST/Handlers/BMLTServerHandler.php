@@ -104,8 +104,8 @@ class BMLTServerHandler
             return $result;
         }
 
-        $version = $this->bmlt_integration->getServerVersion($server);
-        $this->debug_log("getServerVersion version returns ".$version);
+        $version = $this->bmlt_integration->bmltwf_get_remote_server_version($server);
+        $this->debug_log("bmltwf_get_remote_server_version returns ".$version);
         if($version)
         {
             if(version_compare($version,"3.0.0","lt"))
