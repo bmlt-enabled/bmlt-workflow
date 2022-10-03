@@ -70,11 +70,10 @@ class Integration
         return new \WP_Error('bmltwf_error', $message, $data);
     }
 
-    public function getServerVersion()
+    public function getServerVersion($server)
     {
 
-        $bmltwf_bmlt_server_address = get_option('bmltwf_bmlt_server_address');
-        $url = $bmltwf_bmlt_server_address . "/client_interface/serverInfo.xml";
+        $url = $server . "/client_interface/serverInfo.xml";
         $headers = array(
             "Accept: */*",
         );

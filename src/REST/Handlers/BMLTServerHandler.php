@@ -104,7 +104,7 @@ class BMLTServerHandler
             return $result;
         }
 
-        $version = $this->bmlt_integration->getServerVersion();
+        $version = $this->bmlt_integration->getServerVersion($server);
         $this->debug_log("getServerVersion version returns ".$version);
         if($version)
         {
