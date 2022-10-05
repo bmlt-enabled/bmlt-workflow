@@ -26,20 +26,20 @@ if ($bmltwf_bmlt_test_status != "success") {
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
-$bmlt_integration = new Integration();
-$bmltwf_do_counties_and_sub_provinces = false;
-$meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
+// $bmlt_integration = new Integration();
+// $bmltwf_do_counties_and_sub_provinces = false;
+// $meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
 
-if ($meeting_counties_and_sub_provinces) {
-    $bmltwf_do_counties_and_sub_provinces = true;
-}
+// if ($meeting_counties_and_sub_provinces) {
+//     $bmltwf_do_counties_and_sub_provinces = true;
+// }
 
-$bmltwf_do_states_and_provinces = false;
-$meeting_states_and_provinces = $bmlt_integration->getMeetingStates();
+// $bmltwf_do_states_and_provinces = false;
+// $meeting_states_and_provinces = $bmlt_integration->getMeetingStates();
 
-if ($meeting_states_and_provinces) {
-    $bmltwf_do_states_and_provinces = true;
-}
+// if ($meeting_states_and_provinces) {
+//     $bmltwf_do_states_and_provinces = true;
+// }
 ?>
 
 <div id="form_replace" class="bmltwf_wide_form">
@@ -164,20 +164,6 @@ if ($meeting_states_and_provinces) {
                         <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
                         <div id="optional_location_sub_province">
                             <label id="location_sub_province_label" for="location_sub_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname'))?></label>
-
-                            <?php
-                            if ($bmltwf_do_counties_and_sub_provinces) {
-                                echo '<select class="meeting-input" id="location_sub_province" name="location_sub_province">';
-                                foreach ($meeting_counties_and_sub_provinces as $key) {
-                                    echo '<option value="' . $key . '">' . $key . '</option>';
-                                }
-                                echo '</select>';
-                            } else {
-                                echo '<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">';
-                            }
-
-                            ?>
-
                         </div>
                         <div id="optional_location_province">
                             <label id="location_province_label" for="location_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_province_displayname'))?></label>
@@ -234,7 +220,7 @@ if ($meeting_states_and_provinces) {
                         <option value="none">No</option>
                         <option value="virtual">Yes - Virtual only</option>
                         <option value="hybrid"">Yes - Hybrid (Virtual and Face to Face)</option>
-                            <option value=" tempclosure"">Yes -Temporary Face to Face Closure</option>
+                            <option value="tempclosure"">Yes -Temporary Face to Face Closure</option>
                     </select>
                     <div id="virtual_meeting_settings">
                         <div class="tooltip" tabindex="0">

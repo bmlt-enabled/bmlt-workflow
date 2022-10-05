@@ -183,10 +183,9 @@ export async function basic_options() {
   await uncheck_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
   await uncheck_checkbox(t,ao.bmltwf_optional_location_province_required_checkbox);
-  await check_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
   await uncheck_checkbox(t,ao.bmltwf_optional_postcode_required_checkbox);
-
 
   await t.click(ao.submit);
   await ao.settings_updated();

@@ -89,6 +89,16 @@ jQuery(document).ready(function ($) {
       }
     }
 
+    if (bmltwf_do_counties_and_sub_provinces && "" in changes_requested)
+    {
+
+    }
+
+    if (bmltwf_do_counties_and_sub_provinces && "" in changes_requested)
+    {
+
+    }
+
     Object.keys(changes_requested).forEach((element) => {
       if ($("#quickedit_" + element).length) {
         if (element === "format_shared_id_list") {

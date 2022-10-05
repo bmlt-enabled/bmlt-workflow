@@ -113,6 +113,17 @@ if (!class_exists('bmltwf_plugin')) {
             $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
             $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
 
+            // add counties/states/provinces if they are populated
+            $meeting_counties_and_sub_provinces = $this->bmlt_integration->getMeetingCounties();
+            if ($meeting_counties_and_sub_provinces) {
+                $script .= 'var bmltwf_counties_and_sub_provinces = "' . json_encode($meeting_counties_and_sub_provinces) . '";';
+            }
+
+            $meeting_states_and_provinces = $this->bmlt_integration->getMeetingStates();
+            if ($meeting_states_and_provinces) {
+                $script .= 'var bmltwf_do_states_and_provinces = "' . json_encode($meeting_states_and_provinces) . '";';
+            }
+
             // add meeting formats
             $formatarr = $this->bmlt_integration->getMeetingFormats();
             // $this->debug_log("FORMATS");
@@ -277,6 +288,17 @@ if (!class_exists('bmltwf_plugin')) {
                     $script  .= 'var bmltwf_bmltserver_geolocate_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/bmltserver/geolocate') . '; ';
                     // add our bmlt server for the submission lookups
                     $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
+
+                    // add counties/states/provinces if they are populated
+                    $meeting_counties_and_sub_provinces = $this->bmlt_integration->getMeetingCounties();
+                    if ($meeting_counties_and_sub_provinces) {
+                        $script .= 'var bmltwf_counties_and_sub_provinces = "' . json_encode($meeting_counties_and_sub_provinces) . '";';
+                    }
+
+                    $meeting_states_and_provinces = $this->bmlt_integration->getMeetingStates();
+                    if ($meeting_states_and_provinces) {
+                        $script .= 'var bmltwf_do_states_and_provinces = "' . json_encode($meeting_states_and_provinces) . '";';
+                    }
 
                     // add meeting formats
                     $formatarr = $this->bmlt_integration->getMeetingFormats();

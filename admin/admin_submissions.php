@@ -170,7 +170,7 @@ if ($meeting_states_and_provinces) {
             <input type="text" name="quickedit_location_municipality" id="quickedit_location_municipality" class="quickedit-input">
 
             <div id="optional_location_sub_province">
-                <label for="quickedit_location_sub_province">Sub Province</label>
+                <label for="quickedit_location_sub_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname'))?></label>
                 <?php
                 if ($bmltwf_do_counties_and_sub_provinces) {
                     echo '<select class="meeting-input" name="quickedit_location_sub_province">';
@@ -185,7 +185,7 @@ if ($meeting_states_and_provinces) {
             </div>
             <div id="optional_location_province">
 
-                <label for="quickedit_location_province">State<span class="bmltwf-required-field"> *</span></label>
+                <label for="quickedit_location_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_province_displayname'))?><span class="bmltwf-required-field"> *</span></label>
                 <?php
                 if ($bmltwf_do_states_and_provinces) {
                     echo '<select class="meeting-input" name="quickedit_location_province">';
@@ -199,11 +199,11 @@ if ($meeting_states_and_provinces) {
 
                 ?>
             </div>
-            <label for="quickedit_location_postal_code_1">Postcode<span class="bmltwf-required-field"> *</span></label>
-            <input class="meeting-input" type="number" name="quickedit_location_postal_code_1" size="5" max="99999" id="quickedit_location_postal_code_1" required>
+            <label for="quickedit_location_postal_code_1"><?php echo sanitize_text_field(get_option('bmltwf_optional_postcode_displayname'))?><span class="bmltwf-required-field"> *</span></label>
+            <input class="meeting-input" type="text" name="quickedit_location_postal_code_1" size="5" max="99999" id="quickedit_location_postal_code_1" required>
 
             <div id="optional_location_nation">
-                <label for="quickedit_location_nation">Nation</label>
+                <label for="quickedit_location_nation"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname'))?></label>
                 <input class="meeting-input" type="text" name="quickedit_location_nation" size="50" id="quickedit_location_nation">
             </div>
             <fieldset>
