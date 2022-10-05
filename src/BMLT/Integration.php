@@ -33,6 +33,7 @@ class Integration
     protected $bmlt_root_server_version = null; // the version of bmlt root server we're authing against
     protected $v3_access_token = null; // v3 auth token
     protected $v3_access_token_expires_at = null; // v3 auth token expiration
+    protected $bmltwf_bmlt_user_id; // user id of the workflow bot
 
     public function __construct($cookies = null, $wpoptionssstub = null)
     {
@@ -204,7 +205,32 @@ class Integration
 
     public function getServiceBodiesPermissionv3()
     {
-            $this->debug_log("inside getServiceBodiesPermission v3 auth");
+        $this->debug_log("inside getServiceBodiesPermission v3 auth");
+        if (!$this->v3_access_token) {
+            $ret =  $this->authenticateRootServer();
+            if (is_wp_error($ret)) {
+                $this->debug_log("exiting getServiceBodiesPermission authenticateRootServer failed");
+                return $ret;
+            }
+        }
+        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/servicebodies';
+        $response = \wp_safe_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
+        $this->debug_log("v3 API RESPONSE");
+        $this->debug_log(wp_remote_retrieve_body($response));
+
+        if (\wp_remote_retrieve_response_code($response) != 200) {
+            return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
+        }
+
+        return json_decode(wp_remote_retrieve_body($response), 1);
+    }
+
+    public function getmyUserIdv3()
+    {
+        $this->debug_log("inside getmyUserIdv3");
+        if ($this->bmltwf_bmlt_user_id) {
+            return $this->bmltwf_bmlt_user_id;
+        } else {
             if (!$this->v3_access_token) {
                 $ret =  $this->authenticateRootServer();
                 if (is_wp_error($ret)) {
@@ -212,8 +238,8 @@ class Integration
                     return $ret;
                 }
             }
-            $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/servicebodies';
-            $response = \wp_safe_remote_get($url, $this->set_args(null, null, array( "Authorization"=>"Bearer ". $this->v3_access_token)));
+            $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/users';
+            $response = \wp_safe_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
             $this->debug_log("v3 API RESPONSE");
             $this->debug_log(wp_remote_retrieve_body($response));
 
@@ -221,7 +247,8 @@ class Integration
                 return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
             }
 
-            return json_decode(wp_remote_retrieve_body($response), 1);
+            return json_decode(wp_remote_retrieve_body($response), 1)['id'];
+        }
     }
 
     public function getServiceBodiesPermissionv2()
@@ -235,7 +262,7 @@ class Integration
         }
 
         $arr = json_decode(wp_remote_retrieve_body($response), 1);
-    
+
         return $arr;
     }
 
@@ -251,7 +278,7 @@ class Integration
         }
         $url = get_option('bmltwf_bmlt_server_address') . 'formats';
 
-        $ret = \wp_safe_remote_post($url, $this->set_args(array("Authorization"=>"Bearer ". $this->v3_access_token)));
+        $ret = \wp_safe_remote_post($url, $this->set_args(array("Authorization" => "Bearer " . $this->v3_access_token)));
         return $ret;
     }
 
@@ -491,16 +518,14 @@ class Integration
     }
 
     private function set_args($cookies, $body = null, $headers = null)
-    {
-        {
+    { {
             $newheaders =  array(
                 'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36',
                 'Accept' => 'application/json'
             );
 
-            if($headers)
-            {
-                $newheaders = array_merge($headers,$newheaders);
+            if ($headers) {
+                $newheaders = array_merge($headers, $newheaders);
             }
             $this->debug_log('SET_ARGS headers');
             $this->debug_log($headers);
@@ -531,7 +556,7 @@ class Integration
                     return $ret;
                 }
             }
-            $ret = \wp_safe_remote_get($url, $this->set_args(null, null, array("Authorization"=>"Bearer ". $this->v3_access_token)));
+            $ret = \wp_safe_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
             return $ret;
         } else {
             $ret = \wp_safe_remote_get($url, $this->set_args($cookies));
@@ -560,7 +585,7 @@ class Integration
                     return $ret;
                 }
             }
-            $ret = \wp_safe_remote_post($url, $this->set_args(null, null, array("Authorization"=>"Bearer ". $this->v3_access_token), http_build_query($postargs)));
+            $ret = \wp_safe_remote_post($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), http_build_query($postargs)));
             return $ret;
         } else {
             $this->debug_log("POSTING URL = " . $url);
