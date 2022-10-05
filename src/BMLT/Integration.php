@@ -247,7 +247,7 @@ class Integration
                 return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
             }
 
-            return json_decode(wp_remote_retrieve_body($response), 1)['id'];
+            return json_decode(wp_remote_retrieve_body($response), 1)[0]['id'];
         }
     }
 
