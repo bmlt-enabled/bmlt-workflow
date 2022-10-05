@@ -37,25 +37,29 @@ jQuery(document).ready(function ($) {
   // fill in counties and sub provinces
   if(bmltwf_counties_and_sub_provinces === undefined)
   {
+    $("#optional_location_sub_province").append('<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">');
+  }
+  else
+  {
+    $("#optional_location_sub_province").append('<select class="meeting-input" id="location_sub_province" name="location_sub_province">');
+    bmltwf_counties_and_sub_provinces.forEach(function (item, index) {
+      $("#optional_location_sub_province").append('<option value="' + item + '">' + item + '</option>');
+    });
+    $("#optional_location_sub_province").append('</select>');
+  }
+
+  if(bmltwf_do_states_and_provinces === undefined)
+  {
     $("#optional_location_province").append('<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">');
   }
   else
   {
-    $("#optional_location_province").append('<select class="meeting-input" id="location_sub_province" name="location_sub_province">');
+    $("#optional_location_province").append('<select class="meeting-input" id="location_province" name="location_province">');
+    bmltwf_do_states_and_provinces.forEach(function (item, index) {
+      $("#optional_location_province").append('<option value="' + item + '">' + item + '</option>');
+    });
     $("#optional_location_province").append('</select>');
   }
-  // <?php
-  // if ($bmltwf_do_counties_and_sub_provinces) {
-  //     echo '<select class="meeting-input" id="location_sub_province" name="location_sub_province">';
-  //     foreach ($meeting_counties_and_sub_provinces as $key) {
-  //         echo '<option value="' . $key . '">' . $key . '</option>';
-  //     }
-  //     echo '</select>';
-  // } else {
-  //     echo '<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">';
-  // }
-
-  // ?>
 
   Object.keys(bmltwf_bmlt_formats).forEach((key) => {
     formatdata.push({ text: "(" + bmltwf_bmlt_formats[key]["key_string"] + ")-" + bmltwf_bmlt_formats[key]["name_string"], id: key });
