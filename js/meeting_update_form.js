@@ -52,7 +52,7 @@ jQuery(document).ready(function ($) {
 
   if(bmltwf_do_states_and_provinces === false)
   {
-    $("#optional_location_province").append('<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">');
+    $("#optional_location_province").append('<input class="meeting-input" type="text" name="location_province" size="50" id="location_province">');
   }
   else
   {
