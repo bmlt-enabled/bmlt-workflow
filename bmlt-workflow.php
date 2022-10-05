@@ -299,6 +299,10 @@ if (!class_exists('bmltwf_plugin')) {
                     if ($meeting_states_and_provinces) {
                         $script .= 'var bmltwf_do_states_and_provinces = "' . json_encode($meeting_states_and_provinces) . '";';
                     }
+                    $this->error_log("counties:");
+                    $this->error_log(json_encode($meeting_counties_and_sub_provinces));
+                    $this->error_log("states:");
+                    $this->error_log(json_encode($meeting_states_and_provinces));
 
                     // add meeting formats
                     $formatarr = $this->bmlt_integration->getMeetingFormats();
