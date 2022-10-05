@@ -89,7 +89,7 @@ if ($meeting_states_and_provinces) {
         <div class="form-grid-col1">
             <label for="quickedit_meeting_name">Meeting Name</label>
             <input type="text" name="quickedit_meeting_name" id="quickedit_meeting_name" class="quickedit-input">
-            <!-- <label for="quickedit_format_shared_id_list">Meeting Formats</label>
+            <label for="quickedit_format_shared_id_list">Meeting Formats
             <?php
             $req = get_option('bmltwf_required_meeting_formats') === 'true';
             if ($req) {
@@ -101,7 +101,7 @@ if ($meeting_states_and_provinces) {
                 echo ' required';
             }
             ?>
-            </select> -->
+            </select>
             <div class="grid-flex-container">
                 <div class="grid-flex-item">
                     <label for="quickedit_start_time">Start Time</label>
