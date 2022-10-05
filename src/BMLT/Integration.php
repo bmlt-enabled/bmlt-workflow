@@ -203,13 +203,13 @@ class Integration
         return true;
     }
 
-    public function getServiceBodiesPermissionv3()
+    public function getServiceBodiesv3()
     {
-        $this->debug_log("inside getServiceBodiesPermission v3 auth");
+        $this->debug_log("inside getServiceBodies v3 auth");
         if (!$this->v3_access_token) {
             $ret =  $this->authenticateRootServer();
             if (is_wp_error($ret)) {
-                $this->debug_log("exiting getServiceBodiesPermission authenticateRootServer failed");
+                $this->debug_log("exiting getServiceBodies authenticateRootServer failed");
                 return $ret;
             }
         }
@@ -223,32 +223,6 @@ class Integration
         }
 
         return json_decode(wp_remote_retrieve_body($response), 1);
-    }
-
-    public function getmyUserIdv3()
-    {
-        $this->debug_log("inside getmyUserIdv3");
-        if ($this->bmltwf_bmlt_user_id) {
-            return $this->bmltwf_bmlt_user_id;
-        } else {
-            if (!$this->v3_access_token) {
-                $ret =  $this->authenticateRootServer();
-                if (is_wp_error($ret)) {
-                    $this->debug_log("exiting getServiceBodiesPermission authenticateRootServer failed");
-                    return $ret;
-                }
-            }
-            $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/users';
-            $response = \wp_safe_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
-            $this->debug_log("v3 API RESPONSE");
-            $this->debug_log(wp_remote_retrieve_body($response));
-
-            if (\wp_remote_retrieve_response_code($response) != 200) {
-                return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
-            }
-
-            return json_decode(wp_remote_retrieve_body($response), 1)[0]['id'];
-        }
     }
 
     public function getServiceBodiesPermissionv2()
