@@ -299,20 +299,27 @@ if (!class_exists('bmltwf_plugin')) {
                     // add our bmlt server for the submission lookups
                     $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
 
+
                     // add counties/states/provinces if they are populated
                     $meeting_counties_and_sub_provinces = $this->bmlt_integration->getMeetingCounties();
+                    $script .= "var bmltwf_counties_and_sub_provinces = " . json_encode($meeting_counties_and_sub_provinces) . ";";
                     if ($meeting_counties_and_sub_provinces) {
-                        $script .= 'var bmltwf_counties_and_sub_provinces = "' . json_encode($meeting_counties_and_sub_provinces) . '";';
+                        $script .= json_encode($meeting_counties_and_sub_provinces) . ";";
+                    }
+                    else
+                    {
+                        $script .= "false;";
                     }
 
                     $meeting_states_and_provinces = $this->bmlt_integration->getMeetingStates();
+                    $script .= "var bmltwf_do_states_and_provinces = " . json_encode($meeting_states_and_provinces) . ";";
                     if ($meeting_states_and_provinces) {
-                        $script .= 'var bmltwf_do_states_and_provinces = "' . json_encode($meeting_states_and_provinces) . '";';
+                        $script .=  json_encode($meeting_states_and_provinces) . ";";
                     }
-                    $this->debug_log("counties:");
-                    $this->debug_log(json_encode($meeting_counties_and_sub_provinces));
-                    $this->debug_log("states:");
-                    $this->debug_log(json_encode($meeting_states_and_provinces));
+                    else
+                    {
+                        $script .= "false;";
+                    }
 
                     // add meeting formats
                     $formatarr = $this->bmlt_integration->getMeetingFormats();
