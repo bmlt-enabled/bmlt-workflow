@@ -299,10 +299,10 @@ if (!class_exists('bmltwf_plugin')) {
                     if ($meeting_states_and_provinces) {
                         $script .= 'var bmltwf_do_states_and_provinces = "' . json_encode($meeting_states_and_provinces) . '";';
                     }
-                    $this->error_log("counties:");
-                    $this->error_log(json_encode($meeting_counties_and_sub_provinces));
-                    $this->error_log("states:");
-                    $this->error_log(json_encode($meeting_states_and_provinces));
+                    $this->debug_log("counties:");
+                    $this->debug_log(json_encode($meeting_counties_and_sub_provinces));
+                    $this->debug_log("states:");
+                    $this->debug_log(json_encode($meeting_states_and_provinces));
 
                     // add meeting formats
                     $formatarr = $this->bmlt_integration->getMeetingFormats();
@@ -414,8 +414,6 @@ if (!class_exists('bmltwf_plugin')) {
                 {
                     remove_menu_page('bmltwf-settings');
                 }
-                global $submenu;
-                error_log(print_r($submenu, true));
 
         }
 
