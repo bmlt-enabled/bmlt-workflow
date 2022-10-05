@@ -35,7 +35,7 @@ jQuery(document).ready(function ($) {
   }
   
   // fill in counties and sub provinces
-  if(bmltwf_counties_and_sub_provinces === undefined)
+  if(bmltwf_counties_and_sub_provinces !== false)
   {
     $("#optional_location_sub_province").append('<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">');
   }
@@ -48,7 +48,7 @@ jQuery(document).ready(function ($) {
     $("#optional_location_sub_province").append('</select>');
   }
 
-  if(bmltwf_do_states_and_provinces === undefined)
+  if(bmltwf_do_states_and_provinces !== false)
   {
     $("#optional_location_province").append('<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">');
   }
