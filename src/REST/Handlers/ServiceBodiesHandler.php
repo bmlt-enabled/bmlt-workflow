@@ -60,13 +60,13 @@ class ServiceBodiesHandler
 
             if($this->bmlt_integration->is_v3_server())
             {
-                $response = $this->bmlt_integration->getServiceBodiesPermission3x();
+                $response = $this->bmlt_integration->getServiceBodiesPermissionv3();
                 $this->debug_log("permissions array");
                 $this->debug_log($response);
             }
             else
             {
-                $response = $this->bmlt_integration->getServiceBodiesPermission2x();
+                $response = $this->bmlt_integration->getServiceBodiesPermissionv2();
 
                 if (is_wp_error($response)) {
                     return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);

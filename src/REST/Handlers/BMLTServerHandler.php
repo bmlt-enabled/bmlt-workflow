@@ -110,13 +110,13 @@ class BMLTServerHandler
         {
             if(version_compare($version,"3.0.0","lt"))
             {
-                $this->debug_log("checking auth against 2x server");
-                $ret = $this->bmlt_integration->testServerAndAuth2x($username, $password, $server);
+                $this->debug_log("checking auth against v2 server");
+                $ret = $this->bmlt_integration->testServerAndAuthv2($username, $password, $server);
             }
             else
             {
-                $this->debug_log("checking auth against 3x server");
-                $ret = $this->bmlt_integration->testServerAndAuth3x($username, $password, $server);
+                $this->debug_log("checking auth against v3 server");
+                $ret = $this->bmlt_integration->testServerAndAuthv3($username, $password, $server);
             }
         }
         else

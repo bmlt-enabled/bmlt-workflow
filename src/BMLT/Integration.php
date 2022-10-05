@@ -153,7 +153,7 @@ class Integration
         return $meeting;
     }
 
-    public function testServerAndAuth2x($username, $password, $server)
+    public function testServerAndAuthv2($username, $password, $server)
     {
         $postargs = array(
             'admin_action' => 'login',
@@ -178,7 +178,7 @@ class Integration
         return true;
     }
 
-    public function testServerAndAuth3x($username, $password, $server)
+    public function testServerAndAuthv3($username, $password, $server)
     {
         $postargs = array(
             'username' => $username,
@@ -224,7 +224,7 @@ class Integration
             return json_decode(wp_remote_retrieve_body($response), 1);
     }
 
-    public function getServiceBodiesPermission2x()
+    public function getServiceBodiesPermissionv2()
     {
         $req = array();
         $req['admin_action'] = 'get_permissions';
