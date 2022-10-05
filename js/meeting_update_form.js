@@ -41,11 +41,13 @@ jQuery(document).ready(function ($) {
   }
   else
   {
-    $("#optional_location_sub_province").append('<select class="meeting-input" id="location_sub_province" name="location_sub_province">');
+    appendstr = '<select class="meeting-input" id="location_sub_province" name="location_sub_province">';
     bmltwf_counties_and_sub_provinces.forEach(function (item, index) {
-      $("#optional_location_sub_province").append('<option value="' + item + '">' + item + '</option>');
-    });
-    $("#optional_location_sub_province").append('</select>');
+      appendstr += '<option value="' + item + '">' + item + '</option>';
+        });
+    appendstr += '</select>';
+    $("#optional_location_sub_province").append(appendstr);
+
   }
 
   if(bmltwf_do_states_and_provinces === false)
@@ -54,11 +56,12 @@ jQuery(document).ready(function ($) {
   }
   else
   {
-    $("#optional_location_province").append('<select class="meeting-input" id="location_province" name="location_province">');
+    appendstr = '<select class="meeting-input" id="location_province" name="location_province">';
     bmltwf_do_states_and_provinces.forEach(function (item, index) {
-      $("#optional_location_province").append('<option value="' + item + '">' + item + '</option>');
+      appendstr += '<option value="' + item + '">' + item + '</option>';
     });
-    $("#optional_location_province").append('</select>');
+    appendstr += '</select>';
+    $("#optional_location_province").append(appendstr);
   }
 
   Object.keys(bmltwf_bmlt_formats).forEach((key) => {
