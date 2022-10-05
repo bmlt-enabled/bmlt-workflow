@@ -20,14 +20,14 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.0.7
+ * Version: 1.0.8
  * Requires at least: 5.2
  * Tested up to: 6.0
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
 
-define('BMLTWF_PLUGIN_VERSION', '1.0.7');
+define('BMLTWF_PLUGIN_VERSION', '1.0.8');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -112,6 +112,27 @@ if (!class_exists('bmltwf_plugin')) {
             $script .= 'var bmltwf_optional_location_province = "' . get_option('bmltwf_optional_location_province') . '";';
             $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
             $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
+
+            // add counties/states/provinces if they are populated
+            $meeting_counties_and_sub_provinces = $this->bmlt_integration->getMeetingCounties();
+            $script .= "var bmltwf_counties_and_sub_provinces = " . json_encode($meeting_counties_and_sub_provinces) . ";";
+            if ($meeting_counties_and_sub_provinces) {
+                $script .= json_encode($meeting_counties_and_sub_provinces) . ";";
+            }
+            else
+            {
+                $script .= "false;";
+            }
+
+            $meeting_states_and_provinces = $this->bmlt_integration->getMeetingStates();
+            $script .= "var bmltwf_do_states_and_provinces = " . json_encode($meeting_states_and_provinces) . ";";
+            if ($meeting_states_and_provinces) {
+                $script .=  json_encode($meeting_states_and_provinces) . ";";
+            }
+            else
+            {
+                $script .= "false;";
+            }
 
             // add meeting formats
             $formatarr = $this->bmlt_integration->getMeetingFormats();
@@ -278,6 +299,28 @@ if (!class_exists('bmltwf_plugin')) {
                     // add our bmlt server for the submission lookups
                     $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
 
+
+                    // add counties/states/provinces if they are populated
+                    $meeting_counties_and_sub_provinces = $this->bmlt_integration->getMeetingCounties();
+                    $script .= "var bmltwf_counties_and_sub_provinces = " . json_encode($meeting_counties_and_sub_provinces) . ";";
+                    if ($meeting_counties_and_sub_provinces) {
+                        $script .= json_encode($meeting_counties_and_sub_provinces) . ";";
+                    }
+                    else
+                    {
+                        $script .= "false;";
+                    }
+
+                    $meeting_states_and_provinces = $this->bmlt_integration->getMeetingStates();
+                    $script .= "var bmltwf_do_states_and_provinces = " . json_encode($meeting_states_and_provinces) . ";";
+                    if ($meeting_states_and_provinces) {
+                        $script .=  json_encode($meeting_states_and_provinces) . ";";
+                    }
+                    else
+                    {
+                        $script .= "false;";
+                    }
+
                     // add meeting formats
                     $formatarr = $this->bmlt_integration->getMeetingFormats();
                     $script .= 'var bmltwf_bmlt_formats = ' . json_encode($formatarr) . '; ';
@@ -388,8 +431,6 @@ if (!class_exists('bmltwf_plugin')) {
                 {
                     remove_menu_page('bmltwf-settings');
                 }
-                global $submenu;
-                error_log(print_r($submenu, true));
 
         }
 

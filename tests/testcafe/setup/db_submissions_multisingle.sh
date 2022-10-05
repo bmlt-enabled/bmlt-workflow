@@ -16,4 +16,4 @@
 # You should have received a copy of the GNU General Public License
 # along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-mysql -D wpmultisingledb -ussm-user < /home/ssm-user/scripts/db_submissions_multisingl.sql
+mysql -D wpmultisingledb -ussm-user < /home/ssm-user/scripts/db_submissions_multisingle.sql

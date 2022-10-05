@@ -67,6 +67,7 @@
   padding: 5px 10px;
   display: block;
   width: 100%;
+  -webkit-appearance: menulist;
 }
 
 .grid-flex-item select {
