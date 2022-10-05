@@ -239,7 +239,23 @@ class Integration
         return $arr;
     }
 
-    public function getMeetingFormats()
+    public function getMeetingFormatsv3()
+    {
+        $this->debug_log("inside getMeetingFormats v3 auth");
+
+        if (!$this->v3_access_token) {
+            $ret =  $this->authenticateRootServer();
+            if (is_wp_error($ret)) {
+                return $ret;
+            }
+        }
+        $url = get_option('bmltwf_bmlt_server_address') . 'formats';
+
+        $ret = \wp_safe_remote_post($url, $this->set_args(array("Authorization"=>"Bearer ". $this->v3_access_token)));
+        return $ret;
+    }
+
+    public function getMeetingFormatsv2()
     {
 
         // if ($this->is_v3_server()) {
@@ -267,7 +283,6 @@ class Integration
             if (is_wp_error($response)) {
                 return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
             }
-
 
             // $this->debug_log(wp_remote_retrieve_body($response));
             // $formatarr = json_decode(wp_remote_retrieve_body($response), true);

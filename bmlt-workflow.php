@@ -114,10 +114,18 @@ if (!class_exists('bmltwf_plugin')) {
             $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
 
             // add meeting formats
-            $formatarr = $this->bmlt_integration->getMeetingFormats();
-            // $this->debug_log("FORMATS");
-            // $this->debug_log($formatarr);
-            // $this->debug_log(json_encode($formatarr));
+            if($this->bmlt_integration->is_v3_server())
+            {
+                $formatarr = $this->bmlt_integration->getMeetingFormatsv3();
+            }
+            else
+            {
+                $formatarr = $this->bmlt_integration->getMeetingFormatsv2();
+            }
+    
+            $this->debug_log("FORMATS");
+            $this->debug_log($formatarr);
+            $this->debug_log(json_encode($formatarr));
             $script .= 'var bmltwf_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
@@ -279,7 +287,15 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
 
                     // add meeting formats
-                    $formatarr = $this->bmlt_integration->getMeetingFormats();
+                    if($this->bmlt_integration->is_v3_server())
+                    {
+                        $formatarr = $this->bmlt_integration->getMeetingFormatsv3();
+                    }
+                    else
+                    {
+                        $formatarr = $this->bmlt_integration->getMeetingFormatsv2();
+                    }
+
                     $script .= 'var bmltwf_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
                     // do a one off lookup for our servicebodies

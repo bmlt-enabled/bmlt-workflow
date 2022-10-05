@@ -41,7 +41,14 @@ class SubmissionsHandler
         $this->handlerCore = new HandlerCore();
         $this->BMLTWF_Database = new BMLTWF_Database();
 
-        $this->formats = $this->bmlt_integration->getMeetingFormats();
+        if($this->bmlt_integration->is_v3_server())
+        {
+            $this->formats = $this->bmlt_integration->getMeetingFormatsv3();
+        }
+        else
+        {
+            $this->formats = $this->bmlt_integration->getMeetingFormatsv2();
+        }
 
     }
 
@@ -1102,8 +1109,6 @@ class SubmissionsHandler
 
     private function submission_format($submission)
     {
-
-        $formats = $this->bmlt_integration->getMeetingFormats();
 
         $table = '';
 
