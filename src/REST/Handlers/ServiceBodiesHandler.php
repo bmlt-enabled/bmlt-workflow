@@ -58,16 +58,25 @@ class ServiceBodiesHandler
             // detail list
             $sblist = array();
 
-            $response = $this->bmlt_integration->getServiceBodiesPermission();
-
-            if (is_wp_error($response)) {
-                return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
+            if($this->bmlt_integration->is_v3_server())
+            {
+                $response = $this->bmlt_integration->getServiceBodiesPermission3x();
+                $this->debug_log("permissions array");
+                $this->debug_log($response);
             }
+            else
+            {
+                $response = $this->bmlt_integration->getServiceBodiesPermission2x();
 
-            if (empty($arr['service_body'])) {
-                return $this->handlerCore->bmltwf_rest_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);
+                if (is_wp_error($response)) {
+                    return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
+                }
+
+                if (empty($arr['service_body'])) {
+                    return $this->handlerCore->bmltwf_rest_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);
+                }
             }
-
+            $arr = $response;
             // create an array of the service bodies that we are able to see
             $editable = array();
             foreach ($arr['service_body'] as $key => $sb) {
