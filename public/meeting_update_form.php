@@ -167,20 +167,6 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                         </div>
                         <div id="optional_location_province">
                             <label id="location_province_label" for="location_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_province_displayname'))?></label>
-
-                            <!-- <?php
-                            if ($bmltwf_do_states_and_provinces) {
-                                echo '<select class="meeting-input" id="location_province" name="location_province">';
-                                foreach ($meeting_states_and_provinces as $key) {
-                                    echo '<option value="' . $key . '">' . $key . '</option>';
-                                }
-                                echo '</select>';
-                            } else {
-                                echo '<input class="meeting-input" type="text" name="location_province" size="50" id="location_province" required>';
-                            }
-
-                            ?> -->
-
                         </div>
                         <div id="optional_postcode">
                             <label id="location_postal_code_1_label" for="location_postal_code_1"><?php echo sanitize_text_field(get_option('bmltwf_optional_postcode_displayname'))?></label>
