@@ -81,6 +81,8 @@ if ($meeting_states_and_provinces) {
 <div id="bmltwf_submission_quickedit_dialog" class="hidden">
     <div class="form-grid">
         <div class="form-grid-top">
+            <hr class="bmltwf-quickedit-error-message">
+
             <div class="bmltwf_info_text">
                 <br>Highlighted fields are from the user submission and your changes and will be stored when the QuickEdit is saved.
                 <br><br>

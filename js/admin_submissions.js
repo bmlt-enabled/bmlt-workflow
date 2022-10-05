@@ -771,10 +771,10 @@ jQuery(document).ready(function ($) {
       .done(function (response) {
         $("#quickedit_latitude").val(response["latitude"]);
         $("#quickedit_longitude").val(response["longitude"]);
-        notice_success(response, "bmltwf-error-message");
+        notice_success(response, "bmltwf-quickedit-error-message");
       })
       .fail(function (xhr) {
-        notice_error(xhr, "bmltwf-error-message");
+        notice_error(xhr, "bmltwf-quickedit-error-message");
       });
   }
 
