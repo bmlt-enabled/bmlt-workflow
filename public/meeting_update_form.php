@@ -205,7 +205,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                         <option value="none">No</option>
                         <option value="virtual">Yes - Virtual only</option>
                         <option value="hybrid"">Yes - Hybrid (Virtual and Face to Face)</option>
-                            <option value=" tempclosure"">Yes -Temporary Face to Face Closure</option>
+                            <option value="tempclosure"">Yes -Temporary Face to Face Closure</option>
                     </select>
                     <div id="virtual_meeting_settings">
                         <div class="tooltip" tabindex="0">
