@@ -41,7 +41,7 @@ jQuery(document).ready(function ($) {
   }
   else
   {
-    appendstr = '<select class="meeting-input" id="location_sub_province" name="location_sub_province">';
+    var appendstr = '<select class="meeting-input" id="location_sub_province" name="location_sub_province">';
     bmltwf_counties_and_sub_provinces.forEach(function (item, index) {
       appendstr += '<option value="' + item + '">' + item + '</option>';
         });
@@ -56,7 +56,7 @@ jQuery(document).ready(function ($) {
   }
   else
   {
-    appendstr = '<select class="meeting-input" id="location_province" name="location_province">';
+    var appendstr = '<select class="meeting-input" id="location_province" name="location_province">';
     bmltwf_do_states_and_provinces.forEach(function (item, index) {
       appendstr += '<option value="' + item + '">' + item + '</option>';
     });
