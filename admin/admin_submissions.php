@@ -100,6 +100,7 @@ if ($meeting_states_and_provinces) {
             if ($req) {
                 echo ' required';
             }
+            echo '>';
             ?>
             </select>
             <div class="grid-flex-container">
