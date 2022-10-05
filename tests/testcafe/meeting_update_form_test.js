@@ -362,7 +362,7 @@ test("Success_New_Tempclosure_Meeting_And_Submit", async (t) => {
   await t
 
     // no location for virtual meeting
-    // .typeText(uf.location_text, "my location")
+    .typeText(uf.location_text, "my location")
     .typeText(uf.location_street, "110 Avoca Street")
     .typeText(uf.location_info, "info")
     .typeText(uf.location_municipality, "Randwick")
