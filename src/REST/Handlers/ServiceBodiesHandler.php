@@ -58,14 +58,26 @@ class ServiceBodiesHandler
             // detail list
             $sblist = array();
 
-            if($this->bmlt_integration->is_v3_server())
-            {
+            if ($this->bmlt_integration->is_v3_server()) {
                 $response = $this->bmlt_integration->getServiceBodiesPermissionv3();
                 $this->debug_log("permissions array");
                 $this->debug_log($response);
-            }
-            else
-            {
+                // create an array of the service bodies that we are able to see
+                $myId = $this->bmlt_integration->getmyUserIdv3();
+                $this->debug_log("my user id is ");
+                $this->debug_log($myId);
+
+                $editable = array();
+                foreach ($response as $key => $sb) {
+
+                    $editors = $sb['editorUserIds'] ?? 0;
+
+                    if ($editors && array_key_exists($myId, $editors)) {
+                        $editable[$sb['id']] = true;
+                        $this->debug_log('we can edit '.$sb['id']);
+                    }
+                }
+            } else {
                 $response = $this->bmlt_integration->getServiceBodiesPermissionv2();
 
                 if (is_wp_error($response)) {
@@ -75,18 +87,19 @@ class ServiceBodiesHandler
                 if (empty($arr['service_body'])) {
                     return $this->handlerCore->bmltwf_rest_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);
                 }
-            }
-            $arr = $response;
-            // create an array of the service bodies that we are able to see
-            $editable = array();
-            foreach ($arr['service_body'] as $key => $sb) {
 
-                $permissions = $sb['permissions'] ?? 0;
-                $id = $sb['id'] ?? 0;
+                $arr = $response;
+                // create an array of the service bodies that we are able to see
+                $editable = array();
+                foreach ($arr['service_body'] as $key => $sb) {
 
-                if ($id) {
-                    if (($permissions === 2) || ($permissions === 3)) {
-                        $editable[$id] = true;
+                    $permissions = $sb['permissions'] ?? 0;
+                    $id = $sb['id'] ?? 0;
+
+                    if ($id) {
+                        if (($permissions === 2) || ($permissions === 3)) {
+                            $editable[$id] = true;
+                        }
                     }
                 }
             }
@@ -99,7 +112,7 @@ class ServiceBodiesHandler
                 return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
             }
 
-            $arr = json_decode(wp_remote_retrieve_body($response),1);
+            $arr = json_decode(wp_remote_retrieve_body($response), 1);
 
             $idlist = array();
             // $this->debug_log("SERVICE BODY JSON");
@@ -116,8 +129,7 @@ class ServiceBodiesHandler
                 if ($id && $name) {
                     // check we can see the service body from permissions above
                     $is_editable = $editable[$id] ?? false;
-                    if ($is_editable)
-                    {
+                    if ($is_editable) {
                         $idlist[] = $id;
                         $sblist[$id] = array('name' => $name, 'description' => $description);
                     }
@@ -133,7 +145,7 @@ class ServiceBodiesHandler
                 $sql = $wpdb->prepare('INSERT into ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['name'], $sblist[$value]['description'], $value);
                 $wpdb->query($sql);
             }
-            
+
             // update any values that may have changed since last time we looked
             foreach ($idlist as $value) {
                 $sql = $wpdb->prepare('UPDATE ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s" where service_body_bigint="%d"', $sblist[$value]['name'], $sblist[$value]['description'], $value);
@@ -154,8 +166,7 @@ class ServiceBodiesHandler
 
             foreach ($sqlresult as $key => $value) {
                 $is_editable = $editable[$value['service_body_bigint']] ?? false;
-                if ($is_editable)
-                {
+                if ($is_editable) {
                     $bool = $value['show_on_form'] ? (true) : (false);
                     $sblist[$value['service_body_bigint']]['show_on_form'] = $bool;
                 }
