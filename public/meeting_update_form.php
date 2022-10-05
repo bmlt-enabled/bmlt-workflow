@@ -137,58 +137,57 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                         <input type="hidden" name="duration_time" size="10" id="duration_time" required>
 
                         <label id="display_format_shared_id_list_label" for="display_format_shared_id_list">Meeting Formats
-                            <?php 
-                            $req = get_option('bmltwf_required_meeting_formats')==='true';
-                            if ($req)
-                            {
+                            <?php
+                            $req = get_option('bmltwf_required_meeting_formats') === 'true';
+                            if ($req) {
                                 echo '<span class="bmltwf-required-field"> *</span>';
                             }
                             echo '</label>';
                             echo '<select class="display_format_shared_id_list-select2" name="display_format_shared_id_list" id="display_format_shared_id_list"';
-                            if ($req)
-                            {
+                            if ($req) {
                                 echo ' required';
-                            }                     
+                            }
+                            echo '>';
                             ?>
-                    </select>
-                <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
-                        <div id="location_fields">
-                            <label for="location_text">Location (eg: a building name)<span class="bmltwf-required-field"> *</span></label>
-                            <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
-                            <label for="location_street">Street Address<span class="bmltwf-required-field"> *</span></label>
-                            <input class="meeting-input" type="text" name="location_street" size="50" id="location_street" required>
-                            <label for="location_info">Extra Location Info (eg: Near the park)</label>
-                            <input class="meeting-input" type="text" name="location_info" size="50" id="location_info">
-                        </div>
-                        <label for="location_municipality">City/Town/Suburb<span class="bmltwf-required-field"> *</span></label>
-                        <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
-                        <div id="optional_location_sub_province">
-                            <label id="location_sub_province_label" for="location_sub_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname'))?></label>
-                        </div>
-                        <div id="optional_location_province">
-                            <label id="location_province_label" for="location_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_province_displayname'))?></label>
-                        </div>
-                        <div id="optional_postcode">
-                            <label id="location_postal_code_1_label" for="location_postal_code_1"><?php echo sanitize_text_field(get_option('bmltwf_optional_postcode_displayname'))?></label>
-                            <input class="meeting-input" type="text" name="location_postal_code_1" id="location_postal_code_1" required>
-                        </div>
-                        <div id="optional_location_nation">
-                            <label id="location_nation_label" for="location_nation"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname'))?></label>
-                            <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
-                        </div>
-                        <div class="tooltip" tabindex="0">
-                            <label for="service_body_bigint">Service Committee
-                                <span class="dashicons dashicons-info-outline"></span>
-                            </label>
-                            <div class="right">
-                                Creating a new meeting and unsure of your service committee?
-                                <br>Pick the closest match and leave us a note in the 'Any Other Comments' section below
-                                <i></i>
+                            </select>
+                            <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
+                            <div id="location_fields">
+                                <label for="location_text">Location (eg: a building name)<span class="bmltwf-required-field"> *</span></label>
+                                <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
+                                <label for="location_street">Street Address<span class="bmltwf-required-field"> *</span></label>
+                                <input class="meeting-input" type="text" name="location_street" size="50" id="location_street" required>
+                                <label for="location_info">Extra Location Info (eg: Near the park)</label>
+                                <input class="meeting-input" type="text" name="location_info" size="50" id="location_info">
                             </div>
-                        </div>
-                        <select class="meeting-input" name="service_body_bigint" id="service_body_bigint">
-                            <option value="" disabled selected hidden>Select one</option>
-                        </select>
+                            <label for="location_municipality">City/Town/Suburb<span class="bmltwf-required-field"> *</span></label>
+                            <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
+                            <div id="optional_location_sub_province">
+                                <label id="location_sub_province_label" for="location_sub_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname')) ?></label>
+                            </div>
+                            <div id="optional_location_province">
+                                <label id="location_province_label" for="location_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_province_displayname')) ?></label>
+                            </div>
+                            <div id="optional_postcode">
+                                <label id="location_postal_code_1_label" for="location_postal_code_1"><?php echo sanitize_text_field(get_option('bmltwf_optional_postcode_displayname')) ?></label>
+                                <input class="meeting-input" type="text" name="location_postal_code_1" id="location_postal_code_1" required>
+                            </div>
+                            <div id="optional_location_nation">
+                                <label id="location_nation_label" for="location_nation"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname')) ?></label>
+                                <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
+                            </div>
+                            <div class="tooltip" tabindex="0">
+                                <label for="service_body_bigint">Service Committee
+                                    <span class="dashicons dashicons-info-outline"></span>
+                                </label>
+                                <div class="right">
+                                    Creating a new meeting and unsure of your service committee?
+                                    <br>Pick the closest match and leave us a note in the 'Any Other Comments' section below
+                                    <i></i>
+                                </div>
+                            </div>
+                            <select class="meeting-input" name="service_body_bigint" id="service_body_bigint">
+                                <option value="" disabled selected hidden>Select one</option>
+                            </select>
 
 
                     </div>
@@ -206,7 +205,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                         <option value="none">No</option>
                         <option value="virtual">Yes - Virtual only</option>
                         <option value="hybrid"">Yes - Hybrid (Virtual and Face to Face)</option>
-                            <option value="tempclosure"">Yes -Temporary Face to Face Closure</option>
+                            <option value=" tempclosure"">Yes -Temporary Face to Face Closure</option>
                     </select>
                     <div id="virtual_meeting_settings">
                         <div class="tooltip" tabindex="0">
