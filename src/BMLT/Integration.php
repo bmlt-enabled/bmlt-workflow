@@ -276,7 +276,7 @@ class Integration
         $this->debug_log("CALLING URL ".$url);
         $this->debug_log("CALLING WITH ARGS");
         $this->debug_log($args);
-        $ret = \wp_safe_remote_post($url, $args);
+        $ret = \wp_safe_remote_get($url, $args);
         $this->debug_log("CALL RETURNED");
         $this->debug_log($ret);
         return $ret;
