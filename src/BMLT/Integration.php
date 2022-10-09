@@ -90,6 +90,32 @@ class Integration
         }
     }
 
+    public function get_valid_v3_token()
+    {
+        if ($this->is_v3_server() && $this->v3_access_token)
+        {
+            if($this->v3_access_token_expires_at > time())
+            {
+                return $this->v3_access_token;
+            }
+            else
+            {
+                if ($this->authenticateRootServer())
+                {
+                    return $this->v3_access_token;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     public function bmltwf_get_remote_server_version($server)
     {
         $version = get_option('bmltwf_bmlt_server_version');
@@ -275,7 +301,7 @@ class Integration
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/formats';
         $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token));
         $ret = \wp_safe_remote_get($url, $args);
-        
+
         return json_decode(wp_remote_retrieve_body($ret));
     }
 
@@ -429,7 +455,8 @@ class Integration
     private function authenticateRootServer()
     {
 
-        if ($this->cookies == null) {
+        if ($this->cookies == null || !$this->v3_access_token || $this->v3_expires_at > time())
+        {
             $encrypted = get_option('bmltwf_bmlt_password');
             $this->debug_log("retrieved encrypted bmlt password");
             // $this->debug_log(($encrypted));
@@ -448,8 +475,18 @@ class Integration
             if ($decrypted === false) {
                 return new \WP_Error('bmltwf', 'Error decrypting password.');
             }
+        }
+        else
+        {
+            return true;
+        }
+        // v3 flow
 
-            if ($this->is_v3_server()) {
+        if ($this->is_v3_server())
+        {
+            if (!$this->v3_access_token || $this->v3_expires_at > time() )
+            {
+
                 $postargs = array(
                     'username' => get_option('bmltwf_bmlt_username'),
                     'password' => $decrypted
@@ -459,42 +496,47 @@ class Integration
                 $this->debug_log($url);
                 $response = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
                 $this->debug_log(($response));
-
+    
                 $response_code = \wp_remote_retrieve_response_code($response);
-
+    
                 if ($response_code != 200) {
                     return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
                 }
-
+    
                 $auth_details = json_decode(wp_remote_retrieve_body($response), true);
                 $this->v3_access_token = $auth_details['access_token'];
                 $this->v3_expires_at = $auth_details['expires_at'];
-            } else {
-                // legacy auth
-                $postargs = array(
-                    'admin_action' => 'login',
-                    'c_comdef_admin_login' => get_option('bmltwf_bmlt_username'),
-                    'c_comdef_admin_password' => $decrypted
-                );
-                $url = get_option('bmltwf_bmlt_server_address') . "index.php";
-
-                // $this->debug_log("AUTH URL = " . $url);
-                $ret = $this->post($url, null, $postargs);
-
-                if (is_wp_error($ret)) {
-                    return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
-                }
-
-                if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
-                {
-                    $this->cookies = null;
-                    return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
-                }
-
-                $this->cookies = \wp_remote_retrieve_cookies($ret);
+    
             }
+            return true;
+
         }
-        return true;
+        // v2 flow
+        else 
+        {
+            // legacy auth
+            $postargs = array(
+                'admin_action' => 'login',
+                'c_comdef_admin_login' => get_option('bmltwf_bmlt_username'),
+                'c_comdef_admin_password' => $decrypted
+            );
+            $url = get_option('bmltwf_bmlt_server_address') . "index.php";
+
+            // $this->debug_log("AUTH URL = " . $url);
+            $ret = $this->post($url, null, $postargs);
+
+            if (is_wp_error($ret)) {
+                return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
+            }
+
+            if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
+            {
+                $this->cookies = null;
+                return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
+            }
+
+            $this->cookies = \wp_remote_retrieve_cookies($ret);
+        }
     }
 
     private function set_args($cookies, $body = null, $headers = null)
