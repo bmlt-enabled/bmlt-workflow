@@ -49,7 +49,6 @@ class SubmissionsHandler
         {
             $this->formats = $this->bmlt_integration->getMeetingFormatsv2();
         }
-
     }
 
     public function get_submissions_handler()

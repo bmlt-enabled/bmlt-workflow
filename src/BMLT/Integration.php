@@ -30,7 +30,7 @@ class Integration
 
     use \bmltwf\BMLTWF_Debug;
     protected $cookies = null; // our authentication cookies
-    protected $bmlt_root_server_version = null; // the version of bmlt root server we're authing against
+    // protected $bmlt_root_server_version = null; // the version of bmlt root server we're authing against
     protected $v3_access_token = null; // v3 auth token
     protected $v3_access_token_expires_at = null; // v3 auth token expiration
     protected $bmltwf_bmlt_user_id; // user id of the workflow bot
@@ -47,7 +47,7 @@ class Integration
             $this->BMLTWF_WP_Options = $wpoptionssstub;
         }
 
-        $this->bmltwf_set_server_version($this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address')));
+        // $this->bmltwf_set_server_version($this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address')));
     }
 
     private function bmltwf_rest_error($message, $code)
@@ -55,10 +55,10 @@ class Integration
         return new \WP_Error('bmltwf_error', $message, array('status' => $code));
     }
 
-    public function bmltwf_set_server_version($version)
-    {
-        $this->bmlt_root_server_version = $version;
-    }
+    // public function bmltwf_set_server_version($version)
+    // {
+    //     $this->bmlt_root_server_version = $version;
+    // }
 
     // accepts raw string or array
     private function bmltwf_rest_success($message)
@@ -92,27 +92,35 @@ class Integration
 
     public function bmltwf_get_remote_server_version($server)
     {
+        $version = get_option('bmltwf_bmlt_server_version');
+        if($version)
+        {
+            return $version;
+        }
+        else
+        {
+            $url = $server . "client_interface/serverInfo.xml";
+            $this->debug_log("url = " . $url);
+            $headers = array(
+                "Accept: */*",
+            );
 
-        $url = $server . "client_interface/serverInfo.xml";
-        $this->debug_log("url = " . $url);
-        $headers = array(
-            "Accept: */*",
-        );
+            $resp = wp_remote_get($url, array('headers' => $headers));
+            $this->debug_log("WP_REMOTE_GET RETURNS");
+            $this->debug_log(($resp));
 
-        $resp = wp_remote_get($url, array('headers' => $headers));
-        $this->debug_log("WP_REMOTE_GET RETURNS");
-        $this->debug_log(($resp));
-
-        libxml_use_internal_errors(true);
-        $xml = simplexml_load_string(wp_remote_retrieve_body($resp));
-        if ($xml === false) {
-            return false;
-        } else {
-            if (!($xml->serverVersion->readableString instanceof \SimpleXMLElement)) {
+            libxml_use_internal_errors(true);
+            $xml = simplexml_load_string(wp_remote_retrieve_body($resp));
+            if ($xml === false) {
                 return false;
+            } else {
+                if (!($xml->serverVersion->readableString instanceof \SimpleXMLElement)) {
+                    return false;
+                }
+                $version = $xml->serverVersion->readableString->__toString();
+                update_option('bmltwf_bmlt_server_version',$version);
+                return $version;
             }
-
-            return ($xml->serverVersion->readableString->__toString());
         }
     }
     /**
@@ -156,12 +164,17 @@ class Integration
 
     public function testServerAndAuthv2($username, $password, $server)
     {
+        $version =  $this->bmltwf_get_remote_server_version($server);
+        if(!$version)
+        {
+            return new \WP_Error('bmltwf', "Check BMLT server address - couldn't retrieve server version");
+        }
+
         $postargs = array(
             'admin_action' => 'login',
             'c_comdef_admin_login' => $username,
             'c_comdef_admin_password' => $password
         );
-
         $url = $server . "index.php";
         $this->debug_log($url);
         $ret = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
@@ -181,6 +194,13 @@ class Integration
 
     public function testServerAndAuthv3($username, $password, $server)
     {
+        
+        $version =  $this->bmltwf_get_remote_server_version($server);
+        if(!$version)
+        {
+            return new \WP_Error('bmltwf', "Check BMLT server address - couldn't retrieve server version");
+        }
+
         $postargs = array(
             'username' => $username,
             'password' => $password
@@ -259,23 +279,6 @@ class Integration
     public function getMeetingFormatsv2()
     {
 
-        // if ($this->is_v3_server()) {
-        //     $this->debug_log("inside getMeetingFormats v3 auth");
-
-        //     if (!$this->v3_access_token) {
-        //         $ret =  $this->authenticateRootServer();
-        //         if (is_wp_error($ret)) {
-        //             return $ret;
-        //         }
-        //     }
-        //     $url = get_option('bmltwf_bmlt_server_address') . ''
-
-        //     $ret = \wp_safe_remote_post($url, $this->set_args(array("Authorization"=>"Bearer ". $this->v3_access_token), http_build_query($postargs)));
-        //     return $ret;
-        // }
-        // else
-        {
-
             $req = array();
             $req['admin_action'] = 'get_format_info';
 
@@ -304,7 +307,7 @@ class Integration
             // $this->debug_log(($newformat));
 
             return $newformat;
-        }
+        
     }
 
     /**
