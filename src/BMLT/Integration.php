@@ -271,15 +271,12 @@ class Integration
                 return $ret;
             }
         }
+
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/formats';
         $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token));
-        $this->debug_log("CALLING URL ".$url);
-        $this->debug_log("CALLING WITH ARGS");
-        $this->debug_log($args);
         $ret = \wp_safe_remote_get($url, $args);
-        $this->debug_log("CALL RETURNED");
-        $this->debug_log($ret);
-        return $ret;
+        
+        return json_decode(wp_remote_retrieve_body($ret));
     }
 
     public function getMeetingFormatsv2()
