@@ -30,7 +30,7 @@ class Integration
 
     use \bmltwf\BMLTWF_Debug;
     protected $cookies = null; // our authentication cookies
-    // protected $bmlt_root_server_version = null; // the version of bmlt root server we're authing against
+    protected $bmlt_root_server_version = null; // the version of bmlt root server we're authing against
     protected $v3_access_token = null; // v3 auth token
     protected $v3_access_token_expires_at = null; // v3 auth token expiration
     protected $bmltwf_bmlt_user_id; // user id of the workflow bot
@@ -47,7 +47,7 @@ class Integration
             $this->BMLTWF_WP_Options = $wpoptionssstub;
         }
 
-        // $this->bmltwf_set_server_version($this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address')));
+        $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address'));
     }
 
     private function bmltwf_rest_error($message, $code)
@@ -123,6 +123,7 @@ class Integration
             }
         }
     }
+
     /**
      * retrieve_single_meeting
      *
@@ -194,7 +195,7 @@ class Integration
 
     public function testServerAndAuthv3($username, $password, $server)
     {
-        
+
         $version =  $this->bmltwf_get_remote_server_version($server);
         if(!$version)
         {
