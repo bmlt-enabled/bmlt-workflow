@@ -271,7 +271,7 @@ class Integration
                 return $ret;
             }
         }
-        $url = get_option('bmltwf_bmlt_server_address') . 'formats';
+        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/formats';
 
         $ret = \wp_safe_remote_post($url, $this->set_args(array("Authorization" => "Bearer " . $this->v3_access_token)));
         return $ret;
