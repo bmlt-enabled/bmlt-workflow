@@ -71,7 +71,7 @@ if (!class_exists('bmltwf_plugin')) {
             $this->debug_log("ISGEOLOCATEENABLED");
             $this->debug_log($this->bmlt_integration->isAutoGeolocateEnabled()?"true":"false");
 
-            
+
             // actions, shortcodes, menus and filters
             add_action('wp_enqueue_scripts', array(&$this, 'bmltwf_enqueue_form_deps'));
             add_action('admin_menu', array(&$this, 'bmltwf_menu_pages'));
@@ -687,6 +687,14 @@ if (!class_exists('bmltwf_plugin')) {
             );
 
             add_settings_field(
+                'bmltwf_shortcode',
+                'Auto Geocode Root Server Settings',
+                array(&$this, 'bmltwf_auto_geocode_enabled'),
+                'bmltwf-settings',
+                'bmltwf-settings-section-id'
+            );
+
+            add_settings_field(
                 'bmltwf_email_from_address',
                 'Email From Address',
                 array(&$this, 'bmltwf_email_from_address_html'),
@@ -910,6 +918,17 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br>Use the shortcode <code>[bmltwf-meeting-update-form]</code> to generate a form. The form will be associated with service bodies configured on the Service Bodies configuration page.';
             echo '<br><br>';
             echo '</div>';
+        }
+
+        public function bmltwf_auto_geocode_enabled()
+        {
+            $autogeo = $this->bmlt_integration->isAutoGeolocateEnabled();
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>This plugin honours the BMLT Root Server Auto Geocode settings. The $auto_geocoding_enabled setting is set to <b>'.$autogeo?"true":"false".'</b>;';
+            echo '<br>Meeting submissions <b>will'.$autogeo?'':' not'.'</b> be automatically geocoded on save';
+            echo '<br><br>';
+            echo '</div>';
+
         }
 
         public function bmltwf_email_from_address_html()

@@ -641,17 +641,27 @@ jQuery(document).ready(function ($) {
         at: "center",
         of: window,
       },
-      buttons: {
-        "Check Geolocate": function () {
+      buttons: [
+        {
+        text: "Check Geolocate",
+        click: function () {
           geolocate_handler($(this).data("id"));
+          },
+        disabled: true
         },
-        Save: function () {
+        {
+        text: "Save",
+        click: function () {
           save_handler($(this).data("id"));
+          }
         },
-        Cancel: function () {
+        {
+        text: "Cancel",
+        click: function () {
           $(this).dialog("close");
+        }
         },
-      },
+      ],
       open: function () {
         var $this = $(this);
         // close dialog by clicking the overlay behind it

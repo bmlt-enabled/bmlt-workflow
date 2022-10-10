@@ -367,14 +367,17 @@ class SubmissionsHandler
                 // workaround for semantic new meeting bug
                 $change['id_bigint'] = 0;
 
-                // run our geolocator on the address
-                $latlng = $this->do_geolocate($change);
-                if (is_wp_error($latlng)) {
-                    return $latlng;
-                }
+                if($this->bmlt_integration->isAutoGeolocateEnabled())
+                {
+                    // run our geolocator on the address
+                    $latlng = $this->do_geolocate($change);
+                    if (is_wp_error($latlng)) {
+                        return $latlng;
+                    }
 
-                $change['latitude'] = $latlng['latitude'];
-                $change['longitude'] = $latlng['longitude'];
+                    $change['latitude'] = $latlng['latitude'];
+                    $change['longitude'] = $latlng['longitude'];
+                }
 
                 // handle publish/unpublish here
                 $change['published'] = 1;
@@ -409,14 +412,17 @@ class SubmissionsHandler
                     }
                 }
 
-                $latlng = $this->do_geolocate($bmlt_meeting);
-                if (is_wp_error($latlng)) {
-                    return $latlng;
+                if($this->bmlt_integration->isAutoGeolocateEnabled())
+                {
+                    $latlng = $this->do_geolocate($bmlt_meeting);
+                    if (is_wp_error($latlng)) {
+                        return $latlng;
+                    }
+                    // add the new geo to the original change
+                    $change['latitude'] = $latlng['latitude'];
+                    $change['longitude'] = $latlng['longitude'];
                 }
-                // add the new geo to the original change
-                $change['latitude'] = $latlng['latitude'];
-                $change['longitude'] = $latlng['longitude'];
-
+                
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;
                 $changearr['set_meeting_change'] = json_encode($change);
