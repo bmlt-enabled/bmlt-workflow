@@ -10,7 +10,6 @@ Contributors: nigelbmlt
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.
 It is designed to reduce the current complex and heavy manual processing of forms by both the form submitter and the service body trusted servants.
 
-
 == Description ==
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.
 It is designed to reduce the current complex and heavy manual processing of forms by both the form submitter and the service body trusted servants.
