@@ -944,7 +944,7 @@ if (!class_exists('bmltwf_plugin')) {
             }
             echo '<div class="bmltwf_info_text">';
             echo '<br>This plugin honours the BMLT Root Server Auto Geocode settings. The $auto_geocoding_enabled setting is set to <b>'.$val.'</b>;';
-            echo '<br>Meeting submissions <b>'.$val1.'</b> be automatically geocoded on save';
+            echo '<br><br>Meeting submissions <b>'.$val1.'</b> be automatically geocoded on save';
             echo '<br><br>';
             echo '</div>';
 
