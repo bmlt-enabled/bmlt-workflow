@@ -349,10 +349,10 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_optional_location_province = "' . get_option('bmltwf_optional_location_province') . '";';
                     $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
 
-                    $val = "false";
+                    $val = "true";
                     if(!$this->bmlt_integration->isAutoGeocodeEnabled())
                     {
-                        $val = "true";
+                        $val = "false";
                     }
                     $script .= 'var bmltwf_auto_geocode_enabled = ' . $val . ';';
 
