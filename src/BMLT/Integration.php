@@ -240,6 +240,26 @@ class Integration
         return $matches[1];
     }
 
+    public function isAutoGeolocateEnabled()
+    {
+        $ret = $this->authenticateRootServer();
+        if (is_wp_error($ret)) {
+            // $this->debug_log("*** AUTH ERROR");
+            // $this->debug_log(($ret));
+            return $ret;
+        }
+
+        $url = get_option('bmltwf_bmlt_server_address') . "index.php";
+        // $this->debug_log("*** ADMIN URL ".$url);
+
+        $resp = $this->get($url, $this->cookies);
+        // $this->debug_log("*** ADMIN PAGE");
+        // $this->debug_log(wp_remote_retrieve_body($resp));
+
+        preg_match('/"auto_geocoding_enabled":(?:(true)|(false)),/', wp_remote_retrieve_body($resp), $matches);
+        return $matches[1]==="true"?true:false;
+    }
+
     public function geolocateAddress($address)
     {
         $key = $this->getGmapsKey();
