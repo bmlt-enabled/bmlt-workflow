@@ -367,7 +367,7 @@ class SubmissionsHandler
                 // workaround for semantic new meeting bug
                 $change['id_bigint'] = 0;
 
-                if($this->bmlt_integration->isAutoGeolocateEnabled())
+                if($this->bmlt_integration->isAutoGeocodeEnabled())
                 {
                     // run our geolocator on the address
                     $latlng = $this->do_geolocate($change);
@@ -412,7 +412,7 @@ class SubmissionsHandler
                     }
                 }
 
-                if($this->bmlt_integration->isAutoGeolocateEnabled())
+                if($this->bmlt_integration->isAutoGeocodeEnabled())
                 {
                     $latlng = $this->do_geolocate($bmlt_meeting);
                     if (is_wp_error($latlng)) {
@@ -422,7 +422,7 @@ class SubmissionsHandler
                     $change['latitude'] = $latlng['latitude'];
                     $change['longitude'] = $latlng['longitude'];
                 }
-                
+
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;
                 $changearr['set_meeting_change'] = json_encode($change);

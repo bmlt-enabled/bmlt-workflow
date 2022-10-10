@@ -69,7 +69,7 @@ if (!class_exists('bmltwf_plugin')) {
             $this->BMLTWF_Database = new BMLTWF_Database();
 
             $this->debug_log("ISGEOLOCATEENABLED");
-            $this->debug_log($this->bmlt_integration->isAutoGeolocateEnabled()?"true":"false");
+            $this->debug_log($this->bmlt_integration->isAutoGeocodeEnabled()?"true":"false");
 
 
             // actions, shortcodes, menus and filters
@@ -346,6 +346,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_optional_location_sub_province = "' . get_option('bmltwf_optional_location_sub_province') . '";';
                     $script .= 'var bmltwf_optional_location_province = "' . get_option('bmltwf_optional_location_province') . '";';
                     $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
+                    $script .= 'var bmltwf_auto_geocode_enabled = ' . $this->bmlt_integration->isAutoGeocodeEnabled()?"true":"false" . ';';
 
                     // can current user use the delete button?
                     $show_delete = "false";
@@ -689,7 +690,7 @@ if (!class_exists('bmltwf_plugin')) {
             add_settings_field(
                 'bmltwf_shortcode',
                 'Auto Geocode Root Server Settings',
-                array(&$this, 'bmltwf_auto_geocode_enabled'),
+                array(&$this, 'bmltwf_auto_geocode_enabled_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
             );
@@ -920,9 +921,9 @@ if (!class_exists('bmltwf_plugin')) {
             echo '</div>';
         }
 
-        public function bmltwf_auto_geocode_enabled()
+        public function bmltwf_auto_geocode_enabled_html()
         {
-            $autogeo = $this->bmlt_integration->isAutoGeolocateEnabled();
+            $autogeo = $this->bmlt_integration->isAutoGeocodeEnabled();
             echo '<div class="bmltwf_info_text">';
             echo '<br>This plugin honours the BMLT Root Server Auto Geocode settings. The $auto_geocoding_enabled setting is set to <b>'.$autogeo?"true":"false".'</b>;';
             echo '<br>Meeting submissions <b>will'.$autogeo?'':' not'.'</b> be automatically geocoded on save';

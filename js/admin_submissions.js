@@ -37,6 +37,15 @@ var bmltwf_changedata = {};
 jQuery(document).ready(function ($) {
   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+  if(!bmltwf_auto_geocode_enabled)
+  {
+    $("#optional_auto_geocode_enabled").hide();
+  }
+  else
+  {
+    $("#optional_auto_geocode_enabled").show();
+  }
+
   // hide / show / required our optional fields
   switch (bmltwf_optional_location_nation) {
     case "hidden":
@@ -647,7 +656,7 @@ jQuery(document).ready(function ($) {
         click: function () {
           geolocate_handler($(this).data("id"));
           },
-        disabled: true
+        disabled: bmltwf_auto_geocode_enabled
         },
         {
         text: "Save",
