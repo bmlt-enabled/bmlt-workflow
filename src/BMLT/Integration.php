@@ -298,11 +298,60 @@ class Integration
             }
         }
 
+        // {
+        //     "id": 1,
+        //     "worldId": "BEG",
+        //     "type": "COMMON_NEEDS_OR_RESTRICTION",
+        //     "translations": [
+        //         {
+        //             "key": "BEG",
+        //             "name": "Beginners",
+        //             "description": "This meeting is focused on the needs of new members of NA.",
+        //             "language": "en"
+        //         },
+        //     ]
+        // }
+
+        // {
+        //     "@attributes": {
+        //         "sequence_index": "0"
+        //     },
+        //     "key_string": "B",
+        //     "name_string": "Beginners",
+        //     "description_string": "This meeting is focused on the needs of new members of NA.",
+        //     "lang": "en",
+        //     "world_id": "BEG"
+        // }
+        
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/formats';
         $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token));
         $ret = \wp_safe_remote_get($url, $args);
+        $formatarr = json_decode(\wp_remote_retrieve_body($ret),1);
 
-        return json_decode(wp_remote_retrieve_body($ret));
+        $newformat = array();
+        foreach ($formatarr as $key => $value) {
+            $formatid = $value['id'];
+            $newvalue = array();
+            $newvalue['world_id'] = $value['worldId'];
+            foreach ($value['translations'] as $key1 => $value1)
+            {
+                if($value1['language']==='en')
+                {
+                    $newvalue['lang']= 'en';
+                    $newvalue['description_string']=$value1['description'];
+                    $newvalue['name_string']=$value1['name'];
+                    $newvalue['key_string']=$value1['key'];
+                    break;
+                }
+            }            
+            $newformat[$formatid] = $newvalue;
+        }
+        $this->debug_log("NEWFORMAT");
+        $this->debug_log(($newformat));
+
+        return $newformat;
+
+        // return json_decode(wp_remote_retrieve_body($ret));
     }
 
     public function getMeetingFormatsv2()
