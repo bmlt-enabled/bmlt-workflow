@@ -37,7 +37,7 @@ var bmltwf_changedata = {};
 jQuery(document).ready(function ($) {
   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-  if(!bmltwf_auto_geocode_enabled)
+  if(!bmltwf_auto_geocoding_enabled)
   {
     $("#optional_auto_geocode_enabled").hide();
   }
@@ -656,7 +656,7 @@ jQuery(document).ready(function ($) {
         click: function () {
           geolocate_handler($(this).data("id"));
           },
-        disabled: !bmltwf_auto_geocode_enabled
+        disabled: !bmltwf_auto_geocoding_enabled
         },
         {
         text: "Save",

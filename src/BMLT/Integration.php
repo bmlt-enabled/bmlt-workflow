@@ -240,7 +240,7 @@ class Integration
         return $matches[1];
     }
 
-    public function isAutoGeocodeEnabled()
+    public function isAutoGeocodingEnabled()
     {
         $ret = $this->authenticateRootServer();
         if (is_wp_error($ret)) {

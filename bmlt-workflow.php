@@ -69,7 +69,7 @@ if (!class_exists('bmltwf_plugin')) {
             $this->BMLTWF_Database = new BMLTWF_Database();
 
             $this->debug_log("ISGEOLOCATEENABLED");
-            $this->debug_log($this->bmlt_integration->isAutoGeocodeEnabled()?"true":"false");
+            $this->debug_log($this->bmlt_integration->isAutoGeocodingEnabled()?"true":"false");
 
 
             // actions, shortcodes, menus and filters
@@ -350,11 +350,11 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
 
                     $val = "true";
-                    if(!$this->bmlt_integration->isAutoGeocodeEnabled())
+                    if(!$this->bmlt_integration->isAutoGeocodingEnabled())
                     {
                         $val = "false";
                     }
-                    $script .= 'var bmltwf_auto_geocode_enabled = ' . $val . ';';
+                    $script .= 'var bmltwf_auto_geocoding_enabled = ' . $val . ';';
 
                     // can current user use the delete button?
                     $show_delete = "false";
@@ -698,7 +698,7 @@ if (!class_exists('bmltwf_plugin')) {
             add_settings_field(
                 'bmltwf_shortcode',
                 'Auto Geocode Root Server Settings',
-                array(&$this, 'bmltwf_auto_geocode_enabled_html'),
+                array(&$this, 'bmltwf_auto_geocoding_enabled_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
             );
@@ -929,9 +929,9 @@ if (!class_exists('bmltwf_plugin')) {
             echo '</div>';
         }
 
-        public function bmltwf_auto_geocode_enabled_html()
+        public function bmltwf_auto_geocoding_enabled_html()
         {
-            $autogeo = $this->bmlt_integration->isAutoGeocodeEnabled();
+            $autogeo = $this->bmlt_integration->isAutoGeocodingEnabled();
             if($autogeo)
             {
                 $val = "true";

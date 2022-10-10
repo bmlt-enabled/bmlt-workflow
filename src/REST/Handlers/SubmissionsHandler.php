@@ -367,7 +367,7 @@ class SubmissionsHandler
                 // workaround for semantic new meeting bug
                 $change['id_bigint'] = 0;
 
-                if($this->bmlt_integration->isAutoGeocodeEnabled())
+                if($this->bmlt_integration->isAutoGeocodingEnabled())
                 {
                     // run our geolocator on the address
                     $latlng = $this->do_geolocate($change);
@@ -412,7 +412,7 @@ class SubmissionsHandler
                     }
                 }
 
-                if($this->bmlt_integration->isAutoGeocodeEnabled())
+                if($this->bmlt_integration->isAutoGeocodingEnabled())
                 {
                     $latlng = $this->do_geolocate($bmlt_meeting);
                     if (is_wp_error($latlng)) {
