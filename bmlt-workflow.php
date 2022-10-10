@@ -697,7 +697,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_shortcode',
-                'Auto Geocode Root Server Settings',
+                'Auto Geocoding Root Server Settings',
                 array(&$this, 'bmltwf_auto_geocoding_enabled_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
@@ -943,7 +943,7 @@ if (!class_exists('bmltwf_plugin')) {
                 $val1 = "will not";
             }
             echo '<div class="bmltwf_info_text">';
-            echo '<br>This plugin honours the BMLT Root Server Auto Geocode settings. The $auto_geocoding_enabled setting is set to <b>'.$val.'</b>;';
+            echo '<br>This plugin honours the BMLT Root Server Auto Geocoding settings. The $auto_geocoding_enabled setting is set to <b>'.$val.'</b>;';
             echo '<br><br>Meeting submissions <b>'.$val1.'</b> be automatically geocoded on save';
             echo '<br><br>';
             echo '</div>';
