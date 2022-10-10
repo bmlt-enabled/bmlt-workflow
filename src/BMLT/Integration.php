@@ -336,7 +336,8 @@ class Integration
             $url = get_option('bmltwf_bmlt_server_address') . "index.php";
 
             // $this->debug_log("AUTH URL = " . $url);
-            $ret = $this->post($url, null, $postargs);
+            // $ret = $this->post($url, null, $postargs);
+            $ret = \wp_safe_remote_post($url, $this->set_args(null, http_build_query($postargs)));
 
             if (is_wp_error($ret)) {
                 return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
@@ -385,7 +386,6 @@ class Integration
     private function post($url, $cookies = null, $postargs)
     {
         
-
         $this->debug_log("POSTING URL = " . $url);
         // $this->debug_log(($this->set_args($cookies, http_build_query($postargs))));
         // $this->debug_log("*********");
@@ -484,6 +484,7 @@ class Integration
         if (is_wp_error($ret)) {
             return $ret;
         }
+
         if (!(is_array($postargs))) {
             return $this->bmltwf_rest_error("Missing post parameters", "bmltwf_bmlt_integration");
         }
