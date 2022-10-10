@@ -656,7 +656,7 @@ jQuery(document).ready(function ($) {
         click: function () {
           geolocate_handler($(this).data("id"));
           },
-        disabled: bmltwf_auto_geocode_enabled
+        disabled: !bmltwf_auto_geocode_enabled
         },
         {
         text: "Save",
