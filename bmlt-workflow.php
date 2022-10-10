@@ -71,6 +71,7 @@ if (!class_exists('bmltwf_plugin')) {
             $this->debug_log("ISGEOLOCATEENABLED");
             $this->debug_log($this->bmlt_integration->isAutoGeolocateEnabled()?"true":"false");
 
+            
             // actions, shortcodes, menus and filters
             add_action('wp_enqueue_scripts', array(&$this, 'bmltwf_enqueue_form_deps'));
             add_action('admin_menu', array(&$this, 'bmltwf_menu_pages'));
