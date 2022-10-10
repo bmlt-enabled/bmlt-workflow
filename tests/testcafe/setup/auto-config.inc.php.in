@@ -11,7 +11,6 @@ defined( 'BMLT_EXEC' ) or die ( 'Cannot Execute Directly' );	// Makes sure that 
 
 		// Location and Map settings:
 		$region_bias = 'au'; // This is a 2-letter code for a 'region bias,' which helps Google Maps to figure out ambiguous se arch queries.
-		$gkey = 'AIzaSyCSnUAp374q3sDEUPLITW9aMFU2ELpi43U'; // This is the Google Maps JavaScript API Key, necessary for using G oogle Maps.
 		$search_spec_map_center = array ( 'longitude' => -118.563659, 'latitude' => 34.235918, 'zoom' => 6 ); // This is the de fault map location for new meetings.
 		$comdef_distance_units = 'mi';
 
@@ -45,7 +44,9 @@ defined( 'BMLT_EXEC' ) or die ( 'Cannot Execute Directly' );	// Makes sure that 
 		$time_format = 'g:i A'; // The PHP date() format for the times displayed.
 		$change_date_format = 'g:i A, n/j/Y'; // The PHP date() format for times/dates displayed in the change records.
 		$admin_session_name = 'BMLT_Admin'; // This is merely the 'tag' used to identify the BMLT admin session.
-%MEETING_STATES%
-%DB_PASSWORD%
+		// 		$gkey = 'KEY'; // This is the Google Maps JavaScript API Key, necessary for using G oogle Maps.
 
+%DB_PASSWORD%
+%MEETING_STATES% 
+%GMAPS_KEY%
 ?>
