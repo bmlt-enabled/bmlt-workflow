@@ -306,7 +306,8 @@ if (!class_exists('bmltwf_plugin')) {
 
                     // add counties/states/provinces if they are populated
                     $meeting_counties_and_sub_provinces = $this->bmlt_integration->getMeetingCounties();
-                    $script .= "var bmltwf_counties_and_sub_provinces = " . json_encode($meeting_counties_and_sub_provinces) . ";";
+                    // $script .= "var bmltwf_counties_and_sub_provinces = " . json_encode($meeting_counties_and_sub_provinces) . ";";
+                    $script .= "var bmltwf_counties_and_sub_provinces = ";
                     if ($meeting_counties_and_sub_provinces) {
                         $script .= json_encode($meeting_counties_and_sub_provinces) . ";";
                     }
@@ -316,7 +317,8 @@ if (!class_exists('bmltwf_plugin')) {
                     }
 
                     $meeting_states_and_provinces = $this->bmlt_integration->getMeetingStates();
-                    $script .= "var bmltwf_do_states_and_provinces = " . json_encode($meeting_states_and_provinces) . ";";
+                    // $script .= "var bmltwf_do_states_and_provinces = " . json_encode($meeting_states_and_provinces) . ";";
+                    $script .= "var bmltwf_do_states_and_provinces = ";
                     if ($meeting_states_and_provinces) {
                         $script .=  json_encode($meeting_states_and_provinces) . ";";
                     }
@@ -930,9 +932,19 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_auto_geocode_enabled_html()
         {
             $autogeo = $this->bmlt_integration->isAutoGeocodeEnabled();
+            if($autogeo)
+            {
+                $val = "true";
+                $val1 = "will";
+            }
+            else
+            {
+                $val = "false";
+                $val1 = "will not";
+            }
             echo '<div class="bmltwf_info_text">';
-            echo '<br>This plugin honours the BMLT Root Server Auto Geocode settings. The $auto_geocoding_enabled setting is set to <b>'.$autogeo?"true":"false".'</b>;';
-            echo '<br>Meeting submissions <b>will'.$autogeo?'':' not'.'</b> be automatically geocoded on save';
+            echo '<br>This plugin honours the BMLT Root Server Auto Geocode settings. The $auto_geocoding_enabled setting is set to <b>'.$val.'</b>;';
+            echo '<br>Meeting submissions <b>'.$val1.'</b> be automatically geocoded on save';
             echo '<br><br>';
             echo '</div>';
 
