@@ -28,7 +28,7 @@ else
   AG="\$auto_geocoding_enabled = true;"
 fi
 
-GK=$(aws ssm get-parameter --name bmltwf_gmaps_key--region ap-southeast-2 --with-decryption | jq .Parameter.Value -r)
+GK=$(aws ssm get-parameter --name bmltwf_gmaps_key --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r)
 
 DB=$(aws ssm get-parameter --name bmltwf_bmlt_db_password --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r)
 
