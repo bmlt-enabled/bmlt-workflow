@@ -28,15 +28,14 @@ else
   AG="\$auto_geocoding_enabled = true;"
 fi
 
-GK=$(aws ssm get-parameter --name bmltwf_gmaps_key --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r)
-
-DB=$(aws ssm get-parameter --name bmltwf_bmlt_db_password --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r)
+GK=\$gkey=\'$(aws ssm get-parameter --name bmltwf_gmaps_key --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r)\'
+DB=\$dbPassword=\'$(aws ssm get-parameter --name bmltwf_bmlt_db_password --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r)\'
 
 # %DB_PASSWORD%
 # %MEETING_STATES% 
 # %GMAPS_KEY%
 # $AUTO_GEOCODING%
 
-sed "s/%DB_PASSWORD%/\$dbPassword=$DB/g" /home/ssm-user/scripts/auto-config.inc.php.in | sed "s/%MEETING_STATES%/$MS/g" | sed "s/%GMAPS_KEY%/\$gkey=$GK/g" | sed "s/%AUTO_GEOCODING%/$AG/g"  > /tmp/auto-config.inc.$$
+sed "s/%DB_PASSWORD%/$DB/g" /home/ssm-user/scripts/auto-config.inc.php.in | sed "s/%MEETING_STATES%/$MS/g" | sed "s/%GMAPS_KEY%/$GK/g" | sed "s/%AUTO_GEOCODING%/$AG/g"  > /tmp/auto-config.inc.$$
 sudo cp /tmp/auto-config.inc.$$  /var/www/html/blank_bmlt/auto-config.inc.php
 rm /tmp/auto-config.inc.$$
