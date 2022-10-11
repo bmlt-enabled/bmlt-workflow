@@ -29,7 +29,12 @@ else
 fi
 
 GK=\$gkey=\'$(aws ssm get-parameter --name bmltwf_gmaps_key --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r)\'\;
-DB=\$dbPassword=\'$(aws ssm get-parameter --name bmltwf_bmlt_db_password --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r)\'\;
+
+export DB_PASSWORD=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
+aws ssm put-parameter --overwrite --name bmltwf_bmlt_db_password --value $DB_PASSWORD --type SecureString --region ap-southeast-2
+mysql -D blank_bmlt -ussm-user -e "ALTER USER 'blank_bmlt'@'%' IDENTIFIED BY '$DB_PASSWORD';"
+
+DB=\$dbPassword=\'$DB_PASSWORD\'\;
 
 # %DB_PASSWORD%
 # %MEETING_STATES% 
