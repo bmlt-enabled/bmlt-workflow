@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 # Copyright (C) 2022 nigel.bmlt@gmail.com
 # 
 # This file is part of bmlt-workflow.
