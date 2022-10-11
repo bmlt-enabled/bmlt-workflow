@@ -143,10 +143,9 @@ class Integration
 
         // get an xml for a workaround
         $response = $this->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
-        if (is_wp_error($response)) {
+        if (is_wp_error($response)||(wp_remote_retrieve_response_code(($response)!=200))) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-
 
         // $this->debug_log(wp_remote_retrieve_body($response));
         // $formatarr = json_decode(wp_remote_retrieve_body($response), true);
@@ -224,7 +223,7 @@ class Integration
     {
         
         $ret = $this->authenticateRootServer();
-        if ((is_wp_error($ret))||(wp_remote_retrieve_response_code($ret)!=200)) {
+        if (is_wp_error($ret)) {
             // $this->debug_log("*** AUTH ERROR");
             // $this->debug_log(($ret));
             return $ret;
@@ -244,7 +243,7 @@ class Integration
     public function isAutoGeocodingEnabled()
     {
         $ret = $this->authenticateRootServer();
-        if ((is_wp_error($ret))||(wp_remote_retrieve_response_code($ret)!=200)) {
+        if (is_wp_error($ret)) {
             // $this->debug_log("*** AUTH ERROR");
             // $this->debug_log(($ret));
             return $ret;
@@ -377,7 +376,7 @@ class Integration
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
             $ret =  $this->authenticateRootServer();
-            if ((is_wp_error($ret))||(wp_remote_retrieve_response_code($ret)!=200)) {
+            if (is_wp_error($ret)) {
                 return $ret;
             }
             // try once more in case it was a session timeout
@@ -397,7 +396,7 @@ class Integration
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
             $ret =  $this->authenticateRootServer();
-            if ((is_wp_error($ret))||(wp_remote_retrieve_response_code($ret)!=200)) {
+            if (is_wp_error($ret)) {
                 return $ret;
             }
 
@@ -447,7 +446,7 @@ class Integration
     public function postAuthenticatedRootServerRequest($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
-        if ((is_wp_error($ret))||(wp_remote_retrieve_response_code($ret)!=200)) {
+        if (is_wp_error($ret)) {
             return $ret;
         }
         if (!(is_array($postargs))) {
@@ -484,7 +483,7 @@ class Integration
     {
         $ret =  $this->authenticateRootServer();
 
-        if ((is_wp_error($ret))||(wp_remote_retrieve_response_code($ret)!=200)) {
+        if (is_wp_error($ret)) {
             return $ret;
         }
 
