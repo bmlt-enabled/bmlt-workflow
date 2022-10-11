@@ -18,4 +18,4 @@
 
 
 export MEETING_STATES_ON="\$meeting_states_and_provinces = array("NSW","SA","VIC");"
-sh update_bmlt_config.sh
+sh /home/ssm-user/scripts/update_bmlt_config.sh

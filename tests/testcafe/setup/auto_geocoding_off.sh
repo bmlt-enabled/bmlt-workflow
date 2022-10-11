@@ -18,4 +18,4 @@
 
 
 export AUTO_GEOCODING_ON=""
-sh update_bmlt_config.sh
+sh /home/ssm-user/scripts/update_bmlt_config.sh
