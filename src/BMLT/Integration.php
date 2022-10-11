@@ -224,7 +224,7 @@ class Integration
     {
         
         $ret = $this->authenticateRootServer();
-        if (is_wp_error($ret)) {
+        if ((is_wp_error($ret))||(wp_remote_retrieve_response_code($ret)!=200)) {
             // $this->debug_log("*** AUTH ERROR");
             // $this->debug_log(($ret));
             return $ret;
@@ -244,7 +244,7 @@ class Integration
     public function isAutoGeocodingEnabled()
     {
         $ret = $this->authenticateRootServer();
-        if (is_wp_error($ret)) {
+        if ((is_wp_error($ret))||(wp_remote_retrieve_response_code($ret)!=200)) {
             // $this->debug_log("*** AUTH ERROR");
             // $this->debug_log(($ret));
             return $ret;
@@ -342,7 +342,7 @@ class Integration
             // $ret = $this->post($url, null, $postargs);
             $ret = \wp_safe_remote_post($url, $this->set_args(null, http_build_query($postargs)));
 
-            if (is_wp_error($ret)) {
+            if ((is_wp_error($ret))||(wp_remote_retrieve_response_code($ret)!=200)) {
                 return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
             }
 
@@ -377,7 +377,7 @@ class Integration
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
             $ret =  $this->authenticateRootServer();
-            if (is_wp_error($ret)) {
+            if ((is_wp_error($ret))||(wp_remote_retrieve_response_code($ret)!=200)) {
                 return $ret;
             }
             // try once more in case it was a session timeout
@@ -397,7 +397,7 @@ class Integration
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
             $ret =  $this->authenticateRootServer();
-            if (is_wp_error($ret)) {
+            if ((is_wp_error($ret))||(wp_remote_retrieve_response_code($ret)!=200)) {
                 return $ret;
             }
 
@@ -447,7 +447,7 @@ class Integration
     public function postAuthenticatedRootServerRequest($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
-        if (is_wp_error($ret)) {
+        if ((is_wp_error($ret))||(wp_remote_retrieve_response_code($ret)!=200)) {
             return $ret;
         }
         if (!(is_array($postargs))) {
@@ -484,7 +484,7 @@ class Integration
     {
         $ret =  $this->authenticateRootServer();
 
-        if (is_wp_error($ret)) {
+        if ((is_wp_error($ret))||(wp_remote_retrieve_response_code($ret)!=200)) {
             return $ret;
         }
 
