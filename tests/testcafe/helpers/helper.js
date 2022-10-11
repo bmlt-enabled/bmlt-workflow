@@ -89,6 +89,16 @@ export async function reset_bmlt(t) {
   await t.request(userVariables.blank_bmlt);
 }
 
+export async function auto_geocoding_on(t) {
+  // reset bmlt to reasonable state
+  await t.request(userVariables.auto_geocoding_on);
+}
+
+export async function auto_geocoding_off(t) {
+  // reset bmlt to reasonable state
+  await t.request(userVariables.auto_geocoding_off);
+}
+
 export async function insert_submissions() {
   // pre fill the submissions
   await t.request(userVariables.admin_submission_reset);

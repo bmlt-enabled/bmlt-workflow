@@ -291,3 +291,32 @@ test("Submission_Buttons_Active_correctly", async (t) => {
 //     await t .expect((as.dt_submission.child('tbody').child(row).child(column)).innerText).eql('Approved');
 
 // });
+
+test("Approve_New_Meeting_No_Geocoding", async (t) => {
+
+  await auto_geocoding_off(t);
+
+  // new meeting = row 2
+  var row = 2;
+  await click_table_row_column(as.dt_submission, row, 0);
+
+  // quickedit
+  await click_dt_button_by_index(as.dt_submission_wrapper,2);
+  // geocode div should be invisible
+  await t.expect(as.optional_auto_geocode_enabled.visible).eql(false)
+  .debug()  
+
+  // approve
+  await click_dt_button_by_index(as.dt_submission_wrapper, 0);
+
+  await t.expect(as.approve_dialog_parent.visible).eql(true);
+
+  await t.typeText(as.approve_dialog_textarea, "I approve this request");
+  // press ok button
+  await click_dialog_button_by_index(as.approve_dialog_parent, 1);
+  // dialog closes after ok button
+  await t.expect(as.approve_dialog_parent.visible).eql(false);
+
+  var column = 8;
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
+});

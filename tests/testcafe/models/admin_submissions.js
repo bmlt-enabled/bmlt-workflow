@@ -32,6 +32,7 @@ class Admin_Submissions {
         this.reject_dialog_parent = this.reject_dialog.parent();
         this.reject_dialog_textarea = Selector("#bmltwf_submission_reject_dialog_textarea");
         this.quickedit_dialog = Selector("#bmltwf_submission_quickedit_dialog");
+        this.optional_auto_geocode_enabled = Selector("#optional_auto_geocode_enabled");
     }
 }
 
