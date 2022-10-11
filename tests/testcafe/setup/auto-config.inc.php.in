@@ -44,7 +44,6 @@ defined( 'BMLT_EXEC' ) or die ( 'Cannot Execute Directly' );	// Makes sure that 
 		$time_format = 'g:i A'; // The PHP date() format for the times displayed.
 		$change_date_format = 'g:i A, n/j/Y'; // The PHP date() format for times/dates displayed in the change records.
 		$admin_session_name = 'BMLT_Admin'; // This is merely the 'tag' used to identify the BMLT admin session.
-		// 		$gkey = 'KEY'; // This is the Google Maps JavaScript API Key, necessary for using G oogle Maps.
 
 %DB_PASSWORD%
 %MEETING_STATES% 
