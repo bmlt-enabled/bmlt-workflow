@@ -155,7 +155,7 @@ class Integration
         // $this->debug_log(wp_remote_retrieve_body($response));
         $formatarr = json_decode(json_encode($xml), 1);
 
-        // $this->debug_log(($formatarr));
+        $this->debug_log(($formatarr));
 
         $newformat = array();
         foreach ($formatarr['row'] as $key => $value) {
