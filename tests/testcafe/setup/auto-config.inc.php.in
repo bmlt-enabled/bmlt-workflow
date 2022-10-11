@@ -49,4 +49,5 @@ defined( 'BMLT_EXEC' ) or die ( 'Cannot Execute Directly' );	// Makes sure that 
 %DB_PASSWORD%
 %MEETING_STATES% 
 %GMAPS_KEY%
+%AUTO_GEOCODING%
 ?>

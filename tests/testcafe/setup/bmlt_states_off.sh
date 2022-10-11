@@ -16,5 +16,5 @@
 # You should have received a copy of the GNU General Public License
 # along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-
-sed 's/%MEETING_STATES%//g' /home/ssm-user/scripts/auto-config.inc.php.in > /var/www/html/blank_bmlt/auto-config.inc.php
+export MEETING_STATES_ON=""
+sh update_bmlt_config.sh

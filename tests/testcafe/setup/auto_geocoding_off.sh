@@ -17,5 +17,5 @@
 # along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 
-export MEETING_STATES_ON="\$meeting_states_and_provinces = array("NSW","SA","VIC");"
+export AUTO_GEOCODING_ON=""
 sh update_bmlt_config.sh
