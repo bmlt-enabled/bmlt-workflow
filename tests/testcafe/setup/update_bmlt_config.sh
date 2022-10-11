@@ -37,6 +37,6 @@ DB=$(aws ssm get-parameter --name bmltwf_bmlt_db_password --region ap-southeast-
 # %GMAPS_KEY%
 # $AUTO_GEOCODING%
 
-sed "s/%DB_PASSWORD%/$DB/g" /home/ssm-user/scripts/auto-config.inc.php.in | sed "s/%MEETING_STATES%/$MS/g" | sed "s/%GMAPS_KEY%/$GK/g" | sed "s/%AUTO_GEOCODING%/$AG/g"  > /tmp/auto-config.inc.$$
+sed "s/%DB_PASSWORD%/\$dbPassword=$DB/g" /home/ssm-user/scripts/auto-config.inc.php.in | sed "s/%MEETING_STATES%/$MS/g" | sed "s/%GMAPS_KEY%/\$gkey=$GK/g" | sed "s/%AUTO_GEOCODING%/$AG/g"  > /tmp/auto-config.inc.$$
 sudo cp /tmp/auto-config.inc.$$  /var/www/html/blank_bmlt/auto-config.inc.php
 rm /tmp/auto-config.inc.$$
