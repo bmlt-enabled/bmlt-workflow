@@ -37,4 +37,5 @@ cd $PLUGINDIR
 sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" config.php
 /usr/local/bin/composer dumpautoload
 sudo chown -R apache:apache $PLUGINDIR
+/home/ssm-user/scripts/update_bmlt_config.sh
 /home/ssm-user/scripts/wp-install.sh

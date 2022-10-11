@@ -68,9 +68,6 @@ if (!class_exists('bmltwf_plugin')) {
             $this->BMLTWF_Rest_Controller = new Controller();
             $this->BMLTWF_Database = new BMLTWF_Database();
 
-            $this->debug_log("ISGEOLOCATEENABLED");
-            $this->debug_log($this->bmlt_integration->isAutoGeocodingEnabled()?"true":"false");
-
 
             // actions, shortcodes, menus and filters
             add_action('wp_enqueue_scripts', array(&$this, 'bmltwf_enqueue_form_deps'));
@@ -350,6 +347,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
 
                     $val = "true";
+                    
                     if(!$this->bmlt_integration->isAutoGeocodingEnabled())
                     {
                         $val = "false";
