@@ -154,6 +154,7 @@ class Integration
         // $this->debug_log("XML RESPONSE");
         // $this->debug_log(wp_remote_retrieve_body($response));
         $formatarr = json_decode(json_encode($xml), 1);
+        $this->debug_log("FORMATARR");
 
         $this->debug_log(($formatarr));
 
