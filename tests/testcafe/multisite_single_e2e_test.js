@@ -180,8 +180,6 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => 
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
-
-  await t.debug();
   
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
