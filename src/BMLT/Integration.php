@@ -259,7 +259,19 @@ class Integration
         preg_match('/"auto_geocoding_enabled":(?:(true)|(false)),/', wp_remote_retrieve_body($resp), $matches);
         // $this->debug_log("matches: ");
         // $this->debug_log($matches);
-        return $matches[1]==="true"?true:false;
+        $auto = $matches[1]==="true"?true:false; 
+        $this->debug_log("auto geocoding check returns ");
+
+        if($auto)
+        {
+            $this->debug_log("true");
+        }
+        else
+        {
+            $this->debug_log("false");
+        }
+
+        return $auto;
     }
 
     public function geolocateAddress($address)
