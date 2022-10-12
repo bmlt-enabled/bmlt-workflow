@@ -153,9 +153,9 @@ class Integration
         // $this->debug_log("XML RESPONSE");
         // $this->debug_log(wp_remote_retrieve_body($response));
         $formatarr = json_decode(json_encode($xml), 1);
-        $this->debug_log("FORMATARR");
+        // $this->debug_log("FORMATARR");
 
-        $this->debug_log(($formatarr));
+        // $this->debug_log(($formatarr));
 
         $newformat = array();
         foreach ($formatarr['row'] as $key => $value) {
@@ -253,8 +253,8 @@ class Integration
         // $this->debug_log("*** ADMIN URL ".$url);
 
         $resp = $this->get($url, $this->cookies);
-        $this->debug_log("*** ADMIN PAGE");
-        $this->debug_log(wp_remote_retrieve_body($resp));
+        // $this->debug_log("*** ADMIN PAGE");
+        // $this->debug_log(wp_remote_retrieve_body($resp));
 
         preg_match('/"auto_geocoding_enabled":(?:(true)|(false)),/', wp_remote_retrieve_body($resp), $matches);
         // $this->debug_log("matches: ");

@@ -181,7 +181,7 @@ jQuery(document).ready(function ($) {
           if (!Object.keys(data).length) {
             var a = {};
             a["responseJSON"] = {};
-            a["responseJSON"]["message"] = "Error retrieving BMLT data";
+            a["responseJSON"]["message"] = "Error retrieving BMLT data - meeting possibly removed";
             notice_error(a, "bmltwf-error-message");
           } else {
             // split up the duration so we can use it in the select

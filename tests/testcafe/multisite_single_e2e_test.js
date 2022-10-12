@@ -22,6 +22,8 @@ import { Selector, Role } from "testcafe";
 
 import { reset_bmlt, 
   bmlt_states_off, 
+  auto_geocoding_off,
+  auto_geocoding_on,
   click_table_row_column, 
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
@@ -40,6 +42,7 @@ fixture`multisite_single_e2e_test_fixture`
 
     await reset_bmlt(t);
     await bmlt_states_off(t);
+    await auto_geocoding_on(t);
 
     await basic_options_multisingle(t);
 
