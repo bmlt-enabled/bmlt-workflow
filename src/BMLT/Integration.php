@@ -257,8 +257,8 @@ class Integration
         // $this->debug_log(wp_remote_retrieve_body($resp));
 
         preg_match('/"auto_geocoding_enabled":(?:(true)|(false)),/', wp_remote_retrieve_body($resp), $matches);
-        // $this->debug_log("matches: ");
-        // $this->debug_log($matches);
+        $this->debug_log("matches: ");
+        $this->debug_log($matches);
         $auto = $matches[1]==="true"?true:false; 
         $this->debug_log("auto geocoding check returns ");
 
