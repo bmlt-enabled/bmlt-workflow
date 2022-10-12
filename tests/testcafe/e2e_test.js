@@ -23,6 +23,7 @@ import { Selector, Role } from "testcafe";
 
 import { reset_bmlt, 
   bmlt_states_off, 
+  auto_geocoding_on,
   configure_service_bodies, 
   delete_submissions, 
   click_table_row_column, 
@@ -41,7 +42,7 @@ fixture`e2e_test_fixture`
 
     await reset_bmlt(t);
     await bmlt_states_off(t);
-
+    await auto_geocoding_on(t);
     await basic_options(t);
 
     await delete_submissions(t);

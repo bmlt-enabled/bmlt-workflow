@@ -274,6 +274,24 @@ class Integration
         return $auto;
     }
 
+
+    public function getDefaultLatLong()
+    {
+
+        $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
+        if (is_wp_error($response)||(wp_remote_retrieve_response_code($response)!=200)) {
+            return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
+        }
+        // $this->debug_log(wp_remote_retrieve_body($response));  
+        $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
+        if ((!empty($arr['centerLongitude']))&&(!empty($arr['centerLatitude']))) {
+            
+            return array('longitude'=>$arr['centerLongitude'],'latitude'=>$arr['centerLatitude']);
+        }
+        return false;
+    
+    }
+
     public function geolocateAddress($address)
     {
         $key = $this->getGmapsKey();

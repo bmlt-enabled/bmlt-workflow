@@ -378,6 +378,12 @@ class SubmissionsHandler
                     $change['latitude'] = $latlng['latitude'];
                     $change['longitude'] = $latlng['longitude'];
                 }
+                else
+                {
+                    $latlng = $this->bmlt_integration->getDefaultLatLong();
+                    $change['latitude'] = $latlng['latitude'];
+                    $change['longitude'] = $latlng['longitude'];
+                }
 
                 // handle publish/unpublish here
                 $change['published'] = 1;
@@ -423,6 +429,12 @@ class SubmissionsHandler
                         return $latlng;
                     }
                     // add the new geo to the original change
+                    $change['latitude'] = $latlng['latitude'];
+                    $change['longitude'] = $latlng['longitude'];
+                }
+                else
+                {
+                    $latlng = $this->bmlt_integration->getDefaultLatLong();
                     $change['latitude'] = $latlng['latitude'];
                     $change['longitude'] = $latlng['longitude'];
                 }
