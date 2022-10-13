@@ -22,6 +22,8 @@ import { Selector, Role } from "testcafe";
 
 import { reset_bmlt, 
   bmlt_states_off, 
+  auto_geocoding_off,
+  auto_geocoding_on,
   click_table_row_column, 
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
@@ -40,6 +42,7 @@ fixture`multisite_single_e2e_test_fixture`
 
     await reset_bmlt(t);
     await bmlt_states_off(t);
+    await auto_geocoding_on(t);
 
     await basic_options_multisingle(t);
 
@@ -177,7 +180,7 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => 
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
-
+  
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
   await t.typeText(Selector('input[class="select2-search__field"]'), "99999");

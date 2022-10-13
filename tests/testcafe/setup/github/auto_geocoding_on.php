@@ -16,5 +16,5 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-echo shell_exec('sudo -u ssm-user /home/ssm-user/scripts/bmlt_states_on.sh');
+echo shell_exec('sudo -u ssm-user /home/ssm-user/scripts/auto_geocoding_on.sh');
 ?>

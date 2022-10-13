@@ -20,14 +20,14 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.0.8
+ * Version: 1.0.9
  * Requires at least: 5.2
  * Tested up to: 6.0
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
 
-define('BMLTWF_PLUGIN_VERSION', '1.0.8');
+define('BMLTWF_PLUGIN_VERSION', '1.0.9');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -67,6 +67,7 @@ if (!class_exists('bmltwf_plugin')) {
             $this->BMLTWF_Rest = new BMLTWF_Rest();
             $this->BMLTWF_Rest_Controller = new Controller();
             $this->BMLTWF_Database = new BMLTWF_Database();
+
 
             // actions, shortcodes, menus and filters
             add_action('wp_enqueue_scripts', array(&$this, 'bmltwf_enqueue_form_deps'));
@@ -302,7 +303,8 @@ if (!class_exists('bmltwf_plugin')) {
 
                     // add counties/states/provinces if they are populated
                     $meeting_counties_and_sub_provinces = $this->bmlt_integration->getMeetingCounties();
-                    $script .= "var bmltwf_counties_and_sub_provinces = " . json_encode($meeting_counties_and_sub_provinces) . ";";
+                    // $script .= "var bmltwf_counties_and_sub_provinces = " . json_encode($meeting_counties_and_sub_provinces) . ";";
+                    $script .= "var bmltwf_counties_and_sub_provinces = ";
                     if ($meeting_counties_and_sub_provinces) {
                         $script .= json_encode($meeting_counties_and_sub_provinces) . ";";
                     }
@@ -312,7 +314,8 @@ if (!class_exists('bmltwf_plugin')) {
                     }
 
                     $meeting_states_and_provinces = $this->bmlt_integration->getMeetingStates();
-                    $script .= "var bmltwf_do_states_and_provinces = " . json_encode($meeting_states_and_provinces) . ";";
+                    // $script .= "var bmltwf_do_states_and_provinces = " . json_encode($meeting_states_and_provinces) . ";";
+                    $script .= "var bmltwf_do_states_and_provinces = ";
                     if ($meeting_states_and_provinces) {
                         $script .=  json_encode($meeting_states_and_provinces) . ";";
                     }
@@ -342,6 +345,14 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_optional_location_sub_province = "' . get_option('bmltwf_optional_location_sub_province') . '";';
                     $script .= 'var bmltwf_optional_location_province = "' . get_option('bmltwf_optional_location_province') . '";';
                     $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
+
+                    $val = "true";
+                    
+                    if(!$this->bmlt_integration->isAutoGeocodingEnabled())
+                    {
+                        $val = "false";
+                    }
+                    $script .= 'var bmltwf_auto_geocoding_enabled = ' . $val . ';';
 
                     // can current user use the delete button?
                     $show_delete = "false";
@@ -683,6 +694,14 @@ if (!class_exists('bmltwf_plugin')) {
             );
 
             add_settings_field(
+                'bmltwf_shortcode',
+                'Auto Geocoding Root Server Settings',
+                array(&$this, 'bmltwf_auto_geocoding_enabled_html'),
+                'bmltwf-settings',
+                'bmltwf-settings-section-id'
+            );
+
+            add_settings_field(
                 'bmltwf_email_from_address',
                 'Email From Address',
                 array(&$this, 'bmltwf_email_from_address_html'),
@@ -906,6 +925,27 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br>Use the shortcode <code>[bmltwf-meeting-update-form]</code> to generate a form. The form will be associated with service bodies configured on the Service Bodies configuration page.';
             echo '<br><br>';
             echo '</div>';
+        }
+
+        public function bmltwf_auto_geocoding_enabled_html()
+        {
+            $autogeo = $this->bmlt_integration->isAutoGeocodingEnabled();
+            if($autogeo)
+            {
+                $val = "true";
+                $val1 = "will";
+            }
+            else
+            {
+                $val = "false";
+                $val1 = "will not";
+            }
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>This plugin honours the BMLT Root Server Auto Geocoding settings. The $auto_geocoding_enabled setting is set to <b>'.$val.'</b>;';
+            echo '<br><br>Meeting submissions <b>'.$val1.'</b> be automatically geocoded on save';
+            echo '<br><br>';
+            echo '</div>';
+
         }
 
         public function bmltwf_email_from_address_html()

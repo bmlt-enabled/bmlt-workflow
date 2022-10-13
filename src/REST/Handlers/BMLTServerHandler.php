@@ -105,7 +105,7 @@ class BMLTServerHandler
 
         $ret = $this->bmlt_integration->testServerAndAuth($username, $password, $server);
 
-        if (is_wp_error($ret)) {
+        if ((is_wp_error($ret))||(\wp_remote_retrieve_response_code($ret)!=200)) {
 
             $r = update_option("bmltwf_bmlt_test_status", "failure");
             $data["bmltwf_bmlt_test_status"] = "failure";

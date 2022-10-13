@@ -37,6 +37,15 @@ var bmltwf_changedata = {};
 jQuery(document).ready(function ($) {
   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+  if(!bmltwf_auto_geocoding_enabled)
+  {
+    $("#optional_auto_geocode_enabled").hide();
+  }
+  else
+  {
+    $("#optional_auto_geocode_enabled").show();
+  }
+
   // hide / show / required our optional fields
   switch (bmltwf_optional_location_nation) {
     case "hidden":
@@ -172,7 +181,7 @@ jQuery(document).ready(function ($) {
           if (!Object.keys(data).length) {
             var a = {};
             a["responseJSON"] = {};
-            a["responseJSON"]["message"] = "Error retrieving BMLT data";
+            a["responseJSON"]["message"] = "Error retrieving BMLT data - meeting possibly removed";
             notice_error(a, "bmltwf-error-message");
           } else {
             // split up the duration so we can use it in the select
@@ -641,17 +650,27 @@ jQuery(document).ready(function ($) {
         at: "center",
         of: window,
       },
-      buttons: {
-        "Check Geolocate": function () {
+      buttons: [
+        {
+        text: "Check Geolocate",
+        click: function () {
           geolocate_handler($(this).data("id"));
+          },
+        disabled: !bmltwf_auto_geocoding_enabled
         },
-        Save: function () {
+        {
+        text: "Save",
+        click: function () {
           save_handler($(this).data("id"));
+          }
         },
-        Cancel: function () {
+        {
+        text: "Cancel",
+        click: function () {
           $(this).dialog("close");
+        }
         },
-      },
+      ],
       open: function () {
         var $this = $(this);
         // close dialog by clicking the overlay behind it

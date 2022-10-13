@@ -26,6 +26,7 @@ git pull
 cp tests/testcafe/setup/github/* /var/www/html/github
 cp tests/testcafe/setup/*.sh /home/ssm-user/scripts
 cp tests/testcafe/setup/*.sql /home/ssm-user/scripts
+cp tests/testcafe/setup/*.in /home/ssm-user/scripts
 chmod 755 /home/ssm-user/scripts/*.sh
 cd ..
 sudo rm -rf $PLUGINDIR
@@ -36,4 +37,5 @@ cd $PLUGINDIR
 sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" config.php
 /usr/local/bin/composer dumpautoload
 sudo chown -R apache:apache $PLUGINDIR
+/home/ssm-user/scripts/update_bmlt_config.sh
 /home/ssm-user/scripts/wp-install.sh

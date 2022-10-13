@@ -162,6 +162,7 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn("success");
 
         Functions\when('\update_option')->returnArg(1);
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
 
         $stub = \Mockery::mock('Integration');
         /** @var Mockery::mock $stub test */

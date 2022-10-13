@@ -42,7 +42,6 @@ class SubmissionsHandler
         $this->BMLTWF_Database = new BMLTWF_Database();
 
         $this->formats = $this->bmlt_integration->getMeetingFormats();
-
     }
 
     public function get_submissions_handler()
@@ -367,21 +366,31 @@ class SubmissionsHandler
                 // workaround for semantic new meeting bug
                 $change['id_bigint'] = 0;
 
-                // run our geolocator on the address
-                $latlng = $this->do_geolocate($change);
-                if (is_wp_error($latlng)) {
-                    return $latlng;
-                }
+                if ($this->bmlt_integration->isAutoGeocodingEnabled()) {
+                    // run our geolocator on the address
+                    $latlng = $this->do_geolocate($change);
+                    if (is_wp_error($latlng)) {
+                        return $latlng;
+                    }
 
-                $change['latitude'] = $latlng['latitude'];
-                $change['longitude'] = $latlng['longitude'];
+                    $change['latitude'] = $latlng['latitude'];
+                    $change['longitude'] = $latlng['longitude'];
+                } else {
+                    $latlng = $this->bmlt_integration->getDefaultLatLong();
+                    $change['latitude'] = $latlng['latitude'];
+                    $change['longitude'] = $latlng['longitude'];
+                }
 
                 // handle publish/unpublish here
                 $change['published'] = 1;
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;
                 $changearr['set_meeting_change'] = json_encode($change);
+                $this->debug_log("posting change");
+                $this->debug_log($changearr);
+
                 $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
+                $this->debug_log("posted change");
 
                 if (is_wp_error($response)) {
                     return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
@@ -409,13 +418,23 @@ class SubmissionsHandler
                     }
                 }
 
-                $latlng = $this->do_geolocate($bmlt_meeting);
-                if (is_wp_error($latlng)) {
-                    return $latlng;
+                if ($this->bmlt_integration->isAutoGeocodingEnabled()) {
+                    $latlng = $this->do_geolocate($bmlt_meeting);
+                    if (is_wp_error($latlng)) {
+                        return $latlng;
+                    }
+                    // add the new geo to the original change
+                    $change['latitude'] = $latlng['latitude'];
+                    $change['longitude'] = $latlng['longitude'];
+                } else {
+                    // update this only if we have no meeting lat/long already set
+                    if (empty($change['latitude'] && empty($change['longitude']))) {
+
+                        $latlng = $this->bmlt_integration->getDefaultLatLong();
+                        $change['latitude'] = $latlng['latitude'];
+                        $change['longitude'] = $latlng['longitude'];
+                    }
                 }
-                // add the new geo to the original change
-                $change['latitude'] = $latlng['latitude'];
-                $change['longitude'] = $latlng['longitude'];
 
                 $changearr = array();
                 $changearr['bmlt_ajax_callback'] = 1;
@@ -543,12 +562,11 @@ class SubmissionsHandler
 
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         $this->debug_log("Approval email");
-        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers,true));
+        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));
         wp_mail($to_address, $subject, $body, $headers);
 
         // only do FSO features if option is enabled
-        if(get_option('bmltwf_fso_feature')=='display')
-        {
+        if (get_option('bmltwf_fso_feature') == 'display') {
             //
             // send FSO email
             //
@@ -585,7 +603,7 @@ class SubmissionsHandler
         }
 
         // wip for #89
-        
+
         // if(get_option('bmltwf_service_body_contact_notify')==='true')
         // {
         //     /*
@@ -674,14 +692,11 @@ class SubmissionsHandler
             $reason_change_bool = ($data['update_reason'] === 'reason_change');
             $reason_close_bool = ($data['update_reason'] === 'reason_close');
             // handle meeting formats
-            if (isset($data['format_shared_id_list']))
-            {
+            if (isset($data['format_shared_id_list'])) {
                 $strarr = explode(',', $data['format_shared_id_list']);
                 foreach ($strarr as $key) {
-                    if(array_key_exists($key, $this->formats))
-                    {
-                        switch($this->formats[$key]["key_string"])
-                        {
+                    if (array_key_exists($key, $this->formats)) {
+                        switch ($this->formats[$key]["key_string"]) {
                             case "HY":
                             case "VM":
                             case "TC":
@@ -689,47 +704,40 @@ class SubmissionsHandler
                                 break;
                             default:
                                 break;
-                        }    
+                        }
                     }
-                }    
+                }
             }
 
             $require_postcode = false;
-            if(get_option('bmltwf_optional_postcode') === 'displayrequired')
-            {
+            if (get_option('bmltwf_optional_postcode') === 'displayrequired') {
                 $require_postcode = true;
             }
 
             $require_nation = false;
-            if(get_option('bmltwf_optional_location_nation') === 'displayrequired')
-            {
+            if (get_option('bmltwf_optional_location_nation') === 'displayrequired') {
                 $require_nation = true;
             }
 
             $require_province = false;
-            if(get_option('bmltwf_optional_location_province') === 'displayrequired')
-            {
+            if (get_option('bmltwf_optional_location_province') === 'displayrequired') {
                 $require_province = true;
             }
 
             $require_sub_province = false;
-            if(get_option('bmltwf_optional_location_sub_province') === 'displayrequired')
-            {
+            if (get_option('bmltwf_optional_location_sub_province') === 'displayrequired') {
                 $require_sub_province = true;
             }
 
             $require_meeting_formats = false;
-            if(get_option('bmltwf_required_meeting_formats') === 'true')
-            {
+            if (get_option('bmltwf_required_meeting_formats') === 'true') {
                 $require_meeting_formats = true;
             }
 
             $fso_feature = false;
-            if(get_option('bmltwf_fso_feature') === 'display')
-            {
+            if (get_option('bmltwf_fso_feature') === 'display') {
                 $fso_feature = true;
             }
-
         }
 
         if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_change_bool && !$reason_close_bool))) {
@@ -1094,7 +1102,7 @@ class SubmissionsHandler
         $body = $template;
 
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers,true));
+        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));
         wp_mail($to_address, $subject, $body, $headers);
 
         return $this->handlerCore->bmltwf_rest_success($message);

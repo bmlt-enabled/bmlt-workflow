@@ -17,4 +17,5 @@
 # along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 
-sed 's/%MEETING_STATES%/\$meeting_states_and_provinces = array("NSW","SA","VIC");/g' /home/ssm-user/scripts/auto-config.inc.php.in > /var/www/html/blank_bmlt/auto-config.inc.php
+export MEETING_STATES_ON="\$meeting_states_and_provinces = array(\"NSW\",\"SA\",\"VIC\");"
+sh /home/ssm-user/scripts/update_bmlt_config.sh

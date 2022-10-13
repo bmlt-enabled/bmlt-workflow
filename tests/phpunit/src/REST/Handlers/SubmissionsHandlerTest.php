@@ -133,7 +133,8 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
             ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1, "longitude" => 1))
             ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp, true))
-            ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats, true));
+            ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats, true))
+            ->shouldReceive('isAutoGeocodingEnabled')->andreturn(true);
 
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
         return $bmlt;
