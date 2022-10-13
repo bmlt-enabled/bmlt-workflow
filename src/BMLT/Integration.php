@@ -136,14 +136,12 @@ class Integration
 
     public function getMeetingFormats()
     {
-        
-
         $req = array();
         $req['admin_action'] = 'get_format_info';
 
         // get an xml for a workaround
         $response = $this->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
-        if (is_wp_error($response)||(wp_remote_retrieve_response_code(($response)!=200))) {
+        if (is_wp_error($response)||(\wp_remote_retrieve_response_code($response)!=200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
 
@@ -177,7 +175,7 @@ class Integration
     public function getMeetingStates()
     {
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        if (is_wp_error($response)||(wp_remote_retrieve_response_code($response)!=200)) {
+        if (is_wp_error($response)||(\wp_remote_retrieve_response_code($response)!=200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
         // $this->debug_log(wp_remote_retrieve_body($response));  
@@ -197,7 +195,7 @@ class Integration
     public function getMeetingCounties()
     {
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        if (is_wp_error($response)||(wp_remote_retrieve_response_code($response)!=200)) {
+        if (is_wp_error($response)||(\wp_remote_retrieve_response_code($response)!=200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve server info');
         }
         // $this->debug_log(wp_remote_retrieve_body($response));  
@@ -279,7 +277,7 @@ class Integration
     {
 
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        if (is_wp_error($response)||(wp_remote_retrieve_response_code($response)!=200)) {
+        if (is_wp_error($response)||(\wp_remote_retrieve_response_code($response)!=200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
         // $this->debug_log(wp_remote_retrieve_body($response));  
@@ -371,7 +369,7 @@ class Integration
             // $ret = $this->post($url, null, $postargs);
             $ret = \wp_safe_remote_post($url, $this->set_args(null, http_build_query($postargs)));
 
-            if ((is_wp_error($ret))||(wp_remote_retrieve_response_code($ret)!=200)) {
+            if ((is_wp_error($ret))||(\wp_remote_retrieve_response_code($ret)!=200)) {
                 return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
             }
 
@@ -511,6 +509,7 @@ class Integration
      */
     public function postAuthenticatedRootServerRequestSemantic($url, $postargs)
     {
+
         $ret =  $this->authenticateRootServer();
 
         if (is_wp_error($ret)) {

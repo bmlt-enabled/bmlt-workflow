@@ -102,9 +102,9 @@ Line: $errorLine
     {
         // testServerAndAuth($username, $password, $server)
 
-        Functions\when('wp_safe_remote_post')->returnArg();
-        Functions\when('wp_remote_retrieve_response_code')->justReturn('403');
-        Functions\when('wp_remote_retrieve_body')->justReturn('<html></html>');
+        Functions\when('\wp_safe_remote_post')->returnArg();
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('403');
+        Functions\when('\wp_remote_retrieve_body')->justReturn('<html></html>');
         Functions\when('http_build_query')->justReturn(1);
 
         $integration = new Integration();
@@ -119,9 +119,9 @@ Line: $errorLine
     {
         // testServerAndAuth($username, $password, $server)
 
-        Functions\when('wp_safe_remote_post')->returnArg();
-        Functions\when('wp_remote_retrieve_response_code')->justReturn('200');
-        Functions\when('wp_remote_retrieve_body')->justReturn('</head><body class="admin_body"><h2 class="c_comdef_not_auth_3">There was a problem with the user name or password that you entered.</h2><div class="c_comdef_admin_login_form_container_div"><noscript>');
+        Functions\when('\wp_safe_remote_post')->returnArg();
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_remote_retrieve_body')->justReturn('</head><body class="admin_body"><h2 class="c_comdef_not_auth_3">There was a problem with the user name or password that you entered.</h2><div class="c_comdef_admin_login_form_container_div"><noscript>');
         Functions\when('http_build_query')->justReturn(1);
 
         $integration = new Integration();
@@ -137,9 +137,9 @@ Line: $errorLine
         //     public function getMeetingFormats()
 
         // Functions\when('wp_remote_retrieve_body')->justReturn('[{"key_string": "B","name_string": "Beginners","description_string": "This meeting is focused on the needs of new members of NA.","lang": "en","id": "1","world_id": "BEG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"},{"key_string": "BL","name_string": "Bi-Lingual","description_string": "This meeting is conducted in both English and another language.","lang": "en","id": "2","world_id": "LANG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"}]');
-        Functions\when('wp_remote_retrieve_body')->justReturn($this->formats);
-
-        Functions\when('wp_safe_remote_post')->returnArg();
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
+        Functions\when('\wp_safe_remote_post')->justReturn(array('response'=> array('code'=>200 )));
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
@@ -160,9 +160,9 @@ Line: $errorLine
     {
         //     public function getMeetingFormats()
 
-        Functions\when('wp_remote_retrieve_body')->justReturn('[{"key_string": "B","name_string": "Beginners","description_string": "This meeting is focused on the needs of new members of NA.","lang": "en","id": "1","world_id": "BEG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"},{"key_string": "BL","name_string": "Bi-Lingual","description_string": "This meeting is conducted in both English and another language.","lang": "en","id": "2","world_id": "LANG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"}]');
-
-        Functions\when('wp_safe_remote_post')->justReturn(new \WP_Error(1));
+        Functions\when('\wp_remote_retrieve_body')->justReturn('[{"key_string": "B","name_string": "Beginners","description_string": "This meeting is focused on the needs of new members of NA.","lang": "en","id": "1","world_id": "BEG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"},{"key_string": "BL","name_string": "Bi-Lingual","description_string": "This meeting is conducted in both English and another language.","lang": "en","id": "2","world_id": "LANG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"}]');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_safe_remote_post')->justReturn(new \WP_Error(1));
 
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
         /** @var Mockery::mock $BMLTWF_WP_Options test */
@@ -183,9 +183,9 @@ Line: $errorLine
         //         public function getMeetingStates()
 
 
-        Functions\when('wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": "MA,ME,NH,RI,VT"}]');
-
-        Functions\when('wp_safe_remote_post')->returnArg();
+        Functions\when('\wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": "MA,ME,NH,RI,VT"}]');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_safe_remote_post')->returnArg();
 
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
         /** @var Mockery::mock $BMLTWF_WP_Options test */
@@ -205,9 +205,10 @@ Line: $errorLine
         //         public function getMeetingStates()
 
 
-        Functions\when('wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": ""}]');
+        Functions\when('\wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": ""}]');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
 
-        Functions\when('wp_safe_remote_post')->returnArg();
+        Functions\when('\wp_safe_remote_post')->returnArg();
 
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
         /** @var Mockery::mock $BMLTWF_WP_Options test */
@@ -226,9 +227,9 @@ Line: $errorLine
     {
         //         public function getMeetingStates()
 
-        Functions\when('wp_remote_retrieve_body')->justReturn('[{"key_string": "B","name_string": "Beginners","description_string": "This meeting is focused on the needs of new members of NA.","lang": "en","id": "1","world_id": "BEG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"},{"key_string": "BL","name_string": "Bi-Lingual","description_string": "This meeting is conducted in both English and another language.","lang": "en","id": "2","world_id": "LANG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"}]');
+        Functions\when('\wp_remote_retrieve_body')->justReturn('[{"key_string": "B","name_string": "Beginners","description_string": "This meeting is focused on the needs of new members of NA.","lang": "en","id": "1","world_id": "BEG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"},{"key_string": "BL","name_string": "Bi-Lingual","description_string": "This meeting is conducted in both English and another language.","lang": "en","id": "2","world_id": "LANG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"}]');
 
-        Functions\when('wp_safe_remote_post')->justReturn(new \WP_Error(1));
+        Functions\when('\wp_safe_remote_post')->justReturn(new \WP_Error(1));
 
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
         /** @var Mockery::mock $BMLTWF_WP_Options test */
@@ -249,9 +250,9 @@ Line: $errorLine
         //         public function getMeetingCounties()
 
 
-        Functions\when('wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": "MA,ME,NH,RI,VT","meeting_counties_and_sub_provinces": "Androscoggin,Aroostook,Barnstable,Belknap"}]');
-
-        Functions\when('wp_safe_remote_post')->returnArg();
+        Functions\when('\wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": "MA,ME,NH,RI,VT","meeting_counties_and_sub_provinces": "Androscoggin,Aroostook,Barnstable,Belknap"}]');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_safe_remote_post')->returnArg();
 
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
         /** @var Mockery::mock $BMLTWF_WP_Options test */
@@ -272,6 +273,7 @@ Line: $errorLine
 
 
         Functions\when('wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": "MA,ME,NH,RI,VT","meeting_counties_and_sub_provinces": ""}]');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
 
         Functions\when('wp_safe_remote_post')->returnArg();
 
@@ -314,6 +316,7 @@ Line: $errorLine
         //         public function postAuthenticatedRootServerRequest()
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
 
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
@@ -337,6 +340,7 @@ Line: $errorLine
         //         public function postAuthenticatedRootServerRequest()
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
 
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
@@ -359,9 +363,10 @@ Line: $errorLine
     {
         //             public function postAuthenticatedRootServerRequest($url, $postargs)
 
-        Functions\when('wp_remote_retrieve_body')->justReturn('[{}]');
-        Functions\when('wp_safe_remote_post')->justReturn(new \WP_Error(1));
-        Functions\when('wp_remote_retrieve_cookies')->returnArg();
+        Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
+        Functions\when('\wp_safe_remote_post')->justReturn(new \WP_Error(1));
+        Functions\when('\wp_remote_retrieve_cookies')->returnArg();
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
 
         $secretsstub = \Mockery::mock('WP_Options');
         /** @var Mockery::mock $secretsstub test */
@@ -384,7 +389,7 @@ Line: $errorLine
         //         public function postAuthenticatedRootServerRequestSemantic()
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
-
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
@@ -407,7 +412,7 @@ Line: $errorLine
         //         public function postAuthenticatedRootServerRequestSemantic()
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
-
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
@@ -430,9 +435,10 @@ Line: $errorLine
         //             public function postAuthenticatedRootServerRequestSemantic($url, $postargs)
 
         // last call triggers the error
-        Functions\when('wp_safe_remote_post')->justReturn(new \WP_Error(1));
-        Functions\when('wp_remote_retrieve_cookies')->returnArg();
-        Functions\when('wp_remote_retrieve_body')->justReturn('[{}]');
+        Functions\when('\wp_safe_remote_post')->justReturn(new \WP_Error(1));
+        Functions\when('\wp_remote_retrieve_cookies')->returnArg();
+        Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
 
 
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
