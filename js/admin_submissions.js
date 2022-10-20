@@ -37,6 +37,15 @@ var bmltwf_changedata = {};
 jQuery(document).ready(function ($) {
   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
+  if(!bmltwf_auto_geocoding_enabled)
+  {
+    $("#optional_auto_geocode_enabled").hide();
+  }
+  else
+  {
+    $("#optional_auto_geocode_enabled").show();
+  }
+
   // hide / show / required our optional fields
   switch (bmltwf_optional_location_nation) {
     case "hidden":
@@ -46,6 +55,7 @@ jQuery(document).ready(function ($) {
     case "display":
     case "displayrequired":
       $("#optional_location_nation").show();
+      $("#location_nation_label").append('<span class="bmltwf-required-field"> *</span>');
       break;
   }
 
@@ -57,6 +67,7 @@ jQuery(document).ready(function ($) {
     case "display":
     case "displayrequired":
       $("#optional_location_sub_province").show();
+      $("#location_sub_province_label").append('<span class="bmltwf-required-field"> *</span>');
       break;
   }
 
@@ -68,8 +79,40 @@ jQuery(document).ready(function ($) {
     case "display":
     case "displayrequired":
       $("#optional_location_province").show();
+      $("#location_province_label").append('<span class="bmltwf-required-field"> *</span>');
       break;
   }
+
+
+    // fill in counties and sub provinces
+    if(bmltwf_counties_and_sub_provinces === false)
+    {
+      $("#optional_location_sub_province").append('<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">');
+    }
+    else
+    {
+      var appendstr = '<select class="meeting-input" id="quickedit_location_sub_province" name="quickedit_location_sub_province">';
+      bmltwf_counties_and_sub_provinces.forEach(function (item, index) {
+        appendstr += '<option value="' + item + '">' + item + '</option>';
+          });
+      appendstr += '</select>';
+      $("#optional_location_sub_province").append(appendstr);
+
+    }
+
+    if(bmltwf_do_states_and_provinces === false)
+    {
+      $("#optional_location_province").append('<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">');
+    }
+    else
+    {
+      var appendstr = '<select class="meeting-input" id="quickedit_location_province" name="quickedit_location_province">';
+      bmltwf_do_states_and_provinces.forEach(function (item, index) {
+        appendstr += '<option value="' + item + '">' + item + '</option>';
+      });
+      appendstr += '</select>';
+      $("#optional_location_province").append(appendstr);
+    }
 
   function add_highlighted_changes_to_quickedit(bmltwf_requested) {
     // fill in and highlight the changes - use extend to clone
@@ -138,7 +181,7 @@ jQuery(document).ready(function ($) {
           if (!Object.keys(data).length) {
             var a = {};
             a["responseJSON"] = {};
-            a["responseJSON"]["message"] = "Error retrieving BMLT data";
+            a["responseJSON"]["message"] = "Error retrieving BMLT data - meeting possibly removed";
             notice_error(a, "bmltwf-error-message");
           } else {
             // split up the duration so we can use it in the select
@@ -607,17 +650,27 @@ jQuery(document).ready(function ($) {
         at: "center",
         of: window,
       },
-      buttons: {
-        "Check Geolocate": function () {
+      buttons: [
+        {
+        text: "Check Geolocate",
+        click: function () {
           geolocate_handler($(this).data("id"));
+          },
+        disabled: !bmltwf_auto_geocoding_enabled
         },
-        Save: function () {
+        {
+        text: "Save",
+        click: function () {
           save_handler($(this).data("id"));
+          }
         },
-        Cancel: function () {
+        {
+        text: "Cancel",
+        click: function () {
           $(this).dialog("close");
+        }
         },
-      },
+      ],
       open: function () {
         var $this = $(this);
         // close dialog by clicking the overlay behind it
@@ -737,10 +790,10 @@ jQuery(document).ready(function ($) {
       .done(function (response) {
         $("#quickedit_latitude").val(response["latitude"]);
         $("#quickedit_longitude").val(response["longitude"]);
-        notice_success(response, "bmltwf-error-message");
+        notice_success(response, "bmltwf-quickedit-error-message");
       })
       .fail(function (xhr) {
-        notice_error(xhr, "bmltwf-error-message");
+        notice_error(xhr, "bmltwf-quickedit-error-message");
       });
   }
 

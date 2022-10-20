@@ -4,12 +4,11 @@ Requires at least: 5.2
 Tested up to: 6.0
 Requires PHP: 5.2
 License: GPLv2
-Stable tag: 1.0.7
+Stable tag: 1.0.9
 Contributors: nigelbmlt
 
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.
 It is designed to reduce the current complex and heavy manual processing of forms by both the form submitter and the service body trusted servants.
-
 
 == Description ==
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.

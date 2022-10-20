@@ -79,8 +79,12 @@ if ($meeting_states_and_provinces) {
 
 <!-- Quickedit dialog -->
 <div id="bmltwf_submission_quickedit_dialog" class="hidden">
+    <hr class="bmltwf-quickedit-error-message"><br>
+
     <div class="form-grid">
+
         <div class="form-grid-top">
+
             <div class="bmltwf_info_text">
                 <br>Highlighted fields are from the user submission and your changes and will be stored when the QuickEdit is saved.
                 <br><br>
@@ -89,79 +93,91 @@ if ($meeting_states_and_provinces) {
         <div class="form-grid-col1">
             <label for="quickedit_meeting_name">Meeting Name</label>
             <input type="text" name="quickedit_meeting_name" id="quickedit_meeting_name" class="quickedit-input">
-            <label for="quickedit_format_shared_id_list">Meeting Formats</label>
-            <select class="quickedit_format_shared_id_list-select2" name="quickedit_format_shared_id_list" id="quickedit_format_shared_id_list" style="width: auto"></select>
-            <div class="grid-flex-container">
-                <div class="grid-flex-item">
-                    <label for="quickedit_start_time">Start Time</label>
-                    <input type="time" name="quickedit_start_time" id="quickedit_start_time" class="quickedit-input">
+            <label for="quickedit_format_shared_id_list">Meeting Formats
+                <?php
+                $req = get_option('bmltwf_required_meeting_formats') === 'true';
+                if ($req) {
+                    echo '<span class="bmltwf-required-field"> *</span>';
+                }
+                echo '</label>';
+                echo '<select class="quickedit_format_shared_id_list-select2" name="quickedit_format_shared_id_list" id="quickedit_format_shared_id_list" style="width: auto"';
+                if ($req) {
+                    echo ' required';
+                }
+                echo '>';
+                ?>
+                </select>
+                <div class="grid-flex-container">
+                    <div class="grid-flex-item">
+                        <label for="quickedit_start_time">Start Time</label>
+                        <input type="time" name="quickedit_start_time" id="quickedit_start_time" class="quickedit-input">
 
+                    </div>
+                    <div class="grid-flex-item">
+                        <label for="quickedit_weekday_tinyint">Weekday</label>
+                        <select class="quickedit-input" name="quickedit_weekday_tinyint" id="quickedit_weekday_tinyint">
+                            <option value="1">Sunday</option>
+                            <option value="2">Monday</option>
+                            <option value="3">Tuesday</option>
+                            <option value="4">Wednesday</option>
+                            <option value="5">Thursday</option>
+                            <option value="6">Friday</option>
+                            <option value="7">Saturday</option>
+                        </select>
+                    </div>
+                    <div class="grid-flex-double">
+                        <label for="quickedit_duration_hours">Duration</label>
+                        <select class="quickedit-input" id="quickedit_duration_hours">
+                            <option value="00">0</option>
+                            <option value="01" selected="selected">1</option>
+                            <option value="02">2</option>
+                            <option value="03">3</option>
+                            <option value="04">4</option>
+                            <option value="05">5</option>
+                            <option value="06">6</option>
+                            <option value="07">7</option>
+                            <option value="08">8</option>
+                            <option value="09">9</option>
+                            <option value="10">10</option>
+                            <option value="11">11</option>
+                            <option value="12">12</option>
+                        </select> h
+                        <select class="quickedit-input" id="quickedit_duration_minutes">
+                            <option value="00" selected="selected">0</option>
+                            <option value="05">5</option>
+                            <option value="10">10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                            <option value="25">25</option>
+                            <option value="30">30</option>
+                            <option value="35">35</option>
+                            <option value="40">40</option>
+                            <option value="45">45</option>
+                            <option value="50">50</option>
+                            <option value="55">55</option>
+                        </select> m
+                    </div>
                 </div>
-                <div class="grid-flex-item">
-                    <label for="quickedit_weekday_tinyint">Weekday</label>
-                    <select class="quickedit-input" name="quickedit_weekday_tinyint" id="quickedit_weekday_tinyint">
-                        <option value="1">Sunday</option>
-                        <option value="2">Monday</option>
-                        <option value="3">Tuesday</option>
-                        <option value="4">Wednesday</option>
-                        <option value="5">Thursday</option>
-                        <option value="6">Friday</option>
-                        <option value="7">Saturday</option>
-                    </select>
+                <label for="quickedit_virtual_meeting_additional_info">Virtual Meeting Additional Info</label>
+                <div class="grow-wrap">
+                    <textarea class="dialog_textarea quickedit-input" id="quickedit_virtual_meeting_additional_info" name="quickedit_virtual_meeting_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
                 </div>
-                <div class="grid-flex-double">
-                    <label for="quickedit_duration_hours">Duration</label>
-                    <select class="quickedit-input" id="quickedit_duration_hours">
-                        <option value="00">0</option>
-                        <option value="01" selected="selected">1</option>
-                        <option value="02">2</option>
-                        <option value="03">3</option>
-                        <option value="04">4</option>
-                        <option value="05">5</option>
-                        <option value="06">6</option>
-                        <option value="07">7</option>
-                        <option value="08">8</option>
-                        <option value="09">9</option>
-                        <option value="10">10</option>
-                        <option value="11">11</option>
-                        <option value="12">12</option>
-                    </select> h
-                    <select class="quickedit-input" id="quickedit_duration_minutes">
-                        <option value="00" selected="selected">0</option>
-                        <option value="05">5</option>
-                        <option value="10">10</option>
-                        <option value="15">15</option>
-                        <option value="20">20</option>
-                        <option value="25">25</option>
-                        <option value="30">30</option>
-                        <option value="35">35</option>
-                        <option value="40">40</option>
-                        <option value="45">45</option>
-                        <option value="50">50</option>
-                        <option value="55">55</option>
-                    </select> m
+                <label for="quickedit_phone_meeting_number">Virtual Meeting Phone Details</label>
+                <div class="grow-wrap">
+                    <textarea class="dialog_textarea quickedit-input" id="quickedit_phone_meeting_number" name="quickedit_phone_meeting_number" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
                 </div>
-            </div>
-            <label for="quickedit_virtual_meeting_additional_info">Virtual Meeting Additional Info</label>
-            <div class="grow-wrap">
-                <textarea class="dialog_textarea quickedit-input" id="quickedit_virtual_meeting_additional_info" name="quickedit_virtual_meeting_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
-            </div>
-            <label for="quickedit_phone_meeting_number">Virtual Meeting Phone Details</label>
-            <div class="grow-wrap">
-                <textarea class="dialog_textarea quickedit-input" id="quickedit_phone_meeting_number" name="quickedit_phone_meeting_number" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
-            </div>
-            <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
-            <div class="grow-wrap">
-                <textarea class="dialog_textarea quickedit-input" id="quickedit_virtual_meeting_link" name="quickedit_virtual_meeting_link" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
-            </div>
-            <label for="quickedit_additional_info">Additional Information</label>
-            <div class="grow-wrap">
-                <textarea class="dialog_textarea" id="quickedit_additional_info" name="quickedit_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value" disabled></textarea>
-            </div>
+                <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
+                <div class="grow-wrap">
+                    <textarea class="dialog_textarea quickedit-input" id="quickedit_virtual_meeting_link" name="quickedit_virtual_meeting_link" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
+                </div>
+                <label for="quickedit_additional_info">Additional Information</label>
+                <div class="grow-wrap">
+                    <textarea class="dialog_textarea" id="quickedit_additional_info" name="quickedit_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value" disabled></textarea>
+                </div>
         </div>
         <div class="form-grid-col2">
             <label for="quickedit_location_text">Location</label>
-            <input type="text" name="quickedit_quickedit_location_text" id="quickedit_location_text" class="quickedit-input">
+            <input type="text" name="quickedit_location_text" id="quickedit_location_text" class="quickedit-input">
             <label for="quickedit_location_street">Street</label>
             <input type="text" name="quickedit_location_street" id="quickedit_location_street" class="quickedit-input">
             <label for="quickedit_location_info">Location Info</label>
@@ -170,49 +186,27 @@ if ($meeting_states_and_provinces) {
             <input type="text" name="quickedit_location_municipality" id="quickedit_location_municipality" class="quickedit-input">
 
             <div id="optional_location_sub_province">
-                <label for="quickedit_location_sub_province">Sub Province</label>
-                <?php
-                if ($bmltwf_do_counties_and_sub_provinces) {
-                    echo '<select class="meeting-input" name="quickedit_location_sub_province">';
-                    foreach ($meeting_counties_and_sub_provinces as $key) {
-                        echo '<option value="' . esc_attr($key) . '">' . esc_attr($key) . '</option>';
-                    }
-                    echo '</select>';
-                } else {
-                    echo '<input class="meeting-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">';
-                }
-                ?>
+                <label id="location_sub_province_label" for="quickedit_location_sub_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname')) ?></label>
             </div>
             <div id="optional_location_province">
-
-                <label for="quickedit_location_province">State<span class="bmltwf-required-field"> *</span></label>
-                <?php
-                if ($bmltwf_do_states_and_provinces) {
-                    echo '<select class="meeting-input" name="quickedit_location_province">';
-                    foreach ($meeting_states_and_provinces as $key) {
-                        echo '<option value="' . esc_attr($key) . '">' . esc_attr($key) . '</option>';
-                    }
-                    echo '</select>';
-                } else {
-                    echo '<input class="meeting-input" type="text" name="quickedit_location_province" size="50" id="quickedit_location_province" required>';
-                }
-
-                ?>
+                <label id="location_province_label" for="quickedit_location_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_province_displayname')) ?></label>
             </div>
-            <label for="quickedit_location_postal_code_1">Postcode<span class="bmltwf-required-field"> *</span></label>
-            <input class="meeting-input" type="number" name="quickedit_location_postal_code_1" size="5" max="99999" id="quickedit_location_postal_code_1" required>
+            <label for="quickedit_location_postal_code_1"><?php echo sanitize_text_field(get_option('bmltwf_optional_postcode_displayname')) ?></label>
+            <input class="meeting-input" type="text" name="quickedit_location_postal_code_1" id="quickedit_location_postal_code_1" required>
 
             <div id="optional_location_nation">
-                <label for="quickedit_location_nation">Nation</label>
+                <label id="location_nation_label" for="quickedit_location_nation"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname')) ?></label>
                 <input class="meeting-input" type="text" name="quickedit_location_nation" size="50" id="quickedit_location_nation">
             </div>
-            <fieldset>
-                <legend>Meeting Geolocation (auto calculated)</legend>
-                <label for="quickedit_latitude">Latitude</label>
-                <input class="meeting-input" type="number" name="quickedit_latitude" id="quickedit_latitude" disabled>
-                <label for="quickedit_longitude">Longitude</label>
-                <input class="meeting-input" type="number" name="quickedit_longitude" id="quickedit_longitude" disabled>
-            </fieldset>
+            <div id="optional_auto_geocode_enabled">
+                <fieldset>
+                    <legend>Meeting Geolocation (auto calculated)</legend>
+                    <label for="quickedit_latitude">Latitude</label>
+                    <input class="meeting-input" type="number" name="quickedit_latitude" id="quickedit_latitude" disabled>
+                    <label for="quickedit_longitude">Longitude</label>
+                    <input class="meeting-input" type="number" name="quickedit_longitude" id="quickedit_longitude" disabled>
+                </fieldset>
+            </div>
         </div>
     </div>
 </div>

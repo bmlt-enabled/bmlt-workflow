@@ -360,11 +360,11 @@ class Integration
             $req = array();
             $req['admin_action'] = 'get_format_info';
 
-            // get an xml for a workaround
-            $response = $this->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
-            if (is_wp_error($response)) {
-                return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
-            }
+        // get an xml for a workaround
+        $response = $this->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
+        if (is_wp_error($response)||(\wp_remote_retrieve_response_code($response)!=200)) {
+            return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
+        }
 
             // $this->debug_log(wp_remote_retrieve_body($response));
             // $formatarr = json_decode(wp_remote_retrieve_body($response), true);
@@ -396,7 +396,7 @@ class Integration
     public function getMeetingStates()
     {
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        if (is_wp_error($response)) {
+        if (is_wp_error($response)||(\wp_remote_retrieve_response_code($response)!=200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
         // $this->debug_log(wp_remote_retrieve_body($response));  
@@ -416,7 +416,7 @@ class Integration
     public function getMeetingCounties()
     {
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        if (is_wp_error($response)) {
+        if (is_wp_error($response)||(\wp_remote_retrieve_response_code($response)!=200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve server info');
         }
         // $this->debug_log(wp_remote_retrieve_body($response));  
@@ -457,6 +457,58 @@ class Integration
 
         preg_match('/"google_api_key":"(.*?)",/', wp_remote_retrieve_body($resp), $matches);
         return $matches[1];
+    }
+
+    public function isAutoGeocodingEnabled()
+    {
+        $ret = $this->authenticateRootServer();
+        if (is_wp_error($ret)) {
+            // $this->debug_log("*** AUTH ERROR");
+            // $this->debug_log(($ret));
+            return $ret;
+        }
+
+        $url = get_option('bmltwf_bmlt_server_address') . "index.php";
+        // $this->debug_log("*** ADMIN URL ".$url);
+
+        $resp = $this->get($url, $this->cookies);
+        // $this->debug_log("*** ADMIN PAGE");
+        // $this->debug_log(wp_remote_retrieve_body($resp));
+
+        preg_match('/"auto_geocoding_enabled":(?:(true)|(false)),/', wp_remote_retrieve_body($resp), $matches);
+        $this->debug_log("matches: ");
+        $this->debug_log($matches);
+        $auto = $matches[1]==="true"?true:false; 
+        $this->debug_log("auto geocoding check returns ");
+
+        if($auto)
+        {
+            $this->debug_log("true");
+        }
+        else
+        {
+            $this->debug_log("false");
+        }
+
+        return $auto;
+    }
+
+
+    public function getDefaultLatLong()
+    {
+
+        $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
+        if (is_wp_error($response)||(\wp_remote_retrieve_response_code($response)!=200)) {
+            return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
+        }
+        // $this->debug_log(wp_remote_retrieve_body($response));  
+        $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
+        if ((!empty($arr['centerLongitude']))&&(!empty($arr['centerLatitude']))) {
+            
+            return array('longitude'=>$arr['centerLongitude'],'latitude'=>$arr['centerLatitude']);
+        }
+        return false;
+    
     }
 
     public function geolocateAddress($address)
@@ -572,9 +624,10 @@ class Integration
             $url = get_option('bmltwf_bmlt_server_address') . "index.php";
 
             // $this->debug_log("AUTH URL = " . $url);
-            $ret = $this->post($url, null, $postargs);
+            // $ret = $this->post($url, null, $postargs);
+            $ret = \wp_safe_remote_post($url, $this->set_args(null, http_build_query($postargs)));
 
-            if (is_wp_error($ret)) {
+            if ((is_wp_error($ret))||(\wp_remote_retrieve_response_code($ret)!=200)) {
                 return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
             }
 
@@ -753,11 +806,13 @@ class Integration
      */
     public function postAuthenticatedRootServerRequestSemantic($url, $postargs)
     {
+
         $ret =  $this->authenticateRootServer();
 
         if (is_wp_error($ret)) {
             return $ret;
         }
+
         if (!(is_array($postargs))) {
             return $this->bmltwf_rest_error("Missing post parameters", "bmltwf_bmlt_integration");
         }

@@ -34,6 +34,36 @@ jQuery(document).ready(function ($) {
     $("#starter_pack").show();
   }
   
+  // fill in counties and sub provinces
+  if(bmltwf_counties_and_sub_provinces === false)
+  {
+    $("#optional_location_sub_province").append('<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">');
+  }
+  else
+  {
+    var appendstr = '<select class="meeting-input" id="location_sub_province" name="location_sub_province">';
+    bmltwf_counties_and_sub_provinces.forEach(function (item, index) {
+      appendstr += '<option value="' + item + '">' + item + '</option>';
+        });
+    appendstr += '</select>';
+    $("#optional_location_sub_province").append(appendstr);
+
+  }
+
+  if(bmltwf_do_states_and_provinces === false)
+  {
+    $("#optional_location_province").append('<input class="meeting-input" type="text" name="location_province" size="50" id="location_province">');
+  }
+  else
+  {
+    var appendstr = '<select class="meeting-input" id="location_province" name="location_province">';
+    bmltwf_do_states_and_provinces.forEach(function (item, index) {
+      appendstr += '<option value="' + item + '">' + item + '</option>';
+    });
+    appendstr += '</select>';
+    $("#optional_location_province").append(appendstr);
+  }
+
   Object.keys(bmltwf_bmlt_formats).forEach((key) => {
     formatdata.push({ text: "(" + bmltwf_bmlt_formats[key]["key_string"] + ")-" + bmltwf_bmlt_formats[key]["name_string"], id: key });
     if (bmltwf_bmlt_formats[key]["key_string"] === "HY") {

@@ -22,7 +22,9 @@ import {
   configure_service_bodies, 
   insert_submissions, 
   delete_submissions,
-  reset_bmlt, 
+  reset_bmlt,
+  auto_geocoding_off,
+  auto_geocoding_on,
   select_dropdown_by_text, 
   click_table_row_column, 
   click_dt_button_by_index, 
@@ -34,6 +36,8 @@ import { userVariables } from "../../.testcaferc";
 
 fixture`admin_submissions_fixture`.beforeEach(async (t) => {
   await reset_bmlt(t);
+  await auto_geocoding_on(t);
+
   await basic_options(t);
   await delete_submissions(t);
   await configure_service_bodies(t);
@@ -291,3 +295,40 @@ test("Submission_Buttons_Active_correctly", async (t) => {
 //     await t .expect((as.dt_submission.child('tbody').child(row).child(column)).innerText).eql('Approved');
 
 // });
+
+test("Approve_New_Meeting_No_Geocoding", async (t) => {
+
+  await auto_geocoding_off(t);
+
+  await t.eval(() => location.reload(true));
+
+  // new meeting = row 2
+  var row = 2;
+  await click_table_row_column(as.dt_submission, row, 0);
+
+  // quickedit
+  await click_dt_button_by_index(as.dt_submission_wrapper,2);
+  // geocode div should be invisible
+  await t.expect(as.optional_auto_geocode_enabled.visible).eql(false)
+
+  // // check the geocode button is disabled
+  // var g = as.quickedit_dialog_parent.find("button").nth(2);
+  // console.log(g.hasAttribute("disabled"));
+  // console.log(as.quickedit_dialog_parent.find("button").nth(2).hasAttribute("disabled"));
+  // await t.expect(g.withAttribute("disabled").exists).ok();
+});
+
+test("Approve_New_Meeting_Geocoding", async (t) => {
+
+  // new meeting = row 2
+  var row = 2;
+  await click_table_row_column(as.dt_submission, row, 0);
+
+  // quickedit
+  await click_dt_button_by_index(as.dt_submission_wrapper,2);
+  // geocode div should be visible
+  await t.expect(as.optional_auto_geocode_enabled.visible).eql(true)
+
+  // check the geocode button is enabled
+  await t.expect((as.quickedit_dialog_parent).find("button").nth(2).hasAttribute("disabled")).notOk();
+});

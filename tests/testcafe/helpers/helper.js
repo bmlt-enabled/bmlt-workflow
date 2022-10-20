@@ -89,6 +89,16 @@ export async function reset_bmlt(t) {
   await t.request(userVariables.blank_bmlt);
 }
 
+export async function auto_geocoding_on(t) {
+  // reset bmlt to reasonable state
+  await t.request(userVariables.auto_geocoding_on);
+}
+
+export async function auto_geocoding_off(t) {
+  // reset bmlt to reasonable state
+  await t.request(userVariables.auto_geocoding_off);
+}
+
 export async function insert_submissions() {
   // pre fill the submissions
   await t.request(userVariables.admin_submission_reset);
@@ -183,10 +193,9 @@ export async function basic_options() {
   await uncheck_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
   await uncheck_checkbox(t,ao.bmltwf_optional_location_province_required_checkbox);
-  await check_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
   await uncheck_checkbox(t,ao.bmltwf_optional_postcode_required_checkbox);
-
 
   await t.click(ao.submit);
   await ao.settings_updated();

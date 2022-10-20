@@ -1,3 +1,11 @@
+## 1.0.9 (Oct 13, 2022)
+- #103 Feature Request: Allow geocode disabling (thanks @paulnagle !)
+- Lots of refactoring test cases to support bmlt changes
+## 1.0.8 (Oct 5, 2022)
+- #101 QuickEdit page errors (thanks @paulnagle !)
+- #100 more test cases required for virtual meetings
+- #96 geocode success/failed notification from quickedit goes to wrong pane
+
 ## 1.0.7 (Oct 3, 2022)
 - #95 css highlighting on form change broken in 1.0.6
 - #94 'delete' button in submission form not working correctly for non wordpress admin - Now implemented as an option

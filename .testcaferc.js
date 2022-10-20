@@ -107,6 +107,8 @@ module.exports = {
     e2e_test: "http://" + test_ip + "/github/e2e_test.php",
     bmlt_states_on: "http://" + test_ip + "/github/bmlt_states_on.php",
     bmlt_states_off: "http://" + test_ip + "/github/bmlt_states_off.php",
+    auto_geocoding_on: "http://" + test_ip + "/github/auto_geocoding_on.php",
+    auto_geocoding_off: "http://" + test_ip + "/github/auto_geocoding_off.php",
 
     crouton_page: "http://" + test_ip + "/flop/21-2/",
   },
