@@ -128,7 +128,12 @@ class BMLTServerHandler
 
             $r = update_option("bmltwf_bmlt_test_status", "failure");
             $data["bmltwf_bmlt_test_status"] = "failure";
-            return $this->handlerCore->bmltwf_rest_error_with_data('Root Server and Authentication test failed - ' . $ret->get_error_message(), 500, $data);
+            $error = "";
+            if(is_wp_error($ret))
+            {
+                $error = " - ".$ret->get_error_message();
+            }
+            return $this->handlerCore->bmltwf_rest_error_with_data('Root Server and Authentication test failed' . $error, 500, $data);
  
         } else {
 
