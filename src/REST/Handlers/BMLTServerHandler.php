@@ -123,9 +123,7 @@ class BMLTServerHandler
         {
             $ret = new WP_Error("InvalidResponse", "Invalid response from BMLT Root Server");
         }
-        $this->debug_log($ret);
-        $this->debug_log(\wp_remote_retrieve_response_code($ret));
-        if ((is_wp_error($ret))||(\wp_remote_retrieve_response_code($ret)!=200)) {
+        if (is_wp_error($ret)) {
 
             $r = update_option("bmltwf_bmlt_test_status", "failure");
             $data["bmltwf_bmlt_test_status"] = "failure";
