@@ -636,7 +636,46 @@ class Integration
         return $matches[1];
     }
 
+    public function createMeeting()
+    {
+        if($this->is_v3_server())
+        {
+            return $this->createMeetingv3();
+        }
+        else
+        {
+            return $this->createMeetingv2();
+        }
+    }
+
+    private function createMeetingv3()
+    {
+
+    }
+
+    private function createMeetingv2()
+    {
+
+    }
+
     public function isAutoGeocodingEnabled()
+    {
+        if($this->is_v3_server())
+        {
+            return $this->isAutoGeocodingEnabledv3();
+        }
+        else
+        {
+            return $this->isAutoGeocodingEnabledv2();
+        }
+    }
+
+    private function isAutoGeocodingEnabledv3()
+    {
+
+    }
+
+    public function isAutoGeocodingEnabledv2()
     {
         $ret = $this->authenticateRootServer();
         if (is_wp_error($ret)) {
