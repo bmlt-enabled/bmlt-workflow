@@ -92,26 +92,17 @@ class Integration
 
     public function get_valid_v3_token()
     {
-        if ($this->is_v3_server() && $this->v3_access_token)
-        {
-            if($this->v3_access_token_expires_at > time())
-            {
+        if ($this->is_v3_server() && $this->v3_access_token) {
+            if ($this->v3_access_token_expires_at > time()) {
                 return $this->v3_access_token;
-            }
-            else
-            {
-                if ($this->authenticateRootServer())
-                {
+            } else {
+                if ($this->authenticateRootServer()) {
                     return $this->v3_access_token;
-                }
-                else
-                {
+                } else {
                     return false;
                 }
             }
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
@@ -119,12 +110,9 @@ class Integration
     public function bmltwf_get_remote_server_version($server)
     {
         $version = get_option('bmltwf_bmlt_server_version');
-        if($version)
-        {
+        if ($version) {
             return $version;
-        }
-        else
-        {
+        } else {
             $url = $server . "client_interface/serverInfo.xml";
             $this->debug_log("url = " . $url);
             $headers = array(
@@ -144,7 +132,7 @@ class Integration
                     return false;
                 }
                 $version = $xml->serverVersion->readableString->__toString();
-                update_option('bmltwf_bmlt_server_version',$version);
+                update_option('bmltwf_bmlt_server_version', $version);
                 return $version;
             }
         }
@@ -192,8 +180,7 @@ class Integration
     public function testServerAndAuthv2($username, $password, $server)
     {
         $version =  $this->bmltwf_get_remote_server_version($server);
-        if(!$version)
-        {
+        if (!$version) {
             return new \WP_Error('bmltwf', "Check BMLT server address - couldn't retrieve server version");
         }
 
@@ -223,8 +210,7 @@ class Integration
     {
 
         $version =  $this->bmltwf_get_remote_server_version($server);
-        if(!$version)
-        {
+        if (!$version) {
             return new \WP_Error('bmltwf', "Check BMLT server address - couldn't retrieve server version");
         }
 
@@ -250,7 +236,157 @@ class Integration
         return true;
     }
 
-    public function getServiceBodiesv3()
+    public function updateMeeting($change)
+    {
+        if($this->is_v3_server())
+        {
+            return $this->updateMeetingv3($change);
+        }
+        else
+        {
+            return $this->updateMeetingv2($change);
+        }
+    }
+
+    private function updateMeetingv2($change)
+    {
+        $changearr = array();
+        $changearr['bmlt_ajax_callback'] = 1;
+        $changearr['set_meeting_change'] = json_encode($change);
+        $this->debug_log("UNPUBLISH");
+        $this->debug_log(($changearr));
+
+        $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
+
+        if (is_wp_error($response)) {
+            return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
+        }
+
+        $this->debug_log("UNPUBLISH RESPONSE");
+        $this->debug_log(($response));
+
+        $json = wp_remote_retrieve_body($response);
+        $rep = str_replace("'", '"', $json);
+
+        $dec = json_decode($rep, true);
+        if (((isset($dec['error'])) && ($dec['error'] === true)) || (empty($dec[0]))) {
+            return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
+        }
+
+        $arr = $dec[0];
+
+        if ((isset($arr['published'])) && ($arr['published'] != 0)) {
+            return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
+        }
+
+        return true;
+    }
+
+    private function updateMeetingv3($change)
+    {
+
+        $this->debug_log("inside updateMeetingv3 auth");
+
+        if (!$change['id_biging'])
+        {
+            return new \WP_Error('bmltwf', 'updateMeetingv3: No meeting ID present');
+        }
+
+        if (!$this->v3_access_token) {
+            $ret =  $this->authenticateRootServer();
+            if (is_wp_error($ret)) {
+                $this->debug_log("exiting updateMeetingv3 authenticateRootServer failed");
+                return $ret;
+            }
+        }
+        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $change['id_bigint'];
+
+        $response = \wp_safe_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
+        $this->debug_log("v3 API RESPONSE");
+        $this->debug_log(wp_remote_retrieve_body($response));
+
+        if (\wp_remote_retrieve_response_code($response) != 200) {
+            return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
+        }
+
+        // $response = json_decode(wp_remote_retrieve_body($response), 1);
+
+        return true;
+
+    }
+
+    public function getServiceBodies()
+    {
+        if($this->is_v3_server())
+        {
+            return $this->getServiceBodiesv3();
+        }
+        else
+        {
+            return $this->getServiceBodiesv2();
+        }
+    }
+
+    private function getServiceBodiesv2()
+    {
+        $response = $this->bmlt_integration->getServiceBodiesPermissionv2();
+
+        if (is_wp_error($response)) {
+            return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
+        }
+
+        if (empty($arr['service_body'])) {
+            return $this->handlerCore->bmltwf_rest_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);
+        }
+
+        $arr = $response;
+        // create an array of the service bodies that we are able to see
+        $editable = array();
+        foreach ($arr['service_body'] as $key => $sb) {
+
+            $permissions = $sb['permissions'] ?? 0;
+            $id = $sb['id'] ?? 0;
+
+            if ($id) {
+                if (($permissions === 2) || ($permissions === 3)) {
+                    $editable[$id] = true;
+                }
+            }
+        }
+
+        $req = array();
+        $req['admin_action'] = 'get_service_body_info';
+
+        $response = $this->bmlt_integration->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServiceBodies', $req);
+        if (is_wp_error($response)) {
+            return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
+        }
+
+        $arr = json_decode(wp_remote_retrieve_body($response), 1);
+
+        // $this->debug_log("SERVICE BODY JSON");
+        // $this->debug_log(($arr));
+
+        // make our list of editable service bodies
+        foreach ($arr as $key => $value) {
+
+            $id = $value['id'] ?? 0;
+            $name = $value['name'] ?? 0;
+            $description = $value['description'] ?? '';
+
+            // must have an id and name
+            if ($id && $name) {
+                // check we can see the service body from permissions above
+                $is_editable = $editable[$id] ?? false;
+                if ($is_editable) {
+                    $sblist[$id] = array('name' => $name, 'description' => $description);
+                }
+            }
+        }
+        return $sblist;
+    }
+
+    private function getServiceBodiesv3()
     {
         $this->debug_log("inside getServiceBodies v3 auth");
         if (!$this->v3_access_token) {
@@ -269,7 +405,76 @@ class Integration
             return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
         }
 
-        return json_decode(wp_remote_retrieve_body($response), 1);
+        $response = json_decode(wp_remote_retrieve_body($response), 1);
+        foreach($response as $key => $sb)
+        {
+            $sblist[$sb['id']] = array('name' => $sb['name'], 'description' => $sb['description']);
+        }
+        return $sblist;
+    }
+
+    public function deleteMeeting($meeting_id)
+    {
+        if($this->is_v3_server())
+        {
+            return $this->deleteMeetingv3($meeting_id);
+        }
+        else
+        {
+            return $this->deleteMeetingv2($meeting_id);
+        }
+    }
+
+    private function deleteMeetingv2($meeting_id)
+    {
+        $changearr = array();
+        $changearr['bmlt_ajax_callback'] = 1;
+        $changearr['delete_meeting'] = $meeting_id;
+
+        $this->debug_log("DELETE SEND");
+        $this->debug_log(($changearr));
+
+        $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
+
+        if (is_wp_error($response)) {
+            return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
+        }
+
+        $rep = str_replace("'", '"', $response);
+        $this->debug_log("JSON RESPONSE");
+        $this->debug_log(($rep));
+
+        $arr = json_decode($rep, true);
+
+        $this->debug_log("DELETE RESPONSE");
+        $this->debug_log(($arr));
+
+        if ((isset($arr['success'])) && ($arr['success'] != 1)) {
+            return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
+        }
+        if ((!empty($arr['report'])) && ($arr['report'] != $meeting_id)) {
+            return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
+        }
+        return true;
+}
+
+    private function deleteMeetingv3($meeting_id)
+    {
+        $this->debug_log("inside getMeetingFormats v3 auth");
+
+        if (!$this->v3_access_token) {
+            $ret =  $this->authenticateRootServer();
+            if (is_wp_error($ret)) {
+                return $ret;
+            }
+        }
+
+        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/'.$meeting_id;
+        $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token));
+        $args['method']='DELETE';
+        $ret = wp_remote_request( $url, $args );
+        // TODO ERROR HANDLE
+        return true;
     }
 
     public function getServiceBodiesPermissionv2()
@@ -298,52 +503,25 @@ class Integration
             }
         }
 
-        // {
-        //     "id": 1,
-        //     "worldId": "BEG",
-        //     "type": "COMMON_NEEDS_OR_RESTRICTION",
-        //     "translations": [
-        //         {
-        //             "key": "BEG",
-        //             "name": "Beginners",
-        //             "description": "This meeting is focused on the needs of new members of NA.",
-        //             "language": "en"
-        //         },
-        //     ]
-        // }
-
-        // {
-        //     "@attributes": {
-        //         "sequence_index": "0"
-        //     },
-        //     "key_string": "B",
-        //     "name_string": "Beginners",
-        //     "description_string": "This meeting is focused on the needs of new members of NA.",
-        //     "lang": "en",
-        //     "world_id": "BEG"
-        // }
-        
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/formats';
         $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token));
         $ret = \wp_safe_remote_get($url, $args);
-        $formatarr = json_decode(\wp_remote_retrieve_body($ret),1);
+        $formatarr = json_decode(\wp_remote_retrieve_body($ret), 1);
 
         $newformat = array();
         foreach ($formatarr as $key => $value) {
             $formatid = $value['id'];
             $newvalue = array();
             $newvalue['world_id'] = $value['worldId'];
-            foreach ($value['translations'] as $key1 => $value1)
-            {
-                if($value1['language']==='en')
-                {
-                    $newvalue['lang']= 'en';
-                    $newvalue['description_string']=$value1['description'];
-                    $newvalue['name_string']=$value1['name'];
-                    $newvalue['key_string']=$value1['key'];
+            foreach ($value['translations'] as $key1 => $value1) {
+                if ($value1['language'] === 'en') {
+                    $newvalue['lang'] = 'en';
+                    $newvalue['description_string'] = $value1['description'];
+                    $newvalue['name_string'] = $value1['name'];
+                    $newvalue['key_string'] = $value1['key'];
                     break;
                 }
-            }            
+            }
             $newformat[$formatid] = $newvalue;
         }
         $this->debug_log("NEWFORMAT");
@@ -357,35 +535,34 @@ class Integration
     public function getMeetingFormatsv2()
     {
 
-            $req = array();
-            $req['admin_action'] = 'get_format_info';
+        $req = array();
+        $req['admin_action'] = 'get_format_info';
 
         // get an xml for a workaround
         $response = $this->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
-        if (is_wp_error($response)||(\wp_remote_retrieve_response_code($response)!=200)) {
+        if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
 
-            // $this->debug_log(wp_remote_retrieve_body($response));
-            // $formatarr = json_decode(wp_remote_retrieve_body($response), true);
-            $xml = simplexml_load_string(wp_remote_retrieve_body($response));
-            // $this->debug_log("XML RESPONSE");
-            // $this->debug_log(wp_remote_retrieve_body($response));
-            $formatarr = json_decode(json_encode($xml), 1);
+        // $this->debug_log(wp_remote_retrieve_body($response));
+        // $formatarr = json_decode(wp_remote_retrieve_body($response), true);
+        $xml = simplexml_load_string(wp_remote_retrieve_body($response));
+        // $this->debug_log("XML RESPONSE");
+        // $this->debug_log(wp_remote_retrieve_body($response));
+        $formatarr = json_decode(json_encode($xml), 1);
 
-            // $this->debug_log(($formatarr));
+        // $this->debug_log(($formatarr));
 
-            $newformat = array();
-            foreach ($formatarr['row'] as $key => $value) {
-                $formatid = $value['id'];
-                unset($value['id']);
-                $newformat[$formatid] = $value;
-            }
-            // $this->debug_log("NEWFORMAT");
-            // $this->debug_log(($newformat));
+        $newformat = array();
+        foreach ($formatarr['row'] as $key => $value) {
+            $formatid = $value['id'];
+            unset($value['id']);
+            $newformat[$formatid] = $value;
+        }
+        // $this->debug_log("NEWFORMAT");
+        // $this->debug_log(($newformat));
 
-            return $newformat;
-        
+        return $newformat;
     }
 
     /**
@@ -396,7 +573,7 @@ class Integration
     public function getMeetingStates()
     {
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        if (is_wp_error($response)||(\wp_remote_retrieve_response_code($response)!=200)) {
+        if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
         // $this->debug_log(wp_remote_retrieve_body($response));  
@@ -416,7 +593,7 @@ class Integration
     public function getMeetingCounties()
     {
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        if (is_wp_error($response)||(\wp_remote_retrieve_response_code($response)!=200)) {
+        if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve server info');
         }
         // $this->debug_log(wp_remote_retrieve_body($response));  
@@ -478,15 +655,12 @@ class Integration
         preg_match('/"auto_geocoding_enabled":(?:(true)|(false)),/', wp_remote_retrieve_body($resp), $matches);
         $this->debug_log("matches: ");
         $this->debug_log($matches);
-        $auto = $matches[1]==="true"?true:false; 
+        $auto = $matches[1] === "true" ? true : false;
         $this->debug_log("auto geocoding check returns ");
 
-        if($auto)
-        {
+        if ($auto) {
             $this->debug_log("true");
-        }
-        else
-        {
+        } else {
             $this->debug_log("false");
         }
 
@@ -498,17 +672,16 @@ class Integration
     {
 
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        if (is_wp_error($response)||(\wp_remote_retrieve_response_code($response)!=200)) {
+        if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
         // $this->debug_log(wp_remote_retrieve_body($response));  
         $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
-        if ((!empty($arr['centerLongitude']))&&(!empty($arr['centerLatitude']))) {
-            
-            return array('longitude'=>$arr['centerLongitude'],'latitude'=>$arr['centerLatitude']);
+        if ((!empty($arr['centerLongitude'])) && (!empty($arr['centerLatitude']))) {
+
+            return array('longitude' => $arr['centerLongitude'], 'latitude' => $arr['centerLatitude']);
         }
         return false;
-    
     }
 
     public function geolocateAddress($address)
@@ -556,8 +729,7 @@ class Integration
     private function authenticateRootServer()
     {
 
-        if ($this->cookies == null || !$this->v3_access_token || $this->v3_expires_at > time())
-        {
+        if ($this->cookies == null || !$this->v3_access_token || $this->v3_expires_at > time()) {
             $encrypted = get_option('bmltwf_bmlt_password');
             $this->debug_log("retrieved encrypted bmlt password");
             // $this->debug_log(($encrypted));
@@ -576,17 +748,13 @@ class Integration
             if ($decrypted === false) {
                 return new \WP_Error('bmltwf', 'Error decrypting password.');
             }
-        }
-        else
-        {
+        } else {
             return true;
         }
         // v3 flow
 
-        if ($this->is_v3_server())
-        {
-            if (!$this->v3_access_token || $this->v3_expires_at > time() )
-            {
+        if ($this->is_v3_server()) {
+            if (!$this->v3_access_token || $this->v3_expires_at > time()) {
 
                 $postargs = array(
                     'username' => get_option('bmltwf_bmlt_username'),
@@ -597,24 +765,21 @@ class Integration
                 $this->debug_log($url);
                 $response = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
                 $this->debug_log(($response));
-    
+
                 $response_code = \wp_remote_retrieve_response_code($response);
-    
+
                 if ($response_code != 200) {
                     return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
                 }
-    
+
                 $auth_details = json_decode(wp_remote_retrieve_body($response), true);
                 $this->v3_access_token = $auth_details['access_token'];
                 $this->v3_expires_at = $auth_details['expires_at'];
-    
             }
             return true;
-
         }
         // v2 flow
-        else 
-        {
+        else {
             // legacy auth
             $postargs = array(
                 'admin_action' => 'login',
@@ -627,7 +792,7 @@ class Integration
             // $ret = $this->post($url, null, $postargs);
             $ret = \wp_safe_remote_post($url, $this->set_args(null, http_build_query($postargs)));
 
-            if ((is_wp_error($ret))||(\wp_remote_retrieve_response_code($ret)!=200)) {
+            if ((is_wp_error($ret)) || (\wp_remote_retrieve_response_code($ret) != 200)) {
                 return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
             }
 
@@ -642,27 +807,27 @@ class Integration
     }
 
     private function set_args($cookies, $body = null, $headers = null)
-    { {
-            $newheaders =  array(
-                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36',
-                'Accept' => 'application/json'
-            );
+    {
+        $newheaders =  array(
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36',
+            'Accept' => 'application/json'
+        );
 
-            if ($headers) {
-                $newheaders = array_merge($headers, $newheaders);
-            }
-            $this->debug_log('SET_ARGS headers');
-            $this->debug_log($headers);
-            $this->debug_log('SET_ARGS merged headers');
-            $this->debug_log($newheaders);
-            $args = array(
-                'timeout' => '120',
-                'headers' => $newheaders,
-                'cookies' => isset($cookies) ? $cookies : null,
-                'body' => isset($body) ? $body : null
-
-            );
+        if ($headers) {
+            $newheaders = array_merge($headers, $newheaders);
         }
+        $this->debug_log('SET_ARGS headers');
+        $this->debug_log($headers);
+        $this->debug_log('SET_ARGS merged headers');
+        $this->debug_log($newheaders);
+        $args = array(
+            'timeout' => '120',
+            'headers' => $newheaders,
+            'cookies' => isset($cookies) ? $cookies : null,
+            'body' => isset($body) ? $body : null
+
+        );
+
         $this->debug_log("set_args:");
         $this->debug_log($args);
 

@@ -58,72 +58,18 @@ class ServiceBodiesHandler
             // detail list
             $sblist = array();
 
-            if ($this->bmlt_integration->is_v3_server()) {
-                $response = $this->bmlt_integration->getServiceBodiesv3();
-                foreach($response as $key => $sb)
-                {
-                    $idlist[] = $sb['id'];
-                    $sblist[$sb['id']] = array('name' => $sb['name'], 'description' => $sb['description']);
-                }
-
-            } else {
-                $response = $this->bmlt_integration->getServiceBodiesPermissionv2();
-
-                if (is_wp_error($response)) {
-                    return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
-                }
-
-                if (empty($arr['service_body'])) {
-                    return $this->handlerCore->bmltwf_rest_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);
-                }
-
-                $arr = $response;
-                // create an array of the service bodies that we are able to see
-                $editable = array();
-                foreach ($arr['service_body'] as $key => $sb) {
-
-                    $permissions = $sb['permissions'] ?? 0;
-                    $id = $sb['id'] ?? 0;
-
-                    if ($id) {
-                        if (($permissions === 2) || ($permissions === 3)) {
-                            $editable[$id] = true;
-                        }
-                    }
-                }
-
-                $req = array();
-                $req['admin_action'] = 'get_service_body_info';
-
-                $response = $this->bmlt_integration->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServiceBodies', $req);
-                if (is_wp_error($response)) {
-                    return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
-                }
-
-                $arr = json_decode(wp_remote_retrieve_body($response), 1);
-
-                $idlist = array();
-                // $this->debug_log("SERVICE BODY JSON");
-                // $this->debug_log(($arr));
-
-                // make our list of editable service bodies
-                foreach ($arr as $key => $value) {
-
-                    $id = $value['id'] ?? 0;
-                    $name = $value['name'] ?? 0;
-                    $description = $value['description'] ?? '';
-
-                    // must have an id and name
-                    if ($id && $name) {
-                        // check we can see the service body from permissions above
-                        $is_editable = $editable[$id] ?? false;
-                        if ($is_editable) {
-                            $idlist[] = $id;
-                            $sblist[$id] = array('name' => $name, 'description' => $description);
-                        }
-                    }
-                }
+            $sblist = $this->bmlt_integration->getServiceBodies();
+            if(\is_wp_error(($sblist)))
+            {
+                return $sblist;
             }
+
+            // make a list of ids from the response
+            $idlist = array();
+            foreach ($sblist as $key => $value) {
+                $idlist[]=$key;
+            }
+
             // update our service body list in the database in case there have been some new ones added
             $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ';', 0);
 

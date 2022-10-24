@@ -41,12 +41,9 @@ class SubmissionsHandler
         $this->handlerCore = new HandlerCore();
         $this->BMLTWF_Database = new BMLTWF_Database();
 
-        if($this->bmlt_integration->is_v3_server())
-        {
+        if ($this->bmlt_integration->is_v3_server()) {
             $this->formats = $this->bmlt_integration->getMeetingFormatsv3();
-        }
-        else
-        {
+        } else {
             $this->formats = $this->bmlt_integration->getMeetingFormatsv2();
         }
     }
@@ -470,67 +467,20 @@ class SubmissionsHandler
 
                 // are we doing a delete or an unpublish on close?
                 if ((!empty($params['delete'])) && ($params['delete'] == "true")) {
-                    $changearr = array();
-                    $changearr['bmlt_ajax_callback'] = 1;
-                    $changearr['delete_meeting'] = $result['meeting_id'];
 
-                    $this->debug_log("DELETE SEND");
-                    $this->debug_log(($changearr));
+                    $resp = $this->bmlt_integration->deleteMeeting($result['meeting_id']);
 
-                    $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
-
-                    if (is_wp_error($response)) {
-                        return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
-                    }
-
-                    $json = wp_remote_retrieve_body($response);
-                    $rep = str_replace("'", '"', $json);
-                    $this->debug_log("JSON RESPONSE");
-                    $this->debug_log(($rep));
-
-                    $arr = json_decode($rep, true);
-
-                    $this->debug_log("DELETE RESPONSE");
-                    $this->debug_log(($arr));
-
-                    if ((isset($arr['success'])) && ($arr['success'] != 1)) {
-                        return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
-                    }
-                    if ((!empty($arr['report'])) && ($arr['report'] != $result['meeting_id'])) {
-                        return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
+                    if (\is_wp_error(($resp))) {
+                        return $resp;
                     }
                 } else {
                     // unpublish by default
                     $change['published'] = 0;
-
-                    $changearr = array();
-                    $changearr['bmlt_ajax_callback'] = 1;
                     $change['id_bigint'] = $result['meeting_id'];
-                    $changearr['set_meeting_change'] = json_encode($change);
-                    $this->debug_log("UNPUBLISH");
-                    $this->debug_log(($changearr));
+                    $resp = $this->bmlt_integration->changeMeeting($change);
 
-                    $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
-
-                    if (is_wp_error($response)) {
-                        return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
-                    }
-
-                    $this->debug_log("UNPUBLISH RESPONSE");
-                    $this->debug_log(($response));
-
-                    $json = wp_remote_retrieve_body($response);
-                    $rep = str_replace("'", '"', $json);
-
-                    $dec = json_decode($rep, true);
-                    if (((isset($dec['error'])) && ($dec['error'] === true)) || (empty($dec[0]))) {
-                        return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
-                    }
-
-                    $arr = $dec[0];
-
-                    if ((isset($arr['published'])) && ($arr['published'] != 0)) {
-                        return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
+                    if (\is_wp_error(($resp))) {
+                        return $resp;
                     }
                 }
 
