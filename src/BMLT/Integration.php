@@ -592,7 +592,10 @@ class Integration
      */
     public function getMeetingCounties()
     {
+
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
+        $this->debug_log("getMeetingCounties response");
+        $this->debug_log($response);
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve server info');
         }
