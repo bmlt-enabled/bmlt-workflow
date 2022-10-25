@@ -572,7 +572,9 @@ class Integration
      */
     public function getMeetingStates()
     {
-        $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
+        // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
+        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address').'client_interface/json/?switcher=GetServerInfo');
+
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
@@ -592,8 +594,10 @@ class Integration
      */
     public function getMeetingCounties()
     {
+        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address').'client_interface/json/?switcher=GetServerInfo');
+        // $formatarr = json_decode(\wp_remote_retrieve_body($ret), 1);
 
-        $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
+        // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         $this->debug_log("getMeetingCounties response");
         $this->debug_log($response);
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
