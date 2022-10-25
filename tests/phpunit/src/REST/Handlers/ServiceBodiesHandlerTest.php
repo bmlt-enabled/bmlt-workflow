@@ -176,7 +176,7 @@ Line: $errorLine
         $Intstub->shouldReceive('postAuthenticatedRootServerRequest')->andReturn($bodies);
 
         $sblist = array('body'=>'{"service_body":[{"id":1,"name":"toplevel","type":"AS"},"service_body_type":"Area Service Committee","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}},"service_bodies":{"service_body":[{"id":2,"name":"a-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","contact_email":"a-level1@a.com","editors":{"service_body_editors":{"editor":[{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"},{"id":3,"admin_type":"direct","admin_name":"sba"}]}},{"id":3,"name":"b-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"direct","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}}}]}},{"id":4,"name":"test-no-permissions","type":"WS"},"service_body_type":"World Service Conference","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"}}}]}');
-        $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
+        // $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
 
         $rest = new ServiceBodiesHandler($Intstub, $BMLTWF_WP_Options);
 
@@ -227,7 +227,7 @@ Line: $errorLine
         $Intstub->shouldReceive('postAuthenticatedRootServerRequest')->andReturn($bodies);
 
         $sblist = array('body'=>'{"service_body":[{"id":1,"name":"toplevel","type":"AS"},"service_body_type":"Area Service Committee","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}},"service_bodies":{"service_body":[{"id":2,"name":"a-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","contact_email":"a-level1@a.com","editors":{"service_body_editors":{"editor":[{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"},{"id":3,"admin_type":"direct","admin_name":"sba"}]}},{"id":3,"name":"b-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"direct","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}}}]}},{"id":4,"name":"test-no-permissions","type":"WS"},"service_body_type":"World Service Conference","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"}}}]}');
-        $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
+        // $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
 
         $rest = new ServiceBodiesHandler($Intstub, $BMLTWF_WP_Options);
 
@@ -279,7 +279,7 @@ Line: $errorLine
         $Intstub->shouldReceive('postAuthenticatedRootServerRequest')->andReturn($bodies);
 
         $sblist = array('body'=>'{"service_body":[{"id":1,"name":"toplevel","type":"AS"},"service_body_type":"Area Service Committee","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}},"service_bodies":{"service_body":[{"id":2,"name":"a-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","contact_email":"a-level1@a.com","editors":{"service_body_editors":{"editor":[{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"},{"id":3,"admin_type":"direct","admin_name":"sba"}]}},{"id":3,"name":"b-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"direct","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}}}]}},{"id":4,"name":"test-no-permissions","type":"WS"},"service_body_type":"World Service Conference","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"}}}]}');
-        $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
+        // $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
 
         $rest = new ServiceBodiesHandler($Intstub, $BMLTWF_WP_Options);
 

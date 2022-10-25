@@ -679,7 +679,8 @@ class Integration
 
     private function isAutoGeocodingEnabledv3()
     {
-        $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
+        // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
+        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address').'client_interface/json/?switcher=GetServerInfo');
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
@@ -726,8 +727,9 @@ class Integration
 
     public function getDefaultLatLong()
     {
+        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address').'client_interface/json/?switcher=GetServerInfo');
 
-        $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
+        // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
@@ -1001,22 +1003,22 @@ class Integration
         return $this->post(get_option('bmltwf_bmlt_server_address') . $url, $this->cookies, $postargs);
     }
 
-    /**
-     * postUnauthenticatedRootServerRequest
-     *
-     * @param  string $url
-     * @param  array $postargs
-     * @return array|\WP_Error
-     */
-    public function postUnauthenticatedRootServerRequest($url, $postargs)
-    {
-        if (!(is_array($postargs))) {
-            return $this->bmltwf_rest_error("Missing post parameters", "bmltwf_bmlt_integration");
-        }
-        $val = $this->post(get_option('bmltwf_bmlt_server_address') . $url, null, $postargs);
-        // $this->debug_log(($val));
-        return $val;
-    }
+    // /**
+    //  * postUnauthenticatedRootServerRequest
+    //  *
+    //  * @param  string $url
+    //  * @param  array $postargs
+    //  * @return array|\WP_Error
+    //  */
+    // public function postUnauthenticatedRootServerRequest($url, $postargs)
+    // {
+    //     if (!(is_array($postargs))) {
+    //         return $this->bmltwf_rest_error("Missing post parameters", "bmltwf_bmlt_integration");
+    //     }
+    //     $val = $this->post(get_option('bmltwf_bmlt_server_address') . $url, null, $postargs);
+    //     // $this->debug_log(($val));
+    //     return $val;
+    // }
 
     /**
      * postAuthenticatedRootServerRequestSemantic
