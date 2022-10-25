@@ -40,12 +40,7 @@ class SubmissionsHandler
 
         $this->handlerCore = new HandlerCore();
         $this->BMLTWF_Database = new BMLTWF_Database();
-
-        if ($this->bmlt_integration->is_v3_server()) {
-            $this->formats = $this->bmlt_integration->getMeetingFormatsv3();
-        } else {
-            $this->formats = $this->bmlt_integration->getMeetingFormatsv2();
-        }
+        $this->formats = null;
     }
 
     public function get_submissions_handler()
@@ -619,6 +614,17 @@ class SubmissionsHandler
         return implode(',', $emails);
     }
 
+    private function populate_formats()
+    {
+        if ($this->formats === null) {
+            if ($this->bmlt_integration->is_v3_server()) {
+                $this->formats = $this->bmlt_integration->getMeetingFormatsv3();
+            } else {
+                $this->formats = $this->bmlt_integration->getMeetingFormatsv2();
+            }
+        }
+    }
+
     private function invalid_form_field($field)
     {
         return $this->handlerCore->bmltwf_rest_error('Form field "' . $field . '" is invalid.', 422);
@@ -649,6 +655,7 @@ class SubmissionsHandler
             $reason_change_bool = ($data['update_reason'] === 'reason_change');
             $reason_close_bool = ($data['update_reason'] === 'reason_close');
             // handle meeting formats
+            $this->populate_formats();
             if (isset($data['format_shared_id_list'])) {
                 $strarr = explode(',', $data['format_shared_id_list']);
                 foreach ($strarr as $key) {
@@ -1069,7 +1076,7 @@ class SubmissionsHandler
     {
 
         $table = '';
-
+        $this->populate_formats();
         foreach ($submission as $key => $value) {
             switch ($key) {
                 case "meeting_name":
