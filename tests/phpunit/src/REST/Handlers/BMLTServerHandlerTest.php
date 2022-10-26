@@ -93,7 +93,7 @@ Line: $errorLine
     public function test_can_get_bmltserver_with_success(): void
     {
         
-        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/bmltserver");
+        $request = new WP_REST_Request('GET', "http://3.25.141.92/flop/wp-json/bmltwf/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/bmltserver");
         $request->set_method('GET');
@@ -120,7 +120,7 @@ Line: $errorLine
     public function test_can_get_bmltserver_with_failure(): void
     {
 
-        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/bmltserver");
+        $request = new WP_REST_Request('GET', "http://3.25.141.92/flop/wp-json/bmltwf/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/bmltserver");
         $request->set_method('GET');
@@ -149,7 +149,7 @@ Line: $errorLine
     public function test_can_post_bmltserver_with_valid_parameters(): void
     {
 
-        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/bmltserver");
+        $request = new WP_REST_Request('POST', "http://3.25.141.92/flop/wp-json/bmltwf/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/bmltserver");
         $request->set_method('POST');
@@ -189,7 +189,7 @@ Line: $errorLine
      */
     public function test_cant_post_bmltserver_with_invalid_server(): void
     {
-        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/bmltserver");
+        $request = new WP_REST_Request('POST', "http://3.25.141.92/flop/wp-json/bmltwf/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/bmltserver");
         $request->set_method('POST');
@@ -218,7 +218,7 @@ Line: $errorLine
      */
     public function test_cant_post_bmltserver_with_blank_username(): void
     {
-        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/bmltserver");
+        $request = new WP_REST_Request('POST', "http://3.25.141.92/flop/wp-json/bmltwf/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/bmltserver");
         $request->set_method('POST');
@@ -246,7 +246,7 @@ Line: $errorLine
      */
     public function test_cant_post_bmltserver_with_blank_password(): void
     {
-        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/bmltserver");
+        $request = new WP_REST_Request('POST', "http://3.25.141.92/flop/wp-json/bmltwf/v1/bmltserver");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/bmltserver");
         $request->set_method('POST');

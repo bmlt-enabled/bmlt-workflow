@@ -47,10 +47,12 @@ export siteurl=http://$MYIP/$sitename
 export sitelocalpath=/var/www/html/$sitename
 
 sudo rm -rf $sitelocalpath
-
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
 $MYSQL -e "CREATE DATABASE IF NOT EXISTS $mysqldb; GRANT ALL ON $mysqldb.* TO '$mysqluser'@'$mysqlhost' IDENTIFIED BY '$mysqlpass'; FLUSH PRIVILEGES "
+
+sudo mkdir $sitelocalpath
+sudo chown ssm-user:ssm-user $sitelocalpath
 
 wp core download --path=$sitelocalpath
 wp config create --path=$sitelocalpath --dbname=$mysqldb --dbuser=$mysqluser --dbpass=$mysqlpass
@@ -128,6 +130,9 @@ sudo rm -rf $sitelocalpath
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
 $MYSQL -e "CREATE DATABASE IF NOT EXISTS $mysqldb; GRANT ALL ON $mysqldb.* TO '$mysqluser'@'$mysqlhost' IDENTIFIED BY '$mysqlpass'; FLUSH PRIVILEGES "
+
+sudo mkdir $sitelocalpath
+sudo chown ssm-user:ssm-user $sitelocalpath
 
 wp core download --path=$sitelocalpath
 wp config create --path=$sitelocalpath --dbname=$mysqldb --dbuser=$mysqluser --dbpass=$mysqlpass
@@ -230,6 +235,9 @@ sudo rm -rf $sitelocalpath
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
 $MYSQL -e "CREATE DATABASE IF NOT EXISTS $mysqldb; GRANT ALL ON $mysqldb.* TO '$mysqluser'@'$mysqlhost' IDENTIFIED BY '$mysqlpass'; FLUSH PRIVILEGES "
+
+sudo mkdir $sitelocalpath
+sudo chown ssm-user:ssm-user $sitelocalpath
 
 wp core download --path=$sitelocalpath
 wp config create --path=$sitelocalpath --dbname=$mysqldb --dbuser=$mysqluser --dbpass=$mysqlpass

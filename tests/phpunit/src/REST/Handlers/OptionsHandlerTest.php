@@ -86,7 +86,7 @@ Line: $errorLine
     {
 
         
-        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/options/backup");
+        $request = new WP_REST_Request('POST', "http://3.25.141.92/flop/wp-json/bmltwf/v1/options/backup");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/options/backup");
         $request->set_method('POST');
@@ -143,7 +143,7 @@ Line: $errorLine
 //     {
 
         
-//         $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/options/restore");
+//         $request = new WP_REST_Request('POST', "http://3.25.141.92/flop/wp-json/bmltwf/v1/options/restore");
 //         $request->set_header('content-type', 'application/json');
 //         $request->set_route("/bmltwf/v1/options/restore");
 //         $request->set_method('POST');

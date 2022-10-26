@@ -94,7 +94,7 @@ Line: $errorLine
     {
 
         
-        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/servicebodies");
+        $request = new WP_REST_Request('GET', "http://3.25.141.92/flop/wp-json/bmltwf/v1/servicebodies");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/servicebodies");
         $request->set_method('GET');
@@ -144,7 +144,7 @@ Line: $errorLine
     {
 
         
-        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/servicebodies");
+        $request = new WP_REST_Request('GET', "http://3.25.141.92/flop/wp-json/bmltwf/v1/servicebodies");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/servicebodies");
         $request->set_method('GET');
@@ -195,7 +195,7 @@ Line: $errorLine
     public function test_can_get_service_bodies_detail_with_non_editable_service_body(): void
     {
         
-        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/servicebodies");
+        $request = new WP_REST_Request('GET', "http://3.25.141.92/flop/wp-json/bmltwf/v1/servicebodies");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/servicebodies");
         $request->set_method('GET');
@@ -245,7 +245,7 @@ Line: $errorLine
     public function test_can_get_service_bodies_detail_more_service_bodies_added(): void
     {
         
-        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/servicebodies");
+        $request = new WP_REST_Request('GET', "http://3.25.141.92/flop/wp-json/bmltwf/v1/servicebodies");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/servicebodies");
         $request->set_method('GET');
