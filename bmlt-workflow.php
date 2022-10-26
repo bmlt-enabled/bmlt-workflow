@@ -166,25 +166,25 @@ if (!class_exists('bmltwf_plugin')) {
             $status = wp_add_inline_script('bmltwf-meeting-update-form-js', $script, 'before');
             $this->prevent_cache_enqueue_script('bmltwf-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
 
-            $result = [];
-            $result['scripts'] = [];
-            $result['styles'] = [];
+            // $result = [];
+            // $result['scripts'] = [];
+            // $result['styles'] = [];
 
-            $this->debug_log("All scripts and styles");
+            // $this->debug_log("All scripts and styles");
 
-            // Print all loaded Scripts
-            global $wp_scripts;
-            foreach ($wp_scripts->queue as $script) :
-                $result['scripts'][] =  $wp_scripts->registered[$script]->src . ";";
-            endforeach;
+            // // Print all loaded Scripts
+            // global $wp_scripts;
+            // foreach ($wp_scripts->queue as $script) :
+            //     $result['scripts'][] =  $wp_scripts->registered[$script]->src . ";";
+            // endforeach;
 
-            // Print all loaded Styles (CSS)
-            global $wp_styles;
-            foreach ($wp_styles->queue as $style) :
-                $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
-            endforeach;
+            // // Print all loaded Styles (CSS)
+            // global $wp_styles;
+            // foreach ($wp_styles->queue as $style) :
+            //     $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
+            // endforeach;
 
-            $this->debug_log(($result));
+            // $this->debug_log(($result));
 
 
             ob_start();
