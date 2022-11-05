@@ -16,9 +16,10 @@ const execSync = require("child_process").execSync;
 
 // web addresses
 const test_ip = execSync("aws ssm get-parameter --name bmltwf_test_hostip --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" }).trim();
-const siteurl_single = "http://" + test_ip + "/wordpresssingle";
-const siteurl_multisingle = "http://" + test_ip + "/wordpressmultisingle";
-const siteurl_multinetwork = "http://" + test_ip + "/wordpressmultinetwork";
+// const test_ip = 'localhost';
+const siteurl_single = "http://" + test_ip + ":8081";
+const siteurl_multisingle = "http://" + test_ip + ":8082";
+const siteurl_multinetwork = "http://" + test_ip + ":8083";
 
 // usernames and passwords
 const username_single = execSync("aws ssm get-parameter --name bmltwf_test_wpuser_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" });

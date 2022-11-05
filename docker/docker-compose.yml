@@ -1,0 +1,141 @@
+version: '3.1'
+
+services:
+  wordpress-php7-singlesite:
+    build:
+      context: .
+      dockerfile: Dockerfile-wp6.0.3-php7.4
+    depends_on:
+      - db-php7-singlesite
+    restart: always
+    ports:
+      - 8080:80
+      - 7443:443
+    environment:
+      WORDPRESS_DB_HOST: db-php7
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DEBUG: true
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+    volumes:
+      - ../:/var/www/html/wp-content/plugins
+      - ./logs/:/var/log/apache2
+
+  db-php7-singlesite:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+  wordpress-php8-singlesite:
+    build:
+      context: .
+      dockerfile: Dockerfile-wp6.0.3-php8.1
+    depends_on:
+      - db-php8-singlesite
+    command: /usr/local/bin/multisite-install.sh
+    restart: always
+    ports:
+      - 8081:80
+      - 7444:443
+    environment:
+      WORDPRESS_DB_HOST: db-php8-singlesite
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_MULTISITE_INSTALL: true
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+      WORDPRESS_MULTISITE_PORT: 8081
+      WORDPRESS_MULTISITE_HOST: localhost
+    volumes:
+      - ../:/var/www/html/wp-content/plugins
+      - ./logs/:/var/log/apache2
+
+  db-php8-singlesite:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+  wordpress-php8-multisitesingle:
+    build:
+      context: .
+      dockerfile: Dockerfile-wp6.0.3-php8.1
+    depends_on:
+      - db-php8-multisitesingle
+    command: /usr/local/bin/multisite-install.sh
+    restart: always
+    ports:
+      - 8082:80
+      - 7445:443
+    environment:
+      WORDPRESS_DB_HOST: db-php8-multisitesingle
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DEBUG: true
+      WORDPRESS_MULTISITE_INSTALL: true
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+      WORDPRESS_MULTISITE_PORT: 8082
+      WORDPRESS_MULTISITE_HOST: localhost
+    volumes:
+      - ../:/var/www/html/wp-content/plugins
+      - ./logs/:/var/log/apache2
+
+  db-php8-multisitesingle:
+    image: mysql:5.7
+    restart: always
+    ports:
+      - 3308:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+      
+  wordpress-php8-multinetwork:
+    build:
+      context: .
+      dockerfile: Dockerfile-wp6.0.3-php8.1
+    depends_on:
+      - db-php8-multinetwork
+    command: /usr/local/bin/multisite-install.sh
+    restart: always
+    # ports:
+    #   - 8083:80
+    #   - 7446:443
+    environment:
+      WORDPRESS_DB_HOST: db-php8-multinetwork
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DEBUG: true
+      WORDPRESS_MULTISITE_INSTALL: true
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+      WORDPRESS_MULTISITE_PORT: 8083
+      WORDPRESS_MULTISITE_HOST: localhost
+    volumes:
+      - ../:/var/www/html/wp-content/plugins
+      - ./logs/:/var/log/apache2
+
+  db-php8-multinetwork:
+    image: mysql:5.7
+    restart: always
+    # ports:
+    #   - 3309:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
