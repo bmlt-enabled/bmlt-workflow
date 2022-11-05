@@ -46,6 +46,7 @@ export sitename=wordpresssingle
 export siteurl=http://$MYIP/$sitename
 export sitelocalpath=/var/www/html/$sitename
 
+
 sudo rm -rf $sitelocalpath
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
