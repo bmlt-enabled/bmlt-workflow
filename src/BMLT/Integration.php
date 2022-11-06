@@ -191,7 +191,7 @@ class Integration
         );
         $url = $server . "index.php";
         $this->debug_log($url);
-        $ret = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
+        $ret = \wp_remote_post($url, array('body' => http_build_query($postargs)));
         $this->debug_log(($ret));
 
         $response_code = \wp_remote_retrieve_response_code($ret);
@@ -821,7 +821,7 @@ class Integration
                 $this->debug_log("inside authenticateRootServer v3 auth");
                 $url = get_option('bmltwf_bmlt_server_address') . "api/v1/auth/token";
                 $this->debug_log($url);
-                $response = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
+                $response = \wp_remote_post($url, array('body' => http_build_query($postargs)));
                 $this->debug_log(($response));
 
                 $response_code = \wp_remote_retrieve_response_code($response);
@@ -848,7 +848,7 @@ class Integration
 
             // $this->debug_log("AUTH URL = " . $url);
             // $ret = $this->post($url, null, $postargs);
-            $ret = \wp_safe_remote_post($url, $this->set_args(null, http_build_query($postargs)));
+            $ret = \wp_remote_post($url, $this->set_args(null, http_build_query($postargs)));
 
             if ((is_wp_error($ret)) || (\wp_remote_retrieve_response_code($ret) != 200)) {
                 return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
@@ -932,13 +932,13 @@ class Integration
                     return $ret;
                 }
             }
-            $ret = \wp_safe_remote_post($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), http_build_query($postargs)));
+            $ret = \wp_remote_post($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), http_build_query($postargs)));
             return $ret;
         } else {
             $this->debug_log("POSTING URL = " . $url);
             // $this->debug_log(($this->set_args($cookies, http_build_query($postargs))));
             // $this->debug_log("*********");
-            $ret = \wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
+            $ret = \wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
 
             if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
             {
@@ -948,7 +948,7 @@ class Integration
                 }
 
                 // try once more in case it was a session timeout
-                $ret = \wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
+                $ret = \wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
             }
             return $ret;
         }
@@ -978,7 +978,7 @@ class Integration
             // chop trailing &
             $newargs = substr($newargs, 0, -1);
             // $this->debug_log("our post body is " . $newargs);
-            $ret = \wp_safe_remote_post($url, $this->set_args($cookies, $newargs));
+            $ret = \wp_remote_post($url, $this->set_args($cookies, $newargs));
             // $this->debug_log(($ret));
             return $ret;
         }
