@@ -221,7 +221,7 @@ class Integration
 
         $url = $server . "api/v1/auth/token";
         $this->debug_log($url);
-        $response = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
+        $response = \wp_remote_post($url, array('body' => http_build_query($postargs)));
         $this->debug_log(($response));
 
         $response_code = \wp_remote_retrieve_response_code($response);
