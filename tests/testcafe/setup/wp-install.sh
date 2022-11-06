@@ -182,7 +182,7 @@ cd $sitelocalpath/wp-content/plugins/bmlt-workflow
 
 # activate plugin
 wp plugin activate --path=$sitelocalpath "bmlt-workflow"
-wp option --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'$MYIP':8000/main_server/'
+wp option --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'$MYIP':8080/main_server/'
 wp option --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
 wp option --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
 wp option --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
