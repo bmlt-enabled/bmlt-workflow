@@ -121,9 +121,9 @@ export mysqluser=wpsinglebmlt3x
 export mysqlpass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
 export wptitle=wpsinglebmlt3x
 export wpuser=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name bmltwf_test_wpuser_multisingle --value $wpuser --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wpuser_bmlt3x --value $wpuser --type SecureString --region ap-southeast-2
 export wppass=$(((RANDOM<<15|$RANDOM)<<15|$RANDOM))
-aws ssm put-parameter --overwrite --name bmltwf_test_wppass_multisingle --value $wppass --type SecureString --region ap-southeast-2
+aws ssm put-parameter --overwrite --name bmltwf_test_wppass_bmlt3x --value $wppass --type SecureString --region ap-southeast-2
 export wpemail=nigel.bmlt@gmail.com
 export sitename=wpsinglebmlt3x
 export siteurl=http://$MYIP/$sitename/
