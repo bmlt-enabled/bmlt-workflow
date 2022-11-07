@@ -87,7 +87,6 @@ class Integration
         $fromto['venue_type']='venueType';
         $fromto['weekday_tinyint']='day';
         $fromto['start_time']='startTime';
-        $fromto['duration_time']='duration';
 
         foreach ($fromto as $from => $to) {
             $here = $meeting[$from] ?? false;
@@ -96,6 +95,14 @@ class Integration
                 $meeting[$to]=$meeting[$from];
                 unset($meeting[$from]);
             }
+        }
+
+        $here = $meeting['duration_time']?? false;
+        if($here)
+        {
+            $time = explode(':',$meeting['duration_time']);
+            $meeting['duration'] = $time[0] . ":" . $time[1];
+            unset($meeting['duration']);
         }
 
         $here = $meeting['formats']?? false;
