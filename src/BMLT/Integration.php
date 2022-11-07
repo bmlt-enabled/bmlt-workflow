@@ -80,6 +80,33 @@ class Integration
         return new \WP_Error('bmltwf_error', $message, $data);
     }
 
+    private function convertv2meetingtov3($meeting)
+    {
+        $fromto = array();
+        $fromto['service_body_bigint']='serviceBodyId';
+        $fromto['venue_type']='venueType';
+        $fromto['weekday_tinyint']='day';
+        $fromto['start_time']='startTime';
+        $fromto['duration_time']='duration';
+
+        foreach ($fromto as $from => $to) {
+            $here = $meeting[$from] ?? false;
+            if($here)
+            {
+                $meeting[$to]=$meeting[$from];
+                unset($meeting[$from]);
+            }
+        }
+
+        $here = $meeting['formats']?? false;
+        if($here)
+        {
+            $meeting['formatIds'] = explode(',',$meeting['formats']);
+            unset($meeting['formats']);
+        }
+        return $meeting;
+    }
+
     public function is_v3_server()
     {
         if (version_compare($this->bmlt_root_server_version, "3.0.0", "lt")) {
@@ -284,6 +311,8 @@ class Integration
 
     private function updateMeetingv3($change)
     {
+
+        $change = $this->convertv2meetingtov3($change);
 
         $this->debug_log("inside updateMeetingv3 auth");
 
