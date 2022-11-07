@@ -102,7 +102,7 @@ class Integration
         {
             $time = explode(':',$meeting['duration_time']);
             $meeting['duration'] = $time[0] . ":" . $time[1];
-            unset($meeting['duration']);
+            unset($meeting['duration_time']);
         }
 
         $here = $meeting['formats'] ?? false;
@@ -344,7 +344,7 @@ class Integration
 
         $response = \wp_safe_remote_request($url, $this->set_args(null, $change, array("Authorization" => "Bearer " . $this->v3_access_token), 'PATCH'));
         $this->debug_log("v3 API RESPONSE");
-        $this->debug_log(wp_remote_retrieve_body($response));
+        $this->debug_log($response);
 
         if (\wp_remote_retrieve_response_code($response) != 200) {
             return new \WP_Error('bmltwf',\wp_remote_retrieve_response_message($response)); 
