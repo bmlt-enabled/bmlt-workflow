@@ -301,7 +301,7 @@ class Integration
         }
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $change['id_bigint'];
 
-        $response = \wp_safe_remote_request($url, $this->set_args(null, $change, array("Authorization" => "Bearer " . $this->v3_access_token), 'PUT')));
+        $response = \wp_safe_remote_request($url, $this->set_args(null, $change, array("Authorization" => "Bearer " . $this->v3_access_token), 'PUT'));
         $this->debug_log("v3 API RESPONSE");
         $this->debug_log(wp_remote_retrieve_body($response));
 
