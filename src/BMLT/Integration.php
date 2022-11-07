@@ -253,7 +253,7 @@ class Integration
         $changearr = array();
         $changearr['bmlt_ajax_callback'] = 1;
         $changearr['set_meeting_change'] = json_encode($change);
-        $this->debug_log("UNPUBLISH");
+        $this->debug_log("CHANGE");
         $this->debug_log(($changearr));
 
         $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
@@ -262,7 +262,7 @@ class Integration
             return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
         }
 
-        $this->debug_log("UNPUBLISH RESPONSE");
+        $this->debug_log("CHANGE RESPONSE");
         $this->debug_log(($response));
 
         $json = wp_remote_retrieve_body($response);
@@ -270,7 +270,7 @@ class Integration
 
         $dec = json_decode($rep, true);
         if (((isset($dec['error'])) && ($dec['error'] === true)) || (empty($dec[0]))) {
-            return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
+            return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting change failed', 500);
         }
 
         $arr = $dec[0];

@@ -438,23 +438,8 @@ class SubmissionsHandler
                 $changearr = array();
                 $response=$this->bmlt_integration->updateMeeting($change);
 
-                // $changearr['bmlt_ajax_callback'] = 1;
-                // $changearr['set_meeting_change'] = json_encode($change);
-                // $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
-
-                if (is_wp_error($response)) {
-                    return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
-                }
-                $this->debug_log("response");
-                $this->debug_log(($response));
-                $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
-                $this->debug_log("arr");
-                $this->debug_log(($arr));
-                $this->debug_log("change");
-                $this->debug_log(($change));
-                // the response back from BMLT doesnt even match what we are trying to change
-                if ((!empty($arr['id_bigint'])) && ($arr['id_bigint'] != $change['id_bigint'])) {
-                    return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting change failed', 500);
+                if (\is_wp_error(($response))) {
+                    return $response;
                 }
 
                 break;
