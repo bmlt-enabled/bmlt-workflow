@@ -362,8 +362,6 @@ class SubmissionsHandler
         $this->debug_log("change type = " . $submission_type);
         switch ($submission_type) {
             case 'reason_new':
-                // workaround for semantic new meeting bug
-                $change['id_bigint'] = 0;
 
                 if ($this->bmlt_integration->isAutoGeocodingEnabled()) {
                     // run our geolocator on the address
@@ -380,20 +378,7 @@ class SubmissionsHandler
                     $change['longitude'] = $latlng['longitude'];
                 }
 
-                // handle publish/unpublish here
-                $change['published'] = 1;
-                $changearr = array();
-                $changearr['bmlt_ajax_callback'] = 1;
-                $changearr['set_meeting_change'] = json_encode($change);
-                $this->debug_log("posting change");
-                $this->debug_log($changearr);
-
-                $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
-                $this->debug_log("posted change");
-
-                if (is_wp_error($response)) {
-                    return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
-                }
+                $response=$this->bmlt_integration->createMeeting($change);
 
                 break;
             case 'reason_change':
@@ -437,7 +422,6 @@ class SubmissionsHandler
                     }
                 }
 
-                $changearr = array();
                 $response=$this->bmlt_integration->updateMeeting($change);
 
                 if (\is_wp_error(($response))) {

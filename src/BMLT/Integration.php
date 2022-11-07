@@ -347,13 +347,13 @@ class Integration
                 return $ret;
             }
         }
-        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $change['id_bigint'];
+        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $meeting_id;
 
         $response = \wp_safe_remote_request($url, $this->set_args(null, $change, array("Authorization" => "Bearer " . $this->v3_access_token), 'PATCH'));
         $this->debug_log("v3 API RESPONSE");
         $this->debug_log($response);
 
-        if (\wp_remote_retrieve_response_code($response) != 200) {
+        if (\wp_remote_retrieve_response_code($response) != 204) {
             return new \WP_Error('bmltwf',\wp_remote_retrieve_response_message($response)); 
         }
 
@@ -517,10 +517,13 @@ class Integration
         }
 
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/'.$meeting_id;
-        $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token));
-        $args['method']='DELETE';
-        $ret = wp_remote_request( $url, $args );
-        // TODO ERROR HANDLE
+        $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), 'DELETE');
+        $response = \wp_safe_remote_request( $url, $args );
+
+        if (\wp_remote_retrieve_response_code($response) != 204) {
+            return new \WP_Error('bmltwf',\wp_remote_retrieve_response_message($response)); 
+        }
+
         return true;
     }
 
@@ -690,26 +693,72 @@ class Integration
         return $matches[1];
     }
 
-    public function createMeeting()
+    public function createMeeting($meeting)
     {
         if($this->is_v3_server())
         {
-            return $this->createMeetingv3();
+            return $this->createMeetingv3($meeting);
         }
         else
         {
-            return $this->createMeetingv2();
+            return $this->createMeetingv2($meeting);
         }
     }
 
-    private function createMeetingv3()
+    private function createMeetingv3($meeting)
     {
+        $this->debug_log("CHANGE before");
+        $this->debug_log($meeting);
+
+        $meeting = $this->convertv2meetingtov3($meeting);
+
+        $this->debug_log("CHANGE after");
+        $this->debug_log($meeting);
+
+        $this->debug_log("inside createMeetingv3 auth");
+
+
+        if (!$this->v3_access_token) {
+            $ret =  $this->authenticateRootServer();
+            if (is_wp_error($ret)) {
+                $this->debug_log("exiting createMeetingv3 authenticateRootServer failed");
+                return $ret;
+            }
+        }
+        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings';
+
+        $response = \wp_safe_remote_post($url, $this->set_args(null, $meeting, array("Authorization" => "Bearer " . $this->v3_access_token)));
+        $this->debug_log("v3 API RESPONSE");
+        $this->debug_log($response);
+
+        if (\wp_remote_retrieve_response_code($response) != 204) {
+            return new \WP_Error('bmltwf',\wp_remote_retrieve_response_message($response)); 
+        }
+
+        return true;
 
     }
 
-    private function createMeetingv2()
+    private function createMeetingv2($meeting)
     {
+        // workaround for semantic new meeting bug
+        $meeting['id_bigint'] = 0;
 
+        // handle publish/unpublish here
+        $meeting['published'] = 1;
+        $changearr = array();
+        $changearr['bmlt_ajax_callback'] = 1;
+        $changearr['set_meeting_change'] = json_encode($meeting);
+        $this->debug_log("posting change");
+        $this->debug_log($changearr);
+
+        $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
+        $this->debug_log("posted change");
+
+        if (is_wp_error($response)) {
+            return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
+        }
+        return true;
     }
 
     public function isAutoGeocodingEnabled()
