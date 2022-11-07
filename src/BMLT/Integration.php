@@ -97,7 +97,7 @@ class Integration
             }
         }
 
-        $here = $meeting['duration_time']?? false;
+        $here = $meeting['duration_time'] ?? false;
         if($here)
         {
             $time = explode(':',$meeting['duration_time']);
@@ -105,7 +105,7 @@ class Integration
             unset($meeting['duration']);
         }
 
-        $here = $meeting['formats']?? false;
+        $here = $meeting['formats'] ?? false;
         if($here)
         {
             $meeting['formatIds'] = explode(',',$meeting['formats']);
@@ -318,8 +318,13 @@ class Integration
 
     private function updateMeetingv3($change)
     {
+        $this->debug_log("CHANGE before");
+        $this->debug_log($change);
 
         $change = $this->convertv2meetingtov3($change);
+
+        $this->debug_log("CHANGE after");
+        $this->debug_log($change);
 
         $this->debug_log("inside updateMeetingv3 auth");
 
@@ -342,7 +347,7 @@ class Integration
         $this->debug_log(wp_remote_retrieve_body($response));
 
         if (\wp_remote_retrieve_response_code($response) != 200) {
-            return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
+            return new \WP_Error('bmltwf',\wp_remote_retrieve_response_message($response)); 
         }
 
         return true;
@@ -437,7 +442,7 @@ class Integration
         $this->debug_log(\wp_remote_retrieve_body($response));
 
         if (\wp_remote_retrieve_response_code($response) != 200) {
-            return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
+            return new \WP_Error('bmltwf',\wp_remote_retrieve_response_message($response)); 
         }
 
         $response = json_decode(\wp_remote_retrieve_body($response), 1);
@@ -862,7 +867,7 @@ class Integration
                 $response_code = \wp_remote_retrieve_response_code($response);
 
                 if ($response_code != 200) {
-                    return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
+                    return new \WP_Error('bmltwf',\wp_remote_retrieve_response_message($response)); 
                 }
 
                 $auth_details = json_decode(wp_remote_retrieve_body($response), true);
