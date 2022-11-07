@@ -436,9 +436,11 @@ class SubmissionsHandler
                 }
 
                 $changearr = array();
-                $changearr['bmlt_ajax_callback'] = 1;
-                $changearr['set_meeting_change'] = json_encode($change);
-                $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
+                $response=$this->bmlt_integration->updateMeeting($change);
+
+                // $changearr['bmlt_ajax_callback'] = 1;
+                // $changearr['set_meeting_change'] = json_encode($change);
+                // $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
 
                 if (is_wp_error($response)) {
                     return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);

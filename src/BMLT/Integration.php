@@ -287,7 +287,7 @@ class Integration
 
         $this->debug_log("inside updateMeetingv3 auth");
 
-        if (!$change['id_biging'])
+        if (!$change['id_bigint'])
         {
             return new \WP_Error('bmltwf', 'updateMeetingv3: No meeting ID present');
         }
