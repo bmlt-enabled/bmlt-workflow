@@ -301,15 +301,13 @@ class Integration
         }
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $change['id_bigint'];
 
-        $response = \wp_safe_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
+        $response = \wp_safe_remote_request($url, $this->set_args(null, $change, array("Authorization" => "Bearer " . $this->v3_access_token, 'PUT')));
         $this->debug_log("v3 API RESPONSE");
         $this->debug_log(wp_remote_retrieve_body($response));
 
         if (\wp_remote_retrieve_response_code($response) != 200) {
             return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
         }
-
-        // $response = json_decode(wp_remote_retrieve_body($response), 1);
 
         return true;
 
@@ -865,7 +863,7 @@ class Integration
         }
     }
 
-    private function set_args($cookies, $body = null, $headers = null)
+    private function set_args($cookies, $body = null, $headers = null, $method = null)
     {
         $newheaders =  array(
             'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.82 Safari/537.36',
@@ -884,8 +882,11 @@ class Integration
             'headers' => $newheaders,
             'cookies' => isset($cookies) ? $cookies : null,
             'body' => isset($body) ? $body : null
-
         );
+        if($method)
+        {
+            $args['method'] = $method;
+        }
 
         $this->debug_log("set_args:");
         $this->debug_log($args);

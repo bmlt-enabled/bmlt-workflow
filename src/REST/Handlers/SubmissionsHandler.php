@@ -426,9 +426,11 @@ class SubmissionsHandler
                     $change['latitude'] = $latlng['latitude'];
                     $change['longitude'] = $latlng['longitude'];
                 } else {
-                    // update this only if we have no meeting lat/long already set
-                    if (empty($change['latitude'] && empty($change['longitude']))) {
+                    $changelat = $change['latitude'] ?? false;
+                    $changelong = $change['longitude'] ?? false;
 
+                    // update this only if we have no meeting lat/long already set
+                    if (!$changelat || !$changelong) {
                         $latlng = $this->bmlt_integration->getDefaultLatLong();
                         $change['latitude'] = $latlng['latitude'];
                         $change['longitude'] = $latlng['longitude'];
