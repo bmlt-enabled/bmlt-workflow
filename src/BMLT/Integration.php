@@ -88,6 +88,10 @@ class Integration
         $fromto['weekday_tinyint']='day';
         $fromto['start_time']='startTime';
 
+        // dont need this any more
+        unset($meeting['id_bigint']);
+
+        // change all our fields over
         foreach ($fromto as $from => $to) {
             $here = $meeting[$from] ?? false;
             if($here)
@@ -97,6 +101,7 @@ class Integration
             }
         }
 
+        // special cases
         $here = $meeting['duration_time'] ?? false;
         if($here)
         {
@@ -105,11 +110,11 @@ class Integration
             unset($meeting['duration_time']);
         }
 
-        $here = $meeting['formats'] ?? false;
+        $here = $meeting['format_shared_id_list'] ?? false;
         if($here)
         {
-            $meeting['formatIds'] = explode(',',$meeting['formats']);
-            unset($meeting['formats']);
+            $meeting['formatIds'] = explode(',',$meeting['format_shared_id_list']);
+            unset($meeting['format_shared_id_list']);
         }
         return $meeting;
     }
@@ -321,6 +326,8 @@ class Integration
         $this->debug_log("CHANGE before");
         $this->debug_log($change);
 
+        $meeting_id = $change['id_bigint'] ?? false;
+
         $change = $this->convertv2meetingtov3($change);
 
         $this->debug_log("CHANGE after");
@@ -328,7 +335,7 @@ class Integration
 
         $this->debug_log("inside updateMeetingv3 auth");
 
-        if (!$change['id_bigint'])
+        if (!$meeting_id)
         {
             return new \WP_Error('bmltwf', 'updateMeetingv3: No meeting ID present');
         }
