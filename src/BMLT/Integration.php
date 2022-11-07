@@ -397,15 +397,16 @@ class Integration
             }
         }
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/servicebodies';
+        $this->debug_log($url);
         $response = \wp_safe_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
         $this->debug_log("v3 API RESPONSE");
-        $this->debug_log(wp_remote_retrieve_body($response));
+        $this->debug_log(\wp_remote_retrieve_body($response));
 
         if (\wp_remote_retrieve_response_code($response) != 200) {
             return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
         }
 
-        $response = json_decode(wp_remote_retrieve_body($response), 1);
+        $response = json_decode(\wp_remote_retrieve_body($response), 1);
         foreach($response as $key => $sb)
         {
             $sblist[$sb['id']] = array('name' => $sb['name'], 'description' => $sb['description']);

@@ -99,11 +99,8 @@ class ServiceBodiesHandler
             $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name, ARRAY_A);
 
             foreach ($sqlresult as $key => $value) {
-                $is_editable = $editable[$value['service_body_bigint']] ?? false;
-                if ($is_editable) {
                     $bool = $value['show_on_form'] ? (true) : (false);
                     $sblist[$value['service_body_bigint']]['show_on_form'] = $bool;
-                }
             }
         } else {
             // simple list
