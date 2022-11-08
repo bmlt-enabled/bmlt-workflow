@@ -434,7 +434,7 @@ class Integration
         return $ret;
     }
 
-    private function postsemantic($url, $cookies = null, $postargs)
+    private function postsemantic($url, $postargs,$cookies = null)
     {
         
 
