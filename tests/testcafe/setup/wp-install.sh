@@ -63,7 +63,7 @@ cd $sitelocalpath
 # Build our wp-config.php file
 cat > insert << EOF
 // Enable WP_DEBUG mode
-define( 'WP_DEBUG', true );
+define( 'WP_DEBUG', false );
 
 // Disable display of errors and warnings
 define( 'WP_DEBUG_DISPLAY', true );
@@ -143,7 +143,7 @@ cd $sitelocalpath
 # Build our wp-config.php file
 cat > insert << EOF
 // Enable WP_DEBUG mode
-define( 'WP_DEBUG', true );
+define( 'WP_DEBUG', false );
 
 // Disable display of errors and warnings
 define( 'WP_DEBUG_DISPLAY', true );
@@ -246,7 +246,7 @@ cd $sitelocalpath
 # Build our wp-config.php file
 cat > insert << EOF
 // Enable WP_DEBUG mode
-define( 'WP_DEBUG', true );
+define( 'WP_DEBUG', false );
 
 // Disable display of errors and warnings
 define( 'WP_DEBUG_DISPLAY', true );
