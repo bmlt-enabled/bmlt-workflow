@@ -48,6 +48,7 @@ export sitelocalpath=/var/www/html/$sitename
 
 sudo rm -rf $sitelocalpath
 sudo mkdir $sitelocalpath
+sudo chown ssm-user:ssm-user $sitelocalpath
 
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
@@ -126,6 +127,7 @@ export sitelocalpath=/var/www/html/$sitename
 
 sudo rm -rf $sitelocalpath
 sudo mkdir $sitelocalpath
+sudo chown ssm-user:ssm-user $sitelocalpath
 
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
@@ -229,6 +231,7 @@ export sitelocalpath=/var/www/html/$sitename
 
 sudo rm -rf $sitelocalpath
 sudo mkdir $sitelocalpath
+sudo chown ssm-user:ssm-user $sitelocalpath
 
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
