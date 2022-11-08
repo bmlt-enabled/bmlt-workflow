@@ -54,7 +54,7 @@ echo '</form></div>';
     <br><label for="bmltwf_bmlt_server_address"><b>BMLT Root Server Address:</b></label>
     <input type="url" size="50" id="bmltwf_bmlt_server_address" name="bmltwf_bmlt_server_address" value="<?php echo esc_url_raw(get_option('bmltwf_bmlt_server_address')) ?>" />
     <br><label for="bmltwf_bmlt_username"><b>Username:</b></label>
-    <input type="text" size="50" id="bmltwf_bmlt_username" name="bmltwf_bmlt_username" value="<?php echo esc_attr('bmltwf_bmlt_username') ?>" />
+    <input type="text" size="50" id="bmltwf_bmlt_username" name="bmltwf_bmlt_username" value="<?php echo esc_attr(get_option('bmltwf_bmlt_username')) ?>" />
     <br><label for="bmltwf_bmlt_password"><b>Password:</b></label>
     <input type="password" size="50" id="bmltwf_bmlt_password" name="bmltwf_bmlt_password" />
     <br><br>
