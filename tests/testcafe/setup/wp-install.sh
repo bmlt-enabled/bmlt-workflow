@@ -47,6 +47,7 @@ export siteurl=http://$MYIP/$sitename
 export sitelocalpath=/var/www/html/$sitename
 
 sudo rm -rf $sitelocalpath
+sudo mkdir $sitelocalpath
 
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
@@ -124,6 +125,7 @@ export siteurl=http://$MYIP/$sitename/
 export sitelocalpath=/var/www/html/$sitename
 
 sudo rm -rf $sitelocalpath
+sudo mkdir $sitelocalpath
 
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
@@ -226,6 +228,7 @@ export siteurl=http://$MYIP/$sitename/
 export sitelocalpath=/var/www/html/$sitename
 
 sudo rm -rf $sitelocalpath
+sudo mkdir $sitelocalpath
 
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
