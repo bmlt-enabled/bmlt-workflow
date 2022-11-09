@@ -595,10 +595,8 @@ test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
 
   await t.navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_change");
-
   await t.expect(uf.update_reason.value).eql("reason_change");
 
-  debugger;
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
   await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "correctmeeting");
