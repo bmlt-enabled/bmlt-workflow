@@ -46,6 +46,10 @@ export const bmltwf_admin_multinetwork = Role(userVariables.admin_logon_page_mul
   await t.typeText(wordpress_login.user_login, userVariables.admin_logon_multinetwork).typeText(wordpress_login.user_pass, userVariables.admin_password_multinetwork).click(wordpress_login.wp_submit);
 });
 
+export const bmltwf_admin_wpsinglebmlt3x = Role(userVariables.admin_logon_page_wpsinglebmlt3x, async (t) => {
+  await t.typeText(wordpress_login.user_login, userVariables.admin_logon_wpsinglebmlt3x).typeText(wordpress_login.user_pass, userVariables.admin_password_wpsinglebmlt3x).click(wordpress_login.wp_submit);
+});
+
 export async function select_dropdown_by_id(element, id) {
   await t.click(element).click(element.find("option").withAttribute("id", id));
 }
@@ -92,6 +96,14 @@ export async function reset_bmlt(t) {
 
 }
 
+export async function reset_bmlt3x(t) {
+  console.log("resetting bmlt");
+  await t.request(userVariables.blank_bmlt3x);
+  await t.wait(5000);
+  console.log("reset");
+
+}
+
 export async function auto_geocoding_on(t) {
 console.log("turning geocode on");
   await t.request(userVariables.auto_geocoding_on);
@@ -107,6 +119,21 @@ export async function auto_geocoding_off(t) {
 
 }
 
+export async function bmlt3x_auto_geocoding_on(t) {
+  console.log("turning geocode on");
+    await t.request(userVariables.bmlt3x_auto_geocoding_on);
+    await t.wait(5000);
+    console.log("geocode on");
+  }
+  
+  export async function bmlt3x_auto_geocoding_off(t) {
+    console.log("turning geocode off");
+    await t.request(userVariables.bmlt3x_auto_geocoding_off);
+    await t.wait(5000);
+    console.log("geocode off");
+  
+  }
+  
 export async function insert_submissions() {
   // pre fill the submissions
   await t.request(userVariables.admin_submission_reset);
@@ -189,6 +216,34 @@ export async function configure_service_bodies_multinetwork(t) {
     .click("#bmltwf_userlist_checkbox_id_3")
     .click(asb.bmltwf_submit);
 }
+
+export async function configure_service_bodies_wpsinglebmlt3x(t) {
+    await t.request(userVariables.blank_service_bodies_wpsinglebmlt3x);
+  
+    await t
+      .useRole(bmltwf_admin)
+      .navigateTo(userVariables.admin_service_bodies_page_wpsinglebmlt3x)
+  
+      .click(Selector("ul#select2-bmltwf_userlist_id_1-container").parent())
+      .pressKey("enter")
+      .click(Selector("ul#select2-bmltwf_userlist_id_1-container").parent())
+      .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_1-results"]'), "submitpriv")
+      .pressKey("enter")
+      .click("#bmltwf_userlist_checkbox_id_1")
+      .click(Selector("ul#select2-bmltwf_userlist_id_2-container").parent())
+      .pressKey("enter")
+      .click(Selector("ul#select2-bmltwf_userlist_id_2-container").parent())
+      .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_2-results"]'), "submitpriv")
+      .pressKey("enter")
+      .click("#bmltwf_userlist_checkbox_id_2")
+      .click(Selector("ul#select2-bmltwf_userlist_id_3-container").parent())
+      .pressKey("enter")
+      .click(Selector("ul#select2-bmltwf_userlist_id_3-container").parent())
+      .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_3-results"]'), "submitpriv")
+      .pressKey("enter")
+      .click("#bmltwf_userlist_checkbox_id_3")
+      .click(asb.bmltwf_submit);
+  }
 
 // set a from email address, turn off the optional settings and submit
 export async function basic_options() {
@@ -276,6 +331,23 @@ export async function bmlt_states_on(t) {
   console.log("states on");
 }
 
+export async function bmlt3x_states_off(t) {
+  // disable state dropdown
+  console.log("turning states off");
+  await t.request(userVariables.bmlt3x_states_off);
+  await t.wait(5000);
+  console.log("states off");
+
+}
+
+export async function bmlt3x_states_on(t) {
+  // enable state dropdown
+  console.log("turning states on");
+  await t.request(userVariables.bmlt3x_states_on);
+  await t.wait(5000);
+  console.log("states on");
+}
+
 export async function delete_submissions(t) {
   await t.request(userVariables.blank_submission);
 }
@@ -286,6 +358,10 @@ export async function delete_submissions_multisingle(t) {
 
 export async function delete_submissions_multinetwork(t) {
   await t.request(userVariables.blank_submission_multinetwork);
+}
+
+export async function delete_submissions_wpsinglebmlt3x(t) {
+  await t.request(userVariables.blank_submission);
 }
 
 export async function check_checkbox(t,s) {

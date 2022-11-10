@@ -18,48 +18,37 @@
 import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
 import { ct } from "./models/crouton";
-import { ao } from "./models/admin_options";
 import { Selector, Role } from "testcafe";
 
-import { reset_bmlt, 
-  bmlt_states_off, 
-  auto_geocoding_on,
-  auto_geocoding_off,
-  configure_service_bodies, 
-  delete_submissions, 
+import { reset_bmlt3x, 
+  bmlt3x_states_off, 
+  bmlt3x_auto_geocoding_on,
+  bmlt3x_auto_geocoding_off,
+  configure_service_bodies_wpsinglebmlt3x, 
+  delete_submissions_wpsinglebmlt3x, 
   click_table_row_column, 
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
-  bmltwf_admin, 
-  basic_options } from "./helpers/helper.js";
+  bmltwf_admin_wpsinglebmlt3x, 
+  basic_options_wpsinglebmlt3x } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
 
 fixture`e2e_test_fixture`
-  // .page(userVariables.admin_submissions_page)
+  // .page(userVariables.admin_submissions_page_wpsinglebmlt3x)
   .beforeEach(async (t) => {
-console.log("1");
-    await reset_bmlt(t);
-    console.log("2");
-    await bmlt_states_off(t);
-    console.log("3");
-    await auto_geocoding_on(t);
-    console.log("4");
-    await basic_options(t);
-    console.log("5");
-
-    await delete_submissions(t);
-    console.log("6");
-
-    await configure_service_bodies(t);
-    console.log("7");
-
+    await reset_bmlt3x(t);
+    await bmlt3x_states_off(t);
+    await bmlt3x_auto_geocoding_on(t);
+    await basic_options_wpsinglebmlt3x(t);
+    await delete_submissions_wpsinglebmlt3x(t);
+    await configure_service_bodies_wpsinglebmlt3x(t);
 
   });
 
-test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
+test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
   var meeting = {
     location_text: "the church",
     location_street: "105 avoca street",
@@ -69,7 +58,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     location_postal_code_1: "2032",
   };
 
-  await t.navigateTo(userVariables.formpage);
+  await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
 
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 
@@ -165,7 +154,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
 
   // new meeting = row 0
   var row = 0;
@@ -185,7 +174,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
 
   // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
+  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
 
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
@@ -216,8 +205,8 @@ test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .eql(meeting.virtual_meeting_link);
 });
 
-test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
-  await t.navigateTo(userVariables.formpage);
+test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
+  await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
@@ -260,7 +249,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
 
   // new meeting = row 0
   var row = 0;
@@ -280,7 +269,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
 
   // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
+  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
 
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
@@ -290,7 +279,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(ct.meeting_name.innerText).eql("virtualmeeting randwickupdate");
 });
 
-test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
+test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
   var meeting = {
     location_text: "the church",
     location_street: "105 avoca street",
@@ -300,9 +289,9 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
     location_postal_code_1: "2032",
   };
 
-  await auto_geocoding_off(t);
+  await bmlt3x_auto_geocoding_off(t);
 
-  await t.navigateTo(userVariables.formpage);
+  await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
 
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 
@@ -398,7 +387,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
 
   // new meeting = row 0
   var row = 0;
@@ -418,7 +407,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
 
   // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
+  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
 
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
@@ -449,13 +438,13 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
     .eql(meeting.virtual_meeting_link);
 });
 
-test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
+test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
 
   console.log("hi1");
-  await auto_geocoding_off(t);
+  await bmlt3x_auto_geocoding_off(t);
   console.log("hi2");
 
-  await t.navigateTo(userVariables.formpage);
+  await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
@@ -498,7 +487,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
 
   // new meeting = row 0
   var row = 0;
@@ -518,7 +507,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
 
   // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
+  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
 
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
