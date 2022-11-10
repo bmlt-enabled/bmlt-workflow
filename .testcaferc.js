@@ -21,9 +21,9 @@ const test_ip = execSync("aws ssm get-parameter --name bmltwf_test_hostip --prof
 // const siteurl_multisingle = "http://" + test_ip + ":8082";
 // const siteurl_multinetwork = "http://" + test_ip + ":8083";
 const siteurl_single = "http://" + test_ip + "/wordpresssingle";
-const siteurl_multisingle = "http://" + test_ip + "wordpressmultisingle";
-const siteurl_multinetwork = "http://" + test_ip + "wordpressmultinetwork";
-const siteurl_wpsinglebmlt3x = "http://" + test_ip + "wpsinglebmlt3x"
+const siteurl_multisingle = "http://" + test_ip + "/wordpressmultisingle";
+const siteurl_multinetwork = "http://" + test_ip + "/wordpressmultinetwork";
+const siteurl_wpsinglebmlt3x = "http://" + test_ip + "/wpsinglebmlt3x"
 
 // usernames and passwords
 const username_single = execSync("aws ssm get-parameter --name bmltwf_test_wpuser_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" });

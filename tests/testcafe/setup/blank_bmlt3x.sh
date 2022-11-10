@@ -16,5 +16,5 @@
 # You should have received a copy of the GNU General Public License
 # along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-docker exec 9f58018290fa /usr/bin/mysql -D rootserver -e "source /docker-entrypoint-initdb.d/sample-bmlt-schema.sql" -u rootserver --password=rootserver
+docker exec bmltdb /usr/bin/mysql -D rootserver -e "source /docker-entrypoint-initdb.d/sample-bmlt-schema.sql" -u rootserver --password=rootserver
 

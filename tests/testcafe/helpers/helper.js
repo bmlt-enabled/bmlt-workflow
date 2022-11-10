@@ -221,7 +221,7 @@ export async function configure_service_bodies_wpsinglebmlt3x(t) {
     await t.request(userVariables.blank_service_bodies_wpsinglebmlt3x);
   
     await t
-      .useRole(bmltwf_admin)
+      .useRole(bmltwf_admin_wpsinglebmlt3x)
       .navigateTo(userVariables.admin_service_bodies_page_wpsinglebmlt3x)
   
       .click(Selector("ul#select2-bmltwf_userlist_id_1-container").parent())
@@ -250,6 +250,24 @@ export async function basic_options() {
   await t
     .useRole(bmltwf_admin)
     .navigateTo(userVariables.admin_settings_page)
+    .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
+    .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
+
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_province_required_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_postcode_required_checkbox);
+
+  await t.click(ao.submit);
+  await ao.settings_updated();
+}
+
+export async function basic_options_wpsinglebmlt3x() {
+  await t
+    .useRole(bmltwf_admin_wpsinglebmlt3x)
+    .navigateTo(userVariables.admin_settings_page_wpsinglebmlt3x)
     .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
     .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
 
