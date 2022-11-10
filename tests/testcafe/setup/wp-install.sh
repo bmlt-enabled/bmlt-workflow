@@ -87,16 +87,6 @@ sed -i -e "/define( 'WP_DEBUG', false );/d" wp-config.php
 # Grab our Salt Keys
 sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa');/" wp-config.php
 
-
-# install our plugin
-cd /home/ssm-user/wordpress
-git clone https://github.com/bmlt-enabled/bmlt-workflow.git
-cd bmlt-workflow
-git switch $BRANCH
-sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" config.php
-cd ..
-sudo mv bmlt-workflow $sitelocalpath/wp-content/plugins
-
 # install crouton
 sudo /usr/local/bin/wp plugin --path=$sitelocalpath install crouton --allow-root
 sudo chown -R apache:apache $sitelocalpath
@@ -119,6 +109,14 @@ wp option update --path=$sitelocalpath --format=json bmlt_tabs_options <<EOF
 }
 EOF
 
+# install our plugin
+cd /home/ssm-user/wordpress
+git clone https://github.com/bmlt-enabled/bmlt-workflow.git
+cd bmlt-workflow
+git switch $BRANCH
+sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" config.php
+cd ..
+sudo mv bmlt-workflow $sitelocalpath/wp-content/plugins
 
 # activate plugin
 wp plugin activate --path=$sitelocalpath "bmlt-workflow"
@@ -186,6 +184,26 @@ sed -i -e "/define( 'WP_DEBUG', false );/d" wp-config.php
 # Grab our Salt Keys
 sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa');/" wp-config.php
 
+# install crouton (bmlt3x connection)
+wp plugin --path=$sitelocalpath install crouton
+wp plugin activate --path=$sitelocalpath "crouton"
+wp post create --path=$sitelocalpath --post_type=page --post_title='crouton' --post_content='[bmlt_tabs]' --post_status='publish' --post_name='crouton' --meta_input='{"_wp_page_template":"blank"}'
+wp option delete --path=$sitelocalpath bmlt_tabs_options
+wp option update --path=$sitelocalpath --format=json bmlt_tabs_options <<EOF
+{
+  "root_server": "http://${MYIP}:8080/main_server",
+  "service_body_1": "Southern Adirondack Mountain Miracles Area,1050,1046,ABCD Region",
+  "custom_query": "",
+  "custom_css": "",
+  "meeting_data_template": "{{#isTemporarilyClosed this}}\r\n    <div class='temporarilyClosed'><span class='glyphicon glyphicon-flag'></span> {{temporarilyClosed this}}</div>\r\n{{/isTemporarilyClosed}}\r\n<div class='meeting-name'>{{this.meeting_name}}</div>\r\n<div class='location-text'>{{this.location_text}}</div>\r\n<div class='meeting-address'>{{this.formatted_address}}</div>\r\n<div class='location-information'>{{this.formatted_location_info}}</div>\r\n{{#if this.virtual_meeting_additional_info}}\r\n    <div class='meeting-additional-info'>{{this.virtual_meeting_additional_info}}</div>\r\n{{/if}}",
+  "metadata_template": "{{#isVirtualOrHybrid this}}\r\n    {{#isHybrid this}}\r\n        <div class='meetsVirtually'><span class='glyphicon glyphicon-cloud-upload'></span> {{meetsHybrid this}}</div>\r\n    {{else}}\r\n        <div class='meetsVirtually'><span class='glyphicon glyphicon-cloud'></span> {{meetsVirtually this}}</div>\r\n    {{/isHybrid}}\r\n    {{#if this.virtual_meeting_link}}\r\n        <div><span class='glyphicon glyphicon-globe'></span> {{webLinkify this.virtual_meeting_link}}</div>\r\n        {{#if this.show_qrcode}}\r\n            <div class='qrcode'>{{qrCode this.virtual_meeting_link}}</div>\r\n        {{/if}}\r\n    {{/if}}\r\n    {{#if this.phone_meeting_number}}\r\n        <div><span class='glyphicon glyphicon-earphone'></span> {{phoneLinkify this.phone_meeting_number}}</div>\r\n        {{#if this.show_qrcode}}\r\n            <div class='qrcode'>{{qrCode this.phone_meeting_number}}</div>\r\n        {{/if}}\r\n    {{/if}}\r\n{{/isVirtualOrHybrid}}\r\n{{#isNotTemporarilyClosed this}}\r\n    {{#unless (hasFormats 'VM' this)}}\r\n        <div>\r\n            <a id='map-button' class='btn btn-primary btn-xs'\r\n                href='https://www.google.com/maps/search/?api=1&query={{this.latitude}},{{this.longitude}}&q={{this.latitude}},{{this.longitude}}'\r\n                target='_blank' rel='noopener noreferrer'>\r\n                <span class='glyphicon glyphicon-map-marker'></span> {{this.map_word}}</a>\r\n        </div>\r\n        <div class='geo hide'>{{this.latitude}},{{this.longitude}}</div>\r\n    {{/unless}}\r\n{{/isNotTemporarilyClosed}}",
+  "theme": "",
+  "recurse_service_bodies": "0",
+  "extra_meetings": [],
+  "extra_meetings_enabled": "0",
+  "google_api_key": ""
+}
+EOF
 
 # install our plugin
 cd /home/ssm-user/wordpress
@@ -209,7 +227,10 @@ wp post create --path=$sitelocalpath --post_type=page --post_title='testpage' --
 wp user create --path=$sitelocalpath $wp_submission_user aa123@a.com --user_pass=$wp_submission_pass
 wp user create --path=$sitelocalpath $wp_nopriv_user aa456@a.com --user_pass=$wp_nopriv_pass
 
+##
 ## MULTI SITE INSTALLER (single site test)
+##
+
 
 export mysqlhost=localhost
 export mysqldb=wpmultisingledb
