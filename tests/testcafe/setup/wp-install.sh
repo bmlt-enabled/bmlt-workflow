@@ -51,6 +51,20 @@ export sitelocalpath=/var/www/html/$sitename
 
 
 sudo rm -rf $sitelocalpath
+sudo mkdir $sitelocalpath
+sudo chown ssm-user:ssm-user $sitelocalpath
+$MYSQL -e "DROP DATABASE $mysqldb"
+# Setup DB & DB User
+$MYSQL -e "CREATE DATABASE IF NOT EXISTS $mysqldb; GRANT ALL ON $mysqldb.* TO '$mysqluser'@'$mysqlhost' IDENTIFIED BY '$mysqlpass'; FLUSH PRIVILEGES "
+
+sudo mkdir $sitelocalpath
+sudo chown ssm-user:ssm-user $sitelocalpath
+
+wp core download --path=$sitelocalpath
+wp config create --path=$sitelocalpath --dbname=$mysqldb --dbuser=$mysqluser --dbpass=$mysqlpass
+wp core install --url=$siteurl --title="hi" --admin_user=$wpuser --admin_password=$wppass --admin_email=$wpemail --path=$sitelocalpath
+
+
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
 $MYSQL -e "CREATE DATABASE IF NOT EXISTS $mysqldb; GRANT ALL ON $mysqldb.* TO '$mysqluser'@'$mysqlhost' IDENTIFIED BY '$mysqlpass'; FLUSH PRIVILEGES "
@@ -101,9 +115,32 @@ sudo mv bmlt-workflow $sitelocalpath/wp-content/plugins
 sudo chown -R apache:apache $sitelocalpath/wp-content/plugins/bmlt-workflow
 cd $sitelocalpath/wp-content/plugins/bmlt-workflow
 
+# install crouton
+sudo /usr/local/bin/wp plugin --path=$sitelocalpath install crouton --allow-root
+sudo chown -R apache:apache $sitelocalpath/wp-content/plugins/crouton
+wp plugin activate --path=$sitelocalpath "crouton"
+wp post create --path=$sitelocalpath --post_type=page --post_title='crouton' --post_content='[bmlt_tabs]' --post_status='publish' --post_name='crouton' --meta_input='{"_wp_page_template":"blank"}'
+wp option delete --path=$sitelocalpath bmlt_tabs_options
+wp option update --path=$sitelocalpath --format=json bmlt_tabs_options <<EOF
+{
+  "root_server": "http://${MYIP}/blank_bmlt/main_server",
+  "service_body_1": "a-level1,2,1,toplevel",
+  "custom_query": "",
+  "custom_css": "",
+  "meeting_data_template": "{{#isTemporarilyClosed this}}\r\n    <div class='temporarilyClosed'><span class='glyphicon glyphicon-flag'></span> {{temporarilyClosed this}}</div>\r\n{{/isTemporarilyClosed}}\r\n<div class='meeting-name'>{{this.meeting_name}}</div>\r\n<div class='location-text'>{{this.location_text}}</div>\r\n<div class='meeting-address'>{{this.formatted_address}}</div>\r\n<div class='location-information'>{{this.formatted_location_info}}</div>\r\n{{#if this.virtual_meeting_additional_info}}\r\n    <div class='meeting-additional-info'>{{this.virtual_meeting_additional_info}}</div>\r\n{{/if}}",
+  "metadata_template": "{{#isVirtualOrHybrid this}}\r\n    {{#isHybrid this}}\r\n        <div class='meetsVirtually'><span class='glyphicon glyphicon-cloud-upload'></span> {{meetsHybrid this}}</div>\r\n    {{else}}\r\n        <div class='meetsVirtually'><span class='glyphicon glyphicon-cloud'></span> {{meetsVirtually this}}</div>\r\n    {{/isHybrid}}\r\n    {{#if this.virtual_meeting_link}}\r\n        <div><span class='glyphicon glyphicon-globe'></span> {{webLinkify this.virtual_meeting_link}}</div>\r\n        {{#if this.show_qrcode}}\r\n            <div class='qrcode'>{{qrCode this.virtual_meeting_link}}</div>\r\n        {{/if}}\r\n    {{/if}}\r\n    {{#if this.phone_meeting_number}}\r\n        <div><span class='glyphicon glyphicon-earphone'></span> {{phoneLinkify this.phone_meeting_number}}</div>\r\n        {{#if this.show_qrcode}}\r\n            <div class='qrcode'>{{qrCode this.phone_meeting_number}}</div>\r\n        {{/if}}\r\n    {{/if}}\r\n{{/isVirtualOrHybrid}}\r\n{{#isNotTemporarilyClosed this}}\r\n    {{#unless (hasFormats 'VM' this)}}\r\n        <div>\r\n            <a id='map-button' class='btn btn-primary btn-xs'\r\n                href='https://www.google.com/maps/search/?api=1&query={{this.latitude}},{{this.longitude}}&q={{this.latitude}},{{this.longitude}}'\r\n                target='_blank' rel='noopener noreferrer'>\r\n                <span class='glyphicon glyphicon-map-marker'></span> {{this.map_word}}</a>\r\n        </div>\r\n        <div class='geo hide'>{{this.latitude}},{{this.longitude}}</div>\r\n    {{/unless}}\r\n{{/isNotTemporarilyClosed}}",
+  "theme": "",
+  "recurse_service_bodies": "0",
+  "extra_meetings": [],
+  "extra_meetings_enabled": "0",
+  "google_api_key": ""
+}
+EOF
+
+
 # activate plugin
 wp plugin activate --path=$sitelocalpath "bmlt-workflow"
-wp option --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'$MYIP'/blank_bmlt/main_server/'
+wp option --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'$MYIP':8080/main_server/'
 wp option --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
 wp option --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
 wp option --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
@@ -209,6 +246,8 @@ export siteurl=http://$MYIP/$sitename/
 export sitelocalpath=/var/www/html/$sitename
 
 sudo rm -rf $sitelocalpath
+sudo mkdir $sitelocalpath
+sudo chown ssm-user:ssm-user $sitelocalpath
 
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
@@ -314,6 +353,8 @@ export siteurl=http://$MYIP/$sitename/
 export sitelocalpath=/var/www/html/$sitename
 
 sudo rm -rf $sitelocalpath
+sudo mkdir $sitelocalpath
+sudo chown ssm-user:ssm-user $sitelocalpath
 
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User

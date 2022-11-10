@@ -85,18 +85,26 @@ export async function click_dialog_button_by_index(element, index) {
 }
 
 export async function reset_bmlt(t) {
-  // reset bmlt to reasonable state
+  console.log("resetting bmlt");
   await t.request(userVariables.blank_bmlt);
+  await t.wait(5000);
+  console.log("reset");
+
 }
 
 export async function auto_geocoding_on(t) {
-  // reset bmlt to reasonable state
+console.log("turning geocode on");
   await t.request(userVariables.auto_geocoding_on);
+  await t.wait(5000);
+  console.log("geocode on");
 }
 
 export async function auto_geocoding_off(t) {
-  // reset bmlt to reasonable state
+  console.log("turning geocode off");
   await t.request(userVariables.auto_geocoding_off);
+  await t.wait(5000);
+  console.log("geocode off");
+
 }
 
 export async function insert_submissions() {
@@ -253,12 +261,19 @@ export async function basic_options_multinetwork() {
 
 export async function bmlt_states_off(t) {
   // disable state dropdown
+  console.log("turning states off");
   await t.request(userVariables.bmlt_states_off);
+  await t.wait(5000);
+  console.log("states off");
+
 }
 
 export async function bmlt_states_on(t) {
   // enable state dropdown
+  console.log("turning states on");
   await t.request(userVariables.bmlt_states_on);
+  await t.wait(5000);
+  console.log("states on");
 }
 
 export async function delete_submissions(t) {
