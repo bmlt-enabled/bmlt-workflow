@@ -110,6 +110,6 @@ module.exports = {
     auto_geocoding_on: "http://" + test_ip + "/github/auto_geocoding_on.php",
     auto_geocoding_off: "http://" + test_ip + "/github/auto_geocoding_off.php",
 
-    crouton_page: "http://" + test_ip + "/flop/21-2/",
+    crouton_page: siteurl_single+"/index.php/crouton/",
   },
 };

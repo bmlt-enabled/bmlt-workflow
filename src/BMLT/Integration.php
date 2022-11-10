@@ -413,7 +413,7 @@ class Integration
         return $ret;
     }
 
-    private function post($url, $cookies = null, $postargs)
+    private function post($url, $postargs, $cookies = null)
     {
         
         $this->debug_log("POSTING URL = " . $url);
@@ -434,7 +434,7 @@ class Integration
         return $ret;
     }
 
-    private function postsemantic($url, $cookies = null, $postargs)
+    private function postsemantic($url, $postargs,$cookies = null)
     {
         
 
@@ -480,7 +480,7 @@ class Integration
         if (!(is_array($postargs))) {
             return $this->bmltwf_rest_error("Missing post parameters", "bmltwf_bmlt_integration");
         }
-        return $this->post(get_option('bmltwf_bmlt_server_address') . $url, $this->cookies, $postargs);
+        return $this->post(get_option('bmltwf_bmlt_server_address') . $url, $postargs, $this->cookies);
     }
 
     /**
@@ -495,7 +495,7 @@ class Integration
         if (!(is_array($postargs))) {
             return $this->bmltwf_rest_error("Missing post parameters", "bmltwf_bmlt_integration");
         }
-        $val = $this->post(get_option('bmltwf_bmlt_server_address') . $url, null, $postargs);
+        $val = $this->post(get_option('bmltwf_bmlt_server_address') . $url, $postargs, null);
         // $this->debug_log(($val));
         return $val;
     }
@@ -520,6 +520,6 @@ class Integration
             return $this->bmltwf_rest_error("Missing post parameters", "bmltwf_bmlt_integration");
         }
 
-        return $this->postsemantic(get_option('bmltwf_bmlt_server_address') . $url, $this->cookies, $postargs);
+        return $this->postsemantic(get_option('bmltwf_bmlt_server_address') . $url, $postargs, $this->cookies);
     }
 }

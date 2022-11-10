@@ -20,14 +20,14 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.0.9
+ * Version: 1.0.10
  * Requires at least: 5.2
- * Tested up to: 6.0
+ * Tested up to: 6.1
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
 
-define('BMLTWF_PLUGIN_VERSION', '1.0.9');
+define('BMLTWF_PLUGIN_VERSION', '1.0.10');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -1015,9 +1015,9 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<table><thead><tr><th>BMLT Field Name</th><th>Show on form</th><th>Required Field</th><th>Change displayname to:</th></tr></thead><tbody>';
             $this->do_required_field('bmltwf_required_meeting_formats', 'Meeting Formats');
             $this->do_optional_field('bmltwf_optional_location_nation', 'Nation');
-            $this->do_optional_field('bmltwf_optional_location_province', 'Province');
-            $this->do_optional_field('bmltwf_optional_location_sub_province', 'Sub Province');
-            $this->do_optional_field('bmltwf_optional_postcode', 'Post Code');
+            $this->do_optional_field('bmltwf_optional_location_province', 'State/Province');
+            $this->do_optional_field('bmltwf_optional_location_sub_province', 'County/Sub-Province');
+            $this->do_optional_field('bmltwf_optional_postcode', 'Zip/Postal Code');
             echo '</tbody></table>';
             
         }
