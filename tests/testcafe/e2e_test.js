@@ -40,15 +40,21 @@ import { userVariables } from "../../.testcaferc";
 fixture`e2e_test_fixture`
   // .page(userVariables.admin_submissions_page)
   .beforeEach(async (t) => {
-
+console.log("1");
     await reset_bmlt(t);
+    console.log("2");
     await bmlt_states_off(t);
+    console.log("3");
     await auto_geocoding_on(t);
+    console.log("4");
     await basic_options(t);
+    console.log("5");
 
     await delete_submissions(t);
+    console.log("6");
 
     await configure_service_bodies(t);
+    console.log("7");
 
 
   });
@@ -445,7 +451,9 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
 
 test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
 
+  console.log("hi1");
   await auto_geocoding_off(t);
+  console.log("hi2");
 
   await t.navigateTo(userVariables.formpage);
 

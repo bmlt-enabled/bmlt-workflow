@@ -592,8 +592,10 @@ test("Change_Nothing_Check_Error", async (t) => {
 test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
 
   await bmlt_states_on(t);
-
+  
   await t.navigateTo(userVariables.formpage);
+  // console.log(userVariables.formpage);
+  // await t.debug();
   await select_dropdown_by_value(uf.update_reason, "reason_change");
   await t.expect(uf.update_reason.value).eql("reason_change");
 
