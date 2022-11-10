@@ -57,21 +57,6 @@ $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
 $MYSQL -e "CREATE DATABASE IF NOT EXISTS $mysqldb; GRANT ALL ON $mysqldb.* TO '$mysqluser'@'$mysqlhost' IDENTIFIED BY '$mysqlpass'; FLUSH PRIVILEGES "
 
-sudo mkdir $sitelocalpath
-sudo chown ssm-user:ssm-user $sitelocalpath
-
-wp core download --path=$sitelocalpath
-wp config create --path=$sitelocalpath --dbname=$mysqldb --dbuser=$mysqluser --dbpass=$mysqlpass
-wp core install --url=$siteurl --title="hi" --admin_user=$wpuser --admin_password=$wppass --admin_email=$wpemail --path=$sitelocalpath
-
-
-$MYSQL -e "DROP DATABASE $mysqldb"
-# Setup DB & DB User
-$MYSQL -e "CREATE DATABASE IF NOT EXISTS $mysqldb; GRANT ALL ON $mysqldb.* TO '$mysqluser'@'$mysqlhost' IDENTIFIED BY '$mysqlpass'; FLUSH PRIVILEGES "
-
-sudo mkdir $sitelocalpath
-sudo chown ssm-user:ssm-user $sitelocalpath
-
 wp core download --path=$sitelocalpath
 wp config create --path=$sitelocalpath --dbname=$mysqldb --dbuser=$mysqluser --dbpass=$mysqlpass
 wp core install --url=$siteurl --title="hi" --admin_user=$wpuser --admin_password=$wppass --admin_email=$wpemail --path=$sitelocalpath
@@ -102,7 +87,6 @@ sed -i -e "/define( 'WP_DEBUG', false );/d" wp-config.php
 # Grab our Salt Keys
 sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa');/" wp-config.php
 
-sudo chown -R apache:apache $sitelocalpath
 
 # install our plugin
 cd /home/ssm-user/wordpress
@@ -112,12 +96,10 @@ git switch $BRANCH
 sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" config.php
 cd ..
 sudo mv bmlt-workflow $sitelocalpath/wp-content/plugins
-sudo chown -R apache:apache $sitelocalpath/wp-content/plugins/bmlt-workflow
-cd $sitelocalpath/wp-content/plugins/bmlt-workflow
 
 # install crouton
 sudo /usr/local/bin/wp plugin --path=$sitelocalpath install crouton --allow-root
-sudo chown -R apache:apache $sitelocalpath/wp-content/plugins/crouton
+sudo chown -R apache:apache $sitelocalpath
 wp plugin activate --path=$sitelocalpath "crouton"
 wp post create --path=$sitelocalpath --post_type=page --post_title='crouton' --post_content='[bmlt_tabs]' --post_status='publish' --post_name='crouton' --meta_input='{"_wp_page_template":"blank"}'
 wp option delete --path=$sitelocalpath bmlt_tabs_options
@@ -166,11 +148,11 @@ export sitename=wpsinglebmlt3x
 export siteurl=http://$MYIP/$sitename/
 export sitelocalpath=/var/www/html/$sitename
 
-sudo rm -rf $sitelocalpath
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
 $MYSQL -e "CREATE DATABASE IF NOT EXISTS $mysqldb; GRANT ALL ON $mysqldb.* TO '$mysqluser'@'$mysqlhost' IDENTIFIED BY '$mysqlpass'; FLUSH PRIVILEGES "
 
+sudo rm -rf $sitelocalpath
 sudo mkdir $sitelocalpath
 sudo chown ssm-user:ssm-user $sitelocalpath
 
@@ -204,7 +186,6 @@ sed -i -e "/define( 'WP_DEBUG', false );/d" wp-config.php
 # Grab our Salt Keys
 sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa');/" wp-config.php
 
-sudo chown -R apache:apache $sitelocalpath
 
 # install our plugin
 cd /home/ssm-user/wordpress
@@ -214,8 +195,7 @@ git switch $BRANCH
 sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" config.php
 cd ..
 sudo mv bmlt-workflow $sitelocalpath/wp-content/plugins
-sudo chown -R apache:apache $sitelocalpath/wp-content/plugins/bmlt-workflow
-cd $sitelocalpath/wp-content/plugins/bmlt-workflow
+sudo chown -R apache:apache $sitelocalpath
 
 # activate plugin
 wp plugin activate --path=$sitelocalpath "bmlt-workflow"
@@ -252,9 +232,6 @@ sudo chown ssm-user:ssm-user $sitelocalpath
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
 $MYSQL -e "CREATE DATABASE IF NOT EXISTS $mysqldb; GRANT ALL ON $mysqldb.* TO '$mysqluser'@'$mysqlhost' IDENTIFIED BY '$mysqlpass'; FLUSH PRIVILEGES "
-
-sudo mkdir $sitelocalpath
-sudo chown ssm-user:ssm-user $sitelocalpath
 
 wp core download --path=$sitelocalpath
 wp config create --path=$sitelocalpath --dbname=$mysqldb --dbuser=$mysqluser --dbpass=$mysqlpass
@@ -306,7 +283,6 @@ EOF
 # Grab our Salt Keys
 sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa');/" wp-config.php
 
-sudo chown -R apache:apache $sitelocalpath
 
 # install our plugin
 cd /home/ssm-user/wordpress
@@ -316,8 +292,7 @@ git switch $BRANCH
 sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" config.php
 cd ..
 sudo mv bmlt-workflow $sitelocalpath/wp-content/plugins
-sudo chown -R apache:apache $sitelocalpath/wp-content/plugins/bmlt-workflow
-cd $sitelocalpath/wp-content/plugins/bmlt-workflow
+sudo chown -R apache:apache $sitelocalpath
 
 wp --path=$sitelocalpath site create --slug=plugin
 wp --path=$sitelocalpath site create --slug=noplugin
@@ -359,9 +334,6 @@ sudo chown ssm-user:ssm-user $sitelocalpath
 $MYSQL -e "DROP DATABASE $mysqldb"
 # Setup DB & DB User
 $MYSQL -e "CREATE DATABASE IF NOT EXISTS $mysqldb; GRANT ALL ON $mysqldb.* TO '$mysqluser'@'$mysqlhost' IDENTIFIED BY '$mysqlpass'; FLUSH PRIVILEGES "
-
-sudo mkdir $sitelocalpath
-sudo chown ssm-user:ssm-user $sitelocalpath
 
 wp core download --path=$sitelocalpath
 wp config create --path=$sitelocalpath --dbname=$mysqldb --dbuser=$mysqluser --dbpass=$mysqlpass
@@ -411,7 +383,6 @@ EOF
 # Grab our Salt Keys
 sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa');/" wp-config.php
 
-sudo chown -R apache:apache $sitelocalpath
 
 # install our plugin
 cd /home/ssm-user/wordpress
@@ -421,8 +392,7 @@ git switch $BRANCH
 sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" config.php
 cd ..
 sudo mv bmlt-workflow $sitelocalpath/wp-content/plugins
-sudo chown -R apache:apache $sitelocalpath/wp-content/plugins/bmlt-workflow
-cd $sitelocalpath/wp-content/plugins/bmlt-workflow
+sudo chown -R apache:apache $sitelocalpath
 
 wp --path=$sitelocalpath site create --slug=plugin
 wp --path=$sitelocalpath site create --slug=plugin2
