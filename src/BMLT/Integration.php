@@ -46,24 +46,17 @@ class Integration
         } else {
             $this->BMLTWF_WP_Options = $wpoptionssstub;
         }
-        if (empty($root_server_version))
-        {
-            $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address'));
+        if (empty($root_server_version)) {
+            $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address'), false);
         } else {
             $this->bmlt_root_server_version = $root_server_version;
         }
-
     }
 
     private function bmltwf_rest_error($message, $code)
     {
         return new \WP_Error('bmltwf_error', $message, array('status' => $code));
     }
-
-    // public function bmltwf_set_server_version($version)
-    // {
-    //     $this->bmlt_root_server_version = $version;
-    // }
 
     // accepts raw string or array
     private function bmltwf_rest_success($message)
@@ -85,23 +78,13 @@ class Integration
         return new \WP_Error('bmltwf_error', $message, $data);
     }
 
-    private function updateRootServerVersion()
-    {
-        if (empty($root_server_version))
-        {
-            $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address'));
-        } else {
-            $this->bmlt_root_server_version = $root_server_version;
-        }
-    }
-
     private function convertv2meetingtov3($meeting)
     {
         $fromto = array();
-        $fromto['service_body_bigint']='serviceBodyId';
-        $fromto['venue_type']='venueType';
-        $fromto['weekday_tinyint']='day';
-        $fromto['start_time']='startTime';
+        $fromto['service_body_bigint'] = 'serviceBodyId';
+        $fromto['venue_type'] = 'venueType';
+        $fromto['weekday_tinyint'] = 'day';
+        $fromto['start_time'] = 'startTime';
 
         // dont need this any more
         unset($meeting['id_bigint']);
@@ -109,26 +92,23 @@ class Integration
         // change all our fields over
         foreach ($fromto as $from => $to) {
             $here = $meeting[$from] ?? false;
-            if($here)
-            {
-                $meeting[$to]=$meeting[$from];
+            if ($here) {
+                $meeting[$to] = $meeting[$from];
                 unset($meeting[$from]);
             }
         }
 
         // special cases
         $here = $meeting['duration_time'] ?? false;
-        if($here)
-        {
-            $time = explode(':',$meeting['duration_time']);
+        if ($here) {
+            $time = explode(':', $meeting['duration_time']);
             $meeting['duration'] = $time[0] . ":" . $time[1];
             unset($meeting['duration_time']);
         }
 
         $here = $meeting['format_shared_id_list'] ?? false;
-        if($here)
-        {
-            $meeting['formatIds'] = explode(',',$meeting['format_shared_id_list']);
+        if ($here) {
+            $meeting['formatIds'] = explode(',', $meeting['format_shared_id_list']);
             unset($meeting['format_shared_id_list']);
         }
         return $meeting;
@@ -161,34 +141,36 @@ class Integration
         }
     }
 
-    public function bmltwf_get_remote_server_version($server)
+    public function bmltwf_get_remote_server_version($server, $cache = true)
     {
-        $version = get_option('bmltwf_bmlt_server_version');
-        if ($version) {
-            return $version;
-        } else {
-            $url = $server . "client_interface/serverInfo.xml";
-            $this->debug_log("url = " . $url);
-            $headers = array(
-                "Accept: */*",
-            );
-
-            $resp = wp_safe_remote_get($url, array('headers' => $headers));
-            $this->debug_log("wp_safe_remote_get RETURNS");
-            $this->debug_log(($resp));
-
-            libxml_use_internal_errors(true);
-            $xml = simplexml_load_string(wp_remote_retrieve_body($resp));
-            if ($xml === false) {
-                return false;
-            } else {
-                if (!($xml->serverVersion->readableString instanceof \SimpleXMLElement)) {
-                    return false;
-                }
-                $version = $xml->serverVersion->readableString->__toString();
-                update_option('bmltwf_bmlt_server_version', $version);
+        if ($cache) {
+            $version = get_option('bmltwf_bmlt_server_version');
+            if ($version) {
                 return $version;
             }
+        }
+        $url = $server . "client_interface/serverInfo.xml";
+        $this->debug_log("url = " . $url);
+        $headers = array(
+            "Accept: */*",
+        );
+
+        $resp = wp_safe_remote_get($url, array('headers' => $headers));
+        $this->debug_log("wp_safe_remote_get RETURNS");
+        $this->debug_log(($resp));
+
+        libxml_use_internal_errors(true);
+        $xml = simplexml_load_string(wp_remote_retrieve_body($resp));
+        if ($xml === false) {
+            return false;
+        } else {
+            if (!($xml->serverVersion->readableString instanceof \SimpleXMLElement)) {
+                return false;
+            }
+            $version = $xml->serverVersion->readableString->__toString();
+            update_option('bmltwf_bmlt_server_version', $version);
+            $this->bmlt_root_server_version = $version;
+            return $version;
         }
     }
 
@@ -233,15 +215,11 @@ class Integration
 
     public function testServerAndAuth($username, $password, $server)
     {
-        $rsv = $this->bmltwf_get_remote_server_version($server);
-        if (version_compare($rsv, "3.0.0", "lt")) 
-        {
+        $rsv = $this->bmltwf_get_remote_server_version($server, false);
+        if (version_compare($rsv, "3.0.0", "lt")) {
             $ret = $this->testServerAndAuthv2($username, $password, $server);
-        }
-        else
-        {
+        } else {
             $ret = $this->testServerAndAuthv3($username, $password, $server);
-
         }
 
         return $ret;
@@ -300,12 +278,9 @@ class Integration
 
     public function updateMeeting($change)
     {
-        if($this->is_v3_server())
-        {
+        if ($this->is_v3_server()) {
             return $this->updateMeetingv3($change);
-        }
-        else
-        {
+        } else {
             return $this->updateMeetingv2($change);
         }
     }
@@ -358,8 +333,7 @@ class Integration
 
         $this->debug_log("inside updateMeetingv3 auth");
 
-        if (!$meeting_id)
-        {
+        if (!$meeting_id) {
             return new \WP_Error('bmltwf', 'updateMeetingv3: No meeting ID present');
         }
 
@@ -377,21 +351,17 @@ class Integration
         $this->debug_log($response);
 
         if (\wp_remote_retrieve_response_code($response) != 204) {
-            return new \WP_Error('bmltwf',\wp_remote_retrieve_response_message($response)); 
+            return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
         }
 
         return true;
-
     }
 
     public function getServiceBodies()
     {
-        if($this->is_v3_server())
-        {
+        if ($this->is_v3_server()) {
             return $this->getServiceBodiesv3();
-        }
-        else
-        {
+        } else {
             return $this->getServiceBodiesv2();
         }
     }
@@ -472,12 +442,11 @@ class Integration
         $this->debug_log(\wp_remote_retrieve_body($response));
 
         if (\wp_remote_retrieve_response_code($response) != 200) {
-            return new \WP_Error('bmltwf',\wp_remote_retrieve_response_message($response)); 
+            return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
         }
 
         $response = json_decode(\wp_remote_retrieve_body($response), 1);
-        foreach($response as $key => $sb)
-        {
+        foreach ($response as $key => $sb) {
             $sblist[$sb['id']] = array('name' => $sb['name'], 'description' => $sb['description']);
         }
         return $sblist;
@@ -485,12 +454,9 @@ class Integration
 
     public function deleteMeeting($meeting_id)
     {
-        if($this->is_v3_server())
-        {
+        if ($this->is_v3_server()) {
             return $this->deleteMeetingv3($meeting_id);
-        }
-        else
-        {
+        } else {
             return $this->deleteMeetingv2($meeting_id);
         }
     }
@@ -526,7 +492,7 @@ class Integration
             return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
         }
         return true;
-}
+    }
 
     private function deleteMeetingv3($meeting_id)
     {
@@ -539,12 +505,12 @@ class Integration
             }
         }
 
-        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/'.$meeting_id;
+        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $meeting_id;
         $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), 'DELETE');
-        $response = \wp_safe_remote_request( $url, $args );
+        $response = \wp_safe_remote_request($url, $args);
 
         if (\wp_remote_retrieve_response_code($response) != 204) {
-            return new \WP_Error('bmltwf',\wp_remote_retrieve_response_message($response)); 
+            return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
         }
 
         return true;
@@ -646,7 +612,7 @@ class Integration
     public function getMeetingStates()
     {
         // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address').'client_interface/json/?switcher=GetServerInfo');
+        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
 
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
@@ -667,7 +633,7 @@ class Integration
      */
     public function getMeetingCounties()
     {
-        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address').'client_interface/json/?switcher=GetServerInfo');
+        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
         // $formatarr = json_decode(\wp_remote_retrieve_body($ret), 1);
 
         // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
@@ -718,12 +684,9 @@ class Integration
 
     public function createMeeting($meeting)
     {
-        if($this->is_v3_server())
-        {
+        if ($this->is_v3_server()) {
             return $this->createMeetingv3($meeting);
-        }
-        else
-        {
+        } else {
             return $this->createMeetingv2($meeting);
         }
     }
@@ -755,11 +718,10 @@ class Integration
         $this->debug_log($response);
 
         if (\wp_remote_retrieve_response_code($response) != 204) {
-            return new \WP_Error('bmltwf',\wp_remote_retrieve_response_message($response)); 
+            return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
         }
 
         return true;
-
     }
 
     private function createMeetingv2($meeting)
@@ -786,12 +748,9 @@ class Integration
 
     public function isAutoGeocodingEnabled()
     {
-        if($this->is_v3_server())
-        {
+        if ($this->is_v3_server()) {
             return $this->isAutoGeocodingEnabledv3();
-        }
-        else
-        {
+        } else {
             return $this->isAutoGeocodingEnabledv2();
         }
     }
@@ -799,7 +758,7 @@ class Integration
     private function isAutoGeocodingEnabledv3()
     {
         // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address').'client_interface/json/?switcher=GetServerInfo');
+        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
@@ -807,7 +766,7 @@ class Integration
         $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
         if ((!empty($arr['auto_geocoding_enabled']))) {
 
-            return $arr['auto_geocoding_enabled']==="true"?true:false;
+            return $arr['auto_geocoding_enabled'] === "true" ? true : false;
         }
         return false;
     }
@@ -846,7 +805,7 @@ class Integration
 
     public function getDefaultLatLong()
     {
-        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address').'client_interface/json/?switcher=GetServerInfo');
+        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
 
         // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
@@ -946,7 +905,7 @@ class Integration
                 $response_code = \wp_remote_retrieve_response_code($response);
 
                 if ($response_code != 200) {
-                    return new \WP_Error('bmltwf',\wp_remote_retrieve_response_message($response)); 
+                    return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
                 }
 
                 $auth_details = json_decode(wp_remote_retrieve_body($response), true);
@@ -1003,8 +962,7 @@ class Integration
             'cookies' => isset($cookies) ? $cookies : null,
             'body' => isset($body) ? $body : null
         );
-        if($method)
-        {
+        if ($method) {
             $args['method'] = $method;
         }
 
@@ -1076,7 +1034,7 @@ class Integration
         }
     }
 
-    private function postsemantic($url, $postargs,$cookies = null)
+    private function postsemantic($url, $postargs, $cookies = null)
     {
 
 
