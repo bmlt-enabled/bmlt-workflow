@@ -373,11 +373,11 @@ class Integration
         $response = $this->getServiceBodiesPermissionv2();
 
         if (is_wp_error($response)) {
-            return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
+            return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
 
         if (empty($arr['service_body'])) {
-            return $this->handlerCore->bmltwf_rest_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);
+            return $this->bmltwf_integration_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);
         }
 
         $arr = $response;
@@ -400,7 +400,7 @@ class Integration
 
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServiceBodies', $req);
         if (is_wp_error($response)) {
-            return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
+            return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
 
         $arr = json_decode(wp_remote_retrieve_body($response), 1);
@@ -475,7 +475,7 @@ class Integration
         $response = $this->postAuthenticatedRootServerRequest('', $changearr);
 
         if (is_wp_error($response)) {
-            return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
+            return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
 
         $rep = str_replace("'", '"', $response);
@@ -488,10 +488,10 @@ class Integration
         $this->debug_log(($arr));
 
         if ((isset($arr['success'])) && ($arr['success'] != 1)) {
-            return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
+            return $this->bmltwf_integration_error('BMLT Communication Error - Meeting deletion failed', 500);
         }
         if ((!empty($arr['report'])) && ($arr['report'] != $meeting_id)) {
-            return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
+            return $this->bmltwf_integration_error('BMLT Communication Error - Meeting deletion failed', 500);
         }
         return true;
     }
@@ -525,7 +525,7 @@ class Integration
 
         $response = $this->postAuthenticatedRootServerRequest('local_server/server_admin/json.php', $req);
         if (is_wp_error($response)) {
-            return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
+            return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
 
         $arr = json_decode(wp_remote_retrieve_body($response), 1);
@@ -743,7 +743,7 @@ class Integration
         $this->debug_log("posted change");
 
         if (is_wp_error($response)) {
-            return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
+            return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
         return true;
     }
