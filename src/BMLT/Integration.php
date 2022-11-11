@@ -370,9 +370,9 @@ class Integration
 
     private function getServiceBodiesv2()
     {
-        $response = $this->getServiceBodiesPermissionv2();
+        $arr = $this->getServiceBodiesPermissionv2();
 
-        if (is_wp_error($response)) {
+        if (is_wp_error($arr)) {
             return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
 
@@ -380,7 +380,6 @@ class Integration
             return $this->bmltwf_integration_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);
         }
 
-        $arr = $response;
         // create an array of the service bodies that we are able to see
         $editable = array();
         foreach ($arr['service_body'] as $key => $sb) {
