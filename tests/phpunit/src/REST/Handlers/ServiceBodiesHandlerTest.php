@@ -161,31 +161,39 @@ Line: $errorLine
         ->shouldReceive('prepare')->andreturn(array("1","2"))
         ->shouldReceive('query')->andreturn(array("1","2"));
 
-        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
-        /** @var Mockery::mock $BMLTWF_WP_Options test */
-        Functions\when('\get_option')->justReturn("success");
+        // $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+        // /** @var Mockery::mock $BMLTWF_WP_Options test */
+        // Functions\when('\get_option')->justReturn("success");
 
-        Functions\expect('wp_remote_retrieve_body')->twice()->andReturn(
-            '{"service_body":[{"id":1,"name":"toplevel","permissions":2},{"id":2,"name":"a-level1","permissions":3},{"id":3,"name":"b-level1","permissions":2}]}',
-            '[{"id":"1","parent_id":"0","name":"toplevel","description":"","type":"AS"},{"id":"2","parent_id":"1","name":"a-level1","description":"this is the description for a-level1","type":"AS"},{"id":"3","parent_id":"1","name":"b-level1","description":"this is the description for b-level1","type":"AS"},{"id":"4","parent_id":"0","name":"test-no-permissions","description":"","type":"WS"}]'
-        );
+        // Functions\expect('wp_remote_retrieve_body')->twice()->andReturn(
+        //     '{"service_body":[{"id":1,"name":"toplevel","permissions":2},{"id":2,"name":"a-level1","permissions":3},{"id":3,"name":"b-level1","permissions":2}]}',
+        //     '[{"id":"1","parent_id":"0","name":"toplevel","description":"","type":"AS"},{"id":"2","parent_id":"1","name":"a-level1","description":"this is the description for a-level1","type":"AS"},{"id":"3","parent_id":"1","name":"b-level1","description":"this is the description for b-level1","type":"AS"},{"id":"4","parent_id":"0","name":"test-no-permissions","description":"","type":"WS"}]'
+        // );
 
         $Intstub = \Mockery::mock('Integration');
         /** @var Mockery::mock $Intstub test */
-        $bodies = array('body'=>'');
-        $Intstub->shouldReceive('postAuthenticatedRootServerRequest')->andReturn($bodies);
-
+        // $bodies = array('body'=>'');
         $sblist = array('body'=>'{"service_body":[{"id":1,"name":"toplevel","type":"AS"},"service_body_type":"Area Service Committee","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}},"service_bodies":{"service_body":[{"id":2,"name":"a-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","contact_email":"a-level1@a.com","editors":{"service_body_editors":{"editor":[{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"},{"id":3,"admin_type":"direct","admin_name":"sba"}]}},{"id":3,"name":"b-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"direct","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}}}]}},{"id":4,"name":"test-no-permissions","type":"WS"},"service_body_type":"World Service Conference","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"}}}]}');
         // $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
+        // $Intstub->shouldReceive('postAuthenticatedRootServerRequest')->andReturn($bodies)
+        $Intstub->shouldReceive('getServiceBodies')->andReturn($sblist);
 
-        $rest = new ServiceBodiesHandler($Intstub, $BMLTWF_WP_Options);
+        $HandlerCoreStub = \Mockery::mock('HandlerCore');
+        $success = new \WP_REST_Response();
+        $success->set_data($sblist);
+        $success->set_status(200);
+
+        /** @var Mockery::mock $Intstub test */
+        $HandlerCoreStub->shouldReceive('bmltwf_rest_success')->andReturn($success);
+        // $rest = new ServiceBodiesHandler($Intstub, $BMLTWF_WP_Options);
+        $rest = new ServiceBodiesHandler($Intstub, null, $HandlerCoreStub);
 
         $response = $rest->get_service_bodies_handler($request);
 
         // $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
-        // $this->debug_log(($response));
+        $this->debug_log(($response->get_data()));
         $this->assertEquals($response->get_data()['2']['name'], 'a-level1');
     }
 
@@ -224,10 +232,11 @@ Line: $errorLine
         $Intstub = \Mockery::mock('Integration');
         /** @var Mockery::mock $Intstub test */
         $bodies = array('body'=>'');
-        $Intstub->shouldReceive('postAuthenticatedRootServerRequest')->andReturn($bodies);
-
         $sblist = array('body'=>'{"service_body":[{"id":1,"name":"toplevel","type":"AS"},"service_body_type":"Area Service Committee","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}},"service_bodies":{"service_body":[{"id":2,"name":"a-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","contact_email":"a-level1@a.com","editors":{"service_body_editors":{"editor":[{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"},{"id":3,"admin_type":"direct","admin_name":"sba"}]}},{"id":3,"name":"b-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"direct","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}}}]}},{"id":4,"name":"test-no-permissions","type":"WS"},"service_body_type":"World Service Conference","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"}}}]}');
         // $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
+
+        $Intstub->shouldReceive('postAuthenticatedRootServerRequest')->andReturn($bodies)
+        ->shouldReceive('getServiceBodies')->andReturn($sblist);
 
         $rest = new ServiceBodiesHandler($Intstub, $BMLTWF_WP_Options);
 
@@ -276,10 +285,9 @@ Line: $errorLine
         $Intstub = \Mockery::mock('Integration');
         /** @var Mockery::mock $Intstub test */
         $bodies = array('body'=>'');
-        $Intstub->shouldReceive('postAuthenticatedRootServerRequest')->andReturn($bodies);
-
         $sblist = array('body'=>'{"service_body":[{"id":1,"name":"toplevel","type":"AS"},"service_body_type":"Area Service Committee","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}},"service_bodies":{"service_body":[{"id":2,"name":"a-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","contact_email":"a-level1@a.com","editors":{"service_body_editors":{"editor":[{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"},{"id":3,"admin_type":"direct","admin_name":"sba"}]}},{"id":3,"name":"b-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"direct","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}}}]}},{"id":4,"name":"test-no-permissions","type":"WS"},"service_body_type":"World Service Conference","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"}}}]}');
-        // $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
+        $Intstub->shouldReceive('postAuthenticatedRootServerRequest')->andReturn($bodies)
+        ->shouldReceive('getServiceBodies')->andReturn($sblist);
 
         $rest = new ServiceBodiesHandler($Intstub, $BMLTWF_WP_Options);
 

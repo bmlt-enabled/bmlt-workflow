@@ -35,7 +35,7 @@ class Integration
     protected $v3_access_token_expires_at = null; // v3 auth token expiration
     protected $bmltwf_bmlt_user_id; // user id of the workflow bot
 
-    public function __construct($cookies = null, $wpoptionssstub = null)
+    public function __construct($cookies = null, $wpoptionssstub = null, $root_server_version = null)
     {
         if (!empty($cookies)) {
             $this->cookies = $cookies;
@@ -46,8 +46,13 @@ class Integration
         } else {
             $this->BMLTWF_WP_Options = $wpoptionssstub;
         }
+        if (empty($root_server_version))
+        {
+            $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address'));
+        } else {
+            $this->bmlt_root_server_version = $root_server_version;
+        }
 
-        $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address'));
     }
 
     private function bmltwf_rest_error($message, $code)
@@ -78,6 +83,16 @@ class Integration
     {
         $data['status'] = $code;
         return new \WP_Error('bmltwf_error', $message, $data);
+    }
+
+    private function updateRootServerVersion()
+    {
+        if (empty($root_server_version))
+        {
+            $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address'));
+        } else {
+            $this->bmlt_root_server_version = $root_server_version;
+        }
     }
 
     private function convertv2meetingtov3($meeting)
@@ -216,12 +231,24 @@ class Integration
         return $meeting;
     }
 
+    public function testServerAndAuth($username, $password, $server)
+    {
+        $rsv = $this->bmltwf_get_remote_server_version($server);
+        if (version_compare($rsv, "3.0.0", "lt")) 
+        {
+            $ret = $this->testServerAndAuthv2($username, $password, $server);
+        }
+        else
+        {
+            $ret = $this->testServerAndAuthv3($username, $password, $server);
+
+        }
+
+        return $ret;
+    }
+
     public function testServerAndAuthv2($username, $password, $server)
     {
-        $version =  $this->bmltwf_get_remote_server_version($server);
-        if (!$version) {
-            return new \WP_Error('bmltwf', "Check BMLT server address - couldn't retrieve server version");
-        }
 
         $postargs = array(
             'admin_action' => 'login',
@@ -248,10 +275,6 @@ class Integration
     public function testServerAndAuthv3($username, $password, $server)
     {
 
-        $version =  $this->bmltwf_get_remote_server_version($server);
-        if (!$version) {
-            return new \WP_Error('bmltwf', "Check BMLT server address - couldn't retrieve server version");
-        }
 
         $postargs = array(
             'username' => $username,
@@ -295,7 +318,7 @@ class Integration
         $this->debug_log("CHANGE");
         $this->debug_log(($changearr));
 
-        $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
+        $response = $this->postAuthenticatedRootServerRequest('', $changearr);
 
         if (is_wp_error($response)) {
             return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
@@ -375,7 +398,7 @@ class Integration
 
     private function getServiceBodiesv2()
     {
-        $response = $this->bmlt_integration->getServiceBodiesPermissionv2();
+        $response = $this->getServiceBodiesPermissionv2();
 
         if (is_wp_error($response)) {
             return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
@@ -403,7 +426,7 @@ class Integration
         $req = array();
         $req['admin_action'] = 'get_service_body_info';
 
-        $response = $this->bmlt_integration->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServiceBodies', $req);
+        $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServiceBodies', $req);
         if (is_wp_error($response)) {
             return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
@@ -481,7 +504,7 @@ class Integration
         $this->debug_log("DELETE SEND");
         $this->debug_log(($changearr));
 
-        $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
+        $response = $this->postAuthenticatedRootServerRequest('', $changearr);
 
         if (is_wp_error($response)) {
             return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
@@ -532,7 +555,7 @@ class Integration
         $req = array();
         $req['admin_action'] = 'get_permissions';
 
-        $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('local_server/server_admin/json.php', $req);
+        $response = $this->postAuthenticatedRootServerRequest('local_server/server_admin/json.php', $req);
         if (is_wp_error($response)) {
             return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
@@ -752,7 +775,7 @@ class Integration
         $this->debug_log("posting change");
         $this->debug_log($changearr);
 
-        $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
+        $response = $this->postAuthenticatedRootServerRequest('', $changearr);
         $this->debug_log("posted change");
 
         if (is_wp_error($response)) {
@@ -851,13 +874,13 @@ class Integration
             "Accept: */*",
         );
 
-        $resp = wp_safe_remote_get($url, array('headers' => $headers));
+        $resp = \wp_safe_remote_get($url, array('headers' => $headers));
 
         if ((!is_array($resp)) ||  is_wp_error($resp)) {
             return $this->bmltwf_rest_error('Server error geolocating address', 500);
         }
 
-        $body = wp_remote_retrieve_body($resp);
+        $body = \wp_remote_retrieve_body($resp);
 
         if (!$body) {
             return new \WP_Error('bmltwf', 'Server error geolocating address');

@@ -28,7 +28,7 @@ class ServiceBodiesHandler
 {
     use \bmltwf\BMLTWF_Debug;
 
-    public function __construct($intstub = null, $optstub = null)
+    public function __construct($intstub = null, $optstub = null, $handlercorestub = null)
     {
         if (empty($intstub)) {
             $this->bmlt_integration = new Integration();
@@ -42,7 +42,12 @@ class ServiceBodiesHandler
             $this->BMLTWF_WP_Options = $optstub;
         }
 
-        $this->handlerCore = new HandlerCore();
+        if (empty($handlercorestub)) {
+            $this->handlerCore = new HandlerCore();
+        } else {
+            $this->handlerCore = $handlercorestub;
+        }
+
         $this->BMLTWF_Database = new BMLTWF_Database();
     }
 

@@ -116,8 +116,8 @@ Line: $errorLine
         $wpdb->shouldReceive('get_results')->andReturn($dblookup);
         $wpdb->prefix = "";
 
-        // Functions\when('\get_option')->justReturn("success");
-
+        Functions\when('\get_option')->justReturn("success");
+        Functions\when('wp_safe_remote_get')->returnArg();
         Functions\when('\wp_load_alloptions')->justReturn(array('bmltwf_db_version'=> 'testing', 'bmltwf_crap'=> 'testing', 'shouldntbe' => 'inthebackup'));
         $rest = new OptionsHandler();
 

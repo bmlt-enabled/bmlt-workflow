@@ -104,25 +104,7 @@ class BMLTServerHandler
             return $result;
         }
 
-        $version = $this->bmlt_integration->bmltwf_get_remote_server_version($server);
-        $this->debug_log("bmltwf_get_remote_server_version returns ".$version);
-        if($version)
-        {
-            if(version_compare($version,"3.0.0","lt"))
-            {
-                $this->debug_log("checking auth against v2 server");
-                $ret = $this->bmlt_integration->testServerAndAuthv2($username, $password, $server);
-            }
-            else
-            {
-                $this->debug_log("checking auth against v3 server");
-                $ret = $this->bmlt_integration->testServerAndAuthv3($username, $password, $server);
-            }
-        }
-        else
-        {
-            $ret = new WP_Error("InvalidResponse", "Invalid response from BMLT Root Server");
-        }
+        $ret = $this->bmlt_integration->testServerAndAuth($username, $password, $server);
         if (is_wp_error($ret)) {
 
             $r = update_option("bmltwf_bmlt_test_status", "failure");

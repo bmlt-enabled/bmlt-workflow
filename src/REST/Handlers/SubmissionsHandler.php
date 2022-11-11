@@ -445,7 +445,7 @@ class SubmissionsHandler
                     // unpublish by default
                     $change['published'] = 0;
                     $change['id_bigint'] = $result['meeting_id'];
-                    $resp = $this->bmlt_integration->changeMeeting($change);
+                    $resp = $this->bmlt_integration->updateMeeting($change);
 
                     if (\is_wp_error(($resp))) {
                         return $resp;

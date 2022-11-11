@@ -88,7 +88,7 @@ sed -i -e "/define( 'WP_DEBUG', false );/d" wp-config.php
 sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa');/" wp-config.php
 
 # install crouton
-sudo /usr/local/bin/wp plugin --path=$sitelocalpath install crouton --allow-root
+/usr/local/bin/wp plugin --path=$sitelocalpath install crouton
 sudo chown -R apache:apache $sitelocalpath
 wp plugin activate --path=$sitelocalpath "crouton"
 wp post create --path=$sitelocalpath --post_type=page --post_title='crouton' --post_content='[bmlt_tabs]' --post_status='publish' --post_name='crouton' --meta_input='{"_wp_page_template":"blank"}'
