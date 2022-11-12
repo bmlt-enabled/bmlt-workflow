@@ -86,11 +86,11 @@ Line: $errorLine
         // testServerAndAuthv2($username, $password, $server)
 
         Functions\when('wp_safe_remote_post')->returnArg();
-        Functions\when('wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('wp_remote_retrieve_body')->justReturn('<html></html>');
         Functions\when('http_build_query')->justReturn(1);
 
-        $integration = new Integration(null,null, "2.0.0");
+        $integration = new Integration(null, null, "2.0.0");
         $response = $integration->testServerAndAuthv2("user", "pass", "server");
         $this->assertTrue($response);
     }
@@ -103,11 +103,11 @@ Line: $errorLine
         // testServerAndAuthv2($username, $password, $server)
 
         Functions\when('\wp_safe_remote_post')->returnArg();
-        Functions\when('\wp_remote_retrieve_response_code')->justReturn('403');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(403);
         Functions\when('\wp_remote_retrieve_body')->justReturn('<html></html>');
         Functions\when('http_build_query')->justReturn(1);
 
-        $integration = new Integration(null,null, "2.0.0");
+        $integration = new Integration(null, null, "2.0.0");
         $response = $integration->testServerAndAuthv2("user", "pass", "server");
         $this->assertInstanceOf(WP_Error::class, $response);
     }
@@ -120,11 +120,11 @@ Line: $errorLine
         // testServerAndAuthv2($username, $password, $server)
 
         Functions\when('\wp_safe_remote_post')->returnArg();
-        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('\wp_remote_retrieve_body')->justReturn('</head><body class="admin_body"><h2 class="c_comdef_not_auth_3">There was a problem with the user name or password that you entered.</h2><div class="c_comdef_admin_login_form_container_div"><noscript>');
         Functions\when('http_build_query')->justReturn(1);
 
-        $integration = new Integration(null,null, "2.0.0");
+        $integration = new Integration(null, null, "2.0.0");
         $response = $integration->testServerAndAuthv2("user", "pass", "server");
         $this->assertInstanceOf(WP_Error::class, $response);
     }
@@ -139,7 +139,7 @@ Line: $errorLine
         // Functions\when('wp_remote_retrieve_body')->justReturn('[{"key_string": "B","name_string": "Beginners","description_string": "This meeting is focused on the needs of new members of NA.","lang": "en","id": "1","world_id": "BEG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"},{"key_string": "BL","name_string": "Bi-Lingual","description_string": "This meeting is conducted in both English and another language.","lang": "en","id": "2","world_id": "LANG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"}]');
         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
         Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
-        Functions\when('\wp_safe_remote_post')->justReturn(array('response'=> array('code'=>200 )));
+        Functions\when('\wp_safe_remote_post')->justReturn(array('response' => array('code' => 200)));
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
@@ -147,7 +147,7 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn("failure");
         $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
-        $integration = new Integration(null,$BMLTWF_WP_Options, "2.0.0");
+        $integration = new Integration(null, $BMLTWF_WP_Options, "2.0.0");
 
         $response = $integration->getMeetingFormatsv2();
         $this->assertIsArray($response);
@@ -161,7 +161,7 @@ Line: $errorLine
         //     public function getMeetingFormatsv2()
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{"key_string": "B","name_string": "Beginners","description_string": "This meeting is focused on the needs of new members of NA.","lang": "en","id": "1","world_id": "BEG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"},{"key_string": "BL","name_string": "Bi-Lingual","description_string": "This meeting is conducted in both English and another language.","lang": "en","id": "2","world_id": "LANG","root_server_uri": "https://brucegardner.net/bmlt-root-server-master/main_server","format_type_enum": "FC3"}]');
-        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('\wp_safe_remote_post')->justReturn(new \WP_Error(1));
 
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
@@ -169,7 +169,7 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn("failure");
         $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
-        $integration = new Integration(null, $BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(null, $BMLTWF_WP_Options, "2.0.0");
 
         $response = $integration->getMeetingFormatsv2();
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -184,14 +184,14 @@ Line: $errorLine
 
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": "MA,ME,NH,RI,VT"}]');
-        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('\wp_safe_remote_get')->returnArg();
 
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
         /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(null,$BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(null, $BMLTWF_WP_Options, "2.0.0");
 
         $response = $integration->getMeetingStates();
         $this->assertIsArray($response);
@@ -206,7 +206,7 @@ Line: $errorLine
 
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": ""}]');
-        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
 
         Functions\when('\wp_safe_remote_get')->returnArg();
 
@@ -214,7 +214,7 @@ Line: $errorLine
         /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(null, $BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(null, $BMLTWF_WP_Options, "2.0.0");
 
         $response = $integration->getMeetingStates();
         $this->assertFalse($response);
@@ -235,7 +235,7 @@ Line: $errorLine
         /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(null,$BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(null, $BMLTWF_WP_Options, "2.0.0");
 
         $response = $integration->getMeetingStates();
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -251,14 +251,14 @@ Line: $errorLine
 
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": "MA,ME,NH,RI,VT","meeting_counties_and_sub_provinces": "Androscoggin,Aroostook,Barnstable,Belknap"}]');
-        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('\wp_safe_remote_get')->returnArg();
 
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
         /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(null,$BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(null, $BMLTWF_WP_Options, "2.0.0");
 
         $response = $integration->getMeetingCounties();
         $this->assertIsArray($response);
@@ -273,7 +273,7 @@ Line: $errorLine
 
 
         Functions\when('wp_remote_retrieve_body')->justReturn('[{"changesPerMeeting": "5","meeting_states_and_provinces": "MA,ME,NH,RI,VT","meeting_counties_and_sub_provinces": ""}]');
-        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
 
         Functions\when('wp_safe_remote_get')->returnArg();
 
@@ -281,7 +281,7 @@ Line: $errorLine
         /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(null,$BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(null, $BMLTWF_WP_Options, "2.0.0");
 
         $response = $integration->getMeetingCounties();
         $this->assertFalse($response);
@@ -295,14 +295,14 @@ Line: $errorLine
         //         public function getMeetingCounties()
 
         Functions\when('wp_remote_retrieve_body')->justReturn('[{}]');
-        Functions\when('\wp_remote_retrieve_response_code')->justReturn('500');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(500);
         Functions\when('wp_safe_remote_get')->justReturn(new \WP_Error(1));
 
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
         /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(null,$BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(null, $BMLTWF_WP_Options, "2.0.0");
 
         $response = $integration->getMeetingCounties();
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -316,7 +316,7 @@ Line: $errorLine
         //         public function postAuthenticatedRootServerRequest()
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
-        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
 
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
@@ -326,9 +326,9 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn("failure");
         $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
-        $integration = new Integration(null,$BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(null, $BMLTWF_WP_Options, "2.0.0");
 
-        $response = $integration->postAuthenticatedRootServerRequest('test', array('args'=>'args'));
+        $response = $integration->postAuthenticatedRootServerRequest('test', array('args' => 'args'));
         $this->assertIsString($response);
     }
 
@@ -340,7 +340,7 @@ Line: $errorLine
         //         public function postAuthenticatedRootServerRequest()
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
-        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
 
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
@@ -350,7 +350,7 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn("failure");
         $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
-        $integration = new Integration(null,$BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(null, $BMLTWF_WP_Options, "2.0.0");
 
         $response = $integration->postAuthenticatedRootServerRequest('test', null);
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -366,7 +366,7 @@ Line: $errorLine
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
         Functions\when('\wp_safe_remote_post')->justReturn(new \WP_Error(1));
         Functions\when('\wp_remote_retrieve_cookies')->returnArg();
-        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
 
         $secretsstub = \Mockery::mock('WP_Options');
         /** @var Mockery::mock $secretsstub test */
@@ -375,13 +375,13 @@ Line: $errorLine
 
         Functions\when('\is_wp_error')->justReturn(false);
 
-        $integration = new Integration(null, $secretsstub,"2.0.0");
+        $integration = new Integration(null, $secretsstub, "2.0.0");
 
         $response = $integration->postAuthenticatedRootServerRequest('test', array("arg1" => "args1"));
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
-        /**
+    /**
      * @covers bmltwf\BMLT\Integration::postAuthenticatedRootServerRequestSemantic
      */
     public function test_can_call_postAuthenticatedRootServerRequestSemantic_with_valid_auth(): void
@@ -389,7 +389,7 @@ Line: $errorLine
         //         public function postAuthenticatedRootServerRequestSemantic()
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
-        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
@@ -398,9 +398,9 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn("failure");
         $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
-        $integration = new Integration(null,$BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(null, $BMLTWF_WP_Options, "2.0.0");
 
-        $response = $integration->postAuthenticatedRootServerRequestSemantic('test', array('args'=>'args'));
+        $response = $integration->postAuthenticatedRootServerRequestSemantic('test', array('args' => 'args'));
         $this->assertIsString($response);
     }
 
@@ -412,7 +412,7 @@ Line: $errorLine
         //         public function postAuthenticatedRootServerRequestSemantic()
 
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
-        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
 
@@ -421,7 +421,7 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn("failure");
         $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
-        $integration = new Integration(null,$BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(null, $BMLTWF_WP_Options, "2.0.0");
 
         $response = $integration->postAuthenticatedRootServerRequestSemantic('test', null);
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -438,7 +438,7 @@ Line: $errorLine
         Functions\when('\wp_safe_remote_post')->justReturn(new \WP_Error(1));
         Functions\when('\wp_remote_retrieve_cookies')->returnArg();
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
-        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
 
 
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
@@ -449,7 +449,7 @@ Line: $errorLine
 
         Functions\when('\is_wp_error')->justReturn(false);
 
-        $integration = new Integration(null, $BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(null, $BMLTWF_WP_Options, "2.0.0");
 
         $response = $integration->postAuthenticatedRootServerRequestSemantic('test', array("arg1" => "args1"));
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -473,8 +473,8 @@ Line: $errorLine
 
         $json = '{ "results" : [ { "address_components" : [ { "long_name" : "Sydney", "short_name" : "Sydney", "types" : [ "colloquial_area", "locality", "political" ] }, { "long_name" : "New South Wales", "short_name" : "NSW", "types" : [ "administrative_area_level_1", "political" ] }, { "long_name" : "Australia", "short_name" : "AU", "types" : [ "country", "political" ] } ], "formatted_address" : "Sydney NSW, Australia", "geometry" : { "bounds" : { "northeast" : { "lat" : -33.5781409, "lng" : 151.3430209 }, "southwest" : { "lat" : -34.118347, "lng" : 150.5209286 } }, "location" : { "lat" : -33.8688197, "lng" : 151.2092955 }, "location_type" : "APPROXIMATE", "viewport" : { "northeast" : { "lat" : -33.5781409, "lng" : 151.3430209 }, "southwest" : { "lat" : -34.118347, "lng" : 150.5209286 } } }, "partial_match" : true, "place_id" : "ChIJP3Sa8ziYEmsRUKgyFmh9AQM", "types" : [ "colloquial_area", "locality", "political" ] } ], "status" : "OK" }';
 
-        Functions\expect('wp_remote_retrieve_body')->times(3)->andReturn('',$gmapskey,$json);
-        Functions\when('wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\expect('wp_remote_retrieve_body')->times(4)->andReturn('', '', $gmapskey, $json);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('wp_safe_remote_get')->justReturn(array());
 
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
@@ -482,19 +482,18 @@ Line: $errorLine
         $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(true,$BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(true, $BMLTWF_WP_Options, "2.0.0");
         $response = $integration->geolocateAddress('sydney, australia');
-        
+
         $this->debug_log("*** GEO RESPONSE");
         $this->debug_log(($response));
 
         $this->assertNotInstanceOf(WP_Error::class, $response);
         $this->assertIsNumeric($response['latitude']);
         $this->assertIsNumeric($response['longitude']);
-
     }
 
-        /**
+    /**
      * @covers bmltwf\BMLT\Integration::geolocateAddress
      * @covers bmltwf\BMLT\Integration::getGmapsKey
      * @covers bmltwf\BMLT\Integration::AuthenticateRootServer
@@ -504,33 +503,32 @@ Line: $errorLine
     public function test_cant_call_geolocateAddress_with_invalid_address(): void
     {
 
-        Functions\when('wp_safe_remote_get')->returnArg();
-        // Functions\when('wp_safe_remote_post')->returnArg();
-        Functions\when('wp_remote_retrieve_cookies')->returnArg();
+        Functions\when('\wp_safe_remote_post')->returnArg();
+        Functions\when('\wp_remote_retrieve_cookies')->returnArg();
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
         $gmapskey = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> <head> <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /> <meta http-equiv="content-type" content="text/html; charset=utf-8" /> <meta http-equiv="Content-Script-Type" content="text/javascript" /> <meta http-equiv="Content-Style-Type" content="text/css" /> <link rel="stylesheet" href="https://brucegardner.net/bmlt-root-server-master/main_server/local_server/server_admin/style/styles.css?v=1650950537" /> <link rel="icon" href="https://brucegardner.net/bmlt-root-server-master/main_server/local_server/server_admin/style/images/shortcut.png" /> <link rel="preconnect" href="https://fonts.gstatic.com"> <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet"> <title>Basic Meeting List Toolbox Administration Console</title> </head> <body class="admin_body"> <div class="bmlt_admin_logout_bar"><h4><a href="/bmlt-root-server-master/main_server/index.php?admin_action=logout">Sign Out (Server Administrator)</a></h4><div class="server_version_display_div"> 2.16.5 </div></div><div id="google_maps_api_error_div" class="bmlt_admin_google_api_key_error_bar item_hidden"><h4><a id="google_maps_api_error_a" href="https://bmlt.app/google-api-key/" target="_blank"></a></h4></div><div class="admin_page_wrapper"><div id="bmlt_admin_main_console" class="bmlt_admin_main_console_wrapper_div"> <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=googlemapstestkey&libraries=geometry"></script><script type="text/javascript">var my_localized_strings = {"default_meeting_published":true,"week_starts_on":0,"name":"English","enum":"en","comdef_map_radius_ranges":[0.0625,0.125,0.1875,0.25,0.4375,0.5,0.5625,0.75,0.8125,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3,3.25,3.5,3.75,4,4.25,4.5,4.75,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10,11,12,13,14,15,17.5,20,22.5,25,27.5,30,35,40,45,50,60,70,80,90,100,150,200],"include_service_body_email_in_semantic":false,"auto_geocoding_enabled":true,"zip_auto_geocoding_enabled":false,"county_auto_geocoding_enabled":false,"sort_formats":true,"meeting_counties_and_sub_provinces":[],"meeting_states_and_provinces":[],"google_api_key":"googlemapstestkey","dbPrefix":"na","region_bias":"au","default_duration_time":"1:30:00","default_minute_interval":5,"search_spec_map_center":{"longitude":-118.563659,"latitude":34.235918,"zoom":6},"change_type_strings":{"__THE_MEETING_WAS_CHANGED__":"The meeting was changed.","__THE_MEETING_WAS_CREATED__":"The meeting was created.","__THE_MEETING_WAS_DELETED__":"The meeting was deleted.","__THE_MEETING_WAS_ROLLED_BACK__":"The meeting was rolled back to a previous version.","__THE_FORMAT_WAS_CHANGED__":"The format was changed.","__THE_FORMAT_WAS_CREATED__":"The format was created.","__THE_FORMAT_WAS_DELETED__":"The format was deleted.","__THE_FORMAT_WAS_ROLLED_BACK__":"The format was rolled back to a previous version.","__THE_SERVICE_BODY_WAS_CHANGED__":"The service body was changed.","__THE_SERVICE_BODY_WAS_CREATED__":"The service body was created.","__THE_SERVICE_BODY_WAS_DELETED__":"The service body was deleted.","__THE_SERVICE_BODY_WAS_ROLLED_BACK__":"The service body was rolled back to a previous version.","__THE_USER_WAS_CHANGED__":"The user was changed.","__THE_USER_WAS_CREATED__":"The user was created.","__THE_USER_WAS_DELETED__":"The user was deleted.","__THE_USER_WAS_ROLLED_BACK__":"The user was rolled back to a previous version.","__BY__":"by","__FOR__":"for"},"detailed_change_strings":{"was_changed_from":"was changed from","to":"to","was_changed":"was changed","was_added_as":"was added as","was_deleted":"was deleted","was_published":"The meeting was published","was_unpublished":"The meeting was unpublished","formats_prompt":"The meeting format","duration_time":"The meeting duration","start_time":"The meeting start time","longitude":"The meeting longitude","latitude":"The meeting latitude","sb_prompt":"The meeting changed its Service Body from",';
 
         $json = ' { "results" : [], "status" : "ZERO_RESULTS" }';
 
-        Functions\expect('wp_remote_retrieve_body')->times(3)->andReturn('',$gmapskey,$json);
-       
+        Functions\expect('wp_remote_retrieve_body')->times(4)->andReturn('', '', $gmapskey, $json);
+
         Functions\when('wp_safe_remote_get')->justReturn(array());
-    
+
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
         /** @var Mockery::mock $BMLTWF_WP_Options test */
         $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
 
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(true,$BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(true, $BMLTWF_WP_Options, "2.0.0");
         $response = $integration->geolocateAddress('junk, junk');
-        
+
         $this->debug_log("*** GEO RESPONSE");
         $this->debug_log(($response));
         $this->assertInstanceOf(WP_Error::class, $response);
-
     }
 
-       /**
+    /**
      * @covers bmltwf\BMLT\Integration::geolocateAddress
      * @covers bmltwf\BMLT\Integration::getGmapsKey
      * @covers bmltwf\BMLT\Integration::AuthenticateRootServer
@@ -543,28 +541,182 @@ Line: $errorLine
         Functions\when('\wp_safe_remote_get')->returnArg();
         Functions\when('\wp_safe_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_cookies')->returnArg();
-        Functions\when('wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
 
         $gmapskey = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> <head> <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /> <meta http-equiv="content-type" content="text/html; charset=utf-8" /> <meta http-equiv="Content-Script-Type" content="text/javascript" /> <meta http-equiv="Content-Style-Type" content="text/css" /> <link rel="stylesheet" href="https://brucegardner.net/bmlt-root-server-master/main_server/local_server/server_admin/style/styles.css?v=1650950537" /> <link rel="icon" href="https://brucegardner.net/bmlt-root-server-master/main_server/local_server/server_admin/style/images/shortcut.png" /> <link rel="preconnect" href="https://fonts.gstatic.com"> <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet"> <title>Basic Meeting List Toolbox Administration Console</title> </head> <body class="admin_body"> <div class="bmlt_admin_logout_bar"><h4><a href="/bmlt-root-server-master/main_server/index.php?admin_action=logout">Sign Out (Server Administrator)</a></h4><div class="server_version_display_div"> 2.16.5 </div></div><div id="google_maps_api_error_div" class="bmlt_admin_google_api_key_error_bar item_hidden"><h4><a id="google_maps_api_error_a" href="https://bmlt.app/google-api-key/" target="_blank"></a></h4></div><div class="admin_page_wrapper"><div id="bmlt_admin_main_console" class="bmlt_admin_main_console_wrapper_div"> <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=googlemapstestkey&libraries=geometry"></script><script type="text/javascript">var my_localized_strings = {"default_meeting_published":true,"week_starts_on":0,"name":"English","enum":"en","comdef_map_radius_ranges":[0.0625,0.125,0.1875,0.25,0.4375,0.5,0.5625,0.75,0.8125,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3,3.25,3.5,3.75,4,4.25,4.5,4.75,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10,11,12,13,14,15,17.5,20,22.5,25,27.5,30,35,40,45,50,60,70,80,90,100,150,200],"include_service_body_email_in_semantic":false,"auto_geocoding_enabled":true,"zip_auto_geocoding_enabled":false,"county_auto_geocoding_enabled":false,"sort_formats":true,"meeting_counties_and_sub_provinces":[],"meeting_states_and_provinces":[],"google_api_key":"googlemapstestkey","dbPrefix":"na","region_bias":"au","default_duration_time":"1:30:00","default_minute_interval":5,"search_spec_map_center":{"longitude":-118.563659,"latitude":34.235918,"zoom":6},"change_type_strings":{"__THE_MEETING_WAS_CHANGED__":"The meeting was changed.","__THE_MEETING_WAS_CREATED__":"The meeting was created.","__THE_MEETING_WAS_DELETED__":"The meeting was deleted.","__THE_MEETING_WAS_ROLLED_BACK__":"The meeting was rolled back to a previous version.","__THE_FORMAT_WAS_CHANGED__":"The format was changed.","__THE_FORMAT_WAS_CREATED__":"The format was created.","__THE_FORMAT_WAS_DELETED__":"The format was deleted.","__THE_FORMAT_WAS_ROLLED_BACK__":"The format was rolled back to a previous version.","__THE_SERVICE_BODY_WAS_CHANGED__":"The service body was changed.","__THE_SERVICE_BODY_WAS_CREATED__":"The service body was created.","__THE_SERVICE_BODY_WAS_DELETED__":"The service body was deleted.","__THE_SERVICE_BODY_WAS_ROLLED_BACK__":"The service body was rolled back to a previous version.","__THE_USER_WAS_CHANGED__":"The user was changed.","__THE_USER_WAS_CREATED__":"The user was created.","__THE_USER_WAS_DELETED__":"The user was deleted.","__THE_USER_WAS_ROLLED_BACK__":"The user was rolled back to a previous version.","__BY__":"by","__FOR__":"for"},"detailed_change_strings":{"was_changed_from":"was changed from","to":"to","was_changed":"was changed","was_added_as":"was added as","was_deleted":"was deleted","was_published":"The meeting was published","was_unpublished":"The meeting was unpublished","formats_prompt":"The meeting format","duration_time":"The meeting duration","start_time":"The meeting start time","longitude":"The meeting longitude","latitude":"The meeting latitude","sb_prompt":"The meeting changed its Service Body from",';
 
         $json = ' { "junk" : "junk" }';
 
-        Functions\expect('\wp_remote_retrieve_body')->times(3)->andReturn('',$gmapskey,$json);
-       
+        Functions\expect('\wp_remote_retrieve_body')->times(4)->andReturn('', '', $gmapskey, $json);
+
         Functions\when('\wp_safe_remote_get')->justReturn(array());
-    
+
         $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
         $BMLTWF_WP_Options->shouldReceive('secrets_decrypt')->andReturn('true');
         /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $integration = new Integration(true,$BMLTWF_WP_Options,"2.0.0");
+        $integration = new Integration(true, $BMLTWF_WP_Options, "2.0.0");
         $response = $integration->geolocateAddress('junk, junk');
-        
+
         $this->debug_log("*** GEO RESPONSE");
         $this->debug_log(($response));
         $this->assertInstanceOf(WP_Error::class, $response);
-
     }
 
+    /**
+     * @covers bmltwf\BMLT\Integration::is_v3_server
+     **/
+
+    public function test_is_v3_server_returns_true_if_v3(): void
+    {
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+
+        $integration = new Integration(true, $BMLTWF_WP_Options, "3.0.0");
+        $response = $integration->is_v3_server();
+        $this->assertTrue(($response));
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::is_v3_server
+     **/
+
+    public function test_is_v3_server_returns_true_if_v2(): void
+    {
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+
+        $integration = new Integration(true, $BMLTWF_WP_Options, "2.0.0");
+        $response = $integration->is_v3_server();
+        $this->assertFalse(($response));
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::getMeetingFormatsv3
+     **/
+    
+    public function test_getMeetingFormatsv3(): void
+    {
+        $formats = <<<EOD
+[
+    {
+        "id": 1,
+        "worldId": "BEG",
+        "type": "COMMON_NEEDS_OR_RESTRICTION",
+        "translations": [
+        { "key": "BEG", "name": "Beginners", "description": "This meeting is focused on the needs of new members of NA.", "language": "en" },
+        { "key": "BEG", "name": "Principiantes", "description": "Esta reuni\u00f3n se centr\u00f3 en las necesidades de los nuevos miembros de NA.", "language": "es" },
+        {
+            "key": "B",
+            "name": "\u062a\u0627\u0632\u0647 \u0648\u0627\u0631\u062f\u0627\u0646",
+            "description": "\u0627\u06cc\u0646 \u062c\u0644\u0633\u0647 \u0628\u0631 \u0631\u0648\u06cc \u0646\u06cc\u0627\u0632\u0647\u0627\u06cc \u062a\u0627\u0632\u0647 \u0648\u0627\u0631\u062f\u0627\u0646 \u062f\u0631 \u0645\u0639\u062a\u0627\u062f\u0627\u0646 \u06af\u0645\u0646\u0627\u0645 \u0645\u062a\u0645\u0631\u06a9\u0632 \u0645\u06cc\u0628\u0627\u0634\u062f",
+            "language": "fa"
+        },
+        { "key": "B", "name": "Nowoprzybyli", "description": "Mityng koncentruje si\u0119 na potrzebach nowyh cz\u0142onk\u00f3w NA.", "language": "pl" },
+        { "key": "B", "name": "Nowoprzybyli", "description": "Mityng koncentruje si\u0119 na potrzebach nowyh cz\u0142onk\u00f3w NA.", "language": "pl" },
+        { "key": "RC", "name": "Rec\u00e9m-chegados", "description": "Esta reuni\u00e3o tem foco nas necessidades de novos membros em NA.", "language": "pt" }
+        ]
+    },
+    {
+        "id": 48,
+        "worldId": null,
+        "type": null,
+        "translations": [
+        { "key": "S", "name": "Spiritual Principals", "description": "This meeting is focused on spiritual principals.", "language": "en" },
+        { "key": "S", "name": "Directores Espirituales", "description": "Esta reuni\u00f3n se centr\u00f3 en los principios espirituales.", "language": "es" },
+        { "key": "PER", "name": "\u0641\u0627\u0631\u0633\u06cc", "description": "\u062c\u0644\u0633\u0647 \u0628\u0647 \u0632\u0628\u0627\u0646 \u0641\u0627\u0631\u0633\u06cc", "language": "fa" },
+        { "key": "PER", "name": "Perski", "description": "Mityng odbywa si\u0119 w j\u0119zyku perskim", "language": "pl" },
+        { "key": "PER", "name": "Perski", "description": "Mityng odbywa si\u0119 w j\u0119zyku perskim", "language": "pl" },
+        { "key": "PER", "name": "Persa", "description": "Reuni\u00e3o em l\u00edngua persa", "language": "pt" }
+        ]
+    },
+    {
+        "id": 6,
+        "worldId": "CAN",
+        "type": "LOCATION",
+        "translations": [
+        { "key": "CAN", "name": "Candlelight", "description": "This meeting is held by candlelight.", "language": "en" },
+        { "key": "CAN", "name": "Luz De Una Vela", "description": "Esta reuni\u00f3n se celebra con velas.", "language": "es" },
+        {
+            "key": "CL",
+            "name": "\u0634\u0645\u0639 \u0631\u0648\u0634\u0646",
+            "description": "\u0627\u06cc\u0646 \u062c\u0644\u0633\u0647 \u0628\u0647\u0645\u0631\u0627\u0647 \u0634\u0645\u0639 \u0631\u0648\u0634\u0646 \u0628\u0631\u06af\u0632\u0627\u0631 \u0645\u06cc\u06af\u0631\u062f\u062f",
+            "language": "fa"
+        },
+        { "key": "CL", "name": "\u015awieczka", "description": "Ten mityng odbywa si\u0119 przy blasku \u015bwiecy.", "language": "pl" },
+        { "key": "CL", "name": "\u015awieczka", "description": "Ten mityng odbywa si\u0119 przy blasku \u015bwiecy.", "language": "pl" },
+        { "key": "VL", "name": "Luz de velas", "description": "Esta reuni\u00e3o acontece \u00e0 luz de velas.", "language": "pt" }
+        ]
+    },
+    {
+        "id": 7,
+        "worldId": "CW",
+        "type": "COMMON_NEEDS_OR_RESTRICTION",
+        "translations": [
+        { "key": "CW", "name": "Children Welcome", "description": "Children are welcome.", "language": "en" },
+        { "key": "CW", "name": "Los Ni\u00f1os Son Bienvenidos", "description": "", "language": "es" },
+        {
+            "key": "CS",
+            "name": "\u06a9\u0648\u062f\u06a9\u0627\u0646 \u0628\u06cc \u0633\u0631\u067e\u0631\u0633\u062a",
+            "description": "\u062e\u0648\u0634 \u0631\u0641\u062a\u0627\u0631\u06cc",
+            "language": "fa"
+        },
+        { "key": "CW", "name": "Enfants bienvenus", "description": "Les enfants sont les bienvenus \u00e0 cette r\u00e9union.", "language": "fr" },
+        { "key": "CS", "name": "Dzieci pod opiek\u0105", "description": "Dzieci uzale\u017cnionych mile widziane pod warunkiem odpowiedniego zachowania.", "language": "pl" },
+        { "key": "CA", "name": "Crian\u00e7a sob supervis\u00e3o", "description": "Bem-comportadas, crian\u00e7as sob supervis\u00e3o s\u00e3o bem-vindas.", "language": "pt" }
+        ]
+    },
+    {
+        "id": 8,
+        "worldId": "DISC",
+        "type": "MEETING_FORMAT",
+        "translations": [
+        { "key": "D", "name": "Discussion", "description": "This meeting invites participation by all attendees.", "language": "en" },
+        { "key": "D", "name": "Discusi\u00f3n", "description": "Esta reuni\u00f3n invita a la participaci\u00f3n de todos los asistentes.", "language": "es" },
+        {
+            "key": "D",
+            "name": "\u0628\u062d\u062b \u0648 \u06af\u0641\u062a\u06af\u0648",
+            "description": "\u0627\u06cc\u0646 \u062c\u0644\u0633\u0647 \u0627\u0632 \u062a\u0645\u0627\u0645\u06cc \u0634\u0631\u06a9\u062a \u06a9\u0646\u0646\u062f\u06af\u0627\u0646 \u062f\u0639\u0648\u062a \u0628\u0647 \u0628\u062d\u062b \u0645\u06cc\u06a9\u0646\u062f",
+            "language": "fa"
+        },
+        { "key": "D", "name": "Dyskusja", "description": "Mityng dla wszystkich ch\u0119tnych.", "language": "pl" },
+        { "key": "D", "name": "Dyskusja", "description": "Mityng dla wszystkich ch\u0119tnych.", "language": "pl" },
+        { "key": "D", "name": "Discuss\u00e3o", "description": "Esta reuni\u00e3o convida a participa\u00e7\u00e3o de todos.", "language": "pt" }
+        ]
+    },
+    {
+        "id": 9,
+        "worldId": null,
+        "type": "COMMON_NEEDS_OR_RESTRICTION",
+        "translations": [
+        { "key": "ESP", "name": "Espanol", "description": "This meeting primary spoken in Spanish.", "language": "en" },
+        { "key": "ESP", "name": "Espanol", "description": "Esta reuni\u00f3n principal que se habla en espa\u00f1ol.", "language": "es" },
+        {
+            "key": "ES",
+            "name": "\u0627\u0633\u067e\u0627\u0646\u06cc\u0627\u06cc\u06cc",
+            "description": "\u0627\u06cc\u0646 \u062c\u0644\u0633\u0647 \u0628\u0647 \u0632\u0628\u0627\u0646 \u0627\u0633\u067e\u0627\u0646\u06cc\u0627\u06cc\u06cc \u0628\u0631\u06af\u0632\u0627\u0631 \u0645\u06cc\u06af\u0631\u062f\u062f",
+            "language": "fa"
+        },
+        { "key": "ES", "name": "Hiszpa\u0144ski", "description": "Mityng odbywa si\u0119 w j\u0119zyku hiszpa\u0144skim.", "language": "pl" },
+        { "key": "ES", "name": "Hiszpa\u0144ski", "description": "Mityng odbywa si\u0119 w j\u0119zyku hiszpa\u0144skim.", "language": "pl" },
+        { "key": "ES", "name": "Espanhol", "description": "Esta reuni\u00e3o acontece em Espanhol.", "language": "pt" }
+        ]
+    }]
+EOD;
+
+        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+
+        $integration = new Integration(true, $BMLTWF_WP_Options, "3.0.0", "token");
+
+        Functions\when('\get_option')->justReturn("true");
+
+        Functions\when('\wp_safe_remote_get')->justReturn('1');
+        Functions\when('\wp_remote_retrieve_body')->justReturn($formats);
+
+        $response = $integration->getMeetingFormatsv3();
+        $this->assertIsArray($response);
+        $this->debug_log($response);
+        $respjson = json_encode($response);
+
+        $this->assertEquals($respjson,'{"1":{"world_id":"BEG","lang":"en","description_string":"This meeting is focused on the needs of new members of NA.","name_string":"Beginners","key_string":"BEG"},"48":{"world_id":null,"lang":"en","description_string":"This meeting is focused on spiritual principals.","name_string":"Spiritual Principals","key_string":"S"},"6":{"world_id":"CAN","lang":"en","description_string":"This meeting is held by candlelight.","name_string":"Candlelight","key_string":"CAN"},"7":{"world_id":"CW","lang":"en","description_string":"Children are welcome.","name_string":"Children Welcome","key_string":"CW"},"8":{"world_id":"DISC","lang":"en","description_string":"This meeting invites participation by all attendees.","name_string":"Discussion","key_string":"D"},"9":{"world_id":null,"lang":"en","description_string":"This meeting primary spoken in Spanish.","name_string":"Espanol","key_string":"ESP"}}');
+    }
 }

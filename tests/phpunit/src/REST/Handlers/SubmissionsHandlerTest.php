@@ -182,7 +182,8 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         $bmlt_input = '';
         Functions\when('\get_option')->justReturn("success");
-
+        
+        $bmlt_input = '';
         $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
@@ -231,7 +232,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\get_option')->justReturn("success");
 
         $resp = '{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"6","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}';
-
+        
         $bmlt_input = '';
         $handlers = new SubmissionsHandler($this->stub_bmltv2($resp, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
@@ -276,7 +277,8 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $bmlt_input = '';
 
         Functions\when('\get_option')->justReturn("success");
-
+        
+        $bmlt_input = '';
         $handlers = new SubmissionsHandler($this->stub_bmltv2($resp, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
@@ -318,9 +320,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\get_option')->justReturn("success");
 
         $retrieve_single_response = $this->meeting;
-
+        
         $bmlt_input = '';
         $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
@@ -362,7 +365,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\get_option')->justReturn("success");
 
         $retrieve_single_response = $this->meeting;
-
+        
         $bmlt_input = '';
         $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
@@ -472,7 +475,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\get_option')->justReturn("success");
 
         $retrieve_single_response = $this->meeting;
-
+        
         $bmlt_input = '';
         $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
@@ -519,7 +522,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $wpdb->prefix = "";
 
         $retrieve_single_response = $this->meeting;
-
+        
         $bmlt_input = '';
         $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
@@ -529,7 +532,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         /**
      * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
-    public function test_cant_create_new_with_bad_duration_ime(): void
+    public function test_cant_create_new_with_bad_duration_time(): void
     {
         
         $form_post = array(
@@ -564,7 +567,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $wpdb->prefix = "";
 
         $retrieve_single_response = $this->meeting;
-
+        
         $bmlt_input = '';
         $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
@@ -710,10 +713,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $wpdb->prefix = "";
 
         Functions\expect('wp_mail')->never();
+        Functions\when('\get_option')->justReturn("success");
 
         $retrieve_single_response = $this->meeting;
-
-        Functions\when('\get_option')->justReturn("success");
 
         $bmlt_input = '';
         $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
@@ -750,11 +752,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $wpdb->prefix = "";
 
         Functions\expect('wp_mail')->never();
-
-        $retrieve_single_response = $this->meeting;
-
         Functions\when('\get_option')->justReturn("success");
 
+        $retrieve_single_response = $this->meeting;
+        
         $bmlt_input = '';
         $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
@@ -790,11 +791,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $wpdb->prefix = "";
 
         Functions\expect('wp_mail')->never();
-
-        $retrieve_single_response = $this->meeting;
-
         Functions\when('\get_option')->justReturn("success");
 
+        $retrieve_single_response = $this->meeting;
+        
         $bmlt_input = '';
         $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
@@ -830,11 +830,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $wpdb->prefix = "";
 
         Functions\expect('wp_mail')->never();
-
-        $retrieve_single_response = $this->meeting;
-
         Functions\when('\get_option')->justReturn("success");
 
+        $retrieve_single_response = $this->meeting;
+        
         $bmlt_input = '';
         $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
@@ -885,12 +884,14 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         $post_change_response = '[{"id_bigint":"3563"}]';
 
+
         $bmlt_input = '';
         $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
         $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
-
         $handlers = new SubmissionsHandler($stub_bmltv2);
+
+        $bmlt_input = '';
 
         $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
         Functions\when('\wp_get_current_user')->justReturn($user);
@@ -906,9 +907,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
-        $this->assertEquals('Approved submission id 14', $response->data['message']);
+        $this->debug_log(($response));
+        $this->assertEquals('Approved submission id 14', $response->get_data()['message']);
 
-        // $this->debug_log(($response));
     }
 
     /**
@@ -943,15 +944,15 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         /** @var Mockery::mock $wpdb test */
         $wpdb->prefix = "";
 
-        $resp = $this->meeting;
+        $retrieve_single_response = $this->meeting;
         $bmlt_input = '';
 
         Functions\when('\get_option')->justReturn("success");
 
-        $stub_bmltv2 = $this->stub_bmltv2($resp, $bmlt_input);
+        $bmlt_input = '';
+        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
         $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
-
         $handlers = new SubmissionsHandler($stub_bmltv2);
 
         $post_change_response = '[{"published":"0", "success":"true"}]';
@@ -979,16 +980,8 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
-        $this->assertEquals('Approved submission id 14', $response->data['message']);
+        $this->assertEquals('Approved submission id 14', $response->get_data()['message']);
 
-        // 
-        // $this->debug_log($this->debug_log("BMLT INPUT"));
-        // $this->debug_log(($bmlt_input));
-
-        $this->assertArrayHasKey("set_meeting_change", $bmlt_input);
-        $this->assertArrayNotHasKey("delete_meeting", $bmlt_input);
-
-        // $this->debug_log(($response));
     }
 
     /**
@@ -1029,9 +1022,13 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\get_option')->justReturn("success");
 
         $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
-        // make deleteMeeting just return true
-        $stub_bmltv2->shouldReceive('deleteMeeting')->andreturn(true);
+        // make updatemeeting just return true
+        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
 
+        $bmlt_input = '';
+        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        // make updatemeeting just return true
+        $stub_bmltv2->shouldReceive('deleteMeeting')->andreturn(true);
         $handlers = new SubmissionsHandler($stub_bmltv2);
 
 
@@ -1059,12 +1056,8 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
-        $this->assertEquals('Approved submission id 14', $response->data['message']);
+        $this->assertEquals('Approved submission id 14', $response->get_data()['message']);
 
-        $this->assertArrayHasKey("delete_meeting", $bmlt_input);
-        $this->assertArrayNotHasKey("set_meeting_change", $bmlt_input);
-
-        // $this->debug_log(($response));
     }
 
     //
@@ -1108,11 +1101,11 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         Functions\when('\get_option')->justReturn("success");
 
+
         $bmlt_input = '';
         $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
         $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
-
         $handlers = new SubmissionsHandler($stub_bmltv2);
 
         global $wpdb;
@@ -1137,7 +1130,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
-        $this->assertEquals('Approved submission id 14', $response->data['message']);
+        $this->assertEquals('Approved submission id 14', $response->get_data()['message']);
     }
 
 
@@ -1178,10 +1171,16 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         Functions\when('\get_option')->justReturn("success");
 
+
         $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
         $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
 
+
+        $bmlt_input = '';
+        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        // make updatemeeting just return true
+        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
         $handlers = new SubmissionsHandler($stub_bmltv2);
 
         $post_change_response = '[{"id_bigint":"3563"}]';
@@ -1207,7 +1206,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
-        $this->assertEquals('Approved submission id 14', $response->data['message']);
+        $this->assertEquals('Approved submission id 14', $response->get_data()['message']);
     }
 
     /**
@@ -1247,10 +1246,12 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         Functions\when('\get_option')->justReturn("success");
 
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
-        // make deleteMeeting just return true
-        $stub_bmltv2->shouldReceive('deleteMeeting')->andreturn(true);
 
+
+        $bmlt_input = '';
+        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        // make deletemeeting just return true
+        $stub_bmltv2->shouldReceive('deleteMeeting')->andreturn(true);
         $handlers = new SubmissionsHandler($stub_bmltv2);
 
         $post_change_response = '[{"id_bigint":"3563"}]';
@@ -1272,13 +1273,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
         $response = $handlers->approve_submission_handler($request);
-        // $this->debug_log(("LOGLOGLOG"));
-        // $this->debug_log(($bmlt_input));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
-        $this->assertEquals('Approved submission id 14', $response->data['message']);
-        // $this->assertEquals($bmlt_input, array("bmlt_ajax_callback" => 1, "delete_meeting" => 3563));
-        // $this->debug_log(($response));
+        $this->assertEquals('Approved submission id 14', $response->get_data()['message']);
     }
 
     /**
@@ -1314,13 +1311,13 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         /** @var Mockery::mock $wpdb test */
         $wpdb->prefix = "";
 
-        $bmlt_input = '';
         Functions\when('\get_option')->justReturn("success");
 
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
-        // make updateMeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
 
+        $bmlt_input = '';
+        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        // make updatemeeting just return true
+        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
         $handlers = new SubmissionsHandler($stub_bmltv2);
 
         $post_change_response = '[{"report":"3563", "success":"true"}]';
@@ -1346,10 +1343,8 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $response = $handlers->approve_submission_handler($request);
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
-        $this->assertEquals('Approved submission id 14', $response->data['message']);
+        $this->assertEquals('Approved submission id 14', $response->get_data()['message']);
 
-        $this->assertArrayHasKey("set_meeting_change", $bmlt_input);
-        $this->assertArrayNotHasKey("delete_meeting", $bmlt_input);
 
         // $this->debug_log(($response));
     }

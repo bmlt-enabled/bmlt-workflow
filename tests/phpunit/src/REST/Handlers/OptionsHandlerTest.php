@@ -119,12 +119,14 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn("success");
         Functions\when('wp_safe_remote_get')->returnArg();
         Functions\when('\wp_load_alloptions')->justReturn(array('bmltwf_db_version'=> 'testing', 'bmltwf_crap'=> 'testing', 'shouldntbe' => 'inthebackup'));
+
         $rest = new OptionsHandler();
 
         $response = $rest->post_bmltwf_backup_handler($request);
 
-        $this->debug_log(($response));
+        $this->debug_log($response);
         $data = $response->get_data();
+        $this->debug_log($data);
         $this->assertEquals($data['message'],'Backup Successful');
         $backup = json_decode($data['backup'],true);
         $this->assertIsArray($backup['options']);

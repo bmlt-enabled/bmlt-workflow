@@ -55,6 +55,22 @@ class BMLTWF_WP_Options
         );
     }
         
+    public function secrets_decrypt($password, $data)
+    {
+
+        $config = array_map('base64_decode', $data['config']);
+        $encrypted = base64_decode($data['encrypted']);
+
+        $key = hash_hkdf('sha256', $password, $config['size'], 'context');
+
+        return sodium_crypto_aead_chacha20poly1305_ietf_decrypt(
+            $encrypted,
+            $config['nonce'], // Associated Data
+            $config['nonce'],
+            $key
+        );
+    }
+
     public function secrets_encrypt($password, $secret)
     {
 
@@ -82,19 +98,4 @@ class BMLTWF_WP_Options
         ];
     }
 
-    public function secrets_decrypt($password, $data)
-    {
-
-        $config = array_map('base64_decode', $data['config']);
-        $encrypted = base64_decode($data['encrypted']);
-
-        $key = hash_hkdf('sha256', $password, $config['size'], 'context');
-
-        return sodium_crypto_aead_chacha20poly1305_ietf_decrypt(
-            $encrypted,
-            $config['nonce'], // Associated Data
-            $config['nonce'],
-            $key
-        );
-    }
 }

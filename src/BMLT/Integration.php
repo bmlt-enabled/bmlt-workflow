@@ -36,10 +36,14 @@ class Integration
     protected $v3_access_token_expires_at = null; // v3 auth token expiration
     protected $bmltwf_bmlt_user_id; // user id of the workflow bot
 
-    public function __construct($cookies = null, $wpoptionssstub = null, $root_server_version = null, )
+    public function __construct($cookies = null, $wpoptionssstub = null, $root_server_version = null, $access_token = null )
     {
         if (!empty($cookies)) {
             $this->cookies = $cookies;
+        }
+        if (!empty($access_token))
+        {
+            $this->v3_access_token = $access_token;
         }
 
         if (empty($wpoptionssstub)) {
@@ -497,7 +501,7 @@ class Integration
 
     private function deleteMeetingv3($meeting_id)
     {
-        $this->debug_log("inside getMeetingFormats v3 auth");
+        $this->debug_log("inside deleteMeeting v3 auth");
 
         if (!$this->v3_access_token) {
             $ret =  $this->authenticateRootServer();
@@ -569,7 +573,6 @@ class Integration
 
         return $newformat;
 
-        // return json_decode(wp_remote_retrieve_body($ret));
     }
 
     public function getMeetingFormatsv2()
@@ -824,6 +827,10 @@ class Integration
     public function geolocateAddress($address)
     {
         $key = $this->getGmapsKey();
+        if (\is_wp_error($key))
+        {
+            return $this->bmltwf_integration_error('Server error geolocating address', 500);
+        }
 
         $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($address) . "&key=" . $key;
 

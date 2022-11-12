@@ -102,7 +102,9 @@ Line: $errorLine
         /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("success");
 
-        $rest = new BMLTServerHandler(null, $BMLTWF_WP_Options);
+        $Intstub = \Mockery::mock('Integration');
+
+        $rest = new BMLTServerHandler($Intstub, $BMLTWF_WP_Options);
 
         $response = $rest->get_bmltserver_handler($request);
 
@@ -129,7 +131,9 @@ Line: $errorLine
         /** @var Mockery::mock $BMLTWF_WP_Options test */
         Functions\when('\get_option')->justReturn("failure");
 
-        $rest = new BMLTServerHandler(null,$BMLTWF_WP_Options);
+        $Intstub = \Mockery::mock('Integration');
+
+        $rest = new BMLTServerHandler($Intstub, $BMLTWF_WP_Options);
 
         $response = $rest->get_bmltserver_handler($request);
 
@@ -202,11 +206,13 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn("success");
 
         Functions\when('\update_option')->returnArg(1);
-        $rest = new BMLTServerHandler();
+
+        $Intstub = \Mockery::mock('Integration');
+
+        $rest = new BMLTServerHandler($Intstub, $BMLTWF_WP_Options);
 
         $response = $rest->post_bmltserver_handler($request);
 
-        
         $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -231,7 +237,9 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn("success");
 
         Functions\when('\update_option')->returnArg(1);
-        $rest = new BMLTServerHandler();
+        $Intstub = \Mockery::mock('Integration');
+
+        $rest = new BMLTServerHandler($Intstub, $BMLTWF_WP_Options);
 
         $response = $rest->post_bmltserver_handler($request);
 
@@ -259,7 +267,9 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn("success");
 
         Functions\when('\update_option')->returnArg(1);
-        $rest = new BMLTServerHandler();
+        $Intstub = \Mockery::mock('Integration');
+
+        $rest = new BMLTServerHandler($Intstub, $BMLTWF_WP_Options);
 
         $response = $rest->post_bmltserver_handler($request);
 
