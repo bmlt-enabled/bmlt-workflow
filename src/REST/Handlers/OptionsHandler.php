@@ -33,6 +33,7 @@ class OptionsHandler
         $this->handlerCore = new HandlerCore();
         $this->BMLTWF_Database = new BMLTWF_Database();
         $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
+        
     }
 
     public function post_bmltwf_restore_handler($request)

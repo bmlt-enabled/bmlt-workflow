@@ -24,7 +24,6 @@ namespace bmltwf\BMLT;
 use bmltwf\BMLTWF_WP_Options;
 use bmltwf\REST\HandlerCore;
 
-if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
 class Integration
 {
@@ -36,7 +35,7 @@ class Integration
     protected $v3_access_token_expires_at = null; // v3 auth token expiration
     protected $bmltwf_bmlt_user_id; // user id of the workflow bot
 
-    public function __construct($cookies = null, $wpoptionssstub = null, $root_server_version = null, $access_token = null )
+    public function __construct($cookies = null, $root_server_version = null, $access_token = null )
     {
         if (!empty($cookies)) {
             $this->cookies = $cookies;
@@ -46,11 +45,6 @@ class Integration
             $this->v3_access_token = $access_token;
         }
 
-        if (empty($wpoptionssstub)) {
-            $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
-        } else {
-            $this->BMLTWF_WP_Options = $wpoptionssstub;
-        }
         if (empty($root_server_version)) {
             $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address'), false);
         } else {
@@ -647,7 +641,7 @@ class Integration
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve server info');
         }
         // $this->debug_log(wp_remote_retrieve_body($response));  
-        $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
+        $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
         // 
         // $this->debug_log("***");
         // $this->debug_log(($arr));
@@ -670,17 +664,17 @@ class Integration
 
         $ret = $this->authenticateRootServer();
         if (is_wp_error($ret)) {
-            // $this->debug_log("*** AUTH ERROR");
-            // $this->debug_log(($ret));
+            $this->debug_log("*** AUTH ERROR");
+            $this->debug_log(($ret));
             return $ret;
         }
 
         $url = get_option('bmltwf_bmlt_server_address') . "index.php";
-        // $this->debug_log("*** ADMIN URL ".$url);
+        $this->debug_log("*** ADMIN URL ".$url);
 
         $resp = $this->get($url, $this->cookies);
-        // $this->debug_log("*** ADMIN PAGE");
-        // $this->debug_log(wp_remote_retrieve_body($resp));
+        $this->debug_log("*** ADMIN PAGE");
+        $this->debug_log(wp_remote_retrieve_body($resp));
 
         preg_match('/"google_api_key":"(.*?)",/', wp_remote_retrieve_body($resp), $matches);
         return $matches[1];
@@ -870,6 +864,22 @@ class Integration
         }
     }
 
+    public function secrets_decrypt($password, $data)
+    {
+        $this->debug_log($data);
+        $config = array_map('base64_decode', $data['config']);
+        $encrypted = base64_decode($data['encrypted']);
+
+        $key = hash_hkdf('sha256', $password, $config['size'], 'context');
+
+        return sodium_crypto_aead_chacha20poly1305_ietf_decrypt(
+            $encrypted,
+            $config['nonce'], // Associated Data
+            $config['nonce'],
+            $key
+        );
+    }
+
     private function authenticateRootServer()
     {
 
@@ -887,8 +897,10 @@ class Integration
             } else {
                 $nonce_salt = NONCE_SALT;
             }
+$this->debug_log("nonce salt");
+$this->debug_log($nonce_salt);
 
-            $decrypted = $this->BMLTWF_WP_Options->secrets_decrypt($nonce_salt, $encrypted);
+            $decrypted = $this->secrets_decrypt($nonce_salt, $encrypted);
             if ($decrypted === false) {
                 return new \WP_Error('bmltwf', 'Error decrypting password.');
             }

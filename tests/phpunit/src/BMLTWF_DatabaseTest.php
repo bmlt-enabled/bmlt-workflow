@@ -76,7 +76,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers bmltwf\BMLTWF_Database\bmltwf_db_upgrade
+     * @covers bmltwf\BMLTWF_Database::bmltwf_db_upgrade
      */
     public function test_database_upgrade_from_current_without_fresh_install_does_nothing(): void
     {
@@ -98,7 +98,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers bmltwf\BMLTWF_Database\bmltwf_db_upgrade
+     * @covers bmltwf\BMLTWF_Database::bmltwf_db_upgrade
      */
     public function test_database_upgrade_missing_tables_does_fresh_install(): void
     {
@@ -125,7 +125,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers bmltwf\BMLTWF_Database\bmltwf_db_upgrade
+     * @covers bmltwf\BMLTWF_Database::bmltwf_db_upgrade
      */
     public function test_database_upgrade_performs_upgrade_with_low_version(): void
     {
@@ -152,7 +152,7 @@ Line: $errorLine
     }
 
     /**
-     * @covers bmltwf\BMLTWF_Database\bmltwf_db_upgrade
+     * @covers bmltwf\BMLTWF_Database::bmltwf_db_upgrade
      */
     public function test_database_upgrade_no_version_does_fresh_install(): void
     {
@@ -178,7 +178,7 @@ Line: $errorLine
 
 
     /**
-     * @covers bmltwf\BMLTWF_Database\bmltwf_db_upgrade
+     * @covers bmltwf\BMLTWF_Database::bmltwf_db_upgrade
      */
     public function test_database_upgrade_fresh_install_requested_does_fresh_install(): void
     {

@@ -20,8 +20,6 @@ namespace bmltwf\REST;
 
 use bmltwf\BMLT\Integration;
 
-if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
-
 class HandlerCore
 {
 
