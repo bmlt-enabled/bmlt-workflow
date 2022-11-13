@@ -530,6 +530,15 @@ class Integration
         return $arr;
     }
 
+    public function getMeetingFormats()
+    {
+        if ($this->is_v3_server()) {
+            return $this->getMeetingFormatsv3();
+        } else {
+            return $this->getMeetingFormatsv2();
+        }
+    }
+
     public function getMeetingFormatsv3()
     {
         $this->debug_log("inside getMeetingFormats v3 auth");
