@@ -440,9 +440,9 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled",
 
 test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
 
-  console.log("hi1");
+  //console.log("hi1");
   await bmlt3x_auto_geocoding_off(t);
-  console.log("hi2");
+  //console.log("hi2");
 
   await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
 

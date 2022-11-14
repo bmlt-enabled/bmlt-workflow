@@ -89,42 +89,42 @@ export async function click_dialog_button_by_index(element, index) {
 }
 
 export async function reset_bmlt(t) {
-  console.log("resetting bmlt");
+  //console.log("resetting bmlt");
   await t.request(userVariables.blank_bmlt);
-  console.log("reset");
+  //console.log("reset");
 
 }
 
 export async function reset_bmlt3x(t) {
-  console.log("resetting bmlt");
+  //console.log("resetting bmlt");
   await t.request(userVariables.blank_bmlt3x);
-  console.log("reset");
+  //console.log("reset");
 
 }
 
 export async function auto_geocoding_on(t) {
-console.log("turning geocode on");
+//console.log("turning geocode on");
   await t.request(userVariables.auto_geocoding_on);
-  console.log("geocode on");
+  //console.log("geocode on");
 }
 
 export async function auto_geocoding_off(t) {
-  console.log("turning geocode off");
+  //console.log("turning geocode off");
   await t.request(userVariables.auto_geocoding_off);
-  console.log("geocode off");
+  //console.log("geocode off");
 
 }
 
 export async function bmlt3x_auto_geocoding_on(t) {
-  console.log("turning geocode on");
+  //console.log("turning geocode on");
     await t.request(userVariables.bmlt3x_auto_geocoding_on);
-      console.log("geocode on");
+      //console.log("geocode on");
   }
   
   export async function bmlt3x_auto_geocoding_off(t) {
-    console.log("turning geocode off");
+    //console.log("turning geocode off");
     await t.request(userVariables.bmlt3x_auto_geocoding_off);
-      console.log("geocode off");
+      //console.log("geocode off");
   
   }
   
@@ -328,56 +328,56 @@ export async function basic_options_multinetwork() {
 
 export async function bmlt_states_off(t) {
   // disable state dropdown
-  console.log("turning states off");
+  //console.log("turning states off");
   await t.request(userVariables.bmlt_states_off);
-  console.log("states off");
+  //console.log("states off");
 
 }
 
 export async function bmlt_states_on(t) {
   // enable state dropdown
-  console.log("turning states on");
+  //console.log("turning states on");
   await t.request(userVariables.bmlt_states_on);
-  console.log("states on");
+  //console.log("states on");
 }
 
 export async function bmlt3x_states_off(t) {
   // disable state dropdown
-  console.log("turning states off");
+  //console.log("turning states off");
   await t.request(userVariables.bmlt3x_states_off);
-  console.log("states off");
+  //console.log("states off");
 
 }
 
 export async function bmlt3x_states_on(t) {
   // enable state dropdown
-  console.log("turning states on");
+  //console.log("turning states on");
   await t.request(userVariables.bmlt3x_states_on);
-  console.log("states on");
+  //console.log("states on");
 }
 
 export async function delete_submissions(t) {
-  console.log("deleting submissions");
+  //console.log("deleting submissions");
   await t.request(userVariables.blank_submission);
-  console.log("deleted");
+  //console.log("deleted");
 }
 
 export async function delete_submissions_multisingle(t) {
-  console.log("deleting submissions multisingle");
+  //console.log("deleting submissions multisingle");
   await t.request(userVariables.blank_submission_multisingle);
-  console.log("deleted");
+  //console.log("deleted");
 }
 
 export async function delete_submissions_multinetwork(t) {
-  console.log("deleting submissions multinetwork");
+  //console.log("deleting submissions multinetwork");
   await t.request(userVariables.blank_submission_multinetwork);
-  console.log("deleted");
+  //console.log("deleted");
 }
 
 export async function delete_submissions_wpsinglebmlt3x(t) {
-  console.log("deleting submissions wpsinglebmlt3x");
+  //console.log("deleting submissions wpsinglebmlt3x");
   await t.request(userVariables.blank_submission);
-  console.log("deleted");
+  //console.log("deleted");
 }
 
 export async function check_checkbox(t,s) {
