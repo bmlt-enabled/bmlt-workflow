@@ -166,7 +166,7 @@ class Integration
         $this->debug_log(($resp));
 
         libxml_use_internal_errors(true);
-        $xml = simplexml_load_string(wp_remote_retrieve_body($resp));
+        $xml = simplexml_load_string(\wp_remote_retrieve_body($resp));
         if ($xml === false) {
             return false;
         } else {
@@ -276,7 +276,7 @@ class Integration
             return new \WP_Error('bmltwf', 'check BMLT server address');
         }
 
-        $auth_details = json_decode(wp_remote_retrieve_body($response), true);
+        $auth_details = json_decode(\wp_remote_retrieve_body($response), true);
         $this->debug_log($auth_details['access_token']);
 
         return true;
@@ -400,7 +400,7 @@ class Integration
             return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
 
-        $arr = json_decode(wp_remote_retrieve_body($response), 1);
+        $arr = json_decode(\wp_remote_retrieve_body($response), 1);
 
         // $this->debug_log("SERVICE BODY JSON");
         // $this->debug_log(($arr));
@@ -475,11 +475,12 @@ class Integration
             return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
 
-        $rep = str_replace("'", '"', $response);
-        $this->debug_log("JSON RESPONSE");
-        $this->debug_log(($rep));
+        // $rep = str_replace("'", '"', $response);
+        // $this->debug_log("JSON RESPONSE");
+        // $this->debug_log(($rep));
 
-        $arr = json_decode($rep, true);
+        // $arr = json_decode($rep, true);
+        $arr = json_decode(\wp_remote_retrieve_body($response), 1);
 
         $this->debug_log("DELETE RESPONSE");
         $this->debug_log(($arr));
@@ -525,7 +526,7 @@ class Integration
             return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
 
-        $arr = json_decode(wp_remote_retrieve_body($response), 1);
+        $arr = json_decode(\wp_remote_retrieve_body($response), 1);
 
         return $arr;
     }
@@ -590,11 +591,11 @@ class Integration
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
 
-        // $this->debug_log(wp_remote_retrieve_body($response));
-        // $formatarr = json_decode(wp_remote_retrieve_body($response), true);
-        $xml = simplexml_load_string(wp_remote_retrieve_body($response));
+        // $this->debug_log(\wp_remote_retrieve_body($response));
+        // $formatarr = json_decode(\wp_remote_retrieve_body($response), true);
+        $xml = simplexml_load_string(\wp_remote_retrieve_body($response));
         // $this->debug_log("XML RESPONSE");
-        // $this->debug_log(wp_remote_retrieve_body($response));
+        // $this->debug_log(\wp_remote_retrieve_body($response));
         $formatarr = json_decode(json_encode($xml), 1);
 
         // $this->debug_log(($formatarr));
@@ -624,8 +625,8 @@ class Integration
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        // $this->debug_log(wp_remote_retrieve_body($response));  
-        $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
+        // $this->debug_log(\wp_remote_retrieve_body($response));  
+        $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
         if (!empty($arr['meeting_states_and_provinces'])) {
             $states = explode(',', $arr['meeting_states_and_provinces']);
             return $states;
@@ -649,7 +650,7 @@ class Integration
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve server info');
         }
-        // $this->debug_log(wp_remote_retrieve_body($response));  
+        // $this->debug_log(\wp_remote_retrieve_body($response));  
         $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
         // 
         // $this->debug_log("***");
@@ -683,9 +684,9 @@ class Integration
 
         $resp = $this->get($url, $this->cookies);
         $this->debug_log("*** ADMIN PAGE");
-        $this->debug_log(wp_remote_retrieve_body($resp));
+        $this->debug_log(\wp_remote_retrieve_body($resp));
 
-        preg_match('/"google_api_key":"(.*?)",/', wp_remote_retrieve_body($resp), $matches);
+        preg_match('/"google_api_key":"(.*?)",/', \wp_remote_retrieve_body($resp), $matches);
         return $matches[1];
     }
 
@@ -769,8 +770,8 @@ class Integration
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        // $this->debug_log(wp_remote_retrieve_body($response));  
-        $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
+        // $this->debug_log(\wp_remote_retrieve_body($response));  
+        $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
         if ((!empty($arr['auto_geocoding_enabled']))) {
 
             return $arr['auto_geocoding_enabled'] === "true" ? true : false;
@@ -792,7 +793,7 @@ class Integration
 
         $resp = $this->get($url, $this->cookies);
         // $this->debug_log("*** ADMIN PAGE");
-        // $this->debug_log(wp_remote_retrieve_body($resp));
+        // $this->debug_log(\wp_remote_retrieve_body($resp));
 
         preg_match('/"auto_geocoding_enabled":(?:(true)|(false)),/', wp_remote_retrieve_body($resp), $matches);
         $this->debug_log("matches: ");
@@ -818,8 +819,8 @@ class Integration
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        // $this->debug_log(wp_remote_retrieve_body($response));  
-        $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
+        // $this->debug_log(\wp_remote_retrieve_body($response));  
+        $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
         if ((!empty($arr['centerLongitude'])) && (!empty($arr['centerLatitude']))) {
 
             return array('longitude' => $arr['centerLongitude'], 'latitude' => $arr['centerLatitude']);
@@ -873,7 +874,7 @@ class Integration
         }
     }
 
-    public function secrets_decrypt($password, $data)
+    private function secrets_decrypt($password, $data)
     {
         $this->debug_log($data);
         $config = array_map('base64_decode', $data['config']);
@@ -906,8 +907,6 @@ class Integration
             } else {
                 $nonce_salt = NONCE_SALT;
             }
-$this->debug_log("nonce salt");
-$this->debug_log($nonce_salt);
 
             $decrypted = $this->secrets_decrypt($nonce_salt, $encrypted);
             if ($decrypted === false) {
@@ -937,7 +936,7 @@ $this->debug_log($nonce_salt);
                     return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
                 }
 
-                $auth_details = json_decode(wp_remote_retrieve_body($response), true);
+                $auth_details = json_decode(\wp_remote_retrieve_body($response), true);
                 $this->v3_access_token = $auth_details['access_token'];
                 $this->v3_expires_at = $auth_details['expires_at'];
             }
