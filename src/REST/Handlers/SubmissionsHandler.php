@@ -378,7 +378,7 @@ class SubmissionsHandler
                     $change['longitude'] = $latlng['longitude'];
                 }
 
-                $response=$this->bmlt_integration->createMeeting($change);
+                $response = $this->bmlt_integration->createMeeting($change);
 
                 break;
             case 'reason_change':
@@ -422,7 +422,7 @@ class SubmissionsHandler
                     }
                 }
 
-                $response=$this->bmlt_integration->updateMeeting($change);
+                $response = $this->bmlt_integration->updateMeeting($change);
 
                 if (\is_wp_error(($response))) {
                     return $response;
@@ -590,11 +590,7 @@ class SubmissionsHandler
     private function populate_formats()
     {
         if ($this->formats === null) {
-            if ($this->bmlt_integration->is_v3_server()) {
-                $this->formats = $this->bmlt_integration->getMeetingFormatsv3();
-            } else {
-                $this->formats = $this->bmlt_integration->getMeetingFormatsv2();
-            }
+            $this->formats = $this->bmlt_integration->getMeetingFormats();
         }
     }
 
