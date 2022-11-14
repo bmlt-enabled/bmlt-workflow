@@ -141,5 +141,6 @@ module.exports = {
 
     crouton_page: siteurl_single+"/index.php/crouton/",
     crouton3x_page: siteurl_wpsinglebmlt3x+"/index.php/crouton/",
+    bmlt_address: "http://" + test_ip + "/blank_bmlt/main_server/",
   },
 };

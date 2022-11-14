@@ -46,11 +46,17 @@ class Integration
         }
 
         if (empty($root_server_version)) {
-            $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address'), false);
+            $version = get_option('bmltwf_bmlt_server_version');
+            if ($version) {
+                $this->bmlt_root_server_version = $version;
+            }
+            else
+            {
+                $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address'), false);
+            }
         } else {
             $this->bmlt_root_server_version = $root_server_version;
         }
-
     }
 
     private function bmltwf_integration_error($message, $code)

@@ -99,7 +99,7 @@ test("Backup", async (t) => {
 
   await t.expect(f.message).eql("Backup Successful");
 
-  await t.expect(backup.options.bmltwf_db_version).eql("0.4.0").expect(backup.options.bmltwf_bmlt_server_address).eql("http://3.25.141.92/blank_bmlt/main_server/");
+  await t.expect(backup.options.bmltwf_db_version).eql("0.4.0").expect(backup.options.bmltwf_bmlt_server_address).eql(userVariables.bmlt_address);
   // find a specific meeting
   let obj = backup.submissions.find((o) => o.id === "94");
 
