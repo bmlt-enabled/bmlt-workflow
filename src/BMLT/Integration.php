@@ -316,12 +316,6 @@ class Integration
             return $this->bmltwf_integration_error('BMLT Communication Error - Meeting change failed', 500);
         }
 
-        $arr = $dec[0];
-
-        if ((isset($arr['published'])) && ($arr['published'] != 0)) {
-            return $this->bmltwf_integration_error('BMLT Communication Error - Meeting unpublish failed', 500);
-        }
-
         return true;
     }
 
