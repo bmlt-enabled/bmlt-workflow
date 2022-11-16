@@ -68,7 +68,9 @@ Line: $errorLine
 
         Functions\when('\wp_safe_remote_get')->returnArg();
         Functions\when('\wp_safe_remote_post')->returnArg();
-
+        Functions\when('\wp_safe_remote_request')->returnArg();
+        Functions\when('\wp_remote_retrieve_response_message')->returnArg();
+        
         Functions\when('\unserialize')->returnArg();
         Functions\when('\get_option')->alias(function($value) {
             if($value === 'bmltwf_bmlt_password')
@@ -456,7 +458,7 @@ Line: $errorLine
     {
 
         Functions\when('\wp_remote_retrieve_cookies')->returnArg();
-        Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
 
         $gmapskey = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> <head> <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /> <meta http-equiv="content-type" content="text/html; charset=utf-8" /> <meta http-equiv="Content-Script-Type" content="text/javascript" /> <meta http-equiv="Content-Style-Type" content="text/css" /> <link rel="stylesheet" href="https://brucegardner.net/bmlt-root-server-master/main_server/local_server/server_admin/style/styles.css?v=1650950537" /> <link rel="icon" href="https://brucegardner.net/bmlt-root-server-master/main_server/local_server/server_admin/style/images/shortcut.png" /> <link rel="preconnect" href="https://fonts.gstatic.com"> <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet"> <title>Basic Meeting List Toolbox Administration Console</title> </head> <body class="admin_body"> <div class="bmlt_admin_logout_bar"><h4><a href="/bmlt-root-server-master/main_server/index.php?admin_action=logout">Sign Out (Server Administrator)</a></h4><div class="server_version_display_div"> 2.16.5 </div></div><div id="google_maps_api_error_div" class="bmlt_admin_google_api_key_error_bar item_hidden"><h4><a id="google_maps_api_error_a" href="https://bmlt.app/google-api-key/" target="_blank"></a></h4></div><div class="admin_page_wrapper"><div id="bmlt_admin_main_console" class="bmlt_admin_main_console_wrapper_div"> <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=googlemapstestkey&libraries=geometry"></script><script type="text/javascript">var my_localized_strings = {"default_meeting_published":true,"week_starts_on":0,"name":"English","enum":"en","comdef_map_radius_ranges":[0.0625,0.125,0.1875,0.25,0.4375,0.5,0.5625,0.75,0.8125,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3,3.25,3.5,3.75,4,4.25,4.5,4.75,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10,11,12,13,14,15,17.5,20,22.5,25,27.5,30,35,40,45,50,60,70,80,90,100,150,200],"include_service_body_email_in_semantic":false,"auto_geocoding_enabled":true,"zip_auto_geocoding_enabled":false,"county_auto_geocoding_enabled":false,"sort_formats":true,"meeting_counties_and_sub_provinces":[],"meeting_states_and_provinces":[],"google_api_key":"googlemapstestkey","dbPrefix":"na","region_bias":"au","default_duration_time":"1:30:00","default_minute_interval":5,"search_spec_map_center":{"longitude":-118.563659,"latitude":34.235918,"zoom":6},"change_type_strings":{"__THE_MEETING_WAS_CHANGED__":"The meeting was changed.","__THE_MEETING_WAS_CREATED__":"The meeting was created.","__THE_MEETING_WAS_DELETED__":"The meeting was deleted.","__THE_MEETING_WAS_ROLLED_BACK__":"The meeting was rolled back to a previous version.","__THE_FORMAT_WAS_CHANGED__":"The format was changed.","__THE_FORMAT_WAS_CREATED__":"The format was created.","__THE_FORMAT_WAS_DELETED__":"The format was deleted.","__THE_FORMAT_WAS_ROLLED_BACK__":"The format was rolled back to a previous version.","__THE_SERVICE_BODY_WAS_CHANGED__":"The service body was changed.","__THE_SERVICE_BODY_WAS_CREATED__":"The service body was created.","__THE_SERVICE_BODY_WAS_DELETED__":"The service body was deleted.","__THE_SERVICE_BODY_WAS_ROLLED_BACK__":"The service body was rolled back to a previous version.","__THE_USER_WAS_CHANGED__":"The user was changed.","__THE_USER_WAS_CREATED__":"The user was created.","__THE_USER_WAS_DELETED__":"The user was deleted.","__THE_USER_WAS_ROLLED_BACK__":"The user was rolled back to a previous version.","__BY__":"by","__FOR__":"for"},"detailed_change_strings":{"was_changed_from":"was changed from","to":"to","was_changed":"was changed","was_added_as":"was added as","was_deleted":"was deleted","was_published":"The meeting was published","was_unpublished":"The meeting was unpublished","formats_prompt":"The meeting format","duration_time":"The meeting duration","start_time":"The meeting start time","longitude":"The meeting longitude","latitude":"The meeting latitude","sb_prompt":"The meeting changed its Service Body from",';
 
@@ -497,6 +499,7 @@ Line: $errorLine
     }
 
     /**
+     * @covers bmltwf\BMLT\Integration::getMeetingFormats
      * @covers bmltwf\BMLT\Integration::getMeetingFormatsv3
      **/
     
@@ -610,16 +613,154 @@ Line: $errorLine
 EOD;
 
 
-        $integration = new Integration(true, "3.0.0", "token");
+        $integration = new Integration(true, "3.0.0", "token",time()+2000);
 
         Functions\when('\wp_safe_remote_get')->justReturn('1');
         Functions\when('\wp_remote_retrieve_body')->justReturn($formats);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
 
-        $response = $integration->getMeetingFormatsv3();
+        $response = $integration->getMeetingFormats();
         $this->assertIsArray($response);
         $this->debug_log($response);
         $respjson = json_encode($response);
 
         $this->assertEquals($respjson,'{"1":{"world_id":"BEG","lang":"en","description_string":"This meeting is focused on the needs of new members of NA.","name_string":"Beginners","key_string":"BEG"},"48":{"world_id":null,"lang":"en","description_string":"This meeting is focused on spiritual principals.","name_string":"Spiritual Principals","key_string":"S"},"6":{"world_id":"CAN","lang":"en","description_string":"This meeting is held by candlelight.","name_string":"Candlelight","key_string":"CAN"},"7":{"world_id":"CW","lang":"en","description_string":"Children are welcome.","name_string":"Children Welcome","key_string":"CW"},"8":{"world_id":"DISC","lang":"en","description_string":"This meeting invites participation by all attendees.","name_string":"Discussion","key_string":"D"},"9":{"world_id":null,"lang":"en","description_string":"This meeting primary spoken in Spanish.","name_string":"Espanol","key_string":"ESP"}}');
     }
+
+
+    /**
+     * @covers bmltwf\BMLT\Integration::deleteMeeting
+     * @covers bmltwf\BMLT\Integration::deleteMeetingv3
+     **/
+    
+    public function test_deleteMeeting_against_v3_with_valid_meeting(): void
+    {
+
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+
+        $integration = new Integration(true, "3.0.0", "token",time()+2000);
+        $this->assertTrue($integration->deleteMeeting(1));
+
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::deleteMeeting
+     * @covers bmltwf\BMLT\Integration::deleteMeetingv3
+     **/
+    
+    public function test_deleteMeeting_against_v3_with_invalid_meeting(): void
+    {
+
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(404);
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $response = $integration->deleteMeeting(1);
+        $this->assertInstanceOf(WP_Error::class, $response);
+
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::updateMeeting
+     * @covers bmltwf\BMLT\Integration::updateMeetingv3
+     **/
+    
+    public function test_changeMeeting_against_v3_with_valid_meeting(): void
+    {
+
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+        $change = array('id_bigint' => 1,'location_text' => 'updated');
+
+        $integration = new Integration(true, "3.0.0", "token",time()+2000);
+        $this->assertTrue($integration->updateMeeting($change));
+
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::updateMeeting
+     * @covers bmltwf\BMLT\Integration::updateMeetingv3
+     **/
+    
+    public function test_updateMeeting_against_v3_with_invalid_meeting(): void
+    {
+
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(404);
+        $change = array('id_bigint' => 1,'location_text' => 'updated');
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $response = $integration->updateMeeting($change);
+        $this->assertInstanceOf(WP_Error::class, $response);
+
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::updateMeeting
+     * @covers bmltwf\BMLT\Integration::updateMeetingv3
+     **/
+    
+    public function test_updateMeeting_against_v3_with_invalid_change(): void
+    {
+
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(422);
+        $change = array('id_bigint' => 1,'location_text' => 'updated');
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $response = $integration->updateMeeting($change);
+        $this->assertInstanceOf(WP_Error::class, $response);
+
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::getServiceBodies
+     * @covers bmltwf\BMLT\Integration::getServiceBodiesv3
+     **/
+    
+    public function test_getServiceBodies_against_v3(): void
+    {
+        $servicebodies = <<<EOD
+        [{"id": 9,"parentId": 20,"name": "Unity Springs Area","description": "Unity Springs Area","type": "AS","adminUserId": 12,"assignedUserIds": [86, 145, 12],"url": "http://www.unityspringsna.org","helpline": "888-385-3121","email": "unityspringsarea@gmail.com","worldId": "AR63340"  },  {"id": 18,"parentId": 20,"name": "Central Florida Area","description": "Central Florida Area","type": "AS","adminUserId": 21,"assignedUserIds": [21, 145, 86],"url": "http://centralfloridana.org/","helpline": "(877) 240-0002","email": "bobbymey@msn.com","worldId": "AR63337"  },  {"id": 20,"parentId": 42,"name": "South Florida Region","description": "South Florida Region","type": "RS","adminUserId": 23,"assignedUserIds": [86, 145, 87, 23],"url": "https://sfrna.net","helpline": "844-623-5674","email": "public-relations@sfrna.net","worldId": "RG633"  },  {"id": 21,"parentId": 20,"name": "Beach and Bay Area","description": "Beach and Bay","type": "AS","adminUserId": 24,"assignedUserIds": [24, 86, 145],"url": "","helpline": "800) 273-4599","email": "","worldId": "AR63303"  },  {"id": 22,"parentId": 20,"name": "Conch Republic Area","description": "Conch Republic Area","type": "AS","adminUserId": 25,"assignedUserIds": [25, 145, 86],"url": "http://www.floridakeysna.org/","helpline": "305) 664-2270","email": "","worldId": "AR63305"  },  {"id": 23,"parentId": 20,"name": "Gold Coast Area","description": "Gold Coast Area","type": "AS","adminUserId": 26,"assignedUserIds": [26, 145, 86],"url": "http://goldcoastna.org/","helpline": "(888) 524-1777","email": "webmaster@goldcoastna.org","worldId": "AR63313"  },  {"id": 24,"parentId": 20,"name": "Gulf Coast Area","description": "Gulf Coast Area","type": "AS","adminUserId": 35,"assignedUserIds": [35],"url": "http://www.nagulfcoastfla.org/","helpline": "(866) 389-1344","email": "","worldId": "AR63316"  },  {"id": 25,"parentId": 20,"name": "Mid-Coast Area","description": "Mid-Coast Area","type": "AS","adminUserId": 27,"assignedUserIds": [27, 145, 86],"url": "http://www.midcoastarea.org/","helpline": "561-393-0303","email": "","worldId": "AR63322"  },  {"id": 26,"parentId": 20,"name": "North Dade Area","description": "North Dade Area","type": "AS","adminUserId": 28,"assignedUserIds": [24, 42, 86, 28, 145, 33, 143],"url": "http://www.northdadearea.org/","helpline": "(866) 935-8811","email": "secretary@northdadearea.org","worldId": "AR63325"  },  {"id": 27,"parentId": 20,"name": "Peace River Area","description": "Peace River Area","type": "AS","adminUserId": 29,"assignedUserIds": [29, 145, 86],"url": "http://peaceriverna.org/","helpline": "(800) 381-7371","email": "","worldId": "AR63326"  },  {"id": 28,"parentId": 20,"name": "Shark Coast Area","description": "Shark Coast Area","type": "AS","adminUserId": 30,"assignedUserIds": [30, 145, 86],"url": "http://sharkcoastna.org/","helpline": "941-493-5747","email": "","worldId": "AR63327"  },  {"id": 29,"parentId": 20,"name": "South Atlantic Area","description": "South Atlantic Area","type": "AS","adminUserId": 31,"assignedUserIds": [31],"url": "http://southatlanticna.org/","helpline": "","email": "southatlanticna@gmail.com","worldId": "AR63329"  },  {"id": 30,"parentId": 20,"name": "South Broward Area","description": "South Broward Area","type": "AS","adminUserId": 32,"assignedUserIds": [86, 145, 32],"url": "http://southbrowardna.org/","helpline": "954-967-6755","email": "sbapublicrelations@gmail.com","worldId": "AR63330"  },  {"id": 31,"parentId": 20,"name": "South Dade Area","description": "South Dade Area","type": "AS","adminUserId": 33,"assignedUserIds": [33, 145, 86],"url": "","helpline": "305-265-9555","email": "","worldId": "AR63334"  },  {"id": 32,"parentId": 20,"name": "Sunset Coast Area","description": "Sunset Coast Area","type": "AS","adminUserId": 34,"assignedUserIds": [34, 145, 86],"url": "http://sunsetcoastna.com","helpline": "239) 451-3275","email": "sunsetcoastnar@gmail.com","worldId": "AR63336"  }]
+EOD;
+        Functions\when('\wp_remote_retrieve_body')->justReturn($servicebodies);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $response = $integration->getServiceBodies();
+
+        $this->assertEquals($response[9]['name'], "Unity Springs Area");
+        $this->assertEquals($response[20]['description'], "South Florida Region");
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::createMeetingv3
+     **/
+    
+    public function test_createMeeting_against_v3_with_valid_meeting(): void
+    {
+
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
+        $meeting = array();
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $response = $integration->createMeeting($meeting);
+        $this->assertNotInstanceOf(WP_Error::class, $response);
+
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::createMeetingv3
+     **/
+    
+    public function test_createMeeting_against_v3_with_invalid_meeting(): void
+    {
+
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(422);
+        $meeting = array();
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $response = $integration->createMeeting($meeting);
+        $this->assertInstanceOf(WP_Error::class, $response);
+
+    }
+
 }

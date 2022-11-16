@@ -35,7 +35,7 @@ class Integration
     protected $v3_access_token_expires_at = null; // v3 auth token expiration
     protected $bmltwf_bmlt_user_id; // user id of the workflow bot
 
-    public function __construct($cookies = null, $root_server_version = null, $access_token = null )
+    public function __construct($cookies = null, $root_server_version = null, $access_token = null, $token_expiry = null )
     {
         if (!empty($cookies)) {
             $this->cookies = $cookies;
@@ -44,15 +44,19 @@ class Integration
         {
             $this->v3_access_token = $access_token;
         }
+        if (!empty($token_expiry))
+        {
+            $this->v3_access_token_expires_at = $token_expiry;
+        }
 
         if (empty($root_server_version)) {
-            $version = get_option('bmltwf_bmlt_server_version');
+            $version = \get_option('bmltwf_bmlt_server_version');
             if ($version) {
                 $this->bmlt_root_server_version = $version;
             }
             else
             {
-                $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(get_option('bmltwf_bmlt_server_address'), false);
+                $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address'), false);
             }
         } else {
             $this->bmlt_root_server_version = $root_server_version;
@@ -127,23 +131,6 @@ class Integration
         } else {
             $this->debug_log("using v3 auth");
             return true;
-        }
-    }
-
-    public function get_valid_v3_token()
-    {
-        if ($this->is_v3_server() && $this->v3_access_token) {
-            if ($this->v3_access_token_expires_at > time()) {
-                return $this->v3_access_token;
-            } else {
-                if ($this->authenticateRootServer()) {
-                    return $this->v3_access_token;
-                } else {
-                    return false;
-                }
-            }
-        } else {
-            return false;
         }
     }
 
@@ -337,13 +324,14 @@ class Integration
             return new \WP_Error('bmltwf', 'updateMeetingv3: No meeting ID present');
         }
 
-        if (!$this->v3_access_token) {
+        if (!$this->is_v3_token_valid()) {
             $ret =  $this->authenticateRootServer();
             if (is_wp_error($ret)) {
                 $this->debug_log("exiting updateMeetingv3 authenticateRootServer failed");
                 return $ret;
             }
         }
+
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $meeting_id;
 
         $response = \wp_safe_remote_request($url, $this->set_args(null, $change, array("Authorization" => "Bearer " . $this->v3_access_token), 'PATCH'));
@@ -427,7 +415,7 @@ class Integration
     private function getServiceBodiesv3()
     {
         $this->debug_log("inside getServiceBodies v3 auth");
-        if (!$this->v3_access_token) {
+        if (!$this->is_v3_token_valid()) {
             $ret =  $this->authenticateRootServer();
             if (is_wp_error($ret)) {
                 $this->debug_log("exiting getServiceBodies authenticateRootServer failed");
@@ -498,7 +486,7 @@ class Integration
     {
         $this->debug_log("inside deleteMeeting v3 auth");
 
-        if (!$this->v3_access_token) {
+        if (!$this->is_v3_token_valid()) {
             $ret =  $this->authenticateRootServer();
             if (is_wp_error($ret)) {
                 return $ret;
@@ -544,7 +532,7 @@ class Integration
     {
         $this->debug_log("inside getMeetingFormats v3 auth");
 
-        if (!$this->v3_access_token) {
+        if (!$this->is_v3_token_valid()) {
             $ret =  $this->authenticateRootServer();
             if (is_wp_error($ret)) {
                 return $ret;
@@ -712,7 +700,7 @@ class Integration
         $this->debug_log("inside createMeetingv3 auth");
 
 
-        if (!$this->v3_access_token) {
+        if (!$this->is_v3_token_valid()) {
             $ret =  $this->authenticateRootServer();
             if (is_wp_error($ret)) {
                 $this->debug_log("exiting createMeetingv3 authenticateRootServer failed");
@@ -725,7 +713,7 @@ class Integration
         $this->debug_log("v3 API RESPONSE");
         $this->debug_log($response);
 
-        if (\wp_remote_retrieve_response_code($response) != 204) {
+        if (\wp_remote_retrieve_response_code($response) != 201) {
             return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
         }
 
@@ -765,12 +753,10 @@ class Integration
 
     private function isAutoGeocodingEnabledv3()
     {
-        // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
-        // $this->debug_log(\wp_remote_retrieve_body($response));  
         $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
         if ((!empty($arr['auto_geocoding_enabled']))) {
 
@@ -783,17 +769,12 @@ class Integration
     {
         $ret = $this->authenticateRootServer();
         if (is_wp_error($ret)) {
-            // $this->debug_log("*** AUTH ERROR");
-            // $this->debug_log(($ret));
             return $ret;
         }
 
         $url = get_option('bmltwf_bmlt_server_address') . "index.php";
-        // $this->debug_log("*** ADMIN URL ".$url);
 
         $resp = $this->get($url, $this->cookies);
-        // $this->debug_log("*** ADMIN PAGE");
-        // $this->debug_log(\wp_remote_retrieve_body($resp));
 
         preg_match('/"auto_geocoding_enabled":(?:(true)|(false)),/', wp_remote_retrieve_body($resp), $matches);
         $this->debug_log("matches: ");
@@ -815,7 +796,6 @@ class Integration
     {
         $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
 
-        // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
@@ -890,84 +870,116 @@ class Integration
         );
     }
 
+    public function is_v3_token_valid()
+    {
+        if (!$this->v3_access_token || $this->v3_access_token_expires_at < time())
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     private function authenticateRootServer()
     {
-
-        if ($this->cookies == null || !$this->v3_access_token || $this->v3_expires_at > time()) {
-            $encrypted = get_option('bmltwf_bmlt_password');
-            $this->debug_log("retrieved encrypted bmlt password");
-            // $this->debug_log(($encrypted));
-
-            if ($encrypted === false) {
-                return new \WP_Error('bmltwf', 'Error unpacking password.');
-            }
-
-            if (defined('BMLTWF_RUNNING_UNDER_PHPUNIT')) {
-                $nonce_salt = BMLTWF_PHPUNIT_NONCE_SALT;
-            } else {
-                $nonce_salt = NONCE_SALT;
-            }
-
-            $decrypted = $this->secrets_decrypt($nonce_salt, $encrypted);
-            if ($decrypted === false) {
-                return new \WP_Error('bmltwf', 'Error decrypting password.');
-            }
-        } else {
-            return true;
-        }
-        // v3 flow
-
         if ($this->is_v3_server()) {
-            if (!$this->v3_access_token || $this->v3_expires_at > time()) {
-
-                $postargs = array(
-                    'username' => get_option('bmltwf_bmlt_username'),
-                    'password' => $decrypted
-                );
-                $this->debug_log("inside authenticateRootServer v3 auth");
-                $url = get_option('bmltwf_bmlt_server_address') . "api/v1/auth/token";
-                $this->debug_log($url);
-                $response = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
-                $this->debug_log(($response));
-
-                $response_code = \wp_remote_retrieve_response_code($response);
-
-                if ($response_code != 200) {
-                    return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
-                }
-
-                $auth_details = json_decode(\wp_remote_retrieve_body($response), true);
-                $this->v3_access_token = $auth_details['access_token'];
-                $this->v3_expires_at = $auth_details['expires_at'];
-            }
-            return true;
+            return $this->authenticateRootServerv3();
+        } else {
+            return $this->authenticateRootServerv2();
         }
-        // v2 flow
-        else {
-            // legacy auth
+    }
+
+    private function decodeBMLTPassword()
+    {
+        $encrypted = get_option('bmltwf_bmlt_password');
+        $this->debug_log("retrieved encrypted bmlt password");
+        // $this->debug_log(($encrypted));
+
+        if ($encrypted === false) {
+            return new \WP_Error('bmltwf', 'Error unpacking password.');
+        }
+
+        if (defined('BMLTWF_RUNNING_UNDER_PHPUNIT')) {
+            $nonce_salt = BMLTWF_PHPUNIT_NONCE_SALT;
+        } else {
+            $nonce_salt = NONCE_SALT;
+        }
+
+        $decrypted = $this->secrets_decrypt($nonce_salt, $encrypted);
+        if ($decrypted === false) {
+            return new \WP_Error('bmltwf', 'Error decrypting password.');
+        }
+        return $decrypted;
+    }
+
+    private function authenticateRootServerv3()
+    {
+        $decrypted = $this->decodeBMLTPassword();
+        if(\is_wp_error($decrypted))
+        {
+            return $decrypted;
+        }
+
+        if (!$this->is_v3_token_valid()) {
+
             $postargs = array(
-                'admin_action' => 'login',
-                'c_comdef_admin_login' => get_option('bmltwf_bmlt_username'),
-                'c_comdef_admin_password' => $decrypted
+                'username' => get_option('bmltwf_bmlt_username'),
+                'password' => $decrypted
             );
-            $url = get_option('bmltwf_bmlt_server_address') . "index.php";
+            $this->debug_log("inside authenticateRootServer v3 auth");
+            $url = get_option('bmltwf_bmlt_server_address') . "api/v1/auth/token";
+            $this->debug_log($url);
+            $response = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
+            $this->debug_log(($response));
 
-            // $this->debug_log("AUTH URL = " . $url);
-            // $ret = $this->post($url, null, $postargs);
-            $ret = \wp_safe_remote_post($url, $this->set_args(null, http_build_query($postargs)));
+            $response_code = \wp_remote_retrieve_response_code($response);
 
-            if ((is_wp_error($ret)) || (\wp_remote_retrieve_response_code($ret) != 200)) {
-                return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
+            if ($response_code != 200) {
+                return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
             }
 
-            if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
-            {
-                $this->cookies = null;
-                return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
-            }
-
-            $this->cookies = \wp_remote_retrieve_cookies($ret);
+            $auth_details = json_decode(\wp_remote_retrieve_body($response), true);
+            $this->v3_access_token = $auth_details['access_token'];
+            $this->v3_expires_at = $auth_details['expires_at'];
         }
+        return true;
+    }
+
+    private function authenticateRootServerv2()
+    {
+
+        $decrypted = $this->decodeBMLTPassword();
+        if(\is_wp_error($decrypted))
+        {
+            return $decrypted;
+        }
+
+        // legacy auth
+        $postargs = array(
+            'admin_action' => 'login',
+            'c_comdef_admin_login' => get_option('bmltwf_bmlt_username'),
+            'c_comdef_admin_password' => $decrypted
+        );
+        $url = get_option('bmltwf_bmlt_server_address') . "index.php";
+
+        // $this->debug_log("AUTH URL = " . $url);
+        // $ret = $this->post($url, null, $postargs);
+        $ret = \wp_safe_remote_post($url, $this->set_args(null, http_build_query($postargs)));
+
+        if ((is_wp_error($ret)) || (\wp_remote_retrieve_response_code($ret) != 200)) {
+            return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
+        }
+
+        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
+        {
+            $this->cookies = null;
+            return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');
+        }
+
+        $this->cookies = \wp_remote_retrieve_cookies($ret);
+        return true;
     }
 
     private function set_args($cookies, $body = null, $headers = null, $method = null)
@@ -1005,7 +1017,7 @@ class Integration
         if ($this->is_v3_server()) {
             $this->debug_log("inside get v3 auth");
 
-            if (!$this->v3_access_token) {
+            if (!$this->is_v3_token_valid()) {
                 $ret =  $this->authenticateRootServer();
                 if (is_wp_error($ret)) {
                     return $ret;
@@ -1034,7 +1046,7 @@ class Integration
         if ($this->is_v3_server()) {
             $this->debug_log("inside post v3 auth");
 
-            if (!$this->v3_access_token) {
+            if (!$this->is_v3_token_valid()) {
                 $ret =  $this->authenticateRootServer();
                 if (is_wp_error($ret)) {
                     return $ret;

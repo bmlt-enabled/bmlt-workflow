@@ -10,3 +10,4 @@ package-lock.json
 /tests/testcafe/setup/blank_bmlt.sql
 logs/
 /releases
+/coverage
