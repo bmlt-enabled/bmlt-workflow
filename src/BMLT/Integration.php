@@ -148,8 +148,8 @@ class Integration
             "Accept: */*",
         );
 
-        $resp = wp_safe_remote_get($url, array('headers' => $headers));
-        $this->debug_log("wp_safe_remote_get RETURNS");
+        $resp = wp_remote_get($url, array('headers' => $headers));
+        $this->debug_log("wp_remote_get RETURNS");
         $this->debug_log(($resp));
 
         libxml_use_internal_errors(true);
@@ -182,8 +182,8 @@ class Integration
             "Accept: */*",
         );
 
-        $resp = wp_safe_remote_get($url, array('headers' => $headers));
-        $this->debug_log("wp_safe_remote_get RETURNS");
+        $resp = wp_remote_get($url, array('headers' => $headers));
+        $this->debug_log("wp_remote_get RETURNS");
         $this->debug_log(($resp));
 
         if ((!is_array($resp)) ||  is_wp_error($resp)) {
@@ -228,7 +228,7 @@ class Integration
         );
         $url = $server . "index.php";
         $this->debug_log($url);
-        $ret = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
+        $ret = \wp_remote_post($url, array('body' => http_build_query($postargs)));
         $this->debug_log(($ret));
 
         $response_code = \wp_remote_retrieve_response_code($ret);
@@ -254,7 +254,7 @@ class Integration
 
         $url = $server . "api/v1/auth/token";
         $this->debug_log($url);
-        $response = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
+        $response = \wp_remote_post($url, array('body' => http_build_query($postargs)));
         $this->debug_log(($response));
 
         $response_code = \wp_remote_retrieve_response_code($response);
@@ -334,7 +334,7 @@ class Integration
 
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $meeting_id;
 
-        $response = \wp_safe_remote_request($url, $this->set_args(null, $change, array("Authorization" => "Bearer " . $this->v3_access_token), 'PATCH'));
+        $response = \wp_remote_request($url, $this->set_args(null, $change, array("Authorization" => "Bearer " . $this->v3_access_token), 'PATCH'));
         $this->debug_log("v3 API RESPONSE");
         $this->debug_log($response);
 
@@ -424,7 +424,7 @@ class Integration
         }
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/servicebodies';
         $this->debug_log($url);
-        $response = \wp_safe_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
+        $response = \wp_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
         $this->debug_log("v3 API RESPONSE");
         $this->debug_log(\wp_remote_retrieve_body($response));
 
@@ -495,7 +495,7 @@ class Integration
 
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $meeting_id;
         $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), 'DELETE');
-        $response = \wp_safe_remote_request($url, $args);
+        $response = \wp_remote_request($url, $args);
 
         if (\wp_remote_retrieve_response_code($response) != 204) {
             return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
@@ -541,7 +541,7 @@ class Integration
 
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/formats';
         $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token));
-        $ret = \wp_safe_remote_get($url, $args);
+        $ret = \wp_remote_get($url, $args);
         $formatarr = json_decode(\wp_remote_retrieve_body($ret), 1);
 
         $newformat = array();
@@ -608,7 +608,7 @@ class Integration
     public function getMeetingStates()
     {
         // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
+        $response = \wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
 
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
@@ -629,7 +629,7 @@ class Integration
      */
     public function getMeetingCounties()
     {
-        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
+        $response = \wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
         // $formatarr = json_decode(\wp_remote_retrieve_body($ret), 1);
 
         // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
@@ -709,7 +709,7 @@ class Integration
         }
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings';
 
-        $response = \wp_safe_remote_post($url, $this->set_args(null, $meeting, array("Authorization" => "Bearer " . $this->v3_access_token)));
+        $response = \wp_remote_post($url, $this->set_args(null, $meeting, array("Authorization" => "Bearer " . $this->v3_access_token)));
         $this->debug_log("v3 API RESPONSE");
         $this->debug_log($response);
 
@@ -753,7 +753,7 @@ class Integration
 
     private function isAutoGeocodingEnabledv3()
     {
-        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
+        $response = \wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
@@ -794,7 +794,7 @@ class Integration
 
     public function getDefaultLatLong()
     {
-        $response = \wp_safe_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
+        $response = \wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
 
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
@@ -825,7 +825,7 @@ class Integration
             "Accept: */*",
         );
 
-        $resp = \wp_safe_remote_get($url, array('headers' => $headers));
+        $resp = \wp_remote_get($url, array('headers' => $headers));
 
         if ((!is_array($resp)) ||  is_wp_error($resp)) {
             return $this->bmltwf_integration_error('Server error geolocating address', 500);
@@ -931,7 +931,7 @@ class Integration
             $this->debug_log("inside authenticateRootServer v3 auth");
             $url = get_option('bmltwf_bmlt_server_address') . "api/v1/auth/token";
             $this->debug_log($url);
-            $response = \wp_safe_remote_post($url, array('body' => http_build_query($postargs)));
+            $response = \wp_remote_post($url, array('body' => http_build_query($postargs)));
             $this->debug_log(($response));
 
             $response_code = \wp_remote_retrieve_response_code($response);
@@ -966,7 +966,7 @@ class Integration
 
         // $this->debug_log("AUTH URL = " . $url);
         // $ret = $this->post($url, null, $postargs);
-        $ret = \wp_safe_remote_post($url, $this->set_args(null, http_build_query($postargs)));
+        $ret = \wp_remote_post($url, $this->set_args(null, http_build_query($postargs)));
 
         if ((is_wp_error($ret)) || (\wp_remote_retrieve_response_code($ret) != 200)) {
             return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
@@ -1023,10 +1023,10 @@ class Integration
                     return $ret;
                 }
             }
-            $ret = \wp_safe_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
+            $ret = \wp_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
             return $ret;
         } else {
-            $ret = \wp_safe_remote_get($url, $this->set_args($cookies));
+            $ret = \wp_remote_get($url, $this->set_args($cookies));
             if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
             {
                 $ret =  $this->authenticateRootServer();
@@ -1034,7 +1034,7 @@ class Integration
                     return $ret;
                 }
                 // try once more in case it was a session timeout
-                $ret = wp_safe_remote_get($url, $this->set_args($cookies));
+                $ret = wp_remote_get($url, $this->set_args($cookies));
             }
             return $ret;
         }
@@ -1052,13 +1052,13 @@ class Integration
                     return $ret;
                 }
             }
-            $ret = \wp_safe_remote_post($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), http_build_query($postargs)));
+            $ret = \wp_remote_post($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), http_build_query($postargs)));
             return $ret;
         } else {
             $this->debug_log("POSTING URL = " . $url);
             // $this->debug_log(($this->set_args($cookies, http_build_query($postargs))));
             // $this->debug_log("*********");
-            $ret = \wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
+            $ret = \wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
 
             if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
             {
@@ -1068,7 +1068,7 @@ class Integration
                 }
 
                 // try once more in case it was a session timeout
-                $ret = \wp_safe_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
+                $ret = \wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
             }
             return $ret;
         }
@@ -1098,7 +1098,7 @@ class Integration
             // chop trailing &
             $newargs = substr($newargs, 0, -1);
             // $this->debug_log("our post body is " . $newargs);
-            $ret = \wp_safe_remote_post($url, $this->set_args($cookies, $newargs));
+            $ret = \wp_remote_post($url, $this->set_args($cookies, $newargs));
             // $this->debug_log(($ret));
             return $ret;
         }

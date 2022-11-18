@@ -1,6 +1,5 @@
 #!/bin/bash
 
-echo hows it going
 if [[ "$WORDPRESS_MULTISITE_INSTALL" -eq "true" ]]
 then
     cp -f /var/www/html/htaccess.multisite /var/www/html/.htaccess

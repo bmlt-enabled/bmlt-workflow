@@ -71,7 +71,7 @@ Line: $errorLine
         Functions\when('\apply_filters')->returnArg(2);
         Functions\when('\current_time')->justReturn('2022-03-23 09:22:44');
         Functions\when('\absint')->returnArg();
-        Functions\when('\wp_safe_remote_post')->returnArg();
+        Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\get_option')->justReturn("failure");
 
     }

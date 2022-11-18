@@ -11,3 +11,5 @@ package-lock.json
 logs/
 /releases
 /coverage
+/akismet
+hello.php
