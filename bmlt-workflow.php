@@ -22,7 +22,7 @@
  * Description: Workflows for BMLT meeting management!
  * Version: 1.0.10
  * Requires at least: 5.2
- * Tested up to: 6.1
+ * Tested up to: 6.1.1
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/

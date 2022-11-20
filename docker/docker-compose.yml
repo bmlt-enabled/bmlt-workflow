@@ -4,13 +4,11 @@ services:
   wordpress-php7-singlesite:
     build:
       context: .
-      dockerfile: Dockerfile-wp6.0.3-php7.4
+      dockerfile: Dockerfile-wp-php7.4
     depends_on:
       - db-php7-singlesite
     restart: always
-    ports:
-      - 8080:80
-      - 7443:443
+    tmpfs: /var/www/html
     environment:
       WORDPRESS_DB_HOST: db-php7
       WORDPRESS_DB_USER: wordpress
@@ -25,8 +23,7 @@ services:
   db-php7-singlesite:
     image: mysql:5.7
     restart: always
-    ports:
-      - 3305:3306
+    tmpfs: /var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: somewordpress
       MYSQL_DATABASE: wordpress
@@ -36,31 +33,28 @@ services:
   wordpress-php8-singlesite:
     build:
       context: .
-      dockerfile: Dockerfile-wp6.0.3-php8.1
+      dockerfile: Dockerfile-wp-php8.1
     depends_on:
       - db-php8-singlesite
     restart: always
-    ports:
-      - 8081:80
-      - 7444:443
+    command: /usr/local/bin/wp-install.sh
+    tmpfs: /var/www/html
     environment:
       WORDPRESS_DB_HOST: db-php8-singlesite
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_MULTISITE_INSTALL: true
+      WORDPRESS_HOST: wordpress-php8-singlesite
       WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
-      WORDPRESS_MULTISITE_PORT: 8081
-      WORDPRESS_MULTISITE_HOST: localhost
     volumes:
-      - ../:/var/www/html/wp-content/plugins
+      - ../:/var/www/html/wp-content/plugins/bmlt-workflow
       - ./logs/:/var/log/apache2
+      - ../../wpcache:/root/.wp-cli/cache/core/
 
   db-php8-singlesite:
     image: mysql:5.7
     restart: always
-    ports:
-      - 3307:3306
+    tmpfs: /var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: somewordpress
       MYSQL_DATABASE: wordpress
@@ -70,14 +64,12 @@ services:
   wordpress-php8-multisitesingle:
     build:
       context: .
-      dockerfile: Dockerfile-wp6.0.3-php8.1
+      dockerfile: Dockerfile-wpmultisite-php8.1
     depends_on:
       - db-php8-multisitesingle
     command: /usr/local/bin/multisite-install.sh
     restart: always
-    ports:
-      - 8082:80
-      - 7445:443
+    tmpfs: /var/www/html
     environment:
       WORDPRESS_DB_HOST: db-php8-multisitesingle
       WORDPRESS_DB_USER: wordpress
@@ -86,8 +78,7 @@ services:
       WORDPRESS_DEBUG: true
       WORDPRESS_MULTISITE_INSTALL: true
       WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
-      WORDPRESS_MULTISITE_PORT: 8082
-      WORDPRESS_MULTISITE_HOST: localhost
+      WORDPRESS_MULTISITE_HOST: ordpress-php8-multisitesingle
     volumes:
       - ../:/var/www/html/wp-content/plugins
       - ./logs/:/var/log/apache2
@@ -95,8 +86,7 @@ services:
   db-php8-multisitesingle:
     image: mysql:5.7
     restart: always
-    ports:
-      - 3308:3306
+    tmpfs: /var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: somewordpress
       MYSQL_DATABASE: wordpress
@@ -106,14 +96,12 @@ services:
   wordpress-php8-multinetwork:
     build:
       context: .
-      dockerfile: Dockerfile-wp6.0.3-php8.1
+      dockerfile: Dockerfile-wpmultisite-php8.1
     depends_on:
       - db-php8-multinetwork
     command: /usr/local/bin/multisite-install.sh
     restart: always
-    # ports:
-    #   - 8083:80
-    #   - 7446:443
+    tmpfs: /var/www/html
     environment:
       WORDPRESS_DB_HOST: db-php8-multinetwork
       WORDPRESS_DB_USER: wordpress
@@ -122,8 +110,7 @@ services:
       WORDPRESS_DEBUG: true
       WORDPRESS_MULTISITE_INSTALL: true
       WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
-      WORDPRESS_MULTISITE_PORT: 8083
-      WORDPRESS_MULTISITE_HOST: localhost
+      WORDPRESS_MULTISITE_HOST: wordpress-php8-multinetwork
     volumes:
       - ../:/var/www/html/wp-content/plugins
       - ./logs/:/var/log/apache2
@@ -131,8 +118,7 @@ services:
   db-php8-multinetwork:
     image: mysql:5.7
     restart: always
-    # ports:
-    #   - 3309:3306
+    tmpfs: /var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: somewordpress
       MYSQL_DATABASE: wordpress
@@ -142,14 +128,12 @@ services:
   wordpress-php8-singlesite-bmlt3x:
     build:
       context: .
-      dockerfile: Dockerfile-wp6.0.3-php8.1
+      dockerfile: Dockerfile-wp-php8.1
     depends_on:
       - db-php8-singlesite
+    tmpfs: /var/www/html
     restart: always
     command: /usr/local/bin/wp-install.sh
-    ports:
-      - 8084:80
-      - 7447:443
     environment:
       WORDPRESS_DB_HOST: db-php8-singlesite-bmlt3x
       WORDPRESS_DB_USER: wordpress
@@ -163,10 +147,19 @@ services:
   db-php8-singlesite-bmlt3x:
     image: mysql:5.7
     restart: always
-    ports:
-      - 3310:3306
+    tmpfs: /var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD: somewordpress
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
+
+  testcafe:
+    image: testcafe/testcafe
+    environment:
+      - NODE_PATH=/opt/testcafe/node_modules:/opt
+    volumes:
+      - ..:/plugin
+    security_opt:
+      - seccomp:unconfined
+    entrypoint: ["/opt/testcafe/docker/testcafe-docker.sh", "chromium", "/plugin/tests"]

@@ -1,11 +1,11 @@
-FROM wordpress:6.0.3-php8.1-apache
+FROM wordpress:6.1.1-php7.4-apache
+
 
 RUN apt-get update && \
 	apt-get install -y  --no-install-recommends ssl-cert && \
 	rm -r /var/lib/apt/lists/* && \
 	a2enmod ssl rewrite expires && \
-	a2ensite default-ssl && \
-    apt-get update && apt install -y mariadb-client
+	a2ensite default-ssl
 
 ENV PHP_INI_PATH "/usr/local/etc/php/php.ini"
 
@@ -18,14 +18,6 @@ RUN pecl install xdebug-3.1.2 && docker-php-ext-enable xdebug \
     && echo "xdebug.idekey=IDEA_DEBUG" >> ${PHP_INI_PATH} \
     && echo "xdebug.remote_autostart=1" >> ${PHP_INI_PATH} \
     && echo "xdebug.remote_log=/tmp/xdebug.log" >> ${PHP_INI_PATH}
-
-RUN curl -o /usr/local/bin/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-COPY ./wpcli-user.sh /usr/local/bin/wp
-COPY ./multisite-install.sh /usr/local/bin/multisite-install.sh
-COPY ./htaccess.multisite /var/www/html/htaccess.multisite
-RUN chmod +x /usr/local/bin/wp
-RUN chmod +x /usr/local/bin/wp-cli.phar
-RUN chmod +x /usr/local/bin/multisite-install.sh
 
 EXPOSE 80
 EXPOSE 443
