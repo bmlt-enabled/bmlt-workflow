@@ -11,7 +11,7 @@ do
     DONE=$?
     sleep 1
 done
-wp core install --url=http://docker-$WORDPRESS_HOST --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com --path=/var/www/html
+wp core install --url=http://$WORDPRESS_HOST --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com --path=/var/www/html
 
 # activate plugin
 wp plugin activate --path=$sitelocalpath "bmlt-workflow"

@@ -1,7 +1,7 @@
 #!/bin/sh -x 
 
 export sitelocalpath=/var/www/html
-export bmltip=`getent hosts bmlt3x | awk '{print $1}'`
+export bmltip=`getent hosts bmlt2x | awk '{print $1}'`
 cd $sitelocalpath
 wp core download
 export DONE=1
@@ -11,7 +11,7 @@ do
     DONE=$?
     sleep 1
 done
-wp core install --url=http://docker-$WORDPRESS_HOST --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com --path=/var/www/html
+wp core install --url=http://$WORDPRESS_HOST --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com --path=/var/www/html
 
 # activate plugin
 wp plugin activate --path=$sitelocalpath "bmlt-workflow"
@@ -24,5 +24,24 @@ wp post create --path=$sitelocalpath --post_type=page --post_title='testpage' --
 # create our test users
 wp user create --path=$sitelocalpath submission aa123@a.com --user_pass=submission
 wp user create --path=$sitelocalpath nopriv aa456@a.com --user_pass=nopriv
+
+sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" /var/www/html/wp-content/plugins/bmlt-workflow/config.php
+
+cat >/usr/local/etc/php/conf.d/error-logging.ini <<EOF
+error_reporting = E_ERROR | E_WARNING | E_PARSE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING | E_RECOVERABLE_ERROR
+display_errors = Off
+display_startup_errors = Off
+log_errors = On
+error_log = /var/log/php_errors.log
+log_errors_max_len = 1024
+ignore_repeated_errors = On
+ignore_repeated_source = Off
+html_errors = Off
+EOF
+
+touch /var/log/php_errors.log
+chmod 777 /var/log/php_errors.log
+
+echo "<?php phpinfo();" >> /var/www/html/a.php
 
 apache2-foreground

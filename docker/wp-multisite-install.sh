@@ -1,7 +1,8 @@
 #!/bin/sh -x 
 
+
 export sitelocalpath=/var/www/html
-export bmltip=`getent hosts bmlt3x | awk '{print $1}'`
+export bmltip=`getent hosts bmlt2x | awk '{print $1}'`
 cd $sitelocalpath
 wp core download
 export DONE=1
@@ -11,8 +12,8 @@ do
     DONE=$?
     sleep 1
 done
-cp -f /var/www/html/htaccess.multisite /var/www/html/.htaccess
-wp core multisite install --url=http://docker-$WORDPRESS_HOST --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com --path=/var/www/html
+cp -f /usr/local/lib/htaccess.multisite /var/www/html/.htaccess
+wp core multisite-install --base=/$WORDPRESS_HOST/ --url=http://$WORDPRESS_HOST/$WORDPRESS_HOST/ --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com --path=/var/www/html
 
 # activate plugin
 wp plugin activate --path=$sitelocalpath "bmlt-workflow"

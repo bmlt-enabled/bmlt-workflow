@@ -21,11 +21,11 @@ RUN pecl install xdebug-3.1.2 && docker-php-ext-enable xdebug \
 
 RUN curl -o /usr/local/bin/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 COPY ./wpcli-user.sh /usr/local/bin/wp
-COPY ./multisite-install.sh /usr/local/bin/multisite-install.sh
-COPY ./htaccess.multisite /var/www/html/htaccess.multisite
+COPY ./wp-multisite-install.sh /usr/local/bin/wp-multisite-install.sh
+COPY ./htaccess.multisite /usr/local/lib/htaccess.multisite
 RUN chmod +x /usr/local/bin/wp
 RUN chmod +x /usr/local/bin/wp-cli.phar
-RUN chmod +x /usr/local/bin/multisite-install.sh
+RUN chmod +x /usr/local/bin/wp-multisite-install.sh
 
 EXPOSE 80
 EXPOSE 443

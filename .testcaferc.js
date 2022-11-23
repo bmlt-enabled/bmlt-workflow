@@ -9,8 +9,10 @@ const multisite_noplugin = "/noplugin";
 const multisite_plugin2 = "/plugin2";
 const admin_logon_page = "/wp-admin/admin.php";
 const formpage = "/testpage/";
-const admin_backup_json = "/bmltwf/v1/options/backup";
-const backuppath = "/index.php" + sitejsonurl + admin_backup_json;
+const admin_backup_json_path = "/bmltwf/v1/options/backup";
+const backuppath = "/index.php" + sitejsonurl + admin_backup_json_path;
+const admin_restore_json_path = "/bmltwf/v1/options/restore";
+const restorepath = "/index.php" + sitejsonurl + admin_restore_json_path;
 
 const execSync = require("child_process").execSync;
 
@@ -87,7 +89,9 @@ module.exports = {
     submission_reviewer_pass: password_submission_single,
     submission_reviewer_nopriv_user: username_nopriv_single,
     submission_reviewer_nopriv_pass: password_nopriv_single,
-    admin_backup_json: siteurl_single + backuppath,
+    admin_backup_json: siteurl_single + admin_backup_json_path,
+    admin_restore_json: siteurl_single + admin_restore_json_path,
+
     // multisite
     formpage_multisingle: siteurl_multisingle + multisite_plugin + formpage,
     admin_logon_page_multisingle: siteurl_multisingle + admin_logon_page,
@@ -138,15 +142,25 @@ module.exports = {
     // // test case resetters
     // admin_submission_reset: "http://" + test_ip + "/github/db_submissions.php",
     // blank_bmlt: "http://" + test_ip + "/github/blank_bmlt.php",
+    blank_bmlt: "docker-compose -f /testroot/bmlt-workflow/docker/bmlt2x.yml --env-file /testroot/bmlt-workflow/docker/bmlt.env restart bmlt2x db2x",
     // blank_bmlt3x: "http://" + test_ip + "/github/blank_bmlt3x.php",
+    blank_bmlt3x: "docker-compose -f /testroot/bmlt-workflow/docker/bmlt3x.yml --env-file /testroot/bmlt-workflow/docker/bmlt.env restart bmlt3x db3x",
     // blank_submission: "http://" + test_ip + "/github/blank_submission.php",
+    blank_submission: "docker-compose -f /testroot/bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-singlesite db-php8-singlesite",
     // blank_submission_multisingle: "http://" + test_ip + "/github/blank_submission_multisingle.php",
+    blank_submission_multisingle: "docker-compose -f /testroot/bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-multisitesingle db-php8-multisitesingle",
     // blank_submission_multinetwork: "http://" + test_ip + "/github/blank_submission_multinetwork.php",
+    blank_submission_multinetwork: "docker-compose -f /testroot/bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-multinetwork db-php8-multinetwork",
     // blank_submission_wpsinglebmlt3x: "http://" + test_ip + "/github/blank_submission_wpsinglebmlt3x.php",
+    blank_submission_wpsinglebmlt3x: "docker-compose -f /testroot/bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-singlesite-bmlt3x db-php8-singlesite-bmlt3x",
     // blank_service_bodies: "http://" + test_ip + "/github/blank_service_bodies.php",
     // blank_service_bodies_multisingle: "http://" + test_ip + "/github/blank_service_bodies_multisingle.php",
     // blank_service_bodies_multinetwork: "http://" + test_ip + "/github/blank_service_bodies_multinetwork.php",
     // blank_service_bodies_wpsinglebmlt3xmultinetwork: "http://" + test_ip + "/github/blank_service_bodies_wpsinglebmlt3x.php",
+    blank_service_bodies: "docker-compose -f /testroot/bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-singlesite db-php8-singlesite",
+    blank_service_bodies_multisingle: "docker-compose -f /testroot/bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-multisitesingle db-php8-multisitesingle",
+    blank_service_bodies_multinetwork: "docker-compose -f /testroot/bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-multinetwork db-php8-multinetwork",
+    blank_service_bodies_wpsinglebmlt3x: "docker-compose -f /testroot/bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-singlesite-bmlt3x db-php8-singlesite-bmlt3x",
     // e2e_test: "http://" + test_ip + "/github/e2e_test.php",
     // bmlt_states_on: "http://" + test_ip + "/github/bmlt_states_on.php",
     // bmlt_states_off: "http://" + test_ip + "/github/bmlt_states_off.php",

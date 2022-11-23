@@ -15,7 +15,7 @@ services:
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DEBUG: true
-      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
     volumes:
       - ../:/var/www/html/wp-content/plugins
       - ./logs/:/var/log/apache2
@@ -36,6 +36,8 @@ services:
       dockerfile: Dockerfile-wp-php8.1
     depends_on:
       - db-php8-singlesite
+    ports:
+      - 80:80
     restart: always
     command: /usr/local/bin/wp-install.sh
     tmpfs: /var/www/html
@@ -45,11 +47,12 @@ services:
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_HOST: wordpress-php8-singlesite
-      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
     volumes:
       - ../:/var/www/html/wp-content/plugins/bmlt-workflow
       - ./logs/:/var/log/apache2
       - ../../wpcache:/root/.wp-cli/cache/core/
+      - /var/run/docker.sock.raw:/var/run/docker.sock
 
   db-php8-singlesite:
     image: mysql:5.7
@@ -67,7 +70,7 @@ services:
       dockerfile: Dockerfile-wpmultisite-php8.1
     depends_on:
       - db-php8-multisitesingle
-    command: /usr/local/bin/multisite-install.sh
+    command: /usr/local/bin/wp-multisite-install.sh
     restart: always
     tmpfs: /var/www/html
     environment:
@@ -77,11 +80,12 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DEBUG: true
       WORDPRESS_MULTISITE_INSTALL: true
-      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
-      WORDPRESS_MULTISITE_HOST: ordpress-php8-multisitesingle
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+      WORDPRESS_HOST: wordpress-php8-multisitesingle
     volumes:
       - ../:/var/www/html/wp-content/plugins
       - ./logs/:/var/log/apache2
+      - ../../wpcache:/root/.wp-cli/cache/core/
 
   db-php8-multisitesingle:
     image: mysql:5.7
@@ -99,7 +103,7 @@ services:
       dockerfile: Dockerfile-wpmultisite-php8.1
     depends_on:
       - db-php8-multinetwork
-    command: /usr/local/bin/multisite-install.sh
+    command: /usr/local/bin/wp-multisite-install.sh
     restart: always
     tmpfs: /var/www/html
     environment:
@@ -109,11 +113,12 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_DEBUG: true
       WORDPRESS_MULTISITE_INSTALL: true
-      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
-      WORDPRESS_MULTISITE_HOST: wordpress-php8-multinetwork
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+      WORDPRESS_HOST: wordpress-php8-multinetwork
     volumes:
       - ../:/var/www/html/wp-content/plugins
       - ./logs/:/var/log/apache2
+      - ../../wpcache:/root/.wp-cli/cache/core/
 
   db-php8-multinetwork:
     image: mysql:5.7
@@ -139,10 +144,12 @@ services:
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
-      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z\$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+      WORDPRESS_HOST: wordpress-php8-singlesite-bmlt3x
     volumes:
       - ../:/var/www/html/wp-content/plugins
       - ./logs/:/var/log/apache2
+      - ../../wpcache:/root/.wp-cli/cache/core/
 
   db-php8-singlesite-bmlt3x:
     image: mysql:5.7
@@ -155,11 +162,14 @@ services:
       MYSQL_PASSWORD: wordpress
 
   testcafe:
-    image: testcafe/testcafe
+    build:
+      context: .
+      dockerfile: Dockerfile-testcafe
     environment:
       - NODE_PATH=/opt/testcafe/node_modules:/opt
     volumes:
-      - ..:/plugin
-    security_opt:
-      - seccomp:unconfined
-    entrypoint: ["/opt/testcafe/docker/testcafe-docker.sh", "chromium", "/plugin/tests"]
+      - ../..:/testroot
+      - /var/run/docker.sock.raw:/var/run/docker.sock
+    # security_opt:
+    #   - seccomp:unconfined
+    entrypoint: ["/opt/testcafe/docker/testcafe-docker.sh", "chromium", "/testroot/bmlt-workflow/tests", "-S", "-s","path=/testroot/bmlt-workflow/tests/testcafe/screenshots,fullPage=true"]
