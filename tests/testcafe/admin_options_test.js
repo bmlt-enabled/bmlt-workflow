@@ -79,7 +79,9 @@ fixture`admin_options_fixture`
 
     await insert_submissions(t);
 
-    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page);
+    console.log("admin logon = "+userVariables.admin_logon_page_single);
+
+    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
   })
   .requestHooks(logger);
 
@@ -117,7 +119,7 @@ test("Restore", async (t) => {
   // click ok
   await click_dialog_button_by_index(ao.restore_warning_dialog_parent, 1);
   // dialog closes after ok button
-  await t.expect(ao.restore_warning_dialog_parent.visible).eql(false).navigateTo(userVariables.admin_submissions_page);
+  await t.expect(ao.restore_warning_dialog_parent.visible).eql(false).navigateTo(userVariables.admin_submissions_page_single);
   // assert id = 22222
   var row = 0;
   var column = 0;
@@ -157,7 +159,7 @@ test("Options_Save", async (t) => {
 test("Check_Optional_Fields", async (t) => {
   // test optional fields with 'display and required' option
 
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
   await check_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_nation_required_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
@@ -207,7 +209,7 @@ test("Check_Optional_Fields", async (t) => {
     // test optional fields with 'hidden' option
 
     .useRole(bmltwf_admin)
-    .navigateTo(userVariables.admin_settings_page);
+    .navigateTo(userVariables.admin_settings_page_single);
 
   await select_dropdown_by_text(ao.bmltwf_fso_feature, "Disabled");
 
@@ -230,7 +232,7 @@ test("Check_Optional_Fields", async (t) => {
 
     // test optional fields with 'display' option
     .useRole(bmltwf_admin)
-    .navigateTo(userVariables.admin_settings_page);
+    .navigateTo(userVariables.admin_settings_page_single);
 
   await select_dropdown_by_text(ao.bmltwf_fso_feature, "Enabled");
   

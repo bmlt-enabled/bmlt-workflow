@@ -43,7 +43,7 @@ fixture`admin_submissions_fixture`.beforeEach(async (t) => {
   await configure_service_bodies(t);
   await insert_submissions(t);
 
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 });
 
 test("Approve_New_Meeting", async (t) => {
@@ -88,11 +88,11 @@ test("Approve_Modify_Meeting", async (t) => {
 test("Approve_Close_Meeting_With_Unpublish", async (t) => {
 
   // set it to unpublish
-  await t.navigateTo(userVariables.admin_settings_page);
+  await t.navigateTo(userVariables.admin_settings_page_single);
   await select_dropdown_by_text(ao.bmltwf_delete_closed_meetings, "Unpublish");
   await t.click(ao.submit);
   await ao.settings_updated();
-  await t.navigateTo(userVariables.admin_submissions_page);
+  await t.navigateTo(userVariables.admin_submissions_page_single);
 
   // close meeting = row 0
   var row = 0;
@@ -115,11 +115,11 @@ test("Approve_Close_Meeting_With_Unpublish", async (t) => {
 test("Approve_Close_Meeting_With_Delete", async (t) => {
 
   // set it to delete
-  await t.navigateTo(userVariables.admin_settings_page);
+  await t.navigateTo(userVariables.admin_settings_page_single);
   await select_dropdown_by_text(ao.bmltwf_delete_closed_meetings, "Delete");
   await t.click(ao.submit);
   await ao.settings_updated();
-  await t.navigateTo(userVariables.admin_submissions_page);
+  await t.navigateTo(userVariables.admin_submissions_page_single);
 
   // close meeting = row 0
   var row = 0;

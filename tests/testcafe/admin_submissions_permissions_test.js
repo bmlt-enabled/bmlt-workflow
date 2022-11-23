@@ -42,7 +42,7 @@ fixture`admin_submissions_permissions_fixture`.beforeEach(async (t) => {
 
 test("Can_View_Submissions_As_Priv_User", async (t) => {
   
-  await t.useRole(bmltwf_submission_reviewer).navigateTo(userVariables.admin_submissions_page)
+  await t.useRole(bmltwf_submission_reviewer).navigateTo(userVariables.admin_submissions_page_single)
   // .debug()
   .expect(as.dt_submission_wrapper.visible).eql(true);
 
@@ -50,7 +50,7 @@ test("Can_View_Submissions_As_Priv_User", async (t) => {
 
 test("Cant_View_Submissions_As_Non_Priv", async (t) => {
 
-  await t.useRole(bmltwf_submission_nopriv).navigateTo(userVariables.admin_submissions_page)
+  await t.useRole(bmltwf_submission_nopriv).navigateTo(userVariables.admin_submissions_page_single)
   .expect(as.dt_submission_wrapper.visible).eql(false);
 
 });
@@ -58,7 +58,7 @@ test("Cant_View_Submissions_As_Non_Priv", async (t) => {
 test("Cant_Delete_Submissions_As_Trusted_Servant", async (t) => {
 
   await t.useRole(bmltwf_admin)
-  .navigateTo(userVariables.admin_settings_page);
+  .navigateTo(userVariables.admin_settings_page_single);
 
   // let us save successfully
   const testfso = randstr() + "@" + randstr() + ".com";
@@ -76,7 +76,7 @@ test("Cant_Delete_Submissions_As_Trusted_Servant", async (t) => {
   await t.click(ao.submit);
   await ao.settings_updated();
 
-  await t.useRole(bmltwf_submission_reviewer).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bmltwf_submission_reviewer).navigateTo(userVariables.admin_submissions_page_single);
   // check delete button is disabled
   var row = 0;
   await click_table_row_column(as.dt_submission, row, 0);
@@ -91,7 +91,7 @@ test("Cant_Delete_Submissions_As_Trusted_Servant", async (t) => {
 test("Can_Delete_Submissions_As_Admin", async (t) => {
 
   await t.useRole(bmltwf_admin)
-  .navigateTo(userVariables.admin_settings_page);
+  .navigateTo(userVariables.admin_settings_page_single);
 
   // let us save successfully
   const testfso = randstr() + "@" + randstr() + ".com";
@@ -109,7 +109,7 @@ test("Can_Delete_Submissions_As_Admin", async (t) => {
   await t.click(ao.submit);
   await ao.settings_updated();
 
-  await t.navigateTo(userVariables.admin_submissions_page);
+  await t.navigateTo(userVariables.admin_submissions_page_single);
   // check delete button is enabled
   var row = 0;
   await click_table_row_column(as.dt_submission, row, 0);
@@ -124,7 +124,7 @@ test("Can_Delete_Submissions_As_Admin", async (t) => {
 test("Can_Delete_Submissions_As_Trusted_Servant", async (t) => {
 
   await t.useRole(bmltwf_admin)
-  .navigateTo(userVariables.admin_settings_page);
+  .navigateTo(userVariables.admin_settings_page_single);
 
   // let us save successfully
   const testfso = randstr() + "@" + randstr() + ".com";
@@ -142,7 +142,7 @@ test("Can_Delete_Submissions_As_Trusted_Servant", async (t) => {
   await t.click(ao.submit);
   await ao.settings_updated();
 
-  await t.useRole(bmltwf_submission_reviewer).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bmltwf_submission_reviewer).navigateTo(userVariables.admin_submissions_page_single);
   // check delete button is enabled
   var row = 0;
   await click_table_row_column(as.dt_submission, row, 0);

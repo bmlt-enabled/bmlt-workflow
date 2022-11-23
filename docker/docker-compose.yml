@@ -167,9 +167,10 @@ services:
       dockerfile: Dockerfile-testcafe
     environment:
       - NODE_PATH=/opt/testcafe/node_modules:/opt
+    tmpfs: /tmp
     volumes:
       - ../..:/testroot
       - /var/run/docker.sock.raw:/var/run/docker.sock
     # security_opt:
     #   - seccomp:unconfined
-    entrypoint: ["/opt/testcafe/docker/testcafe-docker.sh", "chromium", "/testroot/bmlt-workflow/tests", "-S", "-s","path=/testroot/bmlt-workflow/tests/testcafe/screenshots,fullPage=true"]
+    entrypoint: ["/opt/testcafe/docker/testcafe-docker.sh", "firefox", "/testroot/bmlt-workflow/tests", "-S", "-s","path=/testroot/bmlt-workflow/tests/testcafe/screenshots,fullPage=true,thumbnails=false","--hostname","localhost","--retry-test-pages"]

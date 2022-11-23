@@ -38,7 +38,7 @@ import { reset_bmlt,
 import { userVariables } from "../../.testcaferc";
 
 fixture`e2e_test_fixture`
-  // .page(userVariables.admin_submissions_page)
+  // .page(userVariables.admin_submissions_page_single)
   .beforeEach(async (t) => {
 //console.log("1");
     await reset_bmlt(t);
@@ -165,7 +165,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 
   // new meeting = row 0
   var row = 0;
@@ -260,7 +260,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 
   // new meeting = row 0
   var row = 0;
@@ -398,7 +398,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 
   // new meeting = row 0
   var row = 0;
@@ -498,7 +498,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 
   // new meeting = row 0
   var row = 0;

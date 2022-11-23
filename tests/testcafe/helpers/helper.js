@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { t, Role, Selector } from "testcafe";
+import { t, Role, Selector,ClientFunction } from "testcafe";
 import { wordpress_login } from "../models/wordpress_login";
 import { userVariables } from "../../../.testcaferc";
 import { ao } from "../models/admin_options";
@@ -28,15 +28,22 @@ export function randstr()
   return Math.random().toString(36).replace(/[^a-z]+/g, "") .substr(0, 9);
 }
 
-export const bmltwf_admin = Role(userVariables.admin_logon_page, async (t) => {
-  await t.typeText(wordpress_login.user_login, userVariables.admin_logon).typeText(wordpress_login.user_pass, userVariables.admin_password).click(wordpress_login.wp_submit);
+export const bmltwf_admin = Role(userVariables.admin_logon_page_single, async (t) => {
+  await t.maximizeWindow();
+  await t.typeText(wordpress_login.user_login, userVariables.admin_logon_single).typeText(wordpress_login.user_pass, userVariables.admin_password_single).click(wordpress_login.wp_submit);
+  const getall = ClientFunction(() => {
+  return JSON.stringify(document.querySelectorAll('*'));})
+    
+  console.log(await getall());
+  await t.expect(wordpress_login.user_login.value).eql(userVariables.admin_logon_single);
+
 });
 
-export const bmltwf_submission_reviewer = Role(userVariables.admin_logon_page, async (t) => {
+export const bmltwf_submission_reviewer = Role(userVariables.admin_logon_page_single, async (t) => {
   await t.typeText(wordpress_login.user_login, userVariables.submission_reviewer_user).typeText(wordpress_login.user_pass, userVariables.submission_reviewer_pass).click(wordpress_login.wp_submit);
 });
 
-export const bmltwf_submission_nopriv = Role(userVariables.admin_logon_page, async (t) => {
+export const bmltwf_submission_nopriv = Role(userVariables.admin_logon_page_single, async (t) => {
   await t.typeText(wordpress_login.user_login, userVariables.submission_reviewer_nopriv_user).typeText(wordpress_login.user_pass, userVariables.submission_reviewer_nopriv_pass).click(wordpress_login.wp_submit);
 });
 
@@ -106,26 +113,26 @@ export async function reset_bmlt3x(t) {
 
 export async function auto_geocoding_on(t) {
 //console.log("turning geocode on");
-  // execSync(userVariables.auto_geocoding_on);
+  execSync(userVariables.auto_geocoding_on);
   //console.log("geocode on");
 }
 
 export async function auto_geocoding_off(t) {
   //console.log("turning geocode off");
-  // execSync(userVariables.auto_geocoding_off);
+  execSync(userVariables.auto_geocoding_off);
   //console.log("geocode off");
 
 }
 
 export async function bmlt3x_auto_geocoding_on(t) {
   //console.log("turning geocode on");
-    // execSync(userVariables.bmlt3x_auto_geocoding_on);
+    execSync(userVariables.bmlt3x_auto_geocoding_on);
       //console.log("geocode on");
   }
   
   export async function bmlt3x_auto_geocoding_off(t) {
     //console.log("turning geocode off");
-    // execSync(userVariables.bmlt3x_auto_geocoding_off);
+    execSync(userVariables.bmlt3x_auto_geocoding_off);
       //console.log("geocode off");
   
   }
@@ -256,7 +263,7 @@ export async function configure_service_bodies(t) {
 
   await t
     .useRole(bmltwf_admin)
-    .navigateTo(userVariables.admin_service_bodies_page)
+    .navigateTo(userVariables.admin_service_bodies_page_single)
 
     .click(Selector("ul#select2-bmltwf_userlist_id_1-container").parent())
     .pressKey("enter")
@@ -351,7 +358,7 @@ export async function configure_service_bodies_wpsinglebmlt3x(t) {
 export async function basic_options() {
   await t
     .useRole(bmltwf_admin)
-    .navigateTo(userVariables.admin_settings_page)
+    .navigateTo(userVariables.admin_settings_page_single)
     .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
     .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
 

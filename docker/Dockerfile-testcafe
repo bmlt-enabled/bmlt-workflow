@@ -1,5 +1,6 @@
 FROM testcafe/testcafe
 USER root
 CMD chmod 777 /run/docker.sock
-RUN apk add --update docker openrc docker-compose
-USER user
+RUN apk upgrade
+RUN apk add --update docker openrc docker-cli-compose
+# USER user
