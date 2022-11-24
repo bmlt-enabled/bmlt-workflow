@@ -34,11 +34,13 @@ import {
   select_dropdown_by_value, 
   delete_submissions,
   check_checkbox,
-  uncheck_checkbox} from "./helpers/helper";
+  uncheck_checkbox, 
+  waitfor} from "./helpers/helper";
 
 import fs from "fs";
 import { join as joinPath } from "path";
 import os from "os";
+import { executionAsyncId } from "async_hooks";
 
 const backupurl = userVariables.admin_backup_json;
 const logger = RequestLogger(
@@ -68,19 +70,14 @@ let downloadedFilePath = null;
 
 fixture`admin_options_fixture`
   .beforeEach(async (t) => {
-
     await reset_bmlt(t);
-
-    await basic_options(t);
-    
+    await waitfor(userVariables.admin_logon_page_single);
     await delete_submissions(t);
-    
+    await waitfor(userVariables.admin_logon_page_single);
+    await basic_options(t);
     await configure_service_bodies(t);
 
     await insert_submissions(t);
-
-    console.log("admin logon = "+userVariables.admin_logon_page_single);
-
     await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
   })
   .requestHooks(logger);

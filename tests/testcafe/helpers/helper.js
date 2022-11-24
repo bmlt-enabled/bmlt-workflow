@@ -29,13 +29,9 @@ export function randstr()
 }
 
 export const bmltwf_admin = Role(userVariables.admin_logon_page_single, async (t) => {
-  await t.maximizeWindow();
+  // console.log("trying to log on to "+userVariables.admin_logon_page_single+" using username "+userVariables.admin_password_single+" password "+userVariables.admin_password_single);
   await t.typeText(wordpress_login.user_login, userVariables.admin_logon_single).typeText(wordpress_login.user_pass, userVariables.admin_password_single).click(wordpress_login.wp_submit);
-  const getall = ClientFunction(() => {
-  return JSON.stringify(document.querySelectorAll('*'));})
-    
-  console.log(await getall());
-  await t.expect(wordpress_login.user_login.value).eql(userVariables.admin_logon_single);
+  // await t.expect(wordpress_login.user_login.value).eql(userVariables.admin_logon_single);
 
 });
 
@@ -97,43 +93,48 @@ export async function click_dialog_button_by_index(element, index) {
   await t.click(g);
 }
 
+export async function waitfor(site) {
+  console.log("waiting for "+site);
+  execSync(userVariables.waitfor+" "+site);
+}
+
 export async function reset_bmlt(t) {
-  //console.log("resetting bmlt");
+  console.log("resetting bmlt");
   execSync(userVariables.blank_bmlt);
-  //console.log("reset");
+  console.log("reset");
 
 }
 
 export async function reset_bmlt3x(t) {
-  //console.log("resetting bmlt");
+  console.log("resetting bmlt");
   execSync(userVariables.blank_bmlt3x);
-  //console.log("reset");
+  console.log("reset");
 
 }
 
 export async function auto_geocoding_on(t) {
-//console.log("turning geocode on");
+console.log("turning geocode on");
   execSync(userVariables.auto_geocoding_on);
-  //console.log("geocode on");
+  console.log("geocode on");
 }
 
 export async function auto_geocoding_off(t) {
-  //console.log("turning geocode off");
+  console.log("turning geocode off");
   execSync(userVariables.auto_geocoding_off);
-  //console.log("geocode off");
+  console.log("geocode off");
 
 }
 
 export async function bmlt3x_auto_geocoding_on(t) {
-  //console.log("turning geocode on");
+  console.log("turning geocode on");
     execSync(userVariables.bmlt3x_auto_geocoding_on);
-      //console.log("geocode on");
+      console.log("geocode on");
   }
   
   export async function bmlt3x_auto_geocoding_off(t) {
-    //console.log("turning geocode off");
+    console.log("turning geocode off");
     execSync(userVariables.bmlt3x_auto_geocoding_off);
-      //console.log("geocode off");
+      console.log("geocode off");
   
   }
   
@@ -259,7 +260,6 @@ export async function insert_submissions_multinetwork() {
 }
 
 export async function configure_service_bodies(t) {
-  execSync(userVariables.blank_service_bodies);
 
   await t
     .useRole(bmltwf_admin)
@@ -287,7 +287,6 @@ export async function configure_service_bodies(t) {
 }
 
 export async function configure_service_bodies_multisingle(t) {
-  execSync(userVariables.blank_service_bodies_multisingle);
 
   await t
     .useRole(bmltwf_admin_multisingle)
@@ -308,7 +307,6 @@ export async function configure_service_bodies_multisingle(t) {
 }
 
 export async function configure_service_bodies_multinetwork(t) {
-  execSync(userVariables.blank_service_bodies_multinetwork);
 
   await t
     .useRole(bmltwf_admin_multinetwork)
@@ -327,7 +325,6 @@ export async function configure_service_bodies_multinetwork(t) {
 }
 
 export async function configure_service_bodies_wpsinglebmlt3x(t) {
-    execSync(userVariables.blank_service_bodies_wpsinglebmlt3x);
   
     await t
       .useRole(bmltwf_admin_wpsinglebmlt3x)
@@ -358,6 +355,7 @@ export async function configure_service_bodies_wpsinglebmlt3x(t) {
 export async function basic_options() {
   await t
     .useRole(bmltwf_admin)
+
     .navigateTo(userVariables.admin_settings_page_single)
     .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
     .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });

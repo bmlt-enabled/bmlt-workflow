@@ -11,7 +11,7 @@ do
     DONE=$?
     sleep 1
 done
-wp core install --url=http://$WORDPRESS_HOST --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com --path=/var/www/html
+wp core install --url=http://$WORDPRESS_HOST:$WORDPRESS_PORT --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com --path=/var/www/html
 
 # activate plugin
 wp plugin activate --path=$sitelocalpath "bmlt-workflow"
@@ -41,6 +41,10 @@ EOF
 
 touch /var/log/php_errors.log
 chmod 777 /var/log/php_errors.log
+
+sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /etc/apache2/sites-enabled/000-default.conf 
+sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /etc/apache2/sites-available/000-default.conf 
+sed -i "s/Listen 80/Listen $WORDPRESS_PORT/g" /etc/apache2/ports.conf 
 
 echo "<?php phpinfo();" >> /var/www/html/a.php
 
