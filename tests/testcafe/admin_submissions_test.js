@@ -20,7 +20,7 @@ import { ao } from "./models/admin_options";
 
 import {
   configure_service_bodies, 
-  insert_submissions, 
+  restore_from_backup, 
   delete_submissions,
   reset_bmlt,
   auto_geocoding_off,
@@ -34,14 +34,14 @@ import {
 
 import { userVariables } from "../../.testcaferc";
 
-fixture`admin_submissions_fixture`.beforeEach(async (t) => {
+fixture`admin_submissions_fixture`
+.before(async (t) => {
   await reset_bmlt(t);
+})
+.beforeEach(async (t) => {
   await auto_geocoding_on(t);
 
-  await basic_options(t);
-  await delete_submissions(t);
-  await configure_service_bodies(t);
-  await insert_submissions(t);
+  await restore_from_backup(t);
 
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 });

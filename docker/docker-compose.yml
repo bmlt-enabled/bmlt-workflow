@@ -1,4 +1,10 @@
 version: '3.1'
+name: bmlt-workflow
+
+networks:
+  default:
+    name: testnet
+    external: true
 
 services:
   wordpress-php7-singlesite:
@@ -17,7 +23,7 @@ services:
       WORDPRESS_DEBUG: true
       WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
     volumes:
-      - ../:/var/www/html/wp-content/plugins
+      - ../:/var/www/html/wp-content/plugins/bmlt-workflow
       - ./logs/:/var/log/apache2
 
   db-php7-singlesite:
@@ -87,7 +93,7 @@ services:
       WORDPRESS_HOST: wordpress-php8-multisitesingle
       WORDPRESS_PORT: 81
     volumes:
-      - ../:/var/www/html/wp-content/plugins
+      - ../:/var/www/html/wordpress-php8-multisitesingle/wp-content/plugins/bmlt-workflow
       - ./logs/:/var/log/apache2
       - ../../wpcache:/root/.wp-cli/cache/core/
 
@@ -123,7 +129,7 @@ services:
       WORDPRESS_HOST: wordpress-php8-multinetwork
       WORDPRESS_PORT: 82
     volumes:
-      - ../:/var/www/html/wp-content/plugins
+      - ../:/var/www/html/wordpress-php8-multinetwork/wp-content/plugins/bmlt-workflow
       - ./logs/:/var/log/apache2
       - ../../wpcache:/root/.wp-cli/cache/core/
 
@@ -157,7 +163,7 @@ services:
       WORDPRESS_HOST: wordpress-php8-singlesite-bmlt3x
       WORDPRESS_PORT: 83
     volumes:
-      - ../:/var/www/html/wp-content/plugins
+      - ../:/var/www/html/wp-content/plugins/bmlt-workflow
       - ./logs/:/var/log/apache2
       - ../../wpcache:/root/.wp-cli/cache/core/
 

@@ -156,5 +156,10 @@ jQuery(document).ready(function ($) {
       $("#bmltwf-userlist-table").show();
       $("#bmltwf_submit").show();
     });
+  })
+  .fail(function (xhr) {
+    turn_off_spinner("#bmltwf-form-spinner");
+    notice_error(xhr, "bmltwf-error-message");
   });
+
 });

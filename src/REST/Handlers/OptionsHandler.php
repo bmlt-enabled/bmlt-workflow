@@ -45,6 +45,13 @@ class OptionsHandler
         // $this->debug_log(($request));
 
         $params = $request->get_json_params();
+        $this->debug_log("PARSING PARAMETERS");
+        $this->debug_log($params);
+
+        $options = $params['options']??0;
+        if (!$options) {
+            return $this->handlerCore->bmltwf_rest_error('Restore options missing', 422);
+        }
 
         // create the database as the revision in the backup file
         $this->BMLTWF_Database->bmltwf_db_upgrade($params['options']['bmltwf_db_version'], true);

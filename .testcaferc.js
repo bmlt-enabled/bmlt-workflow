@@ -8,10 +8,13 @@ const multisite_plugin = "/plugin";
 const multisite_noplugin = "/noplugin";
 const multisite_plugin2 = "/plugin2";
 const admin_logon_page = "/wp-login.php";
-const formpage = "/testpage/";
-const admin_backup_json_path = "/bmltwf/v1/options/backup";
+// const formpage = "/testpage/";
+const formpage = "?page_id=4";
+
+// http://wordpress-php8-singlesite/index.php?rest_route=/bmltwf/v1/options/backup
+const admin_backup_json_path = "/index.php?rest_route=/bmltwf/v1/options/backup";
 const backuppath = "/index.php" + sitejsonurl + admin_backup_json_path;
-const admin_restore_json_path = "/bmltwf/v1/options/restore";
+const admin_restore_json_path = "/index.php?rest_route=/bmltwf/v1/options/restore";
 const restorepath = "/index.php" + sitejsonurl + admin_restore_json_path;
 
 const execSync = require("child_process").execSync;
@@ -27,8 +30,8 @@ const execSync = require("child_process").execSync;
 // const siteurl_multinetwork = "http://" + test_ip + "/wordpressmultinetwork";
 // const siteurl_wpsinglebmlt3x = "http://" + test_ip + "/wpsinglebmlt3x"
 const siteurl_single = "http://wordpress-php8-singlesite"
-const siteurl_multisingle = "http://wordpress-php8-multisitesingle:81";
-const siteurl_multinetwork = "http://wordpress-php8-multinetwork:82";
+const siteurl_multisingle = "http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle";
+const siteurl_multinetwork = "http://wordpress-php8-multinetwork:82/wordpress-php8-multinetwork";
 const siteurl_wpsinglebmlt3x = "http://wordpress-php8-singlesite-bmlt3x:83"
 
 // usernames and passwords
@@ -63,16 +66,16 @@ const siteurl_wpsinglebmlt3x = "http://wordpress-php8-singlesite-bmlt3x:83"
 
 const username_single = 'admin';
 const password_single = 'admin';
-const username_submission_single = 'submission';
-const password_submission_single = 'submission';
+const username_submission_single = 'submitpriv';
+const password_submission_single = 'submitpriv';
 const username_nopriv_single = 'nopriv';
 const password_nopriv_single = 'nopriv';
-const username_multisingle = 'submission';
-const password_multisingle = 'submission';
-const username_multinetwork ='submission';
-const password_multinetwork = 'submission';
-const username_wpsinglebmlt3x = 'submission';
-const password_wpsinglebmlt3x ='submission';
+const username_multisingle = 'admin';
+const password_multisingle = 'admin';
+const username_multinetwork ='admin';
+const password_multinetwork = 'admin';
+const username_wpsinglebmlt3x = 'admin';
+const password_wpsinglebmlt3x ='admin';
 
 module.exports = {
   browsers: "chrome",
@@ -163,25 +166,24 @@ module.exports = {
     blank_service_bodies_wpsinglebmlt3x: "docker compose -f ../bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-singlesite-bmlt3x db-php8-singlesite-bmlt3x",
     // e2e_test: "http://" + test_ip + "/github/e2e_test.php",
     // bmlt_states_on: "http://" + test_ip + "/github/bmlt_states_on.php",
-    bmlt_states_on: "docker compose -f ../bmlt2x/docker/docker-compose.yml -e MEETING_STATES_ON=true restart bmlt2x",
+    bmlt_states_on: "MEETING_STATES_ON=true docker compose -f ../bmlt2x/docker/docker-compose.yml restart bmlt2x",
     // bmlt_states_off: "http://" + test_ip + "/github/bmlt_states_off.php",
     bmlt_states_off: "docker compose -f ../bmlt2x/docker/docker-compose.yml restart bmlt2x",
     // auto_geocoding_on: "http://" + test_ip + "/github/auto_geocoding_on.php",
-    auto_geocoding_on: "docker compose -f ../bmlt2x/docker/docker-compose.yml -e AUTO_GEOCODING_ON=true restart bmlt2x",
+    auto_geocoding_on: "AUTO_GEOCODING_ON=true docker compose -f ../bmlt2x/docker/docker-compose.yml restart bmlt2x",
     // auto_geocoding_off: "http://" + test_ip + "/github/auto_geocoding_off.php",
-    auto_geocoding_off: "docker compose -f ../bmlt2x/docker/docker-compose.yml -e AUTO_GEOCODING_ON=false restart bmlt2x",
+    auto_geocoding_off: "AUTO_GEOCODING_ON=false docker compose -f ../bmlt2x/docker/docker-compose.yml restart bmlt2x",
     // bmlt3x_states_on: "http://" + test_ip + "/github/bmlt3x_states_on.php",
-    bmlt3x_states_on: "docker compose -f ../bmlt3x/docker/docker-compose.yml -e MEETING_STATES_ON=true restart bmlt2x",
+    bmlt3x_states_on: "MEETING_STATES_ON=true docker compose -f ../bmlt3x/docker/docker-compose.yml restart bmlt2x",
     // bmlt3x_states_off: "http://" + test_ip + "/github/bmlt3x_states_off.php",
     bmlt3x_states_off: "docker compose -f ../bmlt3x/docker/docker-compose.yml restart bmlt2x",
     // bmlt3x_auto_geocoding_on: "http://" + test_ip + "/github/bmlt3x_auto_geocoding_on.php",
-    bmlt3x_auto_geocoding_on: "docker compose -f ../bmlt3x/docker/docker-compose.yml -e AUTO_GEOCODING_ON=true restart bmlt2x",
+    bmlt3x_auto_geocoding_on: "AUTO_GEOCODING_ON=true docker compose -f ../bmlt3x/docker/docker-compose.yml restart bmlt2x",
     // bmlt3x_auto_geocoding_off: "http://" + test_ip + "/github/bmlt3x_auto_geocoding_off.php",
-    bmlt3x_auto_geocoding_off: "docker compose -f ../bmlt3x/docker/docker-compose.yml -e AUTO_GEOCODING_ON=false restart bmlt2x",
+    bmlt3x_auto_geocoding_off: "AUTO_GEOCODING_ON=false docker compose -f ../bmlt3x/docker/docker-compose.yml restart bmlt2x",
 
     crouton_page: siteurl_single+"/index.php/crouton/",
     crouton3x_page: siteurl_wpsinglebmlt3x+"/index.php/crouton/",
-    // bmlt_address: "http://" + test_ip + "/blank_bmlt/main_server/",
     waitfor: "sh docker/wait-for.sh"
   },
 };

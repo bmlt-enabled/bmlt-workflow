@@ -20,24 +20,22 @@ import { ao } from "./models/admin_options";
 
 import {
   randstr,
-  configure_service_bodies, 
-  insert_submissions, 
-  delete_submissions,
+  restore_from_backup, 
   reset_bmlt, 
   bmltwf_submission_reviewer,
   bmltwf_submission_nopriv,
   bmltwf_admin,
   select_dropdown_by_text,
-  click_table_row_column
+  click_table_row_column,
+  waitfor
  } from "./helpers/helper.js";
 
 import { userVariables } from "../../.testcaferc";
 
 fixture`admin_submissions_permissions_fixture`.beforeEach(async (t) => {
   await reset_bmlt(t);
-  await delete_submissions(t);
-  await configure_service_bodies(t);
-  await insert_submissions(t);
+  await waitfor(userVariables.admin_logon_page_single);
+  await restore_from_backup(t);
 });
 
 test("Can_View_Submissions_As_Priv_User", async (t) => {

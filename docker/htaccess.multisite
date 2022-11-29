@@ -1,6 +1,6 @@
 RewriteEngine On
 RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-RewriteBase /wordpressmultisingle/
+RewriteBase /placeholder/
 RewriteRule ^index\.php$ - [L]
 
 # add a trailing slash to /wp-admin

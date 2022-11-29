@@ -27,7 +27,7 @@ import {
   reset_bmlt, 
   basic_options, 
   configure_service_bodies, 
-  insert_submissions, 
+  restore_from_backup, 
   bmltwf_admin, 
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
@@ -40,16 +40,7 @@ import {
 import fs from "fs";
 import { join as joinPath } from "path";
 import os from "os";
-import { executionAsyncId } from "async_hooks";
 
-const backupurl = userVariables.admin_backup_json;
-const logger = RequestLogger(
-  { url: backupurl, method: "post" },
-  {
-    logResponseHeaders: true,
-    logResponseBody: true,
-  }
-);
 
 async function waitForFileDownload(path) {
   for (let i = 0; i < 10; i++) {
@@ -69,41 +60,43 @@ function getFileDownloadPath(download) {
 let downloadedFilePath = null;
 
 fixture`admin_options_fixture`
-  .beforeEach(async (t) => {
+  .before(async (t) => {
     await reset_bmlt(t);
-    await waitfor(userVariables.admin_logon_page_single);
-    await delete_submissions(t);
-    await waitfor(userVariables.admin_logon_page_single);
-    await basic_options(t);
-    await configure_service_bodies(t);
-
-    await insert_submissions(t);
-    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
   })
-  .requestHooks(logger);
+  .beforeEach(async (t) => {
+    await waitfor(userVariables.admin_logon_page_single);
+    await restore_from_backup(t);
+    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  });
+
+  const logger = RequestLogger(/backup/,
+  {
+    logResponseHeaders: true,
+    logResponseBody: true,
+  }
+  );
 
 test("Backup", async (t) => {
   
-  // console.log(backupurl);
   await t.click(ao.backup_button);
   const b_elem = Selector("#bmltwf_backup_filename");
   const state = await b_elem();
   const filename = state.attributes.download;
   downloadedFilePath = getFileDownloadPath(filename);
   await waitForFileDownload(downloadedFilePath);
-  // console.log(logger);
   var f = JSON.parse(logger.requests[0].response.body.toString());
   // console.log(logger.requests[0].response.body.toString());
   var backup = JSON.parse(f.backup);
-
+  // console.log(backup);
   await t.expect(f.message).eql("Backup Successful");
 
-  await t.expect(backup.options.bmltwf_db_version).eql("0.4.0").expect(backup.options.bmltwf_bmlt_server_address).eql(userVariables.bmlt_address);
+  await t.expect(backup.options.bmltwf_db_version).eql("0.4.0");
   // find a specific meeting
   let obj = backup.submissions.find((o) => o.id === "94");
-
+  // console.log(obj);
   await t.expect(obj.submitter_name).eql("first last").expect(obj.submission_type).eql("reason_change");
-});
+})  .requestHooks(logger);
+
 
 test("Restore", async (t) => {
 

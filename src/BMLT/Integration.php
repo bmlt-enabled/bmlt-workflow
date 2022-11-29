@@ -511,6 +511,10 @@ class Integration
 
         $response = $this->postAuthenticatedRootServerRequest('local_server/server_admin/json.php', $req);
         if (is_wp_error($response)) {
+
+            $this->debug_log("get permissions response");
+            $this->debug_log($response);
+
             return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
 

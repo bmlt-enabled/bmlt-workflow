@@ -20,12 +20,11 @@ import { ao } from "./models/admin_options";
 
 import { Role, Selector } from "testcafe";
 
-import { basic_options, 
-  configure_service_bodies, 
-  bmlt_states_off, 
+import { 
   reset_bmlt, 
   bmlt_states_on, 
-  delete_submissions,
+  waitfor,
+  restore_from_backup,
   select_dropdown_by_text, 
   select_dropdown_by_value
   } from "./helpers/helper.js";
@@ -36,13 +35,8 @@ fixture`meeting_update_form_fixture`
 .beforeEach(async (t) => {
 
   await reset_bmlt(t);
-  await bmlt_states_off(t);
-
-  await basic_options(t);
-  
-  await delete_submissions(t);
-
-  await configure_service_bodies(t);
+  await waitfor(userVariables.admin_logon_page_single);
+  await restore_from_backup(t);
 
   // log in as noone
   await t.useRole(Role.anonymous());
@@ -113,7 +107,7 @@ test("Success_New_Standard_Meeting_And_Submit", async (t) => {
     .typeText(uf.location_province, "NSW")
     .typeText(uf.location_postal_code_1, "2031");
 
-  await select_dropdown_by_text(uf.service_body_bigint, "a-level1");
+  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -198,7 +192,7 @@ test("Success_New_Hybrid_Meeting_And_Submit", async (t) => {
     .typeText(uf.location_province, "NSW")
     .typeText(uf.location_postal_code_1, "2031");
 
-  await select_dropdown_by_text(uf.service_body_bigint, "a-level1");
+  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -284,7 +278,7 @@ test("Success_New_Virtual_Meeting_And_Submit", async (t) => {
     .typeText(uf.location_province, "NSW")
     .typeText(uf.location_postal_code_1, "2031");
 
-  await select_dropdown_by_text(uf.service_body_bigint, "a-level1");
+  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -370,7 +364,7 @@ test("Success_New_Tempclosure_Meeting_And_Submit", async (t) => {
     .typeText(uf.location_province, "NSW")
     .typeText(uf.location_postal_code_1, "2031");
 
-  await select_dropdown_by_text(uf.service_body_bigint, "a-level1");
+  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -393,14 +387,15 @@ test("Success_Change_Meeting_Name_And_Submit", async (t) => {
 
   await t.expect(uf.update_reason.value).eql("reason_change");
 
-  debugger;
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "virtualmeeting");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
-  await t.expect(uf.personal_details.visible).eql(true).expect(uf.meeting_details.visible).eql(true).expect(uf.additional_info_div.visible).eql(true);
+  await t.expect(uf.personal_details.visible).eql(true)
+  .expect(uf.meeting_details.visible).eql(true)
+  .expect(uf.additional_info_div.visible).eql(true);
 
   // personal details
   await t
@@ -439,11 +434,13 @@ test("Success_Close_Meeting_And_Submit", async (t) => {
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "virtualmeeting");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
   await t.pressKey("enter");
 
   // validate form is laid out correctl
-  await t.expect(uf.personal_details.visible).eql(true).expect(uf.meeting_details.visible).eql(true).expect(uf.additional_info_div.visible).eql(true);
+  await t.expect(uf.personal_details.visible).eql(true)
+  .expect(uf.meeting_details.visible).eql(true)
+  .expect(uf.additional_info_div.visible).eql(true);
 
   // personal details
   await t
@@ -481,11 +478,13 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "virtualmeeting");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
-  await t.expect(uf.personal_details.visible).eql(true).expect(uf.meeting_details.visible).eql(true).expect(uf.additional_info_div.visible).eql(true);
+  await t.expect(uf.personal_details.visible).eql(true)
+  .expect(uf.meeting_details.visible).eql(true)
+  .expect(uf.additional_info_div.visible).eql(true);
 
   // personal details
   await t
@@ -572,11 +571,13 @@ test("Change_Nothing_Check_Error", async (t) => {
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "virtualmeeting");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
-  await t.expect(uf.personal_details.visible).eql(true).expect(uf.meeting_details.visible).eql(true).expect(uf.additional_info_div.visible).eql(true);
+  await t.expect(uf.personal_details.visible).eql(true)
+  .expect(uf.meeting_details.visible).eql(true)
+  .expect(uf.additional_info_div.visible).eql(true);
 
   // personal details
   await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number_confidential, "`12345`");

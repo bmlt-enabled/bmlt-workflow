@@ -94,7 +94,7 @@ export async function click_dialog_button_by_index(element, index) {
 }
 
 export async function waitfor(site) {
-  console.log("waiting for "+site);
+  // console.log("waiting for "+site);
   execSync(userVariables.waitfor+" "+site);
 }
 
@@ -138,9 +138,9 @@ export async function bmlt3x_auto_geocoding_on(t) {
   
   }
   
-export async function insert_submissions() {
+export async function restore_from_backup() {
   // pre fill the submissions
-  single_restorebody = {
+  const single_restorebody = {
     "options": {
         "bmltwf_email_from_address": "example@example",
         "bmltwf_delete_closed_meetings": "unpublish",
@@ -174,8 +174,8 @@ export async function insert_submissions() {
             "submission_type": "reason_new",
             "submitter_email": "test@test.com.zz",
             "meeting_id": "0",
-            "service_body_bigint": "2",
-            "changes_requested": "{\"meeting_name\":\"my test meeting\",\"start_time\":\"10:40:00\",\"duration_time\":\"04:30:00\",\"location_text\":\"my location\",\"location_street\":\"110 Avoca Street\",\"location_info\":\"info\",\"location_municipality\":\"Randwick\",\"location_province\":\"NSW\",\"location_postal_code_1\":2031,\"weekday_tinyint\":\"2\",\"service_body_bigint\":2,\"format_shared_id_list\":\"1,2,56\",\"contact_number_confidential\":\"12345\",\"group_relationship\":\"Group Member\",\"add_email\":\"yes\",\"additional_info\":\"my additional info\",\"virtual_meeting_additional_info\":\"Zoom ID 83037287669 Passcode: testing\",\"phone_meeting_number\":\"+61 1800 253430 code #8303782669\",\"virtual_meeting_link\":\"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09\"}",
+            "service_body_bigint": "1047",
+            "changes_requested": "{\"meeting_name\":\"my test meeting\",\"start_time\":\"10:40:00\",\"duration_time\":\"04:30:00\",\"location_text\":\"my location\",\"location_street\":\"110 Avoca Street\",\"location_info\":\"info\",\"location_municipality\":\"Randwick\",\"location_province\":\"NSW\",\"location_postal_code_1\":2031,\"weekday_tinyint\":\"2\",\"service_body_bigint\":1047,\"format_shared_id_list\":\"1,2,56\",\"contact_number_confidential\":\"12345\",\"group_relationship\":\"Group Member\",\"add_email\":\"yes\",\"additional_info\":\"my additional info\",\"virtual_meeting_additional_info\":\"Zoom ID 83037287669 Passcode: testing\",\"phone_meeting_number\":\"+61 1800 253430 code #8303782669\",\"virtual_meeting_link\":\"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09\"}",
             "action_message": null
         },
         {
@@ -187,8 +187,8 @@ export async function insert_submissions() {
             "submitter_name": "first last",
             "submission_type": "reason_change",
             "submitter_email": "test@test.com.zz",
-            "meeting_id": "2",
-            "service_body_bigint": "2",
+            "meeting_id": "1601",
+            "service_body_bigint": "1009",
             "changes_requested": "{\"meeting_name\":\"virtualmeeting randwickupdate\",\"contact_number_confidential\":\"12345\",\"group_relationship\":\"Group Member\",\"add_email\":\"yes\",\"additional_info\":\"my additional info\",\"original_meeting_name\":\"virtualmeeting randwick\",\"original_weekday_tinyint\":\"2\",\"original_start_time\":\"20:30:00\"}",
             "action_message": null
         },
@@ -201,52 +201,106 @@ export async function insert_submissions() {
             "submitter_name": "first last",
             "submission_type": "reason_close",
             "submitter_email": "test@test.com.zz",
-            "meeting_id": "2",
-            "service_body_bigint": "2",
+            "meeting_id": "1601",
+            "service_body_bigint": "1009",
             "changes_requested": "{\"contact_number_confidential\":\"12345\",\"group_relationship\":\"Group Member\",\"add_email\":\"yes\",\"service_body_bigint\":2,\"additional_info\":\"my additional info\",\"meeting_name\":\"virtualmeeting randwick\",\"weekday_tinyint\":\"2\",\"start_time\":\"20:30:00\"}",
             "action_message": null
         }
     ],
     "service_bodies": [
-        {
-            "service_body_bigint": "1",
-            "service_body_name": "toplevel",
-            "service_body_description": "",
-            "show_on_form": "1"
-        },
-        {
-            "service_body_bigint": "2",
-            "service_body_name": "a-level1",
-            "service_body_description": "",
-            "show_on_form": "1"
-        },
-        {
-            "service_body_bigint": "3",
-            "service_body_name": "b-level1",
-            "service_body_description": "",
-            "show_on_form": "1"
-        }
-    ],
-    "service_bodies_access": [
-        {
-            "service_body_bigint": "1",
-            "wp_uid": "1"
-        },
-        {
-            "service_body_bigint": "2",
-            "wp_uid": "1"
-        },
-        {
-            "service_body_bigint": "3",
-            "wp_uid": "1"
-        }
-    ]
+      {
+          "service_body_bigint": "1009",
+          "service_body_name": "Mid-Hudson Area Service",
+          "service_body_description": "Area Service Serving Counties North of Westchester.",
+          "show_on_form": "1"
+      },
+      {
+          "service_body_bigint": "1046",
+          "service_body_name": "ABCD Region",
+          "service_body_description": "North Hudson Valley Area, including some of Western Mass.",
+          "show_on_form": "1"
+      },
+      {
+          "service_body_bigint": "1047",
+          "service_body_name": "Albany-Rensselaer Area",
+          "service_body_description": "",
+          "show_on_form": "1"
+      },
+      {
+          "service_body_bigint": "1048",
+          "service_body_name": "Berkshire County Area",
+          "service_body_description": "",
+          "show_on_form": "0"
+      },
+      {
+          "service_body_bigint": "1049",
+          "service_body_name": "Mohawk River Area",
+          "service_body_description": "",
+          "show_on_form": "0"
+      },
+      {
+          "service_body_bigint": "1050",
+          "service_body_name": "Southern Adirondack Mountain Miracles Area",
+          "service_body_description": "",
+          "show_on_form": "1"
+      },
+      {
+          "service_body_bigint": "1051",
+          "service_body_name": "Green Mountain Area",
+          "service_body_description": "",
+          "show_on_form": "0"
+      }
+  ],
+  "service_bodies_access": [
+      {
+          "service_body_bigint": "1009",
+          "wp_uid": "1"
+      },
+      {
+          "service_body_bigint": "1009",
+          "wp_uid": "2"
+      },
+      {
+          "service_body_bigint": "1046",
+          "wp_uid": "1"
+      },
+      {
+          "service_body_bigint": "1046",
+          "wp_uid": "2"
+      },
+      {
+          "service_body_bigint": "1047",
+          "wp_uid": "1"
+      },
+      {
+          "service_body_bigint": "1047",
+          "wp_uid": "2"
+      },
+      {
+          "service_body_bigint": "1050",
+          "wp_uid": "1"
+      },
+      {
+          "service_body_bigint": "1050",
+          "wp_uid": "2"
+      }
+  ]
 }
 
   await t.useRole(bmltwf_admin)
-    .request(userVariables.admin_restore_json, {method: 'POST', body: JSON.stringify(single_restorebody)});
+  .navigateTo(userVariables.admin_settings_page_single);
 
-  // execSync(userVariables.admin_submission_reset);
+  const nonce = await Selector("#_wprestnonce").value;
+  const resp = await t.request(userVariables.admin_restore_json, 
+    {
+      method: 'POST', 
+      body: single_restorebody,
+      headers: { 
+        "Content-Type" : "application/json", 
+        // "Content-Length":body.length,
+        "X-WP-Nonce": nonce
+      }
+    });
 }
 
 export async function insert_submissions_multisingle() {
@@ -265,24 +319,24 @@ export async function configure_service_bodies(t) {
     .useRole(bmltwf_admin)
     .navigateTo(userVariables.admin_service_bodies_page_single)
 
-    .click(Selector("ul#select2-bmltwf_userlist_id_1-container").parent())
+    .click(Selector("ul#select2-bmltwf_userlist_id_1009-container").parent())
     .pressKey("enter")
-    .click(Selector("ul#select2-bmltwf_userlist_id_1-container").parent())
-    .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_1-results"]'), "submitpriv")
+    .click(Selector("ul#select2-bmltwf_userlist_id_1009-container").parent())
+    .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_1009-results"]'), "submitpriv")
     .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_1")
-    .click(Selector("ul#select2-bmltwf_userlist_id_2-container").parent())
+    .click("#bmltwf_userlist_checkbox_id_1009")
+    .click(Selector("ul#select2-bmltwf_userlist_id_1046-container").parent())
     .pressKey("enter")
-    .click(Selector("ul#select2-bmltwf_userlist_id_2-container").parent())
-    .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_2-results"]'), "submitpriv")
+    .click(Selector("ul#select2-bmltwf_userlist_id_1046-container").parent())
+    .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_1046-results"]'), "submitpriv")
     .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_2")
-    .click(Selector("ul#select2-bmltwf_userlist_id_3-container").parent())
+    .click("#bmltwf_userlist_checkbox_id_1046")
+    .click(Selector("ul#select2-bmltwf_userlist_id_1047-container").parent())
     .pressKey("enter")
-    .click(Selector("ul#select2-bmltwf_userlist_id_3-container").parent())
-    .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_3-results"]'), "submitpriv")
+    .click(Selector("ul#select2-bmltwf_userlist_id_1047-container").parent())
+    .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_1047-results"]'), "submitpriv")
     .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_3")
+    .click("#bmltwf_userlist_checkbox_id_1047")
     .click(asb.bmltwf_submit);
 }
 
@@ -292,17 +346,17 @@ export async function configure_service_bodies_multisingle(t) {
     .useRole(bmltwf_admin_multisingle)
     .navigateTo(userVariables.admin_service_bodies_page_multisingle_plugin)
 
-    .click(Selector("ul#select2-bmltwf_userlist_id_1-container").parent())
+    .click(Selector("ul#select2-bmltwf_userlist_id_1009-container").parent())
     .pressKey("enter")
 
-    .click("#bmltwf_userlist_checkbox_id_1")
-    .click(Selector("ul#select2-bmltwf_userlist_id_2-container").parent())
+    .click("#bmltwf_userlist_checkbox_id_1009")
+    .click(Selector("ul#select2-bmltwf_userlist_id_1046-container").parent())
     .pressKey("enter")
 
-    .click("#bmltwf_userlist_checkbox_id_2")
-    .click(Selector("ul#select2-bmltwf_userlist_id_3-container").parent())
+    .click("#bmltwf_userlist_checkbox_id_1046")
+    .click(Selector("ul#select2-bmltwf_userlist_id_1047-container").parent())
     .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_3")
+    .click("#bmltwf_userlist_checkbox_id_1047")
     .click(asb.bmltwf_submit);
 }
 
@@ -312,15 +366,15 @@ export async function configure_service_bodies_multinetwork(t) {
     .useRole(bmltwf_admin_multinetwork)
     .navigateTo(userVariables.admin_service_bodies_page_multinetwork_plugin)
 
-    .click(Selector("ul#select2-bmltwf_userlist_id_1-container").parent())
+    .click(Selector("ul#select2-bmltwf_userlist_id_1009-container").parent())
     .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_1")
-    .click(Selector("ul#select2-bmltwf_userlist_id_2-container").parent())
+    .click("#bmltwf_userlist_checkbox_id_1009")
+    .click(Selector("ul#select2-bmltwf_userlist_id_1046-container").parent())
     .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_2")
-    .click(Selector("ul#select2-bmltwf_userlist_id_3-container").parent())
+    .click("#bmltwf_userlist_checkbox_id_1046")
+    .click(Selector("ul#select2-bmltwf_userlist_id_1047-container").parent())
     .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_3")
+    .click("#bmltwf_userlist_checkbox_id_1047")
     .click(asb.bmltwf_submit);
 }
 
@@ -336,18 +390,6 @@ export async function configure_service_bodies_wpsinglebmlt3x(t) {
       .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_1050-results"]'), "submitpriv")
       .pressKey("enter")
       .click("#bmltwf_userlist_checkbox_id_1050")
-      // .click(Selector("ul#select2-bmltwf_userlist_id_2-container").parent())
-      // .pressKey("enter")
-      // .click(Selector("ul#select2-bmltwf_userlist_id_2-container").parent())
-      // .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_2-results"]'), "submitpriv")
-      // .pressKey("enter")
-      // .click("#bmltwf_userlist_checkbox_id_2")
-      // .click(Selector("ul#select2-bmltwf_userlist_id_3-container").parent())
-      // .pressKey("enter")
-      // .click(Selector("ul#select2-bmltwf_userlist_id_3-container").parent())
-      // .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_3-results"]'), "submitpriv")
-      // .pressKey("enter")
-      // .click("#bmltwf_userlist_checkbox_id_3")
       .click(asb.bmltwf_submit);
   }
 

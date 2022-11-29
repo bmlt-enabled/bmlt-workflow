@@ -15,20 +15,23 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { basic_options_multinetwork, bmltwf_admin_multisingle, bmltwf_admin_multinetwork } from "./helpers/helper";
+import { basic_options_multinetwork, bmltwf_admin_multisingle, bmltwf_admin_multinetwork, waitfor } from "./helpers/helper";
 import { wordpress_options } from "./models/wordpress_options";
 import { userVariables } from "../../.testcaferc";
 import { ao } from "./models/admin_options";
 import { t, Selector } from "testcafe";
 import { asb } from "./models/admin_service_bodies";
 
-fixture`multisite_tests_fixture`.beforeEach(async (t) => {});
+fixture`multisite_tests_fixture`.beforeEach(async (t) => {
+  await waitfor(userVariables.admin_logon_page_multisingle);
+});
 
 test("MultiSite_Single_Check_Options", async (t) => {
   // check that our options are installed only for sites that have the plugin enabled
   await t
     .useRole(bmltwf_admin_multisingle)
     .navigateTo(userVariables.admin_options_page_multisingle_plugin)
+    // .debug()
     // does our db version appear in the options table?
     .expect(wordpress_options.bmltwf_db_version.exists)
     .eql(true)
@@ -81,7 +84,6 @@ test("MultiSite_Network_Check_Plugin_Config_Page", async (t) => {
 });
 
 test("MultiSite_Network_Check_Plugin_Doesnt_Touch_Plugin2", async (t) => {
-
   await basic_options_multinetwork(t);
 
   // update the service bodies in plugin1 and check they dont show in plugin2
