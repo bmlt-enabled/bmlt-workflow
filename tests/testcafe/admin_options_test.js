@@ -25,14 +25,11 @@ import { t, Selector, Role, RequestLogger } from "testcafe";
 import { 
   randstr,
   reset_bmlt, 
-  basic_options, 
-  configure_service_bodies, 
   restore_from_backup, 
   bmltwf_admin, 
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
-  delete_submissions,
   check_checkbox,
   uncheck_checkbox, 
   waitfor} from "./helpers/helper";
@@ -65,7 +62,14 @@ fixture`admin_options_fixture`
   })
   .beforeEach(async (t) => {
     await waitfor(userVariables.admin_logon_page_single);
-    await restore_from_backup(t);
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json);
+
+        // await t.useRole(bmltwf_admin)
+    // .navigateTo(userVariables.admin_settings_page_single);
+  
+    // const nonce = await Selector("#_wprestnonce").value;
+    // const resp = await t.request(userVariables.admin_restore_json, 
+  
     await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
   });
 

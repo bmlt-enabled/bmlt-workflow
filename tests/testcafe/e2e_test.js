@@ -149,7 +149,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .typeText(uf.location_province, meeting.location_province)
     .typeText(uf.location_postal_code_1, meeting.location_postal_code_1);
 
-  await select_dropdown_by_text(uf.service_body_bigint, "a-level1");
+  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -382,7 +382,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
     .typeText(uf.location_province, meeting.location_province)
     .typeText(uf.location_postal_code_1, meeting.location_postal_code_1);
 
-  await select_dropdown_by_text(uf.service_body_bigint, "a-level1");
+  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");

@@ -19,9 +19,7 @@ import { as } from "./models/admin_submissions";
 import { ao } from "./models/admin_options";
 
 import {
-  configure_service_bodies, 
   restore_from_backup, 
-  delete_submissions,
   reset_bmlt,
   auto_geocoding_off,
   auto_geocoding_on,
@@ -30,7 +28,7 @@ import {
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
   bmltwf_admin, 
-  basic_options } from "./helpers/helper.js";
+   } from "./helpers/helper.js";
 
 import { userVariables } from "../../.testcaferc";
 
@@ -41,7 +39,7 @@ fixture`admin_submissions_fixture`
 .beforeEach(async (t) => {
   await auto_geocoding_on(t);
 
-  await restore_from_backup(t);
+  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json);
 
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 });

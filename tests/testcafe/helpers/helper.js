@@ -138,7 +138,7 @@ export async function bmlt3x_auto_geocoding_on(t) {
   
   }
   
-export async function restore_from_backup() {
+export async function restore_from_backup(role, settings_page, restore_json) {
   // pre fill the submissions
   const single_restorebody = {
     "options": {
@@ -287,11 +287,11 @@ export async function restore_from_backup() {
   ]
 }
 
-  await t.useRole(bmltwf_admin)
-  .navigateTo(userVariables.admin_settings_page_single);
+  await t.useRole(role)
+  .navigateTo(settings_page);
 
   const nonce = await Selector("#_wprestnonce").value;
-  const resp = await t.request(userVariables.admin_restore_json, 
+  const resp = await t.request(restore_json, 
     {
       method: 'POST', 
       body: single_restorebody,

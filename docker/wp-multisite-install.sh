@@ -3,7 +3,7 @@
 export sitelocalpath=/var/www/html/$WORDPRESS_HOST
 export siteurl=http://$WORDPRESS_HOST:$WORDPRESS_PORT/$WORDPRESS_HOST/
 
-export bmltip=`getent hosts bmlt2x | awk '{print $1}'`
+export bmltip=`getent hosts ${BMLT} | awk '{print $1}'`
 mkdir $sitelocalpath
 cd $sitelocalpath
 wp core download
@@ -41,6 +41,7 @@ sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '$WORDPRESS_NONCE_SALT');
 wp --path=$sitelocalpath --url=${siteurl}plugin site create --slug=plugin
 wp --path=$sitelocalpath --url=${siteurl}noplugin site create --slug=noplugin
 export pluginsite=${siteurl}plugin
+export pluginsite2=${siteurl}plugin2
 
 # hack for multisite
 mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_blogs set domain="wordpress-php8-multisitesingle:81" where domain="wordpress-php8-multisitesingle81";'
@@ -57,6 +58,13 @@ wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_server_addres
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
+# site 2
+wp plugin activate --url=$pluginsite2 --path=$sitelocalpath "bmlt-workflow"
+wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'$bmltip':8000/main_server/'
+wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
+wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
+wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
+
 # create our test page
 wp post create --url=$pluginsite --path=$sitelocalpath --post_type=page --post_title='testpage' --post_content='[bmltwf-meeting-update-form]' --post_status='publish' --post_name='testpage'
 # create our test users

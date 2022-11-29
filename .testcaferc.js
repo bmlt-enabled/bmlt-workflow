@@ -9,7 +9,8 @@ const multisite_noplugin = "/noplugin";
 const multisite_plugin2 = "/plugin2";
 const admin_logon_page = "/wp-login.php";
 // const formpage = "/testpage/";
-const formpage = "?page_id=4";
+const croutonpage = "?page_id=4";
+const formpage = "?page_id=5";
 
 // http://wordpress-php8-singlesite/index.php?rest_route=/bmltwf/v1/options/backup
 const admin_backup_json_path = "/index.php?rest_route=/bmltwf/v1/options/backup";
@@ -131,6 +132,8 @@ module.exports = {
     admin_logon_multinetwork: username_multinetwork,
     admin_password_multinetwork: password_multinetwork,
     admin_backup_json_multinetwork: siteurl_multinetwork + multisite_plugin + backuppath,
+    admin_restore_json_multinetwork_plugin: siteurl_multinetwork + multisite_plugin + admin_restore_json_path,
+    admin_restore_json_multinetwork_plugin2: siteurl_multinetwork + multisite_plugin2 + admin_restore_json_path,
     // bmlt3x
     formpage_wpsinglebmlt3x: siteurl_wpsinglebmlt3x + formpage,
     admin_logon_page_wpsinglebmlt3x: siteurl_wpsinglebmlt3x + admin_logon_page,
@@ -141,6 +144,7 @@ module.exports = {
     admin_logon_wpsinglebmlt3x: username_wpsinglebmlt3x,
     admin_password_wpsinglebmlt3x: password_wpsinglebmlt3x,
     admin_backup_json_wpsinglebmlt3x: siteurl_wpsinglebmlt3x + multisite_plugin + backuppath,
+    admin_restore_json_wpsinglebmlt3x: siteurl_wpsinglebmlt3x + admin_restore_json_path,
 
     // // test case resetters
     // admin_submission_reset: "http://" + test_ip + "/github/db_submissions.php",
@@ -182,8 +186,8 @@ module.exports = {
     // bmlt3x_auto_geocoding_off: "http://" + test_ip + "/github/bmlt3x_auto_geocoding_off.php",
     bmlt3x_auto_geocoding_off: "AUTO_GEOCODING_ON=false docker compose -f ../bmlt3x/docker/docker-compose.yml restart bmlt2x",
 
-    crouton_page: siteurl_single+"/index.php/crouton/",
-    crouton3x_page: siteurl_wpsinglebmlt3x+"/index.php/crouton/",
+    crouton_page: siteurl_single+croutonpage,
+    crouton3x_page: siteurl_wpsinglebmlt3x+croutonpage,
     waitfor: "sh docker/wait-for.sh"
   },
 };

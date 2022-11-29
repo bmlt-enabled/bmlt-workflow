@@ -24,27 +24,36 @@ import { reset_bmlt3x,
   bmlt3x_states_off, 
   bmlt3x_auto_geocoding_on,
   bmlt3x_auto_geocoding_off,
-  configure_service_bodies_wpsinglebmlt3x, 
-  delete_submissions_wpsinglebmlt3x, 
+  restore_from_backup,
   click_table_row_column, 
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
   bmltwf_admin_wpsinglebmlt3x, 
-  basic_options_wpsinglebmlt3x } from "./helpers/helper.js";
+  waitfor,
+   } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
 
-fixture`e2e_test_fixture`
+fixture`bmlt3x_e2e_test_fixture`
   // .page(userVariables.admin_submissions_page_wpsinglebmlt3x)
-  .beforeEach(async (t) => {
+  .before(async (t) => {
     await reset_bmlt3x(t);
+  })
+  .beforeEach(async (t) => {
+    await waitfor(userVariables.admin_logon_page_wpsinglebmlt3x);
+
+    await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x)
+
+    // await t.useRole(bmltwf_admin)
+    // .navigateTo(userVariables.admin_settings_page_single);
+  
+    // const nonce = await Selector("#_wprestnonce").value;
+    // const resp = await t.request(userVariables.admin_restore_json, 
+  
     await bmlt3x_states_off(t);
     await bmlt3x_auto_geocoding_on(t);
-    await basic_options_wpsinglebmlt3x(t);
-    await delete_submissions_wpsinglebmlt3x(t);
-    await configure_service_bodies_wpsinglebmlt3x(t);
 
   });
 
@@ -138,7 +147,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .typeText(uf.location_province, meeting.location_province)
     .typeText(uf.location_postal_code_1, meeting.location_postal_code_1);
 
-  await select_dropdown_by_text(uf.service_body_bigint, "a-level1");
+  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -371,7 +380,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled",
     .typeText(uf.location_province, meeting.location_province)
     .typeText(uf.location_postal_code_1, meeting.location_postal_code_1);
 
-  await select_dropdown_by_text(uf.service_body_bigint, "a-level1");
+  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");

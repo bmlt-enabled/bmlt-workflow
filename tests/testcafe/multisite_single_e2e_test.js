@@ -22,33 +22,25 @@ import { Selector, Role } from "testcafe";
 
 import { reset_bmlt, 
   bmlt_states_off, 
-  auto_geocoding_off,
   auto_geocoding_on,
   click_table_row_column, 
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
-  bmltwf_admin_multisingle, 
-  basic_options_multisingle,
-  configure_service_bodies_multisingle,
-  delete_submissions_multisingle } from "./helpers/helper.js";
+  bmltwf_admin_multisingle } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
 
 fixture`multisite_single_e2e_test_fixture`
   // .page(userVariables.admin_submissions_page_single)
+  .before(async(t)=> {
+    await reset_bmlt(t);
+  })
   .beforeEach(async (t) => {
 
-    await reset_bmlt(t);
     await bmlt_states_off(t);
     await auto_geocoding_on(t);
-
-    await basic_options_multisingle(t);
-
-    await delete_submissions_multisingle(t);
-
-    await configure_service_bodies_multisingle(t);
 
   });
 
@@ -143,7 +135,7 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => 
     .typeText(uf.location_province, meeting.location_province)
     .typeText(uf.location_postal_code_1, meeting.location_postal_code_1);
 
-  await select_dropdown_by_text(uf.service_body_bigint, "a-level1");
+  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
