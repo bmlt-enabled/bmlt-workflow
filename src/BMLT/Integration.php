@@ -94,7 +94,7 @@ class Integration
         $fromto['service_body_bigint'] = 'serviceBodyId';
         $fromto['venue_type'] = 'venueType';
         $fromto['weekday_tinyint'] = 'day';
-        $fromto['start_time'] = 'startTime';
+        $fromto['meeting_name'] = 'name';
 
         // dont need this any more
         unset($meeting['id_bigint']);
@@ -114,6 +114,13 @@ class Integration
             $time = explode(':', $meeting['duration_time']);
             $meeting['duration'] = $time[0] . ":" . $time[1];
             unset($meeting['duration_time']);
+        }
+
+        $here = $meeting['start_time'] ?? false;
+        if ($here) {
+            $time = explode(':', $meeting['start_time']);
+            $meeting['startTime'] = $time[0] . ":" . $time[1];
+            unset($meeting['start_time']);
         }
 
         $here = $meeting['format_shared_id_list'] ?? false;
@@ -730,7 +737,6 @@ class Integration
         $meeting['id_bigint'] = 0;
 
         // handle publish/unpublish here
-        $meeting['published'] = 1;
         $changearr = array();
         $changearr['bmlt_ajax_callback'] = 1;
         $changearr['set_meeting_change'] = json_encode($meeting);

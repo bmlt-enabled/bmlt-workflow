@@ -269,6 +269,7 @@ jQuery(document).ready(function ($) {
         "virtual_meeting_additional_info",
         "phone_meeting_number",
         "virtual_meeting_link",
+        "venue_type"
       ];
 
       // populate form fields from bmlt if they exist
@@ -285,14 +286,23 @@ jQuery(document).ready(function ($) {
 
         // handle virtual meeting type in the virtual meeting dropdown
         var virtual_format = "none";
-        if (meeting_formats.includes(hybrid_formatid)) {
-          virtual_format = "hybrid";
-        } else if (meeting_formats.includes(virtual_formatid)) {
+        // if (meeting_formats.includes(hybrid_formatid)) {
+        //   virtual_format = "hybrid";
+        // } else if (meeting_formats.includes(virtual_formatid)) {
+        //   virtual_format = "virtual";
+        // } else if (meeting_formats.includes(tempclosure_formatid)) {
+        //   virtual_format = "tempclosure";
+        // }
+        if (mdata[id].venue_type == 2)
+        {
           virtual_format = "virtual";
-        } else if (meeting_formats.includes(tempclosure_formatid)) {
-          virtual_format = "tempclosure";
         }
-      }
+        else if (mdata[id].venue_type == 3)
+        {
+            virtual_format = "hybrid";
+        }
+
+}
 
       // handle duration in the select dropdowns
       var durationarr = mdata[id].duration_time.split(":");
@@ -477,6 +487,7 @@ jQuery(document).ready(function ($) {
     if (this.value == "none") {
       $("#virtual_meeting_settings").hide();
       $("#location_fields").show();
+      $("#venue_type").val("1");
     } else {
       
       $("#virtual_meeting_settings").show();
@@ -484,14 +495,17 @@ jQuery(document).ready(function ($) {
         case "virtual":
           arr.push(virtual_formatid);
           $("#location_fields").hide();
+          $("#venue_type").val("2");
           break;
         case "hybrid":
           arr.push(hybrid_formatid);
           $("#location_fields").show();
+          $("#venue_type").val("3");
           break;
         case "tempclosure":
           arr.push(tempclosure_formatid);
           $("#location_fields").show();
+          $("#venue_type").val("2");
           break;
       }
     }

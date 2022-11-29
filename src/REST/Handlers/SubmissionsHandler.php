@@ -192,7 +192,8 @@ class SubmissionsHandler
             "format_shared_id_list",
             "virtual_meeting_additional_info",
             "phone_meeting_number",
-            "virtual_meeting_link"
+            "virtual_meeting_link",
+            "venue_type"
         );
 
         foreach ($quickedit_change as $key => $value) {
@@ -341,7 +342,8 @@ class SubmissionsHandler
             "location_nation",
             "virtual_meeting_additional_info",
             "phone_meeting_number",
-            "virtual_meeting_link"
+            "virtual_meeting_link",
+            "venue_type"
         );
 
         foreach ($change as $key => $value) {
@@ -377,6 +379,8 @@ class SubmissionsHandler
                     $change['latitude'] = $latlng['latitude'];
                     $change['longitude'] = $latlng['longitude'];
                 }
+
+                $change['published'] = 1;
 
                 $response = $this->bmlt_integration->createMeeting($change);
 
@@ -688,6 +692,7 @@ class SubmissionsHandler
             "meeting_name" => array("text", $reason_new_bool),
             "start_time" => array("time", $reason_new_bool),
             "duration_time" => array("time", $reason_new_bool),
+            "venue_type" => array("number", $reason_new_bool | $reason_change_bool),
             // location text and street only required if its not a virtual meeting #75
             "location_text" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_street" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
@@ -829,7 +834,8 @@ class SubmissionsHandler
                     "phone_meeting_number",
                     "virtual_meeting_link",
                     "starter_kit_required",
-                    "starter_kit_postal_address"
+                    "starter_kit_postal_address",
+                    "venue_type"
                 );
 
                 // new meeting - add all fields to the changes requested
@@ -864,7 +870,8 @@ class SubmissionsHandler
                     "format_shared_id_list",
                     "virtual_meeting_additional_info",
                     "phone_meeting_number",
-                    "virtual_meeting_link"
+                    "virtual_meeting_link",
+                    "venue_type"
 
                 );
 
