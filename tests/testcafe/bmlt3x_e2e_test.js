@@ -44,7 +44,7 @@ fixture`bmlt3x_e2e_test_fixture`
     await reset_bmlt3x(t);
     await waitfor(userVariables.admin_logon_page_wpsinglebmlt3x);
 
-    await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x)
+    await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x","8000")
 
     // await t.useRole(bmltwf_admin)
     // .navigateTo(userVariables.admin_settings_page_single);

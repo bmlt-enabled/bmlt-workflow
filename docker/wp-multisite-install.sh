@@ -3,8 +3,6 @@
 export sitelocalpath=/var/www/html/$WORDPRESS_HOST
 export siteurl=http://$WORDPRESS_HOST:$WORDPRESS_PORT/$WORDPRESS_HOST/
 
-export bmltip=`getent hosts ${BMLT} | awk '{print $1}'`
-mkdir $sitelocalpath
 cd $sitelocalpath
 wp core download
 export DONE=1
@@ -39,9 +37,16 @@ sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '$WORDPRESS_NONCE_SALT');
 
 # create sites
 wp --path=$sitelocalpath --url=${siteurl}plugin site create --slug=plugin
-wp --path=$sitelocalpath --url=${siteurl}noplugin site create --slug=noplugin
 export pluginsite=${siteurl}plugin
-export pluginsite2=${siteurl}plugin2
+
+if [ ! -z $NOPLUGIN ]
+then
+    wp --path=$sitelocalpath --url=${siteurl}noplugin site create --slug=noplugin
+    export pluginsite2=${siteurl}noplugin
+else 
+    wp --path=$sitelocalpath --url=${siteurl}plugin2 site create --slug=plugin2
+    export pluginsite2=${siteurl}plugin2
+fi
 
 # hack for multisite
 mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_blogs set domain="wordpress-php8-multisitesingle:81" where domain="wordpress-php8-multisitesingle81";'
@@ -54,13 +59,13 @@ sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" $sitel
 
 # activate plugin
 wp plugin activate --url=$pluginsite --path=$sitelocalpath "bmlt-workflow"
-wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'$bmltip':8000/main_server/'
+wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'${BMLT}':'${BMLT_PORT}'/main_server/'
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
 # site 2
 wp plugin activate --url=$pluginsite2 --path=$sitelocalpath "bmlt-workflow"
-wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'$bmltip':8000/main_server/'
+wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'${BMLT}':'${BMLT_PORT}'/main_server/'
 wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
 wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
 wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
@@ -69,7 +74,7 @@ wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_password' '{
 wp post create --url=$pluginsite --path=$sitelocalpath --post_type=page --post_title='testpage' --post_content='[bmltwf-meeting-update-form]' --post_status='publish' --post_name='testpage'
 # create our test users
 wp user create --url=$pluginsite --path=$sitelocalpath submitpriv aa123@a.com --user_pass=submitpriv
-wp user create --url=$pluginsite -path=$sitelocalpath nopriv aa456@a.com --user_pass=nopriv
+wp user create --url=$pluginsite --path=$sitelocalpath nopriv aa456@a.com --user_pass=nopriv
 
 
 cat >/usr/local/etc/php/conf.d/error-logging.ini <<EOF

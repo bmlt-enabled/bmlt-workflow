@@ -1,8 +1,6 @@
 #!/bin/sh -x 
 
 export sitelocalpath=/var/www/html
-# export ${BMLT}=`getent hosts bmlt2x | awk '{print $1}'`
-# export ${BMLT}=bmlt2x
 cd $sitelocalpath
 wp core download
 
