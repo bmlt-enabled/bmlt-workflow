@@ -39,9 +39,9 @@ import { userVariables } from "../../.testcaferc";
 fixture`bmlt3x_e2e_test_fixture`
   // .page(userVariables.admin_submissions_page_wpsinglebmlt3x)
   .before(async (t) => {
-    await reset_bmlt3x(t);
   })
   .beforeEach(async (t) => {
+    await reset_bmlt3x(t);
     await waitfor(userVariables.admin_logon_page_wpsinglebmlt3x);
 
     await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x)
@@ -85,7 +85,10 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .eql(true);
 
   // personal details
-  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number_confidential, "`12345`");
+  await t.typeText(uf.first_name, "first")
+  .typeText(uf.last_name, "last")
+  .typeText(uf.email_address, "test@test.com.zz")
+  .typeText(uf.contact_number_confidential, "`12345`");
 
   // email dropdown
   await select_dropdown_by_text(uf.add_email, "Yes");
@@ -224,7 +227,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "virtualmeeting");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "chance");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
@@ -236,8 +239,9 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
     .typeText(uf.contact_number_confidential, "`12345`")
+    .typeText(uf.location_text, "location")
 
-    .typeText(uf.meeting_name, "update")
+    .typeText(uf.meeting_name, "update", { replace: true })
     // make sure highlighting is present
     .expect(uf.meeting_name.hasClass("bmltwf-changed"))
     .ok();
@@ -251,7 +255,6 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   await t.typeText(uf.additional_info, "my additional info");
-
   await t
     .click(uf.submit)
     .expect(Selector("#bmltwf_response_message").innerText)
@@ -282,10 +285,9 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
 
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
-  await t.typeText(Selector('input[class="select2-search__field"]'), "virtualmeeting");
+  await t.typeText(Selector('input[class="select2-search__field"]'), "update");
   await t.pressKey("enter");
-
-  await t.expect(ct.meeting_name.innerText).eql("virtualmeeting randwickupdate");
+  await t.expect(ct.meeting_name.innerText).eql("update");
 });
 
 test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
@@ -462,7 +464,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disable
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "virtualmeeting");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "chance");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
@@ -473,9 +475,10 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disable
     .typeText(uf.first_name, "first")
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
-    .typeText(uf.contact_number_confidential, "`12345`")
+    .typeText(uf.contact_number_confidential, "12345")
+    .typeText(uf.location_text, "location")
 
-    .typeText(uf.meeting_name, "update")
+    .typeText(uf.meeting_name, "update", { replace: true })
     // make sure highlighting is present
     .expect(uf.meeting_name.hasClass("bmltwf-changed"))
     .ok();
@@ -489,7 +492,6 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disable
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   await t.typeText(uf.additional_info, "my additional info");
-
   await t
     .click(uf.submit)
     .expect(Selector("#bmltwf_response_message").innerText)
@@ -520,8 +522,8 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disable
 
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
-  await t.typeText(Selector('input[class="select2-search__field"]'), "virtualmeeting");
+  await t.typeText(Selector('input[class="select2-search__field"]'), "update");
   await t.pressKey("enter");
 
-  await t.expect(ct.meeting_name.innerText).eql("virtualmeeting randwickupdate");
+  await t.expect(ct.meeting_name.innerText).eql("update");
 });

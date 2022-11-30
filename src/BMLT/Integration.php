@@ -125,7 +125,8 @@ class Integration
 
         $here = $meeting['format_shared_id_list'] ?? false;
         if ($here) {
-            $meeting['formatIds'] = explode(',', $meeting['format_shared_id_list']);
+            $meeting['formatIds'] = array_map('intval', explode(',', $meeting['format_shared_id_list']));
+            // $meeting['formatIds'] = explode(',', $meeting['format_shared_id_list']);
             unset($meeting['format_shared_id_list']);
         }
         return $meeting;
@@ -325,6 +326,8 @@ class Integration
         $this->debug_log("CHANGE after");
         $this->debug_log($change);
 
+        $change['formatIds']=$this->removeLocations($change['formatIds']);
+        
         $this->debug_log("inside updateMeetingv3 auth");
 
         if (!$meeting_id) {
@@ -530,6 +533,19 @@ class Integration
         return $arr;
     }
 
+    private function removeLocations($format)
+    {
+        $realformats = $this->getMeetingFormats();
+        $newformats = array();
+        foreach ($format as $key => $value) {
+            if($realformats[$value]['type']!='LOCATION')
+            {
+                $newformats[]=$value;
+            }
+        }
+        return $newformats;
+    }
+
     public function getMeetingFormats()
     {
         if ($this->is_v3_server()) {
@@ -560,6 +576,7 @@ class Integration
             $formatid = $value['id'];
             $newvalue = array();
             $newvalue['world_id'] = $value['worldId'];
+            $newvalue['type'] = $value['type'];
             foreach ($value['translations'] as $key1 => $value1) {
                 if ($value1['language'] === 'en') {
                     $newvalue['lang'] = 'en';
@@ -707,6 +724,17 @@ class Integration
 
         $this->debug_log("CHANGE after");
         $this->debug_log($meeting);
+
+        $this->debug_log("json");
+        $this->debug_log(json_encode($meeting));
+
+        $this->debug_log("formatsIds before");
+        $this->debug_log($meeting['formatIds']);
+
+        $meeting['formatIds']=$this->removeLocations($meeting['formatIds']);
+
+        $this->debug_log("formatsIds after");
+        $this->debug_log($meeting['formatIds']);
 
         $this->debug_log("inside createMeetingv3 auth");
 
