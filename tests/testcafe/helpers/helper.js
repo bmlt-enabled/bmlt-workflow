@@ -142,6 +142,9 @@ export async function bmlt3x_auto_geocoding_off(t) {
 }
 
 export async function restore_from_backup(role, settings_page, restore_json, host, port) {
+  console.log("settings page "+settings_page);
+  console.log("restore_json "+restore_json);
+  
   // pre fill the submissions
   const restorebody = {
     options: {
@@ -308,7 +311,8 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
       "X-WP-Nonce": nonce,
     },
   });
-  // console.log(resp);
+  console.log(restore_json);
+  console.log(resp);
 }
 
 export async function insert_submissions_multisingle() {

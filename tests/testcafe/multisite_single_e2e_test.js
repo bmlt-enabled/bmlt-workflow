@@ -28,6 +28,9 @@ import { reset_bmlt,
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
+  waitfor,
+  restore_from_backup,
+  bmltwf_admin_multinetwork,
   bmltwf_admin_multisingle } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
@@ -38,10 +41,10 @@ fixture`multisite_single_e2e_test_fixture`
     await reset_bmlt(t);
   })
   .beforeEach(async (t) => {
-
-    await bmlt_states_off(t);
-    await auto_geocoding_on(t);
-
+    await waitfor(userVariables.admin_logon_page_multinetwork);
+    await restore_from_backup(bmltwf_admin_multinetwork, userVariables.admin_settings_page_multinetwork_plugin, userVariables.admin_restore_json_multinetwork_plugin,"bmlt2x","8000");
+    await waitfor(userVariables.admin_logon_page_multisingle);
+    await restore_from_backup(bmltwf_admin_multisingle, userVariables.admin_settings_page_multisingle_plugin, userVariables.admin_restore_json_multisingle_plugin,"bmlt2x","8000");
   });
 
 test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
@@ -56,7 +59,6 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => 
   // console.log(userVariables.formpage_multisingle);
 
   await t.navigateTo(userVariables.formpage_multisingle);
-
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 
   // check our divs are visible
@@ -204,6 +206,7 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => 
 
 test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
   await t.navigateTo(userVariables.formpage_multisingle);
+  console.log(userVariables.formpage_multisingle);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
@@ -212,7 +215,7 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) 
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "virtualmeeting");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "chance");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
@@ -269,8 +272,8 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) 
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
-  await t.typeText(Selector('input[class="select2-search__field"]'), "virtualmeeting");
+  await t.typeText(Selector('input[class="select2-search__field"]'), "update");
   await t.pressKey("enter");
 
-  await t.expect(ct.meeting_name.innerText).eql("virtualmeeting randwickupdate");
+  await t.expect(ct.meeting_name.innerText).eql("update");
 });

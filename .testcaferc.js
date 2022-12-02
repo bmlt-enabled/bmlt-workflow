@@ -8,9 +8,9 @@ const multisite_plugin = "/plugin";
 const multisite_noplugin = "/noplugin";
 const multisite_plugin2 = "/plugin2";
 const admin_logon_page = "/wp-login.php";
-// const formpage = "/testpage/";
 const croutonpage = "?page_id=4";
 const formpage = "?page_id=5";
+const formpage2 = "/testpage/";
 
 // http://wordpress-php8-singlesite/index.php?rest_route=/bmltwf/v1/options/backup
 const admin_backup_json_path = "/index.php?rest_route=/bmltwf/v1/options/backup";
@@ -97,7 +97,7 @@ module.exports = {
     admin_restore_json: siteurl_single + admin_restore_json_path,
 
     // multisite
-    formpage_multisingle: siteurl_multisingle + multisite_plugin + formpage,
+    formpage_multisingle: siteurl_multisingle + multisite_plugin + formpage2,
     admin_logon_page_multisingle: siteurl_multisingle + admin_logon_page,
     admin_submissions_page_multisingle: siteurl_multisingle + admin_submissions_page,
     admin_submissions_page_multisingle_plugin: siteurl_multisingle + multisite_plugin + admin_submissions_page,
@@ -114,8 +114,10 @@ module.exports = {
     admin_logon_multisingle: username_multisingle,
     admin_password_multisingle: password_multisingle,
     admin_backup_json_multisingle: siteurl_multisingle + multisite_plugin + backuppath,
+    admin_restore_json_multisingle_plugin: siteurl_multisingle + multisite_plugin + admin_restore_json_path,
+
     // multisite network install
-    formpage_multinetwork: siteurl_multinetwork + formpage,
+    formpage_multinetwork: siteurl_multinetwork + formpage2,
     admin_logon_page_multinetwork: siteurl_multinetwork + admin_logon_page,
     admin_submissions_page_multinetwork: siteurl_multinetwork + admin_submissions_page,
     admin_submissions_page_multinetwork_plugin: siteurl_multinetwork + multisite_plugin + admin_submissions_page,

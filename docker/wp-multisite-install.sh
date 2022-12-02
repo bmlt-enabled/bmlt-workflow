@@ -64,11 +64,15 @@ wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bm
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
 wp option --url=$pluginsite --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
 # site 2
-wp plugin activate --url=$pluginsite2 --path=$sitelocalpath "bmlt-workflow"
-wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'${BMLT}':'${BMLT_PORT}'/main_server/'
-wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
-wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
-wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
+
+if [ -z $NOPLUGIN ]
+then
+    wp plugin activate --url=$pluginsite2 --path=$sitelocalpath "bmlt-workflow"
+    wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_server_address' 'http://'${BMLT}':'${BMLT_PORT}'/main_server/'
+    wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_username' 'bmlt-workflow-bot'
+    wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_test_status' 'success'
+    wp option --url=$pluginsite2 --path=$sitelocalpath add 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
+fi
 
 # create our test page
 wp post create --url=$pluginsite --path=$sitelocalpath --post_type=page --post_title='testpage' --post_content='[bmltwf-meeting-update-form]' --post_status='publish' --post_name='testpage'
