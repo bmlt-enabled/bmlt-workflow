@@ -108,12 +108,14 @@ export async function waitfor(site) {
 export async function reset_bmlt(t) {
   console.log("resetting bmlt");
   execSync(userVariables.blank_bmlt);
+  waitfor("http://localhost:8000/main_server/index.php")
   console.log("reset");
 }
 
 export async function reset_bmlt3x(t) {
   console.log("resetting bmlt");
   execSync(userVariables.blank_bmlt3x);
+  waitfor("http://localhost:8001/main_server/index.php")
   console.log("reset");
 }
 
@@ -142,8 +144,8 @@ export async function bmlt3x_auto_geocoding_off(t) {
 }
 
 export async function restore_from_backup(role, settings_page, restore_json, host, port) {
-  console.log("settings page "+settings_page);
-  console.log("restore_json "+restore_json);
+  // console.log("settings page "+settings_page);
+  // console.log("restore_json "+restore_json);
   
   // pre fill the submissions
   const restorebody = {
@@ -159,6 +161,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
       bmltwf_optional_postcode: "display",
       bmltwf_optional_postcode_displayname: "Postcode",
       bmltwf_required_meeting_formats: "true",
+      bmltwf_trusted_servants_can_delete_submissions: "true",
       bmltwf_submitter_email_template:
         '<p><br>Thank you for submitting the online meeting update.<br>We will usually be able action your\n    request within 48 hours.<br>Our process also updates NA websites around Australia and at NA World Services.<br>\n</p>\n<hr>What was submitted: <br><br>\n<table class="blueTable" style="border: 1px solid #1C6EA4;background-color: #EEEEEE;text-align: left;border-collapse: collapse;">\n    <thead style="background: #1C6EA4;border-bottom: 2px solid #444444;">\n        <tr>\n            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: none;">\n                <br>Field Name\n            </th>\n            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: 2px solid #D0E4F5;">\n                <br>Value\n            </th>\n        </tr>\n    </thead>\n    <tbody>\n        {field:submission}\n    </tbody>\n</table>\n\n',
       bmltwf_fso_email_template:
@@ -212,10 +215,10 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         submitter_name: "first last",
         submission_type: "reason_close",
         submitter_email: "test@test.com.zz",
-        meeting_id: "1601",
-        service_body_bigint: "1009",
+        meeting_id: "2560",
+        service_body_bigint: "1047",
         changes_requested:
-          '{"contact_number_confidential":"12345","group_relationship":"Group Member","add_email":"yes","service_body_bigint":2,"additional_info":"my additional info","meeting_name":"virtualmeeting randwick","weekday_tinyint":"2","start_time":"20:30:00"}',
+          '{"contact_number_confidential":"12345","group_relationship":"Group Member","add_email":"yes","service_body_bigint":1047,"additional_info":"my additional info","meeting_name":"virtualmeeting randwick","weekday_tinyint":"2","start_time":"20:30:00"}',
         action_message: null,
       },
     ],
@@ -311,8 +314,8 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
       "X-WP-Nonce": nonce,
     },
   });
-  console.log(restore_json);
-  console.log(resp);
+  // console.log(restore_json);
+  // console.log(resp);
 }
 
 export async function insert_submissions_multisingle() {

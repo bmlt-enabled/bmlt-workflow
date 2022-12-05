@@ -527,7 +527,8 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
   // meeting settings
 
   // weekday
-  await select_dropdown_by_text(uf.weekday_tinyint, "Wednesday");
+  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+  // await t.debug();
   await t
     .expect(uf.weekday_tinyint.hasClass("bmltwf-changed"))
     .ok()
@@ -606,7 +607,7 @@ test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "correctmeeting");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "chance");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
@@ -615,7 +616,7 @@ test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
   await t
   // should be a select element if we have a dropdown
   .expect(uf.location_province.tagName).eql("select")
-  // should have changed the state to SA which is not the default
-  .expect(uf.location_province.value).eql("SA");
+  // should have changed the state to NY which is not the default
+  .expect(uf.location_province.value).eql("NY");
 
 });

@@ -31,21 +31,23 @@ RewriteRule . index.php [L]
 EOF
 
 sed -i -e "s/RewriteBase \/placeholder\//RewriteBase \/$WORDPRESS_HOST\//" $sitelocalpath/.htaccess
+
+wp db create
 wp core multisite-install --path=$sitelocalpath --base=/$WORDPRESS_HOST/ --url=$siteurl --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com
 
 sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '$WORDPRESS_NONCE_SALT');/" $sitelocalpath/wp-config.php
 
 # create sites
-wp --path=$sitelocalpath --url=${siteurl}plugin site create --slug=plugin
 export pluginsite=${siteurl}plugin
+wp --path=$sitelocalpath --url=${pluginsite} site create --slug=plugin
 
 if [ ! -z $NOPLUGIN ]
 then
-    wp --path=$sitelocalpath --url=${siteurl}noplugin site create --slug=noplugin
     export pluginsite2=${siteurl}noplugin
+    wp --path=$sitelocalpath --url=${pluginsite2} site create --slug=noplugin
 else 
-    wp --path=$sitelocalpath --url=${siteurl}plugin2 site create --slug=plugin2
     export pluginsite2=${siteurl}plugin2
+    wp --path=$sitelocalpath --url=${pluginsite2} site create --slug=plugin2
 fi
 
 # hack for multisite

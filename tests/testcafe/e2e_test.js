@@ -22,41 +22,26 @@ import { ao } from "./models/admin_options";
 import { Selector, Role } from "testcafe";
 
 import { reset_bmlt, 
-  bmlt_states_off, 
-  auto_geocoding_on,
+  waitfor,
+  restore_from_backup,
   auto_geocoding_off,
-  configure_service_bodies, 
-  delete_submissions, 
   click_table_row_column, 
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
   bmltwf_admin, 
-  basic_options } from "./helpers/helper.js";
+   } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
 
 fixture`e2e_test_fixture`
   // .page(userVariables.admin_submissions_page_single)
   .beforeEach(async (t) => {
-//console.log("1");
     await reset_bmlt(t);
-    //console.log("2");
-    await bmlt_states_off(t);
-    //console.log("3");
-    await auto_geocoding_on(t);
-    //console.log("4");
-    await basic_options(t);
-    //console.log("5");
-
-    await delete_submissions(t);
-    //console.log("6");
-
-    await configure_service_bodies(t);
-    //console.log("7");
-
-
+    await waitfor(userVariables.admin_logon_page_single);
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt2x","8000");
+  
   });
 
 test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
@@ -182,7 +167,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 5000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
@@ -226,7 +211,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "virtualmeeting");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "chance");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
@@ -238,8 +223,9 @@ test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
     .typeText(uf.contact_number_confidential, "`12345`")
+    .typeText(uf.location_text, "location")
 
-    .typeText(uf.meeting_name, "update")
+    .typeText(uf.meeting_name, "update", { replace: true })
     // make sure highlighting is present
     .expect(uf.meeting_name.hasClass("bmltwf-changed"))
     .ok();
@@ -277,17 +263,17 @@ test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 5000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
 
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
-  await t.typeText(Selector('input[class="select2-search__field"]'), "virtualmeeting");
+  await t.typeText(Selector('input[class="select2-search__field"]'), "update");
   await t.pressKey("enter");
 
-  await t.expect(ct.meeting_name.innerText).eql("virtualmeeting randwickupdate");
+  await t.expect(ct.meeting_name.innerText).eql("update");
 });
 
 test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
@@ -415,7 +401,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 5000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
@@ -451,9 +437,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
 
 test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
 
-  //console.log("hi1");
   await auto_geocoding_off(t);
-  //console.log("hi2");
 
   await t.navigateTo(userVariables.formpage);
 
@@ -464,7 +448,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "virtualmeeting");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "chance");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
@@ -476,8 +460,8 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
     .typeText(uf.contact_number_confidential, "`12345`")
-
-    .typeText(uf.meeting_name, "update")
+    .typeText(uf.location_text, "location")
+    .typeText(uf.meeting_name, "update", { replace: true })
     // make sure highlighting is present
     .expect(uf.meeting_name.hasClass("bmltwf-changed"))
     .ok();
@@ -513,17 +497,17 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
   await click_dialog_button_by_index(as.approve_dialog_parent, 1);
   // dialog closes after ok button
   await t.expect(as.approve_dialog_parent.visible).eql(false);
-
+  // await t.debug();
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 5000}, {timeout: 5000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
 
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
-  await t.typeText(Selector('input[class="select2-search__field"]'), "virtualmeeting");
+  await t.typeText(Selector('input[class="select2-search__field"]'), "update");
   await t.pressKey("enter");
 
-  await t.expect(ct.meeting_name.innerText).eql("virtualmeeting randwickupdate");
+  await t.expect(ct.meeting_name.innerText).eql("update");
 });

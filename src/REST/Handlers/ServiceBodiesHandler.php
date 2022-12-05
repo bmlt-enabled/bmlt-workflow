@@ -23,7 +23,7 @@ use bmltwf\BMLT\Integration;
 use bmltwf\REST\HandlerCore;
 use bmltwf\BMLTWF_Database;
 use bmltwf\BMLTWF_WP_Options;
-
+use bmltwf\BMLTWF_WP_User;
 class ServiceBodiesHandler
 {
     use \bmltwf\BMLTWF_Debug;
@@ -43,7 +43,7 @@ class ServiceBodiesHandler
         }
 
         $this->handlerCore = new HandlerCore();
-
+        $this->BMLTWF_WP_User = new BMLTWF_WP_User();
         $this->BMLTWF_Database = new BMLTWF_Database();
     }
 
@@ -156,21 +156,7 @@ class ServiceBodiesHandler
             $wpdb->query($sql);
         }
 
-        // add / remove user capabilities
-        $users = get_users();
-        $result = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name, 0);
-        // $this->debug_log(($sql));
-        // $this->debug_log(($result));
-        foreach ($users as $user) {
-            $this->debug_log("checking user id " . $user->get('ID'));
-            if (in_array($user->get('ID'), $result)) {
-                $user->add_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
-                $this->debug_log("adding cap");
-            } else {
-                $user->remove_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
-                $this->debug_log("removing cap");
-            }
-        }
+        $this->BMLTWF_WP_User->add_remove_caps();
 
         return $this->handlerCore->bmltwf_rest_success('Updated Service Bodies');
     }

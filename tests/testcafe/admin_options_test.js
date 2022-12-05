@@ -113,7 +113,8 @@ test("Restore", async (t) => {
   // click ok
   await click_dialog_button_by_index(ao.restore_warning_dialog_parent, 1);
   // dialog closes after ok button
-  await t.expect(ao.restore_warning_dialog_parent.visible).eql(false).navigateTo(userVariables.admin_submissions_page_single);
+  await t.expect(ao.restore_warning_dialog_parent.visible).eql(false)
+  .navigateTo(userVariables.admin_submissions_page_single);
   // assert id = 22222
   var row = 0;
   var column = 0;

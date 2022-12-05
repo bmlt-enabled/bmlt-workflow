@@ -44,17 +44,11 @@ fixture`bmlt3x_e2e_test_fixture`
     await reset_bmlt3x(t);
     await waitfor(userVariables.admin_logon_page_wpsinglebmlt3x);
 
-    await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x","8000")
+    await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x","8001")
 
-    // await t.useRole(bmltwf_admin)
-    // .navigateTo(userVariables.admin_settings_page_single);
-  
-    // const nonce = await Selector("#_wprestnonce").value;
-    // const resp = await t.request(userVariables.admin_restore_json, 
-  
     await bmlt3x_states_off(t);
     await bmlt3x_auto_geocoding_on(t);
-
+    await waitfor(userVariables.admin_logon_page_wpsinglebmlt3x);
   });
 
 test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
@@ -70,7 +64,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
   await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
 
   await select_dropdown_by_value(uf.update_reason, "reason_new");
-
+// await t.debug();
   // check our divs are visible
   await t
     .expect(uf.update_reason.value)
@@ -183,7 +177,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 5000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
@@ -227,7 +221,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "chance");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "adirondack");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
@@ -278,7 +272,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 5000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
@@ -301,7 +295,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled",
   };
 
   await bmlt3x_auto_geocoding_off(t);
-
+  await waitfor(userVariables.admin_logon_page_wpsinglebmlt3x);
   await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
 
   await select_dropdown_by_value(uf.update_reason, "reason_new");
@@ -415,7 +409,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled",
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 5000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
@@ -454,7 +448,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disable
   //console.log("hi1");
   await bmlt3x_auto_geocoding_off(t);
   //console.log("hi2");
-
+  await waitfor(userVariables.admin_logon_page_wpsinglebmlt3x);
   await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
@@ -464,7 +458,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disable
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "chance");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "beginnings");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
@@ -515,7 +509,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disable
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 5000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);

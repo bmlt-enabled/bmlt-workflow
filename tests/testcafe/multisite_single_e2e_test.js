@@ -38,9 +38,9 @@ import { userVariables } from "../../.testcaferc";
 fixture`multisite_single_e2e_test_fixture`
   // .page(userVariables.admin_submissions_page_single)
   .before(async(t)=> {
-    await reset_bmlt(t);
   })
   .beforeEach(async (t) => {
+    await reset_bmlt(t);
     await waitfor(userVariables.admin_logon_page_multinetwork);
     await restore_from_backup(bmltwf_admin_multinetwork, userVariables.admin_settings_page_multinetwork_plugin, userVariables.admin_restore_json_multinetwork_plugin,"bmlt2x","8000");
     await waitfor(userVariables.admin_logon_page_multisingle);
@@ -170,7 +170,7 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => 
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 5000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
@@ -205,7 +205,9 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => 
 });
 
 test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
+  // await t.debug();
   await t.navigateTo(userVariables.formpage_multisingle);
+
   console.log(userVariables.formpage_multisingle);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
@@ -217,7 +219,6 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) 
   await t.click("#select2-meeting-searcher-container");
   await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "chance");
   await t.pressKey("enter");
-
   // validate form is laid out correctly
   await t.expect(uf.personal_details.visible).eql(true).expect(uf.meeting_details.visible).eql(true).expect(uf.additional_info_div.visible).eql(true);
 
@@ -227,8 +228,9 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) 
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
     .typeText(uf.contact_number_confidential, "`12345`")
+    .typeText(uf.location_text, "location")
 
-    .typeText(uf.meeting_name, "update")
+    .typeText(uf.meeting_name, "update", { replace: true })
     // make sure highlighting is present
     .expect(uf.meeting_name.hasClass("bmltwf-changed"))
     .ok();
@@ -266,7 +268,7 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) 
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved");
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 5000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);

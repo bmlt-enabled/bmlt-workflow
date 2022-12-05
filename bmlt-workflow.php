@@ -158,27 +158,6 @@ if (!class_exists('bmltwf_plugin')) {
             $status = wp_add_inline_script('bmltwf-meeting-update-form-js', $script, 'before');
             $this->prevent_cache_enqueue_script('bmltwf-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
 
-            // $result = [];
-            // $result['scripts'] = [];
-            // $result['styles'] = [];
-
-            // $this->debug_log("All scripts and styles");
-
-            // // Print all loaded Scripts
-            // global $wp_scripts;
-            // foreach ($wp_scripts->queue as $script) :
-            //     $result['scripts'][] =  $wp_scripts->registered[$script]->src . ";";
-            // endforeach;
-
-            // // Print all loaded Styles (CSS)
-            // global $wp_styles;
-            // foreach ($wp_styles->queue as $style) :
-            //     $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
-            // endforeach;
-
-            // $this->debug_log(($result));
-
-
             ob_start();
             include('public/meeting_update_form.php');
             $content .= ob_get_clean();
@@ -501,7 +480,7 @@ if (!class_exists('bmltwf_plugin')) {
                     'description' => 'Trusted servants can delete submissions',
                     'sanitize_callback' => array(&$this, 'bmltwf_trusted_servants_can_delete_submissions_sanitize_callback'),
                     'show_in_rest' => false,
-                    'default' => 'true'
+                    'default' => 'false'
                 )
             );
 

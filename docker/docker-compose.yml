@@ -12,22 +12,24 @@ services:
       context: .
       dockerfile: Dockerfile-wp-php7.4
     depends_on:
-      - db-php7-singlesite
+      - wordpress-db
     restart: always
     tmpfs: /var/www/html
     environment:
-      WORDPRESS_DB_HOST: db-php7
+      WORDPRESS_DB_HOST: wordpress-db
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_NAME: wordpress-php7-singlesite
       WORDPRESS_DEBUG: true
       WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
     volumes:
       - ../:/var/www/html/wp-content/plugins/bmlt-workflow
       - ./logs/:/var/log/apache2
 
-  db-php7-singlesite:
-    image: mysql:5.7
+  wordpress-db:
+    build:
+      context: .
+      dockerfile: Dockerfile-wordpress-db
     restart: always
     tmpfs: /var/lib/mysql
     environment:
@@ -41,17 +43,17 @@ services:
       context: .
       dockerfile: Dockerfile-wp-php8.1
     depends_on:
-      - db-php8-singlesite
+      - wordpress-db
     ports:
       - 80:80
     restart: always
     command: /usr/local/bin/wp-install.sh
     tmpfs: /var/www/html
     environment:
-      WORDPRESS_DB_HOST: db-php8-singlesite
+      WORDPRESS_DB_HOST: wordpress-db
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_NAME: wordpress-php8-singlesite
       WORDPRESS_HOST: wordpress-php8-singlesite
       WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
       WORDPRESS_PORT: 80
@@ -63,32 +65,22 @@ services:
       - ../../wpcache:/root/.wp-cli/cache/core/
       - /var/run/docker.sock.raw:/var/run/docker.sock
 
-  db-php8-singlesite:
-    image: mysql:5.7
-    restart: always
-    tmpfs: /var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: somewordpress
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-
   wordpress-php8-multisitesingle:
     build:
       context: .
       dockerfile: Dockerfile-wpmultisite-php8.1
     depends_on:
-      - db-php8-multisitesingle
+      - wordpress-db
     ports:
       - 81:81
     command: /usr/local/bin/wp-multisite-install.sh
     restart: always
     tmpfs: /var/www/html
     environment:
-      WORDPRESS_DB_HOST: db-php8-multisitesingle
+      WORDPRESS_DB_HOST: wordpress-db
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_NAME: wordpress-php8-multisitesingle
       WORDPRESS_DEBUG: true
       WORDPRESS_MULTISITE_INSTALL: true
       WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
@@ -102,32 +94,22 @@ services:
       - ./logs/:/var/log/apache2
       - ../../wpcache:/root/.wp-cli/cache/core/
 
-  db-php8-multisitesingle:
-    image: mysql:5.7
-    restart: always
-    tmpfs: /var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: somewordpress
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-      
   wordpress-php8-multinetwork:
     build:
       context: .
       dockerfile: Dockerfile-wpmultisite-php8.1
     depends_on:
-      - db-php8-multinetwork
+      - wordpress-db
     command: /usr/local/bin/wp-multisite-install.sh
     restart: always
     ports:
       - 82:82
     tmpfs: /var/www/html
     environment:
-      WORDPRESS_DB_HOST: db-php8-multinetwork
+      WORDPRESS_DB_HOST: wordpress-db
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_NAME: wordpress-php8-multinetwork
       WORDPRESS_DEBUG: true
       WORDPRESS_MULTISITE_INSTALL: true
       WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
@@ -140,32 +122,22 @@ services:
       - ./logs/:/var/log/apache2
       - ../../wpcache:/root/.wp-cli/cache/core/
 
-  db-php8-multinetwork:
-    image: mysql:5.7
-    restart: always
-    tmpfs: /var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: somewordpress
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-
   wordpress-php8-singlesite-bmlt3x:
     build:
       context: .
       dockerfile: Dockerfile-wp-php8.1
     depends_on:
-      - db-php8-singlesite
+      - wordpress-db
     tmpfs: /var/www/html
     restart: always
     command: /usr/local/bin/wp-install.sh
     ports:
       - 83:83
     environment:
-      WORDPRESS_DB_HOST: db-php8-singlesite-bmlt3x
+      WORDPRESS_DB_HOST: wordpress-db
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_NAME: wordpress-php8-singlesite-bmlt3x
       WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
       WORDPRESS_HOST: wordpress-php8-singlesite-bmlt3x
       WORDPRESS_PORT: 83
@@ -175,27 +147,3 @@ services:
       - ../:/var/www/html/wp-content/plugins/bmlt-workflow
       - ./logs/:/var/log/apache2
       - ../../wpcache:/root/.wp-cli/cache/core/
-
-  db-php8-singlesite-bmlt3x:
-    image: mysql:5.7
-    restart: always
-    tmpfs: /var/lib/mysql
-    environment:
-      MYSQL_ROOT_PASSWORD: somewordpress
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-
-  # testcafe:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile-testcafe
-  #   environment:
-  #     - NODE_PATH=/opt/testcafe/node_modules:/opt
-  #   tmpfs: /tmp
-  #   volumes:
-  #     - ../..:/testroot
-  #     - /var/run/docker.sock.raw:/var/run/docker.sock
-  #   # security_opt:
-  #   #   - seccomp:unconfined
-  #   entrypoint: ["/opt/testcafe/docker/testcafe-docker.sh", "firefox", "/testroot/bmlt-workflow/tests", "-S", "-s","path=/testroot/bmlt-workflow/tests/testcafe/screenshots,fullPage=true,thumbnails=false","--hostname","localhost","--retry-test-pages"]

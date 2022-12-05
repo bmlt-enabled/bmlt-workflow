@@ -20,6 +20,7 @@ do
     sleep 1
 done
 
+wp db create
 wp core install --url=$URL --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com --path=/var/www/html
 
 sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '$WORDPRESS_NONCE_SALT');/" /var/www/html/wp-config.php
