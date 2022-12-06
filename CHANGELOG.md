@@ -1,3 +1,8 @@
+## 1.0.11 (Dec 5, 2022)
+- BMLT3.x api support!!
+- Test suite rewrite for docker testing
+- Multiple bugfixes for restore function
+
 ## 1.0.9 (Oct 13, 2022)
 - #103 Feature Request: Allow geocode disabling (thanks @paulnagle !)
 - Lots of refactoring test cases to support bmlt changes

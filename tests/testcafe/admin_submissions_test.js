@@ -105,7 +105,6 @@ test("Approve_Close_Meeting_With_Unpublish", async (t) => {
   await click_dialog_button_by_index(as.approve_close_dialog_parent, 1);
   // dialog closes after ok button
   await t.expect(as.approve_close_dialog_parent.visible).eql(false);
-  await t.debug();
   var column = 8;
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 5000});
 });
