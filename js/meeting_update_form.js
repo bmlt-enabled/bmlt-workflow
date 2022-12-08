@@ -22,9 +22,6 @@ var weekdays = ["none", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", 
 jQuery(document).ready(function ($) {
   // set up our format selector
   var formatdata = [];
-  var hybrid_formatid = "";
-  var virtual_formatid = "";
-  var tempclosure_formatid = "";
 
   // display handler for fso options
   if(bmltwf_fso_feature == 'hidden')
@@ -65,13 +62,10 @@ jQuery(document).ready(function ($) {
   }
 
   Object.keys(bmltwf_bmlt_formats).forEach((key) => {
-    formatdata.push({ text: "(" + bmltwf_bmlt_formats[key]["key_string"] + ")-" + bmltwf_bmlt_formats[key]["name_string"], id: key });
-    if (bmltwf_bmlt_formats[key]["key_string"] === "HY") {
-      hybrid_formatid = key;
-    } else if (bmltwf_bmlt_formats[key]["key_string"] === "VM") {
-      virtual_formatid = key;
-    } else if (bmltwf_bmlt_formats[key]["key_string"] === "TC") {
-      tempclosure_formatid = key;
+    var key_string = bmltwf_bmlt_formats[key]["key_string"];
+    if (!((key_string === "HY")||(key_string === "VM")||(key_string === "TC")))
+    {
+      formatdata.push({ text: "(" + bmltwf_bmlt_formats[key]["key_string"] + ")-" + bmltwf_bmlt_formats[key]["name_string"], id: key });
     }
   });
 
@@ -283,26 +277,7 @@ jQuery(document).ready(function ($) {
       if ("format_shared_id_list" in mdata[id]) {
         var meeting_formats = mdata[id].format_shared_id_list.split(",");
         put_field("display_format_shared_id_list", meeting_formats);
-
-        // handle virtual meeting type in the virtual meeting dropdown
-        var virtual_format = "none";
-        // if (meeting_formats.includes(hybrid_formatid)) {
-        //   virtual_format = "hybrid";
-        // } else if (meeting_formats.includes(virtual_formatid)) {
-        //   virtual_format = "virtual";
-        // } else if (meeting_formats.includes(tempclosure_formatid)) {
-        //   virtual_format = "tempclosure";
-        // }
-        if (mdata[id].venue_type == 2)
-        {
-          virtual_format = "virtual";
-        }
-        else if (mdata[id].venue_type == 3)
-        {
-            virtual_format = "hybrid";
-        }
-
-}
+      }
 
       // handle duration in the select dropdowns
       var durationarr = mdata[id].duration_time.split(":");
@@ -314,9 +289,10 @@ jQuery(document).ready(function ($) {
       // handle service body in the select dropdown
       $("#service_body_bigint").val(mdata[id].service_body_bigint);
 
+      var venue_type = mdata[id].venue_type;
       // doesn't handle if they have both selected in BMLT
-      $("#virtual_hybrid_select").val(virtual_format);
-      if (virtual_format === "none") {
+      $("#venue_type").val(venue_type);
+      if (venue_type === "1") {
         $("#virtual_meeting_settings").hide();
       } else {
         $("#virtual_meeting_settings").show();
@@ -411,7 +387,7 @@ jQuery(document).ready(function ($) {
     enable_field("virtual_meeting_additional_info");
     enable_field("phone_meeting_number");
     enable_field("virtual_meeting_link");
-    enable_field("virtual_hybrid_select");
+    enable_field("");
   }
 
   function disable_edits() {
@@ -433,7 +409,7 @@ jQuery(document).ready(function ($) {
     disable_field("virtual_meeting_additional_info");
     disable_field("phone_meeting_number");
     disable_field("virtual_meeting_link");
-    disable_field("virtual_hybrid_select");
+    disable_field("venue_type");
   }
 
   function clear_form() {
@@ -462,7 +438,7 @@ jQuery(document).ready(function ($) {
     clear_field("virtual_meeting_link");
     // placeholder for these select elements
     $("#group_relationship").val('');
-    $("#virtual_hybrid_select").val('');
+    $("#venue_type").val('');
     $("#service_body_bigint").val('');
     // reset select2
     $('#display_format_shared_id_list').val(null).trigger('change');
@@ -476,7 +452,7 @@ jQuery(document).ready(function ($) {
   $("#meeting_content").hide();
   $("#other_reason").prop("required", false);
 
-  $("#virtual_hybrid_select").on("change", function () {
+  $("#venue_type").on("change", function () {
     // show and hide the virtual meeting settings, and adjust formats as required
     var oldarr = $("#display_format_shared_id_list").val();
     // strip out all the virtual/hybrids first
@@ -484,28 +460,21 @@ jQuery(document).ready(function ($) {
       return value != virtual_formatid && value != hybrid_formatid && value != tempclosure_formatid;
     });
 
-    if (this.value == "none") {
+    if (this.value == "1") {
       $("#virtual_meeting_settings").hide();
       $("#location_fields").show();
-      $("#venue_type").val("1");
     } else {
       
       $("#virtual_meeting_settings").show();
       switch (this.value) {
-        case "virtual":
-          arr.push(virtual_formatid);
+        case "2":
           $("#location_fields").hide();
-          $("#venue_type").val("2");
           break;
-        case "hybrid":
-          arr.push(hybrid_formatid);
+        case "3":
           $("#location_fields").show();
-          $("#venue_type").val("3");
           break;
-        case "tempclosure":
-          arr.push(tempclosure_formatid);
+        case "4":
           $("#location_fields").show();
-          $("#venue_type").val("2");
           break;
       }
     }
@@ -610,6 +579,11 @@ jQuery(document).ready(function ($) {
     var str = $("#duration_hours").val() + ":" + $("#duration_minutes").val() + ":00";
     put_field("duration_time", str);
 
+    if($("#venue_type") == 4)
+    {
+      put_field("venue_type",1);
+      put_field("temporarilyVirtual","true");
+    }
 
     $.ajax({
       url: bmltwf_form_submit_url,

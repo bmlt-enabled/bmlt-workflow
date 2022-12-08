@@ -21,8 +21,6 @@ import { ct } from "./models/crouton";
 import { Selector, Role } from "testcafe";
 
 import { reset_bmlt, 
-  bmlt_states_off, 
-  auto_geocoding_on,
   click_table_row_column, 
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
@@ -99,10 +97,10 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => 
   };
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.virtual_hybrid_select, "hybrid");
+  await select_dropdown_by_value(uf.venue_type, "3");
   await t
-    .expect(uf.virtual_hybrid_select.value)
-    .eql("hybrid")
+    .expect(uf.venue_type.value)
+    .eql("3")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)
     .expect(uf.phone_meeting_number.visible)
@@ -170,7 +168,7 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => 
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 5000});
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
@@ -268,7 +266,7 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) 
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 5000});
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);

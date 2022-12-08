@@ -12,7 +12,6 @@ const croutonpage = "?page_id=4";
 const formpage = "?page_id=5";
 const formpage2 = "/testpage/";
 
-// http://wordpress-php8-singlesite/index.php?rest_route=/bmltwf/v1/options/backup
 const admin_backup_json_path = "/index.php?rest_route=/bmltwf/v1/options/backup";
 const backuppath = "/index.php" + sitejsonurl + admin_backup_json_path;
 const admin_restore_json_path = "/index.php?rest_route=/bmltwf/v1/options/restore";
@@ -21,49 +20,10 @@ const restorepath = "/index.php" + sitejsonurl + admin_restore_json_path;
 const execSync = require("child_process").execSync;
 
 // web addresses
-// const test_ip = execSync("aws ssm get-parameter --name bmltwf_test_hostip --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" }).trim();
-// const test_ip = 'localhost';
-// const siteurl_single = "http://" + test_ip + ":8081";
-// const siteurl_multisingle = "http://" + test_ip + ":8082";
-// const siteurl_multinetwork = "http://" + test_ip + ":8083";
-// const siteurl_single = "http://" + test_ip + "/wordpresssingle";
-// const siteurl_multisingle = "http://" + test_ip + "/wordpressmultisingle";
-// const siteurl_multinetwork = "http://" + test_ip + "/wordpressmultinetwork";
-// const siteurl_wpsinglebmlt3x = "http://" + test_ip + "/wpsinglebmlt3x"
 const siteurl_single = "http://wordpress-php8-singlesite"
 const siteurl_multisingle = "http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle";
 const siteurl_multinetwork = "http://wordpress-php8-multinetwork:82/wordpress-php8-multinetwork";
 const siteurl_wpsinglebmlt3x = "http://wordpress-php8-singlesite-bmlt3x:83"
-
-// usernames and passwords
-// const username_single = execSync("aws ssm get-parameter --name bmltwf_test_wpuser_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" });
-// const password_single = execSync("aws ssm get-parameter --name bmltwf_test_wppass_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" });
-// const username_submission_single = execSync("aws ssm get-parameter --name bmltwf_test_wp_submission_user_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" });
-// const password_submission_single = execSync("aws ssm get-parameter --name bmltwf_test_wp_submission_pass_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" });
-// const username_nopriv_single = execSync("aws ssm get-parameter --name bmltwf_test_wp_nopriv_user_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" });
-// const password_nopriv_single = execSync("aws ssm get-parameter --name bmltwf_test_wp_nopriv_pass_single --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", { encoding: "utf-8" });
-
-// const username_multisingle = execSync("aws ssm get-parameter --name bmltwf_test_wpuser_multisingle --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", {
-//   encoding: "utf-8",
-// });
-// const password_multisingle = execSync("aws ssm get-parameter --name bmltwf_test_wppass_multisingle --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", {
-//   encoding: "utf-8",
-// });
-
-// const username_multinetwork = execSync("aws ssm get-parameter --name bmltwf_test_wpuser_multinetwork --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", {
-//   encoding: "utf-8",
-// });
-// const password_multinetwork = execSync("aws ssm get-parameter --name bmltwf_test_wppass_multinetwork --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", {
-//   encoding: "utf-8",
-// });
-
-// const username_wpsinglebmlt3x = execSync("aws ssm get-parameter --name bmltwf_test_wpuser_bmlt3x --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", {
-//   encoding: "utf-8",
-// });
-// const password_wpsinglebmlt3x = execSync("aws ssm get-parameter --name bmltwf_test_wppass_bmlt3x --profile nb --region ap-southeast-2 --with-decryption | jq .Parameter.Value -r", {
-//   encoding: "utf-8",
-// });
-
 
 const username_single = 'admin';
 const password_single = 'admin';
@@ -149,47 +109,29 @@ module.exports = {
     admin_restore_json_wpsinglebmlt3x: siteurl_wpsinglebmlt3x + admin_restore_json_path,
 
     // // test case resetters
-    // admin_submission_reset: "http://" + test_ip + "/github/db_submissions.php",
-    // blank_bmlt: "http://" + test_ip + "/github/blank_bmlt.php",
     blank_bmlt: "docker compose -f ../bmlt2x/docker/docker-compose.yml --env-file ../bmlt2x/docker/bmlt.env restart bmlt2x db2x",
-    // blank_bmlt3x: "http://" + test_ip + "/github/blank_bmlt3x.php",
     blank_bmlt3x: "docker compose -f ../bmlt3x/docker/docker-compose.yml --env-file ../bmlt3x/docker/bmlt.env restart bmlt3x db3x",
-    // blank_submission: "http://" + test_ip + "/github/blank_submission.php",
     blank_submission: "docker compose -f ../bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-singlesite db-php8-singlesite",
-    // blank_submission_multisingle: "http://" + test_ip + "/github/blank_submission_multisingle.php",
     blank_submission_multisingle: "docker compose -f ../bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-multisitesingle db-php8-multisitesingle",
-    // blank_submission_multinetwork: "http://" + test_ip + "/github/blank_submission_multinetwork.php",
     blank_submission_multinetwork: "docker compose -f ../bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-multinetwork db-php8-multinetwork",
-    // blank_submission_wpsinglebmlt3x: "http://" + test_ip + "/github/blank_submission_wpsinglebmlt3x.php",
     blank_submission_wpsinglebmlt3x: "docker compose -f ../bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-singlesite-bmlt3x db-php8-singlesite-bmlt3x",
-    // blank_service_bodies: "http://" + test_ip + "/github/blank_service_bodies.php",
-    // blank_service_bodies_multisingle: "http://" + test_ip + "/github/blank_service_bodies_multisingle.php",
-    // blank_service_bodies_multinetwork: "http://" + test_ip + "/github/blank_service_bodies_multinetwork.php",
-    // blank_service_bodies_wpsinglebmlt3xmultinetwork: "http://" + test_ip + "/github/blank_service_bodies_wpsinglebmlt3x.php",
     blank_service_bodies: "docker compose -f ../bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-singlesite db-php8-singlesite",
     blank_service_bodies_multisingle: "docker compose -f ../bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-multisitesingle db-php8-multisitesingle",
     blank_service_bodies_multinetwork: "docker compose -f ../bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-multinetwork db-php8-multinetwork",
     blank_service_bodies_wpsinglebmlt3x: "docker compose -f ../bmlt-workflow/docker/docker-compose.yml restart wordpress-php8-singlesite-bmlt3x db-php8-singlesite-bmlt3x",
-    // e2e_test: "http://" + test_ip + "/github/e2e_test.php",
-    // bmlt_states_on: "http://" + test_ip + "/github/bmlt_states_on.php",
-    bmlt_states_on: "MEETING_STATES_ON=true docker compose -f ../bmlt2x/docker/docker-compose.yml up --detach bmlt2x",
-    // bmlt_states_off: "http://" + test_ip + "/github/bmlt_states_off.php",
-    bmlt_states_off: "docker compose -f ../bmlt2x/docker/docker-compose.yml restart bmlt2x",
-    // auto_geocoding_on: "http://" + test_ip + "/github/auto_geocoding_on.php",
-    auto_geocoding_on: "AUTO_GEOCODING_ON=true docker compose -f ../bmlt2x/docker/docker-compose.yml up --detach bmlt2x",
-    // auto_geocoding_off: "http://" + test_ip + "/github/auto_geocoding_off.php",
-    auto_geocoding_off: "AUTO_GEOCODING_ON=false docker compose -f ../bmlt2x/docker/docker-compose.yml up --detach bmlt2x",
-    // bmlt3x_states_on: "http://" + test_ip + "/github/bmlt3x_states_on.php",
-    bmlt3x_states_on: "MEETING_STATES_ON=true docker compose -f ../bmlt3x/docker/docker-compose.yml up --detach bmlt3x",
-    // bmlt3x_states_off: "http://" + test_ip + "/github/bmlt3x_states_off.php",
-    bmlt3x_states_off: "docker compose -f ../bmlt3x/docker/docker-compose.yml restart bmlt2x",
-    // bmlt3x_auto_geocoding_on: "http://" + test_ip + "/github/bmlt3x_auto_geocoding_on.php",
-    bmlt3x_auto_geocoding_on: "AUTO_GEOCODING_ON=true docker compose -f ../bmlt3x/docker/docker-compose.yml up --detach bmlt3x",
-    // bmlt3x_auto_geocoding_off: "http://" + test_ip + "/github/bmlt3x_auto_geocoding_off.php",
-    bmlt3x_auto_geocoding_off: "AUTO_GEOCODING_ON=false docker compose -f ../bmlt3x/docker/docker-compose.yml up --detach bmlt3x",
+    reset_bmlt2x_with_states_on: "MEETING_STATES_ON=true docker compose -f ../bmlt2x/docker/docker-compose.yml up --detach bmlt2x",
+    reset_bmlt2x_with_states_off: "docker compose -f ../bmlt2x/docker/docker-compose.yml restart bmlt2x",
+    // auto_geocoding_on: "AUTO_GEOCODING_ON=true docker compose -f ../bmlt2x/docker/docker-compose.yml up --detach bmlt2x",
+    auto_geocoding_off: "AUTO_GEOCODING_ON=false docker compose -f ../bmlt2x/docker/docker-compose.yml --env-file ../bmlt2x/docker/bmlt.env restart bmlt2x db2x",
+    bmlt3x_auto_geocoding_off: "AUTO_GEOCODING_ON=false docker compose -f ../bmlt3x/docker/docker-compose.yml --env-file ../bmlt3x/docker/bmlt.env restart bmlt3x db3x",
+    reset_bmlt3x_with_states_on: "MEETING_STATES_ON=true docker compose -f ../bmlt3x/docker/docker-compose.yml up --detach bmlt3x",
+    reset_bmlt3x_with_states_off: "docker compose -f ../bmlt3x/docker/docker-compose.yml restart bmlt3x",
+    // bmlt3x_auto_geocoding_on: "AUTO_GEOCODING_ON=true docker compose -f ../bmlt3x/docker/docker-compose.yml up --detach bmlt3x",
 
     crouton_page: siteurl_single+croutonpage,
     crouton3x_page: siteurl_wpsinglebmlt3x+croutonpage,
-    waitfor: "sh docker/wait-for.sh"
+    waitfor: "sh docker/wait-for.sh",
+    bmlt2x_login_page: "http://localhost:8000/main_server/index.php",
+    bmlt3x_login_page: "http://localhost:8001/main_server/index.php"
   },
 };

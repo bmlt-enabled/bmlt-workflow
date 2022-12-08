@@ -22,7 +22,7 @@ import { Role, Selector } from "testcafe";
 
 import { 
   reset_bmlt, 
-  bmlt_states_on, 
+  reset_bmlt2x_with_states_on, 
   waitfor,
   bmltwf_admin,
   restore_from_backup,
@@ -77,9 +77,9 @@ test("Success_New_Standard_Meeting_And_Submit", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.virtual_hybrid_select, "none");
+  await select_dropdown_by_value(uf.venue_type, "none");
   await t
-    .expect(uf.virtual_hybrid_select.value)
+    .expect(uf.venue_type.value)
     .eql("none")
     .expect(uf.virtual_meeting_link.visible)
     .eql(false)
@@ -158,10 +158,10 @@ test("Success_New_Hybrid_Meeting_And_Submit", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.virtual_hybrid_select, "hybrid");
+  await select_dropdown_by_value(uf.venue_type, "3");
   await t
-    .expect(uf.virtual_hybrid_select.value)
-    .eql("hybrid")
+    .expect(uf.venue_type.value)
+    .eql("3")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)
     .expect(uf.phone_meeting_number.visible)
@@ -243,10 +243,10 @@ test("Success_New_Virtual_Meeting_And_Submit", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.virtual_hybrid_select, "virtual");
+  await select_dropdown_by_value(uf.venue_type, "2");
   await t
-    .expect(uf.virtual_hybrid_select.value)
-    .eql("virtual")
+    .expect(uf.venue_type.value)
+    .eql("2")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)
     .expect(uf.phone_meeting_number.visible)
@@ -329,9 +329,9 @@ test("Success_New_Tempclosure_Meeting_And_Submit", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.virtual_hybrid_select, "tempclosure");
+  await select_dropdown_by_value(uf.venue_type, "tempclosure");
   await t
-    .expect(uf.virtual_hybrid_select.value)
+    .expect(uf.venue_type.value)
     .eql("tempclosure")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)
@@ -503,10 +503,10 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
     .ok();
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.virtual_hybrid_select, "hybrid");
+  await select_dropdown_by_value(uf.venue_type, "3");
   await t
-    .expect(uf.virtual_hybrid_select.value)
-    .eql("hybrid")
+    .expect(uf.venue_type.value)
+    .eql("3")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)
     .expect(uf.phone_meeting_number.visible)
@@ -597,7 +597,7 @@ test("Change_Nothing_Check_Error", async (t) => {
 
 test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
 
-  await bmlt_states_on(t);
+  await reset_bmlt2x_with_states_on(t);
   
   await t.navigateTo(userVariables.formpage);
   // console.log(userVariables.formpage);

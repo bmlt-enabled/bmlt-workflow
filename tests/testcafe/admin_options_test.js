@@ -165,6 +165,16 @@ test("Check_Optional_Fields", async (t) => {
   await check_checkbox(t,ao.bmltwf_optional_postcode_required_checkbox);
   await check_checkbox(t,ao.bmltwf_required_meeting_formats_required_checkbox);
 
+  const testfso = randstr() + "@" + randstr() + ".com";
+  const testfrom = randstr() + "@" + randstr() + ".com";
+  await t
+    .typeText(ao.bmltwf_fso_email_address, testfso, { replace: true })
+    .expect(ao.bmltwf_fso_email_address.value)
+    .eql(testfso)
+    .typeText(ao.bmltwf_email_from_address, testfrom, { replace: true })
+    .expect(ao.bmltwf_email_from_address.value)
+    .eql(testfrom);
+
   const testnationdisplay = randstr();
   const testprovincedisplay = randstr();
   const testsubprovincedisplay= randstr();
@@ -206,6 +216,7 @@ test("Check_Optional_Fields", async (t) => {
     .useRole(bmltwf_admin)
     .navigateTo(userVariables.admin_settings_page_single);
 
+  
   await select_dropdown_by_text(ao.bmltwf_fso_feature, "Disabled");
 
   await uncheck_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);

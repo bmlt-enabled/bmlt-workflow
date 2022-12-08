@@ -213,6 +213,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",
             "add_email" => "yes",
+            "venue_type" => 1
 
         );
 
@@ -301,6 +302,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
             "format_shared_id_list" => "1",
+            "venue_type" => "1",
             "group_relationship" => "Group Member",
             "add_email" => "yes",
 
@@ -400,6 +402,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "starter_kit_required" => "no",
             "first_name" => "joe",
             "last_name" => "joe",
+            "venue_type" => "1",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",
@@ -454,6 +457,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "starter_kit_required" => "no",
             "first_name" => "joe",
             "last_name" => "joe",
+            "venue_type" => "1",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",
@@ -598,6 +602,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "starter_kit_postal_address" => "my house",
             "first_name" => "joe",
             "last_name" => "joe",
+            "venue_type" => "1",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",

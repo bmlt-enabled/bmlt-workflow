@@ -52,5 +52,4 @@ class BMLTWF_WP_Options
             'bmltwf_trusted_servants_can_delete_submissions'
         );
     }
-    
 }

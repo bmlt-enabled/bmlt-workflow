@@ -15,11 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { t, Role, Selector, ClientFunction } from "testcafe";
+import { t, Role, Selector } from "testcafe";
 import { wordpress_login } from "../models/wordpress_login";
 import { userVariables } from "../../../.testcaferc";
-import { ao } from "../models/admin_options";
-import { asb } from "../models/admin_service_bodies";
 
 const execSync = require("child_process").execSync;
 
@@ -108,38 +106,29 @@ export async function waitfor(site) {
 export async function reset_bmlt(t) {
   console.log("resetting bmlt");
   execSync(userVariables.blank_bmlt);
-  waitfor("http://localhost:8000/main_server/index.php")
+  waitfor(userVariables.bmlt2x_login_page)
   console.log("reset");
 }
 
 export async function reset_bmlt3x(t) {
-  console.log("resetting bmlt");
+  console.log("resetting bmlt3x");
   execSync(userVariables.blank_bmlt3x);
-  waitfor("http://localhost:8001/main_server/index.php")
+  waitfor(userVariables.bmlt3x_login_page);
   console.log("reset");
 }
 
-export async function auto_geocoding_on(t) {
-  console.log("turning geocode on");
-  execSync(userVariables.auto_geocoding_on);
-  console.log("geocode on");
-}
 
-export async function auto_geocoding_off(t) {
+export async function reset_bmlt_with_auto_geocoding_off(t) {
   console.log("turning geocode off");
   execSync(userVariables.auto_geocoding_off);
+  waitfor(userVariables.bmlt2x_login_page);
   console.log("geocode off");
 }
 
-export async function bmlt3x_auto_geocoding_on(t) {
-  console.log("turning geocode on");
-  execSync(userVariables.bmlt3x_auto_geocoding_on);
-  console.log("geocode on");
-}
-
-export async function bmlt3x_auto_geocoding_off(t) {
-  console.log("turning geocode off");
+export async function reset_bmlt3x_with_auto_geocoding_off(t) {
+  console.log("bmlt3x turning geocode off");
   execSync(userVariables.bmlt3x_auto_geocoding_off);
+  waitfor(userVariables.bmlt3x_login_page);
   console.log("geocode off");
 }
 
@@ -318,230 +307,36 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
   // console.log(resp);
 }
 
-export async function insert_submissions_multisingle() {
-  // pre fill the submissions
-  execSync(userVariables.admin_submission_reset_multisingle);
-}
-
-export async function insert_submissions_multinetwork() {
-  // pre fill the submissions
-  execSync(userVariables.admin_submission_reset_multinetwork);
-}
-
-export async function configure_service_bodies(t) {
-  await t
-    .useRole(bmltwf_admin)
-    .navigateTo(userVariables.admin_service_bodies_page_single)
-
-    .click(Selector("ul#select2-bmltwf_userlist_id_1009-container").parent())
-    .pressKey("enter")
-    .click(Selector("ul#select2-bmltwf_userlist_id_1009-container").parent())
-    .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_1009-results"]'), "submitpriv")
-    .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_1009")
-    .click(Selector("ul#select2-bmltwf_userlist_id_1046-container").parent())
-    .pressKey("enter")
-    .click(Selector("ul#select2-bmltwf_userlist_id_1046-container").parent())
-    .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_1046-results"]'), "submitpriv")
-    .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_1046")
-    .click(Selector("ul#select2-bmltwf_userlist_id_1047-container").parent())
-    .pressKey("enter")
-    .click(Selector("ul#select2-bmltwf_userlist_id_1047-container").parent())
-    .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_1047-results"]'), "submitpriv")
-    .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_1047")
-    .click(asb.bmltwf_submit);
-}
-
-export async function configure_service_bodies_multisingle(t) {
-  await t
-    .useRole(bmltwf_admin_multisingle)
-    .navigateTo(userVariables.admin_service_bodies_page_multisingle_plugin)
-
-    .click(Selector("ul#select2-bmltwf_userlist_id_1009-container").parent())
-    .pressKey("enter")
-
-    .click("#bmltwf_userlist_checkbox_id_1009")
-    .click(Selector("ul#select2-bmltwf_userlist_id_1046-container").parent())
-    .pressKey("enter")
-
-    .click("#bmltwf_userlist_checkbox_id_1046")
-    .click(Selector("ul#select2-bmltwf_userlist_id_1047-container").parent())
-    .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_1047")
-    .click(asb.bmltwf_submit);
-}
-
-export async function configure_service_bodies_multinetwork(t) {
-  await t
-    .useRole(bmltwf_admin_multinetwork)
-    .navigateTo(userVariables.admin_service_bodies_page_multinetwork_plugin)
-
-    .click(Selector("ul#select2-bmltwf_userlist_id_1009-container").parent())
-    .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_1009")
-    .click(Selector("ul#select2-bmltwf_userlist_id_1046-container").parent())
-    .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_1046")
-    .click(Selector("ul#select2-bmltwf_userlist_id_1047-container").parent())
-    .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_1047")
-    .click(asb.bmltwf_submit);
-}
-
-export async function configure_service_bodies_wpsinglebmlt3x(t) {
-  await t
-    .useRole(bmltwf_admin_wpsinglebmlt3x)
-    .navigateTo(userVariables.admin_service_bodies_page_wpsinglebmlt3x)
-
-    .click(Selector("ul#select2-bmltwf_userlist_id_1050-container").parent())
-    .pressKey("enter")
-    .click(Selector("ul#select2-bmltwf_userlist_id_1050-container").parent())
-    .typeText(Selector('[aria-controls="select2-bmltwf_userlist_id_1050-results"]'), "submitpriv")
-    .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_1050")
-    .click(asb.bmltwf_submit);
-}
-
-// set a from email address, turn off the optional settings and submit
-export async function basic_options() {
-  await t
-    .useRole(bmltwf_admin)
-
-    .navigateTo(userVariables.admin_settings_page_single)
-    .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
-    .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
-
-  await uncheck_checkbox(t, ao.bmltwf_optional_location_nation_visible_checkbox);
-  await check_checkbox(t, ao.bmltwf_optional_location_province_visible_checkbox);
-  await uncheck_checkbox(t, ao.bmltwf_optional_location_province_required_checkbox);
-  await uncheck_checkbox(t, ao.bmltwf_optional_location_sub_province_visible_checkbox);
-  await check_checkbox(t, ao.bmltwf_optional_postcode_visible_checkbox);
-  await uncheck_checkbox(t, ao.bmltwf_optional_postcode_required_checkbox);
-
-  await t.click(ao.submit);
-  await ao.settings_updated();
-}
-
-export async function basic_options_wpsinglebmlt3x() {
-  await t
-    .useRole(bmltwf_admin_wpsinglebmlt3x)
-    .navigateTo(userVariables.admin_settings_page_wpsinglebmlt3x)
-    .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
-    .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
-
-  await uncheck_checkbox(t, ao.bmltwf_optional_location_nation_visible_checkbox);
-  await check_checkbox(t, ao.bmltwf_optional_location_province_visible_checkbox);
-  await uncheck_checkbox(t, ao.bmltwf_optional_location_province_required_checkbox);
-  await uncheck_checkbox(t, ao.bmltwf_optional_location_sub_province_visible_checkbox);
-  await check_checkbox(t, ao.bmltwf_optional_postcode_visible_checkbox);
-  await uncheck_checkbox(t, ao.bmltwf_optional_postcode_required_checkbox);
-
-  await t.click(ao.submit);
-  await ao.settings_updated();
-}
-
-export async function basic_options_multisingle() {
-  await t
-    .useRole(bmltwf_admin_multisingle)
-    .navigateTo(userVariables.admin_settings_page_multisingle_plugin)
-    .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
-    .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
-
-  await uncheck_checkbox(t, ao.bmltwf_optional_location_nation_visible_checkbox);
-  await check_checkbox(t, ao.bmltwf_optional_location_province_visible_checkbox);
-  await uncheck_checkbox(t, ao.bmltwf_optional_location_province_required_checkbox);
-  await uncheck_checkbox(t, ao.bmltwf_optional_location_sub_province_visible_checkbox);
-  await check_checkbox(t, ao.bmltwf_optional_postcode_visible_checkbox);
-  await uncheck_checkbox(t, ao.bmltwf_optional_postcode_required_checkbox);
-
-  await t.click(ao.submit);
-  await ao.settings_updated();
-}
-
-export async function basic_options_multinetwork() {
-  await t
-    .useRole(bmltwf_admin_multinetwork)
-    .navigateTo(userVariables.admin_settings_page_multinetwork_plugin)
-    .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
-    .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
-
-  await uncheck_checkbox(t, ao.bmltwf_optional_location_nation_visible_checkbox);
-  await check_checkbox(t, ao.bmltwf_optional_location_province_visible_checkbox);
-  await uncheck_checkbox(t, ao.bmltwf_optional_location_province_required_checkbox);
-  await check_checkbox(t, ao.bmltwf_optional_location_sub_province_visible_checkbox);
-  await check_checkbox(t, ao.bmltwf_optional_postcode_visible_checkbox);
-  await uncheck_checkbox(t, ao.bmltwf_optional_postcode_required_checkbox);
-
-  await t.click(ao.submit);
-  await ao.settings_updated();
-  await t
-    .navigateTo(userVariables.admin_settings_page_multinetwork_plugin2)
-    .typeText(ao.bmltwf_email_from_address, "testing@test.org.zz", { replace: true })
-    .typeText(ao.bmltwf_fso_email_address, "testing@test.org.zz", { replace: true });
-
-  await uncheck_checkbox(t, ao.bmltwf_optional_location_nation_visible_checkbox);
-  await check_checkbox(t, ao.bmltwf_optional_location_province_visible_checkbox);
-  await uncheck_checkbox(t, ao.bmltwf_optional_location_province_required_checkbox);
-  await check_checkbox(t, ao.bmltwf_optional_location_sub_province_visible_checkbox);
-  await check_checkbox(t, ao.bmltwf_optional_postcode_visible_checkbox);
-  await uncheck_checkbox(t, ao.bmltwf_optional_postcode_required_checkbox);
-
-  await t.click(ao.submit);
-  await ao.settings_updated();
-}
-
-export async function bmlt_states_off(t) {
+export async function reset_bmlt2x_with_states_off(t) {
   // disable state dropdown
   //console.log("turning states off");
-  execSync(userVariables.bmlt_states_off);
+  execSync(userVariables.reset_bmlt2x_with_states_off);
+  waitfor(userVariables.bmlt2x_login_page);
   //console.log("states off");
 }
 
-export async function bmlt_states_on(t) {
+export async function reset_bmlt2x_with_states_on(t) {
   // enable state dropdown
   //console.log("turning states on");
-  execSync(userVariables.bmlt_states_on);
+  execSync(userVariables.reset_bmlt2x_with_states_on);
+  waitfor(userVariables.bmlt2x_login_page);
   //console.log("states on");
 }
 
-export async function bmlt3x_states_off(t) {
+export async function reset_bmlt3x_with_states_off(t) {
   // disable state dropdown
   //console.log("turning states off");
-  execSync(userVariables.bmlt3x_states_off);
+  execSync(userVariables.reset_bmlt3x_with_states_off);
+  waitfor(userVariables.bmlt3x_login_page);
   //console.log("states off");
 }
 
-export async function bmlt3x_states_on(t) {
+export async function reset_bmlt3x_with_states_on(t) {
   // enable state dropdown
   //console.log("turning states on");
-  execSync(userVariables.bmlt3x_states_on);
+  execSync(userVariables.reset_bmlt3x_with_states_on);
+  waitfor(userVariables.bmlt3x_login_page);
   //console.log("states on");
-}
-
-export async function delete_submissions(t) {
-  //console.log("deleting submissions");
-  execSync(userVariables.blank_submission);
-  //console.log("deleted");
-}
-
-export async function delete_submissions_multisingle(t) {
-  //console.log("deleting submissions multisingle");
-  execSync(userVariables.blank_submission_multisingle);
-  //console.log("deleted");
-}
-
-export async function delete_submissions_multinetwork(t) {
-  //console.log("deleting submissions multinetwork");
-  execSync(userVariables.blank_submission_multinetwork);
-  //console.log("deleted");
-}
-
-export async function delete_submissions_wpsinglebmlt3x(t) {
-  //console.log("deleting submissions wpsinglebmlt3x");
-  execSync(userVariables.blank_submission);
-  //console.log("deleted");
 }
 
 export async function check_checkbox(t, s) {

@@ -1,52 +1,51 @@
 // Copyright (C) 2022 nigel.bmlt@gmail.com
-// 
+//
 // This file is part of bmlt-workflow.
-// 
+//
 // bmlt-workflow is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // bmlt-workflow is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
 import { ct } from "./models/crouton";
+
 import { Selector, Role } from "testcafe";
 
-import { reset_bmlt3x, 
-  reset_bmlt3x_with_states_off, 
+import {
   restore_from_backup,
-  click_table_row_column, 
-  click_dt_button_by_index, 
-  click_dialog_button_by_index, 
-  select_dropdown_by_text, 
-  select_dropdown_by_value, 
-  bmltwf_admin_wpsinglebmlt3x, 
-  waitfor,
-   } from "./helpers/helper.js";
-  
+  // reset_bmlt3x,
+  reset_bmlt3x_with_auto_geocoding_off,
+  select_dropdown_by_text,
+  select_dropdown_by_value,
+  click_table_row_column,
+  click_dt_button_by_index,
+  click_dialog_button_by_index,
+  bmltwf_admin_wpsinglebmlt3x,
+  waitfor
+} from "./helpers/helper.js";
+
 import { userVariables } from "../../.testcaferc";
 
-fixture`bmlt3x_e2e_test_fixture`
-  // .page(userVariables.admin_submissions_page_wpsinglebmlt3x)
-  .before(async (t) => {
-  })
+fixture`bmlt3x_geocoding_tests_fixture`
+  .before(async (t) => {})
   .beforeEach(async (t) => {
-    await reset_bmlt3x_with_states_off(t);
-
-    await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x","8001")
-
-    await waitfor(userVariables.admin_logon_page_wpsinglebmlt3x);
+    // await reset_bmlt3x(t);
+    await reset_bmlt3x_with_auto_geocoding_off(t);
+    await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x", "8001");
+    // await t.debug();
   });
 
-test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
+test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
   var meeting = {
     location_text: "the church",
     location_street: "105 avoca street",
@@ -56,10 +55,11 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     location_postal_code_1: "2032",
   };
 
+  await waitfor(userVariables.admin_logon_page_wpsinglebmlt3x);
   await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
 
   await select_dropdown_by_value(uf.update_reason, "reason_new");
-// await t.debug();
+
   // check our divs are visible
   await t
     .expect(uf.update_reason.value)
@@ -74,10 +74,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .eql(true);
 
   // personal details
-  await t.typeText(uf.first_name, "first")
-  .typeText(uf.last_name, "last")
-  .typeText(uf.email_address, "test@test.com.zz")
-  .typeText(uf.contact_number_confidential, "`12345`");
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number_confidential, "`12345`");
 
   // email dropdown
   await select_dropdown_by_text(uf.add_email, "Yes");
@@ -172,7 +169,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", { timeout: 10000 });
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
@@ -181,19 +178,6 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
 
   await t.typeText(Selector('input[class="select2-search__field"]'), "99999");
   await t.pressKey("enter");
-
-  // var meeting = {
-  //     meeting_name: 'my test meeting 99999',
-  //     location_text: 'the church',
-  //     location_street: '105 avoca street',
-  //     location_info: 'info',
-  //     location_municipality: 'randwick',
-  //     location_province: 'nsw',
-  //     location_postal_code_1: '2032',
-  //     phone_meeting_number: '+61 1800 253430 code #8303782669',
-  //     virtual_meeting_link: 'https://us02web.zoom.us/j/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09',
-  //     virtual_meeting_additional_info: 'Zoom ID 83037287669 Passcode: testing'
-  //     };
 
   await t
     .expect(ct.meeting_name.innerText)
@@ -206,7 +190,8 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .eql(meeting.virtual_meeting_link);
 });
 
-test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
+test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
+  //console.log("hi1");
   await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
@@ -216,7 +201,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "adirondack");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "right thing");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
@@ -227,7 +212,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
     .typeText(uf.first_name, "first")
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
-    .typeText(uf.contact_number_confidential, "`12345`")
+    .typeText(uf.contact_number_confidential, "12345")
     .typeText(uf.location_text, "location")
 
     .typeText(uf.meeting_name, "update", { replace: true })
@@ -267,7 +252,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", { timeout: 10000 });
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
@@ -276,6 +261,6 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
 
   await t.typeText(Selector('input[class="select2-search__field"]'), "update");
   await t.pressKey("enter");
+
   await t.expect(ct.meeting_name.innerText).eql("update");
 });
-
