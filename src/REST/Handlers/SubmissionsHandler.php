@@ -629,22 +629,8 @@ class SubmissionsHandler
             $reason_close_bool = ($data['update_reason'] === 'reason_close');
             // handle meeting formats
             $this->populate_formats();
-            if (isset($data['format_shared_id_list'])) {
-                $strarr = explode(',', $data['format_shared_id_list']);
-                foreach ($strarr as $key) {
-                    if (array_key_exists($key, $this->formats)) {
-                        switch ($this->formats[$key]["key_string"]) {
-                            case "HY":
-                            case "VM":
-                            case "TC":
-                                $virtual_meeting_bool = true;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-            }
+            $venue_type = $data['venue_type'] ?? '0';
+            $virtual_meeting_bool = ($venue_type !== '1');
 
             $require_postcode = false;
             if (get_option('bmltwf_optional_postcode') === 'displayrequired') {

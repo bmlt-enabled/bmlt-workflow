@@ -453,12 +453,7 @@ jQuery(document).ready(function ($) {
   $("#other_reason").prop("required", false);
 
   $("#venue_type").on("change", function () {
-    // show and hide the virtual meeting settings, and adjust formats as required
-    var oldarr = $("#display_format_shared_id_list").val();
-    // strip out all the virtual/hybrids first
-    var arr = oldarr.filter(function (value, index, a) {
-      return value != virtual_formatid && value != hybrid_formatid && value != tempclosure_formatid;
-    });
+    // show and hide the virtual meeting settings
 
     if (this.value == "1") {
       $("#virtual_meeting_settings").hide();
@@ -479,7 +474,6 @@ jQuery(document).ready(function ($) {
       }
     }
 
-    $("#display_format_shared_id_list").val(arr).trigger("change");
   });
 
   $("#update_reason").on("change", function () {
@@ -508,7 +502,7 @@ jQuery(document).ready(function ($) {
         $("#virtual_meeting_settings").hide();
         // display form instructions
         $("#instructions").html(
-          "Please fill in the details of your new meeting, and then submit your update. <br><b>Note:</b> If your meeting meets multiple times a week, please submit additional new meeting requests for each day you meet."
+          "Please fill in the details of your new meeting, and then submit your update. <br><b>Note:</b> If your meeting convenes multiple times a week, please submit additional new meeting requests for each day you meet."
         );
         // new meeting has a starter pack
         if(bmltwf_fso_feature == 'display')

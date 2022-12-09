@@ -46,6 +46,7 @@ div#form_replace.bmltwf_wide_form fieldset {
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
+  appearance: none;;
   margin: 0;
 }
 
@@ -63,13 +64,13 @@ input[type="number"]::-webkit-outer-spin-button {
 .select2-results__options::-webkit-scrollbar-thumb {
   -webkit-border-radius: 10px;
   border-radius: 10px;
-  /* background: rgba(255, 0, 0, 0.8); */
+  /* background-color: rgba(255, 0, 0, 0.8); */
   -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
 }
 
 .select2-results__options::-webkit-scrollbar-thumb:window-inactive {
-  background: rgba(255, 0, 0, 0.4);
+  background-color: rgba(255, 0, 0, 0.4);
 }
 
 body {
@@ -211,6 +212,7 @@ select.update-form-select {
   border-radius: 8px;
   border-width: 2px;
   -webkit-appearance: menulist;
+  appearance: menulist;
   background-image: none;
   background-color: rgb(255,255,255);
   color: rgb(102,102,102);
@@ -259,11 +261,11 @@ div#meeting_content.form-grid .inline label {
 }
 
 div#meeting_content .bmltwf-changed.bmltwf-changed.bmltwf-changed {
-  background: #e7f478;
+  background-color: #e7f478;
 }
 
 div#meeting_content span.select2-selection--multiple.bmltwf-changed.bmltwf-changed {
-  background: #e7f478;
+  background-color: #e7f478;
 }
 
 /* accessibility for close button */
@@ -394,7 +396,7 @@ span.dashicons.dashicons-info-outline {
 }
 
 .notice {
-  background: #fff;
+  background-color: #fff;
   border: 1px solid #c3c4c7;
   border-left-width: 4px;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
@@ -724,6 +726,7 @@ span.select2-container--bmltwf_select2_theme .select2-selection--single {
 	outline: 0;
 	box-shadow: none;
 	-webkit-appearance: textfield;
+  appearance: textfield;
 }
 
 #meeting_details .select2-container--bmltwf_select2_theme .select2-search--inline textarea.select2-search__field,

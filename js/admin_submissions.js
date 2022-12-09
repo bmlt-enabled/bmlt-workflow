@@ -53,6 +53,8 @@ jQuery(document).ready(function ($) {
       $("#optional_location_nation").hide();
       break;
     case "display":
+      $("#optional_location_nation").show();
+      break;
     case "displayrequired":
       $("#optional_location_nation").show();
       $("#location_nation_label").append('<span class="bmltwf-required-field"> *</span>');
@@ -65,6 +67,8 @@ jQuery(document).ready(function ($) {
       $("#optional_location_sub_province").hide();
       break;
     case "display":
+      $("#optional_location_sub_province").show();
+      break;
     case "displayrequired":
       $("#optional_location_sub_province").show();
       $("#location_sub_province_label").append('<span class="bmltwf-required-field"> *</span>');
@@ -77,6 +81,8 @@ jQuery(document).ready(function ($) {
       $("#optional_location_province").hide();
       break;
     case "display":
+      $("#optional_location_province").show();
+      break;
     case "displayrequired":
       $("#optional_location_province").show();
       $("#location_province_label").append('<span class="bmltwf-required-field"> *</span>');
