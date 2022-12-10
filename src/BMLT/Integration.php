@@ -325,8 +325,10 @@ class Integration
 
         $this->debug_log("CHANGE after");
         $this->debug_log($change);
-
-        $change['formatIds']=$this->removeLocations($change['formatIds']);
+        if(array_key_exists('formatIds',$change))
+        {
+            $change['formatIds']=$this->removeLocations($change['formatIds']);
+        }
         
         $this->debug_log("inside updateMeetingv3 auth");
 
@@ -540,7 +542,7 @@ class Integration
         foreach ($format as $key => $value) {
             if($realformats[$value]['type']!='LOCATION')
             {
-                $newformats[]=$value;
+                $newformats[]=$value;        
             }
         }
         return $newformats;
@@ -761,6 +763,8 @@ class Integration
 
     private function createMeetingv2($meeting)
     {
+        $this->debug_log("meeting = ");
+        $this->debug_log($meeting);
         // workaround for semantic new meeting bug
         $meeting['id_bigint'] = 0;
 

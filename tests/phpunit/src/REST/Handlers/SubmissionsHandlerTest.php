@@ -344,6 +344,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "meeting_id" => "3277",
             "first_name" => "joe",
             "last_name" => "joe",
+            "venue_type" => "1",
             "service_body_bigint" => "3",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",

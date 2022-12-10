@@ -81,6 +81,114 @@ Line: $errorLine
             {
                 return("true");
             }});
+
+            $this->formats = <<<EOD
+        [
+            {
+                "id": 1,
+                "worldId": "BEG",
+                "type": "COMMON_NEEDS_OR_RESTRICTION",
+                "translations": [
+                { "key": "BEG", "name": "Beginners", "description": "This meeting is focused on the needs of new members of NA.", "language": "en" },
+                { "key": "BEG", "name": "Principiantes", "description": "Esta reuni\u00f3n se centr\u00f3 en las necesidades de los nuevos miembros de NA.", "language": "es" },
+                {
+                    "key": "B",
+                    "name": "\u062a\u0627\u0632\u0647 \u0648\u0627\u0631\u062f\u0627\u0646",
+                    "description": "\u0627\u06cc\u0646 \u062c\u0644\u0633\u0647 \u0628\u0631 \u0631\u0648\u06cc \u0646\u06cc\u0627\u0632\u0647\u0627\u06cc \u062a\u0627\u0632\u0647 \u0648\u0627\u0631\u062f\u0627\u0646 \u062f\u0631 \u0645\u0639\u062a\u0627\u062f\u0627\u0646 \u06af\u0645\u0646\u0627\u0645 \u0645\u062a\u0645\u0631\u06a9\u0632 \u0645\u06cc\u0628\u0627\u0634\u062f",
+                    "language": "fa"
+                },
+                { "key": "B", "name": "Nowoprzybyli", "description": "Mityng koncentruje si\u0119 na potrzebach nowyh cz\u0142onk\u00f3w NA.", "language": "pl" },
+                { "key": "B", "name": "Nowoprzybyli", "description": "Mityng koncentruje si\u0119 na potrzebach nowyh cz\u0142onk\u00f3w NA.", "language": "pl" },
+                { "key": "RC", "name": "Rec\u00e9m-chegados", "description": "Esta reuni\u00e3o tem foco nas necessidades de novos membros em NA.", "language": "pt" }
+                ]
+            },
+            {
+                "id": 48,
+                "worldId": null,
+                "type": null,
+                "translations": [
+                { "key": "S", "name": "Spiritual Principals", "description": "This meeting is focused on spiritual principals.", "language": "en" },
+                { "key": "S", "name": "Directores Espirituales", "description": "Esta reuni\u00f3n se centr\u00f3 en los principios espirituales.", "language": "es" },
+                { "key": "PER", "name": "\u0641\u0627\u0631\u0633\u06cc", "description": "\u062c\u0644\u0633\u0647 \u0628\u0647 \u0632\u0628\u0627\u0646 \u0641\u0627\u0631\u0633\u06cc", "language": "fa" },
+                { "key": "PER", "name": "Perski", "description": "Mityng odbywa si\u0119 w j\u0119zyku perskim", "language": "pl" },
+                { "key": "PER", "name": "Perski", "description": "Mityng odbywa si\u0119 w j\u0119zyku perskim", "language": "pl" },
+                { "key": "PER", "name": "Persa", "description": "Reuni\u00e3o em l\u00edngua persa", "language": "pt" }
+                ]
+            },
+            {
+                "id": 6,
+                "worldId": "CAN",
+                "type": "LOCATION",
+                "translations": [
+                { "key": "CAN", "name": "Candlelight", "description": "This meeting is held by candlelight.", "language": "en" },
+                { "key": "CAN", "name": "Luz De Una Vela", "description": "Esta reuni\u00f3n se celebra con velas.", "language": "es" },
+                {
+                    "key": "CL",
+                    "name": "\u0634\u0645\u0639 \u0631\u0648\u0634\u0646",
+                    "description": "\u0627\u06cc\u0646 \u062c\u0644\u0633\u0647 \u0628\u0647\u0645\u0631\u0627\u0647 \u0634\u0645\u0639 \u0631\u0648\u0634\u0646 \u0628\u0631\u06af\u0632\u0627\u0631 \u0645\u06cc\u06af\u0631\u062f\u062f",
+                    "language": "fa"
+                },
+                { "key": "CL", "name": "\u015awieczka", "description": "Ten mityng odbywa si\u0119 przy blasku \u015bwiecy.", "language": "pl" },
+                { "key": "CL", "name": "\u015awieczka", "description": "Ten mityng odbywa si\u0119 przy blasku \u015bwiecy.", "language": "pl" },
+                { "key": "VL", "name": "Luz de velas", "description": "Esta reuni\u00e3o acontece \u00e0 luz de velas.", "language": "pt" }
+                ]
+            },
+            {
+                "id": 7,
+                "worldId": "CW",
+                "type": "COMMON_NEEDS_OR_RESTRICTION",
+                "translations": [
+                { "key": "CW", "name": "Children Welcome", "description": "Children are welcome.", "language": "en" },
+                { "key": "CW", "name": "Los Ni\u00f1os Son Bienvenidos", "description": "", "language": "es" },
+                {
+                    "key": "CS",
+                    "name": "\u06a9\u0648\u062f\u06a9\u0627\u0646 \u0628\u06cc \u0633\u0631\u067e\u0631\u0633\u062a",
+                    "description": "\u062e\u0648\u0634 \u0631\u0641\u062a\u0627\u0631\u06cc",
+                    "language": "fa"
+                },
+                { "key": "CW", "name": "Enfants bienvenus", "description": "Les enfants sont les bienvenus \u00e0 cette r\u00e9union.", "language": "fr" },
+                { "key": "CS", "name": "Dzieci pod opiek\u0105", "description": "Dzieci uzale\u017cnionych mile widziane pod warunkiem odpowiedniego zachowania.", "language": "pl" },
+                { "key": "CA", "name": "Crian\u00e7a sob supervis\u00e3o", "description": "Bem-comportadas, crian\u00e7as sob supervis\u00e3o s\u00e3o bem-vindas.", "language": "pt" }
+                ]
+            },
+            {
+                "id": 8,
+                "worldId": "DISC",
+                "type": "MEETING_FORMAT",
+                "translations": [
+                { "key": "D", "name": "Discussion", "description": "This meeting invites participation by all attendees.", "language": "en" },
+                { "key": "D", "name": "Discusi\u00f3n", "description": "Esta reuni\u00f3n invita a la participaci\u00f3n de todos los asistentes.", "language": "es" },
+                {
+                    "key": "D",
+                    "name": "\u0628\u062d\u062b \u0648 \u06af\u0641\u062a\u06af\u0648",
+                    "description": "\u0627\u06cc\u0646 \u062c\u0644\u0633\u0647 \u0627\u0632 \u062a\u0645\u0627\u0645\u06cc \u0634\u0631\u06a9\u062a \u06a9\u0646\u0646\u062f\u06af\u0627\u0646 \u062f\u0639\u0648\u062a \u0628\u0647 \u0628\u062d\u062b \u0645\u06cc\u06a9\u0646\u062f",
+                    "language": "fa"
+                },
+                { "key": "D", "name": "Dyskusja", "description": "Mityng dla wszystkich ch\u0119tnych.", "language": "pl" },
+                { "key": "D", "name": "Dyskusja", "description": "Mityng dla wszystkich ch\u0119tnych.", "language": "pl" },
+                { "key": "D", "name": "Discuss\u00e3o", "description": "Esta reuni\u00e3o convida a participa\u00e7\u00e3o de todos.", "language": "pt" }
+                ]
+            },
+            {
+                "id": 9,
+                "worldId": null,
+                "type": "COMMON_NEEDS_OR_RESTRICTION",
+                "translations": [
+                { "key": "ESP", "name": "Espanol", "description": "This meeting primary spoken in Spanish.", "language": "en" },
+                { "key": "ESP", "name": "Espanol", "description": "Esta reuni\u00f3n principal que se habla en espa\u00f1ol.", "language": "es" },
+                {
+                    "key": "ES",
+                    "name": "\u0627\u0633\u067e\u0627\u0646\u06cc\u0627\u06cc\u06cc",
+                    "description": "\u0627\u06cc\u0646 \u062c\u0644\u0633\u0647 \u0628\u0647 \u0632\u0628\u0627\u0646 \u0627\u0633\u067e\u0627\u0646\u06cc\u0627\u06cc\u06cc \u0628\u0631\u06af\u0632\u0627\u0631 \u0645\u06cc\u06af\u0631\u062f\u062f",
+                    "language": "fa"
+                },
+                { "key": "ES", "name": "Hiszpa\u0144ski", "description": "Mityng odbywa si\u0119 w j\u0119zyku hiszpa\u0144skim.", "language": "pl" },
+                { "key": "ES", "name": "Hiszpa\u0144ski", "description": "Mityng odbywa si\u0119 w j\u0119zyku hiszpa\u0144skim.", "language": "pl" },
+                { "key": "ES", "name": "Espanhol", "description": "Esta reuni\u00e3o acontece em Espanhol.", "language": "pt" }
+                ]
+            }]
+        EOD;
+
     }
 
     protected function tearDown(): void
@@ -505,118 +613,11 @@ Line: $errorLine
     
     public function test_getMeetingFormatsv3(): void
     {
-        $formats = <<<EOD
-[
-    {
-        "id": 1,
-        "worldId": "BEG",
-        "type": "COMMON_NEEDS_OR_RESTRICTION",
-        "translations": [
-        { "key": "BEG", "name": "Beginners", "description": "This meeting is focused on the needs of new members of NA.", "language": "en" },
-        { "key": "BEG", "name": "Principiantes", "description": "Esta reuni\u00f3n se centr\u00f3 en las necesidades de los nuevos miembros de NA.", "language": "es" },
-        {
-            "key": "B",
-            "name": "\u062a\u0627\u0632\u0647 \u0648\u0627\u0631\u062f\u0627\u0646",
-            "description": "\u0627\u06cc\u0646 \u062c\u0644\u0633\u0647 \u0628\u0631 \u0631\u0648\u06cc \u0646\u06cc\u0627\u0632\u0647\u0627\u06cc \u062a\u0627\u0632\u0647 \u0648\u0627\u0631\u062f\u0627\u0646 \u062f\u0631 \u0645\u0639\u062a\u0627\u062f\u0627\u0646 \u06af\u0645\u0646\u0627\u0645 \u0645\u062a\u0645\u0631\u06a9\u0632 \u0645\u06cc\u0628\u0627\u0634\u062f",
-            "language": "fa"
-        },
-        { "key": "B", "name": "Nowoprzybyli", "description": "Mityng koncentruje si\u0119 na potrzebach nowyh cz\u0142onk\u00f3w NA.", "language": "pl" },
-        { "key": "B", "name": "Nowoprzybyli", "description": "Mityng koncentruje si\u0119 na potrzebach nowyh cz\u0142onk\u00f3w NA.", "language": "pl" },
-        { "key": "RC", "name": "Rec\u00e9m-chegados", "description": "Esta reuni\u00e3o tem foco nas necessidades de novos membros em NA.", "language": "pt" }
-        ]
-    },
-    {
-        "id": 48,
-        "worldId": null,
-        "type": null,
-        "translations": [
-        { "key": "S", "name": "Spiritual Principals", "description": "This meeting is focused on spiritual principals.", "language": "en" },
-        { "key": "S", "name": "Directores Espirituales", "description": "Esta reuni\u00f3n se centr\u00f3 en los principios espirituales.", "language": "es" },
-        { "key": "PER", "name": "\u0641\u0627\u0631\u0633\u06cc", "description": "\u062c\u0644\u0633\u0647 \u0628\u0647 \u0632\u0628\u0627\u0646 \u0641\u0627\u0631\u0633\u06cc", "language": "fa" },
-        { "key": "PER", "name": "Perski", "description": "Mityng odbywa si\u0119 w j\u0119zyku perskim", "language": "pl" },
-        { "key": "PER", "name": "Perski", "description": "Mityng odbywa si\u0119 w j\u0119zyku perskim", "language": "pl" },
-        { "key": "PER", "name": "Persa", "description": "Reuni\u00e3o em l\u00edngua persa", "language": "pt" }
-        ]
-    },
-    {
-        "id": 6,
-        "worldId": "CAN",
-        "type": "LOCATION",
-        "translations": [
-        { "key": "CAN", "name": "Candlelight", "description": "This meeting is held by candlelight.", "language": "en" },
-        { "key": "CAN", "name": "Luz De Una Vela", "description": "Esta reuni\u00f3n se celebra con velas.", "language": "es" },
-        {
-            "key": "CL",
-            "name": "\u0634\u0645\u0639 \u0631\u0648\u0634\u0646",
-            "description": "\u0627\u06cc\u0646 \u062c\u0644\u0633\u0647 \u0628\u0647\u0645\u0631\u0627\u0647 \u0634\u0645\u0639 \u0631\u0648\u0634\u0646 \u0628\u0631\u06af\u0632\u0627\u0631 \u0645\u06cc\u06af\u0631\u062f\u062f",
-            "language": "fa"
-        },
-        { "key": "CL", "name": "\u015awieczka", "description": "Ten mityng odbywa si\u0119 przy blasku \u015bwiecy.", "language": "pl" },
-        { "key": "CL", "name": "\u015awieczka", "description": "Ten mityng odbywa si\u0119 przy blasku \u015bwiecy.", "language": "pl" },
-        { "key": "VL", "name": "Luz de velas", "description": "Esta reuni\u00e3o acontece \u00e0 luz de velas.", "language": "pt" }
-        ]
-    },
-    {
-        "id": 7,
-        "worldId": "CW",
-        "type": "COMMON_NEEDS_OR_RESTRICTION",
-        "translations": [
-        { "key": "CW", "name": "Children Welcome", "description": "Children are welcome.", "language": "en" },
-        { "key": "CW", "name": "Los Ni\u00f1os Son Bienvenidos", "description": "", "language": "es" },
-        {
-            "key": "CS",
-            "name": "\u06a9\u0648\u062f\u06a9\u0627\u0646 \u0628\u06cc \u0633\u0631\u067e\u0631\u0633\u062a",
-            "description": "\u062e\u0648\u0634 \u0631\u0641\u062a\u0627\u0631\u06cc",
-            "language": "fa"
-        },
-        { "key": "CW", "name": "Enfants bienvenus", "description": "Les enfants sont les bienvenus \u00e0 cette r\u00e9union.", "language": "fr" },
-        { "key": "CS", "name": "Dzieci pod opiek\u0105", "description": "Dzieci uzale\u017cnionych mile widziane pod warunkiem odpowiedniego zachowania.", "language": "pl" },
-        { "key": "CA", "name": "Crian\u00e7a sob supervis\u00e3o", "description": "Bem-comportadas, crian\u00e7as sob supervis\u00e3o s\u00e3o bem-vindas.", "language": "pt" }
-        ]
-    },
-    {
-        "id": 8,
-        "worldId": "DISC",
-        "type": "MEETING_FORMAT",
-        "translations": [
-        { "key": "D", "name": "Discussion", "description": "This meeting invites participation by all attendees.", "language": "en" },
-        { "key": "D", "name": "Discusi\u00f3n", "description": "Esta reuni\u00f3n invita a la participaci\u00f3n de todos los asistentes.", "language": "es" },
-        {
-            "key": "D",
-            "name": "\u0628\u062d\u062b \u0648 \u06af\u0641\u062a\u06af\u0648",
-            "description": "\u0627\u06cc\u0646 \u062c\u0644\u0633\u0647 \u0627\u0632 \u062a\u0645\u0627\u0645\u06cc \u0634\u0631\u06a9\u062a \u06a9\u0646\u0646\u062f\u06af\u0627\u0646 \u062f\u0639\u0648\u062a \u0628\u0647 \u0628\u062d\u062b \u0645\u06cc\u06a9\u0646\u062f",
-            "language": "fa"
-        },
-        { "key": "D", "name": "Dyskusja", "description": "Mityng dla wszystkich ch\u0119tnych.", "language": "pl" },
-        { "key": "D", "name": "Dyskusja", "description": "Mityng dla wszystkich ch\u0119tnych.", "language": "pl" },
-        { "key": "D", "name": "Discuss\u00e3o", "description": "Esta reuni\u00e3o convida a participa\u00e7\u00e3o de todos.", "language": "pt" }
-        ]
-    },
-    {
-        "id": 9,
-        "worldId": null,
-        "type": "COMMON_NEEDS_OR_RESTRICTION",
-        "translations": [
-        { "key": "ESP", "name": "Espanol", "description": "This meeting primary spoken in Spanish.", "language": "en" },
-        { "key": "ESP", "name": "Espanol", "description": "Esta reuni\u00f3n principal que se habla en espa\u00f1ol.", "language": "es" },
-        {
-            "key": "ES",
-            "name": "\u0627\u0633\u067e\u0627\u0646\u06cc\u0627\u06cc\u06cc",
-            "description": "\u0627\u06cc\u0646 \u062c\u0644\u0633\u0647 \u0628\u0647 \u0632\u0628\u0627\u0646 \u0627\u0633\u067e\u0627\u0646\u06cc\u0627\u06cc\u06cc \u0628\u0631\u06af\u0632\u0627\u0631 \u0645\u06cc\u06af\u0631\u062f\u062f",
-            "language": "fa"
-        },
-        { "key": "ES", "name": "Hiszpa\u0144ski", "description": "Mityng odbywa si\u0119 w j\u0119zyku hiszpa\u0144skim.", "language": "pl" },
-        { "key": "ES", "name": "Hiszpa\u0144ski", "description": "Mityng odbywa si\u0119 w j\u0119zyku hiszpa\u0144skim.", "language": "pl" },
-        { "key": "ES", "name": "Espanhol", "description": "Esta reuni\u00e3o acontece em Espanhol.", "language": "pt" }
-        ]
-    }]
-EOD;
-
 
         $integration = new Integration(true, "3.0.0", "token",time()+2000);
 
         Functions\when('\wp_remote_get')->justReturn('1');
-        Functions\when('\wp_remote_retrieve_body')->justReturn($formats);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
 
         $response = $integration->getMeetingFormats();
@@ -736,10 +737,26 @@ EOD;
     
     public function test_createMeeting_against_v3_with_valid_meeting(): void
     {
+                
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
 
         Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
-        $meeting = array();
-
+        $meeting = array(
+                "meeting_name" => "lkj",
+                "start_time" => "11:01:00",
+                "duration_time" => "01:00:00",
+                "location_text" => "lkjlk",
+                "location_street" => "lkjlkj",
+                "location_municipality" => "New York",
+                "weekday_tinyint" => "1",
+                "service_body_bigint" => "1050",
+                "format_shared_id_list" => "7",
+                "virtual_meeting_link" => "https://www.google.com",
+                "venue_type" => "3",
+                "latitude" => "40.7127753",
+                "longitude" => "-74.0059728",
+                "published" => "1"
+        );
         $integration = new Integration(true, "3.0.0", "token", time()+2000);
         $response = $integration->createMeeting($meeting);
         $this->assertNotInstanceOf(WP_Error::class, $response);
@@ -753,6 +770,25 @@ EOD;
     
     public function test_createMeeting_against_v3_with_invalid_meeting(): void
     {
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
+
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
+        $meeting = array(
+                "meeting_name" => "lkj",
+                "start_time" => "11:01:00",
+                "duration_time" => "01:00:00",
+                "location_text" => "lkjlk",
+                "location_street" => "lkjlkj",
+                "location_municipality" => "New York",
+                "weekday_tinyint" => "1",
+                "service_body_bigint" => "1050",
+                "format_shared_id_list" => "7",
+                "virtual_meeting_link" => "https://www.google.com",
+                "venue_type" => "10",
+                "latitude" => "40.7127753",
+                "longitude" => "-74.0059728",
+                "published" => "1"
+        );
 
         Functions\when('wp_remote_retrieve_response_code')->justReturn(422);
         $meeting = array();
