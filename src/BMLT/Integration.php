@@ -35,17 +35,15 @@ class Integration
     protected $v3_access_token_expires_at = null; // v3 auth token expiration
     protected $bmltwf_bmlt_user_id; // user id of the workflow bot
 
-    public function __construct($cookies = null, $root_server_version = null, $access_token = null, $token_expiry = null )
+    public function __construct($cookies = null, $root_server_version = null, $access_token = null, $token_expiry = null)
     {
         if (!empty($cookies)) {
             $this->cookies = $cookies;
         }
-        if (!empty($access_token))
-        {
+        if (!empty($access_token)) {
             $this->v3_access_token = $access_token;
         }
-        if (!empty($token_expiry))
-        {
+        if (!empty($token_expiry)) {
             $this->v3_access_token_expires_at = $token_expiry;
         }
 
@@ -53,9 +51,7 @@ class Integration
             $version = \get_option('bmltwf_bmlt_server_version');
             if ($version) {
                 $this->bmlt_root_server_version = $version;
-            }
-            else
-            {
+            } else {
                 $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address'), false);
             }
         } else {
@@ -325,11 +321,10 @@ class Integration
 
         $this->debug_log("CHANGE after");
         $this->debug_log($change);
-        if(array_key_exists('formatIds',$change))
-        {
-            $change['formatIds']=$this->removeLocations($change['formatIds']);
+        if (array_key_exists('formatIds', $change)) {
+            $change['formatIds'] = $this->removeLocations($change['formatIds']);
         }
-        
+
         $this->debug_log("inside updateMeetingv3 auth");
 
         if (!$meeting_id) {
@@ -540,9 +535,8 @@ class Integration
         $realformats = $this->getMeetingFormats();
         $newformats = array();
         foreach ($format as $key => $value) {
-            if($realformats[$value]['type']!='LOCATION')
-            {
-                $newformats[]=$value;        
+            if ($realformats[$value]['type'] != 'LOCATION') {
+                $newformats[] = $value;
             }
         }
         return $newformats;
@@ -594,7 +588,6 @@ class Integration
         $this->debug_log(($newformat));
 
         return $newformat;
-
     }
 
     public function getMeetingFormatsv2()
@@ -641,7 +634,7 @@ class Integration
         $response = \wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
 
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
-            return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
+            return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve server info');
         }
         // $this->debug_log(\wp_remote_retrieve_body($response));  
         $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
@@ -698,7 +691,7 @@ class Integration
         }
 
         $url = get_option('bmltwf_bmlt_server_address') . "index.php";
-        $this->debug_log("*** ADMIN URL ".$url);
+        $this->debug_log("*** ADMIN URL " . $url);
 
         $resp = $this->get($url, $this->cookies);
         $this->debug_log("*** ADMIN PAGE");
@@ -733,7 +726,7 @@ class Integration
         $this->debug_log("formatsIds before");
         $this->debug_log($meeting['formatIds']);
 
-        $meeting['formatIds']=$this->removeLocations($meeting['formatIds']);
+        $meeting['formatIds'] = $this->removeLocations($meeting['formatIds']);
 
         $this->debug_log("formatsIds after");
         $this->debug_log($meeting['formatIds']);
@@ -768,6 +761,53 @@ class Integration
         // workaround for semantic new meeting bug
         $meeting['id_bigint'] = 0;
 
+        $this->debug_log("venue type");
+        $this->debug_log($meeting['venue_type']);
+        $this->debug_log("meeting formats before");
+        $this->debug_log($meeting['format_shared_id_list']);
+        $formats = $this->getMeetingFormats();
+        $this->debug_log("real formats");
+        $this->debug_log($formats);
+
+        $meetingformats = explode(',', $meeting['format_shared_id_list']);
+        // bmlt2x doesn't handle the venue_type field
+        // remove all the invalid venue types from the format list
+        $key = array_search('VM', array_column($formats, 'key_string'));
+        if (($key2 = array_search($key, $meetingformats)) !== false) {
+            unset($meetingformats[$key2]);
+        }
+        $key = array_search('HY', array_column($formats, 'key_string'));
+        if (($key2 = array_search($key, $meetingformats)) !== false) {
+            unset($meetingformats[$key2]);
+        }
+        $key = array_search('TC', array_column($formats, 'key_string'));
+        if (($key2 = array_search($key, $meetingformats)) !== false) {
+            unset($meetingformats[$key2]);
+        }
+        if ($meeting['venue_type'] !== '1') {
+
+            switch ($meeting['venue_type']) {
+                case "2":
+                    $key = array_search('VM', array_column($formats, 'key_string'));
+                    break;
+                case "3":
+                    $key = array_search('HY', array_column($formats, 'key_string'));
+                    break;
+                case "4":
+                    $key = array_search('TC', array_column($formats, 'key_string'));
+                    break;
+            }
+            if (!in_array($key, $meetingformats)) {
+                $meetingformats[] = $key;
+            }
+        }
+
+
+        $meeting['format_shared_id_list'] = implode(',', $meetingformats);
+
+        $this->debug_log("meeting formats after");
+        $this->debug_log($meeting['format_shared_id_list']);
+
         // handle publish/unpublish here
         $changearr = array();
         $changearr['bmlt_ajax_callback'] = 1;
@@ -797,7 +837,7 @@ class Integration
     {
         $response = \wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
-            return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
+            return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve server info');
         }
         $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
         if ((!empty($arr['auto_geocoding_enabled']))) {
@@ -839,7 +879,7 @@ class Integration
         $response = \wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
 
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
-            return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
+            return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve server info');
         }
         // $this->debug_log(\wp_remote_retrieve_body($response));  
         $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
@@ -853,8 +893,7 @@ class Integration
     public function geolocateAddress($address)
     {
         $key = $this->getGmapsKey();
-        if (\is_wp_error($key))
-        {
+        if (\is_wp_error($key)) {
             return $this->bmltwf_integration_error('Server error geolocating address', 500);
         }
 
@@ -914,12 +953,9 @@ class Integration
 
     public function is_v3_token_valid()
     {
-        if (!$this->v3_access_token || $this->v3_access_token_expires_at < time())
-        {
+        if (!$this->v3_access_token || $this->v3_access_token_expires_at < time()) {
             return false;
-        }
-        else
-        {
+        } else {
             return true;
         }
     }
@@ -959,8 +995,7 @@ class Integration
     private function authenticateRootServerv3()
     {
         $decrypted = $this->decodeBMLTPassword();
-        if(\is_wp_error($decrypted))
-        {
+        if (\is_wp_error($decrypted)) {
             return $decrypted;
         }
 
@@ -993,8 +1028,7 @@ class Integration
     {
 
         $decrypted = $this->decodeBMLTPassword();
-        if(\is_wp_error($decrypted))
-        {
+        if (\is_wp_error($decrypted)) {
             return $decrypted;
         }
 

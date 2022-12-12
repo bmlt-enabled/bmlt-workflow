@@ -14,7 +14,9 @@ services:
     depends_on:
       - wordpress-db
     restart: always
-    tmpfs: /var/www/html
+    tmpfs: 
+      - /var/www/html
+      - /var/log
     environment:
       WORDPRESS_DB_HOST: wordpress-db
       WORDPRESS_DB_USER: wordpress
@@ -48,7 +50,9 @@ services:
       - 80:80
     restart: always
     command: /usr/local/bin/wp-install.sh
-    tmpfs: /var/www/html
+    tmpfs: 
+      - /var/www/html
+      - /var/log
     environment:
       WORDPRESS_DB_HOST: wordpress-db
       WORDPRESS_DB_USER: wordpress
@@ -75,7 +79,9 @@ services:
       - 81:81
     command: /usr/local/bin/wp-multisite-install.sh
     restart: always
-    tmpfs: /var/www/html
+    tmpfs: 
+      - /var/www/html
+      - /var/log
     environment:
       WORDPRESS_DB_HOST: wordpress-db
       WORDPRESS_DB_USER: wordpress
@@ -104,7 +110,9 @@ services:
     restart: always
     ports:
       - 82:82
-    tmpfs: /var/www/html
+    tmpfs: 
+      - /var/www/html
+      - /var/log
     environment:
       WORDPRESS_DB_HOST: wordpress-db
       WORDPRESS_DB_USER: wordpress
@@ -128,7 +136,9 @@ services:
       dockerfile: Dockerfile-wp-php8.1
     depends_on:
       - wordpress-db
-    tmpfs: /var/www/html
+    tmpfs: 
+      - /var/www/html
+      - /var/log
     restart: always
     command: /usr/local/bin/wp-install.sh
     ports:

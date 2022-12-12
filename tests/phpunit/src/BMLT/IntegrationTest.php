@@ -767,6 +767,41 @@ EOD;
 
     /**
      * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::createMeetingv2
+     **/
+    
+    public function test_createMeeting_against_v2_with_valid_meeting(): void
+    {
+                
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formatsxml);
+        Functions\when('\wp_remote_post')->justReturn(array('response' => array('code' => 200)));
+        Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
+
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+        $meeting = array(
+                "meeting_name" => "lkj",
+                "start_time" => "11:01:00",
+                "duration_time" => "01:00:00",
+                "location_text" => "lkjlk",
+                "location_street" => "lkjlkj",
+                "location_municipality" => "New York",
+                "weekday_tinyint" => "1",
+                "service_body_bigint" => "1050",
+                "format_shared_id_list" => "7,52,53,54",
+                "virtual_meeting_link" => "https://www.google.com",
+                "venue_type" => "1",
+                "latitude" => "40.7127753",
+                "longitude" => "-74.0059728",
+                "published" => "1"
+        );
+        $integration = new Integration(true, "2.0.0");
+        $response = $integration->createMeeting($meeting);
+        print_r($response);
+        $this->assertNotInstanceOf(WP_Error::class, $response);
+
+    }
+    /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
      * @covers bmltwf\BMLT\Integration::createMeetingv3
      **/
     
