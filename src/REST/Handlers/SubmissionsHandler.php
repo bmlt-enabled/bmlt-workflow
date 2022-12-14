@@ -371,7 +371,6 @@ class SubmissionsHandler
                     if (is_wp_error($latlng)) {
                         return $latlng;
                     }
-
                     $change['latitude'] = $latlng['latitude'];
                     $change['longitude'] = $latlng['longitude'];
                 } else {
