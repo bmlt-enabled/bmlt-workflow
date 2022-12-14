@@ -369,6 +369,8 @@ class Integration
             return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
 
+        $this->debug_log($arr);
+
         if (empty($arr['service_body'])) {
             return $this->bmltwf_integration_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);
         }
@@ -376,6 +378,11 @@ class Integration
         // create an array of the service bodies that we are able to see
         $editable = array();
         foreach ($arr['service_body'] as $key => $sb) {
+
+            $this->debug_log("checking key = ");
+            $this->debug_log($key);
+            $this->debug_log("sb = ");
+            $this->debug_log($sb);
 
             $permissions = $sb['permissions'] ?? 0;
             $id = $sb['id'] ?? 0;
@@ -517,15 +524,22 @@ class Integration
         $req['admin_action'] = 'get_permissions';
 
         $response = $this->postAuthenticatedRootServerRequest('local_server/server_admin/json.php', $req);
+        $this->debug_log("get permissions response");
+        $this->debug_log($response);
         if (is_wp_error($response)) {
-
-            $this->debug_log("get permissions response");
-            $this->debug_log($response);
 
             return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
 
         $arr = json_decode(\wp_remote_retrieve_body($response), 1);
+
+        // if this is just a single service body, then fix the array up
+        if (!array_key_exists('0', $arr['service_body'])) {
+            $newarr = array();
+            $newarr['service_body']=array();
+            $newarr['service_body'][0] = $arr['service_body'];
+            $arr = $newarr;
+        }
 
         return $arr;
     }
