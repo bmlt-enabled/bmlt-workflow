@@ -77,10 +77,10 @@ test("Success_New_Standard_Meeting_And_Submit", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.venue_type, "none");
+  await select_dropdown_by_value(uf.venue_type, "1");
   await t
     .expect(uf.venue_type.value)
-    .eql("none")
+    .eql("1")
     .expect(uf.virtual_meeting_link.visible)
     .eql(false)
     .expect(uf.phone_meeting_number.visible)
@@ -329,10 +329,10 @@ test("Success_New_Tempclosure_Meeting_And_Submit", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.venue_type, "tempclosure");
+  await select_dropdown_by_value(uf.venue_type, "4");
   await t
     .expect(uf.venue_type.value)
-    .eql("tempclosure")
+    .eql("4")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)
     .expect(uf.phone_meeting_number.visible)
@@ -559,7 +559,7 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
     .typeText(uf.location_municipality, "Randwick")
     .expect(uf.location_municipality.hasClass("bmltwf-changed"))
     .ok()
-    .typeText(uf.location_province, "NSW")
+    .typeText(uf.location_province, "VIC")
     .expect(uf.location_province.hasClass("bmltwf-changed"))
     .ok()
     .typeText(uf.location_postal_code_1, "2031")

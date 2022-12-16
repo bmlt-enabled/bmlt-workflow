@@ -1,11 +1,13 @@
-## 1.0.11 (Dec 5, 2022)
-- BMLT3.x api support!!
-- Test suite rewrite for docker testing
+## 1.0.11 (Dec 15, 2022)
+- BMLT3.x api support!! (thanks bmlt-enabled team!)
+- Major test suite rewrite for docker testing
 - Multiple bugfixes for restore function
+- Bugfix for issue where only a single service body is viewable (thanks KevinC !)
 
 ## 1.0.9 (Oct 13, 2022)
 - #103 Feature Request: Allow geocode disabling (thanks @paulnagle !)
 - Lots of refactoring test cases to support bmlt changes
+
 ## 1.0.8 (Oct 5, 2022)
 - #101 QuickEdit page errors (thanks @paulnagle !)
 - #100 more test cases required for virtual meetings
