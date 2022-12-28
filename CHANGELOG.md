@@ -1,4 +1,7 @@
-## 1.0.11 (Dec 15, 2022)
+## 1.0.12 (Dec 28, 2022)
+- Fix verbose phpunit test
+
+## 1.0.11 (Dec 28, 2022)
 - BMLT3.x api support!! (thanks bmlt-enabled team!)
 - Major test suite rewrite for docker testing
 - Multiple bugfixes for restore function
