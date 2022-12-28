@@ -23,24 +23,19 @@ namespace bmltwf\REST\Handlers;
 use bmltwf\BMLT\Integration;
 use bmltwf\REST\HandlerCore;
 use bmltwf\BMLTWF_WP_Options;
+use WP_Error;
 
 class BMLTServerHandler
 {
 
     use \bmltwf\BMLTWF_Debug;
 
-    public function __construct($intstub = null, $wpoptionssstub = null)
+    public function __construct($intstub = null)
     {
         if (empty($intstub)) {
             $this->bmlt_integration = new Integration();
         } else {
             $this->bmlt_integration = $intstub;
-        }
-
-        if (empty($wpoptionssstub)) {
-            $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
-        } else {
-            $this->BMLTWF_WP_Options = $wpoptionssstub;
         }
 
         $this->handlerCore = new HandlerCore();
@@ -104,12 +99,16 @@ class BMLTServerHandler
         }
 
         $ret = $this->bmlt_integration->testServerAndAuth($username, $password, $server);
-
-        if ((is_wp_error($ret))||(\wp_remote_retrieve_response_code($ret)!=200)) {
+        if (is_wp_error($ret)) {
 
             $r = update_option("bmltwf_bmlt_test_status", "failure");
             $data["bmltwf_bmlt_test_status"] = "failure";
-            return $this->handlerCore->bmltwf_rest_error_with_data('Root Server and Authentication test failed - ' . $ret->get_error_message(), 500, $data);
+            $error = "";
+            if(is_wp_error($ret))
+            {
+                $error = " - ".$ret->get_error_message();
+            }
+            return $this->handlerCore->bmltwf_rest_error_with_data('Root Server and Authentication test failed' . $error, 500, $data);
  
         } else {
 
@@ -149,7 +148,7 @@ class BMLTServerHandler
             $nonce_salt = NONCE_SALT;
         }
 
-        $encrypted = $this->BMLTWF_WP_Options->secrets_encrypt($nonce_salt, $password);
+        $encrypted = $this->secrets_encrypt($nonce_salt, $password);
 
         if (!is_array($encrypted)) {
             return $this->handlerCore->bmltwf_rest_failure('Error encrypting password.');
@@ -159,6 +158,33 @@ class BMLTServerHandler
         update_option('bmltwf_bmlt_server_address', $server);
 
         return $this->handlerCore->bmltwf_rest_success('BMLT Root Server and Authentication details updated.');
+    }
+
+    private function secrets_encrypt($password, $secret)
+    {
+
+        $config = [
+            'size'      => SODIUM_CRYPTO_AEAD_CHACHA20POLY1305_IETF_KEYBYTES,
+            'salt'      => random_bytes(SODIUM_CRYPTO_PWHASH_SALTBYTES),
+            'limit_ops' => SODIUM_CRYPTO_PWHASH_OPSLIMIT_SENSITIVE,
+            'limit_mem' => SODIUM_CRYPTO_PWHASH_MEMLIMIT_SENSITIVE,
+            'alg'       => SODIUM_CRYPTO_PWHASH_ALG_ARGON2ID13,
+            'nonce'     => random_bytes(SODIUM_CRYPTO_AEAD_CHACHA20POLY1305_IETF_NPUBBYTES),
+        ];
+
+        $key = hash_hkdf('sha256', $password, $config['size'], 'context');
+
+        $encrypted = sodium_crypto_aead_chacha20poly1305_ietf_encrypt(
+            $secret,
+            $config['nonce'], // Associated Data
+            $config['nonce'],
+            $key
+        );
+
+        return [
+            'config' => array_map('base64_encode', $config),
+            'encrypted' => base64_encode($encrypted),
+        ];
     }
 
     public function get_bmltserver_geolocate_handler($request)

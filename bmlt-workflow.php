@@ -20,14 +20,14 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.0.10
+ * Version: 1.0.11
  * Requires at least: 5.2
- * Tested up to: 6.1
+ * Tested up to: 6.1.1
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
 
-define('BMLTWF_PLUGIN_VERSION', '1.0.10');
+define('BMLTWF_PLUGIN_VERSION', '1.0.11');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -135,11 +135,11 @@ if (!class_exists('bmltwf_plugin')) {
                 $script .= "false;";
             }
 
-            // add meeting formats
             $formatarr = $this->bmlt_integration->getMeetingFormats();
-            // $this->debug_log("FORMATS");
-            // $this->debug_log($formatarr);
-            // $this->debug_log(json_encode($formatarr));
+    
+            $this->debug_log("FORMATS");
+            $this->debug_log($formatarr);
+            $this->debug_log(json_encode($formatarr));
             $script .= 'var bmltwf_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
@@ -157,27 +157,6 @@ if (!class_exists('bmltwf_plugin')) {
             $this->debug_log("adding script " . $script);
             $status = wp_add_inline_script('bmltwf-meeting-update-form-js', $script, 'before');
             $this->prevent_cache_enqueue_script('bmltwf-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
-
-            $result = [];
-            $result['scripts'] = [];
-            $result['styles'] = [];
-
-            $this->debug_log("All scripts and styles");
-
-            // Print all loaded Scripts
-            global $wp_scripts;
-            foreach ($wp_scripts->queue as $script) :
-                $result['scripts'][] =  $wp_scripts->registered[$script]->src . ";";
-            endforeach;
-
-            // Print all loaded Styles (CSS)
-            global $wp_styles;
-            foreach ($wp_styles->queue as $style) :
-                $result['styles'][] =  $wp_styles->registered[$style]->src . ";";
-            endforeach;
-
-            $this->debug_log(($result));
-
 
             ob_start();
             include('public/meeting_update_form.php');
@@ -303,7 +282,6 @@ if (!class_exists('bmltwf_plugin')) {
 
                     // add counties/states/provinces if they are populated
                     $meeting_counties_and_sub_provinces = $this->bmlt_integration->getMeetingCounties();
-                    // $script .= "var bmltwf_counties_and_sub_provinces = " . json_encode($meeting_counties_and_sub_provinces) . ";";
                     $script .= "var bmltwf_counties_and_sub_provinces = ";
                     if ($meeting_counties_and_sub_provinces) {
                         $script .= json_encode($meeting_counties_and_sub_provinces) . ";";
@@ -314,7 +292,6 @@ if (!class_exists('bmltwf_plugin')) {
                     }
 
                     $meeting_states_and_provinces = $this->bmlt_integration->getMeetingStates();
-                    // $script .= "var bmltwf_do_states_and_provinces = " . json_encode($meeting_states_and_provinces) . ";";
                     $script .= "var bmltwf_do_states_and_provinces = ";
                     if ($meeting_states_and_provinces) {
                         $script .=  json_encode($meeting_states_and_provinces) . ";";
@@ -326,6 +303,7 @@ if (!class_exists('bmltwf_plugin')) {
 
                     // add meeting formats
                     $formatarr = $this->bmlt_integration->getMeetingFormats();
+
                     $script .= 'var bmltwf_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
                     // do a one off lookup for our servicebodies
@@ -398,7 +376,7 @@ if (!class_exists('bmltwf_plugin')) {
             $toplevelslug = 'bmltwf-submissions';
         }
 
-        $this->debug_log("slug = ".$toplevelslug);
+        // $this->debug_log("slug = ".$toplevelslug);
                 add_menu_page(
                     'BMLT Workflow',
                     'BMLT Workflow',
@@ -502,7 +480,7 @@ if (!class_exists('bmltwf_plugin')) {
                     'description' => 'Trusted servants can delete submissions',
                     'sanitize_callback' => array(&$this, 'bmltwf_trusted_servants_can_delete_submissions_sanitize_callback'),
                     'show_in_rest' => false,
-                    'default' => 'true'
+                    'default' => 'false'
                 )
             );
 

@@ -18,8 +18,6 @@
 
 namespace bmltwf;
 
-if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
-
 class BMLTWF_Rest
 {
 

@@ -23,7 +23,7 @@ namespace bmltwf\REST\Handlers;
 use bmltwf\REST\HandlerCore;
 use bmltwf\BMLTWF_Database;
 use bmltwf\BMLTWF_WP_Options;
-
+use bmltwf\BMLTWF_WP_User;
 class OptionsHandler
 {
     use \bmltwf\BMLTWF_Debug;
@@ -33,6 +33,7 @@ class OptionsHandler
         $this->handlerCore = new HandlerCore();
         $this->BMLTWF_Database = new BMLTWF_Database();
         $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
+        $this->BMLTWF_WP_User = new BMLTWF_WP_User();
     }
 
     public function post_bmltwf_restore_handler($request)
@@ -44,14 +45,21 @@ class OptionsHandler
         // $this->debug_log(($request));
 
         $params = $request->get_json_params();
+        $this->debug_log("PARSING PARAMETERS");
+        $this->debug_log($params);
+
+        $options = $params['options']??0;
+        if (!$options) {
+            return $this->handlerCore->bmltwf_rest_error('Restore options missing', 422);
+        }
 
         // create the database as the revision in the backup file
         $this->BMLTWF_Database->bmltwf_db_upgrade($params['options']['bmltwf_db_version'], true);
 
         // restore all the options
-        foreach ($this->BMLTWF_WP_Options->bmltwf_options as $key => $value) {
+        foreach ($this->BMLTWF_WP_Options->bmltwf_options as $value) {
             $option_name = $value;
-            delete_option($this->BMLTWF_WP_Options->bmltwf_options[$option_name]);
+            delete_option($value);
             $this->debug_log("deleted option: " . $option_name);
             // check if we have an option in our restore that matches the options array
             if (array_key_exists($option_name, $params['options'])) {
@@ -97,13 +105,14 @@ class OptionsHandler
         // update the database to the latest version
         $this->BMLTWF_Database->bmltwf_db_upgrade($this->BMLTWF_Database->bmltwf_db_version, false);
 
+        $this->BMLTWF_WP_User->add_remove_caps();
+
         return $this->handlerCore->bmltwf_rest_success('Restore Successful');
     }
 
     public function post_bmltwf_backup_handler($request)
     {
         
-
         $this->debug_log("backup handler called");
 
         global $wpdb;

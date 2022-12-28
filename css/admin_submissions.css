@@ -19,7 +19,7 @@
 
 .bmltwf_info_text {
   padding-left: 15px;
-  background: #f8f8f8;
+  background-color: #f8f8f8;
   border-left: 5px solid lightblue;
 }
 
@@ -67,7 +67,8 @@
   padding: 5px 10px;
   display: block;
   width: 100%;
-  -webkit-appearance: menulist;
+  /* -webkit-appearance: menulist;
+  appearance: menulist; */
 }
 
 .grid-flex-item select {
@@ -75,15 +76,15 @@
   font-size: 1.2em;
   padding: 5px 10px;
   display: inline;
-  width: 30%;
+  width: 38%;
 }
 
 .form-grid .bmltwf-changed {
-  background: #e7f478;
+  background-color: #e7f478;
 }
 
 .select2-selection--multiple.quickedit_format_shared_id_list-select2.bmltwf-changed {
-  background: #e7f478;
+  background-color: #e7f478;
 }
 
 /* accessibility for close button */
@@ -131,7 +132,7 @@
   font-size: 1.2em;
   padding: 5px 10px;
   display: inline;
-  width: 30%;
+  width: 38%;
 }
 
 

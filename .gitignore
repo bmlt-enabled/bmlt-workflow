@@ -10,3 +10,10 @@ package-lock.json
 /tests/testcafe/setup/blank_bmlt.sql
 logs/
 /releases
+/coverage
+/akismet
+hello.php
+tests/testcafe/screenshots/
+/docker/bmlt.env
+/docker/bmlt3x.env
+/docker/bmlt2x.env

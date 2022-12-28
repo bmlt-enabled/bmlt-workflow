@@ -1,1 +1,0 @@
-delete from wp_2_bmltwf_submissions;

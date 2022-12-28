@@ -20,21 +20,12 @@ namespace bmltwf\REST;
 
 use bmltwf\BMLT\Integration;
 
-if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
-
 class HandlerCore
 {
 
-    public function __construct($stub = null)
+    public function __construct()
     {
-        if (empty($stub))
-        {
-            $this->bmlt_integration = new Integration();
-        }
-        else
-        {
-            $this->bmlt_integration = $stub;
-        }
+
     }
 
     // accepts raw string or array

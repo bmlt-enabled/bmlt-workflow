@@ -1,10 +1,10 @@
 === BMLT-Workflow ===
 Tags: bmlt,workflow
 Requires at least: 5.2
-Tested up to: 6.1
+Tested up to: 6.1.1
 Requires PHP: 8.0
 License: GPLv2
-Stable tag: 1.0.10
+Stable tag: 1.0.11
 Contributors: nigelbmlt
 
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.

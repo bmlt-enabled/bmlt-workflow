@@ -38,7 +38,7 @@ class Meeting_Update_Form {
         this.contact_number_confidential = Selector('#contact_number_confidential');
         this.group_relationship = Selector('#group_relationship');
         this.virtual_meeting_options = Selector('#virtual_meeting_options');
-        this.virtual_hybrid_select = Selector('#virtual_hybrid_select');
+        this.venue_type = Selector('#venue_type');
         this.virtual_meeting_settings = Selector('#virtual_meeting_settings');
         this.virtual_meeting_link = Selector('#virtual_meeting_link');
         this.virtual_meeting_additional_info = Selector('#virtual_meeting_additional_info');

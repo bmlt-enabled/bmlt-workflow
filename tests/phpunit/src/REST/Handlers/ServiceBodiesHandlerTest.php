@@ -74,8 +74,7 @@ Line: $errorLine
         Functions\when('\apply_filters')->returnArg(2);
         Functions\when('\current_time')->justReturn('2022-03-23 09:22:44');
         Functions\when('\absint')->returnArg();
-        Functions\when('wp_safe_remote_post')->returnArg();
-
+        Functions\when('wp_remote_post')->returnArg();
     }
 
     protected function tearDown(): void
@@ -93,27 +92,37 @@ Line: $errorLine
     public function test_can_get_service_bodies_simple_with_success(): void
     {
 
-        
-        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/servicebodies");
+        $request = new WP_REST_Request('GET', "http://3.25.141.92/flop/wp-json/bmltwf/v1/servicebodies");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/servicebodies");
         $request->set_method('GET');
-
         $sblookup = array(
+            "1" => array(
+                "name" => "toplevel"
+            ),
+            "2" => array(
+                "name" => "a-level1"
+            ),
+            "3" => array(
+                "name" => "b-level1"
+            )
+        );
+
+        $dblookup = array(
             '0' => array(
-                "service_body_bigint" => "2",
-                "service_body_name" => "Sydney Metro",
+                "service_body_bigint" => "1",
+                "service_body_name" => "toplevel",
                 "show_on_form" => "1"
             ),
             '1' => array(
-                "service_body_bigint" =>"3",
-                "service_body_name" =>"Sydney North",
-                "show_on_form" =>"1"
+                "service_body_bigint" => "2",
+                "service_body_name" => "a-level1",
+                "show_on_form" => "1"
             ),
             '2' => array(
-                "service_body_bigint" => "4",
-                "service_body_name" =>"Sydney South",
-                "show_on_form" =>"1"
+                "service_body_bigint" => "3",
+                "service_body_name" => "b-level1",
+                "show_on_form" => "1"
             )
         );
 
@@ -121,11 +130,15 @@ Line: $errorLine
         $wpdb =  Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('prepare')->andReturn("SELECT * from anything");
-        $wpdb->shouldReceive('get_results')->andReturn($sblookup);
+        $wpdb->shouldReceive('get_results')->andReturn($dblookup);
         $wpdb->prefix = "";
 
+        $Intstub = \Mockery::mock('Integration');
+        /** @var Mockery::mock $Intstub test */
+        // $bodies = array('body'=>'');
+        $Intstub->shouldReceive('getServiceBodies')->andReturn($sblookup);
 
-        $rest = new ServiceBodiesHandler();
+        $rest = new ServiceBodiesHandler($Intstub, null, null);
 
         $response = $rest->get_service_bodies_handler($request);
 
@@ -133,7 +146,7 @@ Line: $errorLine
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->debug_log(($response));
-        $this->assertEquals($response->get_data()['2']['name'], 'Sydney Metro');
+        $this->assertEquals($response->get_data()['2']['name'], 'a-level1');
     }
 
 
@@ -143,12 +156,12 @@ Line: $errorLine
     public function test_can_get_service_bodies_detail_with_success(): void
     {
 
-        
-        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/servicebodies");
+
+        $request = new WP_REST_Request('GET', "http://3.25.141.92/flop/wp-json/bmltwf/v1/servicebodies");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/servicebodies");
         $request->set_method('GET');
-        $request->set_param('detail','true');
+        $request->set_param('detail', 'true');
 
         Functions\when('\current_user_can')->justReturn(true);
 
@@ -157,99 +170,94 @@ Line: $errorLine
         $wpdb =  Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('get_results')->andReturn($sblookup)
-        ->shouldReceive('get_col')->andreturn(array("1","2"))
-        ->shouldReceive('prepare')->andreturn(array("1","2"))
-        ->shouldReceive('query')->andreturn(array("1","2"));
-
-        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
-        /** @var Mockery::mock $BMLTWF_WP_Options test */
-        Functions\when('\get_option')->justReturn("success");
-
-        Functions\expect('wp_remote_retrieve_body')->twice()->andReturn(
-            '{"service_body":[{"id":1,"name":"toplevel","permissions":2},{"id":2,"name":"a-level1","permissions":3},{"id":3,"name":"b-level1","permissions":2}]}',
-            '[{"id":"1","parent_id":"0","name":"toplevel","description":"","type":"AS"},{"id":"2","parent_id":"1","name":"a-level1","description":"this is the description for a-level1","type":"AS"},{"id":"3","parent_id":"1","name":"b-level1","description":"this is the description for b-level1","type":"AS"},{"id":"4","parent_id":"0","name":"test-no-permissions","description":"","type":"WS"}]'
-        );
+            ->shouldReceive('get_col')->andreturn(array("1", "2"))
+            ->shouldReceive('prepare')->andreturn(array("1", "2"))
+            ->shouldReceive('query')->andreturn(array("1", "2"));
 
         $Intstub = \Mockery::mock('Integration');
         /** @var Mockery::mock $Intstub test */
-        $bodies = array('body'=>'');
-        $Intstub->shouldReceive('postAuthenticatedRootServerRequest')->andReturn($bodies);
+        // $bodies = array('body'=>'');
+        $sblist = array(
+            '1' => array('name' => 'toplevel', 'description' => ''),
+            '2' => array('name' => 'a-level1', 'description' => ''),
+            '3' => array('name' => 'b-level1', 'description' => '')
+        );
 
-        $sblist = array('body'=>'{"service_body":[{"id":1,"name":"toplevel","type":"AS"},"service_body_type":"Area Service Committee","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}},"service_bodies":{"service_body":[{"id":2,"name":"a-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","contact_email":"a-level1@a.com","editors":{"service_body_editors":{"editor":[{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"},{"id":3,"admin_type":"direct","admin_name":"sba"}]}},{"id":3,"name":"b-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"direct","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}}}]}},{"id":4,"name":"test-no-permissions","type":"WS"},"service_body_type":"World Service Conference","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"}}}]}');
-        $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
+        $Intstub->shouldReceive('getServiceBodies')->andReturn($sblist);
 
-        $rest = new ServiceBodiesHandler($Intstub, $BMLTWF_WP_Options);
+        $rest = new ServiceBodiesHandler($Intstub, null);
 
         $response = $rest->get_service_bodies_handler($request);
 
         // $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
-        // $this->debug_log(($response));
+        $this->debug_log(($response->get_data()));
         $this->assertEquals($response->get_data()['2']['name'], 'a-level1');
     }
+
+    // TODO change this to getservicebodiesv2
+    // /**
+    //  * @covers bmltwf\REST\Handlers\ServiceBodiesHandler::get_service_bodies_handler
+    //  */
+    // public function test_can_get_service_bodies_detail_with_non_editable_service_body(): void
+    // {
+
+    //     $request = new WP_REST_Request('GET', "http://3.25.141.92/flop/wp-json/bmltwf/v1/servicebodies");
+    //     $request->set_header('content-type', 'application/json');
+    //     $request->set_route("/bmltwf/v1/servicebodies");
+    //     $request->set_method('GET');
+    //     $request->set_param('detail', 'true');
+
+    //     Functions\when('\current_user_can')->justReturn(true);
+
+    //     $sblookup = array();
+    //     global $wpdb;
+    //     $wpdb =  Mockery::mock('wpdb');
+    //     /** @var Mockery::mock $wpdb test */
+    //     $wpdb->shouldReceive('get_results')->andReturn($sblookup)
+    //         ->shouldReceive('get_col')->andreturn(array("1", "2"))
+    //         ->shouldReceive('prepare')->andreturn(array("1", "2"))
+    //         ->shouldReceive('query')->andreturn(array("1", "2"));
+
+    //     $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
+    //     /** @var Mockery::mock $BMLTWF_WP_Options test */
+    //     Functions\when('\get_option')->justReturn("success");
+
+    //     Functions\expect('wp_remote_retrieve_body')->twice()->andReturn(
+    //         '{"service_body":[{"id":1,"name":"toplevel","permissions":2},{"id":2,"name":"a-level1","permissions":3},{"id":3,"name":"b-level1","permissions":2}]}',
+    //         '[{"id":"1","parent_id":"0","name":"toplevel","description":"","type":"AS"},{"id":"2","parent_id":"1","name":"a-level1","description":"this is the description for a-level1","type":"AS"},{"id":"3","parent_id":"1","name":"b-level1","description":"this is the description for b-level1","type":"AS"},{"id":"4","parent_id":"0","name":"test-no-permissions","description":"","type":"WS"}]'
+    //     );
+
+    //     $Intstub = \Mockery::mock('Integration');
+    //     /** @var Mockery::mock $Intstub test */
+    //     $bodies = array('body' => '');
+    //     $sblist = array('body' => '{"service_body":[{"id":1,"name":"toplevel","type":"AS"},"service_body_type":"Area Service Committee","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}},"service_bodies":{"service_body":[{"id":2,"name":"a-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","contact_email":"a-level1@a.com","editors":{"service_body_editors":{"editor":[{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"},{"id":3,"admin_type":"direct","admin_name":"sba"}]}},{"id":3,"name":"b-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"direct","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}}}]}},{"id":4,"name":"test-no-permissions","type":"WS"},"service_body_type":"World Service Conference","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"}}}]}');
+    //     // $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
+
+    //     $Intstub->shouldReceive('getServiceBodies')->andReturn($sblist);
+
+    //     $rest = new ServiceBodiesHandler($Intstub, $BMLTWF_WP_Options);
+
+    //     $response = $rest->get_service_bodies_handler($request);
+
+    //     $this->assertInstanceOf(WP_REST_Response::class, $response);
+
+    //     // test-no-permissions should not show as we dont even see it in the permissions list
+    //     $this->assertArrayNotHasKey('4', $response->get_data());
+    // }
 
     /**
      * @covers bmltwf\REST\Handlers\ServiceBodiesHandler::get_service_bodies_handler
      */
-    public function test_can_get_service_bodies_detail_with_non_editable_service_body(): void
-    {
-        
-        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/servicebodies");
-        $request->set_header('content-type', 'application/json');
-        $request->set_route("/bmltwf/v1/servicebodies");
-        $request->set_method('GET');
-        $request->set_param('detail','true');
-
-        Functions\when('\current_user_can')->justReturn(true);
-
-        $sblookup = array();
-        global $wpdb;
-        $wpdb =  Mockery::mock('wpdb');
-        /** @var Mockery::mock $wpdb test */
-        $wpdb->shouldReceive('get_results')->andReturn($sblookup)
-        ->shouldReceive('get_col')->andreturn(array("1","2"))
-        ->shouldReceive('prepare')->andreturn(array("1","2"))
-        ->shouldReceive('query')->andreturn(array("1","2"));
-
-        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
-        /** @var Mockery::mock $BMLTWF_WP_Options test */
-        Functions\when('\get_option')->justReturn("success");
-
-        Functions\expect('wp_remote_retrieve_body')->twice()->andReturn(
-            '{"service_body":[{"id":1,"name":"toplevel","permissions":2},{"id":2,"name":"a-level1","permissions":3},{"id":3,"name":"b-level1","permissions":2}]}',
-            '[{"id":"1","parent_id":"0","name":"toplevel","description":"","type":"AS"},{"id":"2","parent_id":"1","name":"a-level1","description":"this is the description for a-level1","type":"AS"},{"id":"3","parent_id":"1","name":"b-level1","description":"this is the description for b-level1","type":"AS"},{"id":"4","parent_id":"0","name":"test-no-permissions","description":"","type":"WS"}]'
-        );
-
-        $Intstub = \Mockery::mock('Integration');
-        /** @var Mockery::mock $Intstub test */
-        $bodies = array('body'=>'');
-        $Intstub->shouldReceive('postAuthenticatedRootServerRequest')->andReturn($bodies);
-
-        $sblist = array('body'=>'{"service_body":[{"id":1,"name":"toplevel","type":"AS"},"service_body_type":"Area Service Committee","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}},"service_bodies":{"service_body":[{"id":2,"name":"a-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","contact_email":"a-level1@a.com","editors":{"service_body_editors":{"editor":[{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"},{"id":3,"admin_type":"direct","admin_name":"sba"}]}},{"id":3,"name":"b-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"direct","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}}}]}},{"id":4,"name":"test-no-permissions","type":"WS"},"service_body_type":"World Service Conference","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"}}}]}');
-        $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
-
-        $rest = new ServiceBodiesHandler($Intstub, $BMLTWF_WP_Options);
-
-        $response = $rest->get_service_bodies_handler($request);
-
-        $this->assertInstanceOf(WP_REST_Response::class, $response);
-
-        // test-no-permissions should not show as we dont even see it in the permissions list
-        $this->assertArrayNotHasKey('4',$response->get_data());
-    }
-
-        /**
-     * @covers bmltwf\REST\Handlers\ServiceBodiesHandler::get_service_bodies_handler
-     */
     public function test_can_get_service_bodies_detail_more_service_bodies_added(): void
     {
-        
-        $request = new WP_REST_Request('GET', "http://54.153.167.239/flop/wp-json/bmltwf/v1/servicebodies");
+
+        $request = new WP_REST_Request('GET', "http://3.25.141.92/flop/wp-json/bmltwf/v1/servicebodies");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/servicebodies");
         $request->set_method('GET');
-        $request->set_param('detail','true');
+        $request->set_param('detail', 'true');
 
         Functions\when('\current_user_can')->justReturn(true);
 
@@ -258,34 +266,27 @@ Line: $errorLine
         $wpdb =  Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('get_results')->andReturn($sblookup)
-        // say that we only have service body 1 in the db
-        ->shouldReceive('get_col')->andreturn(array("1"))
-        ->shouldReceive('prepare')->andreturn(array("1","2")) 
-        // we'll see query 2 times if we have to add sb 2 and 3 into to the db, then 3 more times for the description/name updates
-        ->shouldReceive('query')->times(5)->andreturn(array("1","2"));
-
-        $BMLTWF_WP_Options =  Mockery::mock('BMLTWF_WP_Options');
-        /** @var Mockery::mock $BMLTWF_WP_Options test */
-        Functions\when('\get_option')->justReturn("success");
-
-        Functions\expect('wp_remote_retrieve_body')->twice()->andReturn(
-            '{"service_body":[{"id":1,"name":"toplevel","permissions":2},{"id":2,"name":"a-level1","permissions":3},{"id":3,"name":"b-level1","permissions":2}]}',
-            '[{"id":"1","parent_id":"0","name":"toplevel","description":"","type":"AS"},{"id":"2","parent_id":"1","name":"a-level1","description":"this is the description for a-level1","type":"AS"},{"id":"3","parent_id":"1","name":"b-level1","description":"this is the description for b-level1","type":"AS"},{"id":"4","parent_id":"0","name":"test-no-permissions","description":"","type":"WS"}]'
-        );
+            // say that we only have service body 1 in the db
+            ->shouldReceive('get_col')->andreturn(array("1"))
+            ->shouldReceive('prepare')->andreturn(array("1", "2"))
+            // we'll see query 2 times if we have to add sb 2 and 3 into to the db, then 3 more times for the description/name updates
+            ->shouldReceive('query')->times(5)->andreturn(array("1", "2"));
 
         $Intstub = \Mockery::mock('Integration');
         /** @var Mockery::mock $Intstub test */
-        $bodies = array('body'=>'');
-        $Intstub->shouldReceive('postAuthenticatedRootServerRequest')->andReturn($bodies);
+        // $bodies = array('body'=>'');
+        $sblist = array(
+            '1' => array('name' => 'toplevel', 'description' => ''),
+            '2' => array('name' => 'a-level1', 'description' => ''),
+            '3' => array('name' => 'b-level1', 'description' => '')
+        );
 
-        $sblist = array('body'=>'{"service_body":[{"id":1,"name":"toplevel","type":"AS"},"service_body_type":"Area Service Committee","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}},"service_bodies":{"service_body":[{"id":2,"name":"a-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","contact_email":"a-level1@a.com","editors":{"service_body_editors":{"editor":[{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"},{"id":3,"admin_type":"direct","admin_name":"sba"}]}},{"id":3,"name":"b-level1","type":"AS"},"service_body_type":"Area Service Committee","parent_service_body":"toplevel","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"direct","admin_name":"sba"},"meeting_list_editors":{"editor":{"id":2,"admin_type":"direct","admin_name":"bmlt-workflow-bot"}}}}]}},{"id":4,"name":"test-no-permissions","type":"WS"},"service_body_type":"World Service Conference","editors":{"service_body_editors":{"editor":{"id":3,"admin_type":"principal","admin_name":"sba"}}}]}');
-        $Intstub->shouldReceive('postUnauthenticatedRootServerRequest')->andReturn($sblist);
+        $Intstub->shouldReceive('getServiceBodies')->andReturn($sblist);
 
-        $rest = new ServiceBodiesHandler($Intstub, $BMLTWF_WP_Options);
+        $rest = new ServiceBodiesHandler($Intstub, null);
 
         $response = $rest->get_service_bodies_handler($request);
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
-
     }
 }

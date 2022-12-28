@@ -15,20 +15,23 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { basic_options_multinetwork, bmltwf_admin_multisingle, bmltwf_admin_multinetwork } from "./helpers/helper";
+import { restore_from_backup, bmltwf_admin_multisingle, bmltwf_admin_multinetwork, waitfor } from "./helpers/helper";
 import { wordpress_options } from "./models/wordpress_options";
 import { userVariables } from "../../.testcaferc";
 import { ao } from "./models/admin_options";
 import { t, Selector } from "testcafe";
 import { asb } from "./models/admin_service_bodies";
 
-fixture`multisite_tests_fixture`.beforeEach(async (t) => {});
+fixture`multisite_tests_fixture`.beforeEach(async (t) => {
+  await waitfor(userVariables.admin_logon_page_multisingle);
+});
 
 test("MultiSite_Single_Check_Options", async (t) => {
   // check that our options are installed only for sites that have the plugin enabled
   await t
     .useRole(bmltwf_admin_multisingle)
     .navigateTo(userVariables.admin_options_page_multisingle_plugin)
+    // .debug()
     // does our db version appear in the options table?
     .expect(wordpress_options.bmltwf_db_version.exists)
     .eql(true)
@@ -81,8 +84,13 @@ test("MultiSite_Network_Check_Plugin_Config_Page", async (t) => {
 });
 
 test("MultiSite_Network_Check_Plugin_Doesnt_Touch_Plugin2", async (t) => {
+  // console.log("restore plugin");
+  // console.log(userVariables.admin_restore_json_multinetwork_plugin);
 
-  await basic_options_multinetwork(t);
+  await restore_from_backup(bmltwf_admin_multinetwork, userVariables.admin_settings_page_multinetwork_plugin, userVariables.admin_restore_json_multinetwork_plugin,"bmlt2x","8000");
+  // console.log("restore plugin2");
+  // console.log(userVariables.admin_restore_json_multinetwork_plugin2);
+  await restore_from_backup(bmltwf_admin_multinetwork, userVariables.admin_settings_page_multinetwork_plugin2, userVariables.admin_restore_json_multinetwork_plugin2,"bmlt2x","8000");
 
   // update the service bodies in plugin1 and check they dont show in plugin2
   // console.log(userVariables.blank_service_bodies_multinetwork);
@@ -90,22 +98,22 @@ test("MultiSite_Network_Check_Plugin_Doesnt_Touch_Plugin2", async (t) => {
   await t
     .useRole(bmltwf_admin_multinetwork)
     .navigateTo(userVariables.admin_service_bodies_page_multinetwork_plugin)
-    .click(Selector("ul#select2-bmltwf_userlist_id_1-container").parent())
+    .click(Selector("ul#select2-bmltwf_userlist_id_1009-container").parent())
     .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_1")
-    .click(Selector("ul#select2-bmltwf_userlist_id_2-container").parent())
+    .click("#bmltwf_userlist_checkbox_id_1009")
+    .click(Selector("ul#select2-bmltwf_userlist_id_1046-container").parent())
     .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_2")
-    .click(Selector("ul#select2-bmltwf_userlist_id_3-container").parent())
+    .click("#bmltwf_userlist_checkbox_id_1046")
+    .click(Selector("ul#select2-bmltwf_userlist_id_1047-container").parent())
     .pressKey("enter")
-    .click("#bmltwf_userlist_checkbox_id_3")
+    .click("#bmltwf_userlist_checkbox_id_1047")
     .click(asb.bmltwf_submit)
     .navigateTo(userVariables.admin_settings_page_multinetwork_plugin2)
     .navigateTo(userVariables.admin_service_bodies_page_multinetwork_plugin2)
-    .expect(Selector("#bmltwf_userlist_checkbox_id_1").checked)
+    .expect(Selector("#bmltwf_userlist_checkbox_id_1009").checked)
     .eql(false)
-    .expect(Selector("#bmltwf_userlist_checkbox_id_2").checked)
+    .expect(Selector("#bmltwf_userlist_checkbox_id_1046").checked)
     .eql(false)
-    .expect(Selector("#bmltwf_userlist_checkbox_id_3").checked)
+    .expect(Selector("#bmltwf_userlist_checkbox_id_1047").checked)
     .eql(false);
 });

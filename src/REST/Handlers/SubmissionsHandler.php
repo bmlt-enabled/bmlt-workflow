@@ -40,8 +40,7 @@ class SubmissionsHandler
 
         $this->handlerCore = new HandlerCore();
         $this->BMLTWF_Database = new BMLTWF_Database();
-
-        $this->formats = $this->bmlt_integration->getMeetingFormats();
+        $this->formats = null;
     }
 
     public function get_submissions_handler()
@@ -193,7 +192,8 @@ class SubmissionsHandler
             "format_shared_id_list",
             "virtual_meeting_additional_info",
             "phone_meeting_number",
-            "virtual_meeting_link"
+            "virtual_meeting_link",
+            "venue_type"
         );
 
         foreach ($quickedit_change as $key => $value) {
@@ -342,7 +342,8 @@ class SubmissionsHandler
             "location_nation",
             "virtual_meeting_additional_info",
             "phone_meeting_number",
-            "virtual_meeting_link"
+            "virtual_meeting_link",
+            "venue_type"
         );
 
         foreach ($change as $key => $value) {
@@ -363,8 +364,6 @@ class SubmissionsHandler
         $this->debug_log("change type = " . $submission_type);
         switch ($submission_type) {
             case 'reason_new':
-                // workaround for semantic new meeting bug
-                $change['id_bigint'] = 0;
 
                 if ($this->bmlt_integration->isAutoGeocodingEnabled()) {
                     // run our geolocator on the address
@@ -372,7 +371,6 @@ class SubmissionsHandler
                     if (is_wp_error($latlng)) {
                         return $latlng;
                     }
-
                     $change['latitude'] = $latlng['latitude'];
                     $change['longitude'] = $latlng['longitude'];
                 } else {
@@ -381,20 +379,9 @@ class SubmissionsHandler
                     $change['longitude'] = $latlng['longitude'];
                 }
 
-                // handle publish/unpublish here
                 $change['published'] = 1;
-                $changearr = array();
-                $changearr['bmlt_ajax_callback'] = 1;
-                $changearr['set_meeting_change'] = json_encode($change);
-                $this->debug_log("posting change");
-                $this->debug_log($changearr);
 
-                $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
-                $this->debug_log("posted change");
-
-                if (is_wp_error($response)) {
-                    return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
-                }
+                $response = $this->bmlt_integration->createMeeting($change);
 
                 break;
             case 'reason_change':
@@ -427,33 +414,21 @@ class SubmissionsHandler
                     $change['latitude'] = $latlng['latitude'];
                     $change['longitude'] = $latlng['longitude'];
                 } else {
-                    // update this only if we have no meeting lat/long already set
-                    if (empty($change['latitude'] && empty($change['longitude']))) {
+                    $changelat = $change['latitude'] ?? false;
+                    $changelong = $change['longitude'] ?? false;
 
+                    // update this only if we have no meeting lat/long already set
+                    if (!$changelat || !$changelong) {
                         $latlng = $this->bmlt_integration->getDefaultLatLong();
                         $change['latitude'] = $latlng['latitude'];
                         $change['longitude'] = $latlng['longitude'];
                     }
                 }
 
-                $changearr = array();
-                $changearr['bmlt_ajax_callback'] = 1;
-                $changearr['set_meeting_change'] = json_encode($change);
-                $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
+                $response = $this->bmlt_integration->updateMeeting($change);
 
-                if (is_wp_error($response)) {
-                    return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
-                }
-                $this->debug_log("response");
-                $this->debug_log(($response));
-                $arr = json_decode(wp_remote_retrieve_body($response), true)[0];
-                $this->debug_log("arr");
-                $this->debug_log(($arr));
-                $this->debug_log("change");
-                $this->debug_log(($change));
-                // the response back from BMLT doesnt even match what we are trying to change
-                if ((!empty($arr['id_bigint'])) && ($arr['id_bigint'] != $change['id_bigint'])) {
-                    return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting change failed', 500);
+                if (\is_wp_error(($response))) {
+                    return $response;
                 }
 
                 break;
@@ -463,67 +438,20 @@ class SubmissionsHandler
 
                 // are we doing a delete or an unpublish on close?
                 if ((!empty($params['delete'])) && ($params['delete'] == "true")) {
-                    $changearr = array();
-                    $changearr['bmlt_ajax_callback'] = 1;
-                    $changearr['delete_meeting'] = $result['meeting_id'];
 
-                    $this->debug_log("DELETE SEND");
-                    $this->debug_log(($changearr));
+                    $resp = $this->bmlt_integration->deleteMeeting($result['meeting_id']);
 
-                    $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
-
-                    if (is_wp_error($response)) {
-                        return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
-                    }
-
-                    $json = wp_remote_retrieve_body($response);
-                    $rep = str_replace("'", '"', $json);
-                    $this->debug_log("JSON RESPONSE");
-                    $this->debug_log(($rep));
-
-                    $arr = json_decode($rep, true);
-
-                    $this->debug_log("DELETE RESPONSE");
-                    $this->debug_log(($arr));
-
-                    if ((isset($arr['success'])) && ($arr['success'] != 1)) {
-                        return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
-                    }
-                    if ((!empty($arr['report'])) && ($arr['report'] != $result['meeting_id'])) {
-                        return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting deletion failed', 500);
+                    if (\is_wp_error(($resp))) {
+                        return $resp;
                     }
                 } else {
                     // unpublish by default
                     $change['published'] = 0;
-
-                    $changearr = array();
-                    $changearr['bmlt_ajax_callback'] = 1;
                     $change['id_bigint'] = $result['meeting_id'];
-                    $changearr['set_meeting_change'] = json_encode($change);
-                    $this->debug_log("UNPUBLISH");
-                    $this->debug_log(($changearr));
+                    $resp = $this->bmlt_integration->updateMeeting($change);
 
-                    $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('', $changearr);
-
-                    if (is_wp_error($response)) {
-                        return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
-                    }
-
-                    $this->debug_log("UNPUBLISH RESPONSE");
-                    $this->debug_log(($response));
-
-                    $json = wp_remote_retrieve_body($response);
-                    $rep = str_replace("'", '"', $json);
-
-                    $dec = json_decode($rep, true);
-                    if (((isset($dec['error'])) && ($dec['error'] === true)) || (empty($dec[0]))) {
-                        return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
-                    }
-
-                    $arr = $dec[0];
-
-                    if ((isset($arr['published'])) && ($arr['published'] != 0)) {
-                        return $this->handlerCore->bmltwf_rest_error('BMLT Communication Error - Meeting unpublish failed', 500);
+                    if (\is_wp_error(($resp))) {
+                        return $resp;
                     }
                 }
 
@@ -662,6 +590,13 @@ class SubmissionsHandler
         return implode(',', $emails);
     }
 
+    private function populate_formats()
+    {
+        if ($this->formats === null) {
+            $this->formats = $this->bmlt_integration->getMeetingFormats();
+        }
+    }
+
     private function invalid_form_field($field)
     {
         return $this->handlerCore->bmltwf_rest_error('Form field "' . $field . '" is invalid.', 422);
@@ -692,22 +627,9 @@ class SubmissionsHandler
             $reason_change_bool = ($data['update_reason'] === 'reason_change');
             $reason_close_bool = ($data['update_reason'] === 'reason_close');
             // handle meeting formats
-            if (isset($data['format_shared_id_list'])) {
-                $strarr = explode(',', $data['format_shared_id_list']);
-                foreach ($strarr as $key) {
-                    if (array_key_exists($key, $this->formats)) {
-                        switch ($this->formats[$key]["key_string"]) {
-                            case "HY":
-                            case "VM":
-                            case "TC":
-                                $virtual_meeting_bool = true;
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-            }
+            $this->populate_formats();
+            $venue_type = $data['venue_type'] ?? '0';
+            $virtual_meeting_bool = ($venue_type !== '1');
 
             $require_postcode = false;
             if (get_option('bmltwf_optional_postcode') === 'displayrequired') {
@@ -755,6 +677,7 @@ class SubmissionsHandler
             "meeting_name" => array("text", $reason_new_bool),
             "start_time" => array("time", $reason_new_bool),
             "duration_time" => array("time", $reason_new_bool),
+            "venue_type" => array("number", $reason_new_bool | $reason_change_bool),
             // location text and street only required if its not a virtual meeting #75
             "location_text" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_street" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
@@ -896,7 +819,8 @@ class SubmissionsHandler
                     "phone_meeting_number",
                     "virtual_meeting_link",
                     "starter_kit_required",
-                    "starter_kit_postal_address"
+                    "starter_kit_postal_address",
+                    "venue_type"
                 );
 
                 // new meeting - add all fields to the changes requested
@@ -931,7 +855,8 @@ class SubmissionsHandler
                     "format_shared_id_list",
                     "virtual_meeting_additional_info",
                     "phone_meeting_number",
-                    "virtual_meeting_link"
+                    "virtual_meeting_link",
+                    "venue_type"
 
                 );
 
@@ -1111,10 +1036,8 @@ class SubmissionsHandler
     private function submission_format($submission)
     {
 
-        $formats = $this->bmlt_integration->getMeetingFormats();
-
         $table = '';
-
+        $this->populate_formats();
         foreach ($submission as $key => $value) {
             switch ($key) {
                 case "meeting_name":

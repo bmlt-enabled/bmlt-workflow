@@ -1,0 +1,159 @@
+version: '3.1'
+name: bmlt-workflow
+
+networks:
+  default:
+    name: testnet
+    external: true
+
+services:
+  wordpress-php7-singlesite:
+    build:
+      context: .
+      dockerfile: Dockerfile-wp-php7.4
+    depends_on:
+      - wordpress-db
+    restart: always
+    tmpfs: 
+      - /var/www/html
+      - /var/log
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress-php7-singlesite
+      WORDPRESS_DEBUG: true
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+    volumes:
+      - ../:/var/www/html/wp-content/plugins/bmlt-workflow
+      - ./logs/:/var/log/apache2
+
+  wordpress-db:
+    build:
+      context: .
+      dockerfile: Dockerfile-wordpress-db
+    restart: always
+    tmpfs: /var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: somewordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+
+  wordpress-php8-singlesite:
+    build:
+      context: .
+      dockerfile: Dockerfile-wp-php8.1
+    depends_on:
+      - wordpress-db
+    ports:
+      - 80:80
+    restart: always
+    command: /usr/local/bin/wp-install.sh
+    tmpfs: 
+      - /var/www/html
+      - /var/log
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress-php8-singlesite
+      WORDPRESS_HOST: wordpress-php8-singlesite
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+      WORDPRESS_PORT: 80
+      BMLT: 'bmlt2x'
+      BMLT_PORT: 8000
+    volumes:
+      - ../:/var/www/html/wp-content/plugins/bmlt-workflow
+      - ./logs/:/var/log/apache2
+      - ../../wpcache:/root/.wp-cli/cache/core/
+      - /var/run/docker.sock.raw:/var/run/docker.sock
+
+  wordpress-php8-multisitesingle:
+    build:
+      context: .
+      dockerfile: Dockerfile-wpmultisite-php8.1
+    depends_on:
+      - wordpress-db
+    ports:
+      - 81:81
+    command: /usr/local/bin/wp-multisite-install.sh
+    restart: always
+    tmpfs: 
+      - /var/www/html
+      - /var/log
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress-php8-multisitesingle
+      WORDPRESS_DEBUG: true
+      WORDPRESS_MULTISITE_INSTALL: true
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+      WORDPRESS_HOST: wordpress-php8-multisitesingle
+      WORDPRESS_PORT: 81
+      NOPLUGIN: 'true'
+      BMLT: 'bmlt2x'
+      BMLT_PORT: 8000
+    volumes:
+      - ../:/var/www/html/wordpress-php8-multisitesingle/wp-content/plugins/bmlt-workflow
+      - ./logs/:/var/log/apache2
+      - ../../wpcache:/root/.wp-cli/cache/core/
+
+  wordpress-php8-multinetwork:
+    build:
+      context: .
+      dockerfile: Dockerfile-wpmultisite-php8.1
+    depends_on:
+      - wordpress-db
+    command: /usr/local/bin/wp-multisite-install.sh
+    restart: always
+    ports:
+      - 82:82
+    tmpfs: 
+      - /var/www/html
+      - /var/log
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress-php8-multinetwork
+      WORDPRESS_DEBUG: true
+      WORDPRESS_MULTISITE_INSTALL: true
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+      WORDPRESS_HOST: wordpress-php8-multinetwork
+      WORDPRESS_PORT: 82
+      BMLT: 'bmlt2x'
+      BMLT_PORT: 8000
+    volumes:
+      - ../:/var/www/html/wordpress-php8-multinetwork/wp-content/plugins/bmlt-workflow
+      - ./logs/:/var/log/apache2
+      - ../../wpcache:/root/.wp-cli/cache/core/
+
+  wordpress-php8-singlesite-bmlt3x:
+    build:
+      context: .
+      dockerfile: Dockerfile-wp-php8.1
+    depends_on:
+      - wordpress-db
+    tmpfs: 
+      - /var/www/html
+      - /var/log
+    restart: always
+    command: /usr/local/bin/wp-install.sh
+    ports:
+      - 83:83
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress-php8-singlesite-bmlt3x
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+      WORDPRESS_HOST: wordpress-php8-singlesite-bmlt3x
+      WORDPRESS_PORT: 83
+      BMLT: 'bmlt3x'
+      BMLT_PORT: 8001
+    volumes:
+      - ../:/var/www/html/wp-content/plugins/bmlt-workflow
+      - ./logs/:/var/log/apache2
+      - ../../wpcache:/root/.wp-cli/cache/core/

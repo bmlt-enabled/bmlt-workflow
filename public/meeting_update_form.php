@@ -199,13 +199,13 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <div id="virtual_meeting_options" class="form-grid-col2-1">
                 <fieldset>
                     <legend>Virtual Meeting Options</legend>
-                    <label for="virtual_hybrid_select">Is this a virtual, hybrid or temporarily closed in person meeting?</label>
-                    <select name="virtual_hybrid_select" id="virtual_hybrid_select">
+                    <label for="venue_type">Is this a virtual, hybrid or temporarily closed in person meeting?</label>
+                    <select name="venue_type" id="venue_type">
                         <option value="" disabled selected hidden>Select one</option>
-                        <option value="none">No</option>
-                        <option value="virtual">Yes - Virtual only</option>
-                        <option value="hybrid"">Yes - Hybrid (Virtual and Face to Face)</option>
-                            <option value="tempclosure"">Yes -Temporary Face to Face Closure</option>
+                        <option value="1">No</option>
+                        <option value="2">Yes - Virtual only</option>
+                        <option value="3"">Yes - Hybrid (Virtual and Face to Face)</option>
+                        <option value="4"">Yes - Temporary Face to Face Closure</option>
                     </select>
                     <div id="virtual_meeting_settings">
                         <div class="tooltip" tabindex="0">
@@ -244,6 +244,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     </div>
                 </fieldset>
             </div>
+            <input type="hidden" name="temporarilyVirtual" id="temporarilyVirtual" value="false">
 
             <!-- personal details -->
             <div id="personal_details" class="form-grid-col2-2">

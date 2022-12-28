@@ -23,7 +23,7 @@ use bmltwf\BMLT\Integration;
 use bmltwf\REST\HandlerCore;
 use bmltwf\BMLTWF_Database;
 use bmltwf\BMLTWF_WP_Options;
-
+use bmltwf\BMLTWF_WP_User;
 class ServiceBodiesHandler
 {
     use \bmltwf\BMLTWF_Debug;
@@ -43,6 +43,7 @@ class ServiceBodiesHandler
         }
 
         $this->handlerCore = new HandlerCore();
+        $this->BMLTWF_WP_User = new BMLTWF_WP_User();
         $this->BMLTWF_Database = new BMLTWF_Database();
     }
 
@@ -58,65 +59,16 @@ class ServiceBodiesHandler
             // detail list
             $sblist = array();
 
-            $req = array();
-            $req['admin_action'] = 'get_permissions';
-
-            $response = $this->bmlt_integration->postAuthenticatedRootServerRequest('local_server/server_admin/json.php', $req);
-            if (is_wp_error($response)) {
-                return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
+            $sblist = $this->bmlt_integration->getServiceBodies();
+            if(\is_wp_error(($sblist)))
+            {
+                return $sblist;
             }
 
-            $arr = json_decode(wp_remote_retrieve_body($response),1);
-
-            if (empty($arr['service_body'])) {
-                return $this->handlerCore->bmltwf_rest_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);
-            }
-
-            // create an array of the service bodies that we are able to see
-            $editable = array();
-            foreach ($arr['service_body'] as $key => $sb) {
-
-                $permissions = $sb['permissions'] ?? 0;
-                $id = $sb['id'] ?? 0;
-
-                if ($id) {
-                    if (($permissions === 2) || ($permissions === 3)) {
-                        $editable[$id] = true;
-                    }
-                }
-            }
-
-            $req = array();
-            $req['admin_action'] = 'get_service_body_info';
-
-            $response = $this->bmlt_integration->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServiceBodies', $req);
-            if (is_wp_error($response)) {
-                return $this->handlerCore->bmltwf_rest_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
-            }
-
-            $arr = json_decode(wp_remote_retrieve_body($response),1);
-
+            // make a list of ids from the response
             $idlist = array();
-            // $this->debug_log("SERVICE BODY JSON");
-            // $this->debug_log(($arr));
-
-            // make our list of editable service bodies
-            foreach ($arr as $key => $value) {
-
-                $id = $value['id'] ?? 0;
-                $name = $value['name'] ?? 0;
-                $description = $value['description'] ?? '';
-
-                // must have an id and name
-                if ($id && $name) {
-                    // check we can see the service body from permissions above
-                    $is_editable = $editable[$id] ?? false;
-                    if ($is_editable)
-                    {
-                        $idlist[] = $id;
-                        $sblist[$id] = array('name' => $name, 'description' => $description);
-                    }
-                }
+            foreach ($sblist as $key => $value) {
+                $idlist[]=$key;
             }
 
             // update our service body list in the database in case there have been some new ones added
@@ -128,7 +80,7 @@ class ServiceBodiesHandler
                 $sql = $wpdb->prepare('INSERT into ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['name'], $sblist[$value]['description'], $value);
                 $wpdb->query($sql);
             }
-            
+
             // update any values that may have changed since last time we looked
             foreach ($idlist as $value) {
                 $sql = $wpdb->prepare('UPDATE ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s" where service_body_bigint="%d"', $sblist[$value]['name'], $sblist[$value]['description'], $value);
@@ -148,12 +100,8 @@ class ServiceBodiesHandler
             $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name, ARRAY_A);
 
             foreach ($sqlresult as $key => $value) {
-                $is_editable = $editable[$value['service_body_bigint']] ?? false;
-                if ($is_editable)
-                {
                     $bool = $value['show_on_form'] ? (true) : (false);
                     $sblist[$value['service_body_bigint']]['show_on_form'] = $bool;
-                }
             }
         } else {
             // simple list
@@ -208,21 +156,7 @@ class ServiceBodiesHandler
             $wpdb->query($sql);
         }
 
-        // add / remove user capabilities
-        $users = get_users();
-        $result = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name, 0);
-        // $this->debug_log(($sql));
-        // $this->debug_log(($result));
-        foreach ($users as $user) {
-            $this->debug_log("checking user id " . $user->get('ID'));
-            if (in_array($user->get('ID'), $result)) {
-                $user->add_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
-                $this->debug_log("adding cap");
-            } else {
-                $user->remove_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
-                $this->debug_log("removing cap");
-            }
-        }
+        $this->BMLTWF_WP_User->add_remove_caps();
 
         return $this->handlerCore->bmltwf_rest_success('Updated Service Bodies');
     }

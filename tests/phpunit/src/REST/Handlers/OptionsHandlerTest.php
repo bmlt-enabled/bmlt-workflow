@@ -86,7 +86,7 @@ Line: $errorLine
     {
 
         
-        $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/options/backup");
+        $request = new WP_REST_Request('POST', "http://3.25.141.92/flop/wp-json/bmltwf/v1/options/backup");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/options/backup");
         $request->set_method('POST');
@@ -116,15 +116,17 @@ Line: $errorLine
         $wpdb->shouldReceive('get_results')->andReturn($dblookup);
         $wpdb->prefix = "";
 
-        // Functions\when('\get_option')->justReturn("success");
-
+        Functions\when('\get_option')->justReturn("success");
+        Functions\when('wp_remote_get')->returnArg();
         Functions\when('\wp_load_alloptions')->justReturn(array('bmltwf_db_version'=> 'testing', 'bmltwf_crap'=> 'testing', 'shouldntbe' => 'inthebackup'));
+
         $rest = new OptionsHandler();
 
         $response = $rest->post_bmltwf_backup_handler($request);
 
-        $this->debug_log(($response));
+        $this->debug_log($response);
         $data = $response->get_data();
+        $this->debug_log($data);
         $this->assertEquals($data['message'],'Backup Successful');
         $backup = json_decode($data['backup'],true);
         $this->assertIsArray($backup['options']);
@@ -143,7 +145,7 @@ Line: $errorLine
 //     {
 
         
-//         $request = new WP_REST_Request('POST', "http://54.153.167.239/flop/wp-json/bmltwf/v1/options/restore");
+//         $request = new WP_REST_Request('POST', "http://3.25.141.92/flop/wp-json/bmltwf/v1/options/restore");
 //         $request->set_header('content-type', 'application/json');
 //         $request->set_route("/bmltwf/v1/options/restore");
 //         $request->set_method('POST');

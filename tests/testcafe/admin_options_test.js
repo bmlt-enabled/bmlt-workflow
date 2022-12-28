@@ -25,29 +25,19 @@ import { t, Selector, Role, RequestLogger } from "testcafe";
 import { 
   randstr,
   reset_bmlt, 
-  basic_options, 
-  configure_service_bodies, 
-  insert_submissions, 
+  restore_from_backup, 
   bmltwf_admin, 
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
-  delete_submissions,
   check_checkbox,
-  uncheck_checkbox} from "./helpers/helper";
+  uncheck_checkbox, 
+  waitfor} from "./helpers/helper";
 
 import fs from "fs";
 import { join as joinPath } from "path";
 import os from "os";
 
-const backupurl = userVariables.admin_backup_json;
-const logger = RequestLogger(
-  { url: backupurl, method: "post" },
-  {
-    logResponseHeaders: true,
-    logResponseBody: true,
-  }
-);
 
 async function waitForFileDownload(path) {
   for (let i = 0; i < 10; i++) {
@@ -67,44 +57,50 @@ function getFileDownloadPath(download) {
 let downloadedFilePath = null;
 
 fixture`admin_options_fixture`
-  .beforeEach(async (t) => {
-
+  .before(async (t) => {
     await reset_bmlt(t);
-
-    await basic_options(t);
-    
-    await delete_submissions(t);
-    
-    await configure_service_bodies(t);
-
-    await insert_submissions(t);
-
-    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page);
   })
-  .requestHooks(logger);
+  .beforeEach(async (t) => {
+    await waitfor(userVariables.admin_logon_page_single);
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt2x","8000");
+
+        // await t.useRole(bmltwf_admin)
+    // .navigateTo(userVariables.admin_settings_page_single);
+  
+    // const nonce = await Selector("#_wprestnonce").value;
+    // const resp = await t.request(userVariables.admin_restore_json, 
+  
+    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  });
+
+  const logger = RequestLogger(/backup/,
+  {
+    logResponseHeaders: true,
+    logResponseBody: true,
+  }
+  );
 
 test("Backup", async (t) => {
   
-  // console.log(backupurl);
   await t.click(ao.backup_button);
   const b_elem = Selector("#bmltwf_backup_filename");
   const state = await b_elem();
   const filename = state.attributes.download;
   downloadedFilePath = getFileDownloadPath(filename);
   await waitForFileDownload(downloadedFilePath);
-  // console.log(logger);
   var f = JSON.parse(logger.requests[0].response.body.toString());
   // console.log(logger.requests[0].response.body.toString());
   var backup = JSON.parse(f.backup);
-
+  // console.log(backup);
   await t.expect(f.message).eql("Backup Successful");
 
-  await t.expect(backup.options.bmltwf_db_version).eql("0.4.0").expect(backup.options.bmltwf_bmlt_server_address).eql("http://54.153.167.239/blank_bmlt/main_server/");
+  await t.expect(backup.options.bmltwf_db_version).eql("0.4.0");
   // find a specific meeting
   let obj = backup.submissions.find((o) => o.id === "94");
-
+  // console.log(obj);
   await t.expect(obj.submitter_name).eql("first last").expect(obj.submission_type).eql("reason_change");
-});
+})  .requestHooks(logger);
+
 
 test("Restore", async (t) => {
 
@@ -117,7 +113,8 @@ test("Restore", async (t) => {
   // click ok
   await click_dialog_button_by_index(ao.restore_warning_dialog_parent, 1);
   // dialog closes after ok button
-  await t.expect(ao.restore_warning_dialog_parent.visible).eql(false).navigateTo(userVariables.admin_submissions_page);
+  await t.expect(ao.restore_warning_dialog_parent.visible).eql(false)
+  .navigateTo(userVariables.admin_submissions_page_single);
   // assert id = 22222
   var row = 0;
   var column = 0;
@@ -157,7 +154,7 @@ test("Options_Save", async (t) => {
 test("Check_Optional_Fields", async (t) => {
   // test optional fields with 'display and required' option
 
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
   await check_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_nation_required_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
@@ -167,6 +164,16 @@ test("Check_Optional_Fields", async (t) => {
   await check_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_postcode_required_checkbox);
   await check_checkbox(t,ao.bmltwf_required_meeting_formats_required_checkbox);
+
+  const testfso = randstr() + "@" + randstr() + ".com";
+  const testfrom = randstr() + "@" + randstr() + ".com";
+  await t
+    .typeText(ao.bmltwf_fso_email_address, testfso, { replace: true })
+    .expect(ao.bmltwf_fso_email_address.value)
+    .eql(testfso)
+    .typeText(ao.bmltwf_email_from_address, testfrom, { replace: true })
+    .expect(ao.bmltwf_email_from_address.value)
+    .eql(testfrom);
 
   const testnationdisplay = randstr();
   const testprovincedisplay = randstr();
@@ -207,8 +214,9 @@ test("Check_Optional_Fields", async (t) => {
     // test optional fields with 'hidden' option
 
     .useRole(bmltwf_admin)
-    .navigateTo(userVariables.admin_settings_page);
+    .navigateTo(userVariables.admin_settings_page_single);
 
+  
   await select_dropdown_by_text(ao.bmltwf_fso_feature, "Disabled");
 
   await uncheck_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
@@ -230,7 +238,7 @@ test("Check_Optional_Fields", async (t) => {
 
     // test optional fields with 'display' option
     .useRole(bmltwf_admin)
-    .navigateTo(userVariables.admin_settings_page);
+    .navigateTo(userVariables.admin_settings_page_single);
 
   await select_dropdown_by_text(ao.bmltwf_fso_feature, "Enabled");
   

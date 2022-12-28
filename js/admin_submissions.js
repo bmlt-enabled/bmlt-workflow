@@ -1,20 +1,19 @@
 // Copyright (C) 2022 nigel.bmlt@gmail.com
-// 
+//
 // This file is part of bmlt-workflow.
-// 
+//
 // bmlt-workflow is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // bmlt-workflow is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
-
 
 // function dismiss_notice(element) {
 //   jQuery(element)
@@ -37,12 +36,9 @@ var bmltwf_changedata = {};
 jQuery(document).ready(function ($) {
   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-  if(!bmltwf_auto_geocoding_enabled)
-  {
+  if (!bmltwf_auto_geocoding_enabled) {
     $("#optional_auto_geocode_enabled").hide();
-  }
-  else
-  {
+  } else {
     $("#optional_auto_geocode_enabled").show();
   }
 
@@ -53,6 +49,8 @@ jQuery(document).ready(function ($) {
       $("#optional_location_nation").hide();
       break;
     case "display":
+      $("#optional_location_nation").show();
+      break;
     case "displayrequired":
       $("#optional_location_nation").show();
       $("#location_nation_label").append('<span class="bmltwf-required-field"> *</span>');
@@ -65,6 +63,8 @@ jQuery(document).ready(function ($) {
       $("#optional_location_sub_province").hide();
       break;
     case "display":
+      $("#optional_location_sub_province").show();
+      break;
     case "displayrequired":
       $("#optional_location_sub_province").show();
       $("#location_sub_province_label").append('<span class="bmltwf-required-field"> *</span>');
@@ -77,42 +77,36 @@ jQuery(document).ready(function ($) {
       $("#optional_location_province").hide();
       break;
     case "display":
+      $("#optional_location_province").show();
+      break;
     case "displayrequired":
       $("#optional_location_province").show();
       $("#location_province_label").append('<span class="bmltwf-required-field"> *</span>');
       break;
   }
 
+  // fill in counties and sub provinces
+  if (bmltwf_counties_and_sub_provinces === false) {
+    $("#optional_location_sub_province").append('<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">');
+  } else {
+    var appendstr = '<select class="meeting-input" id="quickedit_location_sub_province" name="quickedit_location_sub_province">';
+    bmltwf_counties_and_sub_provinces.forEach(function (item, index) {
+      appendstr += '<option value="' + item + '">' + item + "</option>";
+    });
+    appendstr += "</select>";
+    $("#optional_location_sub_province").append(appendstr);
+  }
 
-    // fill in counties and sub provinces
-    if(bmltwf_counties_and_sub_provinces === false)
-    {
-      $("#optional_location_sub_province").append('<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">');
-    }
-    else
-    {
-      var appendstr = '<select class="meeting-input" id="quickedit_location_sub_province" name="quickedit_location_sub_province">';
-      bmltwf_counties_and_sub_provinces.forEach(function (item, index) {
-        appendstr += '<option value="' + item + '">' + item + '</option>';
-          });
-      appendstr += '</select>';
-      $("#optional_location_sub_province").append(appendstr);
-
-    }
-
-    if(bmltwf_do_states_and_provinces === false)
-    {
-      $("#optional_location_province").append('<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">');
-    }
-    else
-    {
-      var appendstr = '<select class="meeting-input" id="quickedit_location_province" name="quickedit_location_province">';
-      bmltwf_do_states_and_provinces.forEach(function (item, index) {
-        appendstr += '<option value="' + item + '">' + item + '</option>';
-      });
-      appendstr += '</select>';
-      $("#optional_location_province").append(appendstr);
-    }
+  if (bmltwf_do_states_and_provinces === false) {
+    $("#optional_location_province").append('<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">');
+  } else {
+    var appendstr = '<select class="meeting-input" id="quickedit_location_province" name="quickedit_location_province">';
+    bmltwf_do_states_and_provinces.forEach(function (item, index) {
+      appendstr += '<option value="' + item + '">' + item + "</option>";
+    });
+    appendstr += "</select>";
+    $("#optional_location_province").append(appendstr);
+  }
 
   function add_highlighted_changes_to_quickedit(bmltwf_requested) {
     // fill in and highlight the changes - use extend to clone
@@ -246,7 +240,7 @@ jQuery(document).ready(function ($) {
     dom: "Bfrtip",
     select: true,
     searching: false,
-    order: [[5,'desc']],
+    order: [[5, "desc"]],
     buttons: [
       {
         name: "approve",
@@ -496,6 +490,24 @@ jQuery(document).ready(function ($) {
           }
           table += column(col_meeting_details, mname, c[key]);
           break;
+        case "venue_type":
+          var vtype = 0;
+          switch (c[key]) {
+            case 1:
+              vtype = "Face to face";
+              break;
+            case 2:
+              vtype = "Virtual Meeting";
+              break;
+            case 3:
+              vtype = "Hybrid Meeting";
+              break;
+            case 4:
+              vtype = "Temporarily Closed";
+              break;
+          }
+          table += column(col_meeting_details, "Venue Type", vtype);
+          break;
         case "start_time":
           table += column(col_meeting_details, "Start Time", c[key]);
           break;
@@ -534,10 +546,9 @@ jQuery(document).ready(function ($) {
           table += column(col_meeting_details, "Meeting Day", weekdays[c[key]]);
           break;
         case "starter_kit_postal_address":
-          if (c["starter_kit_required"] === "yes")
-          {
+          if (c["starter_kit_required"] === "yes") {
             // table += column(col_fso_other, "Starter Kit Postal Address", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + '</textarea></div>');
-            table += column(col_fso_other, "Starter Kit Postal Address",  c[key]);
+            table += column(col_fso_other, "Starter Kit Postal Address", c[key]);
           }
           break;
         case "additional_info":
@@ -652,23 +663,23 @@ jQuery(document).ready(function ($) {
       },
       buttons: [
         {
-        text: "Check Geolocate",
-        click: function () {
-          geolocate_handler($(this).data("id"));
+          text: "Check Geolocate",
+          click: function () {
+            geolocate_handler($(this).data("id"));
           },
-        disabled: !bmltwf_auto_geocoding_enabled
+          disabled: !bmltwf_auto_geocoding_enabled,
         },
         {
-        text: "Save",
-        click: function () {
-          save_handler($(this).data("id"));
-          }
+          text: "Save",
+          click: function () {
+            save_handler($(this).data("id"));
+          },
         },
         {
-        text: "Cancel",
-        click: function () {
-          $(this).dialog("close");
-        }
+          text: "Cancel",
+          click: function () {
+            $(this).dialog("close");
+          },
         },
       ],
       open: function () {
