@@ -796,7 +796,7 @@ EOD;
         );
         $integration = new Integration(true, "2.0.0");
         $response = $integration->createMeeting($meeting);
-        print_r($response);
+        // print_r($response);
         $this->assertNotInstanceOf(WP_Error::class, $response);
 
     }
