@@ -90,7 +90,7 @@ jobs:
           echo "ZIP_FILENAME=${ZIP_FILENAME}" >> $GITHUB_ENV
           echo "GITHUB_RELEASE_FILENAME=${GITHUB_RELEASE_FILENAME}" >> $GITHUB_ENV
           echo "GITHUB_RELEASE_PATH=${DIST_DIR_GITHUB}/${GITHUB_RELEASE_FILENAME}" >> $GITHUB_ENV
-          zip -r $ZIP_FILENAME ./ -x "/.git*" -x "*.editorconfig*" -x "/vendor*" -x "composer.*" -x "*.github*" -x "/assets*" -x "*.gitattributes" -x "/node_modules/*" -x "/tests/*" -x ".userdetails.sh" -x ".phpunit.result.cache" -x "*.DS_Store*" -x "Dockerfile" -x "patchwork.json" -x "/.phpunit.cache*" -x "/.vscode*" -x "phpunit.xml" -x ".testcaferc.js" -x "docker-compose.yml" -x "package.json" -x "package-lock.json" -x "phpunit.xml.orig" -x "config_phpunit.php"
+          zip -r $ZIP_FILENAME ./ -x "/.git*" -x "*.editorconfig*" -x "/vendor*" -x "composer.*" -x "*.github*" -x "/assets*" -x "*.gitattributes" -x "/node_modules/*" -x "/tests/*" -x ".userdetails.sh" -x ".phpunit.result.cache" -x "*.DS_Store*" -x "Dockerfile" -x "patchwork.json" -x "/.phpunit.cache*" -x "/docker/*" -x "/.vscode*" -x "phpunit.xml" -x ".testcaferc.js" -x "docker-compose.yml" -x "package.json" -x "package-lock.json" -x "phpunit.xml.orig" -x "config_phpunit.php"
           mkdir $BUILD_DIR && mv $ZIP_FILENAME $BUILD_DIR/
           mkdir -p $DIST_DIR_S3 && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_S3/$ZIP_FILENAME
           mkdir -p $DIST_DIR_GITHUB && cp $BUILD_DIR/$ZIP_FILENAME $DIST_DIR_GITHUB/$GITHUB_RELEASE_FILENAME
