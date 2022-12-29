@@ -130,7 +130,7 @@ class Integration
 
     public function is_v3_server()
     {
-        if (version_compare($this->bmlt_root_server_version, "3.0.0", "lt")) {
+        if (version_compare($this->bmlt_root_server_version, "3.0.0-rc0", "lt")) {
             return false;
         } else {
             $this->debug_log("using v3 auth");
