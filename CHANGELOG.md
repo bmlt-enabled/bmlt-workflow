@@ -1,5 +1,5 @@
 ## 1.0.13 (Dec 30, 2022)
-- Fix version check for -rc BMLT versions (thanks @californiasteve !)
+- Fix version check for release candidate BMLT versions (thanks @californiasteve !)
 
 ## 1.0.12 (Dec 28, 2022)
 - Fix verbose phpunit test
