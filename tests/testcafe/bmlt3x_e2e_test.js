@@ -216,7 +216,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "adirondack");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "matter");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
