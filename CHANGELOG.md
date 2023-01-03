@@ -1,3 +1,6 @@
+## 1.0.14 (Jan 3, 2023)
+- Bugfix for handling deleted service bodies correctly
+
 ## 1.0.13 (Dec 30, 2022)
 - Fix version check for release candidate BMLT versions (thanks @californiasteve !)
 
