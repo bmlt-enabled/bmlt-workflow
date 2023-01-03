@@ -64,6 +64,8 @@ class ServiceBodiesHandler
             {
                 return $sblist;
             }
+            $this->debug_log("retrieved sblist ");
+            $this->debug_log($sblist);
 
             // make a list of ids from the response
             $idlist = array();
@@ -71,12 +73,39 @@ class ServiceBodiesHandler
                 $idlist[]=$key;
             }
 
-            // update our service body list in the database in case there have been some new ones added
-            $sqlresult = $wpdb->get_col('SELECT service_body_bigint FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ';', 0);
+            $our_stored_sbs = $wpdb->get_col('SELECT service_body_bigint FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ';', 0);
 
-            $missing = array_diff($idlist, $sqlresult);
+            // search through the list of service bodies from bmlt
+            // if they exist in both our db and bmlt, then remove them from processing
+            // if they remain in $todelete, then they are not in bmlt any more, so delete them
+            // if they remain in $toadd, then they are now in bmlt but not our db, so add them
 
-            foreach ($missing as $value) {
+            $todelete = $our_stored_sbs;
+            $toadd = $idlist;
+            foreach($idlist as $key=>$value)
+            {
+                $origkey = array_search($value, $our_stored_sbs);
+                if($origkey !== false)
+                {
+                    unset($toadd[$key]);
+                    unset($todelete[$origkey]);
+                }
+            }
+
+            $this->debug_log("deleting");
+            $this->debug_log($todelete);
+            $this->debug_log("adding");
+            $this->debug_log($toadd);
+            // delete the ones that no longer exist
+            foreach ($todelete as $key=>$value) {
+                $sql = $wpdb->prepare('DELETE from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' where service_body_bigint="%d";', $value);
+                $wpdb->query($sql);
+                $sql = $wpdb->prepare('DELETE from ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' where service_body_bigint="%d";', $value);
+                $wpdb->query($sql);
+            }
+
+            // add the new ones
+            foreach ($toadd as $value) {
                 $sql = $wpdb->prepare('INSERT into ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['name'], $sblist[$value]['description'], $value);
                 $wpdb->query($sql);
             }
@@ -103,6 +132,9 @@ class ServiceBodiesHandler
                     $bool = $value['show_on_form'] ? (true) : (false);
                     $sblist[$value['service_body_bigint']]['show_on_form'] = $bool;
             }
+            $this->debug_log("returning sblist ");
+            $this->debug_log($sblist);
+
         } else {
             // simple list
             $sblist = array();
