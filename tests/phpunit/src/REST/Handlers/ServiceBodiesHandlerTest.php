@@ -276,8 +276,48 @@ Line: $errorLine
         /** @var Mockery::mock $Intstub test */
         // $bodies = array('body'=>'');
         $sblist = array(
-            '1' => array('name' => 'toplevel', 'description' => ''),
+            '1' => array('name' => 'toplevel', 'description' => 'hello'),
             '2' => array('name' => 'a-level1', 'description' => ''),
+            '3' => array('name' => 'b-level1', 'description' => '')
+        );
+
+        $Intstub->shouldReceive('getServiceBodies')->andReturn($sblist);
+
+        $rest = new ServiceBodiesHandler($Intstub, null);
+
+        $response = $rest->get_service_bodies_handler($request);
+
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+    }
+
+        /**
+     * @covers bmltwf\REST\Handlers\ServiceBodiesHandler::get_service_bodies_handler
+     */
+    public function test_can_get_service_bodies_detail_service_bodies_deleted(): void
+    {
+
+        $request = new WP_REST_Request('GET', "http://3.25.141.92/flop/wp-json/bmltwf/v1/servicebodies");
+        $request->set_header('content-type', 'application/json');
+        $request->set_route("/bmltwf/v1/servicebodies");
+        $request->set_method('GET');
+        $request->set_param('detail', 'true');
+
+        Functions\when('\current_user_can')->justReturn(true);
+
+        $sblookup = array();
+        global $wpdb;
+        $wpdb =  Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->shouldReceive('get_results')->andReturn($sblookup)
+            // say that we only have service body 1 in the db
+            ->shouldReceive('get_col')->andreturn(array("1","2"))
+            ->shouldReceive('prepare')->andreturn(array("1","2"))
+            ->shouldReceive('query')->times(5)->andreturn(array("1", "2"));
+
+        $Intstub = \Mockery::mock('Integration');
+        // service body 2 is deleted from bmlt
+        $sblist = array(
+            '1' => array('name' => 'toplevel', 'description' => ''),
             '3' => array('name' => 'b-level1', 'description' => '')
         );
 
