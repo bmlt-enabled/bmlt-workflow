@@ -373,11 +373,7 @@ class SubmissionsHandler
                     }
                     $change['latitude'] = $latlng['latitude'];
                     $change['longitude'] = $latlng['longitude'];
-                } else {
-                    $latlng = $this->bmlt_integration->getDefaultLatLong();
-                    $change['latitude'] = $latlng['latitude'];
-                    $change['longitude'] = $latlng['longitude'];
-                }
+                } 
 
                 $change['published'] = 1;
 
@@ -413,16 +409,6 @@ class SubmissionsHandler
                     // add the new geo to the original change
                     $change['latitude'] = $latlng['latitude'];
                     $change['longitude'] = $latlng['longitude'];
-                } else {
-                    $changelat = $change['latitude'] ?? false;
-                    $changelong = $change['longitude'] ?? false;
-
-                    // update this only if we have no meeting lat/long already set
-                    if (!$changelat || !$changelong) {
-                        $latlng = $this->bmlt_integration->getDefaultLatLong();
-                        $change['latitude'] = $latlng['latitude'];
-                        $change['longitude'] = $latlng['longitude'];
-                    }
                 }
 
                 $response = $this->bmlt_integration->updateMeeting($change);
