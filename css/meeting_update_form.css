@@ -44,7 +44,7 @@ div#form_replace.bmltwf_wide_form fieldset {
 
 .is-active:after {
     content: "";
-    background: url(/wp-includes/images/spinner.gif) no-repeat;
+    background: url(../images/spinner.gif) no-repeat;
     background-size: 20px 20px;
     display: inline-block;
     vertical-align: top;
