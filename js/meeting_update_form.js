@@ -588,15 +588,18 @@ jQuery(document).ready(function ($) {
       processData: false,
       beforeSend: function (xhr) {
         turn_on_spinner("#bmltwf-submit-spinner");
+        $("#submit").prop("disabled", true);
       },
     })
       .done(function (response) {
         turn_off_spinner("#bmltwf-submit-spinner");
+        $("#submit").prop("disabled", false);
         // notice_success(response,"bmltwf-error-message");
         $("#form_replace").replaceWith(response.form_html);
       })
       .fail(function (xhr) {
         turn_off_spinner("#bmltwf-submit-spinner");
+        $("#submit").prop("disabled", false);
         notice_error(xhr, "bmltwf-error-message");
       });
   }

@@ -903,7 +903,7 @@ class SubmissionsHandler
                     else {
 
                         if ($bmlt_field && array_key_exists($field, $sanitised_fields)) {
-                            if ($bmlt_meeting[$field] !== $sanitised_fields[$field]) {
+                            if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
                                 // don't allow someone to modify a meeting service body
                                 if ($field === 'service_body_bigint') {
                                     return $this->handlerCore->bmltwf_rest_error('Service body cannot be changed.', 403);

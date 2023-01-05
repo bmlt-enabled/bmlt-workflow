@@ -42,19 +42,16 @@ div#form_replace.bmltwf_wide_form fieldset {
   padding-block-end: 0.625em;
 }
 
-.spinner {
+.is-active:after {
+    content: "";
     background: url(/wp-includes/images/spinner.gif) no-repeat;
     background-size: 20px 20px;
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: top;
     opacity: .7;
     width: 20px;
     height: 20px;
     margin: 4px 10px 0
-}}
-
-.loading-content .spinner,.spinner.is-active {
-  visibility: visible
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -203,7 +200,7 @@ select.update-form-select
   color: rgb(102,102,102);
 }
 
-input#submit.button {
+button#submit.button {
   background-color: rgb(230, 230, 230);
   color: rgba(0, 0, 0, 0.8);
   line-height: 1.5;
