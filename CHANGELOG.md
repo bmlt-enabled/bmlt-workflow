@@ -1,3 +1,7 @@
+## 1.0.15 (Jan 5, 2023)
+- #115 Bug: Location Info changes not being submitted (thanks @paulnagle !)
+- #114 Feature Request: Submit button feedback (thanks @paulnagle !)
+
 ## 1.0.14 (Jan 3, 2023)
 - Bugfix for handling deleted service bodies correctly
 
