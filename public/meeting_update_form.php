@@ -299,7 +299,10 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 </div>
                 <hr class="bmltwf-error-message">
 
-                <br><input type="submit" name="submit" id="submit" class="button button-primary" value="Submit Form"><span class="spinner" id="bmltwf-submit-spinner"></span>
+                <br>
+                <button class="button" type="submit" name="submit" id="submit">
+                    <span id="bmltwf-submit-spinner" class="button">Submit Form</span>
+                </button>
             </div>
         </div>
 

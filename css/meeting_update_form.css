@@ -42,6 +42,17 @@ div#form_replace.bmltwf_wide_form fieldset {
   padding-block-end: 0.625em;
 }
 
+.is-active:after {
+    content: "";
+    background: url(../images/spinner.gif) no-repeat;
+    background-size: 20px 20px;
+    display: inline-block;
+    vertical-align: top;
+    opacity: .7;
+    width: 20px;
+    height: 20px;
+    margin: 4px 10px 0
+}
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
@@ -164,14 +175,13 @@ div#meeting_content.form-grid {
   display: inline;
 }
 
-div#meeting_content.form-grid input,
 div#meeting_content.form-grid input[type='text'],
 div#meeting_content.form-grid input[type='number'],
 div#meeting_content.form-grid input[type='email'],
+div#meeting_content.form-grid input[type='time'],
 div#meeting_content.form-grid textarea:not(.select2-search__field),
 div#meeting_content.form-grid select,
-select.update-form-select,
-input#submit.button
+select.update-form-select
 {
   line-height: 1.5;
   padding-top: .25rem;
@@ -190,9 +200,22 @@ input#submit.button
   color: rgb(102,102,102);
 }
 
-input#submit.button {
+button#submit.button {
   background-color: rgb(230, 230, 230);
   color: rgba(0, 0, 0, 0.8);
+  line-height: 1.5;
+  padding-top: .25rem;
+  padding-bottom: .25rem;
+  padding-left: .5rem;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 3px;
+  border-style: solid;
+  border-color: rgb(204, 204, 204);
+  border-width: 1px;
+  font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size: 1.2rem;
 }
 
 div#meeting_content.form-grid input {
