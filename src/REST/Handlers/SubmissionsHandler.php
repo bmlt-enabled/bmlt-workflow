@@ -373,7 +373,11 @@ class SubmissionsHandler
                     }
                     $change['latitude'] = $latlng['latitude'];
                     $change['longitude'] = $latlng['longitude'];
-                } 
+                } else {
+                    $latlng = $this->bmlt_integration->getDefaultLatLong();
+                    $change['latitude'] = $latlng['latitude'];
+                    $change['longitude'] = $latlng['longitude'];
+                }
 
                 $change['published'] = 1;
 
@@ -409,6 +413,16 @@ class SubmissionsHandler
                     // add the new geo to the original change
                     $change['latitude'] = $latlng['latitude'];
                     $change['longitude'] = $latlng['longitude'];
+                } else {
+                    $changelat = $change['latitude'] ?? false;
+                    $changelong = $change['longitude'] ?? false;
+
+                    // update this only if we have no meeting lat/long already set
+                    if (!$changelat || !$changelong) {
+                        $latlng = $this->bmlt_integration->getDefaultLatLong();
+                        $change['latitude'] = $latlng['latitude'];
+                        $change['longitude'] = $latlng['longitude'];
+                    }
                 }
 
                 $response = $this->bmlt_integration->updateMeeting($change);
@@ -867,19 +881,35 @@ class SubmissionsHandler
 
                 // if the user submitted something different to what is in bmlt, save it in changes
                 foreach ($allowed_fields as $field) {
+
+                    $bmlt_field = $bmlt_meeting[$field] ?? false;
+
+                    $this->debug_log("field");
+                    $this->debug_log($field);
+                    $this->debug_log("bmlt field");
+                    $this->debug_log($bmlt_field);
+                    $this->debug_log("submitted field");
+                    $this->debug_log($sanitised_fields[$field]);
+                    if(array_key_exists($field, $sanitised_fields))
+                    {
+                        $this->debug_log("field key exists");
+                    }
                     // if the field is blank in bmlt, but they submitted a change, add it to the list
-                    if ((empty($bmlt_meeting[$field])) && (!empty($sanitised_fields[$field]))) {
+                    if (!$bmlt_field && array_key_exists($field, $sanitised_fields)) {
                         $this->debug_log("found a blank bmlt entry " . $field);
                         $submission[$field] = $sanitised_fields[$field];
                     }
                     // if the field is in bmlt and its different to the submitted item, add it to the list
-                    else if ((!empty($bmlt_meeting[$field])) && (!empty($sanitised_fields[$field]))) {
-                        if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
-                            // don't allow someone to modify a meeting service body
-                            if ($field === 'service_body_bigint') {
-                                return $this->handlerCore->bmltwf_rest_error('Service body cannot be changed.', 403);
+                    else {
+
+                        if ($bmlt_field && array_key_exists($field, $sanitised_fields)) {
+                            if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
+                                // don't allow someone to modify a meeting service body
+                                if ($field === 'service_body_bigint') {
+                                    return $this->handlerCore->bmltwf_rest_error('Service body cannot be changed.', 403);
+                                }
+                                $submission[$field] = $sanitised_fields[$field];
                             }
-                            $submission[$field] = $sanitised_fields[$field];
                         }
                     }
                 }
