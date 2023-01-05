@@ -884,18 +884,18 @@ class SubmissionsHandler
 
                     $bmlt_field = $bmlt_meeting[$field] ?? false;
 
-                    $this->debug_log("field");
-                    $this->debug_log($field);
-                    $this->debug_log("bmlt field");
-                    $this->debug_log($bmlt_field);
-                    $this->debug_log("submitted field");
-                    $this->debug_log($sanitised_fields[$field]);
-                    if(array_key_exists($field, $sanitised_fields))
-                    {
-                        $this->debug_log("field key exists");
-                    }
+                    // $this->debug_log("field");
+                    // $this->debug_log($field);
+                    // $this->debug_log("bmlt field");
+                    // $this->debug_log($bmlt_field);
+                    // $this->debug_log("submitted field");
+                    // $this->debug_log($sanitised_fields[$field]);
+                    // if(array_key_exists($field, $sanitised_fields))
+                    // {
+                    //     $this->debug_log("field key exists");
+                    // }
                     // if the field is blank in bmlt, but they submitted a change, add it to the list
-                    if (!$bmlt_field && array_key_exists($field, $sanitised_fields)) {
+                    if (!$bmlt_field && array_key_exists($field, $sanitised_fields) && !empty($sanitised_fields[$field])) {
                         $this->debug_log("found a blank bmlt entry " . $field);
                         $submission[$field] = $sanitised_fields[$field];
                     }
@@ -903,7 +903,7 @@ class SubmissionsHandler
                     else {
 
                         if ($bmlt_field && array_key_exists($field, $sanitised_fields)) {
-                            if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
+                            if ($bmlt_meeting[$field] !== $sanitised_fields[$field]) {
                                 // don't allow someone to modify a meeting service body
                                 if ($field === 'service_body_bigint') {
                                     return $this->handlerCore->bmltwf_rest_error('Service body cannot be changed.', 403);
