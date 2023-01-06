@@ -95,6 +95,7 @@ ignore_repeated_source = Off
 html_errors = Off
 EOF
 
+rm /var/log/php_errors.log
 touch /var/log/php_errors.log
 chmod 777 /var/log/php_errors.log
 

@@ -406,19 +406,43 @@ class SubmissionsHandler
                 }
 
                 if ($this->bmlt_integration->isAutoGeocodingEnabled()) {
+                    $this->debug_log("auto geocoding enabled, performing geolocate");
                     $latlng = $this->do_geolocate($bmlt_meeting);
                     if (is_wp_error($latlng)) {
                         return $latlng;
                     }
+
                     // add the new geo to the original change
                     $change['latitude'] = $latlng['latitude'];
                     $change['longitude'] = $latlng['longitude'];
                 } else {
-                    $changelat = $change['latitude'] ?? false;
-                    $changelong = $change['longitude'] ?? false;
+
+                    $latexists = false;
+                    $longexists = false;
+
+                    if ((array_key_exists('latitude',$bmlt_meeting)) && $bmlt_meeting['latitude'] != 0)
+                    {
+                        $this->debug_log("latitude found");
+                        $latexists = true;
+                    }
+                    else
+                    {
+                        $this->debug_log("latitude not found");
+                    }
+                    if ((array_key_exists('longitude',$bmlt_meeting)) && $bmlt_meeting['longitude'] != 0)
+                    {
+                        $this->debug_log("longitude found");
+                        $longexists = true;
+                    }
+                    else
+                    {
+                        $this->debug_log("longitude not found");
+                    }
 
                     // update this only if we have no meeting lat/long already set
-                    if (!$changelat || !$changelong) {
+                    if (!$latexists && !$longexists) {
+                        $this->debug_log("blank lat/long - updating to defaults");
+    
                         $latlng = $this->bmlt_integration->getDefaultLatLong();
                         $change['latitude'] = $latlng['latitude'];
                         $change['longitude'] = $latlng['longitude'];
