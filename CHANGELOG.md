@@ -1,3 +1,6 @@
+## 1.0.16 (Jan 6, 2023)
+- #116 Bug: Map location being updated to default, even though geolocation is disabled (thanks @paulnagle !)
+
 ## 1.0.15 (Jan 5, 2023)
 - #115 Bug: Location Info changes not being submitted (thanks @paulnagle !)
 - #114 Feature Request: Submit button feedback (thanks @paulnagle !)
