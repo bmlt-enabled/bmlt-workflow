@@ -291,11 +291,12 @@ jQuery(document).ready(function ($) {
 
       var venue_type = mdata[id].venue_type;
       // doesn't handle if they have both selected in BMLT
+      // virtual_meeting_options
       $("#venue_type").val(venue_type);
       if (venue_type === "1") {
-        $("#virtual_meeting_settings").hide();
+        $("#virtual_meeting_options").hide();
       } else {
-        $("#virtual_meeting_settings").show();
+        $("#virtual_meeting_options").show();
       }
 
       // store the selected meeting ID away
@@ -456,11 +457,11 @@ jQuery(document).ready(function ($) {
     // show and hide the virtual meeting settings
 
     if (this.value == "1") {
-      $("#virtual_meeting_settings").hide();
+      $("#virtual_meeting_options").hide();
       $("#location_fields").show();
     } else {
       
-      $("#virtual_meeting_settings").show();
+      $("#virtual_meeting_options").show();
       switch (this.value) {
         case "2":
           $("#location_fields").hide();
@@ -499,7 +500,7 @@ jQuery(document).ready(function ($) {
         $("#personal_details").show();
         $("#meeting_details").show();
         $("#additional_info_div").show();
-        $("#virtual_meeting_settings").hide();
+        $("#virtual_meeting_options").hide();
         // display form instructions
         $("#instructions").html(
           "Please fill in the details of your new meeting, and then submit your update. <br><b>Note:</b> If your meeting convenes multiple times a week, please submit additional new meeting requests for each day you meet."

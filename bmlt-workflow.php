@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.0.16
+ * Version: 1.0.17
  * Requires at least: 5.2
  * Tested up to: 6.1.1
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.0.16');
+define('BMLTWF_PLUGIN_VERSION', '1.0.17');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -60,6 +60,12 @@ if (!class_exists('bmltwf_plugin')) {
     class bmltwf_plugin
     {
         use \bmltwf\BMLTWF_Debug;
+
+        private BMLTWF_WP_Options  $BMLTWF_WP_Options;
+        private Integration $bmlt_integration;
+        private BMLTWF_Rest $BMLTWF_Rest;
+        private Controller $BMLTWF_Rest_Controller;
+        private BMLTWF_Database $BMLTWF_Database;
 
         public function __construct()
         {
@@ -975,7 +981,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             echo '<div class="bmltwf_info_text">';
             echo '<br>This option determines whether trusted servants are able to delete submissions from the submissions list.';
-            echo '<br><br>If this is set to false, then only Wordpress administrators with will have delete submission functionality';
+            echo '<br><br>If this is set to false, then only Wordpress administrators will have delete submission functionality';
             echo '<br><br>';
             echo '</div>';
 

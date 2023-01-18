@@ -112,16 +112,19 @@ div#meeting_content.form-grid {
 .form-grid-col1 {
   grid-column: col;
   grid-row: row 2 / span 3;
+  display: grid
 }
 
 .form-grid-col2-1 {
   grid-column: col;
   grid-row: row 5;
+  display: grid
 }
 
 .form-grid-col2-2 {
   grid-column: col;
   grid-row: row 6;
+  display: grid
 }
 
 .form-grid-bottom {
@@ -153,16 +156,19 @@ div#meeting_content.form-grid {
   .form-grid-col1 {
     grid-column: col;
     grid-row: row 2 / span 3;
+    display: grid
   }
   
   .form-grid-col2-1 {
     grid-column: col 2;
     grid-row: row 2;
+    display: grid
   }
   
   .form-grid-col2-2 {
     grid-column: col 2;
-    grid-row: row 3;
+    grid-row: row 3 / span 2;
+    display: grid
   }
   
   .form-grid-bottom {
