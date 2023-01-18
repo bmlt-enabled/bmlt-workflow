@@ -1,3 +1,6 @@
+## 1.0.17 (Jan 18, 2023)
+- #98 Either add Venue Type up top or move the Virtual Meeting Options panel - virtual meeting options are now displayed seperately in the form from the venue type, and venue type appears in the main form content above the location entry (thanks @tempsaint !)
+
 ## 1.0.16 (Jan 6, 2023)
 - #116 Bug: Map location being updated to default, even though geolocation is disabled (thanks @paulnagle !)
 
