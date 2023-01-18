@@ -75,6 +75,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <legend>Meeting Details</legend>
 
                     <div class="form-grid-col1">
+
                         <label for="meeting_name">Group Name<span class="bmltwf-required-field"> *</span></label>
                         <input class="meeting-input" type="text" name="meeting_name" size="50" id="meeting_name" required>
                         <label for="weekday_tinyint">Meeting Day:<span class="bmltwf-required-field"> *</span></label>
@@ -151,6 +152,15 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             ?>
                             </select>
                             <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
+                            <label for="venue_type">Is this a virtual, hybrid or temporarily closed in person meeting?</label>
+                            <select name="venue_type" id="venue_type">
+                                <option value="" disabled selected hidden>Select one</option>
+                                <option value="1">No</option>
+                                <option value="2">Yes - Virtual only</option>
+                                <option value="3"">Yes - Hybrid (Virtual and Face to Face)</option>
+                            <option value=" 4"">Yes - Temporary Face to Face Closure</option>
+                            </select>
+
                             <div id="location_fields">
                                 <label for="location_text">Location (eg: a building name)<span class="bmltwf-required-field"> *</span></label>
                                 <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
@@ -196,17 +206,9 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
             <!-- virtual meeting settings -->
 
-            <div id="virtual_meeting_options" class="form-grid-col2-1">
+            <div id="virtual_meeting_options" class="form-grid-col2-2">
                 <fieldset>
                     <legend>Virtual Meeting Options</legend>
-                    <label for="venue_type">Is this a virtual, hybrid or temporarily closed in person meeting?</label>
-                    <select name="venue_type" id="venue_type">
-                        <option value="" disabled selected hidden>Select one</option>
-                        <option value="1">No</option>
-                        <option value="2">Yes - Virtual only</option>
-                        <option value="3"">Yes - Hybrid (Virtual and Face to Face)</option>
-                        <option value="4"">Yes - Temporary Face to Face Closure</option>
-                    </select>
                     <div id="virtual_meeting_settings">
                         <div class="tooltip" tabindex="0">
                             <label for="virtual_meeting_link">Online Meeting Link
@@ -247,7 +249,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <input type="hidden" name="temporarilyVirtual" id="temporarilyVirtual" value="false">
 
             <!-- personal details -->
-            <div id="personal_details" class="form-grid-col2-2">
+            <div id="personal_details" class="form-grid-col2-1">
                 <fieldset>
                     <legend>Personal Details</legend>
                     <label for="first_name">First Name<span class="bmltwf-required-field">*</span></label>

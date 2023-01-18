@@ -21,12 +21,15 @@ namespace bmltwf;
 class BMLTWF_Database
 {
     use \bmltwf\BMLTWF_Debug;
+    public $bmltwf_db_version = '0.4.0';
+    public $bmltwf_submissions_table_name;
+    public $bmltwf_service_bodies_table_name;
+    public $bmltwf_service_bodies_access_table_name;
+
 
     public function __construct($stub = null)
     {
         global $wpdb;
-
-        $this->bmltwf_db_version = '0.4.0';
 
         // database tables
         $this->bmltwf_submissions_table_name = $wpdb->prefix . 'bmltwf_submissions';

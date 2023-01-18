@@ -21,13 +21,10 @@ namespace bmltwf;
 class BMLTWF_Rest
 {
 
-    public function __construct($stub = null)
-    {
-        // our rest namespace
-        $this->bmltwf_rest_namespace = 'bmltwf/v1';
-        $this->bmltwf_submissions_rest_base = 'submissions';
-        $this->bmltwf_service_bodies_rest_base = 'servicebodies';
-        $this->bmltwf_bmltserver_rest_base = 'bmltserver';
-        $this->bmltwf_options_rest_base = 'options';
-    }
+    public $bmltwf_rest_namespace = 'bmltwf/v1';
+    public $bmltwf_submissions_rest_base = 'submissions';
+    public $bmltwf_service_bodies_rest_base = 'servicebodies';
+    public $bmltwf_bmltserver_rest_base = 'bmltserver';
+    public $bmltwf_options_rest_base = 'options';
+
 }

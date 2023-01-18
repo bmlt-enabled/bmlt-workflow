@@ -21,35 +21,31 @@ namespace bmltwf;
 class BMLTWF_WP_Options
 {
 
-    public function __construct()
-    {
-    // capability for managing submissions
-        $this->bmltwf_capability_manage_submissions = 'bmltwf_manage_submissions';
-    
-        // option list so we can back them up
-        $this->bmltwf_options = array(
-            'bmltwf_db_version',
-            'bmltwf_bmlt_server_address',
-            'bmltwf_bmlt_username',
-            'bmltwf_bmlt_password',
-            'bmltwf_bmlt_test_status',
-            'bmltwf_submitter_email_template',
-            'bmltwf_required_meeting_formats',
-            'bmltwf_optional_location_sub_province',
-            'bmltwf_optional_location_sub_province_displayname',
-            'bmltwf_optional_location_province',
-            'bmltwf_optional_location_province_displayname',
-            'bmltwf_optional_location_nation',
-            'bmltwf_optional_location_nation_displayname',
-            'bmltwf_optional_postcode',
-            'bmltwf_optional_postcode_displayname',
-            'bmltwf_delete_closed_meetings',
-            'bmltwf_email_from_address',
-            'bmltwf_fso_email_template',
-            'bmltwf_fso_email_address',
-            'bmltwf_submitter_email_template',
-            'bmltwf_fso_feature',
-            'bmltwf_trusted_servants_can_delete_submissions'
-        );
-    }
+    public $bmltwf_capability_manage_submissions = 'bmltwf_manage_submissions';
+
+    // option list so we can back them up
+    public $bmltwf_options = array(
+        'bmltwf_db_version',
+        'bmltwf_bmlt_server_address',
+        'bmltwf_bmlt_username',
+        'bmltwf_bmlt_password',
+        'bmltwf_bmlt_test_status',
+        'bmltwf_submitter_email_template',
+        'bmltwf_required_meeting_formats',
+        'bmltwf_optional_location_sub_province',
+        'bmltwf_optional_location_sub_province_displayname',
+        'bmltwf_optional_location_province',
+        'bmltwf_optional_location_province_displayname',
+        'bmltwf_optional_location_nation',
+        'bmltwf_optional_location_nation_displayname',
+        'bmltwf_optional_postcode',
+        'bmltwf_optional_postcode_displayname',
+        'bmltwf_delete_closed_meetings',
+        'bmltwf_email_from_address',
+        'bmltwf_fso_email_template',
+        'bmltwf_fso_email_address',
+        'bmltwf_submitter_email_template',
+        'bmltwf_fso_feature',
+        'bmltwf_trusted_servants_can_delete_submissions'
+    );
 }
