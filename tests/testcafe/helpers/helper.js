@@ -105,14 +105,16 @@ export async function waitfor(site) {
 
 export async function reset_bmlt(t) {
   console.log("resetting bmlt");
-  execSync(userVariables.blank_bmlt);
+  let options = {stdio : 'pipe' };
+  execSync(userVariables.blank_bmlt,options);
   waitfor(userVariables.bmlt2x_login_page)
   console.log("reset");
 }
 
 export async function reset_bmlt3x(t) {
   console.log("resetting bmlt3x");
-  execSync(userVariables.blank_bmlt3x);
+  let options = {stdio : 'pipe' };
+  execSync(userVariables.blank_bmlt3x,options);
   waitfor(userVariables.bmlt3x_login_page);
   console.log("reset");
 }
@@ -120,14 +122,16 @@ export async function reset_bmlt3x(t) {
 
 export async function reset_bmlt_with_auto_geocoding_off(t) {
   console.log("turning geocode off");
-  execSync(userVariables.auto_geocoding_off);
+  let options = {stdio : 'pipe' };
+  execSync(userVariables.auto_geocoding_off,options);
   waitfor(userVariables.bmlt2x_login_page);
   console.log("geocode off");
 }
 
 export async function reset_bmlt3x_with_auto_geocoding_off(t) {
   console.log("bmlt3x turning geocode off");
-  execSync(userVariables.bmlt3x_auto_geocoding_off);
+  let options = {stdio : 'pipe' };
+  execSync(userVariables.bmlt3x_auto_geocoding_off,options);
   waitfor(userVariables.bmlt3x_login_page);
   console.log("geocode off");
 }
@@ -310,7 +314,8 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
 export async function reset_bmlt2x_with_states_off(t) {
   // disable state dropdown
   //console.log("turning states off");
-  execSync(userVariables.reset_bmlt2x_with_states_off);
+  let options = {stdio : 'pipe' };
+  execSync(userVariables.reset_bmlt2x_with_states_off,options);
   waitfor(userVariables.bmlt2x_login_page);
   //console.log("states off");
 }
@@ -318,7 +323,8 @@ export async function reset_bmlt2x_with_states_off(t) {
 export async function reset_bmlt2x_with_states_on(t) {
   // enable state dropdown
   //console.log("turning states on");
-  execSync(userVariables.reset_bmlt2x_with_states_on);
+  let options = {stdio : 'pipe' };
+  execSync(userVariables.reset_bmlt2x_with_states_on,options);
   waitfor(userVariables.bmlt2x_login_page);
   //console.log("states on");
 }
@@ -326,7 +332,8 @@ export async function reset_bmlt2x_with_states_on(t) {
 export async function reset_bmlt3x_with_states_off(t) {
   // disable state dropdown
   //console.log("turning states off");
-  execSync(userVariables.reset_bmlt3x_with_states_off);
+  let options = {stdio : 'pipe' };
+  execSync(userVariables.reset_bmlt3x_with_states_off,options);
   waitfor(userVariables.bmlt3x_login_page);
   //console.log("states off");
 }
@@ -334,7 +341,8 @@ export async function reset_bmlt3x_with_states_off(t) {
 export async function reset_bmlt3x_with_states_on(t) {
   // enable state dropdown
   //console.log("turning states on");
-  execSync(userVariables.reset_bmlt3x_with_states_on);
+  let options = {stdio : 'pipe' };
+  execSync(userVariables.reset_bmlt3x_with_states_on,options);
   waitfor(userVariables.bmlt3x_login_page);
   //console.log("states on");
 }

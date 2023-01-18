@@ -7,26 +7,26 @@ networks:
     external: true
 
 services:
-  wordpress-php7-singlesite:
-    build:
-      context: .
-      dockerfile: Dockerfile-wp-php7.4
-    depends_on:
-      - wordpress-db
-    restart: always
-    tmpfs: 
-      - /var/www/html
-      - /var/log
-    environment:
-      WORDPRESS_DB_HOST: wordpress-db
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress-php7-singlesite
-      WORDPRESS_DEBUG: true
-      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
-    volumes:
-      - ../:/var/www/html/wp-content/plugins/bmlt-workflow
-      - ./logs/:/var/log/apache2
+  # wordpress-php7-singlesite:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile-wp-php7.4
+  #   depends_on:
+  #     - wordpress-db
+  #   restart: always
+  #   tmpfs: 
+  #     - /var/www/html
+  #     - /var/log
+  #   environment:
+  #     WORDPRESS_DB_HOST: wordpress-db
+  #     WORDPRESS_DB_USER: wordpress
+  #     WORDPRESS_DB_PASSWORD: wordpress
+  #     WORDPRESS_DB_NAME: wordpress-php7-singlesite
+  #     WORDPRESS_DEBUG: true
+  #     WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+  #   volumes:
+  #     - ../:/var/www/html/wp-content/plugins/bmlt-workflow
+  #     - ./logs/:/var/log/apache2
 
   wordpress-db:
     build:
