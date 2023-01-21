@@ -34,7 +34,6 @@ class Integration
     protected $v3_access_token = null; // v3 auth token
     protected $v3_access_token_expires_at = null; // v3 auth token expiration
     protected $bmltwf_bmlt_user_id; // user id of the workflow bot
-
     public function __construct($cookies = null, $root_server_version = null, $access_token = null, $token_expiry = null)
     {
         if (!empty($cookies)) {
@@ -48,12 +47,7 @@ class Integration
         }
 
         if (empty($root_server_version)) {
-            $version = \get_option('bmltwf_bmlt_server_version');
-            if ($version) {
-                $this->bmlt_root_server_version = $version;
-            } else {
-                $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address'), false);
-            }
+            $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address'));
         } else {
             $this->bmlt_root_server_version = $root_server_version;
         }
@@ -138,14 +132,8 @@ class Integration
         }
     }
 
-    public function bmltwf_get_remote_server_version($server, $cache = true)
+    public function bmltwf_get_remote_server_version($server)
     {
-        if ($cache) {
-            $version = get_option('bmltwf_bmlt_server_version');
-            if ($version) {
-                return $version;
-            }
-        }
         $url = $server . "client_interface/serverInfo.xml";
         $this->debug_log("url = " . $url);
         $headers = array(
@@ -165,8 +153,6 @@ class Integration
                 return false;
             }
             $version = $xml->serverVersion->readableString->__toString();
-            update_option('bmltwf_bmlt_server_version', $version);
-            $this->bmlt_root_server_version = $version;
             return $version;
         }
     }
@@ -212,7 +198,7 @@ class Integration
 
     public function testServerAndAuth($username, $password, $server)
     {
-        $rsv = $this->bmltwf_get_remote_server_version($server, false);
+        $rsv = $this->bmltwf_get_remote_server_version($server);
         if (version_compare($rsv, "3.0.0", "lt")) {
             $ret = $this->testServerAndAuthv2($username, $password, $server);
         } else {
@@ -1033,7 +1019,7 @@ class Integration
 
             $auth_details = json_decode(\wp_remote_retrieve_body($response), true);
             $this->v3_access_token = $auth_details['access_token'];
-            $this->v3_expires_at = $auth_details['expires_at'];
+            $this->v3_access_token_expires_at = $auth_details['expires_at'];
         }
         return true;
     }
