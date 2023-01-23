@@ -29,11 +29,13 @@ class Integration
 {
 
     use \bmltwf\BMLTWF_Debug;
+
     protected $cookies = null; // our authentication cookies
-    protected $bmlt_root_server_version = null; // the version of bmlt root server we're authing against
+    public $bmlt_root_server_version = null; // the version of bmlt root server we're authing against
     protected $v3_access_token = null; // v3 auth token
     protected $v3_access_token_expires_at = null; // v3 auth token expiration
     protected $bmltwf_bmlt_user_id; // user id of the workflow bot
+
     public function __construct($cookies = null, $root_server_version = null, $access_token = null, $token_expiry = null)
     {
         if (!empty($cookies)) {

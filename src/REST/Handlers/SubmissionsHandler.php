@@ -31,10 +31,10 @@ class SubmissionsHandler
     use \bmltwf\BMLTWF_Debug;
 
     protected $formats;
-    protected $handlerCore = new HandlerCore();
-    protected $BMLTWF_Database = new BMLTWF_Database();
+    protected $handlerCore;
+    protected $BMLTWF_Database;
     protected $bmlt_integration;
-    
+
     public function __construct($intstub = null)
     {
         if (empty($intstub)) {
@@ -42,6 +42,10 @@ class SubmissionsHandler
         } else {
             $this->bmlt_integration = $intstub;
         }
+        
+        $this->handlerCore = new HandlerCore();
+        $this->BMLTWF_Database = new BMLTWF_Database();
+    
     }
 
     public function get_submissions_handler()

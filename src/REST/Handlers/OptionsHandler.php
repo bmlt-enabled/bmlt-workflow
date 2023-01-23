@@ -28,10 +28,19 @@ class OptionsHandler
 {
     use \bmltwf\BMLTWF_Debug;
 
-    protected $handlerCore = new HandlerCore();
-    protected $BMLTWF_Database = new BMLTWF_Database();
-    protected $BMLTWF_WP_Options = new BMLTWF_WP_Options();
-    protected $BMLTWF_WP_User = new BMLTWF_WP_User();
+    protected $handlerCore;
+    protected $BMLTWF_Database;
+    protected $BMLTWF_WP_Options;
+    protected $BMLTWF_WP_User;
+
+    public function __construct()
+    {
+        $this->handlerCore = new HandlerCore();
+        $this->BMLTWF_Database = new BMLTWF_Database();
+        $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
+        $this->BMLTWF_WP_User = new BMLTWF_WP_User();
+    
+    }
 
     public function post_bmltwf_restore_handler($request)
     {

@@ -82,7 +82,6 @@ Line: $errorLine
         parent::tearDown();
         Mockery::close();
 
-        unset($this->bmltwf_dbg);
     }
 
 // test for GET bmltserver (get server test settings)
@@ -100,6 +99,7 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn("success");
 
         $Intstub = \Mockery::mock('Integration');
+        $Intstub->bmlt_root_server_version = '3.0.0';
 
         $rest = new BMLTServerHandler($Intstub);
 
@@ -125,7 +125,7 @@ Line: $errorLine
         $request->set_method('GET');
 
         $Intstub = \Mockery::mock('Integration');
-
+        $Intstub->bmlt_root_server_version = '3.0.0';
         $rest = new BMLTServerHandler($Intstub);
 
         $response = $rest->get_bmltserver_handler($request);
@@ -158,6 +158,7 @@ Line: $errorLine
         Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
 
         $stub = \Mockery::mock('Integration');
+        $stub->bmlt_root_server_version = '3.0.0';
         /** @var Mockery::mock $stub test */
         $stub->shouldReceive('testServerAndAuth')->andReturn('true');
 
@@ -193,6 +194,7 @@ Line: $errorLine
         Functions\when('\update_option')->returnArg(1);
 
         $Intstub = \Mockery::mock('Integration');
+        $Intstub->bmlt_root_server_version = '3.0.0';
 
         $rest = new BMLTServerHandler($Intstub);
 
@@ -219,6 +221,7 @@ Line: $errorLine
 
         Functions\when('\update_option')->returnArg(1);
         $Intstub = \Mockery::mock('Integration');
+        $Intstub->bmlt_root_server_version = '3.0.0';
 
         $rest = new BMLTServerHandler($Intstub);
 
@@ -245,6 +248,7 @@ Line: $errorLine
 
         Functions\when('\update_option')->returnArg(1);
         $Intstub = \Mockery::mock('Integration');
+        $Intstub->bmlt_root_server_version = '3.0.0';
 
         $rest = new BMLTServerHandler($Intstub);
 

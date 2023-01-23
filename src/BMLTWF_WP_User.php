@@ -22,8 +22,15 @@ class BMLTWF_WP_User
 {
     use \bmltwf\BMLTWF_Debug;
 
-    protected $BMLTWF_Database = new BMLTWF_Database();
-    protected $BMLTWF_WP_Options = new BMLTWF_WP_Options();
+    protected $BMLTWF_Database;
+    protected $BMLTWF_WP_Options;
+
+    public function __construct()
+    {
+        $this->BMLTWF_Database = new BMLTWF_Database();
+        $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
+    
+    }
 
     public function add_remove_caps()
     {

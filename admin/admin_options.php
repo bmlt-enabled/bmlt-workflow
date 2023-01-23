@@ -30,7 +30,7 @@ echo '<div class="bmltwf_banner"></div>';
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 echo '<hr class="bmltwf-error-message">';
-echo '<div class="wrap">';
+echo '<div class="wrap"><h5 align="right">Plugin Version: '.BMLTWF_PLUGIN_VERSION.'</h5>';
 echo '<form id="bmltwf_options_form" method="post" action="options.php">';
 settings_errors();
 

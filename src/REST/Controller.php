@@ -32,22 +32,27 @@ class Controller extends \WP_REST_Controller
 
 	use \bmltwf\BMLTWF_Debug;
 
-	protected $BMLTServerHandler = new BMLTServerHandler();
-	protected $ServiceBodiesHandler = new ServiceBodiesHandler();
-	protected $SubmissionsHandler = new SubmissionsHandler();
-	protected $OptionsHandler = new OptionsHandler();
-	protected $BMLTWF_Rest = new BMLTWF_Rest();
+	protected $BMLTServerHandler;
+	protected $ServiceBodiesHandler;
+	protected $SubmissionsHandler;
+	protected $OptionsHandler; 
+	protected $BMLTWF_Rest;
 	protected $BMLTWF_WP_Options;
 
 	public function __construct($stub = null)
 	{
 		if ($stub === null) {
 			$this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
+			$this->BMLTServerHandler = new BMLTServerHandler();
+			$this->ServiceBodiesHandler = new ServiceBodiesHandler();
+			$this->SubmissionsHandler = new SubmissionsHandler();
+			$this->OptionsHandler = new OptionsHandler();
+			$this->BMLTWF_Rest = new BMLTWF_Rest();	
 		}
 		else
 		{
 			$this->BMLTWF_WP_Options = $stub;
-		}
+		}	
 	}
 
 	public function register_routes()

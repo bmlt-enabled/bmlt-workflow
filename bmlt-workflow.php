@@ -888,6 +888,9 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<div id="bmltwf_bmlt_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Your BMLT Root Server details are not configured correctly.</div>';
             echo '<div id="bmltwf_servicebodies_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your service bodies are successfully configured.</div>';
             echo '<div id="bmltwf_servicebodies_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Your service bodies are not configured and saved correctly. <a href="?bmltwf-submissions">Fix</a></div>';
+            echo '<div id="bmltwf_server_version_yes" style="display: none;" ></div>';
+            echo '<div id="bmltwf_server_version_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Cannot retrieve the BMLT Server Version</div>';
+            echo '<div id="bmltwf_bmlt_server_version"></div>';
             echo '<br>';
             echo '<button type="button" id="bmltwf_configure_bmlt_server">Update BMLT Root Server Configuration</button>';
             echo '<br>';

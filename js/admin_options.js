@@ -321,7 +321,7 @@ jQuery(document).ready(function ($) {
       .fail(function (xhr) {
         notice_error(xhr, "options_dialog_bmltwf_error_message");
         if (saving) {
-          update_from_test_result(xhr);
+          update_from_test_result(xhr.responseJSON.data);
         }
       });
   }
@@ -355,14 +355,18 @@ jQuery(document).ready(function ($) {
       $("#bmltwf_bmlt_test_no").show();
       $("#bmltwf_bmlt_test_yes").hide();
     }
+    if (data["bmltwf_bmlt_server_version"])
+    {
+      $("#bmltwf_server_version_yes").show();
+      $("#bmltwf_server_version_no").hide();
+      $("#bmltwf_server_version_yes").html('<span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>BMLT Root Server Version '+data["bmltwf_bmlt_server_version"]);
+    }
+    else
+    {
+      $("#bmltwf_server_version_no").show();
+      $("#bmltwf_server_version_yes").hide();
+    }
 
-    // if (data["bmltwf_servicebodies_test_status"] === "success") {
-    //   $("#bmltwf_servicebodies_test_yes").show();
-    //   $("#bmltwf_servicebodies_test_no").hide();
-    // } else {
-    //   $("#bmltwf_servicebodies_test_no").show();
-    //   $("#bmltwf_servicebodies_test_yes").hide();
-    // }
   }
 
   function save_results() {
@@ -388,7 +392,7 @@ jQuery(document).ready(function ($) {
       })
       .fail(function (xhr) {
         notice_error(xhr, "bmltwf-error-message");
-        update_from_test_result(xhr);
+        update_from_test_result(xhr.responseJSON.data);
       });
   }
 

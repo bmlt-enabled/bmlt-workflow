@@ -30,6 +30,9 @@ class BMLTServerHandler
 
     use \bmltwf\BMLTWF_Debug;
 
+    protected $bmlt_integration;
+    protected $handlerCore;
+
     public function __construct($intstub = null)
     {
         if (empty($intstub)) {
@@ -37,8 +40,9 @@ class BMLTServerHandler
         } else {
             $this->bmlt_integration = $intstub;
         }
-
+        
         $this->handlerCore = new HandlerCore();
+
     }
 
     private function check_bmltserver_parameters($username, $password, $server)
@@ -71,7 +75,8 @@ class BMLTServerHandler
         $this->debug_log('get test results returning');
         $this->debug_log(get_option("bmltwf_bmlt_test_status", "failure"));
 
-        $response = array("bmltwf_bmlt_test_status" => get_option("bmltwf_bmlt_test_status", "failure"));
+        $response = array("bmltwf_bmlt_test_status" => get_option("bmltwf_bmlt_test_status", "failure"),
+    "bmltwf_bmlt_server_version" => $this->bmlt_integration->bmlt_root_server_version);
 
         return $this->handlerCore->bmltwf_rest_success($response);
     }
@@ -85,6 +90,8 @@ class BMLTServerHandler
         $server = $request['bmltwf_bmlt_server_address'];
 
         $data = array();
+
+        $data["bmltwf_bmlt_server_version"] = $this->bmlt_integration->bmlt_root_server_version;
 
         $result = $this->check_bmltserver_parameters($username, $password, $server);
         if ($result !== true) {
@@ -127,11 +134,17 @@ class BMLTServerHandler
         $password = $request['bmltwf_bmlt_password'];
         $server = $request['bmltwf_bmlt_server_address'];
 
+        $data = array();
+        $data["bmltwf_bmlt_server_version"] = $this->bmlt_integration->bmlt_root_server_version;
+
         $result = $this->check_bmltserver_parameters($username, $password, $server);
-        $this->debug_log("check_bmltserver returned " . $result);
 
         if ($result !== true) {
+            $r = update_option("bmltwf_bmlt_test_status", "failure");
 
+            // $result is a WP_Error
+            $data["bmltwf_bmlt_test_status"] = "failure";
+            $result->add_data($data);
             return $result;
         }
 
