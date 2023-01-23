@@ -317,7 +317,7 @@ jQuery(document).ready(function ($) {
           break;
         case "reason_close":
           // display form instructions
-          $("#instructions").html("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box");
+          $("#instructions").html("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box.<br><br><b>Note: If you are submitting a temporary meeting closure, please instead use 'Change existing meeting' and use the 'temporarily closed in person meeting' dropdown menu.</b>");
           $("#meeting_content").show();
           disable_edits();
           break;

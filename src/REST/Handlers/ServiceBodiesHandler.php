@@ -28,6 +28,12 @@ class ServiceBodiesHandler
 {
     use \bmltwf\BMLTWF_Debug;
 
+    protected $bmlt_integration;
+    protected $BMLTWF_WP_Options;
+    protected $handlerCore;
+    protected $BMLTWF_WP_User;
+    protected $BMLTWF_Database;
+
     public function __construct($intstub = null, $optstub = null)
     {
         if (empty($intstub)) {
@@ -41,10 +47,10 @@ class ServiceBodiesHandler
         } else {
             $this->BMLTWF_WP_Options = $optstub;
         }
-
         $this->handlerCore = new HandlerCore();
         $this->BMLTWF_WP_User = new BMLTWF_WP_User();
         $this->BMLTWF_Database = new BMLTWF_Database();
+    
     }
 
     public function get_service_bodies_handler($request)

@@ -29,11 +29,8 @@ require_once('config_phpunit.php');
 
 class stub_Options {
 
-    public function __construct()
-    {
-    // capability for managing submissions
-        $this->bmltwf_capability_manage_submissions = 'bmltwf_manage_submissions';
-    }
+    public $bmltwf_capability_manage_submissions = 'bmltwf_manage_submissions';
+    
 };
 
 /**
@@ -82,7 +79,6 @@ Line: $errorLine
         Brain\Monkey\tearDown();
         parent::tearDown();
         Mockery::close();
-        unset($this->bmltwf_dbg);
     }
 
     /**
@@ -105,13 +101,15 @@ Line: $errorLine
      */
     public function test_can_call_delete_submission_permissions_check_as_submission_editor(): void
     {
-
         Functions\when('get_option')->justReturn("true");
         Functions\when('current_user_can')->justReturn(true);
         Functions\when('get_current_user_id')->justReturn("1");
+        Functions\when('wp_remote_get')->justReturn("true");
+        Functions\when('wp_remote_retrieve_body')->justReturn("true");
+        global $wpdb;
         $stub = new stub_Options();
-        $integration = new Controller($stub);
-        $response = $integration->delete_submission_permissions_check("{'hello':'hi'}");
+        $controller = new Controller($stub);
+        $response = $controller->delete_submission_permissions_check("{'hello':'hi'}");
         $this->assertNotInstanceOf(\WP_Error::class, $response);
         $this->assertEquals(true, $response);
     }
@@ -126,8 +124,8 @@ Line: $errorLine
         Functions\when('esc_html__')->justReturn("hello");
         Functions\when('is_user_logged_in')->justReturn(true);
         $stub = new stub_Options();
-        $integration = new Controller($stub);
-        $response = $integration->delete_submission_permissions_check("{'hello':'hi'}");
+        $controller = new Controller($stub);
+        $response = $controller->delete_submission_permissions_check("{'hello':'hi'}");
         $this->assertInstanceOf(\WP_Error::class, $response);
     }
 }

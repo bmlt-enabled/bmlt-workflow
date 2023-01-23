@@ -42,6 +42,20 @@ class HandlerCore
         return $response;
     }
 
+    // accepts raw string or array
+    public function bmltwf_rest_failure($message)
+    {
+        if (is_array($message)) {
+            $data = $message;
+        } else {
+            $data = array('message' => $message);
+        }
+        $response = new \WP_REST_Response();
+        $response->set_data($data);
+        $response->set_status(422);
+        return $response;
+    }
+
     public function bmltwf_rest_error($message, $code)
     {
         return new \WP_Error('bmltwf_error', $message, array('status' => $code));

@@ -26,11 +26,9 @@ class BMLTWF_Database
     public $bmltwf_service_bodies_table_name;
     public $bmltwf_service_bodies_access_table_name;
 
-
     public function __construct($stub = null)
     {
         global $wpdb;
-
         // database tables
         $this->bmltwf_submissions_table_name = $wpdb->prefix . 'bmltwf_submissions';
         $this->bmltwf_service_bodies_table_name = $wpdb->prefix . 'bmltwf_service_bodies';
