@@ -1,3 +1,7 @@
+## 1.0.18 (Jan 23, 2023)
+- #120 Server version upgrades handled incorrectly
+- #121 Feature: Make it clear that 'close meeting' is for permanent closures
+
 ## 1.0.17 (Jan 18, 2023)
 - #98 Either add Venue Type up top or move the Virtual Meeting Options panel - virtual meeting options are now displayed seperately in the form from the venue type, and venue type appears in the main form content above the location entry (thanks @tempsaint !)
 

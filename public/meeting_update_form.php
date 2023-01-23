@@ -50,8 +50,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <select class="update-form-select" name="update_reason" id="update_reason">
                     <option disabled="null" selected="null">Select Reason...</option>
                     <option value="reason_new">New Meeting</option>
-                    <option value="reason_change">Change Existing Meeting</option>
-                    <option value="reason_close">Close Meeting</option>
+                    <option value="reason_change">Change Existing Meeting (including Temporary Closure)</option>
+                    <option value="reason_close">Permanently Close Meeting</option>
                 </select>
             </div>
             <div id="meeting_selector">
