@@ -157,8 +157,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                 <option value="" disabled selected hidden>Select one</option>
                                 <option value="1">No</option>
                                 <option value="2">Yes - Virtual only</option>
-                                <option value="3"">Yes - Hybrid (Virtual and Face to Face)</option>
-                            <option value="4"">Yes - Temporary Face to Face Closure</option>
+                                <option value="3">Yes - Hybrid (Virtual and Face to Face)</option>
+                                <option value="4">Yes - Temporary Face to Face Closure</option>
                             </select>
 
                             <div id="location_fields">

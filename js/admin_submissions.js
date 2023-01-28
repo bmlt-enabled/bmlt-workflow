@@ -187,6 +187,7 @@ jQuery(document).ready(function ($) {
                 $("#quickedit_duration_minutes").val(durationarr[1]);
               }
             }
+
             // split up the format list so we can use it in the select
             if ("format_shared_id_list" in item) {
               item["format_shared_id_list"] = item["format_shared_id_list"].split(",");
@@ -206,6 +207,24 @@ jQuery(document).ready(function ($) {
       add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
       $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
     }
+
+    // if the venue type was changed to a virtual meeting, or is a virtual meeting, make sure the quickedit shows the virtual meeting settings section
+    venue_type = bmltwf_changedata[id].changes_requested["venue_type"];
+    original_venue_type = bmltwf_changedata[id].changes_requested["original_venue_type"];
+    if(venue_type != original_venue_type)
+    {
+      use_venue_type = venue_type;
+    }
+    else
+    {
+      use_venue_type = venue_type;
+    }
+    if (use_venue_type == 1) {
+      $("#quickedit_virtual_meeting_options").hide();
+    } else {
+      $("#quickedit_virtual_meeting_options").show();
+    }
+
   }
 
   // function clear_notices() {
@@ -222,8 +241,13 @@ jQuery(document).ready(function ($) {
   }
 
   var formatdata = [];
+
+  // delete hybrid/TC etc
   Object.keys(bmltwf_bmlt_formats).forEach((key) => {
-    formatdata.push({ text: "(" + bmltwf_bmlt_formats[key]["key_string"] + ")-" + bmltwf_bmlt_formats[key]["name_string"], id: key });
+    var key_string = bmltwf_bmlt_formats[key]["key_string"];
+    if (!(key_string === "HY" || key_string === "VM" || key_string === "TC")) {
+      formatdata.push({ text: "(" + bmltwf_bmlt_formats[key]["key_string"] + ")-" + bmltwf_bmlt_formats[key]["name_string"], id: key });
+    }
   });
 
   $("#quickedit_format_shared_id_list").select2({
@@ -450,8 +474,11 @@ jQuery(document).ready(function ($) {
   }
 
   // child rows
-  function format(d) {
-    // console.log(d);
+  function format(rows) {
+
+    // clone the requested info
+    d = $.extend(true, {}, rows);
+
     col_meeting_details = 1;
     col_personal_details = 2;
     col_virtual_meeting_details = 3;
@@ -459,8 +486,8 @@ jQuery(document).ready(function ($) {
 
     table = '<div class="header">';
     table += '<div class="cell-hdr h' + col_personal_details + '">Personal Details</div>';
-    table += '<div class="cell-hdr h' + col_meeting_details + '">Meeting Details</div>';
-    table += '<div class="cell-hdr h' + col_virtual_meeting_details + '">Virtual Meeting Details</div>';
+    table += '<div class="cell-hdr h' + col_meeting_details + '">Updated Meeting Details</div>';
+    table += '<div class="cell-hdr h' + col_virtual_meeting_details + '">Updated Virtual Meeting Details</div>';
     table += '<div class="cell-hdr h' + col_fso_other + '">FSO Request and Other Info</div>';
     table += '</div><div class="gridbody">';
 
@@ -480,7 +507,39 @@ jQuery(document).ready(function ($) {
       }
     }
 
+    venue_types = {
+      1: "Face to face",
+      2: "Virtual Meeting",
+      3: "Hybrid Meeting",
+      4: "Temporarily Closed",
+    };
+
     c = d["changes_requested"];
+
+    // some special handling for deletion of fields
+    
+    for (var key in c) {
+      switch (key) {
+        case "original_virtual_meeting_additional_info":
+          if (!("virtual_meeting_additional_info" in c)) {
+            d["changes_requested"]["virtual_meeting_additional_info"] = "(deleted)";
+          }
+          break;
+        case "original_phone_meeting_number":
+          if (!("phone_meeting_number" in c)) {
+            d["changes_requested"]["phone_meeting_number"] = "(deleted)";
+          }
+          break;
+        case "original_virtual_meeting_link":
+          if (!("virtual_meeting_link" in c)) {
+            d["changes_requested"]["virtual_meeting_link"] = "(deleted)";
+          }
+          break;
+      }
+    }
+
+    // fill in the sub menu
+
     for (var key in c) {
       switch (key) {
         case "meeting_name":
@@ -491,22 +550,9 @@ jQuery(document).ready(function ($) {
           table += column(col_meeting_details, mname, c[key]);
           break;
         case "venue_type":
-          var vtype = 0;
-          switch (c[key]) {
-            case 1:
-              vtype = "Face to face";
-              break;
-            case 2:
-              vtype = "Virtual Meeting";
-              break;
-            case 3:
-              vtype = "Hybrid Meeting";
-              break;
-            case 4:
-              vtype = "Temporarily Closed";
-              break;
-          }
-          table += column(col_meeting_details, "Venue Type", vtype);
+          vtype = venue_types[c[key]];
+          ovtype = venue_types[c["original_venue_type"]];
+          table += column(col_meeting_details, "Venue Type", ovtype + " → " + vtype);
           break;
         case "start_time":
           table += column(col_meeting_details, "Start Time", c[key]);

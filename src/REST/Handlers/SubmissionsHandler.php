@@ -941,6 +941,13 @@ class SubmissionsHandler
                             }
                         }
                     }
+
+                    // store away the original meeting details so we know what changed
+                    if ($bmlt_field)
+                    {
+                        $original_name = "original_".$field;
+                        $submission[$original_name] = $bmlt_field;    
+                    }  
                 }
 
                 if (!count($submission)) {
@@ -958,10 +965,6 @@ class SubmissionsHandler
                 $this->debug_log(($submission));
                 $this->debug_log("BMLT MEETING");
                 $this->debug_log(($bmlt_meeting));
-                // store away the original meeting name so we know what changed
-                $submission['original_meeting_name'] = $bmlt_meeting['meeting_name'];
-                $submission['original_weekday_tinyint'] = $bmlt_meeting['weekday_tinyint'];
-                $submission['original_start_time'] = $bmlt_meeting['start_time'];
 
                 break;
             case ('reason_close'):

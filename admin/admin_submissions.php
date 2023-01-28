@@ -158,24 +158,34 @@ if ($meeting_states_and_provinces) {
                         </select> m
                     </div>
                 </div>
-                <label for="quickedit_virtual_meeting_additional_info">Virtual Meeting Additional Info</label>
-                <div class="grow-wrap">
-                    <textarea class="dialog_textarea quickedit-input" id="quickedit_virtual_meeting_additional_info" name="quickedit_virtual_meeting_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
-                </div>
-                <label for="quickedit_phone_meeting_number">Virtual Meeting Phone Details</label>
-                <div class="grow-wrap">
-                    <textarea class="dialog_textarea quickedit-input" id="quickedit_phone_meeting_number" name="quickedit_phone_meeting_number" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
-                </div>
-                <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
-                <div class="grow-wrap">
-                    <textarea class="dialog_textarea quickedit-input" id="quickedit_virtual_meeting_link" name="quickedit_virtual_meeting_link" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
-                </div>
-                <label for="quickedit_additional_info">Additional Information</label>
-                <div class="grow-wrap">
-                    <textarea class="dialog_textarea" id="quickedit_additional_info" name="quickedit_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value" disabled></textarea>
+                <div id="quickedit_virtual_meeting_options">
+                    <label for="quickedit_virtual_meeting_additional_info">Virtual Meeting Additional Info</label>
+                    <div class="grow-wrap">
+                        <textarea class="dialog_textarea quickedit-input" id="quickedit_virtual_meeting_additional_info" name="quickedit_virtual_meeting_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
+                    </div>
+                    <label for="quickedit_phone_meeting_number">Virtual Meeting Phone Details</label>
+                    <div class="grow-wrap">
+                        <textarea class="dialog_textarea quickedit-input" id="quickedit_phone_meeting_number" name="quickedit_phone_meeting_number" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
+                    </div>
+                    <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
+                    <div class="grow-wrap">
+                        <textarea class="dialog_textarea quickedit-input" id="quickedit_virtual_meeting_link" name="quickedit_virtual_meeting_link" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
+                    </div>
+                    <label for="quickedit_additional_info">Additional Information</label>
+                    <div class="grow-wrap">
+                        <textarea class="dialog_textarea" id="quickedit_additional_info" name="quickedit_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value" disabled></textarea>
+                    </div>
                 </div>
         </div>
         <div class="form-grid-col2">
+            <label for="quickedit_venue_type">Venue Type</label>
+            <select name="quickedit_venue_type" id="quickedit_venue_type">
+                <option value="" disabled selected hidden>Select one</option>
+                <option value="1">Face to Face</option>
+                <option value="2">Virtual only</option>
+                <option value="3">Hybrid (Virtual and Face to Face)</option>
+                <option value="4">Temporary Face to Face Closure</option>
+            </select>
             <label for="quickedit_location_text">Location</label>
             <input type="text" name="quickedit_location_text" id="quickedit_location_text" class="quickedit-input">
             <label for="quickedit_location_street">Street</label>

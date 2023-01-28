@@ -679,7 +679,7 @@ if (!class_exists('bmltwf_plugin')) {
             );
 
             add_settings_field(
-                'bmltwf_shortcode',
+                'bmltwf_geocoding',
                 'Auto Geocoding Root Server Settings',
                 array(&$this, 'bmltwf_auto_geocoding_enabled_html'),
                 'bmltwf-settings',

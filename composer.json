@@ -12,5 +12,8 @@
     },
     "name": "bmlt-enabled/bmlt-workflow",
     "description": "dev dependencies for bmlt-workflow",
-    "license": "MIT"
+    "license": "MIT",
+    "require": {
+        "phuml/phuml": "^6.1"
+    }
 }
