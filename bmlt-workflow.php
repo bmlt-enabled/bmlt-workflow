@@ -491,6 +491,19 @@ if (!class_exists('bmltwf_plugin')) {
                 )
             );
 
+
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_remove_virtual_meeting_details_on_venue_change',
+                array(
+                    'type' => 'string',
+                    'description' => 'Remove virtual meeting details on venue change',
+                    'sanitize_callback' => array(&$this, 'bmltwf_remove_virtual_meeting_details_on_venue_change_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'false'
+                )
+            );
+
             register_setting(
                 'bmltwf-settings-group',
                 'bmltwf_optional_location_nation',
@@ -711,6 +724,14 @@ if (!class_exists('bmltwf_plugin')) {
             );
 
             add_settings_field(
+                'bmltwf_remove_virtual_meeting_details_on_venue_change',
+                'Remove Virtual Meeting details when venue is changed to \'face to face\'',
+                array(&$this, 'bmltwf_remove_virtual_meeting_details_on_venue_change_html'),
+                'bmltwf-settings',
+                'bmltwf-settings-section-id'
+            );
+
+            add_settings_field(
                 'bmltwf_optional_form_fields',
                 'Optional form fields',
                 array(&$this, 'bmltwf_optional_form_fields_html'),
@@ -882,6 +903,20 @@ if (!class_exists('bmltwf_plugin')) {
 
         }
 
+        public function bmltwf_remove_virtual_meeting_details_on_venue_change_sanitize_callback($input)
+        {
+            $output = get_option('bmltwf_remove_virtual_meeting_details_on_venue_change');
+
+            switch ($input) {
+                case 'true':
+                case 'false':
+                    return $input;
+            }
+            add_settings_error('bmltwf_remove_virtual_meeting_details_on_venue_change_sanitize_callback', 'err', 'Invalid "remove virtual meeting details on venue change" setting.');
+            return $output;
+
+        }
+
         public function bmltwf_bmlt_server_address_html()
         {
             echo '<div id="bmltwf_bmlt_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your BMLT Root Server details are successfully configured.</div>';
@@ -988,10 +1023,30 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br><br>';
             echo '</div>';
 
-            echo '<br><label for="bmltwf_trusted_servants_can_delete_submissions"><b>Trusted servants  can delete submissions:</b></label><select id="bmltwf_trusted_servants_can_delete_submissions" name="bmltwf_trusted_servants_can_delete_submissions"><option name="True" value="true" ' . $can_delete . '>True</option><option name="False" value="false" ' . $cannot_delete . '>False</option>';
+            echo '<br><label for="bmltwf_trusted_servants_can_delete_submissions"><b>Trusted servants can delete submissions:</b></label><select id="bmltwf_trusted_servants_can_delete_submissions" name="bmltwf_trusted_servants_can_delete_submissions"><option name="True" value="true" ' . $can_delete . '>True</option><option name="False" value="false" ' . $cannot_delete . '>False</option>';
             echo '<br><br>';
         }
 
+        public function bmltwf_remove_virtual_meeting_details_on_venue_change_html()
+        {
+            $selection = get_option('bmltwf_remove_virtual_meeting_details_on_venue_change');
+            $do_remove = '';
+            $do_not_remove = '';
+            if ($selection === 'true') {
+                $do_remove = 'selected';
+            } else {
+                $do_not_remove = 'selected';
+            }
+
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>This option determines whether virtual meeting configuration, such as url, extra info and dialin number, are removed when the meeting venue type is changed to a face to face meeting.';
+            echo '<br><br>If this is set to false, the virtual meeting settings will be retained in BMLT.';
+            echo '<br><br>';
+            echo '</div>';
+
+            echo '<br><label for="bmltwf_remove_virtual_meeting_details_on_venue_change"><b>Remove virtual meeting details when meetings are changed to face to face:</b></label><select id="bmltwf_remove_virtual_meeting_details_on_venue_change" name="bmltwf_remove_virtual_meeting_details_on_venue_change"><option name="True" value="true" ' . $do_remove . '>True</option><option name="False" value="false" ' . $do_not_remove . '>False</option>';
+            echo '<br><br>';
+        }
 
         public function bmltwf_optional_form_fields_html()
         {
