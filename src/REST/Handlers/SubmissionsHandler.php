@@ -454,6 +454,28 @@ class SubmissionsHandler
                     }
                 }
 
+                $bmlt_venue_type = $bmlt_meeting['venue_type'];
+                $this->debug_log("bmlt_meeting[venue_type]=");
+                $this->debug_log($bmlt_venue_type);
+
+                $change_venue_type = $change['venue_type'] ?? '0';
+                $this->debug_log("change[venue_type]=");
+                $this->debug_log($change_venue_type);
+
+                $is_change_to_f2f = (($change_venue_type == 1)&&($bmlt_venue_type != $change_venue_type));
+                $this->debug_log("is_change_to_f2f=");
+                $this->debug_log($is_change_to_f2f);
+
+                // if bmltwf_remove_virtual_meeting_details_on_venue_change is true, then explicitly blank out our virtual meeting settings when the venue
+                // is changed to face to face
+                
+                if ((get_option('bmltwf_remove_virtual_meeting_details_on_venue_change') == 'true') && $is_change_to_f2f)
+                {
+                    $change["virtual_meeting_additional_info"]="";
+                    $change["phone_meeting_number"]="";
+                    $change["virtual_meeting_link"]="";
+                }
+                
                 $response = $this->bmlt_integration->updateMeeting($change);
 
                 if (\is_wp_error(($response))) {
