@@ -468,7 +468,7 @@ class SubmissionsHandler
 
                 // if bmltwf_remove_virtual_meeting_details_on_venue_change is true, then explicitly blank out our virtual meeting settings when the venue
                 // is changed to face to face
-                
+
                 if ((get_option('bmltwf_remove_virtual_meeting_details_on_venue_change') == 'true') && $is_change_to_f2f)
                 {
                     $change["virtual_meeting_additional_info"]="";
@@ -1075,15 +1075,25 @@ class SubmissionsHandler
 
         $submission_type = $this->submission_type_to_friendlyname($reason);
 
+        $sblist = $this->bmlt_integration->getServiceBodies();
+        if(\is_wp_error(($sblist)))
+        {
+            return $this->handlerCore->bmltwf_rest_error('Error retrieving service bodies', 422);
+        }
+        $this->debug_log("retrieved sblist ");
+        $this->debug_log($sblist);
+
         $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['service_body_bigint']);
-        $subject = '[bmlt-workflow] ' . $submission_type . ' request received - ID ' . $insert_id;
+        $subject = '[bmlt-workflow] ' . $submission_type . ' request received - ' . $sblist[$sanitised_fields['service_body_bigint']]['name'] . ' - Change ID #' . $insert_id;
         $body = 'Log in to <a href="' . get_site_url() . '/wp-admin/admin.php?page=bmltwf-submissions">BMLTWF Submissions Page</a> to review.';
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));
         wp_mail($to_address, $subject, $body, $headers);
 
         /*
         * Send acknowledgement email to the submitter
         */
+
 
         $to_address = $submitter_email;
         $subject = "NA Meeting Change Request Acknowledgement - Submission ID " . $insert_id;
