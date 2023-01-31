@@ -40,9 +40,9 @@ fixture`multisite_single_e2e_test_fixture`
   .beforeEach(async (t) => {
     await reset_bmlt(t);
     await waitfor(userVariables.admin_logon_page_multinetwork);
-    await restore_from_backup(bmltwf_admin_multinetwork, userVariables.admin_settings_page_multinetwork_plugin, userVariables.admin_restore_json_multinetwork_plugin,"bmlt2x","8000");
+    await restore_from_backup(bmltwf_admin_multinetwork, userVariables.admin_settings_page_multinetwork_plugin, userVariables.admin_restore_json_multinetwork_plugin,"bmlt3x","8001");
     await waitfor(userVariables.admin_logon_page_multisingle);
-    await restore_from_backup(bmltwf_admin_multisingle, userVariables.admin_settings_page_multisingle_plugin, userVariables.admin_restore_json_multisingle_plugin,"bmlt2x","8000");
+    await restore_from_backup(bmltwf_admin_multisingle, userVariables.admin_settings_page_multisingle_plugin, userVariables.admin_restore_json_multisingle_plugin,"bmlt3x","8001");
   });
 
 test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {

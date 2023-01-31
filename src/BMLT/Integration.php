@@ -121,6 +121,13 @@ class Integration
             // $meeting['formatIds'] = explode(',', $meeting['format_shared_id_list']);
             unset($meeting['format_shared_id_list']);
         }
+
+        // day starts at 0 for BMLT 3.x
+        $here = $meeting['day'] ?? false;
+        if ($here) {
+            $meeting['day'] = $meeting['day'] - 1;
+        }
+
         return $meeting;
     }
 
@@ -143,8 +150,8 @@ class Integration
         );
 
         $resp = wp_remote_get($url, array('headers' => $headers));
-        $this->debug_log("wp_remote_get RETURNS");
-        $this->debug_log(($resp));
+        $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
+        $this->debug_log(\wp_remote_retrieve_body($resp));
 
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string(\wp_remote_retrieve_body($resp));
@@ -175,8 +182,8 @@ class Integration
         );
 
         $resp = wp_remote_get($url, array('headers' => $headers));
-        $this->debug_log("wp_remote_get RETURNS");
-        $this->debug_log(($resp));
+        $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
+        $this->debug_log(\wp_remote_retrieve_body($resp));
 
         if ((!is_array($resp)) ||  is_wp_error($resp)) {
             return $this->bmltwf_integration_error('Server error retrieving meeting', 500);
@@ -247,7 +254,8 @@ class Integration
         $url = $server . "api/v1/auth/token";
         $this->debug_log($url);
         $response = \wp_remote_post($url, array('body' => http_build_query($postargs)));
-        $this->debug_log(($response));
+        $this->debug_log("wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
+        $this->debug_log(\wp_remote_retrieve_body($response));
 
         $response_code = \wp_remote_retrieve_response_code($response);
 
@@ -284,8 +292,8 @@ class Integration
             return $this->bmltwf_integration_error('BMLT Communication Error - Check the BMLT configuration settings', 500);
         }
 
-        $this->debug_log("CHANGE RESPONSE");
-        $this->debug_log(($response));
+        $this->debug_log("CHANGE RESPONSE" . \wp_remote_retrieve_response_code($response));
+        $this->debug_log(\wp_remote_retrieve_body($response));
 
         $json = wp_remote_retrieve_body($response);
         $rep = str_replace("'", '"', $json);
@@ -330,8 +338,8 @@ class Integration
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $meeting_id;
 
         $response = \wp_remote_request($url, $this->set_args(null, $change, array("Authorization" => "Bearer " . $this->v3_access_token), 'PATCH'));
-        $this->debug_log("v3 API RESPONSE");
-        $this->debug_log($response);
+        $this->debug_log("v3 wp_remote_request returns " . \wp_remote_retrieve_response_code($response));
+        $this->debug_log(\wp_remote_retrieve_body($response));
 
         if (\wp_remote_retrieve_response_code($response) != 204) {
             return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
@@ -427,7 +435,7 @@ class Integration
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/servicebodies';
         $this->debug_log($url);
         $response = \wp_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
-        $this->debug_log("v3 API RESPONSE");
+        $this->debug_log("v3 wp_remote_get returns " . \wp_remote_retrieve_response_code($response));
         $this->debug_log(\wp_remote_retrieve_body($response));
 
         if (\wp_remote_retrieve_response_code($response) != 200) {
@@ -512,8 +520,8 @@ class Integration
         $req['admin_action'] = 'get_permissions';
 
         $response = $this->postAuthenticatedRootServerRequest('local_server/server_admin/json.php', $req);
-        $this->debug_log("get permissions response");
-        $this->debug_log($response);
+        $this->debug_log("get permissions response returns " . \wp_remote_retrieve_response_code($response));
+        $this->debug_log(\wp_remote_retrieve_body($response));
         if (is_wp_error($response)) {
 
             return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
@@ -604,14 +612,9 @@ class Integration
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve meeting formats');
         }
 
-        // $this->debug_log(\wp_remote_retrieve_body($response));
-        // $formatarr = json_decode(\wp_remote_retrieve_body($response), true);
         $xml = simplexml_load_string(\wp_remote_retrieve_body($response));
-        // $this->debug_log("XML RESPONSE");
-        // $this->debug_log(\wp_remote_retrieve_body($response));
         $formatarr = json_decode(json_encode($xml), 1);
 
-        // $this->debug_log(($formatarr));
 
         $newformat = array();
         foreach ($formatarr['row'] as $key => $value) {
@@ -619,8 +622,6 @@ class Integration
             unset($value['id']);
             $newformat[$formatid] = $value;
         }
-        // $this->debug_log("NEWFORMAT");
-        // $this->debug_log(($newformat));
 
         return $newformat;
     }
@@ -658,8 +659,9 @@ class Integration
         // $formatarr = json_decode(\wp_remote_retrieve_body($ret), 1);
 
         // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        $this->debug_log("getMeetingCounties response");
-        $this->debug_log($response);
+        $this->debug_log("getMeetingCounties returns " . \wp_remote_retrieve_response_code($response));
+        $this->debug_log(\wp_remote_retrieve_body($response));
+        
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve server info');
         }
@@ -695,11 +697,12 @@ class Integration
         $url = get_option('bmltwf_bmlt_server_address') . "index.php";
         $this->debug_log("*** ADMIN URL " . $url);
 
-        $resp = $this->get($url, $this->cookies);
+        $response = $this->get($url, $this->cookies);
         $this->debug_log("*** ADMIN PAGE");
-        $this->debug_log(\wp_remote_retrieve_body($resp));
+        $this->debug_log("get returns " . \wp_remote_retrieve_response_code($response));
+        $this->debug_log(\wp_remote_retrieve_body($response));
 
-        preg_match('/"google_api_key":"(.*?)",/', \wp_remote_retrieve_body($resp), $matches);
+        preg_match('/"google_api_key":"(.*?)",/', \wp_remote_retrieve_body($response), $matches);
         return $matches[1];
     }
 
@@ -746,8 +749,8 @@ class Integration
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings';
 
         $response = \wp_remote_post($url, $this->set_args(null, $meeting, array("Authorization" => "Bearer " . $this->v3_access_token)));
-        $this->debug_log("v3 API RESPONSE");
-        $this->debug_log($response);
+        $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
+        $this->debug_log(\wp_remote_retrieve_body($response));
 
         if (\wp_remote_retrieve_response_code($response) != 201) {
             return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
@@ -1011,8 +1014,9 @@ class Integration
             $url = get_option('bmltwf_bmlt_server_address') . "api/v1/auth/token";
             $this->debug_log($url);
             $response = \wp_remote_post($url, array('body' => http_build_query($postargs)));
-            $this->debug_log(($response));
-
+            $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
+            $this->debug_log(\wp_remote_retrieve_body($response));
+    
             $response_code = \wp_remote_retrieve_response_code($response);
 
             if ($response_code != 200) {
@@ -1049,8 +1053,10 @@ class Integration
         if ((is_wp_error($ret)) || (\wp_remote_retrieve_response_code($ret) != 200)) {
             return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
         }
-
-        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
+        $body = wp_remote_retrieve_body($ret);
+        $this->debug_log("BODY");
+        $this->debug_log($body);
+        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $body)) // best way I could find to check for invalid login
         {
             $this->cookies = null;
             return new \WP_Error('bmltwf', 'authenticateRootServer: Authentication Failure');

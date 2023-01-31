@@ -40,7 +40,7 @@ fixture`meeting_update_form_fixture`
 .beforeEach(async (t) => {
 
   await waitfor(userVariables.admin_logon_page_single);
-  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt2x","8000");
+  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
 
   // log in as noone
   await t.useRole(Role.anonymous());

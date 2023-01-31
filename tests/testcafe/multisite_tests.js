@@ -87,10 +87,10 @@ test("MultiSite_Network_Check_Plugin_Doesnt_Touch_Plugin2", async (t) => {
   // console.log("restore plugin");
   // console.log(userVariables.admin_restore_json_multinetwork_plugin);
 
-  await restore_from_backup(bmltwf_admin_multinetwork, userVariables.admin_settings_page_multinetwork_plugin, userVariables.admin_restore_json_multinetwork_plugin,"bmlt2x","8000");
+  await restore_from_backup(bmltwf_admin_multinetwork, userVariables.admin_settings_page_multinetwork_plugin, userVariables.admin_restore_json_multinetwork_plugin,"bmlt3x","8001");
   // console.log("restore plugin2");
   // console.log(userVariables.admin_restore_json_multinetwork_plugin2);
-  await restore_from_backup(bmltwf_admin_multinetwork, userVariables.admin_settings_page_multinetwork_plugin2, userVariables.admin_restore_json_multinetwork_plugin2,"bmlt2x","8000");
+  await restore_from_backup(bmltwf_admin_multinetwork, userVariables.admin_settings_page_multinetwork_plugin2, userVariables.admin_restore_json_multinetwork_plugin2,"bmlt3x","8001");
 
   // update the service bodies in plugin1 and check they dont show in plugin2
   // console.log(userVariables.blank_service_bodies_multinetwork);

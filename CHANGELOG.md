@@ -1,3 +1,9 @@
+## 1.0.19 (Jan 30, 2023)
+- #126 Feature: Add service body to meeting submission notification subject line
+- #125 Feature: When user submits change of venue from virtual to face-to-face, allow removal of the virtual details from BMLT
+- #124 Feature: Modify meeting needs to more clearly show what actually changed in the submission management and quickedit pages
+- #123 Bug: Quickedit does not show venue type
+
 ## 1.0.18 (Jan 23, 2023)
 - #120 Server version upgrades handled incorrectly
 - #121 Feature: Make it clear that 'close meeting' is for permanent closures

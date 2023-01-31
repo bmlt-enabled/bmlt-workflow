@@ -33,6 +33,13 @@ function mysql2localdate(data) {
 
 var bmltwf_changedata = {};
 
+var venue_types = {
+  1: "Face to face",
+  2: "Virtual Meeting",
+  3: "Hybrid Meeting",
+  4: "Temporarily Closed",
+};
+
 jQuery(document).ready(function ($) {
   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -126,6 +133,27 @@ jQuery(document).ready(function ($) {
       }
     }
 
+    // some special handling for deletion of fields    
+    for (var key in changes_requested) {
+      switch (key) {
+        case "original_virtual_meeting_additional_info":
+          if ((!("virtual_meeting_additional_info" in changes_requested)||(changes_requested["virtual_meeting_additional_info"]==="")) && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+            changes_requested["virtual_meeting_additional_info"] = "(deleted)";
+          }
+          break;
+        case "original_phone_meeting_number":
+          if ((!("phone_meeting_number" in changes_requested)||(changes_requested["phone_meeting_number"]==="")) && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+            changes_requested["phone_meeting_number"] = "(deleted)";
+          }
+          break;
+        case "original_virtual_meeting_link":
+          if ((!("virtual_meeting_link" in changes_requested)||(changes_requested["virtual_meeting_link"]===""))&& (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+            changes_requested["virtual_meeting_link"] = "(deleted)";
+          }
+          break;
+      }
+    }
+    
     Object.keys(changes_requested).forEach((element) => {
       if ($("#quickedit_" + element).length) {
         if (element === "format_shared_id_list") {
@@ -144,6 +172,7 @@ jQuery(document).ready(function ($) {
     $("#quickedit_format_shared_id_list").on("change.bmltwf-highlight", function () {
       $(".quickedit_format_shared_id_list-select2").addClass("bmltwf-changed");
     });
+
   }
 
   function populate_and_open_quickedit(id) {
@@ -206,23 +235,6 @@ jQuery(document).ready(function ($) {
     } else if (bmltwf_changedata[id].submission_type == "reason_new") {
       add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
       $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
-    }
-
-    // if the venue type was changed to a virtual meeting, or is a virtual meeting, make sure the quickedit shows the virtual meeting settings section
-    venue_type = bmltwf_changedata[id].changes_requested["venue_type"];
-    original_venue_type = bmltwf_changedata[id].changes_requested["original_venue_type"];
-    if(venue_type != original_venue_type)
-    {
-      use_venue_type = venue_type;
-    }
-    else
-    {
-      use_venue_type = venue_type;
-    }
-    if (use_venue_type == 1) {
-      $("#quickedit_virtual_meeting_options").hide();
-    } else {
-      $("#quickedit_virtual_meeting_options").show();
     }
 
   }
@@ -507,31 +519,23 @@ jQuery(document).ready(function ($) {
       }
     }
 
-    venue_types = {
-      1: "Face to face",
-      2: "Virtual Meeting",
-      3: "Hybrid Meeting",
-      4: "Temporarily Closed",
-    };
-
     c = d["changes_requested"];
 
-    // some special handling for deletion of fields
-    
+    // some special handling for deletion of fields    
     for (var key in c) {
       switch (key) {
         case "original_virtual_meeting_additional_info":
-          if (!("virtual_meeting_additional_info" in c)) {
+          if ((!("virtual_meeting_additional_info" in c)||c["virtual_meeting_additional_info"]==="") && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
             d["changes_requested"]["virtual_meeting_additional_info"] = "(deleted)";
           }
           break;
         case "original_phone_meeting_number":
-          if (!("phone_meeting_number" in c)) {
+          if ((!("phone_meeting_number" in c)||c["phone_meeting_number"]==="") && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
             d["changes_requested"]["phone_meeting_number"] = "(deleted)";
           }
           break;
         case "original_virtual_meeting_link":
-          if (!("virtual_meeting_link" in c)) {
+          if ((!("virtual_meeting_link" in c)||c["virtual_meeting_link"]==="") && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
             d["changes_requested"]["virtual_meeting_link"] = "(deleted)";
           }
           break;
@@ -876,6 +880,11 @@ jQuery(document).ready(function ($) {
           duration_hours = $(this).val();
         } else if (short_id === "duration_minutes") {
           duration_minutes = $(this).val();
+        } else if ((short_id === "virtual_meeting_additional_info")||(short_id === "phone_meeting_number")||(short_id === "virtual_meeting_link")){
+          if($(this).val() === "(deleted)")
+          {
+            delete quickedit_changes_requested[short_id];
+          }
         } else {
           quickedit_changes_requested[short_id] = $(this).val();
         }

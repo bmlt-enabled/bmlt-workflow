@@ -35,6 +35,9 @@ final class IntegrationTest extends TestCase
 {
     use \bmltwf\BMLTWF_Debug;
 
+    protected $formatsxml;
+    protected $formats;
+
     protected function setVerboseErrorHandler()
     {
         $handler = function ($errorNumber, $errorString, $errorFile, $errorLine) {
@@ -197,7 +200,6 @@ Line: $errorLine
         Brain\Monkey\tearDown();
         parent::tearDown();
         Mockery::close();
-        unset($this->bmltwf_dbg);
     }
 
     /**
@@ -513,7 +515,8 @@ Line: $errorLine
 
         $json = '{ "results" : [ { "address_components" : [ { "long_name" : "Sydney", "short_name" : "Sydney", "types" : [ "colloquial_area", "locality", "political" ] }, { "long_name" : "New South Wales", "short_name" : "NSW", "types" : [ "administrative_area_level_1", "political" ] }, { "long_name" : "Australia", "short_name" : "AU", "types" : [ "country", "political" ] } ], "formatted_address" : "Sydney NSW, Australia", "geometry" : { "bounds" : { "northeast" : { "lat" : -33.5781409, "lng" : 151.3430209 }, "southwest" : { "lat" : -34.118347, "lng" : 150.5209286 } }, "location" : { "lat" : -33.8688197, "lng" : 151.2092955 }, "location_type" : "APPROXIMATE", "viewport" : { "northeast" : { "lat" : -33.5781409, "lng" : 151.3430209 }, "southwest" : { "lat" : -34.118347, "lng" : 150.5209286 } } }, "partial_match" : true, "place_id" : "ChIJP3Sa8ziYEmsRUKgyFmh9AQM", "types" : [ "colloquial_area", "locality", "political" ] } ], "status" : "OK" }';
 
-        Functions\expect('wp_remote_retrieve_body')->times(5)->andReturn('','', '', $gmapskey, $json);
+        // $response = array("body"=> "<html>", "code"=>200);
+        Functions\expect('wp_remote_retrieve_body')->times(5)->andReturn('','','', $gmapskey, $json);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('wp_remote_get')->justReturn(array());
 
@@ -669,7 +672,7 @@ Line: $errorLine
     
     public function test_changeMeeting_against_v3_with_valid_meeting(): void
     {
-
+        Functions\when('\wp_remote_retrieve_body')->justReturn('<html></html>');
         Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
         $change = array('id_bigint' => 1,'location_text' => 'updated');
 
@@ -686,6 +689,7 @@ Line: $errorLine
     public function test_updateMeeting_against_v3_with_invalid_meeting(): void
     {
 
+        Functions\when('\wp_remote_retrieve_body')->justReturn('<html></html>');
         Functions\when('wp_remote_retrieve_response_code')->justReturn(404);
         $change = array('id_bigint' => 1,'location_text' => 'updated');
 
@@ -703,6 +707,7 @@ Line: $errorLine
     public function test_updateMeeting_against_v3_with_invalid_change(): void
     {
 
+        Functions\when('\wp_remote_retrieve_body')->justReturn('<html></html>');
         Functions\when('wp_remote_retrieve_response_code')->justReturn(422);
         $change = array('id_bigint' => 1,'location_text' => 'updated');
 

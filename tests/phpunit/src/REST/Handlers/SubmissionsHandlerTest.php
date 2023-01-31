@@ -112,7 +112,6 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         parent::tearDown();
         Mockery::close();
 
-        unset($this->bmltwf_dbg);
     }
 
     private function generate_approve_request($test_submission_id, $body)

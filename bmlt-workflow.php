@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.0.18
+ * Version: 1.0.19
  * Requires at least: 5.2
  * Tested up to: 6.1.1
  * Author: @nigel-bmlt
@@ -144,9 +144,9 @@ if (!class_exists('bmltwf_plugin')) {
 
             $formatarr = $this->bmlt_integration->getMeetingFormats();
     
-            $this->debug_log("FORMATS");
-            $this->debug_log($formatarr);
-            $this->debug_log(json_encode($formatarr));
+            // $this->debug_log("FORMATS");
+            // $this->debug_log($formatarr);
+            // $this->debug_log(json_encode($formatarr));
             $script .= 'var bmltwf_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
@@ -161,7 +161,7 @@ if (!class_exists('bmltwf_plugin')) {
             }
             $script .= 'var bmltwf_service_bodies = ' . json_encode($result) . '; ';
 
-            $this->debug_log("adding script " . $script);
+            // $this->debug_log("adding script " . $script);
             $status = wp_add_inline_script('bmltwf-meeting-update-form-js', $script, 'before');
             $this->prevent_cache_enqueue_script('bmltwf-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
 
@@ -285,7 +285,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $script  .= 'var bmltwf_bmltserver_geolocate_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/bmltserver/geolocate') . '; ';
                     // add our bmlt server for the submission lookups
                     $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
-
+                    $script .= 'var bmltwf_remove_virtual_meeting_details_on_venue_change = "' . get_option('bmltwf_remove_virtual_meeting_details_on_venue_change') . '";';
 
                     // add counties/states/provinces if they are populated
                     $meeting_counties_and_sub_provinces = $this->bmlt_integration->getMeetingCounties();
