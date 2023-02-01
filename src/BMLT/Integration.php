@@ -845,9 +845,9 @@ class Integration
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve server info');
         }
         $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
-        if ((!empty($arr['auto_geocoding_enabled']))) {
 
-            return $arr['auto_geocoding_enabled'] === "true" ? true : false;
+        if ((!empty($arr['auto_geocoding_enabled']))) {
+            return $arr['auto_geocoding_enabled'];
         }
         return false;
     }

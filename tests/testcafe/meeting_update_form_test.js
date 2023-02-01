@@ -22,7 +22,7 @@ import { Role, Selector } from "testcafe";
 
 import { 
   reset_bmlt3x, 
-  reset_bmlt2x_with_states_on, 
+  reset_bmlt3x_with_states_on, 
   waitfor,
   bmltwf_admin,
   restore_from_backup,
@@ -597,7 +597,7 @@ test("Change_Nothing_Check_Error", async (t) => {
 
 test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
 
-  await reset_bmlt2x_with_states_on(t);
+  await reset_bmlt3x_with_states_on(t);
   
   await t.navigateTo(userVariables.formpage);
   // console.log(userVariables.formpage);
