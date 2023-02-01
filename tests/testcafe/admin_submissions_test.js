@@ -20,7 +20,7 @@ import { ao } from "./models/admin_options";
 
 import {
   restore_from_backup, 
-  reset_bmlt,
+  reset_bmlt3x,
   select_dropdown_by_text, 
   click_table_row_column, 
   click_dt_button_by_index, 
@@ -32,7 +32,7 @@ import { userVariables } from "../../.testcaferc";
 
 fixture`admin_submissions_fixture`
 .before(async (t) => {
-  await reset_bmlt(t);
+  await reset_bmlt3x(t);
 })
 .beforeEach(async (t) => {
 

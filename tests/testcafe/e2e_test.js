@@ -24,13 +24,13 @@ import { Selector, Role } from "testcafe";
 import { reset_bmlt, 
   waitfor,
   restore_from_backup,
-  auto_geocoding_off,
   click_table_row_column, 
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
-  bmltwf_admin, 
+  bmltwf_admin,
+  reset_bmlt3x, 
    } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
@@ -38,7 +38,7 @@ import { userVariables } from "../../.testcaferc";
 fixture`e2e_test_fixture`
   // .page(userVariables.admin_submissions_page_single)
   .beforeEach(async (t) => {
-    await reset_bmlt(t);
+    await reset_bmlt3x(t);
     await waitfor(userVariables.admin_logon_page_single);
     await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
   
@@ -198,7 +198,9 @@ test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .expect(ct.phone_meeting_number.innerText)
     .eql(meeting.phone_meeting_number)
     .expect(ct.virtual_meeting_link.innerText)
-    .eql(meeting.virtual_meeting_link);
+    .eql(meeting.virtual_meeting_link)
+    .expect(ct.bmlt_day.innerText)
+    .eql("Monday");
 });
 
 test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {

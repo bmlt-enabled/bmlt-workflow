@@ -20,7 +20,7 @@ import { uf } from "./models/meeting_update_form";
 import { ct } from "./models/crouton";
 import { Selector, Role } from "testcafe";
 
-import { reset_bmlt, 
+import { reset_bmlt3x, 
   click_table_row_column, 
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
@@ -38,7 +38,7 @@ fixture`multisite_single_e2e_test_fixture`
   .before(async(t)=> {
   })
   .beforeEach(async (t) => {
-    await reset_bmlt(t);
+    await reset_bmlt3x(t);
     await waitfor(userVariables.admin_logon_page_multinetwork);
     await restore_from_backup(bmltwf_admin_multinetwork, userVariables.admin_settings_page_multinetwork_plugin, userVariables.admin_restore_json_multinetwork_plugin,"bmlt3x","8001");
     await waitfor(userVariables.admin_logon_page_multisingle);

@@ -21,7 +21,7 @@ import { ao } from "./models/admin_options";
 import {
   randstr,
   restore_from_backup, 
-  reset_bmlt, 
+  reset_bmlt3x, 
   bmltwf_submission_reviewer,
   bmltwf_submission_nopriv,
   bmltwf_admin,
@@ -34,7 +34,7 @@ import { userVariables } from "../../.testcaferc";
 
 fixture`admin_submissions_permissions_fixture`
 .before(async (t) => {
-  await reset_bmlt(t);
+  await reset_bmlt3x(t);
 })
 .beforeEach(async (t) => {
   await waitfor(userVariables.admin_logon_page_single);

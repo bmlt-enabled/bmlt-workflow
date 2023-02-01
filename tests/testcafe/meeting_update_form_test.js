@@ -21,7 +21,7 @@ import { ao } from "./models/admin_options";
 import { Role, Selector } from "testcafe";
 
 import { 
-  reset_bmlt, 
+  reset_bmlt3x, 
   reset_bmlt2x_with_states_on, 
   waitfor,
   bmltwf_admin,
@@ -34,7 +34,7 @@ import { userVariables } from "../../.testcaferc";
 
 fixture`meeting_update_form_fixture`
 .before(async (t) => {
-  await reset_bmlt(t);
+  await reset_bmlt3x(t);
 
 })
 .beforeEach(async (t) => {

@@ -24,6 +24,7 @@ class Crouton {
         this.location_text = Selector('#byday tr:not(.hide) .location-text');
         this.virtual_meeting_link = Selector('#byday tr:not(.hide) .bmlt-column3 .glyphicon-globe + a');
         this.phone_meeting_number = Selector('#byday tr:not(.hide) .bmlt-column3 .glyphicon-earphone + a');
+        this.bmlt_day = Selector('#byday tr:not(.hide) .bmlt-day');
     }
 }
 
