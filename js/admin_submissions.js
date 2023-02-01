@@ -555,8 +555,15 @@ jQuery(document).ready(function ($) {
           break;
         case "venue_type":
           vtype = venue_types[c[key]];
-          ovtype = venue_types[c["original_venue_type"]];
-          table += column(col_meeting_details, "Venue Type", ovtype + " → " + vtype);
+          if("original_venue_type" in c)
+          {
+            ovtype = venue_types[c["original_venue_type"]];
+            table += column(col_meeting_details, "Venue Type", ovtype + " → " + vtype);
+          }
+          else
+          {
+            table += column(col_meeting_details, "Venue Type", vtype);
+          }
           break;
         case "start_time":
           table += column(col_meeting_details, "Start Time", c[key]);
@@ -578,16 +585,16 @@ jQuery(document).ready(function ($) {
           table += column(col_meeting_details, "Municipality", c[key]);
           break;
         case "location_province":
-          table += column(col_meeting_details, "Province", c[key]);
+          table += column(col_meeting_details, bmltwf_optional_location_province_displayname, c[key]);
           break;
         case "location_sub_province":
-          table += column(col_meeting_details, "SubProvince", c[key]);
+          table += column(col_meeting_details, bmltwf_optional_location_sub_province_displayname, c[key]);
           break;
         case "location_nation":
-          table += column(col_meeting_details, "Nation", c[key]);
+          table += column(col_meeting_details, bmltwf_optional_location_nation_displayname, c[key]);
           break;
         case "location_postal_code_1":
-          table += column(col_meeting_details, "PostCode", c[key]);
+          table += column(col_meeting_details, bmltwf_optional_postcode_displayname, c[key]);
           break;
         case "group_relationship":
           table += column(col_personal_details, "Relationship to Group", c[key]);
@@ -815,16 +822,6 @@ jQuery(document).ready(function ($) {
   }
 
   function geolocate_handler(id) {
-    // $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
-    // $locdata = array();
-    // foreach($locfields as $field)
-    // {
-    //     if(!empty($change[$field]))
-    //     {
-    //         $locdata[]=$change[$field];
-    //     }
-    // }
-    // $locstring = implode(', ',$locdata);
     var locfields = ["location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation"];
     var locdata = [];
 

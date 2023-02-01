@@ -286,6 +286,10 @@ if (!class_exists('bmltwf_plugin')) {
                     // add our bmlt server for the submission lookups
                     $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
                     $script .= 'var bmltwf_remove_virtual_meeting_details_on_venue_change = "' . get_option('bmltwf_remove_virtual_meeting_details_on_venue_change') . '";';
+                    $script .= 'var bmltwf_optional_location_sub_province_displayname = "' .sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname')) . '";';
+                    $script .= 'var bmltwf_optional_location_province_displayname = "' .sanitize_text_field(get_option('bmltwf_optional_location_province_displayname')) . '";';
+                    $script .= 'var bmltwf_optional_postcode_displayname = "' .sanitize_text_field(get_option('bmltwf_optional_postcode_displayname')) . '";';
+                    $script .= 'var bmltwf_optional_location_nation_displayname = "' .sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname')) . '";';
 
                     // add counties/states/provinces if they are populated
                     $meeting_counties_and_sub_provinces = $this->bmlt_integration->getMeetingCounties();
