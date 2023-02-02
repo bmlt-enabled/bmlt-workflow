@@ -248,6 +248,7 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) 
     .expect(Selector("#bmltwf_response_message").innerText)
     .match(/submission\ successful/);
 
+    // await t.debug();
   // switch to admin page
   await t.useRole(bmltwf_admin_multisingle).navigateTo(userVariables.admin_submissions_page_multisingle_plugin);
 

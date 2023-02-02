@@ -580,19 +580,20 @@ class Integration
         $newformat = array();
         foreach ($formatarr as $key => $value) {
             $formatid = $value['id'];
-            $newvalue = array();
-            $newvalue['world_id'] = $value['worldId'];
-            $newvalue['type'] = $value['type'];
             foreach ($value['translations'] as $key1 => $value1) {
+                // just add english for now
                 if ($value1['language'] === 'en') {
+                    $newvalue = array();
+                    $newvalue['world_id'] = $value['worldId'];
+                    $newvalue['type'] = $value['type'];        
                     $newvalue['lang'] = 'en';
                     $newvalue['description_string'] = $value1['description'];
                     $newvalue['name_string'] = $value1['name'];
-                    $newvalue['key_string'] = $value1['key'];
+                    $newvalue['key_string'] = $value1['key'];            
+                    $newformat[$formatid] = $newvalue;
                     break;
                 }
             }
-            $newformat[$formatid] = $newvalue;
         }
         $this->debug_log("NEWFORMAT");
         $this->debug_log(($newformat));
@@ -687,7 +688,8 @@ class Integration
     public function getGmapsKey()
     {
 
-        $ret = $this->authenticateRootServer();
+        // force v2 usage because we're authing and scraping the web page
+        $ret = $this->authenticateRootServerv2();
         if (is_wp_error($ret)) {
             $this->debug_log("*** AUTH ERROR");
             $this->debug_log(($ret));
@@ -697,7 +699,7 @@ class Integration
         $url = get_option('bmltwf_bmlt_server_address') . "index.php";
         $this->debug_log("*** ADMIN URL " . $url);
 
-        $response = $this->get($url, $this->cookies);
+        $response = $this->getv2($url, $this->cookies);
         $this->debug_log("*** ADMIN PAGE");
         $this->debug_log("get returns " . \wp_remote_retrieve_response_code($response));
         $this->debug_log(\wp_remote_retrieve_body($response));
@@ -1099,7 +1101,34 @@ class Integration
     private function get($url, $cookies = null)
     {
         if ($this->is_v3_server()) {
-            $this->debug_log("inside get v3 auth");
+            return $this->getv3($url, $cookies);
+        }
+        else
+        {
+            return $this->getv2($url, $cookies);
+        }
+    }
+
+    private function getv2($url, $cookies = null)
+    {
+        $this->debug_log("inside get v2");
+
+        $ret = \wp_remote_get($url, $this->set_args($cookies));
+        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
+        {
+            $ret =  $this->authenticateRootServer();
+            if (is_wp_error($ret)) {
+                return $ret;
+            }
+            // try once more in case it was a session timeout
+            $ret = wp_remote_get($url, $this->set_args($cookies));
+        }
+        return $ret;
+    }
+
+    private function getv3($url, $cookies = null)
+    {
+            $this->debug_log("inside get v3");
 
             if (!$this->is_v3_token_valid()) {
                 $ret =  $this->authenticateRootServer();
@@ -1109,19 +1138,6 @@ class Integration
             }
             $ret = \wp_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
             return $ret;
-        } else {
-            $ret = \wp_remote_get($url, $this->set_args($cookies));
-            if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
-            {
-                $ret =  $this->authenticateRootServer();
-                if (is_wp_error($ret)) {
-                    return $ret;
-                }
-                // try once more in case it was a session timeout
-                $ret = wp_remote_get($url, $this->set_args($cookies));
-            }
-            return $ret;
-        }
     }
 
     private function post($url, $postargs, $cookies = null)
