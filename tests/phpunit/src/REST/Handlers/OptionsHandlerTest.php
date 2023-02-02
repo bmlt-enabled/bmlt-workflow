@@ -74,7 +74,6 @@ Line: $errorLine
         Brain\Monkey\tearDown();
         parent::tearDown();
         Mockery::close();
-        unset($this->bmltwf_dbg);
 
     }
 

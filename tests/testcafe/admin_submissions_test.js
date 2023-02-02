@@ -20,7 +20,7 @@ import { ao } from "./models/admin_options";
 
 import {
   restore_from_backup, 
-  reset_bmlt,
+  reset_bmlt3x,
   select_dropdown_by_text, 
   click_table_row_column, 
   click_dt_button_by_index, 
@@ -32,11 +32,11 @@ import { userVariables } from "../../.testcaferc";
 
 fixture`admin_submissions_fixture`
 .before(async (t) => {
-  await reset_bmlt(t);
+  await reset_bmlt3x(t);
 })
 .beforeEach(async (t) => {
 
-  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt2x","8000");
+  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
 
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 });

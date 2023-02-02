@@ -203,7 +203,10 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .expect(ct.phone_meeting_number.innerText)
     .eql(meeting.phone_meeting_number)
     .expect(ct.virtual_meeting_link.innerText)
-    .eql(meeting.virtual_meeting_link);
+    .eql(meeting.virtual_meeting_link)
+    .expect(ct.bmlt_day.innerText)
+    .eql("Monday");
+
 });
 
 test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {

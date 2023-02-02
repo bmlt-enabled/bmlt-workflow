@@ -24,7 +24,7 @@ import { Selector, Role } from "testcafe";
 import {
   restore_from_backup,
 //   reset_bmlt,
-  reset_bmlt_with_auto_geocoding_off,
+  reset_bmlt3x_with_auto_geocoding_off,
   select_dropdown_by_text,
   select_dropdown_by_value,
   click_table_row_column,
@@ -40,9 +40,9 @@ fixture`geocoding_tests_fixture`
 })
   .beforeEach(async (t) => {
     // await reset_bmlt(t);
-    await reset_bmlt_with_auto_geocoding_off(t);
+    await reset_bmlt3x_with_auto_geocoding_off(t);
 
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, "bmlt2x", "8000");
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, "bmlt3x", "8001");
 
     await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
   });

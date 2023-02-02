@@ -21,7 +21,7 @@ import { ao } from "./models/admin_options";
 import {
   randstr,
   restore_from_backup, 
-  reset_bmlt, 
+  reset_bmlt3x, 
   bmltwf_submission_reviewer,
   bmltwf_submission_nopriv,
   bmltwf_admin,
@@ -34,11 +34,11 @@ import { userVariables } from "../../.testcaferc";
 
 fixture`admin_submissions_permissions_fixture`
 .before(async (t) => {
-  await reset_bmlt(t);
+  await reset_bmlt3x(t);
 })
 .beforeEach(async (t) => {
   await waitfor(userVariables.admin_logon_page_single);
-  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt2x","8000");
+  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
 });
 
 test("Can_View_Submissions_As_Priv_User", async (t) => {

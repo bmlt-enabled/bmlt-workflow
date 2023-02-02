@@ -83,7 +83,6 @@ Line: $errorLine
         parent::tearDown();
         Mockery::close();
 
-        unset($this->bmltwf_dbg);
     }
 
     /**

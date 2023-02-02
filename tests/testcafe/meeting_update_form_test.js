@@ -21,8 +21,8 @@ import { ao } from "./models/admin_options";
 import { Role, Selector } from "testcafe";
 
 import { 
-  reset_bmlt, 
-  reset_bmlt2x_with_states_on, 
+  reset_bmlt3x, 
+  reset_bmlt3x_with_states_on, 
   waitfor,
   bmltwf_admin,
   restore_from_backup,
@@ -34,13 +34,13 @@ import { userVariables } from "../../.testcaferc";
 
 fixture`meeting_update_form_fixture`
 .before(async (t) => {
-  await reset_bmlt(t);
+  await reset_bmlt3x(t);
 
 })
 .beforeEach(async (t) => {
 
   await waitfor(userVariables.admin_logon_page_single);
-  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt2x","8000");
+  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
 
   // log in as noone
   await t.useRole(Role.anonymous());
@@ -597,7 +597,7 @@ test("Change_Nothing_Check_Error", async (t) => {
 
 test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
 
-  await reset_bmlt2x_with_states_on(t);
+  await reset_bmlt3x_with_states_on(t);
   
   await t.navigateTo(userVariables.formpage);
   // console.log(userVariables.formpage);

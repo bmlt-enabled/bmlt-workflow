@@ -454,6 +454,28 @@ class SubmissionsHandler
                     }
                 }
 
+                $bmlt_venue_type = $bmlt_meeting['venue_type'];
+                $this->debug_log("bmlt_meeting[venue_type]=");
+                $this->debug_log($bmlt_venue_type);
+
+                $change_venue_type = $change['venue_type'] ?? '0';
+                $this->debug_log("change[venue_type]=");
+                $this->debug_log($change_venue_type);
+
+                $is_change_to_f2f = (($change_venue_type == 1)&&($bmlt_venue_type != $change_venue_type));
+                $this->debug_log("is_change_to_f2f=");
+                $this->debug_log($is_change_to_f2f);
+
+                // if bmltwf_remove_virtual_meeting_details_on_venue_change is true, then explicitly blank out our virtual meeting settings when the venue
+                // is changed to face to face
+
+                if ((get_option('bmltwf_remove_virtual_meeting_details_on_venue_change') == 'true') && $is_change_to_f2f)
+                {
+                    $change["virtual_meeting_additional_info"]="";
+                    $change["phone_meeting_number"]="";
+                    $change["virtual_meeting_link"]="";
+                }
+                
                 $response = $this->bmlt_integration->updateMeeting($change);
 
                 if (\is_wp_error(($response))) {
@@ -896,6 +918,7 @@ class SubmissionsHandler
                     "additional_info",
                 );
 
+
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
                 // $this->debug_log(($meeting));
                 if (is_wp_error($bmlt_meeting)) {
@@ -908,25 +931,18 @@ class SubmissionsHandler
                     }
                 }
 
+                $submission_count = 0;
                 // if the user submitted something different to what is in bmlt, save it in changes
                 foreach ($allowed_fields as $field) {
 
                     $bmlt_field = $bmlt_meeting[$field] ?? false;
 
-                    // $this->debug_log("field");
-                    // $this->debug_log($field);
-                    // $this->debug_log("bmlt field");
-                    // $this->debug_log($bmlt_field);
-                    // $this->debug_log("submitted field");
-                    // $this->debug_log($sanitised_fields[$field]);
-                    // if(array_key_exists($field, $sanitised_fields))
-                    // {
-                    //     $this->debug_log("field key exists");
-                    // }
                     // if the field is blank in bmlt, but they submitted a change, add it to the list
                     if (!$bmlt_field && array_key_exists($field, $sanitised_fields) && !empty($sanitised_fields[$field])) {
                         $this->debug_log("found a blank bmlt entry " . $field);
                         $submission[$field] = $sanitised_fields[$field];
+                        $submission_count++;
+
                     }
                     // if the field is in bmlt and its different to the submitted item, add it to the list
                     else {
@@ -938,12 +954,20 @@ class SubmissionsHandler
                                     return $this->handlerCore->bmltwf_rest_error('Service body cannot be changed.', 403);
                                 }
                                 $submission[$field] = $sanitised_fields[$field];
+                                $submission_count++;
                             }
                         }
                     }
+
+                    // store away the original meeting details so we know what changed
+                    if ($bmlt_field)
+                    {
+                        $original_name = "original_".$field;
+                        $submission[$original_name] = $bmlt_field;    
+                    }  
                 }
 
-                if (!count($submission)) {
+                if (!$submission_count) {
                     return $this->handlerCore->bmltwf_rest_error('Nothing was changed.', 422);
                 }
 
@@ -958,10 +982,6 @@ class SubmissionsHandler
                 $this->debug_log(($submission));
                 $this->debug_log("BMLT MEETING");
                 $this->debug_log(($bmlt_meeting));
-                // store away the original meeting name so we know what changed
-                $submission['original_meeting_name'] = $bmlt_meeting['meeting_name'];
-                $submission['original_weekday_tinyint'] = $bmlt_meeting['weekday_tinyint'];
-                $submission['original_start_time'] = $bmlt_meeting['start_time'];
 
                 break;
             case ('reason_close'):
@@ -1050,15 +1070,25 @@ class SubmissionsHandler
 
         $submission_type = $this->submission_type_to_friendlyname($reason);
 
+        $sblist = $this->bmlt_integration->getServiceBodies();
+        if(\is_wp_error(($sblist)))
+        {
+            return $this->handlerCore->bmltwf_rest_error('Error retrieving service bodies', 422);
+        }
+        $this->debug_log("retrieved sblist ");
+        $this->debug_log($sblist);
+
         $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['service_body_bigint']);
-        $subject = '[bmlt-workflow] ' . $submission_type . ' request received - ID ' . $insert_id;
+        $subject = '[bmlt-workflow] ' . $submission_type . ' request received - ' . $sblist[$sanitised_fields['service_body_bigint']]['name'] . ' - Change ID #' . $insert_id;
         $body = 'Log in to <a href="' . get_site_url() . '/wp-admin/admin.php?page=bmltwf-submissions">BMLTWF Submissions Page</a> to review.';
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
+        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));
         wp_mail($to_address, $subject, $body, $headers);
 
         /*
         * Send acknowledgement email to the submitter
         */
+
 
         $to_address = $submitter_email;
         $subject = "NA Meeting Change Request Acknowledgement - Submission ID " . $insert_id;

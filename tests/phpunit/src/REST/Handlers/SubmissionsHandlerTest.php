@@ -33,6 +33,10 @@ require_once('config_phpunit.php');
 class SubmissionsHandlerTest_my_wp_user
 {
 
+    public $ID;
+    public $user_login;
+    public $user_email;
+
     public function __construct($id, $name)
     {
         $this->ID = $id;
@@ -56,6 +60,9 @@ final class SubmissionsHandlerTest extends TestCase
 {
     use \bmltwf\BMLTWF_Debug;
 
+    public $meeting;
+    public $bmltwf_dbg;
+    
     protected function setVerboseErrorHandler()
     {
         $handler = function ($errorNumber, $errorString, $errorFile, $errorLine) {
@@ -105,7 +112,6 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         parent::tearDown();
         Mockery::close();
 
-        unset($this->bmltwf_dbg);
     }
 
     private function generate_approve_request($test_submission_id, $body)
@@ -135,7 +141,8 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp, true))
             ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats, true))
             ->shouldReceive('isAutoGeocodingEnabled')->andreturn(true)
-            ->shouldReceive('is_v3_server')->andreturn(false);
+            ->shouldReceive('is_v3_server')->andreturn(false)
+            ->shouldReceive('getServiceBodies')->andreturn(array("1"=> array("name"=>"test"),"3"=> array("name"=>"test"),"6"=> array("name"=>"test"),"99"=> array("name"=>"test")));
 
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
         return $bmlt;

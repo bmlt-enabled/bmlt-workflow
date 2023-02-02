@@ -176,6 +176,14 @@ if ($meeting_states_and_provinces) {
                 </div>
         </div>
         <div class="form-grid-col2">
+            <label for="quickedit_venue_type">Venue Type</label>
+            <select name="quickedit_venue_type" id="quickedit_venue_type">
+                <option value="" disabled selected hidden>Select one</option>
+                <option value="1">Face to Face</option>
+                <option value="2">Virtual only</option>
+                <option value="3">Hybrid (Virtual and Face to Face)</option>
+                <option value="4">Temporary Face to Face Closure</option>
+            </select>
             <label for="quickedit_location_text">Location</label>
             <input type="text" name="quickedit_location_text" id="quickedit_location_text" class="quickedit-input">
             <label for="quickedit_location_street">Street</label>
@@ -186,10 +194,10 @@ if ($meeting_states_and_provinces) {
             <input type="text" name="quickedit_location_municipality" id="quickedit_location_municipality" class="quickedit-input">
 
             <div id="optional_location_sub_province">
-                <label id="location_sub_province_label" for="quickedit_location_sub_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname')) ?></label>
+                <label id="quickedit_location_sub_province_label" for="quickedit_location_sub_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname')) ?></label>
             </div>
             <div id="optional_location_province">
-                <label id="location_province_label" for="quickedit_location_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_province_displayname')) ?></label>
+                <label id="quickedit_location_province_label" for="quickedit_location_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_province_displayname')) ?></label>
             </div>
             <label for="quickedit_location_postal_code_1"><?php echo sanitize_text_field(get_option('bmltwf_optional_postcode_displayname')) ?></label>
             <input class="meeting-input" type="text" name="quickedit_location_postal_code_1" id="quickedit_location_postal_code_1" required>

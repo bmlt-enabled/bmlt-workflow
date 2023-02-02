@@ -33,6 +33,13 @@ function mysql2localdate(data) {
 
 var bmltwf_changedata = {};
 
+var venue_types = {
+  1: "Face to face",
+  2: "Virtual Meeting",
+  3: "Hybrid Meeting",
+  4: "Temporarily Closed",
+};
+
 jQuery(document).ready(function ($) {
   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -87,7 +94,7 @@ jQuery(document).ready(function ($) {
 
   // fill in counties and sub provinces
   if (bmltwf_counties_and_sub_provinces === false) {
-    $("#optional_location_sub_province").append('<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">');
+    $("#optional_location_sub_province").append('<input class="meeting-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">');
   } else {
     var appendstr = '<select class="meeting-input" id="quickedit_location_sub_province" name="quickedit_location_sub_province">';
     bmltwf_counties_and_sub_provinces.forEach(function (item, index) {
@@ -98,7 +105,7 @@ jQuery(document).ready(function ($) {
   }
 
   if (bmltwf_do_states_and_provinces === false) {
-    $("#optional_location_province").append('<input class="meeting-input" type="text" name="location_sub_province" size="50" id="location_sub_province">');
+    $("#optional_location_province").append('<input class="meeting-input" type="text" name="quickedit_location_province" size="50" id="quickedit_location_province">');
   } else {
     var appendstr = '<select class="meeting-input" id="quickedit_location_province" name="quickedit_location_province">';
     bmltwf_do_states_and_provinces.forEach(function (item, index) {
@@ -126,6 +133,27 @@ jQuery(document).ready(function ($) {
       }
     }
 
+    // some special handling for deletion of fields    
+    for (var key in changes_requested) {
+      switch (key) {
+        case "original_virtual_meeting_additional_info":
+          if ((!("virtual_meeting_additional_info" in changes_requested)||(changes_requested["virtual_meeting_additional_info"]==="")) && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+            changes_requested["virtual_meeting_additional_info"] = "(deleted)";
+          }
+          break;
+        case "original_phone_meeting_number":
+          if ((!("phone_meeting_number" in changes_requested)||(changes_requested["phone_meeting_number"]==="")) && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+            changes_requested["phone_meeting_number"] = "(deleted)";
+          }
+          break;
+        case "original_virtual_meeting_link":
+          if ((!("virtual_meeting_link" in changes_requested)||(changes_requested["virtual_meeting_link"]===""))&& (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+            changes_requested["virtual_meeting_link"] = "(deleted)";
+          }
+          break;
+      }
+    }
+    
     Object.keys(changes_requested).forEach((element) => {
       if ($("#quickedit_" + element).length) {
         if (element === "format_shared_id_list") {
@@ -144,6 +172,7 @@ jQuery(document).ready(function ($) {
     $("#quickedit_format_shared_id_list").on("change.bmltwf-highlight", function () {
       $(".quickedit_format_shared_id_list-select2").addClass("bmltwf-changed");
     });
+
   }
 
   function populate_and_open_quickedit(id) {
@@ -187,6 +216,7 @@ jQuery(document).ready(function ($) {
                 $("#quickedit_duration_minutes").val(durationarr[1]);
               }
             }
+
             // split up the format list so we can use it in the select
             if ("format_shared_id_list" in item) {
               item["format_shared_id_list"] = item["format_shared_id_list"].split(",");
@@ -206,6 +236,7 @@ jQuery(document).ready(function ($) {
       add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
       $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
     }
+
   }
 
   // function clear_notices() {
@@ -222,8 +253,13 @@ jQuery(document).ready(function ($) {
   }
 
   var formatdata = [];
+
+  // delete hybrid/TC etc
   Object.keys(bmltwf_bmlt_formats).forEach((key) => {
-    formatdata.push({ text: "(" + bmltwf_bmlt_formats[key]["key_string"] + ")-" + bmltwf_bmlt_formats[key]["name_string"], id: key });
+    var key_string = bmltwf_bmlt_formats[key]["key_string"];
+    if (!(key_string === "HY" || key_string === "VM" || key_string === "TC")) {
+      formatdata.push({ text: "(" + bmltwf_bmlt_formats[key]["key_string"] + ")-" + bmltwf_bmlt_formats[key]["name_string"], id: key });
+    }
   });
 
   $("#quickedit_format_shared_id_list").select2({
@@ -450,8 +486,11 @@ jQuery(document).ready(function ($) {
   }
 
   // child rows
-  function format(d) {
-    // console.log(d);
+  function format(rows) {
+
+    // clone the requested info
+    d = $.extend(true, {}, rows);
+
     col_meeting_details = 1;
     col_personal_details = 2;
     col_virtual_meeting_details = 3;
@@ -459,8 +498,8 @@ jQuery(document).ready(function ($) {
 
     table = '<div class="header">';
     table += '<div class="cell-hdr h' + col_personal_details + '">Personal Details</div>';
-    table += '<div class="cell-hdr h' + col_meeting_details + '">Meeting Details</div>';
-    table += '<div class="cell-hdr h' + col_virtual_meeting_details + '">Virtual Meeting Details</div>';
+    table += '<div class="cell-hdr h' + col_meeting_details + '">Updated Meeting Details</div>';
+    table += '<div class="cell-hdr h' + col_virtual_meeting_details + '">Updated Virtual Meeting Details</div>';
     table += '<div class="cell-hdr h' + col_fso_other + '">FSO Request and Other Info</div>';
     table += '</div><div class="gridbody">';
 
@@ -481,6 +520,30 @@ jQuery(document).ready(function ($) {
     }
 
     c = d["changes_requested"];
+
+    // some special handling for deletion of fields    
+    for (var key in c) {
+      switch (key) {
+        case "original_virtual_meeting_additional_info":
+          if ((!("virtual_meeting_additional_info" in c)||c["virtual_meeting_additional_info"]==="") && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+            d["changes_requested"]["virtual_meeting_additional_info"] = "(deleted)";
+          }
+          break;
+        case "original_phone_meeting_number":
+          if ((!("phone_meeting_number" in c)||c["phone_meeting_number"]==="") && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+            d["changes_requested"]["phone_meeting_number"] = "(deleted)";
+          }
+          break;
+        case "original_virtual_meeting_link":
+          if ((!("virtual_meeting_link" in c)||c["virtual_meeting_link"]==="") && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+            d["changes_requested"]["virtual_meeting_link"] = "(deleted)";
+          }
+          break;
+      }
+    }
+
+    // fill in the sub menu
+
     for (var key in c) {
       switch (key) {
         case "meeting_name":
@@ -491,22 +554,16 @@ jQuery(document).ready(function ($) {
           table += column(col_meeting_details, mname, c[key]);
           break;
         case "venue_type":
-          var vtype = 0;
-          switch (c[key]) {
-            case 1:
-              vtype = "Face to face";
-              break;
-            case 2:
-              vtype = "Virtual Meeting";
-              break;
-            case 3:
-              vtype = "Hybrid Meeting";
-              break;
-            case 4:
-              vtype = "Temporarily Closed";
-              break;
+          vtype = venue_types[c[key]];
+          if("original_venue_type" in c)
+          {
+            ovtype = venue_types[c["original_venue_type"]];
+            table += column(col_meeting_details, "Venue Type", ovtype + " → " + vtype);
           }
-          table += column(col_meeting_details, "Venue Type", vtype);
+          else
+          {
+            table += column(col_meeting_details, "Venue Type", vtype);
+          }
           break;
         case "start_time":
           table += column(col_meeting_details, "Start Time", c[key]);
@@ -528,16 +585,16 @@ jQuery(document).ready(function ($) {
           table += column(col_meeting_details, "Municipality", c[key]);
           break;
         case "location_province":
-          table += column(col_meeting_details, "Province", c[key]);
+          table += column(col_meeting_details, bmltwf_optional_location_province_displayname, c[key]);
           break;
         case "location_sub_province":
-          table += column(col_meeting_details, "SubProvince", c[key]);
+          table += column(col_meeting_details, bmltwf_optional_location_sub_province_displayname, c[key]);
           break;
         case "location_nation":
-          table += column(col_meeting_details, "Nation", c[key]);
+          table += column(col_meeting_details, bmltwf_optional_location_nation_displayname, c[key]);
           break;
         case "location_postal_code_1":
-          table += column(col_meeting_details, "PostCode", c[key]);
+          table += column(col_meeting_details, bmltwf_optional_postcode_displayname, c[key]);
           break;
         case "group_relationship":
           table += column(col_personal_details, "Relationship to Group", c[key]);
@@ -765,16 +822,6 @@ jQuery(document).ready(function ($) {
   }
 
   function geolocate_handler(id) {
-    // $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
-    // $locdata = array();
-    // foreach($locfields as $field)
-    // {
-    //     if(!empty($change[$field]))
-    //     {
-    //         $locdata[]=$change[$field];
-    //     }
-    // }
-    // $locstring = implode(', ',$locdata);
     var locfields = ["location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation"];
     var locdata = [];
 
@@ -830,6 +877,11 @@ jQuery(document).ready(function ($) {
           duration_hours = $(this).val();
         } else if (short_id === "duration_minutes") {
           duration_minutes = $(this).val();
+        } else if ((short_id === "virtual_meeting_additional_info")||(short_id === "phone_meeting_number")||(short_id === "virtual_meeting_link")){
+          if($(this).val() === "(deleted)")
+          {
+            delete quickedit_changes_requested[short_id];
+          }
         } else {
           quickedit_changes_requested[short_id] = $(this).val();
         }
