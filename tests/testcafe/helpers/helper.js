@@ -103,7 +103,7 @@ export async function waitfor(site) {
   execSync(userVariables.waitfor + " " + site);
 }
 
-export async function reset_bmlt2x(t) {
+export async function reset_bmlt(t) {
   console.log("resetting bmlt");
   let options = {stdio : 'pipe' };
   execSync(userVariables.blank_bmlt,options);
@@ -120,7 +120,7 @@ export async function reset_bmlt3x(t) {
 }
 
 
-export async function reset_bmlt2x_with_auto_geocoding_off(t) {
+export async function reset_bmlt_with_auto_geocoding_off(t) {
   console.log("turning geocode off");
   let options = {stdio : 'pipe' };
   execSync(userVariables.auto_geocoding_off,options);
@@ -309,15 +309,6 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
   });
   // console.log(restore_json);
   // console.log(resp);
-}
-
-export async function crouton3x(t) {
-  const resp = await t.request(userVariables.crouton3x);
-}
-
-export async function crouton2x(t) {
-  const resp = await t.request(userVariables.crouton2x);
-
 }
 
 export async function reset_bmlt2x_with_states_off(t) {

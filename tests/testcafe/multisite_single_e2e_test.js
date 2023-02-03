@@ -1,55 +1,51 @@
 // Copyright (C) 2022 nigel.bmlt@gmail.com
-//
+// 
 // This file is part of bmlt-workflow.
-//
+// 
 // bmlt-workflow is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // bmlt-workflow is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//
+// 
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
 import { ct } from "./models/crouton";
-
 import { Selector, Role } from "testcafe";
 
-import {
+import { reset_bmlt3x, 
+  click_table_row_column, 
+  click_dt_button_by_index, 
+  click_dialog_button_by_index, 
+  select_dropdown_by_text, 
+  select_dropdown_by_value, 
+  waitfor,
   restore_from_backup,
-//   reset_bmlt,
-  reset_bmlt2x_with_auto_geocoding_off,
-  select_dropdown_by_text,
-  select_dropdown_by_value,
-  click_table_row_column,
-  click_dt_button_by_index,
-  click_dialog_button_by_index,
-  bmltwf_admin,
-  crouton2x
-} from "./helpers/helper.js";
-
+  bmltwf_admin_multinetwork,
+  bmltwf_admin_multisingle } from "./helpers/helper.js";
+  
 import { userVariables } from "../../.testcaferc";
 
-fixture`bmlt2x_geocoding_tests_fixture`
-  .before(async (t) => {
-})
+fixture`multisite_single_e2e_test_fixture`
+  // .page(userVariables.admin_submissions_page_single)
+  .before(async(t)=> {
+  })
   .beforeEach(async (t) => {
-    // await reset_bmlt(t);
-    await reset_bmlt2x_with_auto_geocoding_off(t);
-
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, "bmlt2x", "8000");
-    await crouton2x(t);
-
-    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+    await reset_bmlt3x(t);
+    await waitfor(userVariables.admin_logon_page_multinetwork);
+    await restore_from_backup(bmltwf_admin_multinetwork, userVariables.admin_settings_page_multinetwork_plugin, userVariables.admin_restore_json_multinetwork_plugin,"bmlt3x","8001");
+    await waitfor(userVariables.admin_logon_page_multisingle);
+    await restore_from_backup(bmltwf_admin_multisingle, userVariables.admin_settings_page_multisingle_plugin, userVariables.admin_restore_json_multisingle_plugin,"bmlt3x","8001");
   });
 
-test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
+test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
   var meeting = {
     location_text: "the church",
     location_street: "105 avoca street",
@@ -58,10 +54,9 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
     location_province: "nsw",
     location_postal_code_1: "2032",
   };
+  // console.log(userVariables.formpage_multisingle);
 
-
-  await t.navigateTo(userVariables.formpage);
-
+  await t.navigateTo(userVariables.formpage_multisingle);
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 
   // check our divs are visible
@@ -156,7 +151,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+  await t.useRole(bmltwf_admin_multisingle).navigateTo(userVariables.admin_submissions_page_multisingle_plugin);
 
   // new meeting = row 0
   var row = 0;
@@ -173,11 +168,11 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", { timeout: 10000 });
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
-
+  
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
   await t.typeText(Selector('input[class="select2-search__field"]'), "99999");
@@ -207,9 +202,11 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
     .eql(meeting.virtual_meeting_link);
 });
 
-test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
+test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
+  // await t.debug();
+  await t.navigateTo(userVariables.formpage_multisingle);
 
-  await t.navigateTo(userVariables.formpage);
+  // console.log(userVariables.formpage_multisingle);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
@@ -220,7 +217,6 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
   await t.click("#select2-meeting-searcher-container");
   await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "chance");
   await t.pressKey("enter");
-
   // validate form is laid out correctly
   await t.expect(uf.personal_details.visible).eql(true).expect(uf.meeting_details.visible).eql(true).expect(uf.additional_info_div.visible).eql(true);
 
@@ -231,6 +227,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
     .typeText(uf.email_address, "test@test.com.zz")
     .typeText(uf.contact_number_confidential, "`12345`")
     .typeText(uf.location_text, "location")
+
     .typeText(uf.meeting_name, "update", { replace: true })
     // make sure highlighting is present
     .expect(uf.meeting_name.hasClass("bmltwf-changed"))
@@ -251,8 +248,9 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
     .expect(Selector("#bmltwf_response_message").innerText)
     .match(/submission\ successful/);
 
+    // await t.debug();
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+  await t.useRole(bmltwf_admin_multisingle).navigateTo(userVariables.admin_submissions_page_multisingle_plugin);
 
   // new meeting = row 0
   var row = 0;
@@ -267,37 +265,16 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
   await click_dialog_button_by_index(as.approve_dialog_parent, 1);
   // dialog closes after ok button
   await t.expect(as.approve_dialog_parent.visible).eql(false);
-  // await t.debug();
+
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", { timeout: 10000 }, { timeout: 10000 });
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
-
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
   await t.typeText(Selector('input[class="select2-search__field"]'), "update");
   await t.pressKey("enter");
 
   await t.expect(ct.meeting_name.innerText).eql("update");
-});
-
-test("Approve_New_Meeting_No_Geocoding", async (t) => {
-
-  await t.eval(() => location.reload(true));
-
-  // new meeting = row 2
-  var row = 2;
-  await click_table_row_column(as.dt_submission, row, 0);
-
-  // quickedit
-  await click_dt_button_by_index(as.dt_submission_wrapper, 2);
-  // geocode div should be invisible
-  await t.expect(as.optional_auto_geocode_enabled.visible).eql(false);
-
-  // // check the geocode button is disabled
-  // var g = as.quickedit_dialog_parent.find("button").nth(2);
-  // console.log(g.hasAttribute("disabled"));
-  // console.log(as.quickedit_dialog_parent.find("button").nth(2).hasAttribute("disabled"));
-  // await t.expect(g.withAttribute("disabled").exists).ok();
 });
