@@ -32,7 +32,7 @@ import {
 
 import { userVariables } from "../../.testcaferc";
 
-fixture`meeting_update_form_fixture`
+fixture`bmlt3x_meeting_update_form_fixture`
 .before(async (t) => {
   await reset_bmlt3x(t);
 

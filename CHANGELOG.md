@@ -1,3 +1,6 @@
+## 1.0.20 (Feb 2, 2023)
+- Actually bump the version number properly
+
 ## 1.0.19 (Jan 30, 2023)
 - First version in live use in Australia region, and lots of bugs/features to fix!
 - #126 Feature: Add service body to meeting submission notification subject line

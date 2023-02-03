@@ -77,11 +77,54 @@ rm /var/log/php_errors.log
 touch /var/log/php_errors.log
 chmod 777 /var/log/php_errors.log
 
+cd /tmp
 sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /etc/apache2/sites-enabled/000-default.conf 
 sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /etc/apache2/sites-available/000-default.conf 
 sed -i "s/Listen 80/Listen $WORDPRESS_PORT/g" /etc/apache2/ports.conf 
 
 echo "<?php phpinfo();" >> /var/www/html/a.php
+cat << END >> /var/www/html/crouton2x.sh
+#!/bin/sh
+wp option update --path=$sitelocalpath --format=json bmlt_tabs_options <<EOF
+{
+  "root_server": "http://bmlt2x:8000/main_server/",
+  "service_body_1":"Mid-Hudson Area Service,1009,1046,ABCD Region",
+  "custom_query": "",
+  "custom_css": "",
+  "meeting_data_template": "{{#isTemporarilyClosed this}}\r\n    <div class='temporarilyClosed'><span class='glyphicon glyphicon-flag'></span> {{temporarilyClosed this}}</div>\r\n{{/isTemporarilyClosed}}\r\n<div class='meeting-name'>{{this.meeting_name}}</div>\r\n<div class='location-text'>{{this.location_text}}</div>\r\n<div class='meeting-address'>{{this.formatted_address}}</div>\r\n<div class='location-information'>{{this.formatted_location_info}}</div>\r\n{{#if this.virtual_meeting_additional_info}}\r\n    <div class='meeting-additional-info'>{{this.virtual_meeting_additional_info}}</div>\r\n{{/if}}",
+  "metadata_template": "{{#isVirtualOrHybrid this}}\r\n    {{#isHybrid this}}\r\n        <div class='meetsVirtually'><span class='glyphicon glyphicon-cloud-upload'></span> {{meetsHybrid this}}</div>\r\n    {{else}}\r\n        <div class='meetsVirtually'><span class='glyphicon glyphicon-cloud'></span> {{meetsVirtually this}}</div>\r\n    {{/isHybrid}}\r\n    {{#if this.virtual_meeting_link}}\r\n        <div><span class='glyphicon glyphicon-globe'></span> {{webLinkify this.virtual_meeting_link}}</div>\r\n        {{#if this.show_qrcode}}\r\n            <div class='qrcode'>{{qrCode this.virtual_meeting_link}}</div>\r\n        {{/if}}\r\n    {{/if}}\r\n    {{#if this.phone_meeting_number}}\r\n        <div><span class='glyphicon glyphicon-earphone'></span> {{phoneLinkify this.phone_meeting_number}}</div>\r\n        {{#if this.show_qrcode}}\r\n            <div class='qrcode'>{{qrCode this.phone_meeting_number}}</div>\r\n        {{/if}}\r\n    {{/if}}\r\n{{/isVirtualOrHybrid}}\r\n{{#isNotTemporarilyClosed this}}\r\n    {{#unless (hasFormats 'VM' this)}}\r\n        <div>\r\n            <a id='map-button' class='btn btn-primary btn-xs'\r\n                href='https://www.google.com/maps/search/?api=1&query={{this.latitude}},{{this.longitude}}&q={{this.latitude}},{{this.longitude}}'\r\n                target='_blank' rel='noopener noreferrer'>\r\n                <span class='glyphicon glyphicon-map-marker'></span> {{this.map_word}}</a>\r\n        </div>\r\n        <div class='geo hide'>{{this.latitude}},{{this.longitude}}</div>\r\n    {{/unless}}\r\n{{/isNotTemporarilyClosed}}",
+  "theme": "",
+  "recurse_service_bodies": "0",
+  "extra_meetings": [],
+  "extra_meetings_enabled": "0",
+  "google_api_key": ""
+}
+EOF
+END
+cat << END >> /var/www/html/crouton3x.sh
+#!/bin/sh
+wp option update --path=$sitelocalpath --format=json bmlt_tabs_options <<EOF
+{
+  "root_server": "http://bmlt3x:8001/main_server/",
+  "service_body_1":"Mid-Hudson Area Service,1009,1046,ABCD Region",
+  "custom_query": "",
+  "custom_css": "",
+  "meeting_data_template": "{{#isTemporarilyClosed this}}\r\n    <div class='temporarilyClosed'><span class='glyphicon glyphicon-flag'></span> {{temporarilyClosed this}}</div>\r\n{{/isTemporarilyClosed}}\r\n<div class='meeting-name'>{{this.meeting_name}}</div>\r\n<div class='location-text'>{{this.location_text}}</div>\r\n<div class='meeting-address'>{{this.formatted_address}}</div>\r\n<div class='location-information'>{{this.formatted_location_info}}</div>\r\n{{#if this.virtual_meeting_additional_info}}\r\n    <div class='meeting-additional-info'>{{this.virtual_meeting_additional_info}}</div>\r\n{{/if}}",
+  "metadata_template": "{{#isVirtualOrHybrid this}}\r\n    {{#isHybrid this}}\r\n        <div class='meetsVirtually'><span class='glyphicon glyphicon-cloud-upload'></span> {{meetsHybrid this}}</div>\r\n    {{else}}\r\n        <div class='meetsVirtually'><span class='glyphicon glyphicon-cloud'></span> {{meetsVirtually this}}</div>\r\n    {{/isHybrid}}\r\n    {{#if this.virtual_meeting_link}}\r\n        <div><span class='glyphicon glyphicon-globe'></span> {{webLinkify this.virtual_meeting_link}}</div>\r\n        {{#if this.show_qrcode}}\r\n            <div class='qrcode'>{{qrCode this.virtual_meeting_link}}</div>\r\n        {{/if}}\r\n    {{/if}}\r\n    {{#if this.phone_meeting_number}}\r\n        <div><span class='glyphicon glyphicon-earphone'></span> {{phoneLinkify this.phone_meeting_number}}</div>\r\n        {{#if this.show_qrcode}}\r\n            <div class='qrcode'>{{qrCode this.phone_meeting_number}}</div>\r\n        {{/if}}\r\n    {{/if}}\r\n{{/isVirtualOrHybrid}}\r\n{{#isNotTemporarilyClosed this}}\r\n    {{#unless (hasFormats 'VM' this)}}\r\n        <div>\r\n            <a id='map-button' class='btn btn-primary btn-xs'\r\n                href='https://www.google.com/maps/search/?api=1&query={{this.latitude}},{{this.longitude}}&q={{this.latitude}},{{this.longitude}}'\r\n                target='_blank' rel='noopener noreferrer'>\r\n                <span class='glyphicon glyphicon-map-marker'></span> {{this.map_word}}</a>\r\n        </div>\r\n        <div class='geo hide'>{{this.latitude}},{{this.longitude}}</div>\r\n    {{/unless}}\r\n{{/isNotTemporarilyClosed}}",
+  "theme": "",
+  "recurse_service_bodies": "0",
+  "extra_meetings": [],
+  "extra_meetings_enabled": "0",
+  "google_api_key": ""
+}
+EOF
+END
+cat << END >> /var/www/html/crouton2x.php
+<?php exec('/bin/sh /var/www/html/crouton2x.sh');
+END
+cat << END >> /var/www/html/crouton3x.php
+<?php exec('/bin/sh /var/www/html/crouton3x.sh');
+END
 
 apache2-foreground
 

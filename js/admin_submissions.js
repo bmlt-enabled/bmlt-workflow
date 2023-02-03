@@ -453,6 +453,9 @@ jQuery(document).ready(function ($) {
     ],
   });
 
+  $("#dt-submission_wrapper .dt-buttons").append("Filter: <select id='dt-submission-filters'><option value=''>All</option><option value='pending'>Pending</option><option value='approved'>Approved</option><option value='rejected'>Rejected</option></select>");
+
+  
   $("#dt-submission")
     .DataTable()
     .on("select deselect", function () {

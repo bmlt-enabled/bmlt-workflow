@@ -56,7 +56,7 @@ function getFileDownloadPath(download) {
 
 let downloadedFilePath = null;
 
-fixture`admin_options_fixture`
+fixture`bmlt3x_admin_options_fixture`
   .before(async (t) => {
     await reset_bmlt3x(t);
   })
