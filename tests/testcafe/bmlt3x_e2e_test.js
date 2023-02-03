@@ -30,6 +30,7 @@ import { reset_bmlt3x,
   select_dropdown_by_value, 
   bmltwf_admin_wpsinglebmlt3x, 
   waitfor,
+  crouton3x
    } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
@@ -42,7 +43,7 @@ fixture`bmlt3x_e2e_test_fixture`
     await reset_bmlt3x_with_states_off(t);
 
     await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x","8001")
-
+    await crouton3x(t);
     await waitfor(userVariables.admin_logon_page_wpsinglebmlt3x);
   });
 
@@ -175,7 +176,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
   // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
+  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
 
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
@@ -273,7 +274,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
   // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
+  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
 
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 

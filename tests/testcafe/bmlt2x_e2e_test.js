@@ -1,53 +1,51 @@
 // Copyright (C) 2022 nigel.bmlt@gmail.com
-//
+// 
 // This file is part of bmlt-workflow.
-//
+// 
 // bmlt-workflow is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // bmlt-workflow is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//
+// 
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
 import { ct } from "./models/crouton";
-
 import { Selector, Role } from "testcafe";
 
-import {
+import { reset_bmlt, 
+  waitfor,
   restore_from_backup,
-//   reset_bmlt,
-  reset_bmlt3x_with_auto_geocoding_off,
-  select_dropdown_by_text,
-  select_dropdown_by_value,
-  click_table_row_column,
-  click_dt_button_by_index,
-  click_dialog_button_by_index,
+  click_table_row_column, 
+  click_dt_button_by_index, 
+  click_dialog_button_by_index, 
+  select_dropdown_by_text, 
+  select_dropdown_by_value, 
   bmltwf_admin,
-} from "./helpers/helper.js";
-
+  reset_bmlt2x, 
+  crouton2x
+   } from "./helpers/helper.js";
+  
 import { userVariables } from "../../.testcaferc";
 
-fixture`geocoding_tests_fixture`
-  .before(async (t) => {
-})
+fixture`bmlt2x_e2e_test_fixture`
+  // .page(userVariables.admin_submissions_page_single)
   .beforeEach(async (t) => {
-    // await reset_bmlt(t);
-    await reset_bmlt3x_with_auto_geocoding_off(t);
-
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, "bmlt3x", "8001");
-
-    await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+    await reset_bmlt2x(t);
+    await crouton2x(t);
+    await waitfor(userVariables.admin_logon_page_single);
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt2x","8000");
+  
   });
 
-test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
+test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
   var meeting = {
     location_text: "the church",
     location_street: "105 avoca street",
@@ -56,7 +54,6 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
     location_province: "nsw",
     location_postal_code_1: "2032",
   };
-
 
   await t.navigateTo(userVariables.formpage);
 
@@ -171,7 +168,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", { timeout: 10000 });
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
@@ -202,11 +199,12 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
     .expect(ct.phone_meeting_number.innerText)
     .eql(meeting.phone_meeting_number)
     .expect(ct.virtual_meeting_link.innerText)
-    .eql(meeting.virtual_meeting_link);
+    .eql(meeting.virtual_meeting_link)
+    .expect(ct.bmlt_day.innerText)
+    .eql("Monday");
 });
 
-test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
-
+test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
   await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
@@ -229,6 +227,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
     .typeText(uf.email_address, "test@test.com.zz")
     .typeText(uf.contact_number_confidential, "`12345`")
     .typeText(uf.location_text, "location")
+
     .typeText(uf.meeting_name, "update", { replace: true })
     // make sure highlighting is present
     .expect(uf.meeting_name.hasClass("bmltwf-changed"))
@@ -265,9 +264,9 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
   await click_dialog_button_by_index(as.approve_dialog_parent, 1);
   // dialog closes after ok button
   await t.expect(as.approve_dialog_parent.visible).eql(false);
-  // await t.debug();
+
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", { timeout: 10000 }, { timeout: 10000 });
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 50000});
 
   // check meeting shows up in crouton
   await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
@@ -280,22 +279,3 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
   await t.expect(ct.meeting_name.innerText).eql("update");
 });
 
-test("Approve_New_Meeting_No_Geocoding", async (t) => {
-
-  await t.eval(() => location.reload(true));
-
-  // new meeting = row 2
-  var row = 2;
-  await click_table_row_column(as.dt_submission, row, 0);
-
-  // quickedit
-  await click_dt_button_by_index(as.dt_submission_wrapper, 2);
-  // geocode div should be invisible
-  await t.expect(as.optional_auto_geocode_enabled.visible).eql(false);
-
-  // // check the geocode button is disabled
-  // var g = as.quickedit_dialog_parent.find("button").nth(2);
-  // console.log(g.hasAttribute("disabled"));
-  // console.log(as.quickedit_dialog_parent.find("button").nth(2).hasAttribute("disabled"));
-  // await t.expect(g.withAttribute("disabled").exists).ok();
-});

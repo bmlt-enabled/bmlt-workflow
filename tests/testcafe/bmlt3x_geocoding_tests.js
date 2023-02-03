@@ -31,7 +31,8 @@ import {
   click_dt_button_by_index,
   click_dialog_button_by_index,
   bmltwf_admin_wpsinglebmlt3x,
-  waitfor
+  waitfor,
+  crouton3x
 } from "./helpers/helper.js";
 
 import { userVariables } from "../../.testcaferc";
@@ -39,10 +40,12 @@ import { userVariables } from "../../.testcaferc";
 fixture`bmlt3x_geocoding_tests_fixture`
   .before(async (t) => {})
   .beforeEach(async (t) => {
-    // await reset_bmlt3x(t);
+
     await reset_bmlt3x_with_auto_geocoding_off(t);
+    await crouton3x(t);
+
     await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x", "8001");
-    // await t.debug();
+
   });
 
 test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
@@ -172,7 +175,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled",
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", { timeout: 10000 });
 
   // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
+  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
 
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
@@ -255,7 +258,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disable
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", { timeout: 10000 });
 
   // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
+  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
 
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
@@ -263,4 +266,24 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disable
   await t.pressKey("enter");
 
   await t.expect(ct.meeting_name.innerText).eql("update");
+});
+
+test("Bmlt3x_Approve_New_Meeting_No_Geocoding", async (t) => {
+
+  await t.eval(() => location.reload(true));
+
+  // new meeting = row 2
+  var row = 2;
+  await click_table_row_column(as.dt_submission, row, 0);
+
+  // quickedit
+  await click_dt_button_by_index(as.dt_submission_wrapper, 2);
+  // geocode div should be invisible
+  await t.expect(as.optional_auto_geocode_enabled.visible).eql(false);
+
+  // // check the geocode button is disabled
+  // var g = as.quickedit_dialog_parent.find("button").nth(2);
+  // console.log(g.hasAttribute("disabled"));
+  // console.log(as.quickedit_dialog_parent.find("button").nth(2).hasAttribute("disabled"));
+  // await t.expect(g.withAttribute("disabled").exists).ok();
 });

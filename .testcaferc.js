@@ -124,9 +124,11 @@ module.exports = {
     reset_bmlt3x_with_states_off: "docker compose -f ../bmlt3x/docker/docker-compose.yml --env-file ../bmlt3x/docker/bmlt.env stop bmlt3x; docker compose -f ../bmlt3x/docker/docker-compose.yml --env-file ../bmlt3x/docker/bmlt.env up --detach bmlt3x",
 
     crouton_page: siteurl_single+croutonpage,
-    crouton3x_page: siteurl_wpsinglebmlt3x+croutonpage,
     waitfor: "sh docker/wait-for.sh",
     bmlt2x_login_page: "http://localhost:8000/main_server/index.php",
-    bmlt3x_login_page: "http://localhost:8001/main_server/index.php"
+    bmlt3x_login_page: "http://localhost:8001/main_server/index.php",
+
+    crouton2x: siteurl_single+"/crouton2x.php",
+    crouton3x: siteurl_single+"/crouton3x.php"
   },
 };
