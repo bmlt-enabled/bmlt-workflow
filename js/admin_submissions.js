@@ -133,27 +133,30 @@ jQuery(document).ready(function ($) {
       }
     }
 
-    // some special handling for deletion of fields    
+    // some special handling for deletion of fields
     for (var key in changes_requested) {
       switch (key) {
         case "original_virtual_meeting_additional_info":
-          if ((!("virtual_meeting_additional_info" in changes_requested)||(changes_requested["virtual_meeting_additional_info"]==="")) && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+          if (
+            (!("virtual_meeting_additional_info" in changes_requested) || changes_requested["virtual_meeting_additional_info"] === "") &&
+            bmltwf_remove_virtual_meeting_details_on_venue_change === "true"
+          ) {
             changes_requested["virtual_meeting_additional_info"] = "(deleted)";
           }
           break;
         case "original_phone_meeting_number":
-          if ((!("phone_meeting_number" in changes_requested)||(changes_requested["phone_meeting_number"]==="")) && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+          if ((!("phone_meeting_number" in changes_requested) || changes_requested["phone_meeting_number"] === "") && bmltwf_remove_virtual_meeting_details_on_venue_change === "true") {
             changes_requested["phone_meeting_number"] = "(deleted)";
           }
           break;
         case "original_virtual_meeting_link":
-          if ((!("virtual_meeting_link" in changes_requested)||(changes_requested["virtual_meeting_link"]===""))&& (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+          if ((!("virtual_meeting_link" in changes_requested) || changes_requested["virtual_meeting_link"] === "") && bmltwf_remove_virtual_meeting_details_on_venue_change === "true") {
             changes_requested["virtual_meeting_link"] = "(deleted)";
           }
           break;
       }
     }
-    
+
     Object.keys(changes_requested).forEach((element) => {
       if ($("#quickedit_" + element).length) {
         if (element === "format_shared_id_list") {
@@ -172,7 +175,6 @@ jQuery(document).ready(function ($) {
     $("#quickedit_format_shared_id_list").on("change.bmltwf-highlight", function () {
       $(".quickedit_format_shared_id_list-select2").addClass("bmltwf-changed");
     });
-
   }
 
   function populate_and_open_quickedit(id) {
@@ -236,7 +238,6 @@ jQuery(document).ready(function ($) {
       add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
       $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
     }
-
   }
 
   // function clear_notices() {
@@ -275,7 +276,7 @@ jQuery(document).ready(function ($) {
   var datatable = $("#dt-submission").DataTable({
     dom: "Bfrtip",
     select: true,
-    searching: false,
+    searching: true,
     order: [[5, "desc"]],
     buttons: [
       {
@@ -431,7 +432,7 @@ jQuery(document).ready(function ($) {
         defaultContent: "",
         render: function (data, type, row) {
           if (data === null) {
-            return "";
+            return "None - Pending";
           }
           switch (data) {
             case "approved":
@@ -453,9 +454,38 @@ jQuery(document).ready(function ($) {
     ],
   });
 
-  $("#dt-submission_wrapper .dt-buttons").append("Filter: <select id='dt-submission-filters'><option value=''>All</option><option value='pending'>Pending</option><option value='approved'>Approved</option><option value='rejected'>Rejected</option></select>");
+  $("#dt-submission_wrapper .dt-buttons").append(
+    "Filter: <select id='dt-submission-filters'><option value='all'>All</option><option value='pending'>Pending</option><option value='approved'>Approved</option><option value='rejected'>Rejected</option></select>"
+  );
+  $("#dt-submission-filters").change(function (e) {
+    $("#dt-submission").DataTable().draw();
+  });
 
-  
+  // filter on column 8
+  $.fn.dataTable.ext.search.push(
+    function (settings, data, dataIndex) {
+      var selectedItem = $('#dt-submission-filters').val()
+      var category = data[8];
+      if(selectedItem === "all")
+      {
+        return true;
+      }
+      if(selectedItem === "pending" &&  category.includes("Pending"))
+      {
+        return true;
+      }
+      if(selectedItem === "approved" &&  category.includes("Approved"))
+      {
+        return true;
+      }
+      if(selectedItem === "rejected" &&  category.includes("Rejects"))
+      {
+        return true;
+      }
+      return false;
+    }
+  );
+
   $("#dt-submission")
     .DataTable()
     .on("select deselect", function () {
@@ -490,7 +520,6 @@ jQuery(document).ready(function ($) {
 
   // child rows
   function format(rows) {
-
     // clone the requested info
     d = $.extend(true, {}, rows);
 
@@ -524,21 +553,21 @@ jQuery(document).ready(function ($) {
 
     c = d["changes_requested"];
 
-    // some special handling for deletion of fields    
+    // some special handling for deletion of fields
     for (var key in c) {
       switch (key) {
         case "original_virtual_meeting_additional_info":
-          if ((!("virtual_meeting_additional_info" in c)||c["virtual_meeting_additional_info"]==="") && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+          if ((!("virtual_meeting_additional_info" in c) || c["virtual_meeting_additional_info"] === "") && bmltwf_remove_virtual_meeting_details_on_venue_change === "true") {
             d["changes_requested"]["virtual_meeting_additional_info"] = "(deleted)";
           }
           break;
         case "original_phone_meeting_number":
-          if ((!("phone_meeting_number" in c)||c["phone_meeting_number"]==="") && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+          if ((!("phone_meeting_number" in c) || c["phone_meeting_number"] === "") && bmltwf_remove_virtual_meeting_details_on_venue_change === "true") {
             d["changes_requested"]["phone_meeting_number"] = "(deleted)";
           }
           break;
         case "original_virtual_meeting_link":
-          if ((!("virtual_meeting_link" in c)||c["virtual_meeting_link"]==="") && (bmltwf_remove_virtual_meeting_details_on_venue_change==='true')) {
+          if ((!("virtual_meeting_link" in c) || c["virtual_meeting_link"] === "") && bmltwf_remove_virtual_meeting_details_on_venue_change === "true") {
             d["changes_requested"]["virtual_meeting_link"] = "(deleted)";
           }
           break;
@@ -558,13 +587,10 @@ jQuery(document).ready(function ($) {
           break;
         case "venue_type":
           vtype = venue_types[c[key]];
-          if("original_venue_type" in c)
-          {
+          if ("original_venue_type" in c) {
             ovtype = venue_types[c["original_venue_type"]];
             table += column(col_meeting_details, "Venue Type", ovtype + " → " + vtype);
-          }
-          else
-          {
+          } else {
             table += column(col_meeting_details, "Venue Type", vtype);
           }
           break;
@@ -880,9 +906,8 @@ jQuery(document).ready(function ($) {
           duration_hours = $(this).val();
         } else if (short_id === "duration_minutes") {
           duration_minutes = $(this).val();
-        } else if ((short_id === "virtual_meeting_additional_info")||(short_id === "phone_meeting_number")||(short_id === "virtual_meeting_link")){
-          if($(this).val() === "(deleted)")
-          {
+        } else if (short_id === "virtual_meeting_additional_info" || short_id === "phone_meeting_number" || short_id === "virtual_meeting_link") {
+          if ($(this).val() === "(deleted)") {
             delete quickedit_changes_requested[short_id];
           }
         } else {
