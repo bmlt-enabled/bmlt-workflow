@@ -289,9 +289,6 @@ class SubmissionsHandler
     {
         global $wpdb;
 
-
-        $this->debug_log("REQUEST");
-        $this->debug_log(($request));
         // body parameters
         $params = $request->get_json_params();
         // url parameters from parsed route
@@ -324,7 +321,7 @@ class SubmissionsHandler
         // handle request to add email
         $submitter_email = $result['submitter_email'];
         $submitter_name = $result['submitter_name'];
-        $submitter_phone = $result['contact_number'];
+        $submitter_phone = $change['contact_number']??'';
 
         $add_contact = false;
         if ((!empty($change['add_contact'])) && ($change['add_contact'] === 'yes')) {
