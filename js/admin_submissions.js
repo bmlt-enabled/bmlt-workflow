@@ -645,11 +645,11 @@ jQuery(document).ready(function ($) {
           // table += column(col_fso_other, "Other Reason", '<div class="grow-wrap"><textarea disabled onInput="this.parentNode.dataset.replicatedValue = this.value">' + c[key] + '</textarea></div>');
           table += column(col_fso_other, "Other Reason", c[key]);
           break;
-        case "contact_number_confidential":
+        case "contact_number":
           table += column(col_personal_details, "Contact number (confidential)", c[key]);
           break;
-        case "add_email":
-          table += column(col_personal_details, "Add email to meeting", d["changes_requested"].add_email === "yes" ? "Yes" : "No");
+        case "add_contact":
+          table += column(col_personal_details, "Add contact details to meeting", d["changes_requested"].add_contact === "yes" ? "Yes" : "No");
           break;
         case "virtual_meeting_additional_info":
           table += column(col_virtual_meeting_details, "Virtual Meeting Additional Info", c[key]);

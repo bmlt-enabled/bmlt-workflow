@@ -323,9 +323,12 @@ class SubmissionsHandler
 
         // handle request to add email
         $submitter_email = $result['submitter_email'];
-        $add_email = false;
-        if ((!empty($change['add_email'])) && ($change['add_email'] === 'yes')) {
-            $add_email = true;
+        $submitter_name = $result['submitter_name'];
+        $submitter_phone = $result['contact_number'];
+
+        $add_contact = false;
+        if ((!empty($change['add_contact'])) && ($change['add_contact'] === 'yes')) {
+            $add_contact = true;
         }
 
         // strip out anything that somehow made it this far, before we send it to bmlt
@@ -357,12 +360,11 @@ class SubmissionsHandler
             }
         }
 
-        if ($add_email === true) {
+        if ($add_contact === true) {
             $change['contact_email_1'] = $submitter_email;
+            $change['contact_name_1'] = $submitter_name;
+            $change['contact_phone_1'] = $submitter_phone;
         }
-
-        // $this->debug_log("json decoded");
-        // $this->debug_log(($change));
 
         // approve based on different change types
         $submission_type = $result['submission_type'];
@@ -737,7 +739,7 @@ class SubmissionsHandler
             "weekday_tinyint" => array("weekday", $reason_new_bool),
             "service_body_bigint" => array("bigint", $reason_new_bool),
             "email_address" => array("email", true),
-            "contact_number_confidential" => array("text", false),
+            "contact_number" => array("text", false),
             // optional #93
             "format_shared_id_list" => array("commaseperatednumbers",  $reason_new_bool && $require_meeting_formats),
             "additional_info" => array("textarea", $reason_close_bool),
@@ -749,7 +751,7 @@ class SubmissionsHandler
             // postcode can be a text format #78
             "location_postal_code_1" => array("text", $reason_new_bool && $require_postcode),
             "group_relationship" => array("text", true),
-            "add_email" => array("yesno", true),
+            "add_contact" => array("yesno", true),
             "virtual_meeting_additional_info" => array("text", false),
             "phone_meeting_number" => array("text", false),
             "virtual_meeting_link" => array("url", false),
@@ -862,9 +864,9 @@ class SubmissionsHandler
                     "weekday_tinyint",
                     "service_body_bigint",
                     "format_shared_id_list",
-                    "contact_number_confidential",
+                    "contact_number",
                     "group_relationship",
-                    "add_email",
+                    "add_contact",
                     "additional_info",
                     "virtual_meeting_additional_info",
                     "phone_meeting_number",
@@ -912,9 +914,9 @@ class SubmissionsHandler
                 );
 
                 $allowed_fields_extra = array(
-                    "contact_number_confidential",
+                    "contact_number",
                     "group_relationship",
-                    "add_email",
+                    "add_contact",
                     "additional_info",
                 );
 
@@ -989,9 +991,9 @@ class SubmissionsHandler
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
-                    "contact_number_confidential",
+                    "contact_number",
                     "group_relationship",
-                    "add_email",
+                    "add_contact",
                     "service_body_bigint",
                     "additional_info",
                 );
@@ -1161,10 +1163,10 @@ class SubmissionsHandler
                 case "other_reason":
                     $table .= '<tr><td>Other Reason:</td><td>' . $value . '</td></tr>';
                     break;
-                case "contact_number_confidential":
+                case "contact_number":
                     $table .= "<tr><td>Contact number (confidential):</td><td>" . $value . '</td></tr>';
                     break;
-                case "add_email":
+                case "add_contact":
                     $result = ($value === 'yes' ? 'Yes' : 'No');
                     $table .= '<tr><td>Add email to meeting:</td><td>' . $result . '</td></tr>';
                     break;
