@@ -890,8 +890,6 @@ jQuery(document).ready(function ($) {
     quickedit_changes_requested = {};
 
     clear_notices();
-    var duration_hours = "00";
-    var duration_minutes = "00";
 
     // pull out all the changed elements
     $(".bmltwf-changed").each(function () {
@@ -902,10 +900,9 @@ jQuery(document).ready(function ($) {
           quickedit_changes_requested[short_id] = $(this).val().join(",");
         }
         // reconstruct our duration from the select list
-        else if (short_id === "duration_hours") {
-          duration_hours = $(this).val();
-        } else if (short_id === "duration_minutes") {
-          duration_minutes = $(this).val();
+        else if ((short_id === "duration_hours")||(short_id === "duration_minutes")) {
+          // add duration entirely if either minutes or hours have changed
+          quickedit_changes_requested["duration_time"] = $("#quickedit_duration_hours").val() + ":" + $("#quickedit_duration_minutes").val() + ":00";
         } else if (short_id === "virtual_meeting_additional_info" || short_id === "phone_meeting_number" || short_id === "virtual_meeting_link") {
           if ($(this).val() === "(deleted)") {
             delete quickedit_changes_requested[short_id];
@@ -915,8 +912,6 @@ jQuery(document).ready(function ($) {
         }
       }
     });
-
-    quickedit_changes_requested["duration_time"] = duration_hours + ":" + duration_minutes + ":00";
 
     parameters["changes_requested"] = quickedit_changes_requested;
 
