@@ -157,7 +157,7 @@ if (!class_exists('bmltwf_plugin')) {
             $response = rest_do_request($request);
             $result = rest_get_server()->response_to_data($response, true);
             if (count($result) == 0) {
-                wp_die("<h4>BMLTWF Plugin Error: Service bodies not configured.</h4>");
+                wp_die("<h4>BMLT Workflow Plugin Error: Service bodies not configured.</h4>");
             }
             $script .= 'var bmltwf_service_bodies = ' . json_encode($result) . '; ';
 
