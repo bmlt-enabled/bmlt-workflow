@@ -58,7 +58,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled",
     location_postal_code_1: "2032",
   };
 
-  await waitfor(userVariables.admin_logon_page_wpsinglebmlt3x);
+  await waitfor(userVariables.admin_logon_page_single);
   await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_new");
@@ -272,7 +272,8 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disable
 
 test("Bmlt3x_Approve_New_Meeting_No_Geocoding", async (t) => {
 
-  await t.eval(() => location.reload(true));
+  // await t.eval(() => location.reload(true));
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 
   // new meeting = row 2
   var row = 2;
