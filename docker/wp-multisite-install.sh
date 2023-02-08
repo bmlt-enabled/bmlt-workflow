@@ -30,8 +30,6 @@ RewriteRule ^([_0-9a-zA-Z-]+/)?(.*\.php)$ \$2 [L]
 RewriteRule . index.php [L]
 EOF
 
-cd /tmp
-
 sed -i -e "s/RewriteBase \/placeholder\//RewriteBase \/$WORDPRESS_HOST\//" $sitelocalpath/.htaccess
 
 wp db create

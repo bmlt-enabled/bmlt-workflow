@@ -23,16 +23,15 @@ import { Selector, Role } from "testcafe";
 
 import {
   restore_from_backup,
-  // reset_bmlt3x,
   reset_bmlt3x_with_auto_geocoding_off,
   select_dropdown_by_text,
   select_dropdown_by_value,
   click_table_row_column,
   click_dt_button_by_index,
   click_dialog_button_by_index,
-  bmltwf_admin_wpsinglebmlt3x,
   waitfor,
-  crouton3x
+  crouton3x,
+  bmltwf_admin
 } from "./helpers/helper.js";
 
 import { userVariables } from "../../.testcaferc";
@@ -44,7 +43,8 @@ fixture`bmlt3x_geocoding_tests_fixture`
     await reset_bmlt3x_with_auto_geocoding_off(t);
     await crouton3x(t);
 
-    await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x", "8001");
+    // await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x", "8001");
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
 
   });
 
@@ -59,7 +59,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled",
   };
 
   await waitfor(userVariables.admin_logon_page_wpsinglebmlt3x);
-  await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
+  await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 
@@ -155,7 +155,8 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled",
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
+  // await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 
   // new meeting = row 0
   var row = 0;
@@ -195,7 +196,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled",
 
 test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
   //console.log("hi1");
-  await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
+  await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
@@ -238,7 +239,8 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disable
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
+  // await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 
   // new meeting = row 0
   var row = 0;

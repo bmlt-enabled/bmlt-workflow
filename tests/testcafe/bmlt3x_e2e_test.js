@@ -28,23 +28,23 @@ import { reset_bmlt3x,
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
-  bmltwf_admin_wpsinglebmlt3x, 
   waitfor,
-  crouton3x
+  crouton3x,
+  bmltwf_admin
    } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
 
 fixture`bmlt3x_e2e_test_fixture`
-  // .page(userVariables.admin_submissions_page_wpsinglebmlt3x)
   .before(async (t) => {
   })
   .beforeEach(async (t) => {
     await reset_bmlt3x_with_states_off(t);
 
-    await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x","8001")
+    // await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x","8001")
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
     await crouton3x(t);
-    await waitfor(userVariables.admin_logon_page_wpsinglebmlt3x);
+    await waitfor(userVariables.admin_logon_page_single);
   });
 
 test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
@@ -57,7 +57,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     location_postal_code_1: "2032",
   };
 
-  await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
+  await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 // await t.debug();
@@ -156,7 +156,8 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+  // await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
 
   // new meeting = row 0
   var row = 0;
@@ -211,7 +212,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
 });
 
 test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
-  await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
+  await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
@@ -254,7 +255,8 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
+  // await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 
   // new meeting = row 0
   var row = 0;

@@ -53,13 +53,6 @@ export const bmltwf_admin_multinetwork = Role(userVariables.admin_logon_page_mul
   await t.typeText(wordpress_login.user_login, userVariables.admin_logon_multinetwork).typeText(wordpress_login.user_pass, userVariables.admin_password_multinetwork).click(wordpress_login.wp_submit);
 });
 
-export const bmltwf_admin_wpsinglebmlt3x = Role(userVariables.admin_logon_page_wpsinglebmlt3x, async (t) => {
-  await t
-    .typeText(wordpress_login.user_login, userVariables.admin_logon_wpsinglebmlt3x)
-    .typeText(wordpress_login.user_pass, userVariables.admin_password_wpsinglebmlt3x)
-    .click(wordpress_login.wp_submit);
-});
-
 export async function select_dropdown_by_id(element, id) {
   await t.click(element).click(element.find("option").withAttribute("id", id));
 }

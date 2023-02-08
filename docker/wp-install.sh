@@ -77,7 +77,6 @@ rm /var/log/php_errors.log
 touch /var/log/php_errors.log
 chmod 777 /var/log/php_errors.log
 
-cd /tmp
 sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /etc/apache2/sites-enabled/000-default.conf 
 sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /etc/apache2/sites-available/000-default.conf 
 sed -i "s/Listen 80/Listen $WORDPRESS_PORT/g" /etc/apache2/ports.conf 
