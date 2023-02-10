@@ -254,7 +254,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <legend>Personal Details (Confidential)</legend>
                     <label for="first_name">First Name<span class="bmltwf-required-field">*</span></label>
                     <input type="text" name="first_name" size="20" id="first_name" required>
-                    <label for="last_name">Last Name<span class="bmltwf-required-field">*</span></label>
+                    <label for="last_name">Last Initial<span class="bmltwf-required-field">*</span></label>
                     <input type="text" name="last_name" size="20" id="last_name" required>
                     <label for="email_address">Email Address<span class="bmltwf-required-field">*</span></label>
                     <input type="email" name="email_address" id="email_address" size="50" required>
