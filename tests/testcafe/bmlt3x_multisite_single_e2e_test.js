@@ -28,19 +28,18 @@ import { reset_bmlt3x,
   select_dropdown_by_value, 
   waitfor,
   restore_from_backup,
-  bmltwf_admin_multinetwork,
+  crouton3x,
   bmltwf_admin_multisingle } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
 
-fixture`multisite_single_e2e_test_fixture`
+fixture`bmlt3x_multisite_single_e2e_test_fixture`
   // .page(userVariables.admin_submissions_page_single)
   .before(async(t)=> {
   })
   .beforeEach(async (t) => {
     await reset_bmlt3x(t);
-    await waitfor(userVariables.admin_logon_page_multinetwork);
-    await restore_from_backup(bmltwf_admin_multinetwork, userVariables.admin_settings_page_multinetwork_plugin, userVariables.admin_restore_json_multinetwork_plugin,"bmlt3x","8001");
+    await crouton3x(t);
     await waitfor(userVariables.admin_logon_page_multisingle);
     await restore_from_backup(bmltwf_admin_multisingle, userVariables.admin_settings_page_multisingle_plugin, userVariables.admin_restore_json_multisingle_plugin,"bmlt3x","8001");
   });
@@ -73,11 +72,11 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve_And_Verify", async (t) => 
     .eql(true);
 
   // personal details
-  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number_confidential, "`12345`");
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "`12345`");
 
   // email dropdown
-  await select_dropdown_by_text(uf.add_email, "Yes");
-  await t.expect(uf.add_email.value).eql("yes");
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
 
   // group member dropdown
   await select_dropdown_by_value(uf.group_relationship, "Group Member");
@@ -225,7 +224,7 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) 
     .typeText(uf.first_name, "first")
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
-    .typeText(uf.contact_number_confidential, "`12345`")
+    .typeText(uf.contact_number, "`12345`")
     .typeText(uf.location_text, "location")
 
     .typeText(uf.meeting_name, "update", { replace: true })
@@ -234,8 +233,8 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) 
     .ok();
 
   // email dropdown
-  await select_dropdown_by_text(uf.add_email, "Yes");
-  await t.expect(uf.add_email.value).eql("yes");
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
 
   // group member dropdown
   await select_dropdown_by_value(uf.group_relationship, "Group Member");

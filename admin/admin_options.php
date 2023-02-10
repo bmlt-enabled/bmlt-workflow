@@ -31,6 +31,7 @@ echo '<div class="bmltwf_banner"></div>';
 wp_nonce_field('wp_rest', '_wprestnonce');
 echo '<hr class="bmltwf-error-message">';
 echo '<div class="wrap"><h5 align="right">Plugin Version: '.BMLTWF_PLUGIN_VERSION.'</h5>';
+echo '<p><h4 align="center">BMLT Workflow issues, bugs or suggestions please raise them on github (<a href="https://github.com/bmlt-enabled/bmlt-workflow/issues">Issues</a>) or chat to us on bmlt-enabled slack, <b>#wordpress-bmlt-workflow</b>!</h4>';
 echo '<form id="bmltwf_options_form" method="post" action="options.php">';
 settings_errors();
 

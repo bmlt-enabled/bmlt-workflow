@@ -28,22 +28,23 @@ import { reset_bmlt3x,
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
-  bmltwf_admin_wpsinglebmlt3x, 
   waitfor,
+  crouton3x,
+  bmltwf_admin
    } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
 
 fixture`bmlt3x_e2e_test_fixture`
-  // .page(userVariables.admin_submissions_page_wpsinglebmlt3x)
   .before(async (t) => {
   })
   .beforeEach(async (t) => {
     await reset_bmlt3x_with_states_off(t);
 
-    await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x","8001")
-
-    await waitfor(userVariables.admin_logon_page_wpsinglebmlt3x);
+    // await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x","8001")
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
+    await crouton3x(t);
+    await waitfor(userVariables.admin_logon_page_single);
   });
 
 test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
@@ -56,7 +57,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     location_postal_code_1: "2032",
   };
 
-  await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
+  await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 // await t.debug();
@@ -77,11 +78,11 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
   await t.typeText(uf.first_name, "first")
   .typeText(uf.last_name, "last")
   .typeText(uf.email_address, "test@test.com.zz")
-  .typeText(uf.contact_number_confidential, "`12345`");
+  .typeText(uf.contact_number, "`12345`");
 
   // email dropdown
-  await select_dropdown_by_text(uf.add_email, "Yes");
-  await t.expect(uf.add_email.value).eql("yes");
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
 
   // group member dropdown
   await select_dropdown_by_value(uf.group_relationship, "Group Member");
@@ -155,7 +156,8 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+  // await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
 
   // new meeting = row 0
   var row = 0;
@@ -175,7 +177,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
   // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
+  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
 
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 
@@ -210,7 +212,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
 });
 
 test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
-  await t.navigateTo(userVariables.formpage_wpsinglebmlt3x);
+  await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
@@ -230,7 +232,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
     .typeText(uf.first_name, "first")
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
-    .typeText(uf.contact_number_confidential, "`12345`")
+    .typeText(uf.contact_number, "`12345`")
     .typeText(uf.location_text, "location")
 
     .typeText(uf.meeting_name, "update", { replace: true })
@@ -239,8 +241,8 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
     .ok();
 
   // email dropdown
-  await select_dropdown_by_text(uf.add_email, "Yes");
-  await t.expect(uf.add_email.value).eql("yes");
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
 
   // group member dropdown
   await select_dropdown_by_value(uf.group_relationship, "Group Member");
@@ -253,7 +255,8 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
+  // await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 
   // new meeting = row 0
   var row = 0;
@@ -273,7 +276,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
   // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton3x_page);
+  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
 
   await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
 

@@ -53,13 +53,6 @@ export const bmltwf_admin_multinetwork = Role(userVariables.admin_logon_page_mul
   await t.typeText(wordpress_login.user_login, userVariables.admin_logon_multinetwork).typeText(wordpress_login.user_pass, userVariables.admin_password_multinetwork).click(wordpress_login.wp_submit);
 });
 
-export const bmltwf_admin_wpsinglebmlt3x = Role(userVariables.admin_logon_page_wpsinglebmlt3x, async (t) => {
-  await t
-    .typeText(wordpress_login.user_login, userVariables.admin_logon_wpsinglebmlt3x)
-    .typeText(wordpress_login.user_pass, userVariables.admin_password_wpsinglebmlt3x)
-    .click(wordpress_login.wp_submit);
-});
-
 export async function select_dropdown_by_id(element, id) {
   await t.click(element).click(element.find("option").withAttribute("id", id));
 }
@@ -103,7 +96,7 @@ export async function waitfor(site) {
   execSync(userVariables.waitfor + " " + site);
 }
 
-export async function reset_bmlt(t) {
+export async function reset_bmlt2x(t) {
   console.log("resetting bmlt");
   let options = {stdio : 'pipe' };
   execSync(userVariables.blank_bmlt,options);
@@ -120,7 +113,7 @@ export async function reset_bmlt3x(t) {
 }
 
 
-export async function reset_bmlt_with_auto_geocoding_off(t) {
+export async function reset_bmlt2x_with_auto_geocoding_off(t) {
   console.log("turning geocode off");
   let options = {stdio : 'pipe' };
   execSync(userVariables.auto_geocoding_off,options);
@@ -181,7 +174,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         meeting_id: "0",
         service_body_bigint: "1047",
         changes_requested:
-          '{"meeting_name":"my test meeting","start_time":"10:40:00","duration_time":"04:30:00","location_text":"my location","location_street":"110 Avoca Street","location_info":"info","location_municipality":"Randwick","location_province":"NSW","location_postal_code_1":2031,"weekday_tinyint":"2","service_body_bigint":1047,"format_shared_id_list":"1,2,56","contact_number_confidential":"12345","group_relationship":"Group Member","add_email":"yes","additional_info":"my additional info","virtual_meeting_additional_info":"Zoom ID 83037287669 Passcode: testing","phone_meeting_number":"+61 1800 253430 code #8303782669","virtual_meeting_link":"https:\\/\\/us02web.zoom.us\\/j\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09"}',
+          '{"meeting_name":"my test meeting","start_time":"10:40:00","duration_time":"04:30:00","location_text":"my location","location_street":"110 Avoca Street","location_info":"info","location_municipality":"Randwick","location_province":"NSW","location_postal_code_1":2031,"weekday_tinyint":"2","service_body_bigint":1047,"format_shared_id_list":"1,2,56","contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"my additional info","virtual_meeting_additional_info":"Zoom ID 83037287669 Passcode: testing","phone_meeting_number":"+61 1800 253430 code #8303782669","virtual_meeting_link":"https:\\/\\/us02web.zoom.us\\/j\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09"}',
         action_message: null,
       },
       {
@@ -196,7 +189,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         meeting_id: "1601",
         service_body_bigint: "1009",
         changes_requested:
-          '{"meeting_name":"virtualmeeting randwickupdate","contact_number_confidential":"12345","group_relationship":"Group Member","add_email":"yes","additional_info":"my additional info","original_meeting_name":"virtualmeeting randwick","original_weekday_tinyint":"2","original_start_time":"20:30:00"}',
+          '{"meeting_name":"virtualmeeting randwickupdate","contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"my additional info","original_meeting_name":"virtualmeeting randwick","original_weekday_tinyint":"2","original_start_time":"20:30:00"}',
         action_message: null,
       },
       {
@@ -211,7 +204,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         meeting_id: "2560",
         service_body_bigint: "1047",
         changes_requested:
-          '{"contact_number_confidential":"12345","group_relationship":"Group Member","add_email":"yes","service_body_bigint":1047,"additional_info":"my additional info","meeting_name":"virtualmeeting randwick","weekday_tinyint":"2","start_time":"20:30:00"}',
+          '{"contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","service_body_bigint":1047,"additional_info":"my additional info","meeting_name":"virtualmeeting randwick","weekday_tinyint":"2","start_time":"20:30:00"}',
         action_message: null,
       },
     ],
@@ -309,6 +302,15 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
   });
   // console.log(restore_json);
   // console.log(resp);
+}
+
+export async function crouton3x(t) {
+  const resp = await t.request(userVariables.crouton3x);
+}
+
+export async function crouton2x(t) {
+  const resp = await t.request(userVariables.crouton2x);
+
 }
 
 export async function reset_bmlt2x_with_states_off(t) {

@@ -24,25 +24,27 @@ import { Selector, Role } from "testcafe";
 import {
   restore_from_backup,
 //   reset_bmlt,
-  reset_bmlt3x_with_auto_geocoding_off,
+  reset_bmlt2x_with_auto_geocoding_off,
   select_dropdown_by_text,
   select_dropdown_by_value,
   click_table_row_column,
   click_dt_button_by_index,
   click_dialog_button_by_index,
   bmltwf_admin,
+  crouton2x
 } from "./helpers/helper.js";
 
 import { userVariables } from "../../.testcaferc";
 
-fixture`geocoding_tests_fixture`
+fixture`bmlt2x_geocoding_tests_fixture`
   .before(async (t) => {
 })
   .beforeEach(async (t) => {
     // await reset_bmlt(t);
-    await reset_bmlt3x_with_auto_geocoding_off(t);
+    await reset_bmlt2x_with_auto_geocoding_off(t);
 
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, "bmlt3x", "8001");
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, "bmlt2x", "8000");
+    await crouton2x(t);
 
     await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
   });
@@ -76,11 +78,11 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
     .eql(true);
 
   // personal details
-  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number_confidential, "`12345`");
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "`12345`");
 
   // email dropdown
-  await select_dropdown_by_text(uf.add_email, "Yes");
-  await t.expect(uf.add_email.value).eql("yes");
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
 
   // group member dropdown
   await select_dropdown_by_value(uf.group_relationship, "Group Member");
@@ -227,7 +229,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
     .typeText(uf.first_name, "first")
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
-    .typeText(uf.contact_number_confidential, "`12345`")
+    .typeText(uf.contact_number, "`12345`")
     .typeText(uf.location_text, "location")
     .typeText(uf.meeting_name, "update", { replace: true })
     // make sure highlighting is present
@@ -235,8 +237,8 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
     .ok();
 
   // email dropdown
-  await select_dropdown_by_text(uf.add_email, "Yes");
-  await t.expect(uf.add_email.value).eql("yes");
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
 
   // group member dropdown
   await select_dropdown_by_value(uf.group_relationship, "Group Member");

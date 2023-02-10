@@ -251,21 +251,20 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <!-- personal details -->
             <div id="personal_details" class="form-grid-col2-1">
                 <fieldset>
-                    <legend>Personal Details</legend>
+                    <legend>Personal Details (Confidential)</legend>
                     <label for="first_name">First Name<span class="bmltwf-required-field">*</span></label>
                     <input type="text" name="first_name" size="20" id="first_name" required>
-                    <label for="last_name">Last Name<span class="bmltwf-required-field">*</span></label>
+                    <label for="last_name">Last Initial<span class="bmltwf-required-field">*</span></label>
                     <input type="text" name="last_name" size="20" id="last_name" required>
                     <label for="email_address">Email Address<span class="bmltwf-required-field">*</span></label>
                     <input type="email" name="email_address" id="email_address" size="50" required>
-                    <label for="add_email" class="add_email">Add this email as a contact
-                        address for the group</label>
-                    <select name="add_email" id="add_email">
+                    <label for="add_contact" class="add_contact">Add your details as a contact for the group</label>
+                    <select name="add_contact" id="add_contact">
                         <option value="yes">Yes</option>
                         <option value="no" selected>No</option>
                     </select>
-                    <label for="contact_number_confidential">Contact Number (Confidential)</label>
-                    <input type="number" name="contact_number_confidential" id="contact_number_confidential">
+                    <label for="contact_number">Contact Number</label>
+                    <input type="number" name="contact_number" id="contact_number">
                     <label for="group_relationship">Relationship to group<span class="bmltwf-required-field">*</span></label>
                     <select name="group_relationship" id="group_relationship" required>
                         <option value="" disabled selected hidden>Select one</option>

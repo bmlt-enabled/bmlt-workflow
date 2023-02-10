@@ -18,7 +18,6 @@
 import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
 import { ct } from "./models/crouton";
-import { ao } from "./models/admin_options";
 import { Selector, Role } from "testcafe";
 
 import { reset_bmlt, 
@@ -30,17 +29,19 @@ import { reset_bmlt,
   select_dropdown_by_text, 
   select_dropdown_by_value, 
   bmltwf_admin,
-  reset_bmlt3x, 
+  reset_bmlt2x, 
+  crouton2x
    } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
 
-fixture`e2e_test_fixture`
+fixture`bmlt2x_e2e_test_fixture`
   // .page(userVariables.admin_submissions_page_single)
   .beforeEach(async (t) => {
-    await reset_bmlt3x(t);
+    await reset_bmlt2x(t);
+    await crouton2x(t);
     await waitfor(userVariables.admin_logon_page_single);
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt2x","8000");
   
   });
 
@@ -72,11 +73,11 @@ test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
     .eql(true);
 
   // personal details
-  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number_confidential, "`12345`");
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "`12345`");
 
   // email dropdown
-  await select_dropdown_by_text(uf.add_email, "Yes");
-  await t.expect(uf.add_email.value).eql("yes");
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
 
   // group member dropdown
   await select_dropdown_by_value(uf.group_relationship, "Group Member");
@@ -224,7 +225,7 @@ test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
     .typeText(uf.first_name, "first")
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
-    .typeText(uf.contact_number_confidential, "`12345`")
+    .typeText(uf.contact_number, "`12345`")
     .typeText(uf.location_text, "location")
 
     .typeText(uf.meeting_name, "update", { replace: true })
@@ -233,8 +234,8 @@ test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
     .ok();
 
   // email dropdown
-  await select_dropdown_by_text(uf.add_email, "Yes");
-  await t.expect(uf.add_email.value).eql("yes");
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
 
   // group member dropdown
   await select_dropdown_by_value(uf.group_relationship, "Group Member");

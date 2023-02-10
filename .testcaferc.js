@@ -23,7 +23,6 @@ const execSync = require("child_process").execSync;
 const siteurl_single = "http://wordpress-php8-singlesite"
 const siteurl_multisingle = "http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle";
 const siteurl_multinetwork = "http://wordpress-php8-multinetwork:82/wordpress-php8-multinetwork";
-const siteurl_wpsinglebmlt3x = "http://wordpress-php8-singlesite-bmlt3x:83"
 
 const username_single = 'admin';
 const password_single = 'admin';
@@ -35,8 +34,6 @@ const username_multisingle = 'admin';
 const password_multisingle = 'admin';
 const username_multinetwork ='admin';
 const password_multinetwork = 'admin';
-const username_wpsinglebmlt3x = 'admin';
-const password_wpsinglebmlt3x ='admin';
 
 module.exports = {
   browsers: "chrome",
@@ -101,17 +98,6 @@ module.exports = {
     admin_backup_json_multinetwork: siteurl_multinetwork + multisite_plugin + backuppath,
     admin_restore_json_multinetwork_plugin: siteurl_multinetwork + multisite_plugin + admin_restore_json_path,
     admin_restore_json_multinetwork_plugin2: siteurl_multinetwork + multisite_plugin2 + admin_restore_json_path,
-    // bmlt3x
-    formpage_wpsinglebmlt3x: siteurl_wpsinglebmlt3x + formpage,
-    admin_logon_page_wpsinglebmlt3x: siteurl_wpsinglebmlt3x + admin_logon_page,
-    admin_submissions_page_wpsinglebmlt3x: siteurl_wpsinglebmlt3x + admin_submissions_page,
-    admin_service_bodies_page_wpsinglebmlt3x: siteurl_wpsinglebmlt3x + admin_service_bodies_page,
-    admin_settings_page_wpsinglebmlt3x: siteurl_wpsinglebmlt3x + admin_settings_page,
-    admin_options_page_wpsinglebmlt3x: siteurl_wpsinglebmlt3x + admin_options_page,
-    admin_logon_wpsinglebmlt3x: username_wpsinglebmlt3x,
-    admin_password_wpsinglebmlt3x: password_wpsinglebmlt3x,
-    admin_backup_json_wpsinglebmlt3x: siteurl_wpsinglebmlt3x + multisite_plugin + backuppath,
-    admin_restore_json_wpsinglebmlt3x: siteurl_wpsinglebmlt3x + admin_restore_json_path,
 
     // // test case resetters
     blank_bmlt: "export AUTO_GEOCODING_ON=true; export MEETING_STATES_ON=false; docker compose -f ../bmlt2x/docker/docker-compose.yml --env-file ../bmlt2x/docker/bmlt.env down; docker compose -f ../bmlt2x/docker/docker-compose.yml --env-file ../bmlt2x/docker/bmlt.env up --detach",
@@ -124,9 +110,11 @@ module.exports = {
     reset_bmlt3x_with_states_off: "docker compose -f ../bmlt3x/docker/docker-compose.yml --env-file ../bmlt3x/docker/bmlt.env stop bmlt3x; docker compose -f ../bmlt3x/docker/docker-compose.yml --env-file ../bmlt3x/docker/bmlt.env up --detach bmlt3x",
 
     crouton_page: siteurl_single+croutonpage,
-    crouton3x_page: siteurl_wpsinglebmlt3x+croutonpage,
     waitfor: "sh docker/wait-for.sh",
     bmlt2x_login_page: "http://localhost:8000/main_server/index.php",
-    bmlt3x_login_page: "http://localhost:8001/main_server/index.php"
+    bmlt3x_login_page: "http://localhost:8001/main_server/index.php",
+
+    crouton2x: siteurl_single+"/crouton2x.php",
+    crouton3x: siteurl_single+"/crouton3x.php"
   },
 };

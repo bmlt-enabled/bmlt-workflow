@@ -34,8 +34,8 @@ class Meeting_Update_Form {
         this.first_name = Selector('#first_name');
         this.last_name = Selector('#last_name');
         this.email_address = Selector('#email_address');
-        this.add_email = Selector('#add_email');
-        this.contact_number_confidential = Selector('#contact_number_confidential');
+        this.add_contact = Selector('#add_contact');
+        this.contact_number = Selector('#contact_number');
         this.group_relationship = Selector('#group_relationship');
         this.virtual_meeting_options = Selector('#virtual_meeting_options');
         this.venue_type = Selector('#venue_type');

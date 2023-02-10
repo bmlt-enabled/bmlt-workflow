@@ -427,7 +427,7 @@ jQuery(document).ready(function ($) {
     clear_field("location_nation");
     clear_field("first_name");
     clear_field("last_name");
-    clear_field("contact_number_confidential");
+    clear_field("contact_number");
     clear_field("email_address");
     clear_field("display_format_shared_id_list");
     clear_field("meeting_id");
