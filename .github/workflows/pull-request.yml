@@ -30,14 +30,14 @@ jobs:
         id: install-dependencies
         uses: php-actions/composer@v5
         with:
-          php_version: 8.1
+          php_version: 8.0
           args: --prefer-dist --no-progress --no-suggest
 
       - name: PHP Unit Test
         id: php-unit-test
         uses: php-actions/phpunit@v3
         with:
-          php_version: 8.1
+          php_version: 8.0
 
       - uses: act10ns/slack@v1
         with:
