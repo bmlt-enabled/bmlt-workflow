@@ -22,7 +22,8 @@ import { ao } from "./models/admin_options";
 import { t, Selector } from "testcafe";
 import { asb } from "./models/admin_service_bodies";
 
-fixture`bmlt3x_multisite_tests_fixture`.beforeEach(async (t) => {
+fixture`bmlt3x_multisite_tests_fixture`
+.beforeEach(async (t) => {
   await waitfor(userVariables.admin_logon_page_multisingle);
 });
 

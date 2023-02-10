@@ -57,7 +57,8 @@ test("Approve_New_Meeting", async (t) => {
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
+  t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 });
 
 test("Approve_Modify_Meeting", async (t) => {
