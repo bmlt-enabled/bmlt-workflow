@@ -39,6 +39,7 @@ jobs:
         uses: php-actions/phpunit@v3
         with:
           php_version: 8.0
+          version: 9.5.21
 
       - uses: act10ns/slack@v1
         with:
