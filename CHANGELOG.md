@@ -1,8 +1,9 @@
-## 1.0.20 (Feb 2, 2023)
+## 1.0.20 (Feb 10, 2023)
 - Actually bump the version number properly
 - #134 Bug: duration time set to 0h0m after quickedit
 - #132 Feature: Update all contact details, not just email
 - #97 Feature: Filter Submissions View (thanks @tempsaint !) - We now have a search bar and a filter by dropdown on the submissions viewer
+- #137 Change Last Name field label to Last Initial (thanks @tempsaint !)
 
 ## 1.0.19 (Jan 30, 2023)
 - First version in live use in Australia region, and lots of bugs/features to fix!
