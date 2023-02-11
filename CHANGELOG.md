@@ -1,6 +1,6 @@
 ## 1.0.21 (Feb 11, 2023)
 - #138 Users dropdown on Service Bodies config page not showing all users (thanks @pjaudiomv !)
-- CSS fix for body margin (thanks KevinC !)
+- CSS fix for body margin (thanks KevinG !)
 
 ## 1.0.20 (Feb 10, 2023)
 - Actually bump the version number properly
