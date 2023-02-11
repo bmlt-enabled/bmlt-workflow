@@ -132,9 +132,7 @@ jQuery(document).ready(function ($) {
 
         if (pg != null) {
           totalpages = parseInt(pg);
-          if (totalpages > 1) {
-            range = [...Array(totalpages).keys()].map((x) => x + 1);
-          }
+          range = [...Array(totalpages).keys()].map((x) => x + 1);
 
           users = {};
           var allAJAX = range.map((page) => {

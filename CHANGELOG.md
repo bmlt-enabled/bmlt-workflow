@@ -1,3 +1,6 @@
+## 1.0.21 (Feb 11, 2023)
+- #138 Users dropdown on Service Bodies config page not showing all users (thanks @pjaudiomv !)
+
 ## 1.0.20 (Feb 10, 2023)
 - Actually bump the version number properly
 - #134 Bug: duration time set to 0h0m after quickedit

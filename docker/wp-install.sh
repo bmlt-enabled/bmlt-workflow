@@ -58,6 +58,17 @@ wp post create --path=$sitelocalpath --post_type=page --post_name='testpage' --p
 # create our test users
 wp user create --path=$sitelocalpath submitpriv aa123@a.com --user_pass=submitpriv
 wp user create --path=$sitelocalpath nopriv aa456@a.com --user_pass=nopriv
+wp user create --path=$sitelocalpath 1 1@a.com --user_pass=nopriv
+wp user create --path=$sitelocalpath 2 2@a.com --user_pass=nopriv
+wp user create --path=$sitelocalpath 3 3@a.com --user_pass=nopriv
+wp user create --path=$sitelocalpath 4 4@a.com --user_pass=nopriv
+wp user create --path=$sitelocalpath 5 5@a.com --user_pass=nopriv
+wp user create --path=$sitelocalpath 6 6@a.com --user_pass=nopriv
+wp user create --path=$sitelocalpath 7 7@a.com --user_pass=nopriv
+wp user create --path=$sitelocalpath 8 8@a.com --user_pass=nopriv
+wp user create --path=$sitelocalpath 9 9@a.com --user_pass=nopriv
+wp user create --path=$sitelocalpath 10 10@a.com --user_pass=nopriv
+wp user create --path=$sitelocalpath 11 11@a.com --user_pass=nopriv
 
 sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" /var/www/html/wp-content/plugins/bmlt-workflow/config.php
 
