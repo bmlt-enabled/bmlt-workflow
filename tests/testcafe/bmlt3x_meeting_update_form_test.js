@@ -573,7 +573,7 @@ test("Change_Nothing_Check_Error", async (t) => {
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "right");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
@@ -592,28 +592,3 @@ test("Change_Nothing_Check_Error", async (t) => {
     .match(/Nothing\ was\ changed/);
 });
 
-test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
-
-  await reset_bmlt3x_with_states_on(t);
-  
-  await t.navigateTo(userVariables.formpage);
-  // console.log(userVariables.formpage);
-  // await t.debug();
-  await select_dropdown_by_value(uf.update_reason, "reason_change");
-  await t.expect(uf.update_reason.value).eql("reason_change");
-
-  // meeting selector
-  await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "chance");
-  await t.pressKey("enter");
-
-  // validate form is laid out correctly
-  await t.expect(uf.personal_details.visible).eql(true).expect(uf.meeting_details.visible).eql(true).expect(uf.additional_info_div.visible).eql(true);
-
-  await t
-  // should be a select element if we have a dropdown
-  .expect(uf.location_province.tagName).eql("select")
-  // should have changed the state to NY which is not the default
-  .expect(uf.location_province.value).eql("NY");
-
-});

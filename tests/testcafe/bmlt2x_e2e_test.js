@@ -17,9 +17,9 @@
 
 import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
-import { Selector, Role } from "testcafe";
+import { Selector  } from "testcafe";
 
-import { reset_bmlt, 
+import { 
   waitfor,
   restore_from_backup,
   click_table_row_column, 
@@ -28,6 +28,7 @@ import { reset_bmlt,
   select_dropdown_by_text, 
   select_dropdown_by_value, 
   bmltwf_admin,
+  myip
    } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
@@ -35,11 +36,12 @@ import { userVariables } from "../../.testcaferc";
 fixture`bmlt2x_e2e_test_fixture`
   .beforeEach(async (t) => {
     await waitfor(userVariables.admin_logon_page_single);
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt2x","8000"),"hidden";
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3000"),"hidden";
+    // await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt2x","8000"),"hidden";
   
   });
 
-test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
+test("Submit_New_Meeting_And_Approve", async (t) => {
   var meeting = {
     location_text: "the church",
     location_street: "105 avoca street",
@@ -167,7 +169,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
 
 });
 
-test("Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
+test("Submit_Change_Meeting_And_Approve", async (t) => {
   await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");

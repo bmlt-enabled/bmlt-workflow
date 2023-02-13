@@ -42,7 +42,7 @@ fixture`bmlt3x_e2e_test_fixture`
     await waitfor(userVariables.admin_logon_page_single);
   });
 
-test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
+test("Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
   var meeting = {
     location_text: "the church",
     location_street: "105 avoca street",
@@ -174,7 +174,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
 
 });
 
-test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
+test("Bmlt3x_Submit_Change_Meeting_And_Approve", async (t) => {
   await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");

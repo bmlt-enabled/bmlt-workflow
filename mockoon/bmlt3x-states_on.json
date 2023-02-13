@@ -246,7 +246,7 @@
           "body": "[\n  {\n    \"version\": \"3.0.2\",\n    \"versionInt\": \"3000000\",\n    \"langs\": \"de,dk,en,es,fa,fr,it,pl,pt,ru,sv\",\n    \"nativeLang\": \"en\",\n    \"centerLongitude\": \"-79.793701171875\",\n    \"centerLatitude\": \"36.065752051707\",\n    \"centerZoom\": \"10\",\n    \"defaultDuration\": \"1:00:00\",\n    \"regionBias\": \"us\",\n    \"charSet\": \"UTF-8\",\n    \"distanceUnits\": \"mi\",\n    \"semanticAdmin\": \"1\",\n    \"emailEnabled\": \"0\",\n    \"emailIncludesServiceBodies\": \"0\",\n    \"changesPerMeeting\": \"5\",\n    \"meeting_states_and_provinces\": \"MA,NY,ME,NH,RI,VT\",\n    \"meeting_counties_and_sub_provinces\": \"TEST1,Columbia,TEST2,TEST3\",\n    \"available_keys\": \"id_bigint,worldid_mixed,service_body_bigint,weekday_tinyint,venue_type,start_time,duration_time,time_zone,formats,lang_enum,longitude,latitude,meeting_name,location_text,location_info,location_street,location_city_subsection,location_neighborhood,location_municipality,location_sub_province,location_province,location_postal_code_1,location_nation,comments,zone,train_lines,bus_lines,phone_meeting_number,virtual_meeting_link,virtual_meeting_additional_info,root_server_uri,format_shared_id_list\",\n    \"google_api_key\": \"AIzaSyDcJxBNlMo5jBNTNeUM75T3rFC6bSeAeTA\",\n    \"dbVersion\": \"2019_12_14_000001_create_personal_access_tokens_table\",\n    \"dbPrefix\": \"na\",\n    \"meeting_time_zones_enabled\": \"0\",\n    \"phpVersion\": \"8.0.25\",\n    \"auto_geocoding_enabled\": false,\n    \"commit\": \"dev\",\n    \"default_closed_status\": true\n  }\n]",
           "latency": 0,
           "statusCode": 200,
-          "label": "",
+          "label": "serverinfo",
           "headers": [
             {
               "key": "content-security-policy",
@@ -291,7 +291,7 @@
           "body": "[{\"id_bigint\":\"1601\",\"worldid_mixed\":\"G00126292\",\"shared_group_id_bigint\":\"\",\"service_body_bigint\":\"1009\",\"weekday_tinyint\":\"5\",\"venue_type\":\"1\",\"start_time\":\"19:00:00\",\"duration_time\":\"01:30:00\",\"time_zone\":\"\",\"formats\":\"O,BT,IP,RF,SD,St\",\"lang_enum\":\"en\",\"longitude\":\"-73.7890726\",\"latitude\":\"42.2501741\",\"distance_in_km\":\"\",\"distance_in_miles\":\"\",\"email_contact\":\"\",\"published\":\"1\",\"root_server_uri\":\"http://bmlt3x:8001/main_server\",\"format_shared_id_list\":\"3,12,17,19,22,27\",\"meeting_name\":\"A New Way Group\",\"location_text\":\"Christ Episcopal Church\",\"location_info\":\"\",\"location_street\":\"431 Union Street\",\"location_city_subsection\":\"\",\"location_neighborhood\":\"\",\"location_municipality\":\"Hudson\",\"location_sub_province\":\"Columbia\",\"location_province\":\"NY\",\"location_postal_code_1\":\"\",\"location_nation\":\"USA\",\"comments\":\"\",\"zone\":\"\",\"train_lines\":\"\",\"bus_lines\":\"\",\"contact_phone_2\":\"\",\"contact_email_2\":\"\",\"contact_name_2\":\"\",\"contact_phone_1\":\"\",\"contact_email_1\":\"\",\"contact_name_1\":\"\",\"phone_meeting_number\":\"\",\"virtual_meeting_link\":\"\",\"virtual_meeting_additional_info\":\"\"}]",
           "latency": 0,
           "statusCode": 200,
-          "label": "",
+          "label": "meeting id 1601",
           "headers": [
             {
               "key": "Content-Type",

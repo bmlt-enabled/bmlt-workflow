@@ -18,7 +18,7 @@
 import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
 
-import { Selector, Role } from "testcafe";
+import { Selector } from "testcafe";
 
 import {
   restore_from_backup,
@@ -28,6 +28,7 @@ import {
   click_dt_button_by_index,
   click_dialog_button_by_index,
   bmltwf_admin,
+  myip
 } from "./helpers/helper.js";
 
 import { userVariables } from "../../.testcaferc";
@@ -37,12 +38,12 @@ fixture`bmlt2x_geocoding_tests_fixture`
 })
   .beforeEach(async (t) => {
 
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, "bmlt2x", "8000","hidden");
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, myip(), "3000","hidden");
 
     await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
   });
 
-test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
+test("Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) => {
   var meeting = {
     location_text: "the church",
     location_street: "105 avoca street",
@@ -171,7 +172,7 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
 
 });
 
-test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
+test("Submit_Change_Meeting_And_Approve_With_Geocoding_Disabled", async (t) => {
 
   await t.navigateTo(userVariables.formpage);
 

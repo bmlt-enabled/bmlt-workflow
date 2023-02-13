@@ -94,9 +94,9 @@ jQuery(document).ready(function ($) {
 
   // fill in counties and sub provinces
   if (bmltwf_counties_and_sub_provinces === false) {
-    $("#optional_location_sub_province").append('<input class="meeting-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">');
+    $("#optional_location_sub_province").append('<input class="quickedit-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">');
   } else {
-    var appendstr = '<select class="meeting-input" id="quickedit_location_sub_province" name="quickedit_location_sub_province">';
+    var appendstr = '<select class="quickedit-input" id="quickedit_location_sub_province" name="quickedit_location_sub_province">';
     bmltwf_counties_and_sub_provinces.forEach(function (item, index) {
       appendstr += '<option value="' + item + '">' + item + "</option>";
     });
@@ -105,9 +105,9 @@ jQuery(document).ready(function ($) {
   }
 
   if (bmltwf_do_states_and_provinces === false) {
-    $("#optional_location_province").append('<input class="meeting-input" type="text" name="quickedit_location_province" size="50" id="quickedit_location_province">');
+    $("#optional_location_province").append('<input class="quickedit-input" type="text" name="quickedit_location_province" size="50" id="quickedit_location_province">');
   } else {
-    var appendstr = '<select class="meeting-input" id="quickedit_location_province" name="quickedit_location_province">';
+    var appendstr = '<select class="quickedit-input" id="quickedit_location_province" name="quickedit_location_province">';
     bmltwf_do_states_and_provinces.forEach(function (item, index) {
       appendstr += '<option value="' + item + '">' + item + "</option>";
     });
@@ -179,6 +179,7 @@ jQuery(document).ready(function ($) {
 
   function populate_and_open_quickedit(id) {
     // clear quickedit
+
 
     // remove our change handler
     $(".quickedit-input").off("input.bmltwf-highlight");

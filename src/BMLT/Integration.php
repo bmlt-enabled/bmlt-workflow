@@ -201,7 +201,7 @@ class Integration
         $this->debug_log("SINGLE MEETING");
         $this->debug_log(($meeting));
         // how possibly can we get a meeting that is not the same as we asked for
-        if ($meeting['id_bigint'] != $meeting_id) {
+        if ((empty($meeting['id_bigint'])) || ($meeting['id_bigint'] != $meeting_id)) {
             return $this->bmltwf_integration_error('Server error retrieving meeting', 500);
         }
         return $meeting;

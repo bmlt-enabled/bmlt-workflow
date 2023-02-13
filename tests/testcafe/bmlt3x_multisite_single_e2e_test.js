@@ -167,7 +167,7 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve", async (t) => {
 
 });
 
-test("Multisite_Single_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
+test("Multisite_Single_Submit_Change_Meeting_And_Approve", async (t) => {
   // await t.debug();
   await t.navigateTo(userVariables.formpage_multisingle);
 
