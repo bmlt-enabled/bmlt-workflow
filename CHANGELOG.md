@@ -1,3 +1,7 @@
+## 1.0.22 (Feb 13, 2023)
+- #139 Bug: Quickedit not clearing correctly between multiple edits
+- Major test case rewrite to use Mockoon
+
 ## 1.0.21 (Feb 11, 2023)
 - #138 Users dropdown on Service Bodies config page not showing all users (thanks @pjaudiomv !)
 - CSS fix for body margin (thanks KevinG !)
