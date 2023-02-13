@@ -227,7 +227,7 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_admin_scripts($hook)
         {
-
+            $this->debug_log("admin scripts");
 
             $this->debug_log($hook);
 
@@ -378,7 +378,6 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_menu_pages()
         {
-        
         $toplevelslug = 'bmltwf-settings';
 
         // if we're just a submission editor, make our submissions page the landing page
@@ -467,7 +466,7 @@ if (!class_exists('bmltwf_plugin')) {
                     'description' => 'Email from address',
                     'sanitize_callback' => array(&$this, 'bmltwf_email_from_address_sanitize_callback'),
                     'show_in_rest' => false,
-                    'default' => 'example@example'
+                    'default' => 'example@example.com'
                 )
             );
 
@@ -660,7 +659,7 @@ if (!class_exists('bmltwf_plugin')) {
                     'description' => 'FSO email address',
                     'sanitize_callback' => array(&$this, 'bmltwf_fso_email_address_sanitize_callback'),
                     'show_in_rest' => false,
-                    'default' => 'example@example.example'
+                    'default' => 'example@example.com'
                 )
             );
 
@@ -1238,7 +1237,7 @@ if (!class_exists('bmltwf_plugin')) {
         private function bmltwf_add_default_options()
         {
             // install all our default options (if they arent set already)
-            add_option('bmltwf_email_from_address', 'example@example');
+            add_option('bmltwf_email_from_address', 'example@example.com');
             add_option('bmltwf_delete_closed_meetings', 'unpublish');
             add_option('bmltwf_optional_location_nation', 'hidden');
             add_option('bmltwf_optional_location_nation_displayname', 'Nation');
@@ -1251,7 +1250,7 @@ if (!class_exists('bmltwf_plugin')) {
             add_option('bmltwf_required_meeting_formats', 'true');
             add_option('bmltwf_submitter_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
             add_option('bmltwf_fso_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
-            add_option('bmltwf_fso_email_address', 'example@example.example');
+            add_option('bmltwf_fso_email_address', 'example@example.com');
             add_option('bmltwf_fso_feature', 'display');
         }
 

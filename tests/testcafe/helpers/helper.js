@@ -91,56 +91,27 @@ export async function click_dialog_button_by_index(element, index) {
   await t.click(g);
 }
 
+export function myip(){
+  return execSync("ipconfig getifaddr en0").toString().trim();
+}
+
 export async function waitfor(site) {
   // console.log("waiting for "+site);
   execSync(userVariables.waitfor + " " + site);
 }
 
-export async function reset_bmlt2x(t) {
-  console.log("resetting bmlt");
-  let options = {stdio : 'pipe' };
-  execSync(userVariables.blank_bmlt,options);
-  waitfor(userVariables.bmlt2x_login_page)
-  console.log("reset");
-}
-
-export async function reset_bmlt3x(t) {
-  console.log("resetting bmlt3x");
-  let options = {stdio : 'pipe' };
-  execSync(userVariables.blank_bmlt3x,options);
-  waitfor(userVariables.bmlt3x_login_page);
-  console.log("reset");
-}
-
-
-export async function reset_bmlt2x_with_auto_geocoding_off(t) {
-  console.log("turning geocode off");
-  let options = {stdio : 'pipe' };
-  execSync(userVariables.auto_geocoding_off,options);
-  waitfor(userVariables.bmlt2x_login_page);
-  console.log("geocode off");
-}
-
-export async function reset_bmlt3x_with_auto_geocoding_off(t) {
-  console.log("bmlt3x turning geocode off");
-  let options = {stdio : 'pipe' };
-  execSync(userVariables.bmlt3x_auto_geocoding_off,options);
-  waitfor(userVariables.bmlt3x_login_page);
-  console.log("geocode off");
-}
-
-export async function restore_from_backup(role, settings_page, restore_json, host, port) {
+export async function restore_from_backup(role, settings_page, restore_json, host, port, subprovince) {
   // console.log("settings page "+settings_page);
   // console.log("restore_json "+restore_json);
   
   // pre fill the submissions
   const restorebody = {
     options: {
-      bmltwf_email_from_address: "example@example",
+      bmltwf_email_from_address: "example@example.com",
       bmltwf_delete_closed_meetings: "unpublish",
       bmltwf_optional_location_nation: "hidden",
       bmltwf_optional_location_nation_displayname: "Nation",
-      bmltwf_optional_location_sub_province: "hidden",
+      bmltwf_optional_location_sub_province: subprovince,
       bmltwf_optional_location_sub_province_displayname: "Sub Province",
       bmltwf_optional_location_province: "display",
       bmltwf_optional_location_province_displayname: "Province",
@@ -152,7 +123,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         '<p><br>Thank you for submitting the online meeting update.<br>We will usually be able action your\n    request within 48 hours.<br>Our process also updates NA websites around Australia and at NA World Services.<br>\n</p>\n<hr>What was submitted: <br><br>\n<table class="blueTable" style="border: 1px solid #1C6EA4;background-color: #EEEEEE;text-align: left;border-collapse: collapse;">\n    <thead style="background: #1C6EA4;border-bottom: 2px solid #444444;">\n        <tr>\n            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: none;">\n                <br>Field Name\n            </th>\n            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: 2px solid #D0E4F5;">\n                <br>Value\n            </th>\n        </tr>\n    </thead>\n    <tbody>\n        {field:submission}\n    </tbody>\n</table>\n\n',
       bmltwf_fso_email_template:
         '<p>Attn: FSO.<br>\nPlease send a starter kit to the following meeting:\n</p>\n<hr><br>\n<table class="blueTable" style="border: 1px solid #1C6EA4;background-color: #EEEEEE;text-align: left;border-collapse: collapse;">\n    <thead style="background: #1C6EA4;border-bottom: 2px solid #444444;">\n        <tr>\n            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: none;">\n                <br>Field Name\n            </th>\n            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: 2px solid #D0E4F5;">\n                <br>Value\n            </th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Group Name</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:meeting_name}</td>\n        </tr>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Requester First Name</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:first_name}</td>\n        </tr>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Requester Last Name</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:last_name}</td>\n        </tr>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Starter Kit Postal Address</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:starter_kit_postal_address}\n            </td>\n        </tr>\n    </tbody>\n</table>\n',
-      bmltwf_fso_email_address: "example@example.example",
+      bmltwf_fso_email_address: "example@example.com",
       bmltwf_fso_feature: "display",
       bmltwf_db_version: "0.4.0",
       bmltwf_bmlt_server_address: "http://" + host + ":" + port + "/main_server/",
@@ -302,51 +273,6 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
   });
   // console.log(restore_json);
   // console.log(resp);
-}
-
-export async function crouton3x(t) {
-  const resp = await t.request(userVariables.crouton3x);
-}
-
-export async function crouton2x(t) {
-  const resp = await t.request(userVariables.crouton2x);
-
-}
-
-export async function reset_bmlt2x_with_states_off(t) {
-  // disable state dropdown
-  //console.log("turning states off");
-  let options = {stdio : 'pipe' };
-  execSync(userVariables.reset_bmlt2x_with_states_off,options);
-  waitfor(userVariables.bmlt2x_login_page);
-  //console.log("states off");
-}
-
-export async function reset_bmlt2x_with_states_on(t) {
-  // enable state dropdown
-  //console.log("turning states on");
-  let options = {stdio : 'pipe' };
-  execSync(userVariables.reset_bmlt2x_with_states_on,options);
-  waitfor(userVariables.bmlt2x_login_page);
-  //console.log("states on");
-}
-
-export async function reset_bmlt3x_with_states_off(t) {
-  // disable state dropdown
-  //console.log("turning states off");
-  let options = {stdio : 'pipe' };
-  execSync(userVariables.reset_bmlt3x_with_states_off,options);
-  waitfor(userVariables.bmlt3x_login_page);
-  //console.log("states off");
-}
-
-export async function reset_bmlt3x_with_states_on(t) {
-  // enable state dropdown
-  //console.log("turning states on");
-  let options = {stdio : 'pipe' };
-  execSync(userVariables.reset_bmlt3x_with_states_on,options);
-  waitfor(userVariables.bmlt3x_login_page);
-  //console.log("states on");
 }
 
 export async function check_checkbox(t, s) {

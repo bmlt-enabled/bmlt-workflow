@@ -176,10 +176,12 @@ class Integration
     {
 
         $bmltwf_bmlt_server_address = get_option('bmltwf_bmlt_server_address');
-        $url = $bmltwf_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
+
+        $url = $bmltwf_bmlt_server_address . "client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
         $headers = array(
             "Accept: */*",
         );
+        $this->debug_log("wp_remote_get from url " . $url);
 
         $resp = wp_remote_get($url, array('headers' => $headers));
         $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));

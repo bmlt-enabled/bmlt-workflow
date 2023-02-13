@@ -20,23 +20,20 @@ import { ao } from "./models/admin_options";
 
 import {
   restore_from_backup, 
-  reset_bmlt3x,
   select_dropdown_by_text, 
   click_table_row_column, 
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
   bmltwf_admin, 
+  myip
    } from "./helpers/helper.js";
 
 import { userVariables } from "../../.testcaferc";
 
 fixture`bmlt3x_admin_submissions_fixture`
-.before(async (t) => {
-  await reset_bmlt3x(t);
-})
 .beforeEach(async (t) => {
 
-  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
+  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001","hidden");
 
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 });

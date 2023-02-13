@@ -24,7 +24,7 @@ import { t, Selector, Role, RequestLogger } from "testcafe";
 
 import { 
   randstr,
-  reset_bmlt3x, 
+  myip,
   restore_from_backup, 
   bmltwf_admin, 
   click_dialog_button_by_index, 
@@ -57,19 +57,9 @@ function getFileDownloadPath(download) {
 let downloadedFilePath = null;
 
 fixture`bmlt3x_admin_options_fixture`
-  .before(async (t) => {
-    await reset_bmlt3x(t);
-  })
   .beforeEach(async (t) => {
     await waitfor(userVariables.admin_logon_page_single);
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
-
-        // await t.useRole(bmltwf_admin)
-    // .navigateTo(userVariables.admin_settings_page_single);
-  
-    // const nonce = await Selector("#_wprestnonce").value;
-    // const resp = await t.request(userVariables.admin_restore_json, 
-  
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001","hidden");
     await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
   });
 
@@ -104,8 +94,88 @@ test("Backup", async (t) => {
 
 test("Restore", async (t) => {
 
+  const fs = require('fs');
+
+  const restoretest = String.raw`
+  {
+    "options": {
+        "bmltwf_db_version": "0.4.0",
+        "bmltwf_bmlt_server_address": "http:\/\/${myip()}:3001\/main_server\/",
+        "bmltwf_bmlt_username": "bmlt-workflow-bot",
+        "bmltwf_bmlt_password": "a:2:{s:6:\"config\";a:6:{s:4:\"size\";s:4:\"MzI=\";s:4:\"salt\";s:24:\"\/5ObzNuYZ\/Y5aoYTsr0sZw==\";s:9:\"limit_ops\";s:4:\"OA==\";s:9:\"limit_mem\";s:12:\"NTM2ODcwOTEy\";s:3:\"alg\";s:4:\"Mg==\";s:5:\"nonce\";s:16:\"VukDVzDkAaex\/jfB\";}s:9:\"encrypted\";s:44:\"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw==\";}",
+        "bmltwf_bmlt_test_status": "success",
+        "bmltwf_submitter_email_template": "<p><br>Thank you for submitting the online meeting update.<br>We will usually be able action your\r\n    request within 48 hours.<br>Our process also updates NA websites around Australia and at NA World Services.<br>\r\n<\/p>\r\n<hr><br>\r\n<table class=\"blueTable\" style=\"border: 1px solid #1C6EA4;background-color: #EEEEEE;text-align: left;border-collapse: collapse;\">\r\n    <thead style=\"background: #1C6EA4;border-bottom: 2px solid #444444;\">\r\n        <tr>\r\n            <th style=\"border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: none;\">\r\n                <br>Field Name\r\n            <\/th>\r\n            <th style=\"border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: 2px solid #D0E4F5;\">\r\n                <br>Value\r\n            <\/th>\r\n        <\/tr>\r\n    <\/thead>\r\n    <tbody>\r\n        {field:submission}\r\n    <\/tbody>\r\n<\/table>",
+        "bmltwf_optional_location_province": "display",
+        "bmltwf_optional_location_sub_province": "hidden",
+        "bmltwf_optional_location_nation": "hidden",
+        "bmltwf_delete_closed_meetings": "unpublish",
+        "bmltwf_email_from_address": "Test <test@test.org>",
+        "bmltwf_fso_email_template": "<p>Attn: FSO.<br>\r\nPlease send a starter kit to the following meeting:\r\n<\/p>\r\n<hr><br>\r\n<table class=\"blueTable\" style=\"border: 1px solid #1C6EA4;background-color: #EEEEEE;text-align: left;border-collapse: collapse;\">\r\n    <thead style=\"background: #1C6EA4;border-bottom: 2px solid #444444;\">\r\n        <tr>\r\n            <th style=\"border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: none;\">\r\n                <br>Field Name\r\n            <\/th>\r\n            <th style=\"border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: 2px solid #D0E4F5;\">\r\n                <br>Value\r\n            <\/th>\r\n        <\/tr>\r\n    <\/thead>\r\n    <tbody>\r\n        <tr>\r\n            <td style=\"border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;\">Group Name<\/td>\r\n            <td style=\"border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;\">{field:meeting_name}<\/td>\r\n        <\/tr>\r\n        <tr>\r\n            <td style=\"border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;\">Requester First Name<\/td>\r\n            <td style=\"border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;\">{field:first_name}<\/td>\r\n        <\/tr>\r\n        <tr>\r\n            <td style=\"border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;\">Requester Last Name<\/td>\r\n            <td style=\"border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;\">{field:last_name}<\/td>\r\n        <\/tr>\r\n        <tr>\r\n            <td style=\"border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;\">Starter Kit Postal Address<\/td>\r\n            <td style=\"border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;\">{field:starter_kit_postal_address}\r\n            <\/td>\r\n        <\/tr>\r\n    <\/tbody>\r\n<\/table>",
+        "bmltwf_fso_email_address": ""
+    },
+    "submissions": [
+        {
+            "id": "22222",
+            "submission_time": "2022-05-15 12:32:38",
+            "change_time": "0000-00-00 00:00:00",
+            "changed_by": null,
+            "change_made": null,
+            "submitter_name": "first last",
+            "submission_type": "reason_new",
+            "submitter_email": "restoretest",
+            "meeting_id": "0",
+            "service_body_bigint": "2",
+            "changes_requested": "{\"meeting_name\":\"my test meeting\",\"start_time\":\"10:40:00\",\"duration_time\":\"04:30:00\",\"location_text\":\"my location\",\"location_street\":\"110 Avoca Street\",\"location_info\":\"info\",\"location_municipality\":\"Randwick\",\"location_province\":\"NSW\",\"location_postal_code_1\":2031,\"weekday_tinyint\":\"2\",\"service_body_bigint\":2,\"format_shared_id_list\":\"1,2,56\",\"contact_number\":\"12345\",\"group_relationship\":\"Group Member\",\"add_contact\":\"yes\",\"additional_info\":\"my additional info\",\"virtual_meeting_additional_info\":\"Zoom ID 83037287669 Passcode: testing\",\"phone_meeting_number\":\"+61 1800 253430 code #8303782669\",\"virtual_meeting_link\":\"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09\"}",
+            "action_message": null
+        }
+    ],
+    "service_bodies": [
+        {
+            "service_body_bigint": "1",
+            "service_body_name": "toplevel",
+            "service_body_description": "",
+            "show_on_form": "1"
+        },
+        {
+            "service_body_bigint": "2",
+            "service_body_name": "a-level1",
+            "service_body_description": "",
+            "show_on_form": "1"
+        },
+        {
+            "service_body_bigint": "3",
+            "service_body_name": "b-level1",
+            "service_body_description": "",
+            "show_on_form": "1"
+        }
+    ],
+    "service_bodies_access": [
+        {
+            "service_body_bigint": "1",
+            "wp_uid": "1"
+        },
+        {
+            "service_body_bigint": "2",
+            "wp_uid": "4"
+        },
+        {
+            "service_body_bigint": "2",
+            "wp_uid": "1"
+        },
+        {
+            "service_body_bigint": "3",
+            "wp_uid": "1"
+        }
+    ]
+}`
+  try {
+    fs.writeFileSync("tests/testcafe/uploads/restoretest2.json", restoretest, { flag: 'w' });
+  } catch (err) {
+    console.log('Error writing json:' + err)
+  }
+
   await t
-    .setFilesToUpload(ao.bmltwf_file_selector, ["./uploads/restoretest1.json"])
+    .setFilesToUpload(ao.bmltwf_file_selector, ["./uploads/restoretest2.json"])
     // .click(ao.restore_button)
     // .debug()
     .expect(ao.restore_warning_dialog_parent.visible)

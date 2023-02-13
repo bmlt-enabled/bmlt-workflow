@@ -17,20 +17,18 @@
 
 import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
-import { ct } from "./models/crouton";
 
-import { Selector, Role } from "testcafe";
+import { Selector } from "testcafe";
 
 import {
   restore_from_backup,
-  reset_bmlt3x_with_auto_geocoding_off,
   select_dropdown_by_text,
   select_dropdown_by_value,
   click_table_row_column,
   click_dt_button_by_index,
   click_dialog_button_by_index,
   waitfor,
-  crouton3x,
+  myip,
   bmltwf_admin
 } from "./helpers/helper.js";
 
@@ -40,15 +38,12 @@ fixture`bmlt3x_geocoding_tests_fixture`
   .before(async (t) => {})
   .beforeEach(async (t) => {
 
-    await reset_bmlt3x_with_auto_geocoding_off(t);
-    await crouton3x(t);
-
-    // await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x", "8001");
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
+    // geocoding disabled on port 3002
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3002","hidden");
 
   });
 
-test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
+test("Bmlt3x_Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) => {
   var meeting = {
     location_text: "the church",
     location_street: "105 avoca street",
@@ -155,7 +150,6 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled",
     .match(/submission\ successful/);
 
   // switch to admin page
-  // await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 
   // new meeting = row 0
@@ -176,26 +170,9 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled",
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
-  // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
-
-  await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
-
-  await t.typeText(Selector('input[class="select2-search__field"]'), "99999");
-  await t.pressKey("enter");
-
-  await t
-    .expect(ct.meeting_name.innerText)
-    .eql(meeting.meeting_name)
-    .expect(ct.location_text.innerText)
-    .eql(meeting.location_text)
-    .expect(ct.phone_meeting_number.innerText)
-    .eql(meeting.phone_meeting_number)
-    .expect(ct.virtual_meeting_link.innerText)
-    .eql(meeting.virtual_meeting_link);
 });
 
-test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
+test("Bmlt3x_Submit_Change_Meeting_And_Approve_With_Geocoding_Disabled", async (t) => {
   //console.log("hi1");
   await t.navigateTo(userVariables.formpage);
 
@@ -206,7 +183,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disable
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "right thing");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "right");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
@@ -240,7 +217,6 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disable
     .match(/submission\ successful/);
 
   // switch to admin page
-  // await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 
   // new meeting = row 0
@@ -261,15 +237,6 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disable
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
-  // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
-
-  await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
-
-  await t.typeText(Selector('input[class="select2-search__field"]'), "update");
-  await t.pressKey("enter");
-
-  await t.expect(ct.meeting_name.innerText).eql("update");
 });
 
 test("Bmlt3x_Approve_New_Meeting_No_Geocoding", async (t) => {

@@ -21,26 +21,23 @@ import { ao } from "./models/admin_options";
 import { Role, Selector } from "testcafe";
 
 import { 
-  reset_bmlt3x, 
+   
   reset_bmlt3x_with_states_on, 
   waitfor,
   bmltwf_admin,
   restore_from_backup,
   select_dropdown_by_text, 
-  select_dropdown_by_value
+  select_dropdown_by_value,
+  myip
   } from "./helpers/helper.js";
 
 import { userVariables } from "../../.testcaferc";
 
 fixture`bmlt3x_meeting_update_form_fixture`
-.before(async (t) => {
-  await reset_bmlt3x(t);
-
-})
 .beforeEach(async (t) => {
 
   await waitfor(userVariables.admin_logon_page_single);
-  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
+  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001","hidden");
 
   // log in as noone
   await t.useRole(Role.anonymous());

@@ -91,12 +91,11 @@ class BMLTServerHandler
 
         $data = array();
 
-        $data["bmltwf_bmlt_server_version"] = $this->bmlt_integration->bmlt_root_server_version;
-
         $result = $this->check_bmltserver_parameters($username, $password, $server);
         if ($result !== true) {
 
             $r = update_option("bmltwf_bmlt_test_status", "failure");
+            $data["bmltwf_bmlt_server_version"] = 'Unknown';
 
             // $result is a WP_Error
             $data["bmltwf_bmlt_test_status"] = "failure";
@@ -115,12 +114,17 @@ class BMLTServerHandler
             {
                 $error = " - ".$ret->get_error_message();
             }
-            return $this->handlerCore->bmltwf_rest_error_with_data('Root Server and Authentication test failed' . $error, 500, $data);
+            $this->debug_log("error");
+            $this->debug_log($error);
+            $this->debug_log("data");
+            $this->debug_log($data);
+            return $this->handlerCore->bmltwf_rest_error_with_data('Root Server and Authentication test failed' . $error, 422, $data);
  
         } else {
 
             $r = update_option("bmltwf_bmlt_test_status", "success");
             $data["bmltwf_bmlt_test_status"] = "success";
+            $data["bmltwf_bmlt_server_version"] = $this->bmlt_integration->bmlt_root_server_version;
             $data["message"] = "BMLT Root Server and Authentication test succeeded.";
 
             return $this->handlerCore->bmltwf_rest_success($data);
@@ -135,7 +139,6 @@ class BMLTServerHandler
         $server = $request['bmltwf_bmlt_server_address'];
 
         $data = array();
-        $data["bmltwf_bmlt_server_version"] = $this->bmlt_integration->bmlt_root_server_version;
 
         $result = $this->check_bmltserver_parameters($username, $password, $server);
 
@@ -147,6 +150,8 @@ class BMLTServerHandler
             $result->add_data($data);
             return $result;
         }
+
+        $data["bmltwf_bmlt_server_version"] = $this->bmlt_integration->bmlt_root_server_version;
 
         update_option('bmltwf_bmlt_username', $username);
 
@@ -170,7 +175,12 @@ class BMLTServerHandler
         update_option('bmltwf_bmlt_password', $encrypted);
         update_option('bmltwf_bmlt_server_address', $server);
 
-        return $this->handlerCore->bmltwf_rest_success('BMLT Root Server and Authentication details updated.');
+        update_option("bmltwf_bmlt_test_status", "success");
+
+        $data["bmltwf_bmlt_test_status"] = "success";
+        $data["message"]='BMLT Root Server and Authentication details updated.';
+
+        return $this->handlerCore->bmltwf_rest_success($data);
     }
 
     private function secrets_encrypt($password, $secret)
