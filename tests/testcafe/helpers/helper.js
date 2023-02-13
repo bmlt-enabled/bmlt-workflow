@@ -91,7 +91,7 @@ export async function click_dialog_button_by_index(element, index) {
   await t.click(g);
 }
 
-export function myip(){
+export function myip() {
   return execSync("ipconfig getifaddr en0").toString().trim();
 }
 
@@ -103,7 +103,7 @@ export async function waitfor(site) {
 export async function restore_from_backup(role, settings_page, restore_json, host, port, subprovince) {
   // console.log("settings page "+settings_page);
   // console.log("restore_json "+restore_json);
-  
+
   // pre fill the submissions
   const restorebody = {
     options: {
@@ -145,37 +145,55 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         meeting_id: "0",
         service_body_bigint: "1047",
         changes_requested:
-          '{"meeting_name":"my test meeting","start_time":"10:40:00","duration_time":"04:30:00","location_text":"my location","location_street":"110 Avoca Street","location_info":"info","location_municipality":"Randwick","location_province":"NSW","location_postal_code_1":2031,"weekday_tinyint":"2","service_body_bigint":1047,"format_shared_id_list":"1,2,56","contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"my additional info","virtual_meeting_additional_info":"Zoom ID 83037287669 Passcode: testing","phone_meeting_number":"+61 1800 253430 code #8303782669","virtual_meeting_link":"https:\\/\\/us02web.zoom.us\\/j\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09"}',
+          '{"meeting_name":"my test meeting","start_time":"10:40:00","duration_time":"04:30:00","location_text":"my location","location_street":"110 avoca st","location_info":"info","location_municipality":"Randwick","location_province":"NSW","location_postal_code_1":"2031","weekday_tinyint":"4","service_body_bigint":1009,"format_shared_id_list":"2,5","contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"some extra info","virtual_meeting_additional_info":"Zoom ID 83037287669 Passcode: testing","phone_meeting_number":"12345","virtual_meeting_link":"https:\\/\\/us02web.zoom.us\\/j\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09","starter_kit_required":"no","venue_type":3}',
         action_message: null,
       },
       {
         id: "94",
-        submission_time: "2022-05-15 12:33:09",
+        submission_time: "2023-02-13 11:24:59",
         change_time: "0000-00-00 00:00:00",
         changed_by: null,
         change_made: null,
-        submitter_name: "first last",
+        submitter_name: "first l",
         submission_type: "reason_change",
-        submitter_email: "test@test.com.zz",
-        meeting_id: "1601",
+        submitter_email: "test@example.com",
+        meeting_id: "2562",
         service_body_bigint: "1009",
-        changes_requested:
-          '{"meeting_name":"virtualmeeting randwickupdate","contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"my additional info","original_meeting_name":"virtualmeeting randwick","original_weekday_tinyint":"2","original_start_time":"20:30:00"}',
+        changes_requested: {
+          meeting_name: "update",
+          original_meeting_name: "2nd Chance Group",
+          original_start_time: "18:30:00",
+          original_duration_time: "01:30:00",
+          location_text: "update location",
+          original_location_street: "360 Warren Street",
+          original_location_municipality: "Hudson",
+          original_location_province: "NY",
+          original_location_nation: "US",
+          original_location_sub_province: "Columbia",
+          original_weekday_tinyint: "3",
+          original_service_body_bigint: "1009",
+          original_format_shared_id_list: "3,17,36",
+          original_venue_type: "1",
+          contact_number: "12345",
+          group_relationship: "Group Member",
+          add_contact: "yes",
+          additional_info: "please action asap",
+        },
         action_message: null,
       },
       {
         id: "95",
-        submission_time: "2022-05-15 12:34:04",
+        submission_time: "2023-02-13 11:28:23",
         change_time: "0000-00-00 00:00:00",
         changed_by: null,
         change_made: null,
-        submitter_name: "first last",
+        submitter_name: "oiu oiu",
         submission_type: "reason_close",
-        submitter_email: "test@test.com.zz",
-        meeting_id: "2560",
-        service_body_bigint: "1047",
+        submitter_email: "oiu@oiu.com",
+        meeting_id: "2562",
+        service_body_bigint: "1009",
         changes_requested:
-          '{"contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","service_body_bigint":1047,"additional_info":"my additional info","meeting_name":"virtualmeeting randwick","weekday_tinyint":"2","start_time":"20:30:00"}',
+          '{"contact_number":"","group_relationship":"Group Member","add_contact":"yes","service_body_bigint":1009,"additional_info":"close it now","meeting_name":"2nd Chance Group","weekday_tinyint":"3","start_time":"18:30:00"}',
         action_message: null,
       },
     ],
