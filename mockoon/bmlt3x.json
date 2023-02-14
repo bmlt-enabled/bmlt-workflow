@@ -732,6 +732,46 @@
       ],
       "enabled": true,
       "responseMode": null
+    },
+    {
+      "uuid": "d8fedfbc-aa7d-4fc6-bc65-a3e5cfabb895",
+      "documentation": "",
+      "method": "delete",
+      "endpoint": "main_server/api/v1/meetings/2562",
+      "responses": [
+        {
+          "uuid": "8af5564f-fc4d-4d6f-8f06-5bda22ca02ce",
+          "latency": 0,
+          "statusCode": 204,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "body": "{}"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -790,6 +830,10 @@
     {
       "type": "route",
       "uuid": "9bdde9ae-18ca-4d04-a966-d6bfb31cdbe0"
+    },
+    {
+      "type": "route",
+      "uuid": "d8fedfbc-aa7d-4fc6-bc65-a3e5cfabb895"
     }
   ],
   "proxyMode": false,

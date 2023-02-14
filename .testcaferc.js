@@ -8,7 +8,7 @@ const multisite_plugin = "/plugin";
 const multisite_noplugin = "/noplugin";
 const multisite_plugin2 = "/plugin2";
 const admin_logon_page = "/wp-login.php";
-const formpage = "?page_id=5";
+const formpage = "?page_id=4";
 const formpage2 = "/testpage/";
 
 const admin_backup_json_path = "/index.php?rest_route=/bmltwf/v1/options/backup";

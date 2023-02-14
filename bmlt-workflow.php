@@ -256,6 +256,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/options/restore') . '; ';
                     $script .= 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/servicebodies') . '; ';
                     $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
+                    $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
 
                     wp_add_inline_script('admin_options_js', $script, 'before');
                     break;

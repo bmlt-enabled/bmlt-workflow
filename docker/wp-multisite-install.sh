@@ -30,12 +30,16 @@ RewriteRule ^([_0-9a-zA-Z-]+/)?(.*\.php)$ \$2 [L]
 RewriteRule . index.php [L]
 EOF
 
+CUR=`pwd`; cd /tmp
 sed -i -e "s/RewriteBase \/placeholder\//RewriteBase \/$WORDPRESS_HOST\//" $sitelocalpath/.htaccess
+cd $CUR
 
 wp db create
 wp core multisite-install --path=$sitelocalpath --base=/$WORDPRESS_HOST/ --url=$siteurl --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com
 
+CUR=`pwd`; cd /tmp
 sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '$WORDPRESS_NONCE_SALT');/" $sitelocalpath/wp-config.php
+cd $CUR
 
 # create sites
 export pluginsite=${siteurl}plugin
@@ -57,7 +61,9 @@ mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --pa
 mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle/noplugin" where option_name="siteurl";'
 mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle/noplugin" where option_name="home";'
 
+CUR=`pwd`; cd /tmp
 sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" $sitelocalpath/wp-content/plugins/bmlt-workflow/config.php
+cd $CUR
 
 # activate plugin
 wp plugin activate --url=$pluginsite --path=$sitelocalpath "bmlt-workflow"
@@ -99,9 +105,11 @@ rm /var/log/php_errors.log
 touch /var/log/php_errors.log
 chmod 777 /var/log/php_errors.log
 
+CUR=`pwd`; cd /tmp
 sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /etc/apache2/sites-enabled/000-default.conf 
 sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /etc/apache2/sites-available/000-default.conf 
 sed -i "s/Listen 80/Listen $WORDPRESS_PORT/g" /etc/apache2/ports.conf 
+cd $CUR
 
 echo "<?php phpinfo();" >> /var/www/html/a.php
 

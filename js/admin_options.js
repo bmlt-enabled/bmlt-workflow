@@ -270,7 +270,7 @@ jQuery(document).ready(function ($) {
       },
       "Save and Close": function () {
         // check if server address changed
-        if (bmltwf_bmlt_server_address != $("#bmltwf_bmlt_server_address").val()) {
+        if (bmltwf_bmlt_server_address !== '' && (bmltwf_bmlt_server_address != $("#bmltwf_bmlt_server_address").val())) {
           $("#bmltwf_bmlt_change_server_warning_dialog").data("parent", $(this)).dialog("open");
         } else {
           save_results();

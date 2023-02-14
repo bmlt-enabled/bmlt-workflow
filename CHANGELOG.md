@@ -1,6 +1,7 @@
 ## 1.0.22 (Feb 13, 2023)
-- #139 Bug: Quickedit not clearing correctly between multiple edits
+- #139 Bug: Quickedit not clearing correctly between multiple edits (thanks markd !)
 - Major test case rewrite to use Mockoon
+- #144 BMLT Root Server Configuration Change Warning (thanks @klgrimley !)
 
 ## 1.0.21 (Feb 11, 2023)
 - #138 Users dropdown on Service Bodies config page not showing all users (thanks @pjaudiomv !)
