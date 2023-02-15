@@ -20,11 +20,6 @@
 
 namespace bmltwf\BMLT;
 
-//  use bmltwf\BMLTWF_Debug;
-use bmltwf\BMLTWF_WP_Options;
-use bmltwf\REST\HandlerCore;
-
-
 class Integration
 {
 
@@ -137,6 +132,18 @@ class Integration
             return false;
         } else {
             $this->debug_log("using v3 auth");
+            return true;
+        }
+    }
+
+    public function is_supported_server($server)
+    {
+        $version = $this->bmltwf_get_remote_server_version($server);
+        if (version_compare($version, "2.16.4", "lt")) {
+            $this->debug_log("unsupported server version");
+            return false;
+        } else {
+            $this->debug_log("supported server version");
             return true;
         }
     }
@@ -627,6 +634,16 @@ class Integration
         }
 
         return $newformat;
+    }
+
+    public function is_valid_bmlt_server($server)
+    {
+        $response = \wp_remote_get($server . 'client_interface/json/?switcher=GetServerInfo');
+
+        if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
+            return false;
+        }
+        return true;
     }
 
     /**

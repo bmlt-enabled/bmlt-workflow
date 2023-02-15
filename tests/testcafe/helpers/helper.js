@@ -265,7 +265,6 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
     body: restorebody,
     headers: {
       "Content-Type": "application/json",
-      // "Content-Length":body.length,
       "X-WP-Nonce": nonce,
     },
   });

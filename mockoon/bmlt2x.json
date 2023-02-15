@@ -91,7 +91,7 @@
       "responses": [
         {
           "uuid": "60cf291e-e702-4fab-aebc-e7475e3c78c5",
-          "body": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<bmltInfo>\n<serverVersion>\n<readableString>2.1.2</readableString>\n</serverVersion>\n</bmltInfo>",
+          "body": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<bmltInfo>\n<serverVersion>\n<readableString>2.16.5</readableString>\n</serverVersion>\n</bmltInfo>",
           "latency": 0,
           "statusCode": 200,
           "label": "",
