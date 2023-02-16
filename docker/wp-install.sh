@@ -23,9 +23,10 @@ done
 wp db create
 wp core install --url=$URL --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com --path=/var/www/html
 
-cp /var/www/html/wp-config.php /tmp
-sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '$WORDPRESS_NONCE_SALT');/" /tmp/wp-config.php
-cp /tmp/wp-config.php /var/www/html/
+mkdir /var/www/html/wp-content/plugins/bmlt-workflow
+cp -R /plugin/* /var/www/html/wp-content/plugins/bmlt-workflow
+
+sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '$WORDPRESS_NONCE_SALT');/" /var/www/html/wp-config.php
 
 # activate plugin
 wp plugin activate --path=$sitelocalpath "bmlt-workflow"
@@ -51,9 +52,7 @@ wp user create --path=$sitelocalpath 9 9@a.com --user_pass=nopriv
 wp user create --path=$sitelocalpath 10 10@a.com --user_pass=nopriv
 wp user create --path=$sitelocalpath 11 11@a.com --user_pass=nopriv
 
-cp /var/www/html/wp-content/plugins/bmlt-workflow/config.php /tmp
-sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" /tmp/config.php
-cp /tmp/config.php /var/www/html/wp-content/plugins/bmlt-workflow/
+sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" /var/www/html/wp-content/plugins/bmlt-workflow/config.php
 
 cat >/usr/local/etc/php/conf.d/error-logging.ini <<EOF
 error_reporting = E_ERROR | E_WARNING | E_PARSE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING | E_RECOVERABLE_ERROR
@@ -71,17 +70,11 @@ rm /var/log/php_errors.log
 touch /var/log/php_errors.log
 chmod 777 /var/log/php_errors.log
 
-cp /etc/apache2/sites-enabled/000-default.conf /tmp
-sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /tmp/000-default.conf 
-cp /tmp/000-default.conf /etc/apache2/sites-enabled/
+sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /etc/apache2/sites-enabled/000-default.conf
 
-cp /etc/apache2/sites-available/000-default.conf /tmp
-sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /tmp/000-default.conf 
-cp /tmp/000-default.conf /etc/apache2/sites-available/
+sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /etc/apache2/sites-available/000-default.conf
 
-cp /etc/apache2/ports.conf /tmp
-sed -i "s/Listen 80/Listen $WORDPRESS_PORT/g" /tmp/ports.conf 
-cp /tmp/ports.conf /etc/apache2/
+sed -i "s/Listen 80/Listen $WORDPRESS_PORT/g" /etc/apache2/ports.conf
 
 echo "<?php phpinfo();" >> /var/www/html/a.php
 

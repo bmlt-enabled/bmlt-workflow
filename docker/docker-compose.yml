@@ -64,7 +64,7 @@ services:
       BMLT: ${BMLT}
       BMLT_PORT: ${BMLT_PORT}
     volumes:
-      - ../:/var/www/html/wp-content/plugins/bmlt-workflow
+      - ../:/plugin
       - ./logs/:/var/log/apache2
       - ../../wpcache:/root/.wp-cli/cache/core/
       - /var/run/docker.sock.raw:/var/run/docker.sock
@@ -96,7 +96,7 @@ services:
       BMLT: ${BMLT}
       BMLT_PORT: ${BMLT_PORT}
     volumes:
-      - ../:/var/www/html/wordpress-php8-multisitesingle/wp-content/plugins/bmlt-workflow
+      - ../:/plugin
       - ./logs/:/var/log/apache2
       - ../../wpcache:/root/.wp-cli/cache/core/
 
@@ -126,7 +126,7 @@ services:
       BMLT: ${BMLT}
       BMLT_PORT: ${BMLT_PORT}
     volumes:
-      - ../:/var/www/html/wordpress-php8-multinetwork/wp-content/plugins/bmlt-workflow
+      - ../:/plugin
       - ./logs/:/var/log/apache2
       - ../../wpcache:/root/.wp-cli/cache/core/
 

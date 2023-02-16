@@ -516,7 +516,7 @@ Line: $errorLine
         $json = '{ "results" : [ { "address_components" : [ { "long_name" : "Sydney", "short_name" : "Sydney", "types" : [ "colloquial_area", "locality", "political" ] }, { "long_name" : "New South Wales", "short_name" : "NSW", "types" : [ "administrative_area_level_1", "political" ] }, { "long_name" : "Australia", "short_name" : "AU", "types" : [ "country", "political" ] } ], "formatted_address" : "Sydney NSW, Australia", "geometry" : { "bounds" : { "northeast" : { "lat" : -33.5781409, "lng" : 151.3430209 }, "southwest" : { "lat" : -34.118347, "lng" : 150.5209286 } }, "location" : { "lat" : -33.8688197, "lng" : 151.2092955 }, "location_type" : "APPROXIMATE", "viewport" : { "northeast" : { "lat" : -33.5781409, "lng" : 151.3430209 }, "southwest" : { "lat" : -34.118347, "lng" : 150.5209286 } } }, "partial_match" : true, "place_id" : "ChIJP3Sa8ziYEmsRUKgyFmh9AQM", "types" : [ "colloquial_area", "locality", "political" ] } ], "status" : "OK" }';
 
         // $response = array("body"=> "<html>", "code"=>200);
-        Functions\expect('wp_remote_retrieve_body')->times(5)->andReturn('','','', $gmapskey, $json);
+        Functions\expect('wp_remote_retrieve_body')->times(4)->andReturn('','', $gmapskey, $json);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('wp_remote_get')->justReturn(array());
 
@@ -547,7 +547,7 @@ Line: $errorLine
 
         $json = ' { "results" : [], "status" : "ZERO_RESULTS" }';
 
-        Functions\expect('wp_remote_retrieve_body')->times(5)->andReturn('','', '', $gmapskey, $json);
+        Functions\expect('wp_remote_retrieve_body')->times(4)->andReturn('', '', $gmapskey, $json);
 
         Functions\when('wp_remote_get')->justReturn(array());
 
@@ -576,7 +576,7 @@ Line: $errorLine
 
         $json = ' { "junk" : "junk" }';
 
-        Functions\expect('\wp_remote_retrieve_body')->times(5)->andReturn('','', '', $gmapskey, $json);
+        Functions\expect('\wp_remote_retrieve_body')->times(4)->andReturn('', '', $gmapskey, $json);
 
         Functions\when('\wp_remote_get')->justReturn(array());
 

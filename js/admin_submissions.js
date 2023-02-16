@@ -239,10 +239,16 @@ jQuery(document).ready(function ($) {
               long = item["longitude"];
               update_gmaps(lat,long);
             }
+            else
+            {
+              $("#quickedit_gmaps").hide();
+            }
             $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
           }
         });
     } else if (bmltwf_changedata[id].submission_type == "reason_new") {
+      // won't have a geolocation for a new meeting
+      $("#quickedit_gmaps").hide();
       add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
       $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
     }
@@ -900,6 +906,8 @@ jQuery(document).ready(function ($) {
   function update_gmaps(lat,long)
   {
     $("#quickedit_gmaps").attr("src","https://www.google.com/maps/embed/v1/place?key="+bmltwf_gmaps_key+"&zoom=18&q="+lat+","+long);
+    $("#quickedit_gmaps").show();
+
   }
 
   function save_handler(id) {

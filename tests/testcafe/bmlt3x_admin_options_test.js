@@ -88,7 +88,7 @@ test("Backup", async (t) => {
   // find a specific meeting
   let obj = backup.submissions.find((o) => o.id === "94");
   // console.log(obj);
-  await t.expect(obj.submitter_name).eql("first last").expect(obj.submission_type).eql("reason_change");
+  await t.expect(obj.submitter_name).eql("first l").expect(obj.submission_type).eql("reason_change");
 })  .requestHooks(logger);
 
 

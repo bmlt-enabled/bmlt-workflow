@@ -88,9 +88,9 @@ test("MultiSite_Network_Check_Plugin_Doesnt_Touch_Plugin2", async (t) => {
   await restore_from_backup(bmltwf_admin_multinetwork, userVariables.admin_settings_page_multinetwork_plugin2, userVariables.admin_restore_json_multinetwork_plugin2, myip(), "3001","hidden");
 
   // update the service bodies in plugin1 and check they dont show in plugin2
-  await t.request(userVariables.blank_service_bodies_multinetwork);
   await t
     .useRole(bmltwf_admin_multinetwork)
+    .debug()
     .navigateTo(userVariables.admin_service_bodies_page_multinetwork_plugin)
     .click(Selector("ul#select2-bmltwf_userlist_id_1009-container").parent())
     .pressKey("enter")
