@@ -21,12 +21,9 @@ import { ao } from "./models/admin_options";
 import { Role, Selector } from "testcafe";
 
 import { 
-   
-  reset_bmlt3x_with_states_on, 
   waitfor,
   bmltwf_admin,
-  restore_from_backup,
-  select_dropdown_by_text, 
+  restore_from_backup, 
   select_dropdown_by_value,
   myip
   } from "./helpers/helper.js";

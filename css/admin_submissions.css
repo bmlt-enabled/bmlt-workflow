@@ -53,6 +53,11 @@
   grid-row: row 2 ;
 }
 
+.form-grid-col3{
+  grid-column: col 3 ;
+  grid-row: row 2 ;
+}
+
 .form-grid input {
   line-height: 1.5;
   font-size: 1.2em;

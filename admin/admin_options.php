@@ -80,7 +80,8 @@ echo '</form></div>';
     <div class="options_dialog_bmltwf_error_message"></div>
     <br>
     <div class="options_dialog_bmltwf_warning_text">
-        <br>WARNING: If you proceed with the restore, your existing plugin configuration, settings and service bodies will be removed.
+        <br>WARNING: If you proceed with the restore, your existing plugin configuration, including submissions, settings and service bodies will be removed.
+        <br><br><b>Note:</b> this only affects the plugin configuration within Wordpress. Nothing outside of this, particularly any BMLT configuration, will be touched.
         <br><br>Are you sure you wish to do this?
         <br><br>
     </div>
@@ -91,6 +92,8 @@ echo '</form></div>';
     <br>WARNING: Changing the BMLT Root Server settings will remove your service body configuration and existing submissions within the plugin.
     <br><br>Use the BACKUP option before pressing Ok if you do not wish to lose your submissions.
     <br><br>If you press Ok, your service bodies, service body permissions and ALL SUBMISSIONS will be removed.
+    <br><br><b>Note:</b> this only affects the plugin configuration within Wordpress. Nothing outside of this, particularly any BMLT configuration, will be touched.
+    <br><br>
     <br><br>Are you sure you wish to do this?
     <br><br>
     <label for="yesimsure">Yes I'm sure!</label>

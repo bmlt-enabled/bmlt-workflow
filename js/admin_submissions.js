@@ -835,6 +835,7 @@ jQuery(document).ready(function ($) {
       contentType: "application/json",
       data: JSON.stringify(parameters),
       beforeSend: function (xhr) {
+        clear_notices();
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
     })
@@ -872,6 +873,7 @@ jQuery(document).ready(function ($) {
       contentType: "application/json",
       data: encodeURI(address),
       beforeSend: function (xhr) {
+        clear_notices();
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
     })
@@ -923,6 +925,7 @@ jQuery(document).ready(function ($) {
       contentType: "application/json",
       data: JSON.stringify(parameters),
       beforeSend: function (xhr) {
+        clear_notices();
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
     })
