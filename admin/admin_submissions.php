@@ -206,17 +206,17 @@ if ($meeting_states_and_provinces) {
                 <label id="location_nation_label" for="quickedit_location_nation"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname')) ?></label>
                 <input class="quickedit-input" type="text" name="quickedit_location_nation" size="50" id="quickedit_location_nation">
             </div>
-            <div class="form-grid-col2">
-
-                <div id="optional_auto_geocode_enabled">
-                    <fieldset>
-                        <legend>Meeting Geolocation (auto calculated)</legend>
-                        <label for="quickedit_latitude">Latitude</label>
-                        <input class="quickedit-input" type="number" name="quickedit_latitude" id="quickedit_latitude" disabled>
-                        <label for="quickedit_longitude">Longitude</label>
-                        <input class="quickedit-input" type="number" name="quickedit_longitude" id="quickedit_longitude" disabled>
-                    </fieldset>
-                </div>
+        </div>
+        <div class="form-grid-col3">
+            <iframe id="quickedit_gmaps" width="100%" height="400" frameborder="0" style="border:0" referrerpolicy="no-referrer-when-downgrade" src="" allowfullscreen> </iframe>
+            <div id="optional_auto_geocode_enabled"><br>
+                <fieldset>
+                    <legend>Meeting Geolocation (auto calculated)</legend>
+                    <label for="quickedit_latitude">Latitude</label>
+                    <input class="quickedit-input" type="number" name="quickedit_latitude" id="quickedit_latitude" disabled>
+                    <label for="quickedit_longitude">Longitude</label>
+                    <input class="quickedit-input" type="number" name="quickedit_longitude" id="quickedit_longitude" disabled>
+                </fieldset>
             </div>
         </div>
     </div>

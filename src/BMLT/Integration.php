@@ -719,11 +719,13 @@ class Integration
         $this->debug_log("*** ADMIN URL " . $url);
 
         $response = $this->getv2($url, $this->cookies);
-        $this->debug_log("*** ADMIN PAGE");
-        $this->debug_log("get returns " . \wp_remote_retrieve_response_code($response));
-        $this->debug_log(\wp_remote_retrieve_body($response));
+        // $this->debug_log("*** ADMIN PAGE");
+        // $this->debug_log("get returns " . \wp_remote_retrieve_response_code($response));
+        // $this->debug_log(\wp_remote_retrieve_body($response));
 
         preg_match('/"google_api_key":"(.*?)",/', \wp_remote_retrieve_body($response), $matches);
+        $this->debug_log("retrieved gmaps key ".$matches[1]);
+
         return $matches[1];
     }
 
@@ -920,7 +922,7 @@ class Integration
     {
         $key = $this->getGmapsKey();
         if (\is_wp_error($key)) {
-            return $this->bmltwf_integration_error('Server error geolocating address', 500);
+            return $this->bmltwf_integration_error('Server error geolocating address: Could not retrieve google maps key.', 500);
         }
 
         $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($address) . "&key=" . $key;
@@ -935,13 +937,13 @@ class Integration
         $resp = \wp_remote_get($url, array('headers' => $headers));
 
         if ((!is_array($resp)) ||  is_wp_error($resp)) {
-            return $this->bmltwf_integration_error('Server error geolocating address', 500);
+            return $this->bmltwf_integration_error('Server error geolocating address: Could not perform google maps lookup', 500);
         }
 
         $body = \wp_remote_retrieve_body($resp);
 
         if (!$body) {
-            return new \WP_Error('bmltwf', 'Server error geolocating address');
+            return $this->bmltwf_integration_error('Server error geolocating address: Nothing returned from google maps lookup', 500);
         }
 
         $this->debug_log("*** GMAPS RESPONSE");
@@ -949,8 +951,13 @@ class Integration
 
         $geo = json_decode($body, true);
         if ((empty($geo)) || (empty($geo['status']))) {
-            return new \WP_Error('bmltwf', 'Server error geolocating address');
+            return $this->bmltwf_integration_error('Server error geolocating address: No google maps status code returned', 500);
         }
+        if ($geo['status'] === "REQUEST_DENIED")
+        {
+            return $this->bmltwf_integration_error('Server error geolocating address: ' . $geo['error_message'], 500);
+        }
+
         if (($geo['status'] === "ZERO_RESULTS") || empty($geo['results'][0]['geometry']['location']['lat']) || empty($geo['results'][0]['geometry']['location']['lng'])) {
             return new \WP_Error('bmltwf', 'Could not geolocate meeting address. Please try amending the address with additional/correct details.');
         } else {

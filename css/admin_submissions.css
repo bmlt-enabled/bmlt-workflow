@@ -34,12 +34,12 @@
 .form-grid {
   display: grid;
   grid-gap: 10px;
-  grid-template-columns: repeat(2, [col] 1fr);
+  grid-template-columns: repeat(3, [col] 1fr);
   grid-template-rows: repeat(2, [row] auto);
 }
 
 .form-grid-top {
-  grid-column: col / span 2;
+  grid-column: col / span 3;
   grid-row: row ;
 }
 

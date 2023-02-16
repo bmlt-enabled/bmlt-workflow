@@ -232,6 +232,13 @@ jQuery(document).ready(function ($) {
               }
             });
             add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
+            
+            if(item["longitude"]&&item["latitude"])
+            {
+              lat = item["latitude"];
+              long = item["longitude"];
+              update_gmaps(lat,long);
+            }
             $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
           }
         });
@@ -878,13 +885,21 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        $("#quickedit_latitude").val(response["latitude"]);
-        $("#quickedit_longitude").val(response["longitude"]);
+        var lat = response["latitude"];
+        var long = response["longitude"];
+        $("#quickedit_latitude").val(lat);
+        $("#quickedit_longitude").val(long);
+        update_gmaps(lat,long);
         notice_success(response, "bmltwf-quickedit-error-message");
       })
       .fail(function (xhr) {
         notice_error(xhr, "bmltwf-quickedit-error-message");
       });
+  }
+
+  function update_gmaps(lat,long)
+  {
+    $("#quickedit_gmaps").attr("src","https://www.google.com/maps/embed/v1/place?key="+bmltwf_gmaps_key+"&zoom=18&q="+lat+","+long);
   }
 
   function save_handler(id) {
