@@ -742,6 +742,9 @@ span.select2-container--bmltwf_select2_theme .select2-selection--single {
 
 .select2-container--bmltwf_select2_theme .select2-search--dropdown .select2-search__field {
 	border: 1px solid #aaa;
+  background: #eee;
+  font-family: "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  font-size: 1.2rem;
 }
 
 .select2-container--bmltwf_select2_theme .select2-search--inline .select2-search__field {
