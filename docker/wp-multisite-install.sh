@@ -48,9 +48,11 @@ wp --path=$sitelocalpath --url=${pluginsite} site create --slug=plugin
 if [ ! -z $NOPLUGIN ]
 then
     export pluginsite2=${siteurl}noplugin
+    export p2slug=noplugin
     wp --path=$sitelocalpath --url=${pluginsite2} site create --slug=noplugin
 else 
     export pluginsite2=${siteurl}plugin2
+    export p2slug=plugin2
     wp --path=$sitelocalpath --url=${pluginsite2} site create --slug=plugin2
 fi
 
@@ -64,8 +66,8 @@ fi
 mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_blogs set domain="'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'" where domain="'${WORDPRESS_HOST}${WORDPRESS_PORT}'";'
 mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/plugin" where option_name="siteurl";'
 mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/plugin" where option_name="home";'
-mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/noplugin" where option_name="siteurl";'
-mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/noplugin" where option_name="home";'
+mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/'${p2slug}'" where option_name="siteurl";'
+mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/'${p2slug}'" where option_name="home";'
 
 
 sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" $sitelocalpath/wp-content/plugins/bmlt-workflow/config.php
