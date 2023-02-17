@@ -56,14 +56,13 @@ echo '</form></div>';
     <input type="url" size="50" id="bmltwf_bmlt_server_address" name="bmltwf_bmlt_server_address" value="<?php echo esc_url_raw(get_option('bmltwf_bmlt_server_address')) ?>" />
     <div id="bmltwf_bmlt_server_address_test_yes" style="display: inline-block;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span></div>
     <div id="bmltwf_bmlt_server_address_test_no" style="display: inline-block;" ><span class="dashicons dashicons-no" style="color: red;"></span></div>
-
     <br><label for="bmltwf_bmlt_username"><b>Username:</b></label>
     <input type="text" size="50" id="bmltwf_bmlt_username" name="bmltwf_bmlt_username" value="<?php echo esc_attr(get_option('bmltwf_bmlt_username')) ?>" />
-    <div id="bmltwf_bmlt_login_test_yes" style="display: inline-block;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span></div>
-    <div id="bmltwf_bmlt_login_test_no" style="display: inline-block;" ><span class="dashicons dashicons-no" style="color: red;"></span></div>
 
     <br><label for="bmltwf_bmlt_password"><b>Password:</b></label>
     <input type="password" size="50" id="bmltwf_bmlt_password" name="bmltwf_bmlt_password" />
+    <div id="bmltwf_bmlt_login_test_yes" style="display: inline-block; vertical-align: middle" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span></div>
+    <div id="bmltwf_bmlt_login_test_no" style="display: inline-block; vertical-align: middle" ><span class="dashicons dashicons-no" style="color: red;"></span></div>
 
     <br><br>
     <div class="options_dialog_bmltwf_info_text">

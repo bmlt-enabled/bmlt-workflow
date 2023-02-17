@@ -158,6 +158,7 @@ class BMLTServerHandler
             return $result;
         } 
         
+        
         $data["bmltwf_bmlt_server_status"] = "true";
         $data["bmltwf_bmlt_login_status"] = "true";
         $data["bmltwf_bmlt_server_version"] = $this->bmlt_integration->bmlt_root_server_version;
@@ -195,6 +196,9 @@ class BMLTServerHandler
         update_option('bmltwf_bmlt_password', $encrypted);
         update_option('bmltwf_bmlt_server_address', $server);
         update_option("bmltwf_bmlt_test_status", "success");
+
+        // store the most current configured server version
+        $this->bmlt_integration->update_root_server_version();
 
         $data = array();
 

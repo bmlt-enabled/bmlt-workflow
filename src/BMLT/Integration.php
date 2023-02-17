@@ -69,6 +69,12 @@ class Integration
         return $response;
     }
 
+    public function update_root_server_version()
+    {
+        $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address'));
+
+    }
+    
     private function bmltwf_integration_error_with_data($message, $code, array $data)
     {
         $data['status'] = $code;

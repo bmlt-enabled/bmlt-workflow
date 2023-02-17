@@ -36,11 +36,6 @@ const password_multinetwork = 'admin';
 
 module.exports = {
   browsers: "chrome",
-  screenshots: {
-    path: "./tests/testcafe/screenshots/",
-    takeOnFails: true,
-    thumbnails: false
-  },
   userVariables: {
     formpage: siteurl_single + '/index.php' + formpage,
     admin_logon_page_single: siteurl_single + admin_logon_page,
