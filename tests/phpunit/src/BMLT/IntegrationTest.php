@@ -603,12 +603,66 @@ Line: $errorLine
      * @covers bmltwf\BMLT\Integration::is_v3_server
      **/
 
-    public function test_is_v3_server_returns_true_if_v2(): void
+    public function test_is_v3_server_returns_false_if_v2(): void
     {
         $integration = new Integration(true, "2.0.0");
-        $response = $integration->is_v3_server();
+        $response = $integration->is_v3_server("");
         $this->assertFalse(($response));
     }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::is_valid_bmlt_server
+     **/
+
+     public function test_is_valid_bmlt_server_returns_false_if_not_valid(): void
+     {
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+
+         $integration = new Integration(true, "2.0.0");
+         $response = $integration->is_valid_bmlt_server("");
+         $this->assertFalse(($response));
+     }
+ 
+    /**
+     * @covers bmltwf\BMLT\Integration::is_valid_bmlt_server
+     **/
+
+     public function test_is_valid_bmlt_server_returns_true_if_valid(): void
+     {
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+
+         $integration = new Integration(true, "3.0.0");
+         $response = $integration->is_valid_bmlt_server("");
+         $this->assertFalse(($response));
+     }
+
+         /**
+     * @covers bmltwf\BMLT\Integration::is_supported_server
+     **/
+
+     public function test_is_supported_server_returns_true_if_supported(): void
+     {
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+        Functions\when('\wp_remote_retrieve_body')->justReturn("<html></html>");
+
+         $integration = new Integration(true, "3.0.0");
+         $response = $integration->is_supported_server("");
+         $this->assertFalse(($response));
+     }
+
+         /**
+     * @covers bmltwf\BMLT\Integration::is_supported_server
+     **/
+
+     public function test_is_supported_server_returns_false_if_not_supported(): void
+     {
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+        Functions\when('\wp_remote_retrieve_body')->justReturn("<html></html>");
+
+         $integration = new Integration(true, "2.0.0");
+         $response = $integration->is_supported_server("");
+         $this->assertFalse(($response));
+     }
 
     /**
      * @covers bmltwf\BMLT\Integration::getMeetingFormats

@@ -36,8 +36,8 @@ sed -i -e "s/RewriteBase \/placeholder\//RewriteBase \/$WORDPRESS_HOST\//" $site
 wp db create
 wp core multisite-install --path=$sitelocalpath --base=/$WORDPRESS_HOST/ --url=$siteurl --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com
 
-mkdir /var/www/html/wordpress-php8-multinetwork/wp-content/plugins/bmlt-workflow
-cp -R /plugin/* /var/www/html/wordpress-php8-multinetwork/wp-content/plugins/bmlt-workflow
+mkdir $sitelocalpath/wp-content/plugins/bmlt-workflow
+cp -R /plugin/* $sitelocalpath/wp-content/plugins/bmlt-workflow
 
 sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '$WORDPRESS_NONCE_SALT');/" $sitelocalpath/wp-config.php
 
