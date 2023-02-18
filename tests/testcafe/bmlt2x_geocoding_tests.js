@@ -253,8 +253,6 @@ test("Approve_New_Meeting_No_Geocoding", async (t) => {
   await t.expect(as.optional_auto_geocode_enabled.visible).eql(false);
 
   // // check the geocode button is disabled
-  // var g = as.quickedit_dialog_parent.find("button").nth(2);
-  // console.log(g.hasAttribute("disabled"));
-  // console.log(as.quickedit_dialog_parent.find("button").nth(2).hasAttribute("disabled"));
-  // await t.expect(g.withAttribute("disabled").exists).ok();
+  var g = as.quickedit_dialog_parent.find("button").nth(2);
+  await t.expect(g.withAttribute("disabled").exists).ok();
 });

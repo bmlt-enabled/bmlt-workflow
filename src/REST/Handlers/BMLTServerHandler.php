@@ -45,35 +45,6 @@ class BMLTServerHandler
 
     }
 
-    private function check_bmltserver_parameters($username, $password, $server)
-    {
-        $data = array();
-
-        if (empty($username)) {
-            $result = $this->handlerCore->bmltwf_rest_error('Empty BMLT username parameter', 422);
-            $data["bmltwf_bmlt_server_status"] = "false";
-            $data["bmltwf_bmlt_login_status"] = "false";
-            $result->add_data($data);
-            return $result;
-        }
-
-        if (empty($password)) {
-            $result = $this->handlerCore->bmltwf_rest_error('Empty BMLT password parameter', 422);
-            $data["bmltwf_bmlt_server_status"] = "false";
-            $data["bmltwf_bmlt_login_status"] = "false";
-            $result->add_data($data);
-            return $result;
-        }
-
-        if (empty($server)) {
-            return $this->handlerCore->bmltwf_rest_error('Empty BMLT Root server parameter', 422);
-        }
-        if (substr($server, -1) !== '/') {
-            return $this->handlerCore->bmltwf_rest_error('BMLT Root Server address missing trailiing /', 422);
-        }
-        return true;
-    }
-
     public function get_bmltserver_handler($request)
     {
 
@@ -109,7 +80,7 @@ class BMLTServerHandler
         }
 
         if (substr($server, -1) !== '/') {
-            $message='BMLT Root Server address missing trailiing /';
+            $message='BMLT Root Server address missing trailing /';
             $result = $this->handlerCore->bmltwf_rest_error($message, $code);
             $result->add_data($data);
             return $result;

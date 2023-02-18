@@ -1,7 +1,11 @@
-## 1.0.22 (Feb 13, 2023)
+## 1.0.22 (Feb 18, 2023)
 - #139 Bug: Quickedit not clearing correctly between multiple edits (thanks markd !)
-- Major test case rewrite to use Mockoon
+- Major test case rewrite to use Mockoon for BMLT backend
 - #144 BMLT Root Server Configuration Change Warning (thanks @klgrimley !)
+- BMLT Root Server configuration page UI updates and test cases
+- Better feedback on Geolocation errors in quicksearch
+- Map view on Quickedit page
+- Disable debug in config file (doh) (thanks dennis.m )
 
 ## 1.0.21 (Feb 11, 2023)
 - #138 Users dropdown on Service Bodies config page not showing all users (thanks @pjaudiomv !)

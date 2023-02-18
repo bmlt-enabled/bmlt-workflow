@@ -163,8 +163,8 @@ class Integration
         );
 
         $resp = wp_remote_get($url, array('headers' => $headers));
-        $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
-        $this->debug_log(\wp_remote_retrieve_body($resp));
+        // $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
+        // $this->debug_log(\wp_remote_retrieve_body($resp));
 
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string(\wp_remote_retrieve_body($resp));

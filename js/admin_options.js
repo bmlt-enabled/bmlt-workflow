@@ -257,14 +257,14 @@ jQuery(document).ready(function ($) {
     buttons: 
       [
         {
-          id: "test",
+          id: "bmltwf_bmlt_configuration_test",
           text: "Test Configuration",
           click: function () {
             test_server_configuration()
           }
         },
         {
-          id: "save",
+          id: "bmltwf_bmlt_configuration_save",
           text: "Save Configuration",
           disabled: true,
           click:  function () {
@@ -280,7 +280,7 @@ jQuery(document).ready(function ($) {
           },
         },
         {
-          id: "cancel",
+          id: "bmltwf_bmlt_configuration_cancel",
           text: "Cancel",
           click:  function () {
             $(this).dialog("close");
@@ -370,7 +370,7 @@ jQuery(document).ready(function ($) {
     var dialogButtons = $( "#bmltwf_bmlt_configuration_dialog" ).dialog("option", "buttons");
 
     $.each(dialogButtons, function (buttonIndex, button) {
-        if (button.id === "save") {
+        if (button.id === "bmltwf_bmlt_configuration_save") {
             button.disabled = !enable;
         }
     })
