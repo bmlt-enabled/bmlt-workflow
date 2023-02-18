@@ -8,8 +8,7 @@ const multisite_plugin = "/plugin";
 const multisite_noplugin = "/noplugin";
 const multisite_plugin2 = "/plugin2";
 const admin_logon_page = "/wp-login.php";
-const croutonpage = "?page_id=4";
-const formpage = "?page_id=5";
+const formpage = "?page_id=4";
 const formpage2 = "/testpage/";
 
 const admin_backup_json_path = "/index.php?rest_route=/bmltwf/v1/options/backup";
@@ -37,11 +36,6 @@ const password_multinetwork = 'admin';
 
 module.exports = {
   browsers: "chrome",
-  screenshots: {
-    path: "./tests/testcafe/screenshots/",
-    takeOnFails: true,
-    thumbnails: false
-  },
   userVariables: {
     formpage: siteurl_single + '/index.php' + formpage,
     admin_logon_page_single: siteurl_single + admin_logon_page,
@@ -99,22 +93,9 @@ module.exports = {
     admin_restore_json_multinetwork_plugin: siteurl_multinetwork + multisite_plugin + admin_restore_json_path,
     admin_restore_json_multinetwork_plugin2: siteurl_multinetwork + multisite_plugin2 + admin_restore_json_path,
 
-    // // test case resetters
-    blank_bmlt: "export AUTO_GEOCODING_ON=true; export MEETING_STATES_ON=false; docker compose -f ../bmlt2x/docker/docker-compose.yml --env-file ../bmlt2x/docker/bmlt.env down; docker compose -f ../bmlt2x/docker/docker-compose.yml --env-file ../bmlt2x/docker/bmlt.env up --detach",
-    blank_bmlt3x: "export AUTO_GEOCODING_ON=true; export MEETING_STATES_ON=false; docker compose -f ../bmlt3x/docker/docker-compose.yml --env-file ../bmlt3x/docker/bmlt.env down; docker compose -f ../bmlt3x/docker/docker-compose.yml --env-file ../bmlt3x/docker/bmlt.env up --detach",
-    auto_geocoding_off: "export AUTO_GEOCODING_ON=false; docker compose -f ../bmlt2x/docker/docker-compose.yml --env-file ../bmlt2x/docker/bmlt.env down; docker compose -f ../bmlt2x/docker/docker-compose.yml --env-file ../bmlt2x/docker/bmlt.env up --detach",
-    reset_bmlt2x_with_states_on: "export MEETING_STATES_ON=true; docker compose -f ../bmlt2x/docker/docker-compose.yml stop bmlt2x; docker compose -f ../bmlt2x/docker/docker-compose.yml up --detach bmlt2x",
-    reset_bmlt2x_with_states_off: "docker compose -f ../bmlt2x/docker/docker-compose.yml stop bmlt2x; docker compose -f ../bmlt2x/docker/docker-compose.yml up --detach bmlt2x",
-    bmlt3x_auto_geocoding_off: "export AUTO_GEOCODING_ON=false; docker compose -f ../bmlt3x/docker/docker-compose.yml --env-file ../bmlt3x/docker/bmlt.env down; docker compose -f ../bmlt3x/docker/docker-compose.yml --env-file ../bmlt3x/docker/bmlt.env up --detach",
-    reset_bmlt3x_with_states_on: "export MEETING_STATES_ON=true; docker compose -f ../bmlt3x/docker/docker-compose.yml --env-file ../bmlt3x/docker/bmlt.env stop bmlt3x; docker compose -f ../bmlt3x/docker/docker-compose.yml --env-file ../bmlt3x/docker/bmlt.env up --detach bmlt3x",
-    reset_bmlt3x_with_states_off: "docker compose -f ../bmlt3x/docker/docker-compose.yml --env-file ../bmlt3x/docker/bmlt.env stop bmlt3x; docker compose -f ../bmlt3x/docker/docker-compose.yml --env-file ../bmlt3x/docker/bmlt.env up --detach bmlt3x",
-
-    crouton_page: siteurl_single+croutonpage,
     waitfor: "sh docker/wait-for.sh",
     bmlt2x_login_page: "http://localhost:8000/main_server/index.php",
     bmlt3x_login_page: "http://localhost:8001/main_server/index.php",
 
-    crouton2x: siteurl_single+"/crouton2x.php",
-    crouton3x: siteurl_single+"/crouton3x.php"
   },
 };

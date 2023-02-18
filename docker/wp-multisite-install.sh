@@ -3,6 +3,7 @@
 export sitelocalpath=/var/www/html/$WORDPRESS_HOST
 export siteurl=http://$WORDPRESS_HOST:$WORDPRESS_PORT/$WORDPRESS_HOST/
 
+mkdir $sitelocalpath
 cd $sitelocalpath
 wp core download
 export DONE=1
@@ -35,6 +36,9 @@ sed -i -e "s/RewriteBase \/placeholder\//RewriteBase \/$WORDPRESS_HOST\//" $site
 wp db create
 wp core multisite-install --path=$sitelocalpath --base=/$WORDPRESS_HOST/ --url=$siteurl --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com
 
+mkdir $sitelocalpath/wp-content/plugins/bmlt-workflow
+cp -R /plugin/* $sitelocalpath/wp-content/plugins/bmlt-workflow
+
 sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '$WORDPRESS_NONCE_SALT');/" $sitelocalpath/wp-config.php
 
 # create sites
@@ -44,18 +48,27 @@ wp --path=$sitelocalpath --url=${pluginsite} site create --slug=plugin
 if [ ! -z $NOPLUGIN ]
 then
     export pluginsite2=${siteurl}noplugin
+    export p2slug=noplugin
     wp --path=$sitelocalpath --url=${pluginsite2} site create --slug=noplugin
 else 
     export pluginsite2=${siteurl}plugin2
+    export p2slug=plugin2
     wp --path=$sitelocalpath --url=${pluginsite2} site create --slug=plugin2
 fi
 
 # hack for multisite
-mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_blogs set domain="wordpress-php8-multisitesingle:81" where domain="wordpress-php8-multisitesingle81";'
-mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle/plugin" where option_name="siteurl";'
-mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle/plugin" where option_name="home";'
-mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle/noplugin" where option_name="siteurl";'
-mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle/noplugin" where option_name="home";'
+# mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_blogs set domain="wordpress-php8-multisitesingle:81" where domain="wordpress-php8-multisitesingle81";'
+# mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle/plugin" where option_name="siteurl";'
+# mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle/plugin" where option_name="home";'
+# mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle/noplugin" where option_name="siteurl";'
+# mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle/noplugin" where option_name="home";'
+
+mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_blogs set domain="'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'" where domain="'${WORDPRESS_HOST}${WORDPRESS_PORT}'";'
+mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/plugin" where option_name="siteurl";'
+mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/plugin" where option_name="home";'
+mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/'${p2slug}'" where option_name="siteurl";'
+mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/'${p2slug}'" where option_name="home";'
+
 
 sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" $sitelocalpath/wp-content/plugins/bmlt-workflow/config.php
 
@@ -99,9 +112,11 @@ rm /var/log/php_errors.log
 touch /var/log/php_errors.log
 chmod 777 /var/log/php_errors.log
 
-sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /etc/apache2/sites-enabled/000-default.conf 
-sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /etc/apache2/sites-available/000-default.conf 
-sed -i "s/Listen 80/Listen $WORDPRESS_PORT/g" /etc/apache2/ports.conf 
+sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /etc/apache2/sites-enabled/000-default.conf
+
+sed -i "s/<VirtualHost \*:80>/<VirtualHost \*:$WORDPRESS_PORT>/g" /etc/apache2/sites-available/000-default.conf
+
+sed -i "s/Listen 80/Listen $WORDPRESS_PORT/g" /etc/apache2/ports.conf
 
 echo "<?php phpinfo();" >> /var/www/html/a.php
 

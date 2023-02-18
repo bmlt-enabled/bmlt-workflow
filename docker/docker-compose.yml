@@ -61,10 +61,10 @@ services:
       WORDPRESS_HOST: wordpress-php8-singlesite
       WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
       WORDPRESS_PORT: 80
-      BMLT: 'bmlt3x'
-      BMLT_PORT: 8001
+      BMLT: ${BMLT}
+      BMLT_PORT: ${BMLT_PORT}
     volumes:
-      - ../:/var/www/html/wp-content/plugins/bmlt-workflow
+      - ../:/plugin
       - ./logs/:/var/log/apache2
       - ../../wpcache:/root/.wp-cli/cache/core/
       - /var/run/docker.sock.raw:/var/run/docker.sock
@@ -93,10 +93,10 @@ services:
       WORDPRESS_HOST: wordpress-php8-multisitesingle
       WORDPRESS_PORT: 81
       NOPLUGIN: 'true'
-      BMLT: 'bmlt3x'
-      BMLT_PORT: 8001
+      BMLT: ${BMLT}
+      BMLT_PORT: ${BMLT_PORT}
     volumes:
-      - ../:/var/www/html/wordpress-php8-multisitesingle/wp-content/plugins/bmlt-workflow
+      - ../:/plugin
       - ./logs/:/var/log/apache2
       - ../../wpcache:/root/.wp-cli/cache/core/
 
@@ -123,10 +123,10 @@ services:
       WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
       WORDPRESS_HOST: wordpress-php8-multinetwork
       WORDPRESS_PORT: 82
-      BMLT: 'bmlt3x'
-      BMLT_PORT: 8001
+      BMLT: ${BMLT}
+      BMLT_PORT: ${BMLT_PORT}
     volumes:
-      - ../:/var/www/html/wordpress-php8-multinetwork/wp-content/plugins/bmlt-workflow
+      - ../:/plugin
       - ./logs/:/var/log/apache2
       - ../../wpcache:/root/.wp-cli/cache/core/
 
@@ -151,8 +151,8 @@ services:
   #     WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
   #     WORDPRESS_HOST: wordpress-php8-singlesite-bmlt3x
   #     WORDPRESS_PORT: 83
-  #     BMLT: 'bmlt3x'
-  #     BMLT_PORT: 8001
+  #     BMLT: ${BMLT}
+  #     BMLT_PORT: ${BMLT_PORT}
   #   volumes:
   #     - ../:/var/www/html/wp-content/plugins/bmlt-workflow
   #     - ./logs/:/var/log/apache2

@@ -119,7 +119,7 @@ function notice_success(response, notice_class) {
       '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
   else
     msg =
-      '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong>' +
+      '<div class="notice notice-success is-dismissible"><p id="bmltwf_error_class_'+notice_class+'"><strong>SUCCESS: </strong>' +
       response.message +
       '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
   jQuery("." + notice_class).after(msg);
@@ -127,7 +127,7 @@ function notice_success(response, notice_class) {
 
 function notice_error(xhr, notice_class) {
   jQuery("." + notice_class).after(
-    '<div class="notice notice-error is-dismissible"><p><strong>ERROR: </strong>' +
+    '<div class="notice notice-error is-dismissible"><p id="bmltwf_error_class_'+notice_class+'"><strong>ERROR: </strong>' +
       xhr.responseJSON.message +
       '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
   );

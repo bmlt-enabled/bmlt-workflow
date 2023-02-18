@@ -94,9 +94,9 @@ jQuery(document).ready(function ($) {
 
   // fill in counties and sub provinces
   if (bmltwf_counties_and_sub_provinces === false) {
-    $("#optional_location_sub_province").append('<input class="meeting-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">');
+    $("#optional_location_sub_province").append('<input class="quickedit-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">');
   } else {
-    var appendstr = '<select class="meeting-input" id="quickedit_location_sub_province" name="quickedit_location_sub_province">';
+    var appendstr = '<select class="quickedit-input" id="quickedit_location_sub_province" name="quickedit_location_sub_province">';
     bmltwf_counties_and_sub_provinces.forEach(function (item, index) {
       appendstr += '<option value="' + item + '">' + item + "</option>";
     });
@@ -105,9 +105,9 @@ jQuery(document).ready(function ($) {
   }
 
   if (bmltwf_do_states_and_provinces === false) {
-    $("#optional_location_province").append('<input class="meeting-input" type="text" name="quickedit_location_province" size="50" id="quickedit_location_province">');
+    $("#optional_location_province").append('<input class="quickedit-input" type="text" name="quickedit_location_province" size="50" id="quickedit_location_province">');
   } else {
-    var appendstr = '<select class="meeting-input" id="quickedit_location_province" name="quickedit_location_province">';
+    var appendstr = '<select class="quickedit-input" id="quickedit_location_province" name="quickedit_location_province">';
     bmltwf_do_states_and_provinces.forEach(function (item, index) {
       appendstr += '<option value="' + item + '">' + item + "</option>";
     });
@@ -180,6 +180,7 @@ jQuery(document).ready(function ($) {
   function populate_and_open_quickedit(id) {
     // clear quickedit
 
+
     // remove our change handler
     $(".quickedit-input").off("input.bmltwf-highlight");
     $("#quickedit_format_shared_id_list").off("change.bmltwf-highlight");
@@ -231,10 +232,23 @@ jQuery(document).ready(function ($) {
               }
             });
             add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
+            
+            if(item["longitude"]&&item["latitude"])
+            {
+              lat = item["latitude"];
+              long = item["longitude"];
+              update_gmaps(lat,long);
+            }
+            else
+            {
+              $("#quickedit_gmaps").hide();
+            }
             $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
           }
         });
     } else if (bmltwf_changedata[id].submission_type == "reason_new") {
+      // won't have a geolocation for a new meeting
+      $("#quickedit_gmaps").hide();
       add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
       $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
     }
@@ -834,6 +848,7 @@ jQuery(document).ready(function ($) {
       contentType: "application/json",
       data: JSON.stringify(parameters),
       beforeSend: function (xhr) {
+        clear_notices();
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
     })
@@ -871,17 +886,28 @@ jQuery(document).ready(function ($) {
       contentType: "application/json",
       data: encodeURI(address),
       beforeSend: function (xhr) {
+        clear_notices();
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
     })
       .done(function (response) {
-        $("#quickedit_latitude").val(response["latitude"]);
-        $("#quickedit_longitude").val(response["longitude"]);
+        var lat = response["latitude"];
+        var long = response["longitude"];
+        $("#quickedit_latitude").val(lat);
+        $("#quickedit_longitude").val(long);
+        update_gmaps(lat,long);
         notice_success(response, "bmltwf-quickedit-error-message");
       })
       .fail(function (xhr) {
         notice_error(xhr, "bmltwf-quickedit-error-message");
       });
+  }
+
+  function update_gmaps(lat,long)
+  {
+    $("#quickedit_gmaps").attr("src","https://www.google.com/maps/embed/v1/place?key="+bmltwf_gmaps_key+"&zoom=18&q="+lat+","+long);
+    $("#quickedit_gmaps").show();
+
   }
 
   function save_handler(id) {
@@ -922,6 +948,7 @@ jQuery(document).ready(function ($) {
       contentType: "application/json",
       data: JSON.stringify(parameters),
       beforeSend: function (xhr) {
+        clear_notices();
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
     })

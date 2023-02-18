@@ -16,42 +16,29 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 jQuery(document).ready(function ($) {
-
   // form submit handler to massage form content before sending
 
-  $("#bmltwf_options_form").submit(function( event ) {
-    $('input[type=hidden]').each(function (i, el) {
-      if(el.name.startsWith("bmltwf_optional"))
-      {
-        hidden = !($('input[name="' + el.name + '_visible_checkbox"]')[0].checked);
+  $("#bmltwf_options_form").submit(function (event) {
+    $("input[type=hidden]").each(function (i, el) {
+      if (el.name.startsWith("bmltwf_optional")) {
+        hidden = !$('input[name="' + el.name + '_visible_checkbox"]')[0].checked;
         required = $('input[name="' + el.name + '_required_checkbox"]')[0].checked;
-        if(hidden)
-        {
+        if (hidden) {
           $(el).val("hidden");
-        }
-        else if(required)
-        {
+        } else if (required) {
           $(el).val("displayrequired");
-        }
-        else
-        {
+        } else {
           $(el).val("display");
         }
-      }
-      else if(el.name.startsWith("bmltwf_required"))
-      {
+      } else if (el.name.startsWith("bmltwf_required")) {
         required = $('input[name="' + el.name + '_required_checkbox"]')[0].checked;
-        if(required)
-        {
+        if (required) {
           $(el).val("true");
-        }
-        else
-        {
+        } else {
           $(el).val("false");
         }
       }
-
-  });
+    });
   });
 
   // click and display handler for fso options
@@ -155,6 +142,9 @@ jQuery(document).ready(function ($) {
   // click handler for bmlt configuration popup
   $("#bmltwf_configure_bmlt_server").on("click", function (event) {
     clear_notices();
+
+    hide_bmlt_validation();
+
     $("#bmltwf_bmlt_configuration_dialog").dialog("open");
   });
 
@@ -264,25 +254,40 @@ jQuery(document).ready(function ($) {
       at: "center",
       of: window,
     },
-    buttons: {
-      "Test Configuration": function () {
-        test_configuration(false);
-      },
-      "Save and Close": function () {
-        // check if server address changed
-        if (bmltwf_bmlt_server_address != $("#bmltwf_bmlt_server_address").val()) {
-          $("#bmltwf_bmlt_change_server_warning_dialog").data("parent", $(this)).dialog("open");
-        } else {
-          save_results();
-          // trigger an update on the main page
-          test_configuration(true);
-          $(this).dialog("close");
+    buttons: 
+      [
+        {
+          id: "bmltwf_bmlt_configuration_test",
+          text: "Test Configuration",
+          click: function () {
+            test_server_configuration()
+          }
+        },
+        {
+          id: "bmltwf_bmlt_configuration_save",
+          text: "Save Configuration",
+          disabled: true,
+          click:  function () {
+            // check if server address changed
+            if (bmltwf_bmlt_server_address !== "" && bmltwf_bmlt_server_address != $("#bmltwf_bmlt_server_address").val()) {
+              $("#bmltwf_bmlt_change_server_warning_dialog").data("parent", $(this)).dialog("open");
+            } else {
+              save_results();
+              // trigger an update on the main page
+              test_configuration(true);
+              $(this).dialog("close");
+            }
+          },
+        },
+        {
+          id: "bmltwf_bmlt_configuration_cancel",
+          text: "Cancel",
+          click:  function () {
+            $(this).dialog("close");
+          }
         }
-      },
-      Cancel: function () {
-        $(this).dialog("close");
-      },
-    },
+      ],
+    
     open: function () {
       var $this = $(this);
       // close dialog by clicking the overlay behind it
@@ -295,7 +300,8 @@ jQuery(document).ready(function ($) {
     },
   });
 
-  function test_configuration(saving) {
+
+  function test_server_configuration() {
     var parameters = {};
     parameters["bmltwf_bmlt_server_address"] = $("#bmltwf_bmlt_server_address").val();
     parameters["bmltwf_bmlt_username"] = $("#bmltwf_bmlt_username").val();
@@ -312,18 +318,116 @@ jQuery(document).ready(function ($) {
         xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
       },
     })
-      .done(function (response) {
-        notice_success(response, "options_dialog_bmltwf_error_message");
-        if (saving) {
-          update_from_test_result(response);
+
+    .done(function (response) {
+      notice_success(response, "options_dialog_bmltwf_error_message");
+      $("#bmltwf_bmlt_server_address_test_yes").show();
+      $("#bmltwf_bmlt_login_test_yes").show();
+      $("#bmltwf_bmlt_server_address_test_no").hide();
+      $("#bmltwf_bmlt_login_test_no").hide();
+      enable_save_button(true);
+
+    })
+
+    .fail(function (xhr) {
+
+      if(xhr.responseJSON.data['bmltwf_bmlt_server_status']==="true")
+      {
+        $("#bmltwf_bmlt_server_address_test_yes").show();
+        $("#bmltwf_bmlt_server_address_test_no").hide();
+      }
+      else
+      {
+        $("#bmltwf_bmlt_server_address_test_yes").hide();
+        $("#bmltwf_bmlt_server_address_test_no").show();
+      }
+      if(xhr.responseJSON.data['bmltwf_bmlt_login_status']!=="unknown")
+      {
+        if(xhr.responseJSON.data['bmltwf_bmlt_login_status']==="true")
+        {
+          $("#bmltwf_bmlt_login_test_yes").show();
+          $("#bmltwf_bmlt_login_test_no").hide();
         }
+        else
+        {
+          $("#bmltwf_bmlt_login_test_yes").hide();
+          $("#bmltwf_bmlt_login_test_no").show();
+        }
+      }
+      else
+      {
+        $("#bmltwf_bmlt_login_test_yes").hide();
+        $("#bmltwf_bmlt_login_test_no").hide();
+      }
+      enable_save_button(false);
+
+      notice_error(xhr, "options_dialog_bmltwf_error_message");
+    });
+  }
+
+  function enable_save_button(enable)
+  {
+    var dialogButtons = $( "#bmltwf_bmlt_configuration_dialog" ).dialog("option", "buttons");
+
+    $.each(dialogButtons, function (buttonIndex, button) {
+        if (button.id === "bmltwf_bmlt_configuration_save") {
+            button.disabled = !enable;
+        }
+    })
+    $("#bmltwf_bmlt_configuration_dialog").dialog("option", "buttons", dialogButtons);
+
+  }
+
+  $("#bmltwf_bmlt_server_address").on("change", function () {
+    enable_save_button(false);
+    hide_bmlt_validation()
+    });
+
+  $("#bmltwf_bmlt_username").on("change", function () {
+    enable_save_button(false);
+    hide_bmlt_validation()
+    });
+
+  $("#bmltwf_bmlt_password").on("change", function () {
+    enable_save_button(false);
+    hide_bmlt_validation()
+    });
+
+  function hide_bmlt_validation()
+  {
+    $("#bmltwf_bmlt_server_address_test_yes").hide();
+    $("#bmltwf_bmlt_login_test_yes").hide();
+    $("#bmltwf_bmlt_server_address_test_no").hide();
+    $("#bmltwf_bmlt_login_test_no").hide();
+  }
+
+  function test_configuration(saving) {
+    var parameters = {};
+    parameters["bmltwf_bmlt_server_address"] = $("#bmltwf_bmlt_server_address").val();
+    parameters["bmltwf_bmlt_username"] = $("#bmltwf_bmlt_username").val();
+    parameters["bmltwf_bmlt_password"] = $("#bmltwf_bmlt_password").val();
+
+    return new Promise((resolve,reject) => {
+      $.ajax({
+        url: bmltwf_admin_bmltserver_rest_url,
+        type: "POST",
+        dataType: "json",
+        contentType: "application/json",
+        data: JSON.stringify(parameters),
+        beforeSend: function (xhr) {
+          clear_notices();
+          xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+        },
       })
-      .fail(function (xhr) {
-        notice_error(xhr, "options_dialog_bmltwf_error_message");
-        if (saving) {
-          update_from_test_result(xhr.responseJSON.data);
-        }
-      });
+        .done(function (response) {
+          notice_success(response, "options_dialog_bmltwf_error_message");
+          resolve();
+        })
+        .fail(function (xhr) {
+          notice_error(xhr, "options_dialog_bmltwf_error_message");
+          reject();
+        });
+    });
   }
 
   function get_test_status() {
@@ -355,18 +459,14 @@ jQuery(document).ready(function ($) {
       $("#bmltwf_bmlt_test_no").show();
       $("#bmltwf_bmlt_test_yes").hide();
     }
-    if (data["bmltwf_bmlt_server_version"])
-    {
+    if (data["bmltwf_bmlt_server_version"]) {
       $("#bmltwf_server_version_yes").show();
       $("#bmltwf_server_version_no").hide();
-      $("#bmltwf_server_version_yes").html('<span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>BMLT Root Server Version '+data["bmltwf_bmlt_server_version"]);
-    }
-    else
-    {
+      $("#bmltwf_server_version_yes").html('<span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>BMLT Root Server Version ' + data["bmltwf_bmlt_server_version"]);
+    } else {
       $("#bmltwf_server_version_no").show();
       $("#bmltwf_server_version_yes").hide();
     }
-
   }
 
   function save_results() {

@@ -17,21 +17,18 @@
 
 import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
-import { ct } from "./models/crouton";
 
-import { Selector, Role } from "testcafe";
+import { Selector } from "testcafe";
 
 import {
   restore_from_backup,
-//   reset_bmlt,
-  reset_bmlt2x_with_auto_geocoding_off,
   select_dropdown_by_text,
   select_dropdown_by_value,
   click_table_row_column,
   click_dt_button_by_index,
   click_dialog_button_by_index,
   bmltwf_admin,
-  crouton2x
+  myip
 } from "./helpers/helper.js";
 
 import { userVariables } from "../../.testcaferc";
@@ -40,16 +37,13 @@ fixture`bmlt2x_geocoding_tests_fixture`
   .before(async (t) => {
 })
   .beforeEach(async (t) => {
-    // await reset_bmlt(t);
-    await reset_bmlt2x_with_auto_geocoding_off(t);
 
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, "bmlt2x", "8000");
-    await crouton2x(t);
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, myip(), "3000","hidden");
 
     await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
   });
 
-test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
+test("Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) => {
   var meeting = {
     location_text: "the church",
     location_street: "105 avoca street",
@@ -176,39 +170,9 @@ test("Submit_New_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async 
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
-  // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
-
-  await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
-
-  await t.typeText(Selector('input[class="select2-search__field"]'), "99999");
-  await t.pressKey("enter");
-
-  // var meeting = {
-  //     meeting_name: 'my test meeting 99999',
-  //     location_text: 'the church',
-  //     location_street: '105 avoca street',
-  //     location_info: 'info',
-  //     location_municipality: 'randwick',
-  //     location_province: 'nsw',
-  //     location_postal_code_1: '2032',
-  //     phone_meeting_number: '+61 1800 253430 code #8303782669',
-  //     virtual_meeting_link: 'https://us02web.zoom.us/j/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09',
-  //     virtual_meeting_additional_info: 'Zoom ID 83037287669 Passcode: testing'
-  //     };
-
-  await t
-    .expect(ct.meeting_name.innerText)
-    .eql(meeting.meeting_name)
-    .expect(ct.location_text.innerText)
-    .eql(meeting.location_text)
-    .expect(ct.phone_meeting_number.innerText)
-    .eql(meeting.phone_meeting_number)
-    .expect(ct.virtual_meeting_link.innerText)
-    .eql(meeting.virtual_meeting_link);
 });
 
-test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", async (t) => {
+test("Submit_Change_Meeting_And_Approve_With_Geocoding_Disabled", async (t) => {
 
   await t.navigateTo(userVariables.formpage);
 
@@ -273,15 +237,6 @@ test("Submit_Change_Meeting_And_Approve_And_Verify_With_Geocoding_Disabled", asy
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
-  // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
-
-  await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
-
-  await t.typeText(Selector('input[class="select2-search__field"]'), "update");
-  await t.pressKey("enter");
-
-  await t.expect(ct.meeting_name.innerText).eql("update");
 });
 
 test("Approve_New_Meeting_No_Geocoding", async (t) => {
@@ -298,8 +253,6 @@ test("Approve_New_Meeting_No_Geocoding", async (t) => {
   await t.expect(as.optional_auto_geocode_enabled.visible).eql(false);
 
   // // check the geocode button is disabled
-  // var g = as.quickedit_dialog_parent.find("button").nth(2);
-  // console.log(g.hasAttribute("disabled"));
-  // console.log(as.quickedit_dialog_parent.find("button").nth(2).hasAttribute("disabled"));
-  // await t.expect(g.withAttribute("disabled").exists).ok();
+  var g = as.quickedit_dialog_parent.find("button.ui-corner-all").nth(1);
+  await t.expect(g.withAttribute("disabled").exists).ok();
 });

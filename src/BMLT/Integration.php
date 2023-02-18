@@ -20,11 +20,6 @@
 
 namespace bmltwf\BMLT;
 
-//  use bmltwf\BMLTWF_Debug;
-use bmltwf\BMLTWF_WP_Options;
-use bmltwf\REST\HandlerCore;
-
-
 class Integration
 {
 
@@ -74,6 +69,12 @@ class Integration
         return $response;
     }
 
+    public function update_root_server_version()
+    {
+        $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address'));
+
+    }
+    
     private function bmltwf_integration_error_with_data($message, $code, array $data)
     {
         $data['status'] = $code;
@@ -141,6 +142,18 @@ class Integration
         }
     }
 
+    public function is_supported_server($server)
+    {
+        $version = $this->bmltwf_get_remote_server_version($server);
+        if (version_compare($version, "2.16.4", "lt")) {
+            $this->debug_log("unsupported server version");
+            return false;
+        } else {
+            $this->debug_log("supported server version");
+            return true;
+        }
+    }
+
     public function bmltwf_get_remote_server_version($server)
     {
         $url = $server . "client_interface/serverInfo.xml";
@@ -150,8 +163,8 @@ class Integration
         );
 
         $resp = wp_remote_get($url, array('headers' => $headers));
-        $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
-        $this->debug_log(\wp_remote_retrieve_body($resp));
+        // $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
+        // $this->debug_log(\wp_remote_retrieve_body($resp));
 
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string(\wp_remote_retrieve_body($resp));
@@ -176,10 +189,12 @@ class Integration
     {
 
         $bmltwf_bmlt_server_address = get_option('bmltwf_bmlt_server_address');
-        $url = $bmltwf_bmlt_server_address . "/client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
+
+        $url = $bmltwf_bmlt_server_address . "client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
         $headers = array(
             "Accept: */*",
         );
+        $this->debug_log("wp_remote_get from url " . $url);
 
         $resp = wp_remote_get($url, array('headers' => $headers));
         $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
@@ -199,7 +214,7 @@ class Integration
         $this->debug_log("SINGLE MEETING");
         $this->debug_log(($meeting));
         // how possibly can we get a meeting that is not the same as we asked for
-        if ($meeting['id_bigint'] != $meeting_id) {
+        if ((empty($meeting['id_bigint'])) || ($meeting['id_bigint'] != $meeting_id)) {
             return $this->bmltwf_integration_error('Server error retrieving meeting', 500);
         }
         return $meeting;
@@ -627,6 +642,16 @@ class Integration
         return $newformat;
     }
 
+    public function is_valid_bmlt_server($server)
+    {
+        $response = \wp_remote_get($server . 'client_interface/json/?switcher=GetServerInfo');
+
+        if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * getMeetingStates
      *
@@ -700,11 +725,13 @@ class Integration
         $this->debug_log("*** ADMIN URL " . $url);
 
         $response = $this->getv2($url, $this->cookies);
-        $this->debug_log("*** ADMIN PAGE");
-        $this->debug_log("get returns " . \wp_remote_retrieve_response_code($response));
-        $this->debug_log(\wp_remote_retrieve_body($response));
+        // $this->debug_log("*** ADMIN PAGE");
+        // $this->debug_log("get returns " . \wp_remote_retrieve_response_code($response));
+        // $this->debug_log(\wp_remote_retrieve_body($response));
 
         preg_match('/"google_api_key":"(.*?)",/', \wp_remote_retrieve_body($response), $matches);
+        $this->debug_log("retrieved gmaps key ".$matches[1]);
+
         return $matches[1];
     }
 
@@ -901,7 +928,7 @@ class Integration
     {
         $key = $this->getGmapsKey();
         if (\is_wp_error($key)) {
-            return $this->bmltwf_integration_error('Server error geolocating address', 500);
+            return $this->bmltwf_integration_error('Server error geolocating address: Could not retrieve google maps key.', 500);
         }
 
         $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($address) . "&key=" . $key;
@@ -916,13 +943,13 @@ class Integration
         $resp = \wp_remote_get($url, array('headers' => $headers));
 
         if ((!is_array($resp)) ||  is_wp_error($resp)) {
-            return $this->bmltwf_integration_error('Server error geolocating address', 500);
+            return $this->bmltwf_integration_error('Server error geolocating address: Could not perform google maps lookup', 500);
         }
 
         $body = \wp_remote_retrieve_body($resp);
 
         if (!$body) {
-            return new \WP_Error('bmltwf', 'Server error geolocating address');
+            return $this->bmltwf_integration_error('Server error geolocating address: Nothing returned from google maps lookup', 500);
         }
 
         $this->debug_log("*** GMAPS RESPONSE");
@@ -930,8 +957,13 @@ class Integration
 
         $geo = json_decode($body, true);
         if ((empty($geo)) || (empty($geo['status']))) {
-            return new \WP_Error('bmltwf', 'Server error geolocating address');
+            return $this->bmltwf_integration_error('Server error geolocating address: No google maps status code returned', 500);
         }
+        if ($geo['status'] === "REQUEST_DENIED")
+        {
+            return $this->bmltwf_integration_error('Server error geolocating address: ' . $geo['error_message'], 500);
+        }
+
         if (($geo['status'] === "ZERO_RESULTS") || empty($geo['results'][0]['geometry']['location']['lat']) || empty($geo['results'][0]['geometry']['location']['lng'])) {
             return new \WP_Error('bmltwf', 'Could not geolocate meeting address. Please try amending the address with additional/correct details.');
         } else {

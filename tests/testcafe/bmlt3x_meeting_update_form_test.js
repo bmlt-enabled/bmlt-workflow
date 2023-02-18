@@ -21,26 +21,23 @@ import { ao } from "./models/admin_options";
 import { Role, Selector } from "testcafe";
 
 import { 
-  reset_bmlt3x, 
+   
   reset_bmlt3x_with_states_on, 
   waitfor,
   bmltwf_admin,
   restore_from_backup,
   select_dropdown_by_text, 
-  select_dropdown_by_value
+  select_dropdown_by_value,
+  myip
   } from "./helpers/helper.js";
 
 import { userVariables } from "../../.testcaferc";
 
 fixture`bmlt3x_meeting_update_form_fixture`
-.before(async (t) => {
-  await reset_bmlt3x(t);
-
-})
 .beforeEach(async (t) => {
 
   await waitfor(userVariables.admin_logon_page_single);
-  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
+  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001","hidden");
 
   // log in as noone
   await t.useRole(Role.anonymous());
@@ -576,7 +573,7 @@ test("Change_Nothing_Check_Error", async (t) => {
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "right");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
@@ -595,28 +592,3 @@ test("Change_Nothing_Check_Error", async (t) => {
     .match(/Nothing\ was\ changed/);
 });
 
-test("Check_States_Dropdown_Appears_And_Set_Correctly", async (t) => {
-
-  await reset_bmlt3x_with_states_on(t);
-  
-  await t.navigateTo(userVariables.formpage);
-  // console.log(userVariables.formpage);
-  // await t.debug();
-  await select_dropdown_by_value(uf.update_reason, "reason_change");
-  await t.expect(uf.update_reason.value).eql("reason_change");
-
-  // meeting selector
-  await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "chance");
-  await t.pressKey("enter");
-
-  // validate form is laid out correctly
-  await t.expect(uf.personal_details.visible).eql(true).expect(uf.meeting_details.visible).eql(true).expect(uf.additional_info_div.visible).eql(true);
-
-  await t
-  // should be a select element if we have a dropdown
-  .expect(uf.location_province.tagName).eql("select")
-  // should have changed the state to NY which is not the default
-  .expect(uf.location_province.value).eql("NY");
-
-});

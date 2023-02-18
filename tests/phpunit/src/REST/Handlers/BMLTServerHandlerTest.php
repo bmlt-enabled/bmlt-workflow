@@ -161,6 +161,8 @@ Line: $errorLine
         $stub->bmlt_root_server_version = '3.0.0';
         /** @var Mockery::mock $stub test */
         $stub->shouldReceive('testServerAndAuth')->andReturn('true');
+        $stub->shouldReceive('is_valid_bmlt_server')->andReturn('true');
+        $stub->shouldReceive('is_supported_server')->andReturn('true');
 
         Functions\when('\is_wp_error')->justReturn(false);
 
@@ -172,8 +174,9 @@ Line: $errorLine
         $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals($response->get_data()['bmltwf_bmlt_server_status'], 'true');
+        $this->assertEquals($response->get_data()['bmltwf_bmlt_login_status'], 'true');
 
-        $this->assertEquals($response->get_data()['bmltwf_bmlt_test_status'], 'success');
     }
 
     // test for POST bmltserver
@@ -203,7 +206,7 @@ Line: $errorLine
         $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_Error::class, $response);
-        $this->assertEquals($response->get_error_data()['bmltwf_bmlt_test_status'], 'failure');
+        $this->assertEquals($response->get_error_data()['bmltwf_bmlt_server_status'], 'false');
     }
 
     /**
@@ -230,7 +233,7 @@ Line: $errorLine
         $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_Error::class, $response);
-        $this->assertEquals($response->get_error_data()['bmltwf_bmlt_test_status'], 'failure');
+        $this->assertEquals($response->get_error_data()['bmltwf_bmlt_login_status'], 'unknown');
     }
 
     /**
@@ -254,10 +257,11 @@ Line: $errorLine
 
         $response = $rest->post_bmltserver_handler($request);
 
-        
         $this->debug_log(($response));
 
         $this->assertInstanceOf(WP_Error::class, $response);
-        $this->assertEquals($response->get_error_data()['bmltwf_bmlt_test_status'], 'failure');
+        //        $data["bmltwf_bmlt_server_status"] = "true";
+
+        $this->assertEquals($response->get_error_data()['bmltwf_bmlt_login_status'], 'unknown');
     }
 }

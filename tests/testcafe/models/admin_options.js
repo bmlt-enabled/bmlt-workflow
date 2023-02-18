@@ -22,6 +22,14 @@ class Admin_Options {
         this.backup_button = Selector("#bmltwf_backup");
         this.restore_button = Selector("#bmltwf_restore");
         this.bmltwf_file_selector = Selector("#bmltwf_file_selector");
+        this.bmltwf_configure_bmlt_server = Selector("#bmltwf_configure_bmlt_server");
+        this.bmltwf_bmlt_configuration_save = Selector("#bmltwf_bmlt_configuration_save");
+        this.bmltwf_bmlt_configuration_test = Selector("#bmltwf_bmlt_configuration_test");
+        this.bmltwf_bmlt_server_address = Selector("#bmltwf_bmlt_server_address");
+        this.bmltwf_bmlt_username = Selector("#bmltwf_bmlt_username");
+        this.bmltwf_bmlt_password = Selector("#bmltwf_bmlt_password");
+        this.bmltwf_error_class_options_dialog_bmltwf_error_message = Selector("#bmltwf_error_class_options_dialog_bmltwf_error_message");
+
         // dialogs
         this.restore_warning_dialog = Selector("#bmltwf_restore_warning_dialog");
         this.restore_warning_dialog_parent = this.restore_warning_dialog.parent();

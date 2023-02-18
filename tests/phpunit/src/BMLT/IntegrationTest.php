@@ -516,7 +516,7 @@ Line: $errorLine
         $json = '{ "results" : [ { "address_components" : [ { "long_name" : "Sydney", "short_name" : "Sydney", "types" : [ "colloquial_area", "locality", "political" ] }, { "long_name" : "New South Wales", "short_name" : "NSW", "types" : [ "administrative_area_level_1", "political" ] }, { "long_name" : "Australia", "short_name" : "AU", "types" : [ "country", "political" ] } ], "formatted_address" : "Sydney NSW, Australia", "geometry" : { "bounds" : { "northeast" : { "lat" : -33.5781409, "lng" : 151.3430209 }, "southwest" : { "lat" : -34.118347, "lng" : 150.5209286 } }, "location" : { "lat" : -33.8688197, "lng" : 151.2092955 }, "location_type" : "APPROXIMATE", "viewport" : { "northeast" : { "lat" : -33.5781409, "lng" : 151.3430209 }, "southwest" : { "lat" : -34.118347, "lng" : 150.5209286 } } }, "partial_match" : true, "place_id" : "ChIJP3Sa8ziYEmsRUKgyFmh9AQM", "types" : [ "colloquial_area", "locality", "political" ] } ], "status" : "OK" }';
 
         // $response = array("body"=> "<html>", "code"=>200);
-        Functions\expect('wp_remote_retrieve_body')->times(5)->andReturn('','','', $gmapskey, $json);
+        Functions\expect('wp_remote_retrieve_body')->times(4)->andReturn('','', $gmapskey, $json);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('wp_remote_get')->justReturn(array());
 
@@ -547,7 +547,7 @@ Line: $errorLine
 
         $json = ' { "results" : [], "status" : "ZERO_RESULTS" }';
 
-        Functions\expect('wp_remote_retrieve_body')->times(5)->andReturn('','', '', $gmapskey, $json);
+        Functions\expect('wp_remote_retrieve_body')->times(4)->andReturn('', '', $gmapskey, $json);
 
         Functions\when('wp_remote_get')->justReturn(array());
 
@@ -576,7 +576,7 @@ Line: $errorLine
 
         $json = ' { "junk" : "junk" }';
 
-        Functions\expect('\wp_remote_retrieve_body')->times(5)->andReturn('','', '', $gmapskey, $json);
+        Functions\expect('\wp_remote_retrieve_body')->times(4)->andReturn('', '', $gmapskey, $json);
 
         Functions\when('\wp_remote_get')->justReturn(array());
 
@@ -603,12 +603,66 @@ Line: $errorLine
      * @covers bmltwf\BMLT\Integration::is_v3_server
      **/
 
-    public function test_is_v3_server_returns_true_if_v2(): void
+    public function test_is_v3_server_returns_false_if_v2(): void
     {
         $integration = new Integration(true, "2.0.0");
-        $response = $integration->is_v3_server();
+        $response = $integration->is_v3_server("");
         $this->assertFalse(($response));
     }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::is_valid_bmlt_server
+     **/
+
+     public function test_is_valid_bmlt_server_returns_false_if_not_valid(): void
+     {
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+
+         $integration = new Integration(true, "2.0.0");
+         $response = $integration->is_valid_bmlt_server("");
+         $this->assertFalse(($response));
+     }
+ 
+    /**
+     * @covers bmltwf\BMLT\Integration::is_valid_bmlt_server
+     **/
+
+     public function test_is_valid_bmlt_server_returns_true_if_valid(): void
+     {
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+
+         $integration = new Integration(true, "3.0.0");
+         $response = $integration->is_valid_bmlt_server("");
+         $this->assertFalse(($response));
+     }
+
+         /**
+     * @covers bmltwf\BMLT\Integration::is_supported_server
+     **/
+
+     public function test_is_supported_server_returns_true_if_supported(): void
+     {
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+        Functions\when('\wp_remote_retrieve_body')->justReturn("<html></html>");
+
+         $integration = new Integration(true, "3.0.0");
+         $response = $integration->is_supported_server("");
+         $this->assertFalse(($response));
+     }
+
+         /**
+     * @covers bmltwf\BMLT\Integration::is_supported_server
+     **/
+
+     public function test_is_supported_server_returns_false_if_not_supported(): void
+     {
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+        Functions\when('\wp_remote_retrieve_body')->justReturn("<html></html>");
+
+         $integration = new Integration(true, "2.0.0");
+         $response = $integration->is_supported_server("");
+         $this->assertFalse(($response));
+     }
 
     /**
      * @covers bmltwf\BMLT\Integration::getMeetingFormats

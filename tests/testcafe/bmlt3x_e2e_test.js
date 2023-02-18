@@ -17,11 +17,9 @@
 
 import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
-import { ct } from "./models/crouton";
 import { Selector, Role } from "testcafe";
 
-import { reset_bmlt3x, 
-  reset_bmlt3x_with_states_off, 
+import {  
   restore_from_backup,
   click_table_row_column, 
   click_dt_button_by_index, 
@@ -29,8 +27,8 @@ import { reset_bmlt3x,
   select_dropdown_by_text, 
   select_dropdown_by_value, 
   waitfor,
-  crouton3x,
-  bmltwf_admin
+  bmltwf_admin,
+  myip
    } from "./helpers/helper.js";
   
 import { userVariables } from "../../.testcaferc";
@@ -39,15 +37,12 @@ fixture`bmlt3x_e2e_test_fixture`
   .before(async (t) => {
   })
   .beforeEach(async (t) => {
-    await reset_bmlt3x_with_states_off(t);
 
-    // await restore_from_backup(bmltwf_admin_wpsinglebmlt3x, userVariables.admin_service_bodies_page_wpsinglebmlt3x, userVariables.admin_restore_json_wpsinglebmlt3x, "bmlt3x","8001")
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt3x","8001");
-    await crouton3x(t);
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001"),"hidden";
     await waitfor(userVariables.admin_logon_page_single);
   });
 
-test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
+test("Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
   var meeting = {
     location_text: "the church",
     location_street: "105 avoca street",
@@ -177,42 +172,9 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
-  // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
-
-  await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
-
-  await t.typeText(Selector('input[class="select2-search__field"]'), "99999");
-  await t.pressKey("enter");
-
-  // var meeting = {
-  //     meeting_name: 'my test meeting 99999',
-  //     location_text: 'the church',
-  //     location_street: '105 avoca street',
-  //     location_info: 'info',
-  //     location_municipality: 'randwick',
-  //     location_province: 'nsw',
-  //     location_postal_code_1: '2032',
-  //     phone_meeting_number: '+61 1800 253430 code #8303782669',
-  //     virtual_meeting_link: 'https://us02web.zoom.us/j/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09',
-  //     virtual_meeting_additional_info: 'Zoom ID 83037287669 Passcode: testing'
-  //     };
-
-  await t
-    .expect(ct.meeting_name.innerText)
-    .eql(meeting.meeting_name)
-    .expect(ct.location_text.innerText)
-    .eql(meeting.location_text)
-    .expect(ct.phone_meeting_number.innerText)
-    .eql(meeting.phone_meeting_number)
-    .expect(ct.virtual_meeting_link.innerText)
-    .eql(meeting.virtual_meeting_link)
-    .expect(ct.bmlt_day.innerText)
-    .eql("Monday");
-
 });
 
-test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
+test("Bmlt3x_Submit_Change_Meeting_And_Approve", async (t) => {
   await t.navigateTo(userVariables.formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
@@ -277,13 +239,5 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_And_Verify", async (t) => {
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
-  // check meeting shows up in crouton
-  await t.useRole(Role.anonymous()).navigateTo(userVariables.crouton_page);
-
-  await t.dispatchEvent(ct.groups_dropdown, "mousedown", { which: 1 });
-
-  await t.typeText(Selector('input[class="select2-search__field"]'), "update");
-  await t.pressKey("enter");
-  await t.expect(ct.meeting_name.innerText).eql("update");
 });
 

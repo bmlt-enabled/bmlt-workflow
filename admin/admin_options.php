@@ -31,7 +31,8 @@ echo '<div class="bmltwf_banner"></div>';
 wp_nonce_field('wp_rest', '_wprestnonce');
 echo '<hr class="bmltwf-error-message">';
 echo '<div class="wrap"><h5 align="right">Plugin Version: '.BMLTWF_PLUGIN_VERSION.'</h5>';
-echo '<p><h4 align="center">BMLT Workflow issues, bugs or suggestions please raise them on github (<a href="https://github.com/bmlt-enabled/bmlt-workflow/issues">Issues</a>) or chat to us on bmlt-enabled slack, <b>#wordpress-bmlt-workflow</b>!</h4>';
+echo '<p><h4 align="center">BMLT Workflow issues, bugs or suggestions please raise them on <a href="https://github.com/bmlt-enabled/bmlt-workflow/issues">GitHub Issues</a> or chat to us on bmlt-enabled slack, <b>#wordpress-bmlt-workflow</b>!';
+echo '<br>Plugin documentation can be found <a href="https://github.com/bmlt-enabled/bmlt-workflow/wiki">GitHub Wiki</a></h4>';
 echo '<form id="bmltwf_options_form" method="post" action="options.php">';
 settings_errors();
 
@@ -54,10 +55,16 @@ echo '</form></div>';
 
     <br><label for="bmltwf_bmlt_server_address"><b>BMLT Root Server Address:</b></label>
     <input type="url" size="50" id="bmltwf_bmlt_server_address" name="bmltwf_bmlt_server_address" value="<?php echo esc_url_raw(get_option('bmltwf_bmlt_server_address')) ?>" />
+    <div id="bmltwf_bmlt_server_address_test_yes" style="display: inline-block;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span></div>
+    <div id="bmltwf_bmlt_server_address_test_no" style="display: inline-block;" ><span class="dashicons dashicons-no" style="color: red;"></span></div>
     <br><label for="bmltwf_bmlt_username"><b>Username:</b></label>
     <input type="text" size="50" id="bmltwf_bmlt_username" name="bmltwf_bmlt_username" value="<?php echo esc_attr(get_option('bmltwf_bmlt_username')) ?>" />
+
     <br><label for="bmltwf_bmlt_password"><b>Password:</b></label>
     <input type="password" size="50" id="bmltwf_bmlt_password" name="bmltwf_bmlt_password" />
+    <div id="bmltwf_bmlt_login_test_yes" style="display: inline-block; vertical-align: middle" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span></div>
+    <div id="bmltwf_bmlt_login_test_no" style="display: inline-block; vertical-align: middle" ><span class="dashicons dashicons-no" style="color: red;"></span></div>
+
     <br><br>
     <div class="options_dialog_bmltwf_info_text">
         <br>The BMLT root server username and password is used to action meeting approvals/rejections as well as perform any BMLT related actions on the Wordpress users behalf.
@@ -73,7 +80,8 @@ echo '</form></div>';
     <div class="options_dialog_bmltwf_error_message"></div>
     <br>
     <div class="options_dialog_bmltwf_warning_text">
-        <br>WARNING: If you proceed with the restore, your existing plugin configuration, settings and service bodies will be removed.
+        <br>WARNING: If you proceed with the restore, your existing plugin configuration, including submissions, settings and service bodies will be removed.
+        <br><br><b>Note:</b> this only affects the plugin configuration within Wordpress. Nothing outside of this, particularly any BMLT configuration, will be touched.
         <br><br>Are you sure you wish to do this?
         <br><br>
     </div>
@@ -84,6 +92,8 @@ echo '</form></div>';
     <br>WARNING: Changing the BMLT Root Server settings will remove your service body configuration and existing submissions within the plugin.
     <br><br>Use the BACKUP option before pressing Ok if you do not wish to lose your submissions.
     <br><br>If you press Ok, your service bodies, service body permissions and ALL SUBMISSIONS will be removed.
+    <br><br><b>Note:</b> this only affects the plugin configuration within Wordpress. Nothing outside of this, particularly any BMLT configuration, will be touched.
+    <br><br>
     <br><br>Are you sure you wish to do this?
     <br><br>
     <label for="yesimsure">Yes I'm sure!</label>

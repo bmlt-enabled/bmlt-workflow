@@ -595,7 +595,6 @@ jQuery(document).ready(function ($) {
       .done(function (response) {
         turn_off_spinner("#bmltwf-submit-spinner");
         $("#submit").prop("disabled", false);
-        // notice_success(response,"bmltwf-error-message");
         $("#form_replace").replaceWith(response.form_html);
       })
       .fail(function (xhr) {
