@@ -1,3 +1,8 @@
+## 1.0.23 (Feb 18, 2023)
+- #141 Bug: turning off a service body from form display makes submission page hang
+- Roll back Map view on Quickedit page - needs to change maps API from embed to javascript :( 
+- Fix for erroring CI/CD test cases
+
 ## 1.0.22 (Feb 18, 2023)
 - #139 Bug: Quickedit not clearing correctly between multiple edits (thanks markd !)
 - Major test case rewrite to use Mockoon for BMLT backend
