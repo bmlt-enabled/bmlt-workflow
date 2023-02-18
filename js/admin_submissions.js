@@ -374,7 +374,14 @@ jQuery(document).ready(function ($) {
         name: "service_body_bigint",
         data: "service_body_bigint",
         render: function (data, type, row) {
-          return bmltwf_admin_bmltwf_service_bodies[data]["name"];
+          if( data in bmltwf_admin_bmltwf_service_bodies )
+          {
+            return bmltwf_admin_bmltwf_service_bodies[data]["name"];
+          }
+          else
+          {
+            return "<service body id "+data+" no longer shown>";
+          }
         },
       },
       {
