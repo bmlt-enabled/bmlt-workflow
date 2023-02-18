@@ -33,6 +33,13 @@ then
     exit 1
 fi
 
+git switch $BRANCH
+if [ $? != 0 ]
+then
+    echo "Error locating source branch $BRANCH"
+    exit 1
+fi
+
 BV=$(grep " * Version:" bmlt-workflow.php | awk '{print $3}')
 PV=$(grep "define('BMLTWF_PLUGIN_VERSION" bmlt-workflow.php | awk -F \' '{print $4}')
 RV=$(grep "Stable tag:" readme.txt | awk '{print $3}')
@@ -58,13 +65,6 @@ fi
 sed -i'.bak' "s/define('BMLTWF_DEBUG', true);/define('BMLTWF_DEBUG', false);/g" ./config.php
 rm config.php.bak
 
-git switch $BRANCH
-if [ $? != 0 ]
-then
-    echo "Error locating source branch $BRANCH"
-    exit 1
-fi
-
 export DOIT='n'
 echo -n "Are you ok to merge $BRANCH into main as release $RELEASE? [yN]"
 read DOIT
@@ -72,7 +72,7 @@ read DOIT
 if [ a${DOIT}a != "aa" ] && [ $DOIT == 'y' ]
 then
     git switch main
-    git squash --merge "$BRANCH"
+    git merge --squash "$BRANCH"
     git commit -m "$RELEASE"
     git push
     git tag "$RELEASE"
