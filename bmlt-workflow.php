@@ -337,7 +337,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
                     $key = $this->bmlt_integration->getGmapsKey() ?? "";
                     $script .= 'var bmltwf_gmaps_key = "' . $key . '";';
-
+              
                     $val = "true";
                     
                     if(!$this->bmlt_integration->isAutoGeocodingEnabled())

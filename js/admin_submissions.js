@@ -15,14 +15,34 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-// function dismiss_notice(element) {
-//   jQuery(element)
-//     .parent()
-//     .slideUp("normal", function () {
-//       jQuery(this).remove();
-//     });
-//   return false;
-// }
+let map;
+
+function initMap(lat=null,lng=null) {
+  if(lat && lng)
+  {
+  const mapOptions = {
+    zoom: 16,
+    center: { lat: lat, lng: lng },
+
+  };
+
+  map = new google.maps.Map(document.getElementById("bmltwf_quickedit_map"), mapOptions);
+
+  const marker = new google.maps.Marker({
+    position: { lat: lat, lng: lng },
+    map: map,
+  });
+  const infowindow = new google.maps.InfoWindow({
+    content: "<p>Marker Location:" + marker.getPosition() + "</p>",
+  });
+
+  google.maps.event.addListener(marker, "click", () => {
+    infowindow.open(map, marker);
+  });
+}
+}
+
+// window.initMap = initMap;
 
 function mysql2localdate(data) {
   var t = data.split(/[- :]/);
@@ -42,6 +62,8 @@ var venue_types = {
 
 jQuery(document).ready(function ($) {
   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  $.getScript("https://maps.googleapis.com/maps/api/js?key="+bmltwf_gmaps_key+"&callback=initMap&v=weekly&async=2");
 
   if (!bmltwf_auto_geocoding_enabled) {
     $("#optional_auto_geocode_enabled").hide();
@@ -190,6 +212,9 @@ jQuery(document).ready(function ($) {
 
     // remove any content from the input fields
     $(".quickedit-input").val("");
+
+    // hide map and let it be shown later if required
+    $('#bmltwf_quickedit_map').hide();
 
     // fill quickedit
 
@@ -912,8 +937,10 @@ jQuery(document).ready(function ($) {
 
   function update_gmaps(lat,long)
   {
-    $("#quickedit_gmaps").attr("src","https://www.google.com/maps/embed/v1/place?key="+bmltwf_gmaps_key+"&zoom=18&q="+lat+","+long);
-    $("#quickedit_gmaps").show();
+    initMap(lat,long);
+    $('#bmltwf_quickedit_map').show();
+    // $("#quickedit_gmaps").attr("src","https://www.google.com/maps/embed/v1/place?key="+bmltwf_gmaps_key+"&zoom=18&q="+lat+","+long);
+    // $("#quickedit_gmaps").show();
 
   }
 
