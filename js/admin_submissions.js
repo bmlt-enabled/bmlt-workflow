@@ -17,6 +17,9 @@
 
 let map;
 
+function gm_authFailure() { notice_error("Google Maps API Authentication failure - BMLT API key restrictions must allow this web client client to access the Javascript API", "bmltwf-quickedit-error-message");
+};
+
 function initMap(lat=null,lng=null) {
   if(lat && lng)
   {
@@ -216,6 +219,7 @@ jQuery(document).ready(function ($) {
     // hide map and let it be shown later if required
     $('#bmltwf_quickedit_map').hide();
 
+    clear_notices();
     // fill quickedit
 
     // if it's a meeting change, fill from bmlt first
@@ -278,12 +282,6 @@ jQuery(document).ready(function ($) {
       $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
     }
   }
-
-  // function clear_notices() {
-  //   jQuery(".notice-dismiss").each(function (i, e) {
-  //     dismiss_notice(e);
-  //   });
-  // }
 
   // default close meeting radio button
   if (bmltwf_default_closed_meetings === "delete") {

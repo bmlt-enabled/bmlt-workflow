@@ -172,11 +172,11 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                 <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
                             </div>
                             <div class="tooltip" tabindex="0">
-                                <label for="service_body_bigint">Service Committee
+                                <label for="service_body_bigint">Service Body
                                     <span class="dashicons dashicons-info-outline"></span>
                                 </label>
                                 <div class="right">
-                                    Creating a new meeting and unsure of your service committee?
+                                    Creating a new meeting and unsure of your service body?
                                     <br>Pick the closest match and leave us a note in the 'Any Other Comments' section below
                                     <i></i>
                                 </div>
