@@ -380,7 +380,7 @@ jQuery(document).ready(function ($) {
           }
           else
           {
-            return "<service body id "+data+" no longer shown>";
+            return "<b>Service body ID "+data+" no longer shown to users</b>";
           }
         },
       },

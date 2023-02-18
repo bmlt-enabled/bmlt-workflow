@@ -208,7 +208,7 @@ if ($meeting_states_and_provinces) {
             </div>
         </div>
         <div class="form-grid-col3">
-            <iframe id="quickedit_gmaps" width="100%" height="400" frameborder="0" style="border:0" referrerpolicy="no-referrer-when-downgrade" src="" allowfullscreen> </iframe>
+            <!-- <iframe id="quickedit_gmaps" width="100%" height="400" frameborder="0" style="border:0" referrerpolicy="no-referrer-when-downgrade" src="" allowfullscreen> </iframe> -->
             <div id="optional_auto_geocode_enabled"><br>
                 <fieldset>
                     <legend>Meeting Geolocation (auto calculated)</legend>
