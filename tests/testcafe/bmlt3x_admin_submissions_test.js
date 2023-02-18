@@ -304,5 +304,5 @@ test("Approve_New_Meeting_Geocoding", async (t) => {
   await t.expect(as.optional_auto_geocode_enabled.visible).eql(true)
 
   // check the geocode button is enabled
-  await t.expect((as.quickedit_dialog_parent).find("button").nth(2).hasAttribute("disabled")).notOk();
+  await t.expect((as.quickedit_dialog_parent).find("button.ui-corner-all").nth(1).hasAttribute("disabled")).notOk();
 });
