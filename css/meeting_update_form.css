@@ -301,7 +301,7 @@ span.dashicons.dashicons-info-outline {
   color: cornflowerblue;
 }
 
-.tooltip {
+.bmltwf_tooltip {
   display: inline-block;
   position: relative;
   border-bottom: 1px dotted #666;
@@ -309,11 +309,11 @@ span.dashicons.dashicons-info-outline {
   margin-bottom: 3%;
 }
 
-.tooltip label {
+.bmltwf_tooltip label {
   padding-bottom: 0%;
 }
 
-.tooltip .left {
+.bmltwf_tooltip .bmltwf_left {
   min-width: 10rem;
   max-width: 500rem;
   white-space: nowrap;
@@ -335,12 +335,12 @@ span.dashicons.dashicons-info-outline {
   border: 1px solid #DCA;
 }
 
-.tooltip:hover .left,
-.tooltip:focus .left {
+.bmltwf_tooltip:hover .bmltwf_left,
+.bmltwf_tooltip:focus .bmltwf_left {
   display: block;
 }
 
-.tooltip .left i {
+.bmltwf_tooltip .bmltwf_left i {
   position: absolute;
   top: 50%;
   left: 100%;
@@ -350,7 +350,7 @@ span.dashicons.dashicons-info-outline {
   overflow: hidden;
 }
 
-.tooltip .left i::after {
+.bmltwf_tooltip .bmltwf_left i::after {
   content: '';
   position: absolute;
   width: 12px;
@@ -363,7 +363,7 @@ span.dashicons.dashicons-info-outline {
 }
 
 
-.tooltip .right {
+.bmltwf_tooltip .bmltwf_right {
   min-width: 10rem;
   max-width: 500rem;
   white-space: nowrap;
@@ -385,12 +385,12 @@ span.dashicons.dashicons-info-outline {
   border: 1px solid #DCA;
 }
 
-.tooltip:hover .right,
-.tooltip:focus .right {
+.bmltwf_tooltip:hover .bmltwf_right,
+.bmltwf_tooltip:focus .bmltwf_right {
   display: block;
 }
 
-.tooltip .right i {
+.bmltwf_tooltip .bmltwf_right i {
   position: absolute;
   top: 50%;
   right: 100%;
@@ -400,7 +400,7 @@ span.dashicons.dashicons-info-outline {
   overflow: hidden;
 }
 
-.tooltip .right i::before {
+.bmltwf_tooltip .bmltwf_right i::before {
   content: '';
   position: absolute;
   width: 12px;
