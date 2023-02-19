@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.0.24
+ * Version: 1.0.25
  * Requires at least: 5.2
  * Tested up to: 6.1.1
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.0.24');
+define('BMLTWF_PLUGIN_VERSION', '1.0.25');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -755,7 +755,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_submitter_email_template',
-                'Email Template for New Meeting',
+                'Email template used when sending a form submission notification',
                 array(&$this, 'bmltwf_submitter_email_template_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'

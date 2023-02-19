@@ -1,3 +1,7 @@
+## 1.0.25 (Feb 19, 2023)
+- Javascript fix for google maps
+- #150 Service Body Dropdown Confusion (thanks @klgrimley !)
+
 ## 1.0.24 (Feb 19, 2023)
 - Map view in Quickedit is back, in pog form
 
