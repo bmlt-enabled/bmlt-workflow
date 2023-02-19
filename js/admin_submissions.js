@@ -17,35 +17,47 @@
 
 let map;
 
-function gm_authFailure() { notice_error("Google Maps API Authentication failure - BMLT API key restrictions must allow this web client client to access the Javascript API", "bmltwf-quickedit-error-message");
-};
-
-function initMap(lat=null,lng=null) {
-  if(lat && lng)
-  {
-  const mapOptions = {
-    zoom: 16,
-    center: { lat: lat, lng: lng },
-
-  };
-
-  map = new google.maps.Map(document.getElementById("bmltwf_quickedit_map"), mapOptions);
-
-  const marker = new google.maps.Marker({
-    position: { lat: lat, lng: lng },
-    map: map,
-  });
-  const infowindow = new google.maps.InfoWindow({
-    content: "<p>Marker Location:" + marker.getPosition() + "</p>",
-  });
-
-  google.maps.event.addListener(marker, "click", () => {
-    infowindow.open(map, marker);
-  });
-}
+function gm_authFailure() {
+  notice_error("Google Maps API Authentication failure - BMLT API key restrictions must allow this web client client to access the Javascript API", "bmltwf-quickedit-error-message");
 }
 
-// window.initMap = initMap;
+function initMap(origlat = null, origlng = null) {
+  var lat;
+  var lng;
+
+  if (origlat && origlng) {
+    if (typeof origlat === "string") {
+      lat = parseFloat(origlat);
+    } else {
+      lat = origlat;
+    }
+
+    if (typeof origlng === "string") {
+      lng = parseFloat(origlng);
+    } else {
+      lng = origlng;
+    }
+
+    const mapOptions = {
+      zoom: 16,
+      center: { lat: lat, lng: lng },
+    };
+
+    map = new google.maps.Map(document.getElementById("bmltwf_quickedit_map"), mapOptions);
+
+    const marker = new google.maps.Marker({
+      position: { lat: lat, lng: lng },
+      map: map,
+    });
+    const infowindow = new google.maps.InfoWindow({
+      content: "<p>Marker Location:" + marker.getPosition() + "</p>",
+    });
+
+    google.maps.event.addListener(marker, "click", () => {
+      infowindow.open(map, marker);
+    });
+  }
+}
 
 function mysql2localdate(data) {
   var t = data.split(/[- :]/);
@@ -66,7 +78,7 @@ var venue_types = {
 jQuery(document).ready(function ($) {
   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-  $.getScript("https://maps.googleapis.com/maps/api/js?key="+bmltwf_gmaps_key+"&callback=initMap&v=weekly&async=2");
+  $.getScript("https://maps.googleapis.com/maps/api/js?key=" + bmltwf_gmaps_key + "&callback=initMap&v=weekly&async=2");
 
   if (!bmltwf_auto_geocoding_enabled) {
     $("#optional_auto_geocode_enabled").hide();
@@ -205,7 +217,6 @@ jQuery(document).ready(function ($) {
   function populate_and_open_quickedit(id) {
     // clear quickedit
 
-
     // remove our change handler
     $(".quickedit-input").off("input.bmltwf-highlight");
     $("#quickedit_format_shared_id_list").off("change.bmltwf-highlight");
@@ -217,7 +228,7 @@ jQuery(document).ready(function ($) {
     $(".quickedit-input").val("");
 
     // hide map and let it be shown later if required
-    $('#bmltwf_quickedit_map').hide();
+    $("#bmltwf_quickedit_map").hide();
 
     clear_notices();
     // fill quickedit
@@ -261,15 +272,12 @@ jQuery(document).ready(function ($) {
               }
             });
             add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
-            
-            if(item["longitude"]&&item["latitude"])
-            {
+
+            if (item["longitude"] && item["latitude"]) {
               lat = item["latitude"];
               long = item["longitude"];
-              update_gmaps(lat,long);
-            }
-            else
-            {
+              update_gmaps(lat, long);
+            } else {
               $("#quickedit_gmaps").hide();
             }
             $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
@@ -397,13 +405,10 @@ jQuery(document).ready(function ($) {
         name: "service_body_bigint",
         data: "service_body_bigint",
         render: function (data, type, row) {
-          if( data in bmltwf_admin_bmltwf_service_bodies )
-          {
+          if (data in bmltwf_admin_bmltwf_service_bodies) {
             return bmltwf_admin_bmltwf_service_bodies[data]["name"];
-          }
-          else
-          {
-            return "<b>Service body ID "+data+" no longer shown to users</b>";
+          } else {
+            return "<b>Service body ID " + data + " no longer shown to users</b>";
           }
         },
       },
@@ -506,29 +511,23 @@ jQuery(document).ready(function ($) {
   });
 
   // filter on column 8
-  $.fn.dataTable.ext.search.push(
-    function (settings, data, dataIndex) {
-      var selectedItem = $('#dt-submission-filters').val()
-      var category = data[8];
-      if(selectedItem === "all")
-      {
-        return true;
-      }
-      if(selectedItem === "pending" &&  category.includes("Pending"))
-      {
-        return true;
-      }
-      if(selectedItem === "approved" &&  category.includes("Approved"))
-      {
-        return true;
-      }
-      if(selectedItem === "rejected" &&  category.includes("Rejects"))
-      {
-        return true;
-      }
-      return false;
+  $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+    var selectedItem = $("#dt-submission-filters").val();
+    var category = data[8];
+    if (selectedItem === "all") {
+      return true;
     }
-  );
+    if (selectedItem === "pending" && category.includes("Pending")) {
+      return true;
+    }
+    if (selectedItem === "approved" && category.includes("Approved")) {
+      return true;
+    }
+    if (selectedItem === "rejected" && category.includes("Rejects")) {
+      return true;
+    }
+    return false;
+  });
 
   $("#dt-submission")
     .DataTable()
@@ -925,7 +924,7 @@ jQuery(document).ready(function ($) {
         var long = response["longitude"];
         $("#quickedit_latitude").val(lat);
         $("#quickedit_longitude").val(long);
-        update_gmaps(lat,long);
+        update_gmaps(lat, long);
         notice_success(response, "bmltwf-quickedit-error-message");
       })
       .fail(function (xhr) {
@@ -933,13 +932,11 @@ jQuery(document).ready(function ($) {
       });
   }
 
-  function update_gmaps(lat,long)
-  {
-    initMap(lat,long);
-    $('#bmltwf_quickedit_map').show();
+  function update_gmaps(lat, long) {
+    initMap(lat, long);
+    $("#bmltwf_quickedit_map").show();
     // $("#quickedit_gmaps").attr("src","https://www.google.com/maps/embed/v1/place?key="+bmltwf_gmaps_key+"&zoom=18&q="+lat+","+long);
     // $("#quickedit_gmaps").show();
-
   }
 
   function save_handler(id) {
@@ -958,7 +955,7 @@ jQuery(document).ready(function ($) {
           quickedit_changes_requested[short_id] = $(this).val().join(",");
         }
         // reconstruct our duration from the select list
-        else if ((short_id === "duration_hours")||(short_id === "duration_minutes")) {
+        else if (short_id === "duration_hours" || short_id === "duration_minutes") {
           // add duration entirely if either minutes or hours have changed
           quickedit_changes_requested["duration_time"] = $("#quickedit_duration_hours").val() + ":" + $("#quickedit_duration_minutes").val() + ":00";
         } else if (short_id === "virtual_meeting_additional_info" || short_id === "phone_meeting_number" || short_id === "virtual_meeting_link") {

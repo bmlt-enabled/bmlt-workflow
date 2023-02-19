@@ -171,11 +171,11 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                 <label id="location_nation_label" for="location_nation"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname')) ?></label>
                                 <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
                             </div>
-                            <div class="tooltip" tabindex="0">
+                            <div class="bmltwf_tooltip" tabindex="0">
                                 <label for="service_body_bigint">Service Body
                                     <span class="dashicons dashicons-info-outline"></span>
                                 </label>
-                                <div class="right">
+                                <div class="bmltwf_right">
                                     Creating a new meeting and unsure of your service body?
                                     <br>Pick the closest match and leave us a note in the 'Any Other Comments' section below
                                     <i></i>
@@ -196,34 +196,34 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <fieldset>
                     <legend>Virtual Meeting Options</legend>
                     <div id="virtual_meeting_settings">
-                        <div class="tooltip" tabindex="0">
+                        <div class="bmltwf_tooltip" tabindex="0">
                             <label for="virtual_meeting_link">Online Meeting Link
                                 <span class="dashicons dashicons-info-outline"></span>
                             </label>
-                            <div class="left">
+                            <div class="bmltwf_left">
                                 A URL for the virtual meeting eg:
                                 <br>https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1
                                 <i></i>
                             </div>
                         </div>
                         <textarea class="meeting-input" type="url" name="virtual_meeting_link" maxlength="128" size="128" id="virtual_meeting_link"></textarea>
-                        <div class="tooltip" tabindex="0">
+                        <div class="bmltwf_tooltip" tabindex="0">
                             <label for="virtual_meeting_additional_info">Virtual Meeting Additional Info
                                 <span class="dashicons dashicons-info-outline"></span>
                             </label>
-                            <div class="left">
+                            <div class="bmltwf_left">
                                 Additional information, such as a meeting ID and Password eg:
                                 <br>Zoom ID: 456 033 8613, Passcode: 1953
                                 <i></i>
                             </div>
                         </div>
                         <textarea class="meeting-input" type="text" name="virtual_meeting_additional_info" maxlength="128" size="128" id="virtual_meeting_additional_info"></textarea>
-                        <div class="tooltip" tabindex="0">
+                        <div class="bmltwf_tooltip" tabindex="0">
                             <label for="phone_meeting_number">Phone Meeting Dial-in Number
                                 <span class="dashicons dashicons-info-outline" style="color: cornflowerblue;"></span>
                             </label>
 
-                            <div class="left">
+                            <div class="bmltwf_left">
                                 Any phone dialin details for this virtual meeting.
                                 <i></i>
                             </div>
