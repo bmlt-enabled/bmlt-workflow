@@ -1,3 +1,6 @@
+## 1.0.24 (Feb 19, 2023)
+- Map view in Quickedit is back, in pog form
+
 ## 1.0.23 (Feb 18, 2023)
 - #141 Bug: turning off a service body from form display makes submission page hang
 - Roll back Map view on Quickedit page - needs to change maps API from embed to javascript :( 

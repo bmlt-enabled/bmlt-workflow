@@ -31,6 +31,11 @@
   display: block;
 }
 
+#bmltwf_quickedit_map {
+  height: 80%;
+  width: 100%;
+}
+
 .form-grid {
   display: grid;
   grid-gap: 10px;

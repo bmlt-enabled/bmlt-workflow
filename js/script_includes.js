@@ -126,11 +126,23 @@ function notice_success(response, notice_class) {
 }
 
 function notice_error(xhr, notice_class) {
-  jQuery("." + notice_class).after(
-    '<div class="notice notice-error is-dismissible"><p id="bmltwf_error_class_'+notice_class+'"><strong>ERROR: </strong>' +
-      xhr.responseJSON.message +
-      '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
-  );
+  if (typeof xhr === 'string')
+  {
+    jQuery("." + notice_class).after(
+      '<div class="notice notice-error is-dismissible"><p id="bmltwf_error_class_'+notice_class+'"><strong>ERROR: </strong>' +
+        xhr +
+        '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
+    );      
+  }
+  else
+  {
+    jQuery("." + notice_class).after(
+      '<div class="notice notice-error is-dismissible"><p id="bmltwf_error_class_'+notice_class+'"><strong>ERROR: </strong>' +
+        xhr.responseJSON.message +
+        '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
+    );
+  }
+
 }
 
 function clear_notices() {
