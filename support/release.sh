@@ -66,7 +66,7 @@ sed -i'.bak' "s/define('BMLTWF_DEBUG', true);/define('BMLTWF_DEBUG', false);/g" 
 rm config.php.bak
 
 export DOIT='n'
-echo -n "Are you ok to merge $BRANCH into main as release $RELEASE? [yN]"
+echo "Are you ok to merge $BRANCH into main as release $RELEASE? [yN]"
 read DOIT
 
 if [ a${DOIT}a != "aa" ] && [ $DOIT == 'y' ]

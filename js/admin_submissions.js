@@ -722,10 +722,12 @@ jQuery(document).ready(function ($) {
     return table;
   }
 
-  $("#dt-submission tbody").on("click", "td.dt-control", function () {
+  $("#dt-submission tbody").on("click", "td.dt-control", function (event ) {
     var tr = $(this).closest("tr");
     var row = datatable.row(tr);
 
+    event.stopPropagation();
+    
     if (row.child.isShown()) {
       // This row is already open - close it
       row.child.hide();

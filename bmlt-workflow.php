@@ -50,7 +50,6 @@ if (file_exists('vendor/autoload.php')) {
 use bmltwf\BMLT\Integration;
 use bmltwf\REST\Controller;
 use bmltwf\BMLTWF_Database;
-use bmltwf\BMLTWF_WP_Options;
 use bmltwf\BMLTWF_Rest;
 
 // database configuration
@@ -60,19 +59,19 @@ if (!class_exists('bmltwf_plugin')) {
     class bmltwf_plugin
     {
         use \bmltwf\BMLTWF_Debug;
+        use \bmltwf\BMLTWF_Constants;
 
-        private BMLTWF_WP_Options  $BMLTWF_WP_Options;
         private Integration $bmlt_integration;
-        private BMLTWF_Rest $BMLTWF_Rest;
         private Controller $BMLTWF_Rest_Controller;
         private BMLTWF_Database $BMLTWF_Database;
 
         public function __construct()
         {
-            $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
+            $this->debug_log("Creating new Integration");
             $this->bmlt_integration = new Integration();
-            $this->BMLTWF_Rest = new BMLTWF_Rest();
+            $this->debug_log("Creating new Controller");
             $this->BMLTWF_Rest_Controller = new Controller();
+            $this->debug_log("Creating new BMLTWF_Database");
             $this->BMLTWF_Database = new BMLTWF_Database();
 
 
@@ -112,7 +111,7 @@ if (!class_exists('bmltwf_plugin')) {
             $this->enqueue_select2();
 
             // inline scripts
-            $script  = 'var bmltwf_form_submit_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/submissions') . '; ';
+            $script  = 'var bmltwf_form_submit_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/submissions') . '; ';
             $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
             // optional fields
             $script .= 'var bmltwf_optional_location_nation = "' . get_option('bmltwf_optional_location_nation') . '";';
@@ -150,7 +149,7 @@ if (!class_exists('bmltwf_plugin')) {
             $script .= 'var bmltwf_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
-            $url = '/' . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/servicebodies';
+            $url = '/' . $this->bmltwf_rest_namespace . '/servicebodies';
             $this->debug_log("rest url = " . $url);
 
             $request  = new WP_REST_Request('GET', $url);
@@ -251,10 +250,10 @@ if (!class_exists('bmltwf_plugin')) {
                     $this->enqueue_jquery_dialog();
 
                     // inline scripts
-                    $script  = 'var bmltwf_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/bmltserver') . '; ';
-                    $script .= 'var bmltwf_admin_backup_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/options/backup') . '; ';
-                    $script .= 'var bmltwf_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/options/restore') . '; ';
-                    $script .= 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/servicebodies') . '; ';
+                    $script  = 'var bmltwf_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/bmltserver') . '; ';
+                    $script .= 'var bmltwf_admin_backup_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/backup') . '; ';
+                    $script .= 'var bmltwf_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/restore') . '; ';
+                    $script .= 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/servicebodies') . '; ';
                     $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
                     $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
 
@@ -282,8 +281,8 @@ if (!class_exists('bmltwf_plugin')) {
                     $this->enqueue_select2();
 
                     // make sure our rest urls are populated
-                    $script  = 'var bmltwf_admin_submissions_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/submissions/') . '; ';
-                    $script  .= 'var bmltwf_bmltserver_geolocate_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/bmltserver/geolocate') . '; ';
+                    $script  = 'var bmltwf_admin_submissions_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/submissions/') . '; ';
+                    $script  .= 'var bmltwf_bmltserver_geolocate_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/bmltserver/geolocate') . '; ';
                     // add our bmlt server for the submission lookups
                     $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
                     $script .= 'var bmltwf_remove_virtual_meeting_details_on_venue_change = "' . get_option('bmltwf_remove_virtual_meeting_details_on_venue_change') . '";';
@@ -319,7 +318,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
                     // do a one off lookup for our servicebodies
-                    $url = '/' . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/servicebodies';
+                    $url = '/' . $this->bmltwf_rest_namespace . '/servicebodies';
 
                     $request  = new WP_REST_Request('GET', $url);
                     $response = rest_do_request($request);
@@ -372,7 +371,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $this->enqueue_select2();
 
                     // make sure our rest url is populated
-                    $script = 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/servicebodies') . '; ';
+                    $script = 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/servicebodies') . '; ';
                     $script .= 'var wp_users_url = ' . json_encode(get_rest_url() . 'wp/v2/users') . '; ';
                     wp_add_inline_script('admin_service_bodies_js', $script, 'before');
                     break;
@@ -384,7 +383,7 @@ if (!class_exists('bmltwf_plugin')) {
         $toplevelslug = 'bmltwf-settings';
 
         // if we're just a submission editor, make our submissions page the landing page
-        if(!current_user_can('manage_options')&&(current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)))
+        if(!current_user_can('manage_options')&&(current_user_can($this->bmltwf_capability_manage_submissions)))
         {
             $toplevelslug = 'bmltwf-submissions';
         }
@@ -393,7 +392,7 @@ if (!class_exists('bmltwf_plugin')) {
                 add_menu_page(
                     'BMLT Workflow',
                     'BMLT Workflow',
-                    $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
+                    $this->bmltwf_capability_manage_submissions,
                     $toplevelslug,
                     '',
                     'dashicons-analytics',
@@ -414,7 +413,7 @@ if (!class_exists('bmltwf_plugin')) {
                     'bmltwf-settings',
                     'Workflow Submissions',
                     'Workflow Submissions',
-                    $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
+                    $this->bmltwf_capability_manage_submissions,
                     'bmltwf-submissions',
                     array(&$this, 'display_bmltwf_admin_submissions_page'),
                     2
@@ -429,7 +428,7 @@ if (!class_exists('bmltwf_plugin')) {
                     array(&$this, 'display_bmltwf_admin_service_bodies_page'),
                     2
                 );
-                if(!current_user_can('manage_options')&&(current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)))
+                if(!current_user_can('manage_options')&&(current_user_can($this->bmltwf_capability_manage_submissions)))
                 {
                     remove_menu_page('bmltwf-settings');
                 }
@@ -1266,7 +1265,7 @@ if (!class_exists('bmltwf_plugin')) {
         private function bmltwf_add_capability_to_manage_options_user($user)
         {
             if ($user->has_cap('manage_options')) {
-                $user->add_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
+                $user->add_cap($this->bmltwf_capability_manage_submissions);
                 $this->debug_log("adding capabilities to user " . $user->get('ID'));
             }
         }

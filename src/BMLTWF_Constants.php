@@ -18,7 +18,7 @@
 
 namespace bmltwf;
 
-class BMLTWF_WP_Options
+trait BMLTWF_Constants
 {
 
     public $bmltwf_capability_manage_submissions = 'bmltwf_manage_submissions';
@@ -49,4 +49,11 @@ class BMLTWF_WP_Options
         'bmltwf_trusted_servants_can_delete_submissions',
         'bmltwf_remove_virtual_meeting_details_on_venue_change'
     );
+
+    public $bmltwf_rest_namespace = 'bmltwf/v1';
+    public $bmltwf_submissions_rest_base = 'submissions';
+    public $bmltwf_service_bodies_rest_base = 'servicebodies';
+    public $bmltwf_bmltserver_rest_base = 'bmltserver';
+    public $bmltwf_options_rest_base = 'options';
+
 }

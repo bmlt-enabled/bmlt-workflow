@@ -24,22 +24,6 @@ use bmltwf\BMLT\Integration;
 
 wp_nonce_field('wp_rest', '_wprestnonce');
 
-$bmlt_integration = new Integration();
-
-$bmltwf_do_counties_and_sub_provinces = false;
-$meeting_counties_and_sub_provinces = $bmlt_integration->getMeetingCounties();
-
-if ($meeting_counties_and_sub_provinces) {
-    $bmltwf_do_counties_and_sub_provinces = true;
-}
-
-$bmltwf_do_states_and_provinces = false;
-$meeting_states_and_provinces = $bmlt_integration->getMeetingStates();
-
-if ($meeting_states_and_provinces) {
-    $bmltwf_do_states_and_provinces = true;
-}
-
 ?>
 <!-- Approve dialog -->
 <div id="bmltwf_submission_approve_dialog" class="hidden" style="max-width:800px">

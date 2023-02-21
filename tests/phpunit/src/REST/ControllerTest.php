@@ -27,12 +27,6 @@ use function Patchwork\{redefine, getFunction, always};
 
 require_once('config_phpunit.php');
 
-class stub_Options {
-
-    public $bmltwf_capability_manage_submissions = 'bmltwf_manage_submissions';
-    
-};
-
 /**
  * @covers bmltwf\REST\Controller
  * @uses bmltwf\BMLTWF_Debug
@@ -90,8 +84,8 @@ Line: $errorLine
         Functions\when('current_user_can')->justReturn(true);
         Functions\when('get_current_user_id')->justReturn("1");
 
-        $integration = new Controller(true);
-        $response = $integration->delete_submission_permissions_check("{'hello':'hi'}");
+        $controller = new Controller(true);
+        $response = $controller->delete_submission_permissions_check("{'hello':'hi'}");
         $this->assertNotInstanceOf(\WP_Error::class, $response);
         $this->assertEquals(true, $response);
     }
@@ -107,8 +101,7 @@ Line: $errorLine
         Functions\when('wp_remote_get')->justReturn("true");
         Functions\when('wp_remote_retrieve_body')->justReturn("true");
         global $wpdb;
-        $stub = new stub_Options();
-        $controller = new Controller($stub);
+        $controller = new Controller(true);
         $response = $controller->delete_submission_permissions_check("{'hello':'hi'}");
         $this->assertNotInstanceOf(\WP_Error::class, $response);
         $this->assertEquals(true, $response);
@@ -123,8 +116,7 @@ Line: $errorLine
         Functions\when('get_current_user_id')->justReturn("1");
         Functions\when('esc_html__')->justReturn("hello");
         Functions\when('is_user_logged_in')->justReturn(true);
-        $stub = new stub_Options();
-        $controller = new Controller($stub);
+        $controller = new Controller(true);
         $response = $controller->delete_submission_permissions_check("{'hello':'hi'}");
         $this->assertInstanceOf(\WP_Error::class, $response);
     }

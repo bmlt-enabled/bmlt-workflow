@@ -44,7 +44,12 @@ class Integration
         }
 
         if (empty($root_server_version)) {
-            $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address'));
+            $version = \get_option('bmltwf_bmlt_server_version',false);
+            if(!$version)
+            {
+                \update_option("bmltwf_bmlt_server_version", $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address')));
+            }
+            $this->bmlt_root_server_version = $version;
         } else {
             $this->bmlt_root_server_version = $root_server_version;
         }
@@ -71,7 +76,9 @@ class Integration
 
     public function update_root_server_version()
     {
-        $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address'));
+        $new_version = $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address'));
+        $this->bmlt_root_server_version = $new_version;
+        \update_option("bmltwf_bmlt_server_version", $new_version);
 
     }
     
@@ -1110,10 +1117,10 @@ class Integration
         if ($headers) {
             $newheaders = array_merge($headers, $newheaders);
         }
-        $this->debug_log('SET_ARGS headers');
-        $this->debug_log($headers);
-        $this->debug_log('SET_ARGS merged headers');
-        $this->debug_log($newheaders);
+        // $this->debug_log('SET_ARGS headers');
+        // $this->debug_log($headers);
+        // $this->debug_log('SET_ARGS merged headers');
+        // $this->debug_log($newheaders);
         $args = array(
             'timeout' => '120',
             'headers' => $newheaders,
