@@ -334,9 +334,14 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_optional_location_sub_province = "' . get_option('bmltwf_optional_location_sub_province') . '";';
                     $script .= 'var bmltwf_optional_location_province = "' . get_option('bmltwf_optional_location_province') . '";';
                     $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
-                    $key = $this->bmlt_integration->getGmapsKey() ?? "";
-                    $script .= 'var bmltwf_gmaps_key = "' . $key . '";';
-              
+                    $key = $this->bmlt_integration->getGmapsKey();
+                    if (\is_wp_error($key)) {
+                        $key = "";
+                    }
+                    else
+                    {
+                        $script .= 'var bmltwf_gmaps_key = "' . $key . '";';
+                    }
                     $val = "true";
                     
                     if(!$this->bmlt_integration->isAutoGeocodingEnabled())
