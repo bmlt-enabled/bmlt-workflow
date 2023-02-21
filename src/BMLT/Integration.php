@@ -164,7 +164,7 @@ class Integration
     public function bmltwf_get_remote_server_version($server)
     {
         $url = $server . "client_interface/serverInfo.xml";
-        $this->debug_log("url = " . $url);
+        // $this->debug_log("url = " . $url);
         $headers = array(
             "Accept: */*",
         );
@@ -182,6 +182,7 @@ class Integration
                 return false;
             }
             $version = $xml->serverVersion->readableString->__toString();
+            $this->debug_log("version returns = " . $version);
             return $version;
         }
     }
@@ -204,8 +205,8 @@ class Integration
         $this->debug_log("wp_remote_get from url " . $url);
 
         $resp = wp_remote_get($url, array('headers' => $headers));
-        $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
-        $this->debug_log(\wp_remote_retrieve_body($resp));
+        // $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
+        // $this->debug_log(\wp_remote_retrieve_body($resp));
 
         if ((!is_array($resp)) ||  is_wp_error($resp)) {
             return $this->bmltwf_integration_error('Server error retrieving meeting', 500);
@@ -1131,8 +1132,8 @@ class Integration
             $args['method'] = $method;
         }
 
-        $this->debug_log("set_args:");
-        $this->debug_log($args);
+        // $this->debug_log("set_args:");
+        // $this->debug_log($args);
 
         return $args;
     }

@@ -18,30 +18,20 @@
 
 namespace bmltwf;
 
-class BMLTWF_WP_User
+trait BMLTWF_WP_User
 {
     use \bmltwf\BMLTWF_Debug;
     use \bmltwf\BMLTWF_Constants;
 
-    protected $BMLTWF_Database;
-
-    public function __construct()
+    public function add_remove_caps($uids)
     {
-        $this->debug_log("Creating new BMLTWF_Database");
-        $this->BMLTWF_Database = new BMLTWF_Database();
-    }
-
-    public function add_remove_caps()
-    {
-        global $wpdb;
         // add / remove user capabilities
         $users = get_users();
-        $result = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name, 0);
         // $this->debug_log(($sql));
         // $this->debug_log(($result));
         foreach ($users as $user) {
             $this->debug_log("checking user id " . $user->get('ID'));
-            if (in_array($user->get('ID'), $result)) {
+            if (in_array($user->get('ID'), $uids)) {
                 $user->add_cap($this->bmltwf_capability_manage_submissions);
                 $this->debug_log("adding cap");
             } else {

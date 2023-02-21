@@ -21,29 +21,26 @@ namespace bmltwf\REST\Handlers;
 
 use bmltwf\BMLT\Integration;
 use bmltwf\BMLTWF_Database;
-use bmltwf\BMLTWF_WP_User;
 class ServiceBodiesHandler
 {
     use \bmltwf\BMLTWF_Debug;
     use \bmltwf\BMLTWF_Constants;
+    use \bmltwf\BMLTWF_WP_User;
     use \bmltwf\REST\HandlerCore;
 
     protected $bmlt_integration;
-    protected $BMLTWF_WP_User;
     protected $BMLTWF_Database;
-    
+
     public function __construct($intstub = null)
     {
         if (empty($intstub)) {
-            $this->debug_log("Creating new Integration");        
+            $this->debug_log("ServiceBodiesHandler: Creating new Integration");        
             $this->bmlt_integration = new Integration();
         } else {
             $this->bmlt_integration = $intstub;
         }
 
-        $this->debug_log("Creating new BMLTWF_WP_User");        
-        $this->BMLTWF_WP_User = new BMLTWF_WP_User();
-        $this->debug_log("Creating new BMLTWF_Database");        
+        $this->debug_log("ServiceBodiesHandler: Creating new BMLTWF_Database");        
         $this->BMLTWF_Database = new BMLTWF_Database();
     
     }
@@ -189,7 +186,8 @@ class ServiceBodiesHandler
             $wpdb->query($sql);
         }
 
-        $this->BMLTWF_WP_User->add_remove_caps();
+        $uids = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name, 0);
+        $this->add_remove_caps($uids);
 
         return $this->bmltwf_rest_success('Updated Service Bodies');
     }

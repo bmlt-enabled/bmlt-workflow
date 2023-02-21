@@ -67,11 +67,11 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function __construct()
         {
-            $this->debug_log("Creating new Integration");
+            $this->debug_log("bmlt-workflow: Creating new Integration");
             $this->bmlt_integration = new Integration();
-            $this->debug_log("Creating new Controller");
+            $this->debug_log("bmlt-workflow: Creating new Controller");
             $this->BMLTWF_Rest_Controller = new Controller();
-            $this->debug_log("Creating new BMLTWF_Database");
+            $this->debug_log("bmlt-workflow: Creating new BMLTWF_Database");
             $this->BMLTWF_Database = new BMLTWF_Database();
 
 
@@ -95,7 +95,7 @@ if (!class_exists('bmltwf_plugin')) {
             if ($bmltwf_bmlt_test_status != "success") {
                 wp_die("<h4>BMLTWF Plugin Error: BMLT Root Server not configured and tested.</h4>");
             }
-            $this->debug_log(("inside shortcode setup"));
+            // $this->debug_log(("inside shortcode setup"));
             // base css and js for this page
             $this->prevent_cache_enqueue_script('bmltwf-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
             $this->prevent_cache_enqueue_style('bmltwf-meeting-update-form-css', false, 'css/meeting_update_form.css');
@@ -150,7 +150,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             // do a one off lookup for our servicebodies
             $url = '/' . $this->bmltwf_rest_namespace . '/servicebodies';
-            $this->debug_log("rest url = " . $url);
+            // $this->debug_log("rest url = " . $url);
 
             $request  = new WP_REST_Request('GET', $url);
             $response = rest_do_request($request);
@@ -763,7 +763,7 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_fso_feature_sanitize_callback($input)
         {
-            $this->debug_log("fso_enablde sanitize callback");
+            $this->debug_log("fso_enable sanitize callback");
             $this->debug_log($input);
 
             $output = get_option('bmltwf_fso_feature');

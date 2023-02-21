@@ -36,13 +36,13 @@ class SubmissionsHandler
     public function __construct($intstub = null)
     {
         if (empty($intstub)) {
-            $this->debug_log("Creating new Integration");
+            $this->debug_log("SubmissionsHandler: Creating new Integration");
             $this->bmlt_integration = new Integration();
         } else {
             $this->bmlt_integration = $intstub;
         }
         
-        $this->debug_log("Creating new BMLTWF_Database");        
+        $this->debug_log("SubmissionsHandler: Creating new BMLTWF_Database");        
         $this->BMLTWF_Database = new BMLTWF_Database();
     
     }
@@ -164,7 +164,7 @@ class SubmissionsHandler
 
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         $this->debug_log("Rejection email");
-        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . ($headers));
+        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body);
         wp_mail($to_address, $subject, $body, $headers);
 
         return $this->bmltwf_rest_success('Rejected submission id ' . $change_id);
