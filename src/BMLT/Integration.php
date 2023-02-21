@@ -790,8 +790,8 @@ class Integration
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings';
 
         $response = \wp_remote_post($url, $this->set_args(null, $meeting, array("Authorization" => "Bearer " . $this->v3_access_token)));
-        $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
-        $this->debug_log(\wp_remote_retrieve_body($response));
+        // $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
+        // $this->debug_log(\wp_remote_retrieve_body($response));
 
         if (\wp_remote_retrieve_response_code($response) != 201) {
             return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
@@ -1060,8 +1060,8 @@ class Integration
             $url = get_option('bmltwf_bmlt_server_address') . "api/v1/auth/token";
             $this->debug_log($url);
             $response = \wp_remote_post($url, array('body' => http_build_query($postargs)));
-            $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
-            $this->debug_log(\wp_remote_retrieve_body($response));
+            // $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
+            // $this->debug_log(\wp_remote_retrieve_body($response));
     
             $response_code = \wp_remote_retrieve_response_code($response);
 

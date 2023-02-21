@@ -72,7 +72,8 @@ Line: $errorLine
         Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\wp_remote_request')->returnArg();
         Functions\when('\wp_remote_retrieve_response_message')->returnArg();
-        
+        Functions\when('\wp_remote_retrieve_cookie')->justReturn("");
+
         Functions\when('\unserialize')->returnArg();
         Functions\when('\get_option')->alias(function($value) {
             if($value === 'bmltwf_bmlt_password')
@@ -376,7 +377,7 @@ Line: $errorLine
     /**
      * @covers bmltwf\BMLT\Integration::getMeetingCounties
      */
-    public function test_cant_call_getMeetingCounties_with_invalid_bmlt_details(): void
+    public function test_cant_call_v2_getMeetingCounties_with_invalid_bmlt_details(): void
     {
         //         public function getMeetingCounties()
 
@@ -393,7 +394,7 @@ Line: $errorLine
     /**
      * @covers bmltwf\BMLT\Integration::postAuthenticatedRootServerRequest
      */
-    public function test_can_call_postAuthenticatedRootServerRequest_with_valid_auth(): void
+    public function test_can_call_v2_postAuthenticatedRootServerRequest_with_valid_auth(): void
     {
         //         public function postAuthenticatedRootServerRequest()
 
@@ -410,7 +411,7 @@ Line: $errorLine
     /**
      * @covers bmltwf\BMLT\Integration::postAuthenticatedRootServerRequest
      */
-    public function test_cant_call_postAuthenticatedRootServerRequest_with_valid_auth_no_args(): void
+    public function test_cant_call_v2_postAuthenticatedRootServerRequest_with_valid_auth_no_args(): void
     {
         //         public function postAuthenticatedRootServerRequest()
 
@@ -427,7 +428,7 @@ Line: $errorLine
     /**
      * @covers bmltwf\BMLT\Integration::postAuthenticatedRootServerRequest
      */
-    public function test_cant_call_postAuthenticatedRootServerRequest_with_invalid_bmlt_details(): void
+    public function test_cant_call_v2_postAuthenticatedRootServerRequest_with_invalid_bmlt_details(): void
     {
         //             public function postAuthenticatedRootServerRequest($url, $postargs)
 
@@ -447,7 +448,7 @@ Line: $errorLine
     /**
      * @covers bmltwf\BMLT\Integration::postAuthenticatedRootServerRequestSemantic
      */
-    public function test_can_call_postAuthenticatedRootServerRequestSemantic_with_valid_auth(): void
+    public function test_can_call_v2_postAuthenticatedRootServerRequestSemantic_with_valid_auth(): void
     {
         //         public function postAuthenticatedRootServerRequestSemantic()
 
@@ -464,7 +465,7 @@ Line: $errorLine
     /**
      * @covers bmltwf\BMLT\Integration::postAuthenticatedRootServerRequestSemantic
      */
-    public function test_cant_call_postAuthenticatedRootServerRequestSemantic_with_valid_auth_no_args(): void
+    public function test_cant_call_v2_postAuthenticatedRootServerRequestSemantic_with_valid_auth_no_args(): void
     {
         //         public function postAuthenticatedRootServerRequestSemantic()
 
@@ -481,7 +482,7 @@ Line: $errorLine
     /**
      * @covers bmltwf\BMLT\Integration::postAuthenticatedRootServerRequestSemantic
      */
-    public function test_cant_call_postAuthenticatedRootServerRequestSemantic_with_invalid_bmlt_details(): void
+    public function test_cant_call_v2_postAuthenticatedRootServerRequestSemantic_with_invalid_bmlt_details(): void
     {
         //             public function postAuthenticatedRootServerRequestSemantic($url, $postargs)
 
@@ -506,7 +507,7 @@ Line: $errorLine
      * @covers bmltwf\BMLT\Integration::post
      * @covers bmltwf\BMLT\Integration::get
      */
-    public function test_can_call_geolocateAddress_with_valid_address(): void
+    public function test_can_call_v2_geolocateAddress_with_valid_address(): void
     {
 
         Functions\when('wp_remote_retrieve_cookies')->returnArg();
@@ -516,7 +517,7 @@ Line: $errorLine
         $json = '{ "results" : [ { "address_components" : [ { "long_name" : "Sydney", "short_name" : "Sydney", "types" : [ "colloquial_area", "locality", "political" ] }, { "long_name" : "New South Wales", "short_name" : "NSW", "types" : [ "administrative_area_level_1", "political" ] }, { "long_name" : "Australia", "short_name" : "AU", "types" : [ "country", "political" ] } ], "formatted_address" : "Sydney NSW, Australia", "geometry" : { "bounds" : { "northeast" : { "lat" : -33.5781409, "lng" : 151.3430209 }, "southwest" : { "lat" : -34.118347, "lng" : 150.5209286 } }, "location" : { "lat" : -33.8688197, "lng" : 151.2092955 }, "location_type" : "APPROXIMATE", "viewport" : { "northeast" : { "lat" : -33.5781409, "lng" : 151.3430209 }, "southwest" : { "lat" : -34.118347, "lng" : 150.5209286 } } }, "partial_match" : true, "place_id" : "ChIJP3Sa8ziYEmsRUKgyFmh9AQM", "types" : [ "colloquial_area", "locality", "political" ] } ], "status" : "OK" }';
 
         // $response = array("body"=> "<html>", "code"=>200);
-        Functions\expect('wp_remote_retrieve_body')->times(4)->andReturn('','', $gmapskey, $json);
+        Functions\expect('wp_remote_retrieve_body')->times(5)->andReturn('','','', $gmapskey, $json);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('wp_remote_get')->justReturn(array());
 
@@ -538,7 +539,7 @@ Line: $errorLine
      * @covers bmltwf\BMLT\Integration::post
      * @covers bmltwf\BMLT\Integration::get
      */
-    public function test_cant_call_geolocateAddress_with_invalid_address(): void
+    public function test_cant_call_v2_geolocateAddress_with_invalid_address(): void
     {
 
         Functions\when('\wp_remote_retrieve_cookies')->returnArg();
@@ -547,7 +548,7 @@ Line: $errorLine
 
         $json = ' { "results" : [], "status" : "ZERO_RESULTS" }';
 
-        Functions\expect('wp_remote_retrieve_body')->times(4)->andReturn('', '', $gmapskey, $json);
+        Functions\expect('wp_remote_retrieve_body')->times(5)->andReturn('','', '', $gmapskey, $json);
 
         Functions\when('wp_remote_get')->justReturn(array());
 
@@ -566,7 +567,7 @@ Line: $errorLine
      * @covers bmltwf\BMLT\Integration::post
      * @covers bmltwf\BMLT\Integration::get
      */
-    public function test_error_when_gmaps_call_returns_trash(): void
+    public function test_error_v2_when_gmaps_call_returns_trash(): void
     {
 
         Functions\when('\wp_remote_retrieve_cookies')->returnArg();
@@ -576,7 +577,7 @@ Line: $errorLine
 
         $json = ' { "junk" : "junk" }';
 
-        Functions\expect('\wp_remote_retrieve_body')->times(4)->andReturn('', '', $gmapskey, $json);
+        Functions\expect('\wp_remote_retrieve_body')->times(5)->andReturn('','', '', $gmapskey, $json);
 
         Functions\when('\wp_remote_get')->justReturn(array());
 
