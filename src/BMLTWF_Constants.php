@@ -47,7 +47,8 @@ trait BMLTWF_Constants
         'bmltwf_submitter_email_template',
         'bmltwf_fso_feature',
         'bmltwf_trusted_servants_can_delete_submissions',
-        'bmltwf_remove_virtual_meeting_details_on_venue_change'
+        'bmltwf_remove_virtual_meeting_details_on_venue_change',
+        'bmltwf_google_maps_key'
     );
 
     public $bmltwf_rest_namespace = 'bmltwf/v1';

@@ -725,6 +725,14 @@ class Integration
     public function getGmapsKey()
     {
 
+        $storedkey = get_option('bmltwf_google_maps_key','');
+
+        if ($storedkey != '')
+        {
+            $this->debug_log("returning saved google maps key with length " . strval(strlen($storedkey)));
+            return $storedkey;
+        }
+
         // force v2 usage because we're authing and scraping the web page
         $ret = $this->authenticateRootServerv2();
         if (is_wp_error($ret)) {

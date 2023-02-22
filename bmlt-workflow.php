@@ -479,6 +479,18 @@ if (!class_exists('bmltwf_plugin')) {
 
             register_setting(
                 'bmltwf-settings-group',
+                'bmltwf_google_maps_key',
+                array(
+                    'type' => 'string',
+                    'description' => 'Google maps key',
+                    'sanitize_callback' => array(&$this, 'bmltwf_google_maps_key_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => ''
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
                 'bmltwf_delete_closed_meetings',
                 array(
                     'type' => 'string',
@@ -718,6 +730,14 @@ if (!class_exists('bmltwf_plugin')) {
             );
 
             add_settings_field(
+                'bmltwf_google_maps_key',
+                'Google Maps Key',
+                array(&$this, 'bmltwf_google_maps_key_html'),
+                'bmltwf-settings',
+                'bmltwf-settings-section-id'
+            );
+
+            add_settings_field(
                 'bmltwf_delete_closed_meetings',
                 'Default for close meeting submission',
                 array(&$this, 'bmltwf_delete_closed_meetings_html'),
@@ -768,8 +788,6 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_fso_feature_sanitize_callback($input)
         {
-            $this->debug_log("fso_enable sanitize callback");
-            $this->debug_log($input);
 
             $output = get_option('bmltwf_fso_feature');
             switch ($input) {
@@ -783,8 +801,6 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_optional_postcode_sanitize_callback($input)
         {
-            $this->debug_log("postcode sanitize callback");
-            $this->debug_log($input);
 
             $output = get_option('bmltwf_optional_postcode');
             switch ($input) {
@@ -799,8 +815,6 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_optional_location_nation_sanitize_callback($input)
         {
-            $this->debug_log("location nation sanitize callback");
-            $this->debug_log($input);
 
             $output = get_option('bmltwf_optional_location_nation');
             switch ($input) {
@@ -858,6 +872,17 @@ if (!class_exists('bmltwf_plugin')) {
                 return $output;
             }
             return $sanitized_email;
+        }
+
+        public function bmltwf_google_maps_key_sanitize_callback($input)
+        {
+            $output = get_option('bmltwf_google_maps_key');
+            
+            if ((strlen($input)!=39) && ($input !== "")) {
+                add_settings_error('bmltwf_google_maps_key', 'err', 'Invalid google maps key.');
+                return $output;
+            }
+            return $input;
         }
 
         public function bmltwf_fso_email_address_sanitize_callback($input)
@@ -979,6 +1004,22 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br><br>';
             echo '</div>';
 
+        }
+        
+        public function bmltwf_google_maps_key_html()
+        {
+
+            $google_maps_key = get_option('bmltwf_google_maps_key');
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>This plugin will try and use the google maps key from your BMLT Root Server for geolocation and displaying the map view.';
+            echo '<br>You can also provide a dedicated google maps key below and this will be used in preference to the BMLT Root Server key.';
+            echo '<br><br>';
+            echo "<br>Leave this field blank if you'd like to use the BMLT Root Server Key";
+            echo '<br><br>';
+            echo '</div>';
+
+            echo '<br><label for="bmltwf_google_maps_key"><b>Google Maps Key:</b></label><input id="bmltwf_google_maps_key" type="text" size="39" name="bmltwf_google_maps_key" value="' . esc_attr($google_maps_key) . '"/>';
+            echo '<br><br>';
         }
 
         public function bmltwf_email_from_address_html()
