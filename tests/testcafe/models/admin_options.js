@@ -51,6 +51,8 @@ class Admin_Options {
         this.bmltwf_delete_closed_meetings = Selector("#bmltwf_delete_closed_meetings");
         this.bmltwf_email_from_address = Selector("#bmltwf_email_from_address");
         this.bmltwf_trusted_servants_can_delete_submissions = Selector("#bmltwf_trusted_servants_can_delete_submissions");
+        this.bmltwf_google_maps_key_select = Selector("#bmltwf_google_maps_key_select");
+        this.bmltwf_google_maps_key = Selector("#bmltwf_google_maps_key");
         this.submit = Selector('#submit');
         this.settings_updated = Selector("#setting-error-settings_updated");
     }

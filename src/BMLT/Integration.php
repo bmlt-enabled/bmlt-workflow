@@ -760,7 +760,7 @@ class Integration
         preg_match('/"google_api_key":"(.*?)",/', \wp_remote_retrieve_body($response), $matches);
         $this->debug_log("retrieved gmaps key ".$matches[1]);
         $gmaps_key = $matches[1];
-        
+
         \update_option('bmltwf_bmlt_google_maps_key', $gmaps_key);
 
         return $gmaps_key;

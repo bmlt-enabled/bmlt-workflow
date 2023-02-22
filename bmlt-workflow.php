@@ -255,7 +255,17 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/restore') . '; ';
                     $script .= 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/servicebodies') . '; ';
                     $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
-                    $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
+
+                    $script .= 'var bmltwf_google_maps_key_select = ';
+                    $google_maps_key = get_option('bmltwf_google_maps_key','');
+                    if($google_maps_key==='')
+                    {
+                         $script .= '"bmlt_key";';
+                    }
+                    else
+                    {
+                        $script .= '"your_own_key";';
+                    }
 
                     wp_add_inline_script('admin_options_js', $script, 'before');
                     break;
@@ -1014,12 +1024,17 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br>This plugin will try and use the google maps key from your BMLT Root Server for geolocation and displaying the map view.';
             echo '<br>You can also provide a dedicated google maps key below and this will be used in preference to the BMLT Root Server key.';
             echo '<br><br>';
-            echo "<br>Leave this field blank if you'd like to use the BMLT Root Server Key";
-            echo '<br><br>';
             echo '</div>';
-
-            echo '<br><label for="bmltwf_google_maps_key"><b>Google Maps Key:</b></label><input id="bmltwf_google_maps_key" type="text" size="39" name="bmltwf_google_maps_key" value="' . esc_attr($google_maps_key) . '"/>';
+            if ($google_maps_key === '') {
+                $bmlt_key = 'selected';
+            } else {
+                $your_own_key = 'selected';
+            }
+            echo '<br><label for="bmltwf_google_maps_key_select"></label><select id="bmltwf_google_maps_key_select" name="bmltwf_google_maps_key_select"><option name="bmlt_key" value="bmlt_key" ' . $bmlt_key . '>Google Maps Key from BMLT</option><option name="your_own_key" value="your_own_key" ' . $your_own_key . '>Custom Google Maps Key</option>';
             echo '<br><br>';
+            echo '<input id="bmltwf_google_maps_key" type="text" size="39" name="bmltwf_google_maps_key" value="' . esc_attr($google_maps_key) . '"/>';
+            // echo '<br><label for="bmltwf_google_maps_key"><b>Google Maps Key:</b></label><input id="bmltwf_google_maps_key" type="text" size="39" name="bmltwf_google_maps_key" value="' . esc_attr($google_maps_key) . '"/>';
+            // echo '<br><br>';
         }
 
         public function bmltwf_email_from_address_html()
