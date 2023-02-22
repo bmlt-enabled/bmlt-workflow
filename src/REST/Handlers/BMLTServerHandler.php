@@ -166,6 +166,9 @@ class BMLTServerHandler
         // store the most current configured server version
         $this->bmlt_integration->update_root_server_version();
 
+        // lets clean out the old stored gmaps key for our new server and refresh it for next time
+        \update_option('bmltwf_bmlt_google_maps_key', '');
+
         $data = array();
 
         $data["bmltwf_bmlt_server_version"] = $this->bmlt_integration->bmlt_root_server_version;

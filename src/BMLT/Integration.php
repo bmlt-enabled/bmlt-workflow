@@ -733,6 +733,14 @@ class Integration
             return $storedkey;
         }
 
+        $storedkey = get_option('bmltwf_bmlt_google_maps_key','');
+
+        if ($storedkey != '')
+        {
+            $this->debug_log("returning bmlt google maps key with length " . strval(strlen($storedkey)));
+            return $storedkey;
+        }
+
         // force v2 usage because we're authing and scraping the web page
         $ret = $this->authenticateRootServerv2();
         if (is_wp_error($ret)) {
@@ -751,8 +759,11 @@ class Integration
 
         preg_match('/"google_api_key":"(.*?)",/', \wp_remote_retrieve_body($response), $matches);
         $this->debug_log("retrieved gmaps key ".$matches[1]);
+        $gmaps_key = $matches[1];
+        
+        \update_option('bmltwf_bmlt_google_maps_key', $gmaps_key);
 
-        return $matches[1];
+        return $gmaps_key;
     }
 
     public function createMeeting($meeting)
