@@ -32,6 +32,31 @@ class Admin_Submissions {
         this.reject_dialog_parent = this.reject_dialog.parent();
         this.reject_dialog_textarea = Selector("#bmltwf_submission_reject_dialog_textarea");
         this.quickedit_dialog = Selector("#bmltwf_submission_quickedit_dialog");
+        // quickedit fields
+        this.quickedit_meeting_name = Selector("#quickedit_meeting_name");
+        this.quickedit_format_shared_id_list = Selector("#quickedit_format_shared_id_list");
+        this.quickedit_start_time = Selector("#quickedit_start_time");
+        this.quickedit_duration_hours = Selector("#quickedit_duration_hours");
+        this.quickedit_duration_minutes = Selector("#quickedit_duration_minutes");
+        this.quickedit_virtual_meeting_additional_info = Selector("#quickedit_virtual_meeting_additional_info");
+        this.quickedit_phone_meeting_number = Selector("#quickedit_phone_meeting_number");
+        this.quickedit_virtual_meeting_link = Selector("#quickedit_virtual_meeting_link");
+        this.quickedit_additional_info = Selector("#quickedit_additional_info");
+        this.quickedit_venue_type = Selector("#quickedit_venue_type");
+        this.quickedit_weekday_tinyint = Selector("#quickedit_weekday_tinyint");
+        this.quickedit_location_text = Selector("#quickedit_location_text");
+        this.quickedit_location_street = Selector("#quickedit_location_street");
+        this.quickedit_location_info = Selector("#quickedit_location_info");
+        this.quickedit_location_municipality = Selector("#quickedit_location_municipality");
+        this.quickedit_location_sub_province = Selector("#quickedit_location_sub_province");
+        this.quickedit_location_sub_province_select = Selector("select#quickedit_location_sub_province");
+        this.quickedit_location_province = Selector("#quickedit_location_province");
+        this.quickedit_location_province_select = Selector("select#quickedit_location_province");
+        this.quickedit_location_postal_code_1 = Selector("#quickedit_location_postal_code_1");
+        this.quickedit_location_nation = Selector("#quickedit_location_nation");
+        this.quickedit_latitude = Selector("#quickedit_latitude");
+        this.quickedit_longitude = Selector("#quickedit_longitude");
+        
         this.quickedit_dialog_parent = this.quickedit_dialog.parent();
         this.optional_auto_geocode_enabled = Selector("#optional_auto_geocode_enabled");
     }

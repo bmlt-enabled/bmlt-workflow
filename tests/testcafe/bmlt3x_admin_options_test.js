@@ -380,3 +380,6 @@ test("Check_BMLT_Google_Maps_Key", async (t) => {
   await t.expect(f).contains('=AIzaSyDcJ');
 
 }).requestHooks(gmapslogger);
+
+test('Quickedit_Input_Labels', async t => {
+});

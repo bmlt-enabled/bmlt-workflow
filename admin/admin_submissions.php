@@ -161,7 +161,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         </div>
         <div class="form-grid-col2">
             <label for="quickedit_venue_type">Venue Type</label>
-            <select name="quickedit_venue_type" id="quickedit_venue_type">
+            <select name="quickedit_venue_type" id="quickedit_venue_type" class="quickedit-input">
                 <option value="" disabled selected hidden>Select one</option>
                 <option value="1">Face to Face</option>
                 <option value="2">Virtual only</option>

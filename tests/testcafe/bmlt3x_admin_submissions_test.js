@@ -28,6 +28,8 @@ import {
   myip
    } from "./helpers/helper.js";
 
+import { RequestLogger } from "testcafe";
+
 import { userVariables } from "../../.testcaferc";
 
 fixture`bmlt3x_admin_submissions_fixture`
@@ -265,32 +267,213 @@ test("Submission_Buttons_Active_correctly", async (t) => {
   await t.expect(g.hasAttribute("disabled")).ok();
 });
 
-// test('Quickedit_New_Meeting', async t => {
+test('Quickedit_New_Meeting', async t => {
 
-// await t.useRole(bmltwf_admin);
+await t.useRole(bmltwf_admin);
 
-//     // new meeting = row 0
-//     var row = 0;
-//     await click_table_row_column(as.dt_submission,row,0);
-//     // quickedit
-//     await click_dt_button_by_index(as.dt_submission_wrapper,2);
+    // new meeting = row 2
+    var row = 2;
+    await click_table_row_column(as.dt_submission,row,0);
+    // quickedit
+    await click_dt_button_by_index(as.dt_submission_wrapper,2);
 
-//     await t
-//     .expect(as.approve_dialog_parent.visible).eql(true);
+    await t
+    .expect(as.quickedit_dialog_parent.visible).eql(true)
 
-//     await t
-//     .typeText(as.approve_dialog_textarea, 'I approve this request');
-//     // press ok button
-//     await click_dialog_button_by_index(as.approve_dialog_parent,1);
-//     // dialog closes after ok button
-//     await t
-//     .expect(as.approve_dialog_parent.visible).eql(false);
+    // '{"meeting_name":"my test meeting",
+    // "start_time":"10:40:00",
+    // "duration_time":"04:30:00",
+    // "location_text":"my location",
+    // "location_street":"110 avoca st",
+    // "location_info":"info",
+    // "location_municipality":"Randwick",
+    // "location_province":"NSW",
+    // "location_postal_code_1":"2031",
+    // "weekday_tinyint":"4",
+    // "service_body_bigint":1009,
+    // "format_shared_id_list":"2,5",
+    // "contact_number":"12345",
+    // "group_relationship":"Group Member",
+    // "add_contact":"yes",
+    // "additional_info":"some extra info",
+    // "virtual_meeting_additional_info":"Zoom ID 83037287669 Passcode: testing",
+    // "phone_meeting_number":"12345",
+    // "virtual_meeting_link":"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09",
+    // "starter_kit_required":"no",
+    // "venue_type":3}',
+    .expect(as.quickedit_meeting_name.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_meeting_name.value).eql("my test meeting")
+    .expect(as.quickedit_start_time.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_start_time.value).eql("10:40:00")
+    .expect(as.quickedit_weekday_tinyint.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_weekday_tinyint.value).eql("4")
+    .expect(as.quickedit_duration_hours.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_duration_hours.value).eql("04")
+    .expect(as.quickedit_duration_minutes.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_duration_minutes.value).eql("30")
+    .expect(as.quickedit_virtual_meeting_additional_info.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_virtual_meeting_additional_info.value).eql("Zoom ID 83037287669 Passcode: testing")
+    .expect(as.quickedit_phone_meeting_number.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_phone_meeting_number.value).eql("12345")
+    .expect(as.quickedit_virtual_meeting_link.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_virtual_meeting_link.value).eql("https://us02web.zoom.us/j/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09")
+    .expect(as.quickedit_additional_info.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_additional_info.value).eql("some extra info")
+    .expect(as.quickedit_venue_type.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_venue_type.value).eql("3")
+    .expect(as.quickedit_location_text.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_location_text.value).eql("my location")
+    .expect(as.quickedit_location_street.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_location_street.value).eql("110 avoca st")
+    .expect(as.quickedit_location_info.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_location_info.value).eql("info")
+    .expect(as.quickedit_location_municipality.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_location_municipality.value).eql("Randwick")
+    .expect(as.quickedit_location_province.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_location_province.value).eql("NSW")
+    .expect(as.quickedit_location_postal_code_1.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_location_postal_code_1.value).eql("2031")
+    // we dont have sub province or nation visible so these should not be shown
+    .expect(as.quickedit_location_sub_province.visible).eql(false)
+    .expect(as.quickedit_location_nation.visible).eql(false)
+});
 
-//     var column = 8;
-//     await t .expect((as.dt_submission.child('tbody').child(row).child(column)).innerText).eql('Approved');
+test('Quickedit_Change_Meeting', async t => {
 
-// });
+  await t.useRole(bmltwf_admin);
 
+    // change meeting = row 1
+    var row = 1;
+    await click_table_row_column(as.dt_submission,row,0);
+    // quickedit
+    await click_dt_button_by_index(as.dt_submission_wrapper,2);
+
+    await t
+    .expect(as.quickedit_dialog_parent.visible).eql(true)
+    // changes_requested: '{
+    // "meeting_name":"update",
+    // "original_meeting_name":"2nd Chance Group",
+    // "original_start_time":"18:30:00",
+    // "original_duration_time":"01:30:00",
+    // "location_text":"update location",
+    // "original_location_street":"360 Warren Street",
+    // "original_location_municipality":"Hudson",
+    // "original_location_province":"NY",
+    // "original_location_nation":"US",
+    // "original_location_sub_province":"Columbia",
+    // "original_weekday_tinyint":"3",
+    // "original_service_body_bigint":"1009",
+    // "original_format_shared_id_list":"3,17,36",
+    // "original_venue_type":"1",
+    // "contact_number":"12345",
+    // "group_relationship":"Group Member",
+    // "add_contact":"yes",
+    // "additional_info":"please action asap"}',
+
+    // these changed
+    .expect(as.quickedit_meeting_name.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_meeting_name.value).eql("update")
+    .expect(as.quickedit_additional_info.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_additional_info.value).eql("please action asap")
+    .expect(as.quickedit_location_text.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_location_text.value).eql("update location")
+    // these didnt change
+    .expect(as.quickedit_start_time.hasClass("bmltwf-changed")).notOk()
+    .expect(as.quickedit_weekday_tinyint.hasClass("bmltwf-changed")).notOk()
+    .expect(as.quickedit_duration_hours.hasClass("bmltwf-changed")).notOk()
+    .expect(as.quickedit_duration_minutes.hasClass("bmltwf-changed")).notOk()
+    .expect(as.quickedit_virtual_meeting_additional_info.hasClass("bmltwf-changed")).notOk()
+    .expect(as.quickedit_phone_meeting_number.hasClass("bmltwf-changed")).notOk()
+    .expect(as.quickedit_virtual_meeting_link.hasClass("bmltwf-changed")).notOk()
+    .expect(as.quickedit_venue_type.hasClass("bmltwf-changed")).notOk()
+    .expect(as.quickedit_location_street.hasClass("bmltwf-changed")).notOk()
+    .expect(as.quickedit_location_info.hasClass("bmltwf-changed")).notOk()
+    .expect(as.quickedit_location_municipality.hasClass("bmltwf-changed")).notOk()
+    .expect(as.quickedit_location_province.hasClass("bmltwf-changed")).notOk()
+    .expect(as.quickedit_location_postal_code_1.hasClass("bmltwf-changed")).notOk()
+    // we dont have sub province or nation visible so these should not be shown
+    .expect(as.quickedit_location_sub_province.visible).eql(false)
+    .expect(as.quickedit_location_nation.visible).eql(false)
+  });
+
+
+test('Quickedit_States_Dropdowns', async t => {
+  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3003","display");
+  await t.navigateTo(userVariables.admin_submissions_page_single);
+  // change meeting = row 1
+  var row = 1;
+  await click_table_row_column(as.dt_submission,row,0);
+  // quickedit
+  await click_dt_button_by_index(as.dt_submission_wrapper,2);
+
+  await t
+  .expect(as.quickedit_dialog_parent.visible).eql(true)
+  .expect(as.quickedit_location_sub_province.hasClass("bmltwf-changed")).notOk()
+  .expect(as.quickedit_location_sub_province.value).eql("Columbia")
+  .expect(as.quickedit_location_province.hasClass("bmltwf-changed")).notOk()
+  .expect(as.quickedit_location_province.value).eql("NY")
+  // make sure they are select dropdowns
+  .expect(as.quickedit_location_sub_province_select.exists).eql(true)
+  .expect(as.quickedit_location_province_select.exists).eql(true)
+  // make sure sub province is even showing up
+  .expect(as.quickedit_location_sub_province.visible).eql(true)
+
+});
+
+const submissionslogger = RequestLogger(/bmltwf\/v1\/submissions\/93/,
+{
+  logRequestBody: true,
+}
+);
+
+test('Quickedit_Saves_No_Changes_Correctly', async t => {
+
+    // new meeting = row 2
+    var row = 2;
+    await click_table_row_column(as.dt_submission,row,0);
+    // quickedit
+    await click_dt_button_by_index(as.dt_submission_wrapper,2);
+
+    await t
+    .expect(as.quickedit_dialog_parent.visible).eql(true)
+    await t.click(as.quickedit_dialog_parent.find("button.ui-corner-all").nth(2))
+    .wait(1000);
+
+    var f = JSON.parse(submissionslogger.requests[0].request.body.toString());
+    // console.log(f.changes_requested.meeting_name);
+    await t.expect(f.changes_requested.meeting_name).eql("my test meeting");
+
+}).requestHooks(submissionslogger);
+
+const submissions1logger = RequestLogger(/bmltwf\/v1\/submissions\/93/,
+{
+  logRequestBody: true,
+}
+);
+
+test('Quickedit_Saves_Changes_Correctly', async t => {
+
+    // new meeting = row 2
+    var row = 2;
+    await click_table_row_column(as.dt_submission,row,0);
+    // quickedit
+    await click_dt_button_by_index(as.dt_submission_wrapper,2);
+
+    await t
+    .expect(as.quickedit_dialog_parent.visible).eql(true)
+    .typeText(as.quickedit_location_info,'garbage', {replace: true})
+    .typeText(as.quickedit_virtual_meeting_additional_info,'meetinginfo', {replace: true})
+    .typeText(as.quickedit_virtual_meeting_link,'meetinglink', {replace: true})
+    await t.click(as.quickedit_dialog_parent.find("button.ui-corner-all").nth(2))
+    .wait(1000);
+
+    var f = JSON.parse(submissions1logger.requests[0].request.body.toString());
+    // console.log(f.changes_requested);
+    await t.expect(f.changes_requested.location_info).eql("garbage")
+    .expect(f.changes_requested.virtual_meeting_additional_info).eql("meetinginfo")
+    .expect(f.changes_requested.virtual_meeting_link).eql("meetinglink");
+
+}).requestHooks(submissions1logger);
 
 test("Approve_New_Meeting_Geocoding", async (t) => {
 
