@@ -1,3 +1,6 @@
+## 1.0.27 (Feb 24, 2023)
+- Bump version number for previous invalid release
+
 ## 1.0.26 (Feb 24, 2023)
 - Feature: Support using our own dedicated google maps API key (thanks Colin P)
 - Feature: Better google maps error responses
