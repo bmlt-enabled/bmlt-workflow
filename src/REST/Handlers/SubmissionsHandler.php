@@ -1054,8 +1054,23 @@ class SubmissionsHandler
                 '%s'
             )
         );
+        $log_submission = json_encode(array(
+            'submission_time'   => current_time('mysql', true),
+            'meeting_id' => $sanitised_fields['meeting_id'],
+            'submitter_name' => $submitter_name,
+            'submission_type'  => $reason,
+            'submitter_email' => $submitter_email,
+            'changes_requested' => wp_json_encode($submission, 0, 1),
+            'service_body_bigint' => $sanitised_fields['service_body_bigint']
+        ));
+
+
         $insert_id = $wpdb->insert_id;
         // $this->debug_log("id = " . $insert_id);
+        // last resort capture of the submission in our logs
+        error_log("[bmltwf - submission log id = " . $insert_id . "]");
+        error_log($log_submission);
+        
         $message = array(
             "message" => 'Form submission successful, submission id ' . $insert_id,
             "form_html" => '<h3 id="bmltwf_response_message">Form submission successful, your submission id  is #' . $insert_id . '. You will also receive an email confirmation of your submission.</h3>'
