@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.0.25
+ * Version: 1.0.26
  * Requires at least: 5.2
  * Tested up to: 6.1.1
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.0.25');
+define('BMLTWF_PLUGIN_VERSION', '1.0.26');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -50,7 +50,6 @@ if (file_exists('vendor/autoload.php')) {
 use bmltwf\BMLT\Integration;
 use bmltwf\REST\Controller;
 use bmltwf\BMLTWF_Database;
-use bmltwf\BMLTWF_WP_Options;
 use bmltwf\BMLTWF_Rest;
 
 // database configuration
@@ -60,19 +59,19 @@ if (!class_exists('bmltwf_plugin')) {
     class bmltwf_plugin
     {
         use \bmltwf\BMLTWF_Debug;
+        use \bmltwf\BMLTWF_Constants;
 
-        private BMLTWF_WP_Options  $BMLTWF_WP_Options;
         private Integration $bmlt_integration;
-        private BMLTWF_Rest $BMLTWF_Rest;
         private Controller $BMLTWF_Rest_Controller;
         private BMLTWF_Database $BMLTWF_Database;
 
         public function __construct()
         {
-            $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
+            $this->debug_log("bmlt-workflow: Creating new Integration");
             $this->bmlt_integration = new Integration();
-            $this->BMLTWF_Rest = new BMLTWF_Rest();
+            $this->debug_log("bmlt-workflow: Creating new Controller");
             $this->BMLTWF_Rest_Controller = new Controller();
+            $this->debug_log("bmlt-workflow: Creating new BMLTWF_Database");
             $this->BMLTWF_Database = new BMLTWF_Database();
 
 
@@ -96,7 +95,7 @@ if (!class_exists('bmltwf_plugin')) {
             if ($bmltwf_bmlt_test_status != "success") {
                 wp_die("<h4>BMLTWF Plugin Error: BMLT Root Server not configured and tested.</h4>");
             }
-            $this->debug_log(("inside shortcode setup"));
+            // $this->debug_log(("inside shortcode setup"));
             // base css and js for this page
             $this->prevent_cache_enqueue_script('bmltwf-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
             $this->prevent_cache_enqueue_style('bmltwf-meeting-update-form-css', false, 'css/meeting_update_form.css');
@@ -112,7 +111,7 @@ if (!class_exists('bmltwf_plugin')) {
             $this->enqueue_select2();
 
             // inline scripts
-            $script  = 'var bmltwf_form_submit_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/submissions') . '; ';
+            $script  = 'var bmltwf_form_submit_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/submissions') . '; ';
             $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
             // optional fields
             $script .= 'var bmltwf_optional_location_nation = "' . get_option('bmltwf_optional_location_nation') . '";';
@@ -150,8 +149,8 @@ if (!class_exists('bmltwf_plugin')) {
             $script .= 'var bmltwf_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
             // do a one off lookup for our servicebodies
-            $url = '/' . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/servicebodies';
-            $this->debug_log("rest url = " . $url);
+            $url = '/' . $this->bmltwf_rest_namespace . '/servicebodies';
+            // $this->debug_log("rest url = " . $url);
 
             $request  = new WP_REST_Request('GET', $url);
             $response = rest_do_request($request);
@@ -251,12 +250,22 @@ if (!class_exists('bmltwf_plugin')) {
                     $this->enqueue_jquery_dialog();
 
                     // inline scripts
-                    $script  = 'var bmltwf_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/bmltserver') . '; ';
-                    $script .= 'var bmltwf_admin_backup_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/options/backup') . '; ';
-                    $script .= 'var bmltwf_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/options/restore') . '; ';
-                    $script .= 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/servicebodies') . '; ';
+                    $script  = 'var bmltwf_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/bmltserver') . '; ';
+                    $script .= 'var bmltwf_admin_backup_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/backup') . '; ';
+                    $script .= 'var bmltwf_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/restore') . '; ';
+                    $script .= 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/servicebodies') . '; ';
                     $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
-                    $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
+
+                    $script .= 'var bmltwf_google_maps_key_select = ';
+                    $google_maps_key = get_option('bmltwf_google_maps_key','');
+                    if($google_maps_key==='')
+                    {
+                         $script .= '"bmlt_key";';
+                    }
+                    else
+                    {
+                        $script .= '"your_own_key";';
+                    }
 
                     wp_add_inline_script('admin_options_js', $script, 'before');
                     break;
@@ -282,8 +291,8 @@ if (!class_exists('bmltwf_plugin')) {
                     $this->enqueue_select2();
 
                     // make sure our rest urls are populated
-                    $script  = 'var bmltwf_admin_submissions_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/submissions/') . '; ';
-                    $script  .= 'var bmltwf_bmltserver_geolocate_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/bmltserver/geolocate') . '; ';
+                    $script  = 'var bmltwf_admin_submissions_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/submissions/') . '; ';
+                    $script  .= 'var bmltwf_bmltserver_geolocate_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/bmltserver/geolocate') . '; ';
                     // add our bmlt server for the submission lookups
                     $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
                     $script .= 'var bmltwf_remove_virtual_meeting_details_on_venue_change = "' . get_option('bmltwf_remove_virtual_meeting_details_on_venue_change') . '";';
@@ -319,7 +328,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_bmlt_formats = ' . json_encode($formatarr) . '; ';
 
                     // do a one off lookup for our servicebodies
-                    $url = '/' . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/servicebodies';
+                    $url = '/' . $this->bmltwf_rest_namespace . '/servicebodies';
 
                     $request  = new WP_REST_Request('GET', $url);
                     $response = rest_do_request($request);
@@ -335,9 +344,14 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_optional_location_sub_province = "' . get_option('bmltwf_optional_location_sub_province') . '";';
                     $script .= 'var bmltwf_optional_location_province = "' . get_option('bmltwf_optional_location_province') . '";';
                     $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
-                    $key = $this->bmlt_integration->getGmapsKey() ?? "";
-                    $script .= 'var bmltwf_gmaps_key = "' . $key . '";';
-              
+                    $key = $this->bmlt_integration->getGmapsKey();
+                    if (\is_wp_error($key)) {
+                        $key = "";
+                    }
+                    else
+                    {
+                        $script .= 'var bmltwf_gmaps_key = "' . $key . '";';
+                    }
                     $val = "true";
                     
                     if(!$this->bmlt_integration->isAutoGeocodingEnabled())
@@ -372,7 +386,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $this->enqueue_select2();
 
                     // make sure our rest url is populated
-                    $script = 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->BMLTWF_Rest->bmltwf_rest_namespace . '/servicebodies') . '; ';
+                    $script = 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/servicebodies') . '; ';
                     $script .= 'var wp_users_url = ' . json_encode(get_rest_url() . 'wp/v2/users') . '; ';
                     wp_add_inline_script('admin_service_bodies_js', $script, 'before');
                     break;
@@ -384,7 +398,7 @@ if (!class_exists('bmltwf_plugin')) {
         $toplevelslug = 'bmltwf-settings';
 
         // if we're just a submission editor, make our submissions page the landing page
-        if(!current_user_can('manage_options')&&(current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)))
+        if(!current_user_can('manage_options')&&(current_user_can($this->bmltwf_capability_manage_submissions)))
         {
             $toplevelslug = 'bmltwf-submissions';
         }
@@ -393,7 +407,7 @@ if (!class_exists('bmltwf_plugin')) {
                 add_menu_page(
                     'BMLT Workflow',
                     'BMLT Workflow',
-                    $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
+                    $this->bmltwf_capability_manage_submissions,
                     $toplevelslug,
                     '',
                     'dashicons-analytics',
@@ -414,7 +428,7 @@ if (!class_exists('bmltwf_plugin')) {
                     'bmltwf-settings',
                     'Workflow Submissions',
                     'Workflow Submissions',
-                    $this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions,
+                    $this->bmltwf_capability_manage_submissions,
                     'bmltwf-submissions',
                     array(&$this, 'display_bmltwf_admin_submissions_page'),
                     2
@@ -429,7 +443,7 @@ if (!class_exists('bmltwf_plugin')) {
                     array(&$this, 'display_bmltwf_admin_service_bodies_page'),
                     2
                 );
-                if(!current_user_can('manage_options')&&(current_user_can($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions)))
+                if(!current_user_can('manage_options')&&(current_user_can($this->bmltwf_capability_manage_submissions)))
                 {
                     remove_menu_page('bmltwf-settings');
                 }
@@ -470,6 +484,18 @@ if (!class_exists('bmltwf_plugin')) {
                     'sanitize_callback' => array(&$this, 'bmltwf_email_from_address_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'example@example.com'
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_google_maps_key',
+                array(
+                    'type' => 'string',
+                    'description' => 'Google maps key',
+                    'sanitize_callback' => array(&$this, 'bmltwf_google_maps_key_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => ''
                 )
             );
 
@@ -714,6 +740,14 @@ if (!class_exists('bmltwf_plugin')) {
             );
 
             add_settings_field(
+                'bmltwf_google_maps_key',
+                'Google Maps Key',
+                array(&$this, 'bmltwf_google_maps_key_html'),
+                'bmltwf-settings',
+                'bmltwf-settings-section-id'
+            );
+
+            add_settings_field(
                 'bmltwf_delete_closed_meetings',
                 'Default for close meeting submission',
                 array(&$this, 'bmltwf_delete_closed_meetings_html'),
@@ -764,8 +798,6 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_fso_feature_sanitize_callback($input)
         {
-            $this->debug_log("fso_enablde sanitize callback");
-            $this->debug_log($input);
 
             $output = get_option('bmltwf_fso_feature');
             switch ($input) {
@@ -779,8 +811,6 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_optional_postcode_sanitize_callback($input)
         {
-            $this->debug_log("postcode sanitize callback");
-            $this->debug_log($input);
 
             $output = get_option('bmltwf_optional_postcode');
             switch ($input) {
@@ -795,8 +825,6 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_optional_location_nation_sanitize_callback($input)
         {
-            $this->debug_log("location nation sanitize callback");
-            $this->debug_log($input);
 
             $output = get_option('bmltwf_optional_location_nation');
             switch ($input) {
@@ -854,6 +882,17 @@ if (!class_exists('bmltwf_plugin')) {
                 return $output;
             }
             return $sanitized_email;
+        }
+
+        public function bmltwf_google_maps_key_sanitize_callback($input)
+        {
+            $output = get_option('bmltwf_google_maps_key');
+            
+            if ((strlen($input)!=39) && ($input !== "")) {
+                add_settings_error('bmltwf_google_maps_key', 'err', 'Invalid google maps key.');
+                return $output;
+            }
+            return $input;
         }
 
         public function bmltwf_fso_email_address_sanitize_callback($input)
@@ -975,6 +1014,27 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br><br>';
             echo '</div>';
 
+        }
+        
+        public function bmltwf_google_maps_key_html()
+        {
+
+            $google_maps_key = get_option('bmltwf_google_maps_key');
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>This plugin will try and use the google maps key from your BMLT Root Server for geolocation and displaying the map view.';
+            echo '<br>You can also provide a dedicated google maps key below and this will be used in preference to the BMLT Root Server key.';
+            echo '<br><br>';
+            echo '</div>';
+            if ($google_maps_key === '') {
+                $bmlt_key = 'selected';
+            } else {
+                $your_own_key = 'selected';
+            }
+            echo '<br><label for="bmltwf_google_maps_key_select"></label><select id="bmltwf_google_maps_key_select" name="bmltwf_google_maps_key_select"><option name="bmlt_key" value="bmlt_key" ' . $bmlt_key . '>Google Maps Key from BMLT</option><option name="your_own_key" value="your_own_key" ' . $your_own_key . '>Custom Google Maps Key</option>';
+            echo '<br><br>';
+            echo '<input id="bmltwf_google_maps_key" type="text" size="39" name="bmltwf_google_maps_key" value="' . esc_attr($google_maps_key) . '"/>';
+            // echo '<br><label for="bmltwf_google_maps_key"><b>Google Maps Key:</b></label><input id="bmltwf_google_maps_key" type="text" size="39" name="bmltwf_google_maps_key" value="' . esc_attr($google_maps_key) . '"/>';
+            // echo '<br><br>';
         }
 
         public function bmltwf_email_from_address_html()
@@ -1266,7 +1326,7 @@ if (!class_exists('bmltwf_plugin')) {
         private function bmltwf_add_capability_to_manage_options_user($user)
         {
             if ($user->has_cap('manage_options')) {
-                $user->add_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
+                $user->add_cap($this->bmltwf_capability_manage_submissions);
                 $this->debug_log("adding capabilities to user " . $user->get('ID'));
             }
         }

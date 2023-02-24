@@ -18,35 +18,24 @@
 
 namespace bmltwf;
 
-class BMLTWF_WP_User
+trait BMLTWF_WP_User
 {
     use \bmltwf\BMLTWF_Debug;
+    use \bmltwf\BMLTWF_Constants;
 
-    protected $BMLTWF_Database;
-    protected $BMLTWF_WP_Options;
-
-    public function __construct()
+    public function add_remove_caps($uids)
     {
-        $this->BMLTWF_Database = new BMLTWF_Database();
-        $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
-    
-    }
-
-    public function add_remove_caps()
-    {
-        global $wpdb;
         // add / remove user capabilities
         $users = get_users();
-        $result = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name, 0);
         // $this->debug_log(($sql));
         // $this->debug_log(($result));
         foreach ($users as $user) {
             $this->debug_log("checking user id " . $user->get('ID'));
-            if (in_array($user->get('ID'), $result)) {
-                $user->add_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
+            if (in_array($user->get('ID'), $uids)) {
+                $user->add_cap($this->bmltwf_capability_manage_submissions);
                 $this->debug_log("adding cap");
             } else {
-                $user->remove_cap($this->BMLTWF_WP_Options->bmltwf_capability_manage_submissions);
+                $user->remove_cap($this->bmltwf_capability_manage_submissions);
                 $this->debug_log("removing cap");
             }
         }

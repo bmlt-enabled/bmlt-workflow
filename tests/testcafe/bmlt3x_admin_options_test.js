@@ -28,6 +28,8 @@ import {
   restore_from_backup, 
   bmltwf_admin, 
   click_dialog_button_by_index, 
+  click_dt_button_by_index,
+  click_table_row_column,
   select_dropdown_by_text, 
   select_dropdown_by_value, 
   check_checkbox,
@@ -63,12 +65,12 @@ fixture`bmlt3x_admin_options_fixture`
     await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
   });
 
-  const logger = RequestLogger(/backup/,
-  {
-    logResponseHeaders: true,
-    logResponseBody: true,
-  }
-  );
+const logger = RequestLogger(/backup/,
+{
+  logResponseHeaders: true,
+  logResponseBody: true,
+}
+);
 
 test("Backup", async (t) => {
   
@@ -336,4 +338,48 @@ test("Check_Optional_Fields", async (t) => {
   .eql(null);
 
 
+});
+
+const gmapslogger = RequestLogger(/https:\/\/maps.googleapis.com\/maps\/api\/js\?key=/,
+{
+  logRequestBody: true,
+}
+);
+
+test("Check_Custom_Google_Maps_Key", async (t) => {
+  // check we can put in a google maps key and use it
+
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await select_dropdown_by_text(ao.bmltwf_google_maps_key_select, "Custom Google Maps Key");
+  await t.expect(ao.bmltwf_google_maps_key.visible).eql(true)
+  .typeText(ao.bmltwf_google_maps_key, 'AIXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', { replace: true })
+  .click(ao.submit);
+  await ao.settings_updated();
+
+  await t.navigateTo(userVariables.admin_submissions_page_single)
+  .wait(1000);
+  // console.log(gmapslogger.requests);
+  var f = gmapslogger.requests[0].request.url;
+  await t.expect(f).contains('=AIXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX&');
+
+}).requestHooks(gmapslogger);
+
+test("Check_BMLT_Google_Maps_Key", async (t) => {
+  // check we can put in a google maps key and use it
+
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await select_dropdown_by_text(ao.bmltwf_google_maps_key_select, "Google Maps Key from BMLT");
+  await t.expect(ao.bmltwf_google_maps_key.visible).eql(false)
+  await t.click(ao.submit);
+  await ao.settings_updated();
+
+  await t.navigateTo(userVariables.admin_submissions_page_single)
+  .wait(1000);
+  // console.log(gmapslogger.requests);
+  var f = gmapslogger.requests[0].request.url;
+  await t.expect(f).contains('=AIzaSyDcJ');
+
+}).requestHooks(gmapslogger);
+
+test('Quickedit_Input_Labels', async t => {
 });

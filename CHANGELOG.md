@@ -1,3 +1,12 @@
+## 1.0.26 (Feb 24, 2023)
+- Feature: Support using our own dedicated google maps API key (thanks Colin P)
+- Feature: Better google maps error responses
+- Feature: Cache google maps key from BMLT
+- Improve support for detecting a live BMLT root server upgrade, without constantly hitting serverinfo
+- Move some classes to traits to clean up code and test cases
+- #152 Bug: virtual meeting link not saving in quickedit
+- #151 Bug: Clicking the More Info Button also Selects/Deselects Submissions (thanks @tempsaint !)
+
 ## 1.0.25 (Feb 19, 2023)
 - Javascript fix for google maps
 - #150 Service Body Dropdown Confusion (thanks @klgrimley !)

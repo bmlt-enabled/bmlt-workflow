@@ -23,9 +23,11 @@ RUN curl -o /usr/local/bin/wp-cli.phar https://raw.githubusercontent.com/wp-cli/
 COPY ./wpcli-user.sh /usr/local/bin/wp
 COPY ./wp-multisite-install.sh /usr/local/bin/wp-multisite-install.sh
 COPY ./htaccess.multisite /usr/local/lib/htaccess.multisite
+COPY ./sync-plugin.sh /usr/local/bin/sync-plugin.sh
 RUN chmod +x /usr/local/bin/wp
 RUN chmod +x /usr/local/bin/wp-cli.phar
 RUN chmod +x /usr/local/bin/wp-multisite-install.sh
+RUN chmod +x /usr/local/bin/sync-plugin.sh
 
 EXPOSE 80
 EXPOSE 443

@@ -722,10 +722,12 @@ jQuery(document).ready(function ($) {
     return table;
   }
 
-  $("#dt-submission tbody").on("click", "td.dt-control", function () {
+  $("#dt-submission tbody").on("click", "td.dt-control", function (event ) {
     var tr = $(this).closest("tr");
     var row = datatable.row(tr);
 
+    event.stopPropagation();
+    
     if (row.child.isShown()) {
       // This row is already open - close it
       row.child.hide();
@@ -958,10 +960,10 @@ jQuery(document).ready(function ($) {
         else if (short_id === "duration_hours" || short_id === "duration_minutes") {
           // add duration entirely if either minutes or hours have changed
           quickedit_changes_requested["duration_time"] = $("#quickedit_duration_hours").val() + ":" + $("#quickedit_duration_minutes").val() + ":00";
-        } else if (short_id === "virtual_meeting_additional_info" || short_id === "phone_meeting_number" || short_id === "virtual_meeting_link") {
-          if ($(this).val() === "(deleted)") {
-            delete quickedit_changes_requested[short_id];
-          }
+        } else if ((short_id === "virtual_meeting_additional_info" || short_id === "phone_meeting_number" || short_id === "virtual_meeting_link") && ($(this).val() === "(deleted)")) {
+        {
+          delete quickedit_changes_requested[short_id];
+        }
         } else {
           quickedit_changes_requested[short_id] = $(this).val();
         }

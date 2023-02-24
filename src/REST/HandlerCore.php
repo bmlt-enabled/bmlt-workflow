@@ -18,15 +18,9 @@
 
 namespace bmltwf\REST;
 
-use bmltwf\BMLT\Integration;
 
-class HandlerCore
+trait HandlerCore
 {
-
-    public function __construct()
-    {
-
-    }
 
     // accepts raw string or array
     public function bmltwf_rest_success($message)

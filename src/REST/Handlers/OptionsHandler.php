@@ -20,26 +20,25 @@
 
 namespace bmltwf\REST\Handlers;
 
-use bmltwf\REST\HandlerCore;
 use bmltwf\BMLTWF_Database;
-use bmltwf\BMLTWF_WP_Options;
-use bmltwf\BMLTWF_WP_User;
+use bmltwf\BMLT\Integration;
+
 class OptionsHandler
 {
     use \bmltwf\BMLTWF_Debug;
+    use \bmltwf\BMLTWF_Constants;
+    use \bmltwf\BMLTWF_WP_User;
+    use \bmltwf\REST\HandlerCore;
 
-    protected $handlerCore;
     protected $BMLTWF_Database;
-    protected $BMLTWF_WP_Options;
-    protected $BMLTWF_WP_User;
+    protected $Integration;
 
     public function __construct()
     {
-        $this->handlerCore = new HandlerCore();
+        $this->debug_log("OptionsHandler: Creating new BMLTWF_Database");        
         $this->BMLTWF_Database = new BMLTWF_Database();
-        $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
-        $this->BMLTWF_WP_User = new BMLTWF_WP_User();
-    
+        $this->debug_log("OptionsHandler: Creating new Integration");        
+        $this->Integration = new Integration();
     }
 
     public function post_bmltwf_restore_handler($request)
@@ -56,14 +55,14 @@ class OptionsHandler
 
         $options = $params['options']??0;
         if (!$options) {
-            return $this->handlerCore->bmltwf_rest_error('Restore options missing', 422);
+            return $this->bmltwf_rest_error('Restore options missing', 422);
         }
 
         // create the database as the revision in the backup file
         $this->BMLTWF_Database->bmltwf_db_upgrade($params['options']['bmltwf_db_version'], true);
 
         // restore all the options
-        foreach ($this->BMLTWF_WP_Options->bmltwf_options as $value) {
+        foreach ($this->bmltwf_options as $value) {
             $option_name = $value;
             delete_option($value);
             $this->debug_log("deleted option: " . $option_name);
@@ -110,10 +109,13 @@ class OptionsHandler
 
         // update the database to the latest version
         $this->BMLTWF_Database->bmltwf_db_upgrade($this->BMLTWF_Database->bmltwf_db_version, false);
+        $uids = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name, 0);
 
-        $this->BMLTWF_WP_User->add_remove_caps();
+        $this->add_remove_caps($uids);
 
-        return $this->handlerCore->bmltwf_rest_success('Restore Successful');
+        $this->Integration->update_root_server_version();
+
+        return $this->bmltwf_rest_success('Restore Successful');
     }
 
     public function post_bmltwf_backup_handler($request)
@@ -131,9 +133,9 @@ class OptionsHandler
         $saveoptarr = array();
         foreach ($optarr as $key => $value) {
             $this->debug_log("searching for " . $key . " in ");
-            $this->debug_log(($this->BMLTWF_WP_Options->bmltwf_options));
+            $this->debug_log(($this->bmltwf_options));
 
-            if (in_array($key, $this->BMLTWF_WP_Options->bmltwf_options)) {
+            if (in_array($key, $this->bmltwf_options)) {
                 $this->debug_log("found " . $key);
                 $saveoptarr[$key] = $value;
             }
@@ -157,6 +159,6 @@ class OptionsHandler
         $dateTime = new \DateTime();
         $fname = $dateTime->format(\DateTimeInterface::RFC3339_EXTENDED);
         $save['backupdetails'] = $fname;
-        return $this->handlerCore->bmltwf_rest_success(array('message' => 'Backup Successful', 'backup' => $contents));
+        return $this->bmltwf_rest_success(array('message' => 'Backup Successful', 'backup' => $contents));
     }
 }

@@ -119,6 +119,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
       bmltwf_optional_postcode_displayname: "Postcode",
       bmltwf_required_meeting_formats: "true",
       bmltwf_trusted_servants_can_delete_submissions: "true",
+      bmltwf_google_maps_key: "",
       bmltwf_submitter_email_template:
         '<p><br>Thank you for submitting the online meeting update.<br>We will usually be able action your\n    request within 48 hours.<br>Our process also updates NA websites around Australia and at NA World Services.<br>\n</p>\n<hr>What was submitted: <br><br>\n<table class="blueTable" style="border: 1px solid #1C6EA4;background-color: #EEEEEE;text-align: left;border-collapse: collapse;">\n    <thead style="background: #1C6EA4;border-bottom: 2px solid #444444;">\n        <tr>\n            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: none;">\n                <br>Field Name\n            </th>\n            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: 2px solid #D0E4F5;">\n                <br>Value\n            </th>\n        </tr>\n    </thead>\n    <tbody>\n        {field:submission}\n    </tbody>\n</table>\n\n',
       bmltwf_fso_email_template:

@@ -44,7 +44,12 @@ class Integration
         }
 
         if (empty($root_server_version)) {
-            $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address'));
+            $version = \get_option('bmltwf_bmlt_server_version',false);
+            if(!$version)
+            {
+                \update_option("bmltwf_bmlt_server_version", $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address')));
+            }
+            $this->bmlt_root_server_version = $version;
         } else {
             $this->bmlt_root_server_version = $root_server_version;
         }
@@ -71,7 +76,9 @@ class Integration
 
     public function update_root_server_version()
     {
-        $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address'));
+        $new_version = $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address'));
+        $this->bmlt_root_server_version = $new_version;
+        \update_option("bmltwf_bmlt_server_version", $new_version);
 
     }
     
@@ -157,7 +164,7 @@ class Integration
     public function bmltwf_get_remote_server_version($server)
     {
         $url = $server . "client_interface/serverInfo.xml";
-        $this->debug_log("url = " . $url);
+        // $this->debug_log("url = " . $url);
         $headers = array(
             "Accept: */*",
         );
@@ -175,6 +182,7 @@ class Integration
                 return false;
             }
             $version = $xml->serverVersion->readableString->__toString();
+            $this->debug_log("version returns = " . $version);
             return $version;
         }
     }
@@ -197,8 +205,8 @@ class Integration
         $this->debug_log("wp_remote_get from url " . $url);
 
         $resp = wp_remote_get($url, array('headers' => $headers));
-        $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
-        $this->debug_log(\wp_remote_retrieve_body($resp));
+        // $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
+        // $this->debug_log(\wp_remote_retrieve_body($resp));
 
         if ((!is_array($resp)) ||  is_wp_error($resp)) {
             return $this->bmltwf_integration_error('Server error retrieving meeting', 500);
@@ -243,7 +251,6 @@ class Integration
         $url = $server . "index.php";
         $this->debug_log($url);
         $ret = \wp_remote_post($url, array('body' => http_build_query($postargs)));
-        $this->debug_log(($ret));
 
         $response_code = \wp_remote_retrieve_response_code($ret);
 
@@ -269,8 +276,8 @@ class Integration
         $url = $server . "api/v1/auth/token";
         $this->debug_log($url);
         $response = \wp_remote_post($url, array('body' => http_build_query($postargs)));
-        $this->debug_log("wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
-        $this->debug_log(\wp_remote_retrieve_body($response));
+        // $this->debug_log("wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
+        // $this->debug_log(\wp_remote_retrieve_body($response));
 
         $response_code = \wp_remote_retrieve_response_code($response);
 
@@ -380,7 +387,7 @@ class Integration
             return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
 
-        $this->debug_log($arr);
+        // $this->debug_log($arr);
 
         if (empty($arr['service_body'])) {
             return $this->bmltwf_integration_error('No service bodies visible - Check the BMLT Root Server configuration settings', 500);
@@ -450,8 +457,8 @@ class Integration
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/servicebodies';
         $this->debug_log($url);
         $response = \wp_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
-        $this->debug_log("v3 wp_remote_get returns " . \wp_remote_retrieve_response_code($response));
-        $this->debug_log(\wp_remote_retrieve_body($response));
+        // $this->debug_log("v3 wp_remote_get returns " . \wp_remote_retrieve_response_code($response));
+        // $this->debug_log(\wp_remote_retrieve_body($response));
 
         if (\wp_remote_retrieve_response_code($response) != 200) {
             return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
@@ -535,14 +542,19 @@ class Integration
         $req['admin_action'] = 'get_permissions';
 
         $response = $this->postAuthenticatedRootServerRequest('local_server/server_admin/json.php', $req);
-        $this->debug_log("get permissions response returns " . \wp_remote_retrieve_response_code($response));
-        $this->debug_log(\wp_remote_retrieve_body($response));
+        // $this->debug_log("get permissions response returns " . \wp_remote_retrieve_response_code($response));
+        // $this->debug_log(\wp_remote_retrieve_body($response));
         if (is_wp_error($response)) {
 
             return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 500);
         }
 
         $arr = json_decode(\wp_remote_retrieve_body($response), 1);
+
+        if ((!is_array($arr)) || (!array_key_exists('service_body', $arr)))
+        {
+            return $this->bmltwf_integration_error('BMLT Root Server Communication Error - Cannot retrieve service bodies', 500);
+        }
 
         // if this is just a single service body, then fix the array up
         if (!array_key_exists('0', $arr['service_body'])) {
@@ -685,8 +697,8 @@ class Integration
         // $formatarr = json_decode(\wp_remote_retrieve_body($ret), 1);
 
         // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        $this->debug_log("getMeetingCounties returns " . \wp_remote_retrieve_response_code($response));
-        $this->debug_log(\wp_remote_retrieve_body($response));
+        // $this->debug_log("getMeetingCounties returns " . \wp_remote_retrieve_response_code($response));
+        // $this->debug_log(\wp_remote_retrieve_body($response));
         
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', 'BMLT Configuration Error - Unable to retrieve server info');
@@ -713,6 +725,22 @@ class Integration
     public function getGmapsKey()
     {
 
+        $storedkey = get_option('bmltwf_google_maps_key','');
+
+        if ($storedkey != '')
+        {
+            $this->debug_log("returning saved google maps key with length " . strval(strlen($storedkey)));
+            return $storedkey;
+        }
+
+        $storedkey = get_option('bmltwf_bmlt_google_maps_key','');
+
+        if ($storedkey != '')
+        {
+            $this->debug_log("returning bmlt google maps key with length " . strval(strlen($storedkey)));
+            return $storedkey;
+        }
+
         // force v2 usage because we're authing and scraping the web page
         $ret = $this->authenticateRootServerv2();
         if (is_wp_error($ret)) {
@@ -731,8 +759,11 @@ class Integration
 
         preg_match('/"google_api_key":"(.*?)",/', \wp_remote_retrieve_body($response), $matches);
         $this->debug_log("retrieved gmaps key ".$matches[1]);
+        $gmaps_key = $matches[1];
 
-        return $matches[1];
+        \update_option('bmltwf_bmlt_google_maps_key', $gmaps_key);
+
+        return $gmaps_key;
     }
 
     public function createMeeting($meeting)
@@ -778,8 +809,8 @@ class Integration
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings';
 
         $response = \wp_remote_post($url, $this->set_args(null, $meeting, array("Authorization" => "Bearer " . $this->v3_access_token)));
-        $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
-        $this->debug_log(\wp_remote_retrieve_body($response));
+        // $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
+        // $this->debug_log(\wp_remote_retrieve_body($response));
 
         if (\wp_remote_retrieve_response_code($response) != 201) {
             return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
@@ -1048,8 +1079,8 @@ class Integration
             $url = get_option('bmltwf_bmlt_server_address') . "api/v1/auth/token";
             $this->debug_log($url);
             $response = \wp_remote_post($url, array('body' => http_build_query($postargs)));
-            $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
-            $this->debug_log(\wp_remote_retrieve_body($response));
+            // $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
+            // $this->debug_log(\wp_remote_retrieve_body($response));
     
             $response_code = \wp_remote_retrieve_response_code($response);
 
@@ -1080,9 +1111,11 @@ class Integration
         );
         $url = get_option('bmltwf_bmlt_server_address') . "index.php";
 
-        // $this->debug_log("AUTH URL = " . $url);
-        // $ret = $this->post($url, null, $postargs);
+        $this->debug_log("AUTH URL = " . $url);
+        $ret = $this->post($url, $postargs, null);
         $ret = \wp_remote_post($url, $this->set_args(null, http_build_query($postargs)));
+        $this->debug_log("returns");
+        $this->debug_log($ret);
 
         if ((is_wp_error($ret)) || (\wp_remote_retrieve_response_code($ret) != 200)) {
             return new \WP_Error('bmltwf', 'authenticateRootServer: Server Failure');
@@ -1110,10 +1143,10 @@ class Integration
         if ($headers) {
             $newheaders = array_merge($headers, $newheaders);
         }
-        $this->debug_log('SET_ARGS headers');
-        $this->debug_log($headers);
-        $this->debug_log('SET_ARGS merged headers');
-        $this->debug_log($newheaders);
+        // $this->debug_log('SET_ARGS headers');
+        // $this->debug_log($headers);
+        // $this->debug_log('SET_ARGS merged headers');
+        // $this->debug_log($newheaders);
         $args = array(
             'timeout' => '120',
             'headers' => $newheaders,
@@ -1124,8 +1157,8 @@ class Integration
             $args['method'] = $method;
         }
 
-        $this->debug_log("set_args:");
-        $this->debug_log($args);
+        // $this->debug_log("set_args:");
+        // $this->debug_log($args);
 
         return $args;
     }
@@ -1192,6 +1225,15 @@ class Integration
             // $this->debug_log("*********");
             $ret = \wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
 
+            $cookie = \wp_remote_retrieve_cookie($ret, 'laravel_session');
+            if($cookie != "")
+            {
+                // this is a bmlt3x server and we hit it with 2x.
+                $this->debug_log("ROOT SERVER VERSION UPGRADE DETECTED");
+                $this->update_root_server_version();
+                return $this->bmltwf_integration_error("Wrong server version - updating. Please refresh.", "bmltwf_bmlt_integration");
+            }
+
             if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
             {
                 $ret =  $this->authenticateRootServer();
@@ -1246,6 +1288,7 @@ class Integration
     public function postAuthenticatedRootServerRequest($url, $postargs)
     {
         $ret =  $this->authenticateRootServer();
+
         if (is_wp_error($ret)) {
             return $ret;
         }

@@ -34,7 +34,6 @@ require_once('config_phpunit.php');
  * @uses bmltwf\REST\HandlerCore
  * @uses bmltwf\BMLT\Integration
  * @uses bmltwf\BMLTWF_Database
- * @uses bmltwf\BMLTWF_WP_Options
  */
 final class ServiceBodiesHandlerTest extends TestCase
 {

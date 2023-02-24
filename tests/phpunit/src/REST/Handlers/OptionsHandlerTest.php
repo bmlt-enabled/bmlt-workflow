@@ -32,7 +32,6 @@ require_once('config_phpunit.php');
  * @uses bmltwf\REST\HandlerCore
  * @uses bmltwf\BMLT\Integration
  * @uses bmltwf\BMLTWF_Database
- * @uses bmltwf\BMLTWF_WP_Options
  */
 final class OptionsHandlerTest extends TestCase
 {
@@ -84,7 +83,6 @@ Line: $errorLine
     public function test_can_post_options_backup_with_success(): void
     {
 
-        
         $request = new WP_REST_Request('POST', "http://3.25.141.92/flop/wp-json/bmltwf/v1/options/backup");
         $request->set_header('content-type', 'application/json');
         $request->set_route("/bmltwf/v1/options/backup");

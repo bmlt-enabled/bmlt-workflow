@@ -57,6 +57,19 @@ jQuery(document).ready(function ($) {
       $(disableclass).prop("disabled", true);
     }
   });
+  
+  // show/hide our google maps key input box
+  $("#bmltwf_google_maps_key_select").on("change", function () {
+    if (this.value == "bmlt_key") {
+      $("#bmltwf_google_maps_key").hide();
+      $("#bmltwf_google_maps_key").val('');
+    } else {
+      $("#bmltwf_google_maps_key").show();
+    }
+  });
+
+  $("#bmltwf_google_maps_key_select").val(bmltwf_google_maps_key_select);
+  $("#bmltwf_google_maps_key_select").trigger("change");
 
   $("#bmltwf_fso_feature").on("change", function () {
     if (this.value == "hidden") {

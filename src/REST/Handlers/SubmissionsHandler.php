@@ -21,29 +21,28 @@
 namespace bmltwf\REST\Handlers;
 
 use bmltwf\BMLT\Integration;
-use bmltwf\REST\HandlerCore;
 use bmltwf\BMLTWF_Database;
 
-use function Patchwork\CodeManipulation\Actions\Generic\injectFalseExpressionAtBeginnings;
 
 class SubmissionsHandler
 {
     use \bmltwf\BMLTWF_Debug;
+    use \bmltwf\REST\HandlerCore;
 
     protected $formats;
-    protected $handlerCore;
     protected $BMLTWF_Database;
     protected $bmlt_integration;
 
     public function __construct($intstub = null)
     {
         if (empty($intstub)) {
+            $this->debug_log("SubmissionsHandler: Creating new Integration");
             $this->bmlt_integration = new Integration();
         } else {
             $this->bmlt_integration = $intstub;
         }
         
-        $this->handlerCore = new HandlerCore();
+        $this->debug_log("SubmissionsHandler: Creating new BMLTWF_Database");        
         $this->BMLTWF_Database = new BMLTWF_Database();
     
     }
@@ -74,7 +73,7 @@ class SubmissionsHandler
         $sql = $wpdb->prepare('DELETE FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where id="%d" limit 1', $request['id']);
         $wpdb->query($sql, ARRAY_A);
 
-        return $this->handlerCore->bmltwf_rest_success('Deleted submission id ' . $request['id']);
+        return $this->bmltwf_rest_success('Deleted submission id ' . $request['id']);
     }
 
     public function get_submission_handler($request)
@@ -100,7 +99,7 @@ class SubmissionsHandler
         $this->debug_log("RESULT");
         $this->debug_log(($result));
         if (empty($result)) {
-            return $this->handlerCore->bmltwf_rest_error("Permission denied viewing submission id {$change_id}", 403);
+            return $this->bmltwf_rest_error("Permission denied viewing submission id {$change_id}", 403);
         }
         return $result;
     }
@@ -123,7 +122,7 @@ class SubmissionsHandler
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->handlerCore->bmltwf_rest_error("Submission id {$change_id} is already $change_made", 422);
+            return $this->bmltwf_rest_error("Submission id {$change_id} is already $change_made", 422);
         }
 
         $params = $request->get_json_params();
@@ -131,7 +130,7 @@ class SubmissionsHandler
         if (!empty($params['action_message'])) {
             $message = $params['action_message'];
             if (strlen($message) > 1023) {
-                return $this->handlerCore->bmltwf_rest_error('Reject message must be less than 1024 characters', 422);
+                return $this->bmltwf_rest_error('Reject message must be less than 1024 characters', 422);
             }
         } else {
             $this->debug_log("action message is null");
@@ -165,10 +164,10 @@ class SubmissionsHandler
 
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         $this->debug_log("Rejection email");
-        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . ($headers));
+        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body);
         wp_mail($to_address, $subject, $body, $headers);
 
-        return $this->handlerCore->bmltwf_rest_success('Rejected submission id ' . $change_id);
+        return $this->bmltwf_rest_success('Rejected submission id ' . $change_id);
     }
 
     public function patch_submission_handler($request)
@@ -220,7 +219,7 @@ class SubmissionsHandler
         $change_made = $result['change_made'];
 
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->handlerCore->bmltwf_rest_error("Submission id {$change_id} is already $change_made", 422);
+            return $this->bmltwf_rest_error("Submission id {$change_id} is already $change_made", 422);
         }
         // $this->debug_log("change made is ".$change_made);
 
@@ -255,7 +254,7 @@ class SubmissionsHandler
 
         $result = $wpdb->get_results($sql, ARRAY_A);
 
-        return $this->handlerCore->bmltwf_rest_success('Updated submission id ' . $change_id);
+        return $this->bmltwf_rest_success('Updated submission id ' . $change_id);
     }
 
     private function do_geolocate($change)
@@ -299,7 +298,7 @@ class SubmissionsHandler
         if (!empty($params['action_message'])) {
             $message = $params['action_message'];
             if (strlen($message) > 1023) {
-                return $this->handlerCore->bmltwf_rest_error('Approve message must be less than 1024 characters', 422);
+                return $this->bmltwf_rest_error('Approve message must be less than 1024 characters', 422);
             }
         }
 
@@ -313,7 +312,7 @@ class SubmissionsHandler
         // can't approve an already actioned submission
         $change_made = $result['change_made'];
         if (($change_made === 'approved') || ($change_made === 'rejected')) {
-            return $this->handlerCore->bmltwf_rest_error("Submission id {$change_id} is already {$change_made}", 422);
+            return $this->bmltwf_rest_error("Submission id {$change_id} is already {$change_made}", 422);
         }
 
         $change = json_decode($result['changes_requested'], 1);
@@ -398,7 +397,7 @@ class SubmissionsHandler
                 // geolocate based on changes - apply the changes to the BMLT version, then geolocate
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($result['meeting_id']);
                 if (is_wp_error($bmlt_meeting)) {
-                    return $this->handlerCore->bmltwf_rest_error('Error retrieving meeting details', 422);
+                    return $this->bmltwf_rest_error('Error retrieving meeting details', 422);
                 }
 
                 $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
@@ -508,7 +507,7 @@ class SubmissionsHandler
                 break;
 
             default:
-                return $this->handlerCore->bmltwf_rest_error("This change type ({$submission_type}) cannot be approved", 422);
+                return $this->bmltwf_rest_error("This change type ({$submission_type}) cannot be approved", 422);
         }
 
         $current_user = wp_get_current_user();
@@ -606,7 +605,7 @@ class SubmissionsHandler
         // }
 
 
-        return $this->handlerCore->bmltwf_rest_success('Approved submission id ' . $change_id);
+        return $this->bmltwf_rest_success('Approved submission id ' . $change_id);
     }
 
 
@@ -649,7 +648,7 @@ class SubmissionsHandler
 
     private function invalid_form_field($field)
     {
-        return $this->handlerCore->bmltwf_rest_error('Form field "' . $field . '" is invalid.', 422);
+        return $this->bmltwf_rest_error('Form field "' . $field . '" is invalid.', 422);
     }
 
 
@@ -713,7 +712,7 @@ class SubmissionsHandler
         }
 
         if (!(isset($data['update_reason']) || (!$reason_new_bool && !$reason_change_bool && !$reason_close_bool))) {
-            return $this->handlerCore->bmltwf_rest_error('No valid meeting update reason provided', 422);
+            return $this->bmltwf_rest_error('No valid meeting update reason provided', 422);
         }
 
         // sanitize any input
@@ -765,7 +764,7 @@ class SubmissionsHandler
             $field_is_required = $validation[1];
             // if the form field is required, check if the submission is empty or non existent
             if ($field_is_required && empty($data[$field])) {
-                return $this->handlerCore->bmltwf_rest_error('Form field "' . $field . '" is required.', 422);
+                return $this->bmltwf_rest_error('Form field "' . $field . '" is required.', 422);
             }
 
             // sanitise only fields that have been provided
@@ -815,7 +814,7 @@ class SubmissionsHandler
                         }
                         break;
                     default:
-                        return $this->handlerCore->bmltwf_rest_error('Form processing error', 500);
+                        return $this->bmltwf_rest_error('Form processing error', 500);
                         break;
                 }
                 $sanitised_fields[$field] = $data[$field];
@@ -832,7 +831,7 @@ class SubmissionsHandler
 
         if (empty($sanitised_fields['service_body_bigint'])) {
             // we should never have a blank service body unless it is 'other' request
-            return $this->handlerCore->bmltwf_rest_error('Form field "service_body_bigint" is required.', 422);
+            return $this->bmltwf_rest_error('Form field "service_body_bigint" is required.', 422);
         }
 
         // main switch for meeting change type
@@ -921,7 +920,7 @@ class SubmissionsHandler
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
                 // $this->debug_log(($meeting));
                 if (\is_wp_error($bmlt_meeting)) {
-                    return $this->handlerCore->bmltwf_rest_error('Error retrieving meeting details', 422);
+                    return $this->bmltwf_rest_error('Error retrieving meeting details', 422);
                 }
                 // strip blanks from BMLT
                 foreach ($bmlt_meeting as $key => $value) {
@@ -950,7 +949,7 @@ class SubmissionsHandler
                             if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
                                 // don't allow someone to modify a meeting service body
                                 if ($field === 'service_body_bigint') {
-                                    return $this->handlerCore->bmltwf_rest_error('Service body cannot be changed.', 403);
+                                    return $this->bmltwf_rest_error('Service body cannot be changed.', 403);
                                 }
                                 $submission[$field] = $sanitised_fields[$field];
                                 $submission_count++;
@@ -967,7 +966,7 @@ class SubmissionsHandler
                 }
 
                 if (!$submission_count) {
-                    return $this->handlerCore->bmltwf_rest_error('Nothing was changed.', 422);
+                    return $this->bmltwf_rest_error('Nothing was changed.', 422);
                 }
 
                 // add in extra form fields (non BMLT fields) to the submission
@@ -1005,7 +1004,7 @@ class SubmissionsHandler
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
                 if(\is_wp_error($bmlt_meeting))
                 {
-                    return $this->handlerCore->bmltwf_rest_error('Error retrieving meeting details', 422);
+                    return $this->bmltwf_rest_error('Error retrieving meeting details', 422);
                 }
                 $this->debug_log("BMLT MEETING");
                 $this->debug_log(($bmlt_meeting));
@@ -1017,7 +1016,7 @@ class SubmissionsHandler
                 break;
 
             default:
-                return $this->handlerCore->bmltwf_rest_error('Invalid meeting change', 422);
+                return $this->bmltwf_rest_error('Invalid meeting change', 422);
         }
 
         $this->debug_log("SUBMISSION");
@@ -1030,7 +1029,7 @@ class SubmissionsHandler
         $chg = wp_json_encode($submission, 0, 1);
 
         if (strlen($chg) >= 2048) {
-            return $this->handlerCore->bmltwf_rest_error('Meeting change request exceeds maximum size', 422);
+            return $this->bmltwf_rest_error('Meeting change request exceeds maximum size', 422);
         }
 
         // insert into submissions db
@@ -1055,8 +1054,23 @@ class SubmissionsHandler
                 '%s'
             )
         );
+        $log_submission = json_encode(array(
+            'submission_time'   => current_time('mysql', true),
+            'meeting_id' => $sanitised_fields['meeting_id'],
+            'submitter_name' => $submitter_name,
+            'submission_type'  => $reason,
+            'submitter_email' => $submitter_email,
+            'changes_requested' => wp_json_encode($submission, 0, 1),
+            'service_body_bigint' => $sanitised_fields['service_body_bigint']
+        ));
+
+
         $insert_id = $wpdb->insert_id;
         // $this->debug_log("id = " . $insert_id);
+        // last resort capture of the submission in our logs
+        error_log("[bmltwf - submission log id = " . $insert_id . "]");
+        error_log($log_submission);
+        
         $message = array(
             "message" => 'Form submission successful, submission id ' . $insert_id,
             "form_html" => '<h3 id="bmltwf_response_message">Form submission successful, your submission id  is #' . $insert_id . '. You will also receive an email confirmation of your submission.</h3>'
@@ -1076,7 +1090,7 @@ class SubmissionsHandler
         $sblist = $this->bmlt_integration->getServiceBodies();
         if(\is_wp_error(($sblist)))
         {
-            return $this->handlerCore->bmltwf_rest_error('Error retrieving service bodies', 422);
+            return $this->bmltwf_rest_error('Error retrieving service bodies', 422);
         }
         $this->debug_log("retrieved sblist ");
         $this->debug_log($sblist);
@@ -1108,7 +1122,7 @@ class SubmissionsHandler
         $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));
         wp_mail($to_address, $subject, $body, $headers);
 
-        return $this->handlerCore->bmltwf_rest_success($message);
+        return $this->bmltwf_rest_success($message);
     }
 
     private function submission_format($submission)

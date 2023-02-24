@@ -37,7 +37,7 @@ wp db create
 wp core multisite-install --path=$sitelocalpath --base=/$WORDPRESS_HOST/ --url=$siteurl --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com
 
 mkdir $sitelocalpath/wp-content/plugins/bmlt-workflow
-cp -R /plugin/* $sitelocalpath/wp-content/plugins/bmlt-workflow
+sync-plugin.sh $sitelocalpath
 
 sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '$WORDPRESS_NONCE_SALT');/" $sitelocalpath/wp-config.php
 

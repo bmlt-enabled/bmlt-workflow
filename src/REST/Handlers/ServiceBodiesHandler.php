@@ -20,35 +20,27 @@
 namespace bmltwf\REST\Handlers;
 
 use bmltwf\BMLT\Integration;
-use bmltwf\REST\HandlerCore;
 use bmltwf\BMLTWF_Database;
-use bmltwf\BMLTWF_WP_Options;
-use bmltwf\BMLTWF_WP_User;
 class ServiceBodiesHandler
 {
     use \bmltwf\BMLTWF_Debug;
+    use \bmltwf\BMLTWF_Constants;
+    use \bmltwf\BMLTWF_WP_User;
+    use \bmltwf\REST\HandlerCore;
 
     protected $bmlt_integration;
-    protected $BMLTWF_WP_Options;
-    protected $handlerCore;
-    protected $BMLTWF_WP_User;
     protected $BMLTWF_Database;
 
-    public function __construct($intstub = null, $optstub = null)
+    public function __construct($intstub = null)
     {
         if (empty($intstub)) {
+            $this->debug_log("ServiceBodiesHandler: Creating new Integration");        
             $this->bmlt_integration = new Integration();
         } else {
             $this->bmlt_integration = $intstub;
         }
 
-        if (empty($optstub)) {
-            $this->BMLTWF_WP_Options = new BMLTWF_WP_Options();
-        } else {
-            $this->BMLTWF_WP_Options = $optstub;
-        }
-        $this->handlerCore = new HandlerCore();
-        $this->BMLTWF_WP_User = new BMLTWF_WP_User();
+        $this->debug_log("ServiceBodiesHandler: Creating new BMLTWF_Database");        
         $this->BMLTWF_Database = new BMLTWF_Database();
     
     }
@@ -151,7 +143,7 @@ class ServiceBodiesHandler
                 $sblist[$value['service_body_bigint']]['name'] = $value['service_body_name'];
             }
         }
-        return $this->handlerCore->bmltwf_rest_success($sblist);
+        return $this->bmltwf_rest_success($sblist);
     }
 
     public function post_service_bodies_handler($request)
@@ -167,7 +159,7 @@ class ServiceBodiesHandler
         if (!is_array($permissions)) {
             $this->debug_log("error not array");
 
-            return $this->handlerCore->bmltwf_rest_error('Invalid service bodies post', 422);
+            return $this->bmltwf_rest_error('Invalid service bodies post', 422);
         }
         foreach ($permissions as $sb => $arr) {
             if ((!is_array($arr)) || (!array_key_exists('membership', $arr)) || (!array_key_exists('show_on_form', $arr))) {
@@ -181,7 +173,7 @@ class ServiceBodiesHandler
                 //     $this->debug_log($sb . " error show_on_form");
                 // }
 
-                return $this->handlerCore->bmltwf_rest_error('Invalid service bodies post', 422);
+                return $this->bmltwf_rest_error('Invalid service bodies post', 422);
             }
             $members = $arr['membership'];
             foreach ($members as $member) {
@@ -194,9 +186,10 @@ class ServiceBodiesHandler
             $wpdb->query($sql);
         }
 
-        $this->BMLTWF_WP_User->add_remove_caps();
+        $uids = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name, 0);
+        $this->add_remove_caps($uids);
 
-        return $this->handlerCore->bmltwf_rest_success('Updated Service Bodies');
+        return $this->bmltwf_rest_success('Updated Service Bodies');
     }
 
 
@@ -217,9 +210,9 @@ class ServiceBodiesHandler
             $result = $wpdb->query('DELETE from ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name);
             $this->debug_log("Delete service bodies");
             $this->debug_log(($result));
-            return $this->handlerCore->bmltwf_rest_success('Deleted Service Bodies');
+            return $this->bmltwf_rest_success('Deleted Service Bodies');
         } else {
-            return $this->handlerCore->bmltwf_rest_success('Nothing was performed');
+            return $this->bmltwf_rest_success('Nothing was performed');
         }
     }
 }
