@@ -176,8 +176,9 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                     <span class="dashicons dashicons-info-outline"></span>
                                 </label>
                                 <div class="bmltwf_right">
-                                    Creating a new meeting and unsure of your service body?
-                                    <br>Pick the closest match and leave us a note in the 'Any Other Comments' section below
+                                <?php echo __( 'Creating a new meeting and unsure of your service body?', 'bmlt-workflow' ); ?>
+                                    <br><?php echo __( "Pick the closest match and leave us a note in the 'Any Other Comments' section below", 'bmlt-workflow' ); ?>
+
                                     <i></i>
                                 </div>
                             </div>
@@ -201,7 +202,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                 <span class="dashicons dashicons-info-outline"></span>
                             </label>
                             <div class="bmltwf_left">
-                                A URL for the virtual meeting eg:
+                                <?php echo __( 'A URL for the virtual meeting eg:', 'bmlt-workflow' ); ?>
                                 <br>https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1
                                 <i></i>
                             </div>
@@ -212,7 +213,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                 <span class="dashicons dashicons-info-outline"></span>
                             </label>
                             <div class="bmltwf_left">
-                                Additional information, such as a meeting ID and Password eg:
+                            <?php echo __( 'Additional information, such as a meeting ID and Password eg:', 'bmlt-workflow' ); ?>
                                 <br>Zoom ID: 456 033 8613, Passcode: 1953
                                 <i></i>
                             </div>
@@ -224,7 +225,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             </label>
 
                             <div class="bmltwf_left">
-                                Any phone dialin details for this virtual meeting.
+                            <?php echo __( 'Any phone dialin details for this virtual meeting', 'bmlt-workflow' ); ?>.
                                 <i></i>
                             </div>
                         </div>
@@ -270,7 +271,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <fieldset>
                         <legend><?php echo __( 'Additional Information', 'bmlt-workflow' ); ?></legend>
                         <label for="additional_info"><?php echo __( 'Any Other Comments', 'bmlt-workflow' ); ?></label>
-                        <textarea name="additional_info" id="additional_info" maxlength="512" rows="5" cols="50" placeholder="Provide any more detail that may help us action your meeting change request"></textarea>
+                        <textarea name="additional_info" id="additional_info" maxlength="512" rows="5" cols="50" placeholder="<?php echo __( 'Provide any more detail that may help us action your meeting change request', 'bmlt-workflow' ); ?>"></textarea>
                         <div id="starter_pack">
                             <label for="starter_kit_required"><?php echo __( 'Starter Kit Required', 'bmlt-workflow' ); ?></label>
                             <select name="starter_kit_required" id="starter_kit_required">
