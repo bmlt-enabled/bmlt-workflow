@@ -21,7 +21,7 @@ use bmltwf\BMLT\Integration;
 
 $bmltwf_bmlt_test_status = get_option('bmltwf_bmlt_test_status', "failure");
 if ($bmltwf_bmlt_test_status != "success") {
-    wp_die("<h4><?php echo __( 'BMLTWF Plugin Error: BMLT Root Server not configured and tested', 'bmlt-workflow-textdomain' ); ?>.</h4>");
+    wp_die("<h4><?php echo __( 'BMLTWF Plugin Error: BMLT Root Server not configured and tested', 'bmlt-workflow' ); ?>.</h4>");
 }
 
 wp_nonce_field('wp_rest', '_wprestnonce');
@@ -32,12 +32,12 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <form action="#" method="post" id="meeting_update_form">
         <div id="meeting_update_form_header">
             <div>
-                <label for="update_reason"><?php echo __( 'Reason For Update', 'bmlt-workflow-textdomain' ); ?>:</label>
+                <label for="update_reason"><?php echo __( 'Reason For Update', 'bmlt-workflow' ); ?>:</label>
                 <select class="update-form-select" name="update_reason" id="update_reason">
-                    <option disabled="null" selected="null"><?php echo __( 'Select Reason', 'bmlt-workflow-textdomain' ); ?>...</option>
-                    <option value="reason_new"><?php echo __( 'New Meeting', 'bmlt-workflow-textdomain' ); ?></option>
-                    <option value="reason_change"><?php echo __( 'Change Existing Meeting (including Temporary Closure)', 'bmlt-workflow-textdomain' ); ?></option>
-                    <option value="reason_close"><?php echo __( 'Permanently Close Meeting', 'bmlt-workflow-textdomain' ); ?></option>
+                    <option disabled="null" selected="null"><?php echo __( 'Select Reason', 'bmlt-workflow' ); ?>...</option>
+                    <option value="reason_new"><?php echo __( 'New Meeting', 'bmlt-workflow' ); ?></option>
+                    <option value="reason_change"><?php echo __( 'Change Existing Meeting (including Temporary Closure)', 'bmlt-workflow' ); ?></option>
+                    <option value="reason_close"><?php echo __( 'Permanently Close Meeting', 'bmlt-workflow' ); ?></option>
                 </select>
             </div>
             <div id="meeting_selector">

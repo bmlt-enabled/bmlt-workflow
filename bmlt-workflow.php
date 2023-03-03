@@ -89,7 +89,16 @@ if (!class_exists('bmltwf_plugin')) {
         }
 
         public function bmltwf_load_textdomain() {
-            load_plugin_textdomain( 'bmlt-workflow-textdomain', false, dirname( plugin_basename(__FILE__) ) . '/lang/' );
+            $this->debug_log("setting textdomain to ".dirname( plugin_basename(__FILE__) ) . '/lang/');
+            $a = load_plugin_textdomain( 'bmlt-workflow', false, dirname( plugin_basename(__FILE__) ) . '/lang/' );
+            $this->debug_log("plugin textdomain returns");
+            if($a)
+            {
+                $this->debug_log("true");
+            } else
+            {
+                $this->debug_log("false");
+            }
         }
 
         public function bmltwf_meeting_update_form($atts = [], $content = null, $tag = '')
