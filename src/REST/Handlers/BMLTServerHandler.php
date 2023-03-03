@@ -33,7 +33,7 @@ class BMLTServerHandler
     public function __construct($intstub = null)
     {
         if (empty($intstub)) {
-			$this->debug_log("BMLTServerHandler: Creating new Integration");
+			// $this->debug_log("BMLTServerHandler: Creating new Integration");
             $this->bmlt_integration = new Integration();
         } else {
             $this->bmlt_integration = $intstub;

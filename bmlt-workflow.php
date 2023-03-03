@@ -67,11 +67,11 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function __construct()
         {
-            $this->debug_log("bmlt-workflow: Creating new Integration");
+            // $this->debug_log("bmlt-workflow: Creating new Integration");
             $this->bmlt_integration = new Integration();
-            $this->debug_log("bmlt-workflow: Creating new Controller");
+            // $this->debug_log("bmlt-workflow: Creating new Controller");
             $this->BMLTWF_Rest_Controller = new Controller();
-            $this->debug_log("bmlt-workflow: Creating new BMLTWF_Database");
+            // $this->debug_log("bmlt-workflow: Creating new BMLTWF_Database");
             $this->BMLTWF_Database = new BMLTWF_Database();
 
 
@@ -84,8 +84,12 @@ if (!class_exists('bmltwf_plugin')) {
             add_shortcode('bmltwf-meeting-update-form', array(&$this, 'bmltwf_meeting_update_form'));
             add_filter('plugin_action_links', array(&$this, 'bmltwf_add_plugin_link'), 10, 2);
             add_action('user_register', array(&$this, 'bmltwf_add_capability'), 10, 1);
-
+            add_action('plugins_loaded', array(&$this,'bmltwf_load_textdomain'));
             register_activation_hook(__FILE__, array(&$this, 'bmltwf_install'));
+        }
+
+        public function bmltwf_load_textdomain() {
+            load_plugin_textdomain( 'bmlt-workflow-textdomain', false, dirname( plugin_basename(__FILE__) ) . '/lang/' );
         }
 
         public function bmltwf_meeting_update_form($atts = [], $content = null, $tag = '')
@@ -462,7 +466,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             $new_actions = array();
             if (basename(plugin_dir_path(__FILE__)) . '/bmlt-workflow.php' === $plugin_file) {
-                $new_actions['cl_settings'] = sprintf(__('<a href="%s">Settings</a>', 'comment-limiter'), esc_url(admin_url('admin.php?page=bmltwf-settings')));
+                $new_actions['cl_settings'] = sprintf('<a href="%s">Settings</a>', esc_url(admin_url('admin.php?page=bmltwf-settings')));
             }
 
             return array_merge($new_actions, $plugin_actions);

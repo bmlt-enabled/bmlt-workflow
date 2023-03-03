@@ -36,13 +36,13 @@ class SubmissionsHandler
     public function __construct($intstub = null)
     {
         if (empty($intstub)) {
-            $this->debug_log("SubmissionsHandler: Creating new Integration");
+            // $this->debug_log("SubmissionsHandler: Creating new Integration");
             $this->bmlt_integration = new Integration();
         } else {
             $this->bmlt_integration = $intstub;
         }
         
-        $this->debug_log("SubmissionsHandler: Creating new BMLTWF_Database");        
+        // $this->debug_log("SubmissionsHandler: Creating new BMLTWF_Database");        
         $this->BMLTWF_Database = new BMLTWF_Database();
     
     }

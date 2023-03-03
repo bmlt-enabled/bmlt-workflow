@@ -1,0 +1,49 @@
+# Copyright (C) 2023 @nigel-bmlt
+# This file is distributed under the same license as the BMLT Workflow plugin.
+msgid ""
+msgstr ""
+"Project-Id-Version: BMLT Workflow 1.0.28\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bmlt-workflow\n"
+"Last-Translator: nigel-bmlt <nigel-bmlt@gmail.com>\n"
+"Language-Team: nigel-bmlt <nigel-bmlt@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2023-03-03T11:09:46+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.7.1\n"
+"X-Domain: bmlt-workflow\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: assets\n"
+"X-Poedit-SearchPathExcluded-1: css\n"
+"X-Poedit-SearchPathExcluded-2: docker\n"
+"X-Poedit-SearchPathExcluded-3: images\n"
+"X-Poedit-SearchPathExcluded-4: lang\n"
+"X-Poedit-SearchPathExcluded-5: mockoon\n"
+"X-Poedit-SearchPathExcluded-6: support\n"
+"X-Poedit-SearchPathExcluded-7: tests\n"
+"X-Poedit-SearchPathExcluded-8: thirdparty\n"
+"X-Poedit-SearchPathExcluded-9: vendor\n"
+"X-Poedit-SearchPathExcluded-10: node_modules\n"
+
+#. Plugin Name of the plugin
+msgid "BMLT Workflow"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://github.com/bmlt-enabled/bmlt-workflow"
+msgstr ""
+
+#. Description of the plugin
+msgid "Workflows for BMLT meeting management!"
+msgstr ""
+
+#. Author of the plugin
+msgid "@nigel-bmlt"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://github.com/nigel-bmlt"
+msgstr ""

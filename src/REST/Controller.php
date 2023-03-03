@@ -40,13 +40,13 @@ class Controller extends \WP_REST_Controller
 	{
 		if(!$stub)
 		{
-			$this->debug_log("Controller: Creating new BMLTServerHandler");
+			// $this->debug_log("Controller: Creating new BMLTServerHandler");
 			$this->BMLTServerHandler = new BMLTServerHandler();
-			$this->debug_log("Controller: Creating new ServiceBodiesHandler");
+			// $this->debug_log("Controller: Creating new ServiceBodiesHandler");
 			$this->ServiceBodiesHandler = new ServiceBodiesHandler();
-			$this->debug_log("Controller: Creating new SubmissionsHandler");
+			// $this->debug_log("Controller: Creating new SubmissionsHandler");
 			$this->SubmissionsHandler = new SubmissionsHandler();
-			$this->debug_log("Controller: Creating new OptionsHandler");
+			// $this->debug_log("Controller: Creating new OptionsHandler");
 			$this->OptionsHandler = new OptionsHandler();
 		}
 	}

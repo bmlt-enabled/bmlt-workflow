@@ -35,9 +35,9 @@ class OptionsHandler
 
     public function __construct()
     {
-        $this->debug_log("OptionsHandler: Creating new BMLTWF_Database");        
+        // $this->debug_log("OptionsHandler: Creating new BMLTWF_Database");        
         $this->BMLTWF_Database = new BMLTWF_Database();
-        $this->debug_log("OptionsHandler: Creating new Integration");        
+        // $this->debug_log("OptionsHandler: Creating new Integration");        
         $this->Integration = new Integration();
     }
 
