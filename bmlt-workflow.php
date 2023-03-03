@@ -403,6 +403,13 @@ if (!class_exists('bmltwf_plugin')) {
             $toplevelslug = 'bmltwf-submissions';
         }
 
+        // give our admins the view capability on the fly
+        if(current_user_can('manage_options')&&(!current_user_can($this->bmltwf_capability_manage_submissions)))
+        {
+            global $current_user;
+            $current_user->add_cap($this->bmltwf_capability_manage_submissions);
+        }
+
         // $this->debug_log("slug = ".$toplevelslug);
                 add_menu_page(
                     'BMLT Workflow',

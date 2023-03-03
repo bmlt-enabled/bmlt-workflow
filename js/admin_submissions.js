@@ -78,7 +78,16 @@ var venue_types = {
 jQuery(document).ready(function ($) {
   weekdays = ["Error", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-  $.getScript("https://maps.googleapis.com/maps/api/js?key=" + bmltwf_gmaps_key + "&callback=initMap&v=weekly&async=2");
+  // $.getScript("https://maps.googleapis.com/maps/api/js?key=" + bmltwf_gmaps_key + "&callback=initMap&v=weekly&async=2");
+  mapsurl = "https://maps.googleapis.com/maps/api/js?key=" + bmltwf_gmaps_key + "&callback=initMap&v=weekly&async=2";
+
+  $.ajax({
+    url: mapsurl,
+    dataType: 'script',
+    beforeSend: function(request) {
+      request.setRequestHeader("X-Alt-Referer", "Fags");
+      request.setRequestHeader("X-Requested-With", "shit");    }
+  });
 
   if (!bmltwf_auto_geocoding_enabled) {
     $("#optional_auto_geocode_enabled").hide();

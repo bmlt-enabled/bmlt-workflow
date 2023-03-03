@@ -39,6 +39,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         <br><br>You can configure which service areas are visible to the end-users using the <code>Display on end-user Form</code> checkbox.
         <br><br>You can select users from your Wordpress userlist and grant them access to your service areas in the <code>Wordpress Users with Access</code> column.
         These users will only be given access to the submission admin page, and only submissions from their service areas will be visible to approve.
+        <br><br>Wordpress admins or multisite superadmins will always have access to all submissions, so there is no need to add them individually
         <br><br>Note: Settings will only be applied when the 'Save Settings' button is pressed.
         <br><br>
     </div>

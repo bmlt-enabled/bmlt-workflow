@@ -258,7 +258,7 @@ class Controller extends \WP_REST_Controller
 
 
 		$this->debug_log("get submissions current user " . get_current_user_id());
-		if (!current_user_can($this->bmltwf_capability_manage_submissions)) {
+		if ((!current_user_can($this->bmltwf_capability_manage_submissions))||(!current_user_can('manage_options'))) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view submissions.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -268,7 +268,7 @@ class Controller extends \WP_REST_Controller
 	{
 
 		$this->debug_log("get submissions current user " . get_current_user_id());
-		if (!current_user_can($this->bmltwf_capability_manage_submissions)) {
+		if ((!current_user_can($this->bmltwf_capability_manage_submissions))||(!current_user_can('manage_options'))) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view a submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -280,7 +280,7 @@ class Controller extends \WP_REST_Controller
 
 
 		$this->debug_log("approve submission current user " . get_current_user_id());
-		if (!current_user_can($this->bmltwf_capability_manage_submissions)) {
+		if ((!current_user_can($this->bmltwf_capability_manage_submissions))||(!current_user_can('manage_options'))) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot approve this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -291,7 +291,7 @@ class Controller extends \WP_REST_Controller
 
 
 		$this->debug_log("reject submission current user " . get_current_user_id());
-		if (!current_user_can($this->bmltwf_capability_manage_submissions)) {
+		if ((!current_user_can($this->bmltwf_capability_manage_submissions))||(!current_user_can('manage_options'))) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot reject this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -321,7 +321,7 @@ class Controller extends \WP_REST_Controller
 	{
 
 		$this->debug_log("patch submission current user " . get_current_user_id());
-		if (!current_user_can($this->bmltwf_capability_manage_submissions)) {
+		if ((!current_user_can($this->bmltwf_capability_manage_submissions))||(!current_user_can('manage_options'))) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot patch this submission.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
@@ -394,7 +394,7 @@ class Controller extends \WP_REST_Controller
 
 
 		$this->debug_log("patch_bmltserver " . get_current_user_id());
-		if (!current_user_can($this->bmltwf_capability_manage_submissions)) {
+		if ((!current_user_can($this->bmltwf_capability_manage_submissions))||(!current_user_can('manage_options'))) {
 			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot geolocate an address.'), array('status' => $this->authorization_status_code()));
 		}
 		return true;

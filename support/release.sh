@@ -72,9 +72,29 @@ read DOIT
 if [ a${DOIT}a != "aa" ] && [ $DOIT == 'y' ]
 then
     git switch main
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+
     git merge --squash "$BRANCH"
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+
     git commit -m "$RELEASE"
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+
     git push
+    if [ $? != 0 ]
+    then
+        exit 1
+    fi
+    
     git tag "$RELEASE"
     git push --tag
 else

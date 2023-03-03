@@ -49,13 +49,19 @@ class SubmissionsHandler
 
     public function get_submissions_handler()
     {
-
         global $wpdb;
 
         // only show submissions we have access to
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
-        $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
+        if(current_user_can('manage_options'))
+        {
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name);
+        }
+        else
+        {
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
+        }
         // $this->debug_log($sql);
         $result = $wpdb->get_results($sql, ARRAY_A);
         // $this->debug_log(($result));
