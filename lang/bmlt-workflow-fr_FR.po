@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BMLT Workflow 1.0.28\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bmlt-workflow\n"
-"POT-Creation-Date: 2023-03-03 22:27+1100\n"
-"PO-Revision-Date: 2023-03-03 22:29+1100\n"
+"POT-Creation-Date: 2023-03-03 23:27+1100\n"
+"PO-Revision-Date: 2023-03-03 23:28+1100\n"
 "Last-Translator: \n"
 "Language-Team: nigel-bmlt <nigel-bmlt@gmail.com>\n"
 "Language: fr\n"
@@ -49,3 +49,193 @@ msgstr "Modification d’une réunion (incluant fermeture temporaire)"
 #: public/meeting_update_form.php:40
 msgid "Permanently Close Meeting"
 msgstr "Fermeture permanente d’une réunion"
+
+#: public/meeting_update_form.php:45
+msgid "Search For Meeting"
+msgstr "Recherche de réunion"
+
+#: public/meeting_update_form.php:61
+msgid "Meeting Details"
+msgstr "Détails de réunion"
+
+#: public/meeting_update_form.php:65
+msgid "Group Name"
+msgstr "Nom du groupe"
+
+#: public/meeting_update_form.php:67
+msgid "Meeting Day"
+msgstr ""
+
+#: public/meeting_update_form.php:69
+msgid "Sunday"
+msgstr "Dimanche"
+
+#: public/meeting_update_form.php:70
+msgid "Monday"
+msgstr "Lundi"
+
+#: public/meeting_update_form.php:71
+msgid "Tuesday"
+msgstr "Mardi"
+
+#: public/meeting_update_form.php:72
+msgid "Wednesday"
+msgstr "Mercredi"
+
+#: public/meeting_update_form.php:73
+msgid "Thursday"
+msgstr "Jeudi"
+
+#: public/meeting_update_form.php:74
+msgid "Friday"
+msgstr "Vendredi"
+
+#: public/meeting_update_form.php:75
+msgid "Saturday"
+msgstr "Samedi"
+
+#: public/meeting_update_form.php:79
+msgid "Start Time"
+msgstr "Début de la réunion"
+
+#: public/meeting_update_form.php:83
+msgid "Duration"
+msgstr "Durée"
+
+#: public/meeting_update_form.php:126
+msgid "Meeting Formats"
+msgstr ""
+
+#: public/meeting_update_form.php:141
+msgid "Is this a virtual, hybrid or temporarily closed in person meeting?"
+msgstr "Tenue de réunion"
+
+#: public/meeting_update_form.php:143 public/meeting_update_form.php:185
+#: public/meeting_update_form.php:256
+msgid "Select one"
+msgstr "Tenue"
+
+#: public/meeting_update_form.php:144 public/meeting_update_form.php:250
+#: public/meeting_update_form.php:278
+msgid "No"
+msgstr "Non"
+
+#: public/meeting_update_form.php:145
+msgid "Yes - Virtual only"
+msgstr "Videoconférence"
+
+#: public/meeting_update_form.php:146
+msgid "Yes - Hybrid (Virtual and Face to Face)"
+msgstr "Hybride (Vidéoconférence et présentielle)"
+
+#: public/meeting_update_form.php:147
+msgid "Yes - Temporary Face to Face Closure"
+msgstr "Temporrairement fermé en présentielle et ouvert en vidéoconférence"
+
+#: public/meeting_update_form.php:151
+msgid "Location (eg: a building name)"
+msgstr "Emplacement (ex: Nom de l’édifice)"
+
+#: public/meeting_update_form.php:153
+msgid "Street Address"
+msgstr "Adresse"
+
+#: public/meeting_update_form.php:155
+msgid "Extra Location Info (eg: Near the park)"
+msgstr "Détails ( ex: 3e étage, entrée )"
+
+#: public/meeting_update_form.php:158
+msgid "City/Town/Suburb"
+msgstr "Ville/Municipalité"
+
+#: public/meeting_update_form.php:175
+msgid "Service Body"
+msgstr "Service Committee"
+
+#: public/meeting_update_form.php:197
+msgid "Virtual Meeting Options"
+msgstr "Détails de réunion virtuelle"
+
+#: public/meeting_update_form.php:200
+msgid "Online Meeting Link"
+msgstr "Lien de réunion"
+
+#: public/meeting_update_form.php:211
+msgid "Virtual Meeting Additional Info"
+msgstr "Information additionnelle"
+
+#: public/meeting_update_form.php:222
+msgid "Phone Meeting Dial-in Number"
+msgstr "Numéro d’appel de la réunion téléphonique"
+
+#: public/meeting_update_form.php:240
+msgid "Personal Details (Confidential)"
+msgstr "Données personnelles (confidentiel)"
+
+#: public/meeting_update_form.php:241
+msgid "First Name"
+msgstr "Prénom"
+
+#: public/meeting_update_form.php:243
+msgid "Last Initial"
+msgstr "Nom (1ère lettre)"
+
+#: public/meeting_update_form.php:245
+msgid "Email Address"
+msgstr "Courriel"
+
+#: public/meeting_update_form.php:247
+msgid "Add your details as a contact for the group"
+msgstr "Ajoutez vos coordonnées en tant que contact pour le groupe"
+
+#: public/meeting_update_form.php:249 public/meeting_update_form.php:277
+msgid "Yes"
+msgstr "Oui"
+
+#: public/meeting_update_form.php:252
+msgid "Contact Number"
+msgstr "Numéro de contact"
+
+#: public/meeting_update_form.php:254
+msgid "Relationship to group"
+msgstr "Relation au groupe"
+
+#: public/meeting_update_form.php:257
+msgid "Group Member"
+msgstr "Membre serviteur du groupe"
+
+#: public/meeting_update_form.php:258
+msgid "Area Trusted Servant"
+msgstr "Membre du CE local"
+
+#: public/meeting_update_form.php:259
+msgid "Regional Trusted Servant"
+msgstr "Membre du CE régional"
+
+#: public/meeting_update_form.php:260
+msgid "NA Member"
+msgstr "Un membre NA"
+
+#: public/meeting_update_form.php:261
+msgid "Not A Member"
+msgstr "Non-membre"
+
+#: public/meeting_update_form.php:271
+msgid "Additional Information"
+msgstr "Autres commentaires"
+
+#: public/meeting_update_form.php:272
+msgid "Any Other Comments"
+msgstr ""
+
+#: public/meeting_update_form.php:275
+msgid "Starter Kit Required"
+msgstr "Kit de démarrage requis"
+
+#: public/meeting_update_form.php:281
+msgid "Starter Kit Postal Address"
+msgstr "Adresse postale"
+
+#: public/meeting_update_form.php:291
+msgid "Submit Form"
+msgstr "Soumettre"
