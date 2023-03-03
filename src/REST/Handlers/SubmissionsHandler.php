@@ -96,10 +96,16 @@ class SubmissionsHandler
     {
         global $wpdb;
 
-
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
-        $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
+        if(current_user_can('manage_options'))
+        {
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name);
+        }
+        else
+        {
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
+        }
         // $this->debug_log($sql);
         $result = $wpdb->get_row($sql, ARRAY_A);
         $this->debug_log("RESULT");

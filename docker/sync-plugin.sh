@@ -13,3 +13,5 @@ for i in $FILES
 do
 cp -R /plugin/$i $PLUGIN_PATH
 done
+
+sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" $PLUGIN_PATH/config.php

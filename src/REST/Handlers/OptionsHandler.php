@@ -112,6 +112,8 @@ class OptionsHandler
         $uids = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name, 0);
 
         $this->add_remove_caps($uids);
+        // clean out the google maps key if cached
+        \update_option('bmltwf_bmlt_google_maps_key', '');
 
         $this->Integration->update_root_server_version();
 
