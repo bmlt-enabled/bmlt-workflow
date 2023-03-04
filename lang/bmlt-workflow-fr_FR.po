@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BMLT Workflow 1.0.28\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bmlt-workflow\n"
-"POT-Creation-Date: 2023-03-03 23:27+1100\n"
-"PO-Revision-Date: 2023-03-03 23:28+1100\n"
+"POT-Creation-Date: 2023-03-04 23:27+1100\n"
+"PO-Revision-Date: 2023-03-04 23:28+1100\n"
 "Last-Translator: \n"
 "Language-Team: nigel-bmlt <nigel-bmlt@gmail.com>\n"
 "Language: fr\n"
@@ -29,6 +29,386 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-8: thirdparty\n"
 "X-Poedit-SearchPathExcluded-9: vendor\n"
 "X-Poedit-SearchPathExcluded-10: node_modules\n"
+
+#: admin/admin_options.php:35
+msgid "Plugin Versio"
+msgstr ""
+
+#: admin/admin_options.php:39
+msgid ""
+"For BMLT Workflow plugin issues, bugs or suggestions please raise them at"
+msgstr ""
+
+#: admin/admin_options.php:41
+msgid " or chat to us on bmlt-enabled slack, <b>#wordpress-bmlt-workflow</b>!"
+msgstr ""
+
+#: admin/admin_options.php:43
+msgid "Plugin documentation can be found "
+msgstr ""
+
+#: admin/admin_options.php:60
+msgid ""
+"Enter your BMLT Root Server address, and a BMLT Root Server username and "
+"password"
+msgstr ""
+
+#: admin/admin_options.php:65
+msgid "BMLT Root Server Address"
+msgstr ""
+
+#: admin/admin_options.php:69
+msgid "Username"
+msgstr ""
+
+#: admin/admin_options.php:72
+msgid "Password"
+msgstr ""
+
+#: admin/admin_options.php:79
+msgid ""
+"The BMLT root server username and password is used to action meeting "
+"approvals/rejections as well as perform any BMLT related actions on the "
+"Wordpress users behalf."
+msgstr ""
+
+#: admin/admin_options.php:80
+msgid ""
+"This user must be configured as a service body administrator and have access "
+"within the BMLT Root Server to edit all service bodies that are used in "
+"BMLTWF form submissions."
+msgstr ""
+
+#: admin/admin_options.php:82
+msgid ""
+"The server address is the full URL to your BMLT Root Server installation. "
+"For example: <code>https://na.test.zzz/main_server/</code>"
+msgstr ""
+
+#: admin/admin_options.php:92
+msgid ""
+"WARNING: If you proceed with the restore, your existing plugin "
+"configuration, including submissions, settings and service bodies will be "
+"removed."
+msgstr ""
+
+#: admin/admin_options.php:93 admin/admin_options.php:104
+msgid ""
+"this only affects the plugin configuration within Wordpress. Nothing outside "
+"of this, particularly any BMLT configuration, will be touched."
+msgstr ""
+
+#: admin/admin_options.php:94 admin/admin_options.php:106
+msgid "Are you sure you wish to do this?"
+msgstr ""
+
+#: admin/admin_options.php:101
+msgid ""
+"WARNING: Changing the BMLT Root Server settings will remove your service "
+"body configuration and existing submissions within the plugin."
+msgstr ""
+
+#: admin/admin_options.php:102
+msgid ""
+"Use the BACKUP option before pressing Ok if you do not wish to lose your "
+"submissions."
+msgstr ""
+
+#: admin/admin_options.php:103
+msgid ""
+"If you press Ok, your service bodies, service body permissions and ALL "
+"SUBMISSIONS will be removed."
+msgstr ""
+
+#: admin/admin_options.php:108
+msgid "Yes I'm sure!"
+msgstr ""
+
+#: admin/admin_service_bodies.php:26
+msgid "BMLTWF Plugin Error: BMLT Root Server not configured and tested."
+msgstr ""
+
+#: admin/admin_service_bodies.php:35
+#, fuzzy
+#| msgid "Service Body"
+msgid "Service Body Configuration"
+msgstr "Service Committee"
+
+#: admin/admin_service_bodies.php:38
+msgid ""
+"Service bodies are retrieved from BMLT Root Server using the BMLT Root "
+"Server details configured on the option page."
+msgstr ""
+
+#: admin/admin_service_bodies.php:39
+msgid ""
+"You can configure which service areas are visible to the end-users using the "
+"<code>Display on end-user Form</code> checkbox."
+msgstr ""
+
+#: admin/admin_service_bodies.php:40
+msgid ""
+"You can select users from your Wordpress userlist and grant them access to "
+"your service areas in the <code>Wordpress Users with Access</code> column. "
+"These users will only be given access to the submission admin page, and only "
+"submissions from their service areas will be visible to approve."
+msgstr ""
+
+#: admin/admin_service_bodies.php:41
+msgid ""
+"Wordpress admins or multisite superadmins will always have access to all "
+"submissions, so there is no need to add them individually"
+msgstr ""
+
+#: admin/admin_service_bodies.php:42
+msgid ""
+"Note: Settings will only be applied when the 'Save Settings' button is "
+"pressed."
+msgstr ""
+
+#: admin/admin_service_bodies.php:50 admin/admin_submissions.php:222
+#: admin/admin_submissions.php:236 public/meeting_update_form.php:175
+msgid "Service Body"
+msgstr "Service Committee"
+
+#: admin/admin_service_bodies.php:51
+#, fuzzy
+#| msgid "Duration"
+msgid "Description"
+msgstr "Durée"
+
+#: admin/admin_service_bodies.php:52
+msgid "Wordpress Users with Access"
+msgstr ""
+
+#: admin/admin_service_bodies.php:53
+msgid "Display on end-user Form"
+msgstr ""
+
+#: admin/admin_service_bodies.php:59
+msgid "Save Settings"
+msgstr ""
+
+#: admin/admin_submissions.php:30 admin/admin_submissions.php:40
+msgid "Approval note:"
+msgstr ""
+
+#: admin/admin_submissions.php:34
+msgid ""
+"You can use the quickedit function to make any extra changes before approval."
+msgstr ""
+
+#: admin/admin_submissions.php:35
+msgid "Are you sure you would like to approve the submission?"
+msgstr ""
+
+#: admin/admin_submissions.php:44
+msgid ""
+"Choose whether you'd like the meeting to be deleted from BMLT, or marked as "
+"unpublished."
+msgstr ""
+
+#: admin/admin_submissions.php:45
+msgid "Unpublish"
+msgstr ""
+
+#: admin/admin_submissions.php:46
+msgid "Delete"
+msgstr ""
+
+#: admin/admin_submissions.php:51
+msgid ""
+"This change cannot be undone. Use this to remove an entirely unwanted "
+"submission from the list."
+msgstr ""
+
+#: admin/admin_submissions.php:52
+msgid "Are you sure you would like to delete this submission completely?"
+msgstr ""
+
+#: admin/admin_submissions.php:61
+msgid "Are you sure you would like to reject this submission?"
+msgstr ""
+
+#: admin/admin_submissions.php:73
+msgid ""
+"Highlighted fields are from the user submission and your changes and will be "
+"stored when the QuickEdit is saved."
+msgstr ""
+
+#: admin/admin_submissions.php:78
+#, fuzzy
+#| msgid "Meeting Details"
+msgid "Meeting Name"
+msgstr "Détails de réunion"
+
+#: admin/admin_submissions.php:80 public/meeting_update_form.php:126
+msgid "Meeting Formats"
+msgstr ""
+
+#: admin/admin_submissions.php:96 public/meeting_update_form.php:79
+msgid "Start Time"
+msgstr "Début de la réunion"
+
+#: admin/admin_submissions.php:101
+msgid "Weekday"
+msgstr ""
+
+#: admin/admin_submissions.php:103 public/meeting_update_form.php:69
+msgid "Sunday"
+msgstr "Dimanche"
+
+#: admin/admin_submissions.php:104 public/meeting_update_form.php:70
+msgid "Monday"
+msgstr "Lundi"
+
+#: admin/admin_submissions.php:105 public/meeting_update_form.php:71
+msgid "Tuesday"
+msgstr "Mardi"
+
+#: admin/admin_submissions.php:106 public/meeting_update_form.php:72
+msgid "Wednesday"
+msgstr "Mercredi"
+
+#: admin/admin_submissions.php:107 public/meeting_update_form.php:73
+msgid "Thursday"
+msgstr "Jeudi"
+
+#: admin/admin_submissions.php:108 public/meeting_update_form.php:74
+msgid "Friday"
+msgstr "Vendredi"
+
+#: admin/admin_submissions.php:109 public/meeting_update_form.php:75
+msgid "Saturday"
+msgstr "Samedi"
+
+#: admin/admin_submissions.php:113 public/meeting_update_form.php:83
+msgid "Duration"
+msgstr "Durée"
+
+#: admin/admin_submissions.php:145 public/meeting_update_form.php:212
+msgid "Virtual Meeting Additional Info"
+msgstr "Information additionnelle"
+
+#: admin/admin_submissions.php:149
+#, fuzzy
+#| msgid "Virtual Meeting Options"
+msgid "Virtual Meeting Phone Details"
+msgstr "Détails de réunion virtuelle"
+
+#: admin/admin_submissions.php:153
+#, fuzzy
+#| msgid "Virtual Meeting Options"
+msgid "Virtual Meeting Link"
+msgstr "Détails de réunion virtuelle"
+
+#: admin/admin_submissions.php:157 public/meeting_update_form.php:272
+msgid "Additional Information"
+msgstr "Autres commentaires"
+
+#: admin/admin_submissions.php:163
+msgid "Venue Type"
+msgstr ""
+
+#: admin/admin_submissions.php:165 public/meeting_update_form.php:143
+#: public/meeting_update_form.php:186 public/meeting_update_form.php:257
+msgid "Select one"
+msgstr "Tenue"
+
+#: admin/admin_submissions.php:166
+msgid "Face to Face"
+msgstr ""
+
+#: admin/admin_submissions.php:167
+#, fuzzy
+#| msgid "Yes - Virtual only"
+msgid "Virtual only"
+msgstr "Videoconférence"
+
+#: admin/admin_submissions.php:168
+#, fuzzy
+#| msgid "Yes - Hybrid (Virtual and Face to Face)"
+msgid "Hybrid (Virtual and Face to Face)"
+msgstr "Hybride (Vidéoconférence et présentielle)"
+
+#: admin/admin_submissions.php:169
+#, fuzzy
+#| msgid "Yes - Temporary Face to Face Closure"
+msgid "Temporary Face to Face Closure"
+msgstr "Temporrairement fermé en présentielle et ouvert en vidéoconférence"
+
+#: admin/admin_submissions.php:171
+#, fuzzy
+#| msgid "Duration"
+msgid "Location"
+msgstr "Durée"
+
+#: admin/admin_submissions.php:173
+#, fuzzy
+#| msgid "Street Address"
+msgid "Street"
+msgstr "Adresse"
+
+#: admin/admin_submissions.php:175
+msgid "Location Info"
+msgstr ""
+
+#: admin/admin_submissions.php:177 public/meeting_update_form.php:158
+msgid "City/Town/Suburb"
+msgstr "Ville/Municipalité"
+
+#: admin/admin_submissions.php:198
+msgid "Meeting Geolocation (auto calculated)"
+msgstr ""
+
+#: admin/admin_submissions.php:199
+msgid "Latitude"
+msgstr ""
+
+#: admin/admin_submissions.php:201
+msgid "Longitude"
+msgstr ""
+
+#: admin/admin_submissions.php:212 admin/admin_submissions.php:227
+#: admin/admin_submissions.php:241
+msgid "Meeting Submissions"
+msgstr ""
+
+#: admin/admin_submissions.php:219 admin/admin_submissions.php:233
+msgid "ID"
+msgstr ""
+
+#: admin/admin_submissions.php:220 admin/admin_submissions.php:234
+#, fuzzy
+#| msgid "Submit Form"
+msgid "Submitter Name"
+msgstr "Soumettre"
+
+#: admin/admin_submissions.php:221 admin/admin_submissions.php:235
+#, fuzzy
+#| msgid "Submit Form"
+msgid "Submitter Email"
+msgstr "Soumettre"
+
+#: admin/admin_submissions.php:223 admin/admin_submissions.php:237
+msgid "Change Summary"
+msgstr ""
+
+#: admin/admin_submissions.php:224 admin/admin_submissions.php:238
+msgid "Submission Time"
+msgstr ""
+
+#: admin/admin_submissions.php:225 admin/admin_submissions.php:239
+msgid "Change Time"
+msgstr ""
+
+#: admin/admin_submissions.php:226 admin/admin_submissions.php:240
+msgid "Changed By"
+msgstr ""
+
+#: admin/admin_submissions.php:228 admin/admin_submissions.php:242
+msgid "Change Made"
+msgstr ""
 
 #: public/meeting_update_form.php:35
 msgid "Reason For Update"
@@ -66,57 +446,12 @@ msgstr "Nom du groupe"
 msgid "Meeting Day"
 msgstr ""
 
-#: public/meeting_update_form.php:69
-msgid "Sunday"
-msgstr "Dimanche"
-
-#: public/meeting_update_form.php:70
-msgid "Monday"
-msgstr "Lundi"
-
-#: public/meeting_update_form.php:71
-msgid "Tuesday"
-msgstr "Mardi"
-
-#: public/meeting_update_form.php:72
-msgid "Wednesday"
-msgstr "Mercredi"
-
-#: public/meeting_update_form.php:73
-msgid "Thursday"
-msgstr "Jeudi"
-
-#: public/meeting_update_form.php:74
-msgid "Friday"
-msgstr "Vendredi"
-
-#: public/meeting_update_form.php:75
-msgid "Saturday"
-msgstr "Samedi"
-
-#: public/meeting_update_form.php:79
-msgid "Start Time"
-msgstr "Début de la réunion"
-
-#: public/meeting_update_form.php:83
-msgid "Duration"
-msgstr "Durée"
-
-#: public/meeting_update_form.php:126
-msgid "Meeting Formats"
-msgstr ""
-
 #: public/meeting_update_form.php:141
 msgid "Is this a virtual, hybrid or temporarily closed in person meeting?"
 msgstr "Tenue de réunion"
 
-#: public/meeting_update_form.php:143 public/meeting_update_form.php:185
-#: public/meeting_update_form.php:256
-msgid "Select one"
-msgstr "Tenue"
-
-#: public/meeting_update_form.php:144 public/meeting_update_form.php:250
-#: public/meeting_update_form.php:278
+#: public/meeting_update_form.php:144 public/meeting_update_form.php:251
+#: public/meeting_update_form.php:279
 msgid "No"
 msgstr "Non"
 
@@ -144,98 +479,109 @@ msgstr "Adresse"
 msgid "Extra Location Info (eg: Near the park)"
 msgstr "Détails ( ex: 3e étage, entrée )"
 
-#: public/meeting_update_form.php:158
-msgid "City/Town/Suburb"
-msgstr "Ville/Municipalité"
+#: public/meeting_update_form.php:179
+msgid "Creating a new meeting and unsure of your service body?"
+msgstr ""
 
-#: public/meeting_update_form.php:175
-msgid "Service Body"
-msgstr "Service Committee"
+#: public/meeting_update_form.php:180
+msgid ""
+"Pick the closest match and leave us a note in the 'Any Other Comments' "
+"section below"
+msgstr ""
 
-#: public/meeting_update_form.php:197
+#: public/meeting_update_form.php:198
 msgid "Virtual Meeting Options"
 msgstr "Détails de réunion virtuelle"
 
-#: public/meeting_update_form.php:200
+#: public/meeting_update_form.php:201
 msgid "Online Meeting Link"
 msgstr "Lien de réunion"
 
-#: public/meeting_update_form.php:211
-msgid "Virtual Meeting Additional Info"
-msgstr "Information additionnelle"
+#: public/meeting_update_form.php:205
+msgid "A URL for the virtual meeting eg:"
+msgstr ""
 
-#: public/meeting_update_form.php:222
+#: public/meeting_update_form.php:216
+msgid "Additional information, such as a meeting ID and Password eg:"
+msgstr ""
+
+#: public/meeting_update_form.php:223
 msgid "Phone Meeting Dial-in Number"
 msgstr "Numéro d’appel de la réunion téléphonique"
 
-#: public/meeting_update_form.php:240
+#: public/meeting_update_form.php:228
+msgid "Any phone dialin details for this virtual meeting"
+msgstr ""
+
+#: public/meeting_update_form.php:241
 msgid "Personal Details (Confidential)"
 msgstr "Données personnelles (confidentiel)"
 
-#: public/meeting_update_form.php:241
+#: public/meeting_update_form.php:242
 msgid "First Name"
 msgstr "Prénom"
 
-#: public/meeting_update_form.php:243
+#: public/meeting_update_form.php:244
 msgid "Last Initial"
 msgstr "Nom (1ère lettre)"
 
-#: public/meeting_update_form.php:245
+#: public/meeting_update_form.php:246
 msgid "Email Address"
 msgstr "Courriel"
 
-#: public/meeting_update_form.php:247
+#: public/meeting_update_form.php:248
 msgid "Add your details as a contact for the group"
 msgstr "Ajoutez vos coordonnées en tant que contact pour le groupe"
 
-#: public/meeting_update_form.php:249 public/meeting_update_form.php:277
+#: public/meeting_update_form.php:250 public/meeting_update_form.php:278
 msgid "Yes"
 msgstr "Oui"
 
-#: public/meeting_update_form.php:252
+#: public/meeting_update_form.php:253
 msgid "Contact Number"
 msgstr "Numéro de contact"
 
-#: public/meeting_update_form.php:254
+#: public/meeting_update_form.php:255
 msgid "Relationship to group"
 msgstr "Relation au groupe"
 
-#: public/meeting_update_form.php:257
+#: public/meeting_update_form.php:258
 msgid "Group Member"
 msgstr "Membre serviteur du groupe"
 
-#: public/meeting_update_form.php:258
+#: public/meeting_update_form.php:259
 msgid "Area Trusted Servant"
 msgstr "Membre du CE local"
 
-#: public/meeting_update_form.php:259
+#: public/meeting_update_form.php:260
 msgid "Regional Trusted Servant"
 msgstr "Membre du CE régional"
 
-#: public/meeting_update_form.php:260
+#: public/meeting_update_form.php:261
 msgid "NA Member"
 msgstr "Un membre NA"
 
-#: public/meeting_update_form.php:261
+#: public/meeting_update_form.php:262
 msgid "Not A Member"
 msgstr "Non-membre"
 
-#: public/meeting_update_form.php:271
-msgid "Additional Information"
-msgstr "Autres commentaires"
-
-#: public/meeting_update_form.php:272
+#: public/meeting_update_form.php:273
 msgid "Any Other Comments"
 msgstr ""
 
-#: public/meeting_update_form.php:275
+#: public/meeting_update_form.php:274
+msgid ""
+"Provide any more detail that may help us action your meeting change request"
+msgstr ""
+
+#: public/meeting_update_form.php:276
 msgid "Starter Kit Required"
 msgstr "Kit de démarrage requis"
 
-#: public/meeting_update_form.php:281
+#: public/meeting_update_form.php:282
 msgid "Starter Kit Postal Address"
 msgstr "Adresse postale"
 
-#: public/meeting_update_form.php:291
+#: public/meeting_update_form.php:292
 msgid "Submit Form"
 msgstr "Soumettre"
