@@ -259,7 +259,7 @@ class Controller extends \WP_REST_Controller
 
 		$this->debug_log("get submissions current user " . get_current_user_id());
 		if ((!current_user_can($this->bmltwf_capability_manage_submissions))&&(!current_user_can('manage_options'))) {
-			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view submissions.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot view submissions.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -269,7 +269,7 @@ class Controller extends \WP_REST_Controller
 
 		$this->debug_log("get submissions current user " . get_current_user_id());
 		if ((!current_user_can($this->bmltwf_capability_manage_submissions))&&(!current_user_can('manage_options'))) {
-			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot view a submission.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot view a submission.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -281,7 +281,7 @@ class Controller extends \WP_REST_Controller
 
 		$this->debug_log("approve submission current user " . get_current_user_id());
 		if ((!current_user_can($this->bmltwf_capability_manage_submissions))&&(!current_user_can('manage_options'))) {
-			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot approve this submission.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot approve this submission.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -292,7 +292,7 @@ class Controller extends \WP_REST_Controller
 
 		$this->debug_log("reject submission current user " . get_current_user_id());
 		if ((!current_user_can($this->bmltwf_capability_manage_submissions))&&(!current_user_can('manage_options'))) {
-			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot reject this submission.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot reject this submission.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -312,7 +312,7 @@ class Controller extends \WP_REST_Controller
 
 		$this->debug_log("delete submission current user " . get_current_user_id());
 		if (!$can_delete) {
-			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot delete this submission.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot delete this submission.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -322,7 +322,7 @@ class Controller extends \WP_REST_Controller
 
 		$this->debug_log("patch submission current user " . get_current_user_id());
 		if ((!current_user_can($this->bmltwf_capability_manage_submissions))&&(!current_user_can('manage_options'))) {
-			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot patch this submission.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot patch this submission.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -341,7 +341,7 @@ class Controller extends \WP_REST_Controller
 
 		$this->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
-			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area updates.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot post service_area updates.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -351,7 +351,7 @@ class Controller extends \WP_REST_Controller
 
 		$this->debug_log("post_service_bodies_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
-			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post service_area updates.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot post service_area updates.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -362,7 +362,7 @@ class Controller extends \WP_REST_Controller
 
 		$this->debug_log("post_bmltserver " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
-			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post server updates.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot post server updates.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -373,7 +373,7 @@ class Controller extends \WP_REST_Controller
 
 		$this->debug_log("get_bmltserver " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
-			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot post server updates.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot post server updates.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -384,7 +384,7 @@ class Controller extends \WP_REST_Controller
 
 		$this->debug_log("patch_bmltserver " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
-			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot patch server updates.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot patch server updates.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -395,7 +395,7 @@ class Controller extends \WP_REST_Controller
 
 		$this->debug_log("patch_bmltserver " . get_current_user_id());
 		if ((!current_user_can($this->bmltwf_capability_manage_submissions))&&(!current_user_can('manage_options'))) {
-			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot geolocate an address.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot geolocate an address.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -406,7 +406,7 @@ class Controller extends \WP_REST_Controller
 
 		$this->debug_log("post_bmltwf_Backup_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
-			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot call the backup API.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot call the backup API.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
@@ -417,7 +417,7 @@ class Controller extends \WP_REST_Controller
 
 		$this->debug_log("post_bmltwf_restore_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
-			return new \WP_Error('rest_forbidden', esc_html__('Access denied: You cannot call the restore API.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot call the restore API.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
 		return true;
 	}
