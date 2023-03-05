@@ -168,8 +168,8 @@ class SubmissionsHandler
 
         $from_address = get_option('bmltwf_email_from_address');
         $to_address = $submitter_email;
-        $subject = __("NA Meeting Change Request Rejection - Submission ID")." " . $request['id'];
-        $body = __("Your meeting change has been rejected - change ID")." (" . $request['id'] . ")";
+        $subject = __('NA Meeting Change Request Rejection - Submission ID','bmlt-workflow')." " . $request['id'];
+        $body = __('Your meeting change has been rejected - change ID','bmlt-workflow')." (" . $request['id'] . ")";
 
         if (!empty($message)) {
             $body .= '<br><br>'.__('Message from trusted servant','bmlt-workflow').':<br><br>' . $message;
@@ -518,7 +518,7 @@ class SubmissionsHandler
                 break;
 
             default:
-                return $this->bmltwf_rest_error(__("This change type cannot be approved")." ({$submission_type})", 422);
+                return $this->bmltwf_rest_error(__('This change type cannot be approved','bmlt-workflow')." ({$submission_type})", 422);
         }
 
         $current_user = wp_get_current_user();
@@ -542,8 +542,8 @@ class SubmissionsHandler
         //
 
         $to_address = $submitter_email;
-        $subject = __("NA Meeting Change Request Approval - Submission ID")." " . $request['id'];
-        $body = __("Your meeting change has been approved - change ID")." (" . $request['id'] . ")";
+        $subject = __('NA Meeting Change Request Approval - Submission ID','bmlt-workflow')." " . $request['id'];
+        $body = __('Your meeting change has been approved - change ID','bmlt-workflow')." (" . $request['id'] . ")";
         if (!empty($message)) {
             $body .= '<br><br>'.__('Message from trusted servant','bmlt-workflow').':<br><br>' . $message;
         }
@@ -625,13 +625,13 @@ class SubmissionsHandler
     {
         switch ($reason) {
             case "reason_new":
-                $submission_type = __("New Meeting");
+                $submission_type = __('New Meeting','bmlt-workflow');
                 break;
             case "reason_close":
-                $submission_type = __("Close Meeting");
+                $submission_type = __('Close Meeting','bmlt-workflow');
                 break;
             case "reason_change":
-                $submission_type = __("Modify Meeting");
+                $submission_type = __('Modify Meeting','bmlt-workflow');
                 break;
         }
         return $submission_type;
@@ -1181,7 +1181,7 @@ class SubmissionsHandler
                     $table .= '<tr><td>'.__('Relationship to Group','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
                     break;
                 case "weekday_tinyint":
-                    $weekdays = [__("Error"), __("Sunday"), __("Monday"), __("Tuesday"), __("Wednesday"), __("Thursday"), __("Friday"), __("Saturday")];
+                    $weekdays = [__('Error'), __('Sunday','bmlt-workflow'), __('Monday','bmlt-workflow'), __('Tuesday','bmlt-workflow'), __('Wednesday','bmlt-workflow'), __('Thursday','bmlt-workflow'), __('Friday','bmlt-workflow'), __('Saturday','bmlt-workflow')];
                     $table .= '<tr><td>'.__('Meeting Day','bmlt-workflow').':</td><td>' . $weekdays[$value] . '</td></tr>';
                     break;
                 case "additional_info":
@@ -1208,7 +1208,7 @@ class SubmissionsHandler
                     break;
 
                 case "format_shared_id_list":
-                    $friendlyname = __("Meeting Formats",'bmlt-workflow');
+                    $friendlyname = __('Meeting Formats','bmlt-workflow');
                     // convert the meeting formats to human readable
                     $friendlydata = "";
                     $strarr = explode(',', $value);

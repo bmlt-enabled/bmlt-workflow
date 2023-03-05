@@ -1037,17 +1037,17 @@ if (!class_exists('bmltwf_plugin')) {
             if($autogeo)
             {
                 $val = "true";
-                $val1 = __("will");
+                $val1 = __('will','bmlt-workflow');
             }
             else
             {
                 $val = "false";
-                $val1 = __("will not");
+                $val1 = __('will not','bmlt-workflow');
             }
             echo '<div class="bmltwf_info_text">';
             echo '<br>';
             echo __('This plugin honours the BMLT Root Server Auto Geocoding settings. The $auto_geocoding_enabled setting is set to ','bmlt-workflow');
-            echo '<b>'.$val.'</b>;';
+            echo '<b>'.$val.'</b>';
             echo '<br><br>';
             echo __('Meeting submissions ','bmlt-workflow');
             echo '<b>'.$val1.'</b> ';
@@ -1165,7 +1165,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             echo '<div class="bmltwf_info_text">';
             echo '<br>';
-            echo '__(This option determines whether virtual meeting configuration, such as url, extra info and dialin number, are removed when the meeting venue type is changed to a face to face meeting.';
+            echo __('This option determines whether virtual meeting configuration, such as url, extra info and dialin number, are removed when the meeting venue type is changed to a face to face meeting.');
             echo '<br><br>';
             echo __('If this is set to false, the virtual meeting settings will be retained in BMLT.','bmlt-workflow');
             echo '<br><br>';
@@ -1325,7 +1325,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             echo '<div class="bmltwf_info_text">';
             echo '<br>';
-            echo __("This template will be used when emailing a submitter about the meeting change they've requested.");
+            echo __("This template will be used when emailing a submitter about the meeting change they've requested.",'bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
 
