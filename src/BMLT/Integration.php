@@ -643,7 +643,6 @@ class Integration
         $xml = simplexml_load_string(\wp_remote_retrieve_body($response));
         $formatarr = json_decode(json_encode($xml), 1);
 
-
         $newformat = array();
         foreach ($formatarr['row'] as $key => $value) {
             $formatid = $value['id'];
@@ -849,8 +848,9 @@ class Integration
         if (($key2 = array_search($key, $meetingformats)) !== false) {
             unset($meetingformats[$key2]);
         }
-        if ($meeting['venue_type'] !== '1') {
-
+        if ($meeting['venue_type'] !== 1) {
+            $this->debug_log("i'm in the venue type checker");
+            $key='';
             switch ($meeting['venue_type']) {
                 case "2":
                     $key = array_search('VM', array_column($formats, 'key_string'));
@@ -862,10 +862,15 @@ class Integration
                     $key = array_search('TC', array_column($formats, 'key_string'));
                     break;
             }
-            if (!in_array($key, $meetingformats)) {
+            if (($key != '')&&(!in_array($key, $meetingformats))) {
+                $this->debug_log("adding key to meetingformats");
+                $this->debug_log($key);
+        
                 $meetingformats[] = $key;
             }
         }
+        $this->debug_log("at end meetingformats = ");
+        $this->debug_log($meetingformats);
 
 
         $meeting['format_shared_id_list'] = implode(',', $meetingformats);
@@ -1221,7 +1226,7 @@ class Integration
             return $ret;
         } else {
             $this->debug_log("POSTING URL = " . $url);
-            // $this->debug_log(($this->set_args($cookies, http_build_query($postargs))));
+            $this->debug_log($this->set_args($cookies, http_build_query($postargs)));
             // $this->debug_log("*********");
             $ret = \wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
 

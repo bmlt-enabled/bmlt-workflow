@@ -911,6 +911,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
+        Functions\when('\current_user_can')->justReturn('false');
 
         // 
         // $this->debug_log('APPROVEREQUEST');
@@ -987,6 +988,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
+        Functions\when('\current_user_can')->justReturn('false');
 
         // $this->debug_log(($request));
 
@@ -1063,6 +1065,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
+        Functions\when('\current_user_can')->justReturn('false');
 
         // $this->debug_log(($request));
 
@@ -1137,6 +1140,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
+        Functions\when('\current_user_can')->justReturn('false');
 
         Functions\expect('\wp_mail')->times(1)->with('a@a.com', Mockery::any(), Mockery::any(), Mockery::any());
 
@@ -1211,6 +1215,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\wp_get_current_user')->justReturn($user);
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
+        Functions\when('\current_user_can')->justReturn('false');
 
 
         Functions\expect('\wp_mail')->times(1)->with('a@a.com', Mockery::any(), Mockery::any(), Mockery::any());
@@ -1283,6 +1288,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
+        Functions\when('\current_user_can')->justReturn('false');
 
 
         $response = $handlers->approve_submission_handler($request);
@@ -1349,6 +1355,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\is_wp_error')->justReturn(false);
         Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
+        Functions\when('\current_user_can')->justReturn('false');
 
 
         // $this->debug_log(($request));

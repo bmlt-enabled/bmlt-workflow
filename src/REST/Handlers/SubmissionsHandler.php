@@ -100,7 +100,7 @@ class SubmissionsHandler
         $current_uid = $this_user->get('ID');
         if(current_user_can('manage_options'))
         {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name);
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where id=%d', $change_id);
         }
         else
         {
