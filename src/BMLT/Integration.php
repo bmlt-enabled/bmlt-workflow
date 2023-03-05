@@ -849,7 +849,6 @@ class Integration
             unset($meetingformats[$key2]);
         }
         if ($meeting['venue_type'] !== 1) {
-            $this->debug_log("i'm in the venue type checker");
             $key='';
             switch ($meeting['venue_type']) {
                 case "2":
@@ -871,7 +870,6 @@ class Integration
         }
         $this->debug_log("at end meetingformats = ");
         $this->debug_log($meetingformats);
-
 
         $meeting['format_shared_id_list'] = implode(',', $meetingformats);
 

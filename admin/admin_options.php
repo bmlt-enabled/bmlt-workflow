@@ -37,11 +37,11 @@ echo BMLTWF_PLUGIN_VERSION;
 echo '</h5>';
 echo '<p><h4 align="center">';
 echo __( 'For BMLT Workflow plugin issues, bugs or suggestions please raise them at','bmlt-workflow');
-echo '<a href="https://github.com/bmlt-enabled/bmlt-workflow/issues">GitHub Issues</a>';
+echo ' <a href="https://github.com/bmlt-enabled/bmlt-workflow/issues">GitHub Issues</a>';
 echo __(' or chat to us on bmlt-enabled slack, <b>#wordpress-bmlt-workflow</b>!','bmlt-workflow');
 echo '<br>';
-echo __('Plugin documentation can be found ','bmlt-workflow');
-echo '<a href="https://github.com/bmlt-enabled/bmlt-workflow/wiki">GitHub Wiki</a></h4>';
+echo __('Plugin documentation can be found at','bmlt-workflow');
+echo ' <a href="https://github.com/bmlt-enabled/bmlt-workflow/wiki">GitHub Wiki</a></h4>';
 echo '<form id="bmltwf_options_form" method="post" action="options.php">';
 settings_errors();
 
