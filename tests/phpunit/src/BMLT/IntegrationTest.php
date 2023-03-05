@@ -71,7 +71,7 @@ Line: $errorLine
         Brain\Monkey\setUp();
 
         Functions\when('\wp_remote_get')->returnArg();
-        Functions\when('\wp_remote_post')->returnArg();
+        // Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\wp_remote_request')->returnArg();
         Functions\when('\wp_remote_retrieve_response_message')->returnArg();
         Functions\when('\wp_remote_retrieve_cookie')->justReturn("");
@@ -211,6 +211,7 @@ Line: $errorLine
     public function test_can_call_testServerAndAuthv2_with_success(): void
     {
         // testServerAndAuthv2($username, $password, $server)
+        Functions\when('\wp_remote_post')->returnArg();
 
         Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('wp_remote_retrieve_body')->justReturn('<html></html>');
@@ -228,6 +229,7 @@ Line: $errorLine
     {
         // testServerAndAuthv2($username, $password, $server)
 
+        Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_response_code')->justReturn(403);
         Functions\when('\wp_remote_retrieve_body')->justReturn('<html></html>');
         Functions\when('http_build_query')->justReturn(1);
@@ -244,6 +246,7 @@ Line: $errorLine
     {
         // testServerAndAuthv2($username, $password, $server)
 
+        Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('\wp_remote_retrieve_body')->justReturn('</head><body class="admin_body"><h2 class="c_comdef_not_auth_3">There was a problem with the user name or password that you entered.</h2><div class="c_comdef_admin_login_form_container_div"><noscript>');
         Functions\when('http_build_query')->justReturn(1);
@@ -381,7 +384,6 @@ Line: $errorLine
      */
     public function test_cant_call_v2_getMeetingCounties_with_invalid_bmlt_details(): void
     {
-        //         public function getMeetingCounties()
 
         Functions\when('wp_remote_retrieve_body')->justReturn('[{}]');
         Functions\when('\wp_remote_retrieve_response_code')->justReturn(500);
@@ -398,8 +400,7 @@ Line: $errorLine
      */
     public function test_can_call_v2_postAuthenticatedRootServerRequest_with_valid_auth(): void
     {
-        //         public function postAuthenticatedRootServerRequest()
-
+        Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
         Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
@@ -415,8 +416,7 @@ Line: $errorLine
      */
     public function test_cant_call_v2_postAuthenticatedRootServerRequest_with_valid_auth_no_args(): void
     {
-        //         public function postAuthenticatedRootServerRequest()
-
+        Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
         Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
@@ -432,8 +432,7 @@ Line: $errorLine
      */
     public function test_cant_call_v2_postAuthenticatedRootServerRequest_with_invalid_bmlt_details(): void
     {
-        //             public function postAuthenticatedRootServerRequest($url, $postargs)
-
+        Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
         Functions\when('\wp_remote_post')->justReturn(new \WP_Error(1));
         Functions\when('\wp_remote_retrieve_cookies')->returnArg();
@@ -452,8 +451,7 @@ Line: $errorLine
      */
     public function test_can_call_v2_postAuthenticatedRootServerRequestSemantic_with_valid_auth(): void
     {
-        //         public function postAuthenticatedRootServerRequestSemantic()
-
+        Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
         Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
@@ -469,8 +467,7 @@ Line: $errorLine
      */
     public function test_cant_call_v2_postAuthenticatedRootServerRequestSemantic_with_valid_auth_no_args(): void
     {
-        //         public function postAuthenticatedRootServerRequestSemantic()
-
+        Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_body')->justReturn('[{}]');
         Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
@@ -606,6 +603,7 @@ Line: $errorLine
     {
 
         Functions\when('wp_remote_retrieve_cookies')->returnArg();
+        Functions\when('\wp_remote_post')->returnArg();
 
         $gmapskey = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"> <head> <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" /> <meta http-equiv="content-type" content="text/html; charset=utf-8" /> <meta http-equiv="Content-Script-Type" content="text/javascript" /> <meta http-equiv="Content-Style-Type" content="text/css" /> <link rel="stylesheet" href="https://brucegardner.net/bmlt-root-server-master/main_server/local_server/server_admin/style/styles.css?v=1650950537" /> <link rel="icon" href="https://brucegardner.net/bmlt-root-server-master/main_server/local_server/server_admin/style/images/shortcut.png" /> <link rel="preconnect" href="https://fonts.gstatic.com"> <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700&display=swap" rel="stylesheet"> <title>Basic Meeting List Toolbox Administration Console</title> </head> <body class="admin_body"> <div class="bmlt_admin_logout_bar"><h4><a href="/bmlt-root-server-master/main_server/index.php?admin_action=logout">Sign Out (Server Administrator)</a></h4><div class="server_version_display_div"> 2.16.5 </div></div><div id="google_maps_api_error_div" class="bmlt_admin_google_api_key_error_bar item_hidden"><h4><a id="google_maps_api_error_a" href="https://bmlt.app/google-api-key/" target="_blank"></a></h4></div><div class="admin_page_wrapper"><div id="bmlt_admin_main_console" class="bmlt_admin_main_console_wrapper_div"> <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=googlemapstestkey&libraries=geometry"></script><script type="text/javascript">var my_localized_strings = {"default_meeting_published":true,"week_starts_on":0,"name":"English","enum":"en","comdef_map_radius_ranges":[0.0625,0.125,0.1875,0.25,0.4375,0.5,0.5625,0.75,0.8125,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3,3.25,3.5,3.75,4,4.25,4.5,4.75,5,5.5,6,6.5,7,7.5,8,8.5,9,9.5,10,11,12,13,14,15,17.5,20,22.5,25,27.5,30,35,40,45,50,60,70,80,90,100,150,200],"include_service_body_email_in_semantic":false,"auto_geocoding_enabled":true,"zip_auto_geocoding_enabled":false,"county_auto_geocoding_enabled":false,"sort_formats":true,"meeting_counties_and_sub_provinces":[],"meeting_states_and_provinces":[],"google_api_key":"googlemapstestkey","dbPrefix":"na","region_bias":"au","default_duration_time":"1:30:00","default_minute_interval":5,"search_spec_map_center":{"longitude":-118.563659,"latitude":34.235918,"zoom":6},"change_type_strings":{"__THE_MEETING_WAS_CHANGED__":"The meeting was changed.","__THE_MEETING_WAS_CREATED__":"The meeting was created.","__THE_MEETING_WAS_DELETED__":"The meeting was deleted.","__THE_MEETING_WAS_ROLLED_BACK__":"The meeting was rolled back to a previous version.","__THE_FORMAT_WAS_CHANGED__":"The format was changed.","__THE_FORMAT_WAS_CREATED__":"The format was created.","__THE_FORMAT_WAS_DELETED__":"The format was deleted.","__THE_FORMAT_WAS_ROLLED_BACK__":"The format was rolled back to a previous version.","__THE_SERVICE_BODY_WAS_CHANGED__":"The service body was changed.","__THE_SERVICE_BODY_WAS_CREATED__":"The service body was created.","__THE_SERVICE_BODY_WAS_DELETED__":"The service body was deleted.","__THE_SERVICE_BODY_WAS_ROLLED_BACK__":"The service body was rolled back to a previous version.","__THE_USER_WAS_CHANGED__":"The user was changed.","__THE_USER_WAS_CREATED__":"The user was created.","__THE_USER_WAS_DELETED__":"The user was deleted.","__THE_USER_WAS_ROLLED_BACK__":"The user was rolled back to a previous version.","__BY__":"by","__FOR__":"for"},"detailed_change_strings":{"was_changed_from":"was changed from","to":"to","was_changed":"was changed","was_added_as":"was added as","was_deleted":"was deleted","was_published":"The meeting was published","was_unpublished":"The meeting was unpublished","formats_prompt":"The meeting format","duration_time":"The meeting duration","start_time":"The meeting start time","longitude":"The meeting longitude","latitude":"The meeting latitude","sb_prompt":"The meeting changed its Service Body from",';
 
@@ -848,7 +846,7 @@ EOD;
     
     public function test_createMeeting_against_v3_with_valid_meeting(): void
     {
-                
+        Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
 
         Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
@@ -909,6 +907,178 @@ EOD;
         $this->assertNotInstanceOf(WP_Error::class, $response);
 
     }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::createMeetingv2
+     **/
+    
+     public function test_createMeeting_against_v2_with_face_to_face_meeting(): void
+     {
+                 
+         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formatsxml);
+         // check we are creating the format list correctly
+         Functions\expect('\wp_remote_post')->withArgs(function ($arg1,$arg2) {
+            if(str_contains($arg2['body'],urlencode('"format_shared_id_list":"7"')))
+            {
+                return true;
+            }
+            return false;
+        })->times(1)->andReturn(200);
+         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
+ 
+         Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+         $meeting = array(
+                 "meeting_name" => "lkj",
+                 "start_time" => "11:01:00",
+                 "duration_time" => "01:00:00",
+                 "location_text" => "lkjlk",
+                 "location_street" => "lkjlkj",
+                 "location_municipality" => "New York",
+                 "weekday_tinyint" => "1",
+                 "service_body_bigint" => "1050",
+                 "format_shared_id_list" => "7,52,53,54",
+                 "virtual_meeting_link" => "https://www.google.com",
+                 "venue_type" => "1",
+                 "latitude" => "40.7127753",
+                 "longitude" => "-74.0059728",
+                 "published" => "1"
+         );
+         $integration = new Integration(true, "2.0.0");
+         $response = $integration->createMeeting($meeting);
+         // print_r($response);
+         $this->assertNotInstanceOf(WP_Error::class, $response);
+ 
+     }
+
+         /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::createMeetingv2
+     **/
+    
+     public function test_createMeeting_against_v2_with_virtual_meeting(): void
+     {
+         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formatsxml);
+         // check we are creating the format list correctly
+         Functions\expect('\wp_remote_post')->withArgs(function ($arg1,$arg2) {
+            if(str_contains($arg2['body'],urlencode('"format_shared_id_list":"7,52"')))
+            {
+                return true;
+            }
+            return false;
+        })->times(1)->andReturn(200);
+         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
+ 
+         Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+         $meeting = array(
+                 "meeting_name" => "lkj",
+                 "start_time" => "11:01:00",
+                 "duration_time" => "01:00:00",
+                 "location_text" => "lkjlk",
+                 "location_street" => "lkjlkj",
+                 "location_municipality" => "New York",
+                 "weekday_tinyint" => "1",
+                 "service_body_bigint" => "1050",
+                 "format_shared_id_list" => "7,52,53,54",
+                 "virtual_meeting_link" => "https://www.google.com",
+                 "venue_type" => "2",
+                 "latitude" => "40.7127753",
+                 "longitude" => "-74.0059728",
+                 "published" => "1"
+         );
+         $integration = new Integration(true, "2.0.0");
+         $response = $integration->createMeeting($meeting);
+         // print_r($response);
+         $this->assertNotInstanceOf(WP_Error::class, $response);
+ 
+     }
+
+         /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::createMeetingv2
+     **/
+    
+     public function test_createMeeting_against_v2_with_hybrid_meeting(): void
+     {
+                 
+         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formatsxml);
+         // check we are creating the format list correctly
+         Functions\expect('\wp_remote_post')->withArgs(function ($arg1,$arg2) {
+            if(str_contains($arg2['body'],urlencode('"format_shared_id_list":"7,54"')))
+            {
+                return true;
+            }
+            return false;
+        })->times(1)->andReturn(200);
+         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
+ 
+         Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+         $meeting = array(
+                 "meeting_name" => "lkj",
+                 "start_time" => "11:01:00",
+                 "duration_time" => "01:00:00",
+                 "location_text" => "lkjlk",
+                 "location_street" => "lkjlkj",
+                 "location_municipality" => "New York",
+                 "weekday_tinyint" => "1",
+                 "service_body_bigint" => "1050",
+                 "format_shared_id_list" => "7,52,53,54",
+                 "virtual_meeting_link" => "https://www.google.com",
+                 "venue_type" => "3",
+                 "latitude" => "40.7127753",
+                 "longitude" => "-74.0059728",
+                 "published" => "1"
+         );
+         $integration = new Integration(true, "2.0.0");
+         $response = $integration->createMeeting($meeting);
+         // print_r($response);
+         $this->assertNotInstanceOf(WP_Error::class, $response);
+ 
+     }
+
+         /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::createMeetingv2
+     **/
+    
+     public function test_createMeeting_against_v2_with_tempclosed_meeting(): void
+     {
+                 
+         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formatsxml);
+         // check we are creating the format list correctly
+         Functions\expect('\wp_remote_post')->withArgs(function ($arg1,$arg2) {
+            if(str_contains($arg2['body'],urlencode('"format_shared_id_list":"7,53"')))
+            {
+                return true;
+            }
+            return false;
+        })->times(1)->andReturn(200);
+         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
+ 
+         Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+         $meeting = array(
+                 "meeting_name" => "lkj",
+                 "start_time" => "11:01:00",
+                 "duration_time" => "01:00:00",
+                 "location_text" => "lkjlk",
+                 "location_street" => "lkjlkj",
+                 "location_municipality" => "New York",
+                 "weekday_tinyint" => "1",
+                 "service_body_bigint" => "1050",
+                 "format_shared_id_list" => "7,52,53,54",
+                 "virtual_meeting_link" => "https://www.google.com",
+                 "venue_type" => "4",
+                 "latitude" => "40.7127753",
+                 "longitude" => "-74.0059728",
+                 "published" => "1"
+         );
+         $integration = new Integration(true, "2.0.0");
+         $response = $integration->createMeeting($meeting);
+         // print_r($response);
+         $this->assertNotInstanceOf(WP_Error::class, $response);
+ 
+     }
+
     /**
      * @covers bmltwf\BMLT\Integration::createMeeting
      * @covers bmltwf\BMLT\Integration::createMeetingv3
@@ -917,6 +1087,7 @@ EOD;
     public function test_createMeeting_against_v3_with_invalid_meeting(): void
     {
         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
+        Functions\when('\wp_remote_post')->returnArg();
 
         Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
         $meeting = array(

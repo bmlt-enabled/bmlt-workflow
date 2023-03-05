@@ -36,26 +36,32 @@ class SubmissionsHandler
     public function __construct($intstub = null)
     {
         if (empty($intstub)) {
-            $this->debug_log("SubmissionsHandler: Creating new Integration");
+            // $this->debug_log("SubmissionsHandler: Creating new Integration");
             $this->bmlt_integration = new Integration();
         } else {
             $this->bmlt_integration = $intstub;
         }
         
-        $this->debug_log("SubmissionsHandler: Creating new BMLTWF_Database");        
+        // $this->debug_log("SubmissionsHandler: Creating new BMLTWF_Database");        
         $this->BMLTWF_Database = new BMLTWF_Database();
     
     }
 
     public function get_submissions_handler()
     {
-
         global $wpdb;
 
         // only show submissions we have access to
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
-        $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
+        if(current_user_can('manage_options'))
+        {
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name);
+        }
+        else
+        {
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
+        }
         // $this->debug_log($sql);
         $result = $wpdb->get_results($sql, ARRAY_A);
         // $this->debug_log(($result));
@@ -90,10 +96,16 @@ class SubmissionsHandler
     {
         global $wpdb;
 
-
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
-        $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
+        if(current_user_can('manage_options'))
+        {
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where id=%d', $change_id);
+        }
+        else
+        {
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
+        }
         // $this->debug_log($sql);
         $result = $wpdb->get_row($sql, ARRAY_A);
         $this->debug_log("RESULT");

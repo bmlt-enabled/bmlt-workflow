@@ -120,7 +120,7 @@ test("Submit_New_Meeting_And_Approve", async (t) => {
   await select_dropdown_by_value(uf.duration_minutes, "30");
 
   // format list
-  await t.click(uf.format_list_clickable).pressKey("b e g enter").click(uf.format_list_clickable).pressKey("l i n enter");
+  await t.click(uf.format_list_clickable).pressKey("o p e enter").click(uf.format_list_clickable).pressKey("s p e enter");
 
   await t
 

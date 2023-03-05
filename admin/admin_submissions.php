@@ -27,29 +27,29 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 ?>
 <!-- Approve dialog -->
 <div id="bmltwf_submission_approve_dialog" class="hidden" style="max-width:800px">
-    <label class='dialog_label' for="bmltwf_submission_approve_dialog_textarea">Approval note:</label>
+    <label class='dialog_label' for="bmltwf_submission_approve_dialog_textarea"><?php echo __( 'Approval note:', 'bmlt-workflow' ); ?></label>
     <div class="grow-wrap">
         <textarea class='dialog_textarea' id="bmltwf_submission_approve_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
     </div>
-    <p>You can use the quickedit function to make any extra changes before approval.</p>
-    <p>Are you sure you would like to approve the submission?</p>
+    <p><?php echo __( 'You can use the quickedit function to make any extra changes before approval.', 'bmlt-workflow' ); ?></p>
+    <p><?php echo __( 'Are you sure you would like to approve the submission?' ); ?></p>
 </div>
 
 <!-- Approve dialog -->
 <div id="bmltwf_submission_approve_close_dialog" class="hidden" style="max-width:800px">
-    <label class='dialog_label' for="bmltwf_submission_approve_close_dialog_textarea">Approval note:</label>
+    <label class='dialog_label' for="bmltwf_submission_approve_close_dialog_textarea"><?php echo __( 'Approval note:', 'bmlt-workflow' ); ?></label>
     <div class="grow-wrap">
         <textarea class='dialog_textarea' id="bmltwf_submission_approve_close_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this approval for the submitter'></textarea>
     </div>
-    <p>Choose whether you'd like the meeting to be deleted from BMLT, or marked as unpublished.</p>
-    <input type='radio' name='close_action' id='close_unpublish'><label for='close_unpublish'>Unpublish</label>
-    <input type='radio' name='close_action' id='close_delete'><label for='close_delete'>Delete</label>
+    <p><?php echo __( "Choose whether you'd like the meeting to be deleted from BMLT, or marked as unpublished.", 'bmlt-workflow' ); ?></p>
+    <input type='radio' name='close_action' id='close_unpublish'><label for='close_unpublish'><?php echo __( 'Unpublish', 'bmlt-workflow' ); ?></label>
+    <input type='radio' name='close_action' id='close_delete'><label for='close_delete'><?php echo __( 'Delete', 'bmlt-workflow' ); ?></label>
 </div>
 
 <!-- Delete dialog -->
 <div id="bmltwf_submission_delete_dialog" class="hidden" style="max-width:800px">
-    <p>This change cannot be undone. Use this to remove an entirely unwanted submission from the list.</p>
-    <p>Are you sure you would like to delete this submission completely?</p>
+    <p><?php echo __( "This change cannot be undone. Use this to remove an entirely unwanted submission from the list.", 'bmlt-workflow' ); ?></p>
+    <p><?php echo __( "Are you sure you would like to delete this submission completely?", 'bmlt-workflow' ); ?></p>
 </div>
 
 <!-- Reject dialog -->
@@ -58,7 +58,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <div class="grow-wrap">
         <textarea class='dialog_textarea' id="bmltwf_submission_reject_dialog_textarea" onInput="this.parentNode.dataset.replicatedValue = this.value" placeholder='Add a note to this reject for the submitter'></textarea>
     </div>
-    <p>Are you sure you would like to reject this submission?</p>
+    <p><?php echo __( "Are you sure you would like to reject this submission?", 'bmlt-workflow' ); ?></p>
 </div>
 
 <!-- Quickedit dialog -->
@@ -70,14 +70,14 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         <div class="form-grid-top">
 
             <div class="bmltwf_info_text">
-                <br>Highlighted fields are from the user submission and your changes and will be stored when the QuickEdit is saved.
+                <br><?php echo __( "Highlighted fields are from the user submission and your changes and will be stored when the QuickEdit is saved.", 'bmlt-workflow' ); ?>
                 <br><br>
             </div>
         </div>
         <div class="form-grid-col1">
-            <label for="quickedit_meeting_name">Meeting Name</label>
+            <label for="quickedit_meeting_name"><?php echo __( "Meeting Name", 'bmlt-workflow' ); ?></label>
             <input type="text" name="quickedit_meeting_name" id="quickedit_meeting_name" class="quickedit-input">
-            <label for="quickedit_format_shared_id_list">Meeting Formats
+            <label for="quickedit_format_shared_id_list"><?php echo __( "Meeting Formats", 'bmlt-workflow' ); ?>
                 <?php
                 $req = get_option('bmltwf_required_meeting_formats') === 'true';
                 if ($req) {
@@ -93,24 +93,24 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 </select>
                 <div class="grid-flex-container">
                     <div class="grid-flex-item">
-                        <label for="quickedit_start_time">Start Time</label>
+                        <label for="quickedit_start_time"><?php echo __( "Start Time", 'bmlt-workflow' ); ?></label>
                         <input type="time" name="quickedit_start_time" id="quickedit_start_time" class="quickedit-input">
 
                     </div>
                     <div class="grid-flex-item">
-                        <label for="quickedit_weekday_tinyint">Weekday</label>
+                        <label for="quickedit_weekday_tinyint"><?php echo __( "Weekday", 'bmlt-workflow' ); ?></label>
                         <select class="quickedit-input" name="quickedit_weekday_tinyint" id="quickedit_weekday_tinyint">
-                            <option value="1">Sunday</option>
-                            <option value="2">Monday</option>
-                            <option value="3">Tuesday</option>
-                            <option value="4">Wednesday</option>
-                            <option value="5">Thursday</option>
-                            <option value="6">Friday</option>
-                            <option value="7">Saturday</option>
+                            <option value="1"><?php echo __( "Sunday", 'bmlt-workflow' ); ?></option>
+                            <option value="2"><?php echo __( "Monday", 'bmlt-workflow' ); ?></option>
+                            <option value="3"><?php echo __( "Tuesday", 'bmlt-workflow' ); ?></option>
+                            <option value="4"><?php echo __( "Wednesday", 'bmlt-workflow' ); ?></option>
+                            <option value="5"><?php echo __( "Thursday", 'bmlt-workflow' ); ?></option>
+                            <option value="6"><?php echo __( "Friday", 'bmlt-workflow' ); ?></option>
+                            <option value="7"><?php echo __( "Saturday", 'bmlt-workflow' ); ?></option>
                         </select>
                     </div>
                     <div class="grid-flex-double">
-                        <label for="quickedit_duration_hours">Duration</label>
+                        <label for="quickedit_duration_hours"><?php echo __( "Duration", 'bmlt-workflow' ); ?></label>
                         <select class="quickedit-input" id="quickedit_duration_hours">
                             <option value="00">0</option>
                             <option value="01" selected="selected">1</option>
@@ -142,39 +142,39 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                         </select> m
                     </div>
                 </div>
-                <label for="quickedit_virtual_meeting_additional_info">Virtual Meeting Additional Info</label>
+                <label for="quickedit_virtual_meeting_additional_info"><?php echo __( "Virtual Meeting Additional Info", 'bmlt-workflow' ); ?></label>
                 <div class="grow-wrap">
                     <textarea class="dialog_textarea quickedit-input" id="quickedit_virtual_meeting_additional_info" name="quickedit_virtual_meeting_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
                 </div>
-                <label for="quickedit_phone_meeting_number">Virtual Meeting Phone Details</label>
+                <label for="quickedit_phone_meeting_number"><?php echo __( "Virtual Meeting Phone Details", 'bmlt-workflow' ); ?></label>
                 <div class="grow-wrap">
                     <textarea class="dialog_textarea quickedit-input" id="quickedit_phone_meeting_number" name="quickedit_phone_meeting_number" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
                 </div>
-                <label for="quickedit_virtual_meeting_link">Virtual Meeting Link</label>
+                <label for="quickedit_virtual_meeting_link"><?php echo __( "Virtual Meeting Link", 'bmlt-workflow' ); ?></label>
                 <div class="grow-wrap">
                     <textarea class="dialog_textarea quickedit-input" id="quickedit_virtual_meeting_link" name="quickedit_virtual_meeting_link" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
                 </div>
-                <label for="quickedit_additional_info">Additional Information</label>
+                <label for="quickedit_additional_info"><?php echo __( "Additional Information", 'bmlt-workflow' ); ?></label>
                 <div class="grow-wrap">
                     <textarea class="dialog_textarea quickedit-input" id="quickedit_additional_info" name="quickedit_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value" disabled></textarea>
                 </div>
         </div>
         <div class="form-grid-col2">
-            <label for="quickedit_venue_type">Venue Type</label>
+            <label for="quickedit_venue_type"><?php echo __( "Venue Type", 'bmlt-workflow' ); ?></label>
             <select name="quickedit_venue_type" id="quickedit_venue_type" class="quickedit-input">
-                <option value="" disabled selected hidden>Select one</option>
-                <option value="1">Face to Face</option>
-                <option value="2">Virtual only</option>
-                <option value="3">Hybrid (Virtual and Face to Face)</option>
-                <option value="4">Temporary Face to Face Closure</option>
+                <option value="" disabled selected hidden><?php echo __( "Select one", 'bmlt-workflow' ); ?></option>
+                <option value="1"><?php echo __( "Face to Face", 'bmlt-workflow' ); ?></option>
+                <option value="2"><?php echo __( "Virtual only", 'bmlt-workflow' ); ?></option>
+                <option value="3"><?php echo __( "Hybrid (Virtual and Face to Face)", 'bmlt-workflow' ); ?></option>
+                <option value="4"><?php echo __( "Temporary Face to Face Closure", 'bmlt-workflow' ); ?></option>
             </select>
-            <label for="quickedit_location_text">Location</label>
+            <label for="quickedit_location_text"><?php echo __( "Location", 'bmlt-workflow' ); ?></label>
             <input type="text" name="quickedit_location_text" id="quickedit_location_text" class="quickedit-input">
-            <label for="quickedit_location_street">Street</label>
+            <label for="quickedit_location_street"><?php echo __( "Street", 'bmlt-workflow' ); ?></label>
             <input type="text" name="quickedit_location_street" id="quickedit_location_street" class="quickedit-input">
-            <label for="quickedit_location_info">Location Info</label>
+            <label for="quickedit_location_info"><?php echo __( "Location Info", 'bmlt-workflow' ); ?></label>
             <input type="text" name="quickedit_location_info" id="quickedit_location_info" class="quickedit-input">
-            <label for="quickedit_location_municipality">City/Town/Suburb</label>
+            <label for="quickedit_location_municipality"><?php echo __( "City/Town/Suburb", 'bmlt-workflow' ); ?></label>
             <input type="text" name="quickedit_location_municipality" id="quickedit_location_municipality" class="quickedit-input">
 
             <div id="optional_location_sub_province">
@@ -195,10 +195,10 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <div id="bmltwf_quickedit_map"></div>
             <div id="optional_auto_geocode_enabled"><br>
                 <fieldset>
-                    <legend>Meeting Geolocation (auto calculated)</legend>
-                    <label for="quickedit_latitude">Latitude</label>
+                    <legend><?php echo __( "Meeting Geolocation (auto calculated)", 'bmlt-workflow' ); ?></legend>
+                    <label for="quickedit_latitude"><?php echo __( "Latitude", 'bmlt-workflow' ); ?></label>
                     <input class="quickedit-input" type="number" name="quickedit_latitude" id="quickedit_latitude" disabled>
-                    <label for="quickedit_longitude">Longitude</label>
+                    <label for="quickedit_longitude"><?php echo __( "Longitude", 'bmlt-workflow' ); ?></label>
                     <input class="quickedit-input" type="number" name="quickedit_longitude" id="quickedit_longitude" disabled>
                 </fieldset>
             </div>
@@ -209,37 +209,37 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
-    <h2>Meeting Submissions</h2>
+    <h2><?php echo __( "Meeting Submissions", 'bmlt-workflow' ); ?></h2>
     <hr class="bmltwf-error-message">
 
     <div class="dt-container">
         <table id="dt-submission" class="display" style="width:90%">
             <thead>
                 <tr>
-                    <th>ID</th>
-                    <th>Submitter Name</th>
-                    <th>Submitter Email</th>
-                    <th>Service Body</th>
-                    <th>Change Summary</th>
-                    <th>Submission Time</th>
-                    <th>Change Time</th>
-                    <th>Changed By</th>
-                    <th>Change Made</th>
-                    <th>More Info</th>
+                    <th><?php echo __( "ID", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Submitter Name", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Submitter Email", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Service Body", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Change Summary", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Submission Time", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Change Time", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Changed By", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Meeting Submissions", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Change Made", 'bmlt-workflow' ); ?></th>
                 </tr>
             </thead>
             <tfoot>
                 <tr>
-                    <th>ID</th>
-                    <th>Submitter Name</th>
-                    <th>Submitter Email</th>
-                    <th>Service Body</th>
-                    <th>Change Summary</th>
-                    <th>Submission Time</th>
-                    <th>Change Time</th>
-                    <th>Changed By</th>
-                    <th>Change Made</th>
-                    <th>More Info</th>
+                    <th><?php echo __( "ID", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Submitter Name", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Submitter Email", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Service Body", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Change Summary", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Submission Time", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Change Time", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Changed By", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Meeting Submissions", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Change Made", 'bmlt-workflow' ); ?></th>
                 </tr>
             </tfoot>
         </table>

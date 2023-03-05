@@ -225,15 +225,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
     service_bodies_access: [
       {
         service_body_bigint: "1009",
-        wp_uid: "1",
-      },
-      {
-        service_body_bigint: "1009",
         wp_uid: "2",
-      },
-      {
-        service_body_bigint: "1046",
-        wp_uid: "1",
       },
       {
         service_body_bigint: "1046",
@@ -241,15 +233,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
       },
       {
         service_body_bigint: "1047",
-        wp_uid: "1",
-      },
-      {
-        service_body_bigint: "1047",
         wp_uid: "2",
-      },
-      {
-        service_body_bigint: "1050",
-        wp_uid: "1",
       },
       {
         service_body_bigint: "1050",

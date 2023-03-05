@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.0.28
+ * Version: 1.0.29
  * Requires at least: 5.2
  * Tested up to: 6.1.1
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.0.28');
+define('BMLTWF_PLUGIN_VERSION', '1.0.29');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -67,11 +67,11 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function __construct()
         {
-            $this->debug_log("bmlt-workflow: Creating new Integration");
+            // $this->debug_log("bmlt-workflow: Creating new Integration");
             $this->bmlt_integration = new Integration();
-            $this->debug_log("bmlt-workflow: Creating new Controller");
+            // $this->debug_log("bmlt-workflow: Creating new Controller");
             $this->BMLTWF_Rest_Controller = new Controller();
-            $this->debug_log("bmlt-workflow: Creating new BMLTWF_Database");
+            // $this->debug_log("bmlt-workflow: Creating new BMLTWF_Database");
             $this->BMLTWF_Database = new BMLTWF_Database();
 
 
@@ -84,8 +84,21 @@ if (!class_exists('bmltwf_plugin')) {
             add_shortcode('bmltwf-meeting-update-form', array(&$this, 'bmltwf_meeting_update_form'));
             add_filter('plugin_action_links', array(&$this, 'bmltwf_add_plugin_link'), 10, 2);
             add_action('user_register', array(&$this, 'bmltwf_add_capability'), 10, 1);
-
+            // add_action('plugins_loaded', array(&$this,'bmltwf_load_textdomain'));
             register_activation_hook(__FILE__, array(&$this, 'bmltwf_install'));
+        }
+
+        public function bmltwf_load_textdomain() {
+            $this->debug_log("setting textdomain to ".dirname( plugin_basename(__FILE__) ) . '/lang/');
+            $a = load_plugin_textdomain( 'bmlt-workflow', false, dirname( plugin_basename(__FILE__) ) . '/lang/' );
+            $this->debug_log("plugin textdomain returns");
+            if($a)
+            {
+                $this->debug_log("true");
+            } else
+            {
+                $this->debug_log("false");
+            }
         }
 
         public function bmltwf_meeting_update_form($atts = [], $content = null, $tag = '')
@@ -403,6 +416,13 @@ if (!class_exists('bmltwf_plugin')) {
             $toplevelslug = 'bmltwf-submissions';
         }
 
+        // give our admins the view capability on the fly
+        if(current_user_can('manage_options')&&(!current_user_can($this->bmltwf_capability_manage_submissions)))
+        {
+            global $current_user;
+            $current_user->add_cap($this->bmltwf_capability_manage_submissions);
+        }
+
         // $this->debug_log("slug = ".$toplevelslug);
                 add_menu_page(
                     'BMLT Workflow',
@@ -455,7 +475,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             $new_actions = array();
             if (basename(plugin_dir_path(__FILE__)) . '/bmlt-workflow.php' === $plugin_file) {
-                $new_actions['cl_settings'] = sprintf(__('<a href="%s">Settings</a>', 'comment-limiter'), esc_url(admin_url('admin.php?page=bmltwf-settings')));
+                $new_actions['cl_settings'] = sprintf('<a href="%s">Settings</a>', esc_url(admin_url('admin.php?page=bmltwf-settings')));
             }
 
             return array_merge($new_actions, $plugin_actions);

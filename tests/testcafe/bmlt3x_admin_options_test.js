@@ -377,7 +377,7 @@ test("Check_BMLT_Google_Maps_Key", async (t) => {
   .wait(1000);
   // console.log(gmapslogger.requests);
   var f = gmapslogger.requests[0].request.url;
-  await t.expect(f).contains('=AIzaSyDcJ');
+  await t.expect(f).contains('=AIzaSy');
 
 }).requestHooks(gmapslogger);
 

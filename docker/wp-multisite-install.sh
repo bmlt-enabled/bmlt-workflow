@@ -57,20 +57,11 @@ else
 fi
 
 # hack for multisite
-# mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_blogs set domain="wordpress-php8-multisitesingle:81" where domain="wordpress-php8-multisitesingle81";'
-# mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle/plugin" where option_name="siteurl";'
-# mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle/plugin" where option_name="home";'
-# mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle/noplugin" where option_name="siteurl";'
-# mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle/noplugin" where option_name="home";'
-
 mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_blogs set domain="'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'" where domain="'${WORDPRESS_HOST}${WORDPRESS_PORT}'";'
 mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/plugin" where option_name="siteurl";'
 mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/plugin" where option_name="home";'
 mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/'${p2slug}'" where option_name="siteurl";'
 mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/'${p2slug}'" where option_name="home";'
-
-
-sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" $sitelocalpath/wp-content/plugins/bmlt-workflow/config.php
 
 # activate plugin
 wp plugin activate --url=$pluginsite --path=$sitelocalpath "bmlt-workflow"

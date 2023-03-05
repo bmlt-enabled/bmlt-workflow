@@ -21,7 +21,7 @@ use bmltwf\BMLT\Integration;
 
 $bmltwf_bmlt_test_status = get_option('bmltwf_bmlt_test_status', "failure");
 if ($bmltwf_bmlt_test_status != "success") {
-    wp_die("<h4>BMLTWF Plugin Error: BMLT Root Server not configured and tested.</h4>");
+    wp_die("<h4><?php echo __( 'BMLTWF Plugin Error: BMLT Root Server not configured and tested', 'bmlt-workflow' ); ?>.</h4>");
 }
 
 wp_nonce_field('wp_rest', '_wprestnonce');
@@ -32,17 +32,17 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <form action="#" method="post" id="meeting_update_form">
         <div id="meeting_update_form_header">
             <div>
-                <label for="update_reason">Reason For Update:</label>
+                <label for="update_reason"><?php echo __( 'Reason For Update', 'bmlt-workflow' ); ?>:</label>
                 <select class="update-form-select" name="update_reason" id="update_reason">
-                    <option disabled="null" selected="null">Select Reason...</option>
-                    <option value="reason_new">New Meeting</option>
-                    <option value="reason_change">Change Existing Meeting (including Temporary Closure)</option>
-                    <option value="reason_close">Permanently Close Meeting</option>
+                    <option disabled="null" selected="null"><?php echo __( 'Select Reason', 'bmlt-workflow' ); ?>...</option>
+                    <option value="reason_new"><?php echo __( 'New Meeting', 'bmlt-workflow' ); ?></option>
+                    <option value="reason_change"><?php echo __( 'Change Existing Meeting (including Temporary Closure)', 'bmlt-workflow' ); ?></option>
+                    <option value="reason_close"><?php echo __( 'Permanently Close Meeting', 'bmlt-workflow' ); ?></option>
                 </select>
             </div>
             <div id="meeting_selector">
                 <br>
-                <label for="meeting-searcher">Search For Meeting:</label>
+                <label for="meeting-searcher"><?php echo __( 'Search For Meeting', 'bmlt-workflow' ); ?>:</label>
                 <br>
                 <select name="meeting-searcher" class="meeting-searcher" id="meeting-searcher">
                     <option></option>
@@ -58,29 +58,29 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <!-- meeting details -->
             <div id="meeting_details" class="form-grid-col1">
                 <fieldset>
-                    <legend>Meeting Details</legend>
+                    <legend><?php echo __( 'Meeting Details', 'bmlt-workflow' ); ?></legend>
 
                     <div class="form-grid-col1">
 
-                        <label for="meeting_name">Group Name<span class="bmltwf-required-field"> *</span></label>
+                        <label for="meeting_name"><?php echo __( 'Group Name', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
                         <input class="meeting-input" type="text" name="meeting_name" size="50" id="meeting_name" required>
-                        <label for="weekday_tinyint">Meeting Day:<span class="bmltwf-required-field"> *</span></label>
+                        <label for="weekday_tinyint"><?php echo __( 'Meeting Day', 'bmlt-workflow' ); ?>:<span class="bmltwf-required-field"> *</span></label>
                         <select class="meeting-input" name="weekday_tinyint" id="weekday_tinyint">
-                            <option value=1>Sunday</option>
-                            <option value=2>Monday</option>
-                            <option value=3>Tuesday</option>
-                            <option value=4>Wednesday</option>
-                            <option value=5>Thursday</option>
-                            <option value=6>Friday</option>
-                            <option value=7>Saturday</option>
+                            <option value=1><?php echo __( 'Sunday', 'bmlt-workflow' ); ?></option>
+                            <option value=2><?php echo __( 'Monday', 'bmlt-workflow' ); ?></option>
+                            <option value=3><?php echo __( 'Tuesday', 'bmlt-workflow' ); ?></option>
+                            <option value=4><?php echo __( 'Wednesday', 'bmlt-workflow' ); ?></option>
+                            <option value=5><?php echo __( 'Thursday', 'bmlt-workflow' ); ?></option>
+                            <option value=6><?php echo __( 'Friday', 'bmlt-workflow' ); ?></option>
+                            <option value=7><?php echo __( 'Saturday', 'bmlt-workflow' ); ?></option>
                         </select>
                         <div class="grid-flex-container">
                             <div class="grid-flex-item">
-                                <label for="start_time">Start Time<span class="bmltwf-required-field"> *</span></label>
+                                <label for="start_time"><?php echo __( 'Start Time', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
                                 <input class="meeting-input" type="time" name="start_time" size="10" id="start_time" required>
                             </div>
                             <div class="grid-flex-item">
-                                <label>Duration</label>
+                                <label><?php echo __( 'Duration', 'bmlt-workflow' ); ?></label>
                                 <div class="inline">
                                     <span>
                                         <select class="meeting-input" id="duration_hours">
@@ -123,7 +123,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                         </div>
                         <input type="hidden" name="duration_time" size="10" id="duration_time" required>
 
-                        <label id="display_format_shared_id_list_label" for="display_format_shared_id_list">Meeting Formats
+                        <label id="display_format_shared_id_list_label" for="display_format_shared_id_list"><?php echo __( 'Meeting Formats', 'bmlt-workflow' ); ?>
                             <?php
                             $req = get_option('bmltwf_required_meeting_formats') === 'true';
                             if ($req) {
@@ -138,24 +138,24 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             ?>
                             </select>
                             <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
-                            <label for="venue_type">Is this a virtual, hybrid or temporarily closed in person meeting?</label>
+                            <label for="venue_type"><?php echo __( 'Is this a virtual, hybrid or temporarily closed in person meeting?', 'bmlt-workflow' ); ?></label>
                             <select name="venue_type" id="venue_type">
-                                <option value="" disabled selected hidden>Select one</option>
-                                <option value="1">No</option>
-                                <option value="2">Yes - Virtual only</option>
-                                <option value="3">Yes - Hybrid (Virtual and Face to Face)</option>
-                                <option value="4">Yes - Temporary Face to Face Closure</option>
+                                <option value="" disabled selected hidden><?php echo __( 'Select one', 'bmlt-workflow' ); ?></option>
+                                <option value="1"><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
+                                <option value="2"><?php echo __( 'Yes - Virtual only', 'bmlt-workflow' ); ?></option>
+                                <option value="3"><?php echo __( 'Yes - Hybrid (Virtual and Face to Face)', 'bmlt-workflow' ); ?></option>
+                                <option value="4"><?php echo __( 'Yes - Temporary Face to Face Closure', 'bmlt-workflow' ); ?></option>
                             </select>
 
                             <div id="location_fields">
-                                <label for="location_text">Location (eg: a building name)<span class="bmltwf-required-field"> *</span></label>
+                                <label for="location_text"><?php echo __( 'Location (eg: a building name)', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
                                 <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
-                                <label for="location_street">Street Address<span class="bmltwf-required-field"> *</span></label>
+                                <label for="location_street"><?php echo __( 'Street Address', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
                                 <input class="meeting-input" type="text" name="location_street" size="50" id="location_street" required>
-                                <label for="location_info">Extra Location Info (eg: Near the park)</label>
+                                <label for="location_info"><?php echo __( 'Extra Location Info (eg: Near the park)', 'bmlt-workflow' ); ?></label>
                                 <input class="meeting-input" type="text" name="location_info" size="50" id="location_info">
                             </div>
-                            <label for="location_municipality">City/Town/Suburb<span class="bmltwf-required-field"> *</span></label>
+                            <label for="location_municipality"><?php echo __( 'City/Town/Suburb', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
                             <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
                             <div id="optional_location_sub_province">
                                 <label id="location_sub_province_label" for="location_sub_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname')) ?></label>
@@ -172,17 +172,18 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                 <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
                             </div>
                             <div class="bmltwf_tooltip" tabindex="0">
-                                <label for="service_body_bigint">Service Body
+                                <label for="service_body_bigint"><?php echo __( 'Service Body', 'bmlt-workflow' ); ?>
                                     <span class="dashicons dashicons-info-outline"></span>
                                 </label>
                                 <div class="bmltwf_right">
-                                    Creating a new meeting and unsure of your service body?
-                                    <br>Pick the closest match and leave us a note in the 'Any Other Comments' section below
+                                <?php echo __( 'Creating a new meeting and unsure of your service body?', 'bmlt-workflow' ); ?>
+                                    <br><?php echo __( "Pick the closest match and leave us a note in the 'Any Other Comments' section below", 'bmlt-workflow' ); ?>
+
                                     <i></i>
                                 </div>
                             </div>
                             <select class="meeting-input" name="service_body_bigint" id="service_body_bigint">
-                                <option value="" disabled selected hidden>Select one</option>
+                                <option value="" disabled selected hidden><?php echo __( 'Select one', 'bmlt-workflow' ); ?></option>
                             </select>
 
 
@@ -194,37 +195,37 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
             <div id="virtual_meeting_options" class="form-grid-col2-2">
                 <fieldset>
-                    <legend>Virtual Meeting Options</legend>
+                    <legend><?php echo __( 'Virtual Meeting Options', 'bmlt-workflow' ); ?></legend>
                     <div id="virtual_meeting_settings">
                         <div class="bmltwf_tooltip" tabindex="0">
-                            <label for="virtual_meeting_link">Online Meeting Link
+                            <label for="virtual_meeting_link"><?php echo __( 'Online Meeting Link', 'bmlt-workflow' ); ?>
                                 <span class="dashicons dashicons-info-outline"></span>
                             </label>
                             <div class="bmltwf_left">
-                                A URL for the virtual meeting eg:
+                                <?php echo __( 'A URL for the virtual meeting eg:', 'bmlt-workflow' ); ?>
                                 <br>https://zoom.us/j/123456789?pwd=FxL3NlWVFId0l1cWh1
                                 <i></i>
                             </div>
                         </div>
                         <textarea class="meeting-input" type="url" name="virtual_meeting_link" maxlength="128" size="128" id="virtual_meeting_link"></textarea>
                         <div class="bmltwf_tooltip" tabindex="0">
-                            <label for="virtual_meeting_additional_info">Virtual Meeting Additional Info
+                            <label for="virtual_meeting_additional_info"><?php echo __( 'Virtual Meeting Additional Info', 'bmlt-workflow' ); ?>
                                 <span class="dashicons dashicons-info-outline"></span>
                             </label>
                             <div class="bmltwf_left">
-                                Additional information, such as a meeting ID and Password eg:
+                            <?php echo __( 'Additional information, such as a meeting ID and Password eg:', 'bmlt-workflow' ); ?>
                                 <br>Zoom ID: 456 033 8613, Passcode: 1953
                                 <i></i>
                             </div>
                         </div>
                         <textarea class="meeting-input" type="text" name="virtual_meeting_additional_info" maxlength="128" size="128" id="virtual_meeting_additional_info"></textarea>
                         <div class="bmltwf_tooltip" tabindex="0">
-                            <label for="phone_meeting_number">Phone Meeting Dial-in Number
+                            <label for="phone_meeting_number"><?php echo __( 'Phone Meeting Dial-in Number', 'bmlt-workflow' ); ?>
                                 <span class="dashicons dashicons-info-outline" style="color: cornflowerblue;"></span>
                             </label>
 
                             <div class="bmltwf_left">
-                                Any phone dialin details for this virtual meeting.
+                            <?php echo __( 'Any phone dialin details for this virtual meeting', 'bmlt-workflow' ); ?>.
                                 <i></i>
                             </div>
                         </div>
@@ -237,28 +238,28 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <!-- personal details -->
             <div id="personal_details" class="form-grid-col2-1">
                 <fieldset>
-                    <legend>Personal Details (Confidential)</legend>
-                    <label for="first_name">First Name<span class="bmltwf-required-field">*</span></label>
+                    <legend><?php echo __( 'Personal Details (Confidential)', 'bmlt-workflow' ); ?></legend>
+                    <label for="first_name"><?php echo __( 'First Name', 'bmlt-workflow' ); ?><span class="bmltwf-required-field">*</span></label>
                     <input type="text" name="first_name" size="20" id="first_name" required>
-                    <label for="last_name">Last Initial<span class="bmltwf-required-field">*</span></label>
+                    <label for="last_name"><?php echo __( 'Last Initial', 'bmlt-workflow' ); ?><span class="bmltwf-required-field">*</span></label>
                     <input type="text" name="last_name" size="20" id="last_name" required>
-                    <label for="email_address">Email Address<span class="bmltwf-required-field">*</span></label>
+                    <label for="email_address"><?php echo __( 'Email Address', 'bmlt-workflow' ); ?><span class="bmltwf-required-field">*</span></label>
                     <input type="email" name="email_address" id="email_address" size="50" required>
-                    <label for="add_contact" class="add_contact">Add your details as a contact for the group</label>
+                    <label for="add_contact" class="add_contact"><?php echo __( 'Add your details as a contact for the group', 'bmlt-workflow' ); ?></label>
                     <select name="add_contact" id="add_contact">
-                        <option value="yes">Yes</option>
-                        <option value="no" selected>No</option>
+                        <option value="yes"><?php echo __( 'Yes', 'bmlt-workflow' ); ?></option>
+                        <option value="no" selected><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
                     </select>
-                    <label for="contact_number">Contact Number</label>
+                    <label for="contact_number"><?php echo __( 'Contact Number', 'bmlt-workflow' ); ?></label>
                     <input type="number" name="contact_number" id="contact_number">
-                    <label for="group_relationship">Relationship to group<span class="bmltwf-required-field">*</span></label>
+                    <label for="group_relationship"><?php echo __( 'Relationship to group', 'bmlt-workflow' ); ?><span class="bmltwf-required-field">*</span></label>
                     <select name="group_relationship" id="group_relationship" required>
-                        <option value="" disabled selected hidden>Select one</option>
-                        <option value="Group Member">Group Member</option>
-                        <option value="Area Trusted Servant">Area Trusted Servant</option>
-                        <option value="Regional Trusted Servant">Regional Trusted Servant</option>
-                        <option value="NA Member">NA Member</option>
-                        <option value="Not A Member">Not A Member</option>
+                        <option value="" disabled selected hidden><?php echo __( 'Select one', 'bmlt-workflow' ); ?></option>
+                        <option value="Group Member"><?php echo __( 'Group Member', 'bmlt-workflow' ); ?></option>
+                        <option value="Area Trusted Servant"><?php echo __( 'Area Trusted Servant', 'bmlt-workflow' ); ?></option>
+                        <option value="Regional Trusted Servant"><?php echo __( 'Regional Trusted Servant', 'bmlt-workflow' ); ?></option>
+                        <option value="NA Member"><?php echo __( 'NA Member', 'bmlt-workflow' ); ?></option>
+                        <option value="Not A Member"><?php echo __( 'Not A Member', 'bmlt-workflow' ); ?></option>
                     </select>
                 </fieldset>
             </div>
@@ -268,17 +269,17 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <div class="form-grid-bottom">
                 <div id="additional_info_div">
                     <fieldset>
-                        <legend>Additional Information</legend>
-                        <label for="additional_info">Any Other Comments</label>
-                        <textarea name="additional_info" id="additional_info" maxlength="512" rows="5" cols="50" placeholder="Provide any more detail that may help us action your meeting change request"></textarea>
+                        <legend><?php echo __( 'Additional Information', 'bmlt-workflow' ); ?></legend>
+                        <label for="additional_info"><?php echo __( 'Any Other Comments', 'bmlt-workflow' ); ?></label>
+                        <textarea name="additional_info" id="additional_info" maxlength="512" rows="5" cols="50" placeholder="<?php echo __( 'Provide any more detail that may help us action your meeting change request', 'bmlt-workflow' ); ?>"></textarea>
                         <div id="starter_pack">
-                            <label for="starter_kit_required">Starter Kit Required</label>
+                            <label for="starter_kit_required"><?php echo __( 'Starter Kit Required', 'bmlt-workflow' ); ?></label>
                             <select name="starter_kit_required" id="starter_kit_required">
-                                <option value="yes" selected="true" id="starter_kit_required_yes">Yes</option>
-                                <option value="no" id="starter_kit_required_no">No</option>
+                                <option value="yes" selected="true" id="starter_kit_required_yes"><?php echo __( 'Yes', 'bmlt-workflow' ); ?></option>
+                                <option value="no" id="starter_kit_required_no"><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
                             </select>
                             <div id="starter_kit_postal_address_div">
-                                <label for="starter_kit_postal_address">Starter Kit Postal Address<span class="bmltwf-required-field"> *</span></label>
+                                <label for="starter_kit_postal_address"><?php echo __( 'Starter Kit Postal Address', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
                                 <textarea name="starter_kit_postal_address" id="starter_kit_postal_address" maxlength="512" rows="5" cols="50"></textarea>
                             </div>
                         </div>
@@ -288,7 +289,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
                 <br>
                 <button class="button" type="submit" name="submit" id="submit">
-                    <span id="bmltwf-submit-spinner" class="button">Submit Form</span>
+                    <span id="bmltwf-submit-spinner" class="button"><?php echo __( 'Submit Form', 'bmlt-workflow' ); ?></span>
                 </button>
             </div>
         </div>

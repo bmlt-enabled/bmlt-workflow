@@ -52,8 +52,6 @@ wp user create --path=$sitelocalpath 9 9@a.com --user_pass=nopriv
 wp user create --path=$sitelocalpath 10 10@a.com --user_pass=nopriv
 wp user create --path=$sitelocalpath 11 11@a.com --user_pass=nopriv
 
-sed -i "s/define('BMLTWF_DEBUG', false);/define('BMLTWF_DEBUG', true);/g" /var/www/html/wp-content/plugins/bmlt-workflow/config.php
-
 cat >/usr/local/etc/php/conf.d/error-logging.ini <<EOF
 error_reporting = E_ERROR | E_WARNING | E_PARSE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING | E_RECOVERABLE_ERROR
 display_errors = Off
