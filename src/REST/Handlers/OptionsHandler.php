@@ -55,7 +55,7 @@ class OptionsHandler
 
         $options = $params['options']??0;
         if (!$options) {
-            return $this->bmltwf_rest_error('Restore options missing', 422);
+            return $this->bmltwf_rest_error(__('Restore file is missing the options section','bmlt-workflow'), 422);
         }
 
         // create the database as the revision in the backup file
@@ -117,7 +117,7 @@ class OptionsHandler
 
         $this->Integration->update_root_server_version();
 
-        return $this->bmltwf_rest_success('Restore Successful');
+        return $this->bmltwf_rest_success(__('Restore Successful','bmlt-workflow'));
     }
 
     public function post_bmltwf_backup_handler($request)
@@ -161,6 +161,6 @@ class OptionsHandler
         $dateTime = new \DateTime();
         $fname = $dateTime->format(\DateTimeInterface::RFC3339_EXTENDED);
         $save['backupdetails'] = $fname;
-        return $this->bmltwf_rest_success(array('message' => 'Backup Successful', 'backup' => $contents));
+        return $this->bmltwf_rest_success(array('message' => __('Backup Successful','bmlt-workflow'), 'backup' => $contents));
     }
 }

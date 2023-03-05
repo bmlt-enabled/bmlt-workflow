@@ -436,8 +436,8 @@ if (!class_exists('bmltwf_plugin')) {
 
                 add_submenu_page(
                     'bmltwf-settings',
-                    'Configuration',
-                    'Configuration',
+                    __('Configuration','bmlt-workflow'),
+                    __('Configuration','bmlt-workflow'),
                     'manage_options',
                     'bmltwf-settings',
                     array(&$this, 'display_bmltwf_admin_options_page'),
@@ -446,8 +446,8 @@ if (!class_exists('bmltwf_plugin')) {
 
                 add_submenu_page(
                     'bmltwf-settings',
-                    'Workflow Submissions',
-                    'Workflow Submissions',
+                    __('Workflow Submissions','bmlt-workflow'),
+                    __('Workflow Submissions','bmlt-workflow'),
                     $this->bmltwf_capability_manage_submissions,
                     'bmltwf-submissions',
                     array(&$this, 'display_bmltwf_admin_submissions_page'),
@@ -456,8 +456,8 @@ if (!class_exists('bmltwf_plugin')) {
 
                 add_submenu_page(
                     'bmltwf-settings',
-                    'Service Bodies',
-                    'Service Bodies',
+                    __('Service Bodies','bmlt-workflow'),
+                    __('Service Bodies','bmlt-workflow'),
                     'manage_options',
                     'bmltwf-service-bodies',
                     array(&$this, 'display_bmltwf_admin_service_bodies_page'),
@@ -500,7 +500,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_email_from_address',
                 array(
                     'type' => 'string',
-                    'description' => 'Email from address',
+                    'description' => __('Email from address','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_email_from_address_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'example@example.com'
@@ -512,7 +512,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_google_maps_key',
                 array(
                     'type' => 'string',
-                    'description' => 'Google maps key',
+                    'description' => __('Google maps key','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_google_maps_key_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => ''
@@ -524,7 +524,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_delete_closed_meetings',
                 array(
                     'type' => 'string',
-                    'description' => 'Default for close meeting submission',
+                    'description' => __('Default behaviour when closing meetings','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_delete_closed_meetings_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'unpublish'
@@ -536,7 +536,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_trusted_servants_can_delete_submissions',
                 array(
                     'type' => 'string',
-                    'description' => 'Trusted servants can delete submissions',
+                    'description' => __('Trusted servants can delete submissions','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_trusted_servants_can_delete_submissions_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'false'
@@ -549,7 +549,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_remove_virtual_meeting_details_on_venue_change',
                 array(
                     'type' => 'string',
-                    'description' => 'Remove virtual meeting details on venue change',
+                    'description' => __('Remove virtual meeting details on venue change','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_remove_virtual_meeting_details_on_venue_change_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'false'
@@ -561,7 +561,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_optional_location_nation',
                 array(
                     'type' => 'string',
-                    'description' => 'optional field for location_nation',
+                    'description' => __('Option to enable displaying nation field to end users','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_optional_location_nation_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'hidden'
@@ -573,7 +573,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_optional_location_nation_displayname',
                 array(
                     'type' => 'string',
-                    'description' => 'optional field for location_nation',
+                    'description' => __('Display name for nation field','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'Nation'
@@ -585,7 +585,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_optional_location_sub_province',
                 array(
                     'type' => 'string',
-                    'description' => 'optional field for location_sub_province',
+                    'description' => __('Option to enable displaying subprovince field to end users','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_optional_location_sub_province_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'hidden'
@@ -597,7 +597,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_optional_location_sub_province_displayname',
                 array(
                     'type' => 'string',
-                    'description' => 'optional field for location_sub_province',
+                    'description' => __('Display name for subprovince field','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'Sub Province'
@@ -609,7 +609,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_optional_location_province',
                 array(
                     'type' => 'string',
-                    'description' => 'optional field for location_province',
+                    'description' => __('optional field for location_province','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_optional_location_province_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'display'
@@ -621,7 +621,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_optional_location_province_displayname',
                 array(
                     'type' => 'string',
-                    'description' => 'optional field for location_province',
+                    'description' => __('optional field for location_province','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'Province'
@@ -633,7 +633,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_optional_postcode',
                 array(
                     'type' => 'string',
-                    'description' => 'optional field for postcode',
+                    'description' => __('optional field for postcode','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_optional_postcode_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'display'
@@ -645,7 +645,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_optional_postcode_displayname',
                 array(
                     'type' => 'string',
-                    'description' => 'optional field for postcode',
+                    'description' => __('optional field for postcode','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'Postcode'
@@ -657,7 +657,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_required_meeting_formats',
                 array(
                     'type' => 'string',
-                    'description' => 'required field for meeting format',
+                    'description' => __('required field for meeting format','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_required_meeting_formats_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'true'
@@ -669,7 +669,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_submitter_email_template',
                 array(
                     'type' => 'string',
-                    'description' => 'bmltwf_submitter_email_template',
+                    'description' => __('Email template for submitter','bmlt-workflow'),
                     'sanitize_callback' => null,
                     'show_in_rest' => false,
                     'default' => file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html')
@@ -681,7 +681,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_fso_feature',
                 array(
                     'type' => 'string',
-                    'description' => 'bmltwf_fso_feature',
+                    'description' => __('Toggle for FSO feature','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_fso_feature_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'display'
@@ -693,7 +693,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_fso_email_template',
                 array(
                     'type' => 'string',
-                    'description' => 'bmltwf_fso_email_template',
+                    'description' => __('Email template for FSO','bmlt-workflow'),
                     'sanitize_callback' => null,
                     'show_in_rest' => false,
                     'default' => file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html')
@@ -705,7 +705,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_fso_email_address',
                 array(
                     'type' => 'string',
-                    'description' => 'FSO email address',
+                    'description' => __('FSO email address','bmlt-workflow'),
                     'sanitize_callback' => array(&$this, 'bmltwf_fso_email_address_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'example@example.com'
@@ -721,7 +721,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_bmlt_server_address',
-                'BMLT Root Server Configuration',
+                __('BMLT Root Server Configuration','bmlt-workflow'),
                 array(&$this, 'bmltwf_bmlt_server_address_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
@@ -729,7 +729,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_backup_restore',
-                'Backup and Restore',
+                __('Backup and Restore','bmlt-workflow'),
                 array(&$this, 'bmltwf_backup_restore_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
@@ -737,7 +737,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_shortcode',
-                'Meeting Update Form Shortcode',
+                __('Meeting Update Form Shortcode','bmlt-workflow'),
                 array(&$this, 'bmltwf_shortcode_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
@@ -745,7 +745,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_geocoding',
-                'Auto Geocoding Root Server Settings',
+                __('Auto Geocoding Root Server Settings','bmlt-workflow'),
                 array(&$this, 'bmltwf_auto_geocoding_enabled_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
@@ -753,7 +753,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_email_from_address',
-                'Email From Address',
+                __('Email From Address','bmlt-workflow'),
                 array(&$this, 'bmltwf_email_from_address_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
@@ -761,7 +761,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_google_maps_key',
-                'Google Maps Key',
+                __('Google Maps Key','bmlt-workflow'),
                 array(&$this, 'bmltwf_google_maps_key_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
@@ -769,7 +769,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_delete_closed_meetings',
-                'Default for close meeting submission',
+                __('Default for close meeting submission','bmlt-workflow'),
                 array(&$this, 'bmltwf_delete_closed_meetings_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
@@ -777,7 +777,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_trusted_servants_can_delete_submissions',
-                'Trusted servants can delete submissions',
+                __('Trusted servants can delete submissions','bmlt-workflow'),
                 array(&$this, 'bmltwf_trusted_servants_can_delete_submissions_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
@@ -785,7 +785,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_remove_virtual_meeting_details_on_venue_change',
-                'Remove Virtual Meeting details when venue is changed to \'face to face\'',
+                __("Remove Virtual Meeting details when venue is changed to 'face to face'",'bmlt-workflow'),
                 array(&$this, 'bmltwf_remove_virtual_meeting_details_on_venue_change_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
@@ -793,7 +793,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_optional_form_fields',
-                'Optional form fields',
+                __('Optional form fields','bmlt-workflow'),
                 array(&$this, 'bmltwf_optional_form_fields_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
@@ -801,7 +801,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_fso_options',
-                'Field Service Office configuration',
+                __('Field Service Office configuration','bmlt-workflow'),
                 array(&$this, 'bmltwf_fso_options_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
@@ -809,7 +809,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             add_settings_field(
                 'bmltwf_submitter_email_template',
-                'Email template used when sending a form submission notification',
+                __('Email template used when sending a form submission notification','bmlt-workflow'),
                 array(&$this, 'bmltwf_submitter_email_template_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
@@ -825,7 +825,7 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'display':
                     return $input;
             }
-            add_settings_error('bmltwf_fso_feature', 'err', 'Invalid FSO Enabled setting.');
+            add_settings_error('bmltwf_fso_feature', 'err', __('Invalid FSO Enabled setting.','bmlt-workflow'));
             return $output;
         }
 
@@ -839,7 +839,7 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'display':
                     return $input;
             }
-            add_settings_error('bmltwf_optional_postcode', 'err', 'Invalid Postcode setting.');
+            add_settings_error('bmltwf_optional_postcode', 'err', __('Invalid Postcode setting.','bmlt-workflow'));
             return $output;
         }
 
@@ -853,7 +853,7 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'display':
                     return $input;
             }
-            add_settings_error('bmltwf_optional_location_nation', 'err', 'Invalid Nation setting.');
+            add_settings_error('bmltwf_optional_location_nation', 'err', __('Invalid Nation setting.','bmlt-workflow'));
             return $output;
         }
 
@@ -866,7 +866,7 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'display':
                     return $input;
             }
-            add_settings_error('bmltwf_optional_location_sub_province', 'err', 'Invalid Sub Province setting.');
+            add_settings_error('bmltwf_optional_location_sub_province', 'err', __('Invalid Sub Province setting.','bmlt-workflow'));
             return $output;
         }
 
@@ -884,7 +884,7 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'display':
                     return $input;
             }
-            add_settings_error('bmltwf_optional_location_province', 'err', 'Invalid Province setting.');
+            add_settings_error('bmltwf_optional_location_province', 'err', __('Invalid Province setting.','bmlt-workflow'));
             return $output;
         }
 
@@ -898,7 +898,7 @@ if (!class_exists('bmltwf_plugin')) {
             $output = get_option('bmltwf_email_from_address');
             $sanitized_email = sanitize_email($input);
             if (!is_email($sanitized_email)) {
-                add_settings_error('bmltwf_email_from_address', 'err', 'Invalid email from address.');
+                add_settings_error('bmltwf_email_from_address', 'err', __('Invalid email from address.','bmlt-workflow'));
                 return $output;
             }
             return $sanitized_email;
@@ -909,7 +909,7 @@ if (!class_exists('bmltwf_plugin')) {
             $output = get_option('bmltwf_google_maps_key');
             
             if ((strlen($input)!=39) && ($input !== "")) {
-                add_settings_error('bmltwf_google_maps_key', 'err', 'Invalid google maps key.');
+                add_settings_error('bmltwf_google_maps_key', 'err', __('Invalid google maps key.','bmlt-workflow'));
                 return $output;
             }
             return $input;
@@ -920,7 +920,7 @@ if (!class_exists('bmltwf_plugin')) {
             $output = get_option('bmltwf_fso_email_address');
             $sanitized_email = sanitize_email($input);
             if (!is_email($sanitized_email)) {
-                add_settings_error('bmltwf_fso_email_address', 'err', 'Invalid FSO email address.');
+                add_settings_error('bmltwf_fso_email_address', 'err', __('Invalid FSO email address.','bmlt-workflow'));
                 return $output;
             }
             return $sanitized_email;
@@ -935,7 +935,7 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'unpublish':
                     return $input;
             }
-            add_settings_error('bmltwf_delete_closed_meetings', 'err', 'Invalid delete closed meetings setting.');
+            add_settings_error('bmltwf_delete_closed_meetings', 'err', __('Invalid "delete closed meetings" setting.','bmlt-workflow'));
             return $output;
         }
         
@@ -949,7 +949,7 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'false':
                     return $input;
             }
-            add_settings_error('bmltwf_required_meeting_formats', 'err', 'Invalid "meeting formats" setting.');
+            add_settings_error('bmltwf_required_meeting_formats', 'err', __('Invalid "meeting formats required" setting.','bmlt-workflow'));
             return $output;
 
         }
@@ -963,7 +963,7 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'false':
                     return $input;
             }
-            add_settings_error('bmltwf_trusted_servants_can_delete_submissions', 'err', 'Invalid "non admins can delete submissions" setting.');
+            add_settings_error('bmltwf_trusted_servants_can_delete_submissions', 'err', __('Invalid "non admins can delete submissions" setting.','bmlt-workflow'));
             return $output;
 
         }
@@ -977,40 +977,56 @@ if (!class_exists('bmltwf_plugin')) {
                 case 'false':
                     return $input;
             }
-            add_settings_error('bmltwf_remove_virtual_meeting_details_on_venue_change_sanitize_callback', 'err', 'Invalid "remove virtual meeting details on venue change" setting.');
+            add_settings_error('bmltwf_remove_virtual_meeting_details_on_venue_change_sanitize_callback', 'err', __('Invalid "remove virtual meeting details on venue change" setting.','bmlt-workflow'));
             return $output;
 
         }
 
         public function bmltwf_bmlt_server_address_html()
         {
-            echo '<div id="bmltwf_bmlt_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your BMLT Root Server details are successfully configured.</div>';
-            echo '<div id="bmltwf_bmlt_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Your BMLT Root Server details are not configured correctly.</div>';
-            echo '<div id="bmltwf_servicebodies_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>Your service bodies are successfully configured.</div>';
-            echo '<div id="bmltwf_servicebodies_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Your service bodies are not configured and saved correctly. <a href="?bmltwf-submissions">Fix</a></div>';
+            echo '<div id="bmltwf_bmlt_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>';
+            echo __('Your BMLT Root Server details are successfully configured.','bmlt-workflow');
+            echo '</div>';
+            echo '<div id="bmltwf_bmlt_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>';
+            echo __('Your BMLT Root Server details are not configured correctly.','bmlt-workflow');
+            echo '</div>';
+            echo '<div id="bmltwf_servicebodies_test_yes" style="display: none;" ><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>';
+            echo __('Your service bodies are successfully configured.','bmlt-workflow');
+            echo '</div>';
+            echo '<div id="bmltwf_servicebodies_test_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>';
+            echo __('Your service bodies are not configured and saved correctly. <a href="?bmltwf-submissions">Fix</a>','bmlt-workflow');
+            echo '</div>';
             echo '<div id="bmltwf_server_version_yes" style="display: none;" ></div>';
-            echo '<div id="bmltwf_server_version_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>Cannot retrieve the BMLT Server Version</div>';
+            echo '<div id="bmltwf_server_version_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>';
+            echo '__(Cannot retrieve the BMLT Server Version';
+            echo '</div>';
             echo '<div id="bmltwf_bmlt_server_version"></div>';
             echo '<br>';
-            echo '<button type="button" id="bmltwf_configure_bmlt_server">Update BMLT Root Server Configuration</button>';
+            echo '<button type="button" id="bmltwf_configure_bmlt_server">';
+            echo __('Update BMLT Root Server Configuration','bmlt-workflow');
+            echo '</button>';
             echo '<br>';
         }
 
         public function bmltwf_backup_restore_html()
         {
             echo '<div class="bmltwf_info_text">';
-            echo '<br>Backup and Restore the entire plugin configuration, including all submission entries and plugin settings.';
+            echo '<br>';
+            echo __('Backup and Restore the entire plugin configuration, including all submission entries and plugin settings.','bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
             echo '<br>';
-            echo '<button type="button" id="bmltwf_backup">Backup Configuration</button>   <button type="button" id="bmltwf_restore">Restore Configuration</button><input type="file" id="bmltwf_file_selector" accept=".json,application/json" style="display:none">';
+            echo '<button type="button" id="bmltwf_backup">Backup Configuration</button>   <button type="button" id="bmltwf_restore">';
+            echo __('Restore Configuration','bmlt-workflow');
+            echo '</button><input type="file" id="bmltwf_file_selector" accept=".json,application/json" style="display:none">';
             echo '<span class="spinner" id="bmltwf-backup-spinner"></span><br>';
         }
 
         public function bmltwf_shortcode_html()
         {
             echo '<div class="bmltwf_info_text">';
-            echo '<br>Use the shortcode <code>[bmltwf-meeting-update-form]</code> to generate a form. The form will be associated with service bodies configured on the Service Bodies configuration page.';
+            echo '<br>';
+            echo __('Use the shortcode <code>[bmltwf-meeting-update-form]</code> to generate a form. The form will be associated with service bodies configured on the Service Bodies configuration page.','bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
         }
@@ -1021,16 +1037,21 @@ if (!class_exists('bmltwf_plugin')) {
             if($autogeo)
             {
                 $val = "true";
-                $val1 = "will";
+                $val1 = __("will");
             }
             else
             {
                 $val = "false";
-                $val1 = "will not";
+                $val1 = __("will not");
             }
             echo '<div class="bmltwf_info_text">';
-            echo '<br>This plugin honours the BMLT Root Server Auto Geocoding settings. The $auto_geocoding_enabled setting is set to <b>'.$val.'</b>;';
-            echo '<br><br>Meeting submissions <b>'.$val1.'</b> be automatically geocoded on save';
+            echo '<br>';
+            echo __('This plugin honours the BMLT Root Server Auto Geocoding settings. The $auto_geocoding_enabled setting is set to ','bmlt-workflow');
+            echo '<b>'.$val.'</b>;';
+            echo '<br><br>';
+            echo __('Meeting submissions ','bmlt-workflow');
+            echo '<b>'.$val1.'</b> ';
+            echo __('be automatically geocoded on save','bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
 
@@ -1041,8 +1062,10 @@ if (!class_exists('bmltwf_plugin')) {
 
             $google_maps_key = get_option('bmltwf_google_maps_key');
             echo '<div class="bmltwf_info_text">';
-            echo '<br>This plugin will try and use the google maps key from your BMLT Root Server for geolocation and displaying the map view.';
-            echo '<br>You can also provide a dedicated google maps key below and this will be used in preference to the BMLT Root Server key.';
+            echo '<br>';
+            echo __('This plugin will try and use the google maps key from your BMLT Root Server for geolocation and displaying the map view.','bmlt-workflow');
+            echo '<br>';
+            echo __('You can also provide a dedicated google maps key below and this will be used in preference to the BMLT Root Server key.','bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
             if ($google_maps_key === '') {
@@ -1050,11 +1073,13 @@ if (!class_exists('bmltwf_plugin')) {
             } else {
                 $your_own_key = 'selected';
             }
-            echo '<br><label for="bmltwf_google_maps_key_select"></label><select id="bmltwf_google_maps_key_select" name="bmltwf_google_maps_key_select"><option name="bmlt_key" value="bmlt_key" ' . $bmlt_key . '>Google Maps Key from BMLT</option><option name="your_own_key" value="your_own_key" ' . $your_own_key . '>Custom Google Maps Key</option>';
+            echo '<br><label for="bmltwf_google_maps_key_select"></label><select id="bmltwf_google_maps_key_select" name="bmltwf_google_maps_key_select"><option name="bmlt_key" value="bmlt_key" ' . $bmlt_key . '>';
+            echo __('Google Maps Key from BMLT','bmlt-workflow');
+            echo '</option><option name="your_own_key" value="your_own_key" ' . $your_own_key . '>';
+            echo __('Custom Google Maps Key','bmlt-workflow');
+            echo '</option>';
             echo '<br><br>';
             echo '<input id="bmltwf_google_maps_key" type="text" size="39" name="bmltwf_google_maps_key" value="' . esc_attr($google_maps_key) . '"/>';
-            // echo '<br><label for="bmltwf_google_maps_key"><b>Google Maps Key:</b></label><input id="bmltwf_google_maps_key" type="text" size="39" name="bmltwf_google_maps_key" value="' . esc_attr($google_maps_key) . '"/>';
-            // echo '<br><br>';
         }
 
         public function bmltwf_email_from_address_html()
@@ -1062,7 +1087,8 @@ if (!class_exists('bmltwf_plugin')) {
 
             $from_address = get_option('bmltwf_email_from_address');
             echo '<div class="bmltwf_info_text">';
-            echo '<br>The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form <code>Display Name &lt;example@example.com&gt;</code> or just a standard email address.';
+            echo '<br>';
+            echo __('The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form <code>Display Name &lt;example@example.com&gt;</code> or just a standard email address.','bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
 
@@ -1083,11 +1109,16 @@ if (!class_exists('bmltwf_plugin')) {
             }
 
             echo '<div class="bmltwf_info_text">';
-            echo '<br>Trusted servants approving a "Close Meeting" request can choose to either Delete or Unpublish. This option selects the default for all trusted servants.';
+            echo '<br>';
+            echo __('Trusted servants approving a "Close Meeting" request can choose to either Delete or Unpublish. This option selects the default for all trusted servants.','bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
 
-            echo '<br><label for="bmltwf_delete_closed_meetings"><b>Close meeting default:</b></label><select id="bmltwf_delete_closed_meetings" name="bmltwf_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>Unpublish</option><option name="delete" value="delete" ' . $delete . '>Delete</option>';
+            echo '<br><label for="bmltwf_delete_closed_meetings"><b>Close meeting default:</b></label><select id="bmltwf_delete_closed_meetings" name="bmltwf_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>';
+            echo __('Unpublish','bmlt-workflow');
+            echo '</option><option name="delete" value="delete" ' . $delete . '>';
+            echo __('Delete','bmlt-workflow');
+            echo '</option>';
             echo '<br><br>';
         }
 
@@ -1104,12 +1135,20 @@ if (!class_exists('bmltwf_plugin')) {
             }
 
             echo '<div class="bmltwf_info_text">';
-            echo '<br>This option determines whether trusted servants are able to delete submissions from the submissions list.';
-            echo '<br><br>If this is set to false, then only Wordpress administrators will have delete submission functionality';
+            echo '<br>';
+            echo __('This option determines whether trusted servants are able to delete submissions from the submissions list.','bmlt-workflow');
+            echo '<br><br>';
+            echo __('If this is set to false, then only Wordpress administrators will have delete submission functionality','bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
 
-            echo '<br><label for="bmltwf_trusted_servants_can_delete_submissions"><b>Trusted servants can delete submissions:</b></label><select id="bmltwf_trusted_servants_can_delete_submissions" name="bmltwf_trusted_servants_can_delete_submissions"><option name="True" value="true" ' . $can_delete . '>True</option><option name="False" value="false" ' . $cannot_delete . '>False</option>';
+            echo '<br><label for="bmltwf_trusted_servants_can_delete_submissions"><b>';
+            echo __('Trusted servants can delete submissions:','bmlt-workflow');
+            echo '</b></label><select id="bmltwf_trusted_servants_can_delete_submissions" name="bmltwf_trusted_servants_can_delete_submissions"><option name="';
+            echo __('True','bmlt-workflow');
+            echo '" value="true" ' . $can_delete . '>True</option><option name="';
+            echo __('False','bmlt-workflow');
+            echo '" value="false" ' . $cannot_delete . '>False</option>';
             echo '<br><br>';
         }
 
@@ -1125,28 +1164,45 @@ if (!class_exists('bmltwf_plugin')) {
             }
 
             echo '<div class="bmltwf_info_text">';
-            echo '<br>This option determines whether virtual meeting configuration, such as url, extra info and dialin number, are removed when the meeting venue type is changed to a face to face meeting.';
-            echo '<br><br>If this is set to false, the virtual meeting settings will be retained in BMLT.';
+            echo '<br>';
+            echo '__(This option determines whether virtual meeting configuration, such as url, extra info and dialin number, are removed when the meeting venue type is changed to a face to face meeting.';
+            echo '<br><br>';
+            echo __('If this is set to false, the virtual meeting settings will be retained in BMLT.','bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
 
-            echo '<br><label for="bmltwf_remove_virtual_meeting_details_on_venue_change"><b>Remove virtual meeting details when meetings are changed to face to face:</b></label><select id="bmltwf_remove_virtual_meeting_details_on_venue_change" name="bmltwf_remove_virtual_meeting_details_on_venue_change"><option name="True" value="true" ' . $do_remove . '>True</option><option name="False" value="false" ' . $do_not_remove . '>False</option>';
+            echo '<br><label for="bmltwf_remove_virtual_meeting_details_on_venue_change"><b>';
+            echo __('Remove virtual meeting details when meetings are changed to face to face','bmlt-workflow');
+            echo ':</b></label><select id="bmltwf_remove_virtual_meeting_details_on_venue_change" name="bmltwf_remove_virtual_meeting_details_on_venue_change"><option name="';
+            echo __('True','bmlt-workflow');
+            echo '" value="true" ' . $do_remove . '>True</option><option name="';
+            echo __('False','bmlt-workflow');
+            echo '" value="false" ' . $do_not_remove . '>False</option>';
             echo '<br><br>';
         }
 
         public function bmltwf_optional_form_fields_html()
         {
             echo '<div class="bmltwf_info_text">';
-            echo '<br>Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users. You can also change the way some fields are labelled on the meeting change form.';
+            echo '<br>';
+            echo __('Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users. You can also change the way some fields are labelled on the meeting change form.','bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
 
-            echo '<table><thead><tr><th>BMLT Field Name</th><th>Show on form</th><th>Required Field</th><th>Change displayname to:</th></tr></thead><tbody>';
-            $this->do_required_field('bmltwf_required_meeting_formats', 'Meeting Formats');
-            $this->do_optional_field('bmltwf_optional_location_nation', 'Nation');
-            $this->do_optional_field('bmltwf_optional_location_province', 'State/Province');
-            $this->do_optional_field('bmltwf_optional_location_sub_province', 'County/Sub-Province');
-            $this->do_optional_field('bmltwf_optional_postcode', 'Zip/Postal Code');
+            echo '<table><thead><tr><th>';
+            echo __('BMLT Field Name','bmlt-workflow');
+            echo '</th><th>';
+            echo __('Show on form','bmlt-workflow');
+            echo '</th><th>';
+            echo __('Required Field','bmlt-workflow');
+            echo '</th><th>';
+            echo __('Change displayname to','bmlt-workflow');
+            echo ':</th></tr></thead><tbody>';
+            $this->do_required_field('bmltwf_required_meeting_formats', __('Meeting Formats','bmlt-workflow'));
+            $this->do_optional_field('bmltwf_optional_location_nation', __('Nation','bmlt-workflow'));
+            $this->do_optional_field('bmltwf_optional_location_province', __('State/Province','bmlt-workflow'));
+            $this->do_optional_field('bmltwf_optional_location_sub_province', __('County/Sub-Province','bmlt-workflow'));
+            $this->do_optional_field('bmltwf_optional_postcode', __('Zip/Postal Code','bmlt-workflow'));
             echo '</tbody></table>';
             
         }
@@ -1205,7 +1261,8 @@ if (!class_exists('bmltwf_plugin')) {
             $display = '';
 
             echo '<div class="bmltwf_info_text">';
-            echo '<br>Enable this setting to display the starter kit option in the submission form and to configure the email address for your Field Service Office.';
+            echo '<br>';
+            echo __('Enable this setting to display the starter kit option in the submission form and to configure the email address for your Field Service Office.','bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
 
@@ -1221,24 +1278,34 @@ if (!class_exists('bmltwf_plugin')) {
                     break;
             }
 
-            echo '<br><label for="bmltwf_fso_feature"><b>FSO Features:</b>';
+            echo '<br><label for="bmltwf_fso_feature"><b>';
+            echo __('FSO Features','bmlt-workflow');
+            echo ':</b>';
             echo '</label><select id="bmltwf_fso_feature" name="bmltwf_fso_feature">';
-            echo '<option name="hidden" value="hidden" ' . esc_attr($hidden) . '>Disabled</option>';
-            echo '<option name="display" value="display" ' . esc_attr($display) . '>Enabled</option>';
+            echo '<option name="hidden" value="hidden" ' . esc_attr($hidden) . '>';
+            echo __('Disabled','bmlt-workflow');
+            echo '</option>';
+            echo '<option name="display" value="display" ' . esc_attr($display) . '>';
+            echo __('Enabled','bmlt-workflow');
+            echo '</option>';
             echo '</select>';
             echo '<br><br>';
             echo '<div id="fso_options">';
             echo '<div class="bmltwf_info_text">';
-            echo '<br>The email address to notify the FSO that starter kits are required.';
+            echo '<br>';
+            echo __('The email address to notify the FSO that starter kits are required.','bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
 
 
-            echo '<br><label for="bmltwf_email_from_address"><b>FSO Email Address:</b></label><input type="text" size="50" id="bmltwf_fso_email_address" name="bmltwf_fso_email_address" value="' . esc_attr($from_address) . '"/>';
+            echo '<br><label for="bmltwf_email_from_address"><b>';
+            echo __('FSO Email Address','bmlt-workflow');
+            echo ':</b></label><input type="text" size="50" id="bmltwf_fso_email_address" name="bmltwf_fso_email_address" value="' . esc_attr($from_address) . '"/>';
             echo '<br><br>';
 
             echo '<div class="bmltwf_info_text">';
-            echo '<br>This template will be used when emailing the FSO about starter kit requests.';
+            echo '<br>';
+            echo __('This template will be used when emailing the FSO about starter kit requests.','bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
 
@@ -1246,7 +1313,9 @@ if (!class_exists('bmltwf_plugin')) {
             $editor_id = 'bmltwf_fso_email_template';
 
             wp_editor($content, $editor_id, array('media_buttons' => false));
-            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . esc_attr($editor_id) . '_default">Copy default template to clipboard</button>';
+            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . esc_attr($editor_id) . '_default">';
+            echo __('Copy default template to clipboard','bmlt-workflow');
+            echo '</button>';
             echo '<br><br>';
             echo '</div>';
         }
@@ -1255,7 +1324,8 @@ if (!class_exists('bmltwf_plugin')) {
         {
 
             echo '<div class="bmltwf_info_text">';
-            echo "<br>This template will be used when emailing a submitter about the meeting change they've requested.";
+            echo '<br>';
+            echo __("This template will be used when emailing a submitter about the meeting change they've requested.");
             echo '<br><br>';
             echo '</div>';
 
@@ -1263,7 +1333,9 @@ if (!class_exists('bmltwf_plugin')) {
             $editor_id = 'bmltwf_submitter_email_template';
 
             wp_editor($content, $editor_id, array('media_buttons' => false));
-            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . esc_attr($editor_id) . '_default">Copy default template to clipboard</button>';
+            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . esc_attr($editor_id) . '_default">';
+            echo __('Copy default template to clipboard','bmlt-workflow');
+            echo '</button>';
             echo '<br><br>';
         }
 
@@ -1323,13 +1395,13 @@ if (!class_exists('bmltwf_plugin')) {
             add_option('bmltwf_email_from_address', 'example@example.com');
             add_option('bmltwf_delete_closed_meetings', 'unpublish');
             add_option('bmltwf_optional_location_nation', 'hidden');
-            add_option('bmltwf_optional_location_nation_displayname', 'Nation');
+            add_option('bmltwf_optional_location_nation_displayname', __('Nation','bmlt-workflow'));
             add_option('bmltwf_optional_location_sub_province', 'hidden');
-            add_option('bmltwf_optional_location_sub_province_displayname', 'Sub Province');
+            add_option('bmltwf_optional_location_sub_province_displayname', __('Sub Province','bmlt-workflow'));
             add_option('bmltwf_optional_location_province', 'display');
-            add_option('bmltwf_optional_location_province_displayname', 'Province');
+            add_option('bmltwf_optional_location_province_displayname', __('Province','bmlt-workflow'));
             add_option('bmltwf_optional_postcode', 'display');
-            add_option('bmltwf_optional_postcode_displayname', 'Postcode');
+            add_option('bmltwf_optional_postcode_displayname', __('Postcode','bmlt-workflow'));
             add_option('bmltwf_required_meeting_formats', 'true');
             add_option('bmltwf_submitter_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
             add_option('bmltwf_fso_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
