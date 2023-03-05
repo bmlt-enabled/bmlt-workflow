@@ -1,6 +1,6 @@
 ## 1.0.29 (Mar 5, 2023)
 - Feature: Admins and superadmins (with manage_options capability) have full visibility of the workflow submissions pane
-- Feature: First cut of multi language support
+- Feature (disabled for now): First cut of multi language support
 - #158 New meeting added an additional format (thanks @TheRichWoods !)
 
 ## 1.0.28 (Feb 24, 2023)
