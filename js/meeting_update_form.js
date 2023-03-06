@@ -17,7 +17,10 @@
 
 "use strict";
 
-var weekdays = ["none", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const { __ } = wp.i18n;
+
+var weekdays = [__("none",'bmlt-workflow'), __("Sunday",'bmlt-workflow'), __("Monday",'bmlt-workflow'), __("Tuesday",'bmlt-workflow'),
+__( "Wednesday",'bmlt-workflow'), __("Thursday",'bmlt-workflow'), __("Friday",'bmlt-workflow'),__( "Saturday",'bmlt-workflow')];
 
 jQuery(document).ready(function ($) {
   // set up our format selector
@@ -70,7 +73,7 @@ jQuery(document).ready(function ($) {
   });
 
   $("#display_format_shared_id_list").select2({
-    placeholder: "Select from available formats",
+    placeholder: __("Select from available formats",'bmlt-workflow'),
     multiple: true,
     data: formatdata,
     width: "100%",
@@ -230,7 +233,7 @@ jQuery(document).ready(function ($) {
 
     $("#meeting-searcher").select2({
       data: mtext,
-      placeholder: "Click to select",
+      placeholder: __("Click to select",'bmlt-workflow'),
       allowClear: true,
       dropdownAutoWidth: true,
       matcher: matchCustom,
@@ -239,7 +242,7 @@ jQuery(document).ready(function ($) {
     });
 
     $("#meeting-searcher").on("select2:open", function (e) {
-      $("input.select2-search__field").prop("placeholder", "Begin typing your meeting name");
+      $("input.select2-search__field").prop("placeholder", __("Begin typing your meeting name",'bmlt-workflow'));
     });
 
     $("#meeting-searcher").on("select2:select", function (e) {
@@ -308,7 +311,7 @@ jQuery(document).ready(function ($) {
         case "reason_change":
           // display form instructions
           $("#instructions").html(
-            "We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval."
+            __("We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval.",'bmlt-workflow')
           );
           $("#meeting_content").show();
           disable_field("service_body_bigint");
@@ -317,7 +320,7 @@ jQuery(document).ready(function ($) {
           break;
         case "reason_close":
           // display form instructions
-          $("#instructions").html("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box.<br><br><b>Note: If you are submitting a temporary meeting closure, please instead use 'Change existing meeting' and use the 'temporarily closed in person meeting' dropdown menu.</b>");
+          $("#instructions").html(__("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box.<br><br><b>Note: If you are submitting a temporary meeting closure, please instead use 'Change existing meeting' and use the 'temporarily closed in person meeting' dropdown menu.",'bmlt-workflow')+"</b>");
           $("#meeting_content").show();
           disable_edits();
           break;
@@ -503,7 +506,7 @@ jQuery(document).ready(function ($) {
         $("#virtual_meeting_options").hide();
         // display form instructions
         $("#instructions").html(
-          "Please fill in the details of your new meeting, and then submit your update. <br><b>Note:</b> If your meeting convenes multiple times a week, please submit additional new meeting requests for each day you meet."
+          __("Please fill in the details of your new meeting, and then submit your update. <br><b>Note:</b> If your meeting convenes multiple times a week, please submit additional new meeting requests for each day you meet.",'bmlt-workflow')
         );
         // new meeting has a starter pack
         if(bmltwf_fso_feature == 'display')

@@ -15,22 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
+"use strict";
+
+const { __ } = wp.i18n;
+
 jQuery(document).ready(function ($) {
-  // function dismiss_notice(element) {
-  //   jQuery(element)
-  //     .parent()
-  //     .slideUp("normal", function () {
-  //       jQuery(this).remove();
-  //     });
-  //   return false;
-  // }
-
-  // function clear_notices() {
-  //   jQuery(".notice-dismiss").each(function (i, e) {
-  //     dismiss_notice(e);
-  //   });
-  // }
-
+ 
   function attach_select_options_for_sbid(sblist, userlist, sbid, selectid) {
     Object.keys(userlist).forEach((item) => {
       var wp_uid = userlist[item]["id"];
@@ -187,7 +177,7 @@ jQuery(document).ready(function ($) {
           });
         } else {
           turn_off_spinner("#bmltwf-form-spinner");
-          notice_error("Error retrieving wordpress users", "bmltwf-error-message");
+          notice_error(__("Error retrieving wordpress users",'bmlt-workflow'), "bmltwf-error-message");
         }
       });
     })

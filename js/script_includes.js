@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
+"use strict";
 
 var defaultOptions = {
   timeout: 300000,
@@ -116,10 +117,10 @@ function notice_success(response, notice_class) {
   var msg = "";
   if (response.message == "")
     msg =
-      '<div class="notice notice-success is-dismissible"><p><strong>SUCCESS: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
+      '<div class="notice notice-success is-dismissible"><p><strong>'+__("SUCCESS",'bmlt-workflow')+': </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
   else
     msg =
-      '<div class="notice notice-success is-dismissible"><p id="bmltwf_error_class_'+notice_class+'"><strong>SUCCESS: </strong>' +
+      '<div class="notice notice-success is-dismissible"><p id="bmltwf_error_class_'+notice_class+'"><strong>'+__("SUCCESS",'bmlt-workflow')+': </strong>' +
       response.message +
       '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>';
   jQuery("." + notice_class).after(msg);
@@ -129,7 +130,7 @@ function notice_error(xhr, notice_class) {
   if (typeof xhr === 'string')
   {
     jQuery("." + notice_class).after(
-      '<div class="notice notice-error is-dismissible"><p id="bmltwf_error_class_'+notice_class+'"><strong>ERROR: </strong>' +
+      '<div class="notice notice-error is-dismissible"><p id="bmltwf_error_class_'+notice_class+'"><strong>'+__("ERROR",'bmlt-workflow')+': </strong>' +
         xhr +
         '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
     );      
@@ -137,7 +138,7 @@ function notice_error(xhr, notice_class) {
   else
   {
     jQuery("." + notice_class).after(
-      '<div class="notice notice-error is-dismissible"><p id="bmltwf_error_class_'+notice_class+'"><strong>ERROR: </strong>' +
+      '<div class="notice notice-error is-dismissible"><p id="bmltwf_error_class_'+notice_class+'"><strong>'+__("ERROR",'bmlt-workflow')+': </strong>' +
         xhr.responseJSON.message +
         '.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>'
     );

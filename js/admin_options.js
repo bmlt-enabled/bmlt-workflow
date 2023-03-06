@@ -15,6 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
+"use strict";
+
+const { __ } = wp.i18n;
+
 jQuery(document).ready(function ($) {
   // form submit handler to massage form content before sending
 
@@ -475,7 +479,7 @@ jQuery(document).ready(function ($) {
     if (data["bmltwf_bmlt_server_version"]) {
       $("#bmltwf_server_version_yes").show();
       $("#bmltwf_server_version_no").hide();
-      $("#bmltwf_server_version_yes").html('<span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>BMLT Root Server Version ' + data["bmltwf_bmlt_server_version"]);
+      $("#bmltwf_server_version_yes").html('<span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>'+__('BMLT Root Server Version','bmlt-workflow')+' ' + data["bmltwf_bmlt_server_version"]);
     } else {
       $("#bmltwf_server_version_no").show();
       $("#bmltwf_server_version_yes").hide();

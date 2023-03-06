@@ -84,21 +84,16 @@ if (!class_exists('bmltwf_plugin')) {
             add_shortcode('bmltwf-meeting-update-form', array(&$this, 'bmltwf_meeting_update_form'));
             add_filter('plugin_action_links', array(&$this, 'bmltwf_add_plugin_link'), 10, 2);
             add_action('user_register', array(&$this, 'bmltwf_add_capability'), 10, 1);
-            // add_action('plugins_loaded', array(&$this,'bmltwf_load_textdomain'));
+            add_action('plugins_loaded', array(&$this,'bmltwf_load_textdomain'));
             register_activation_hook(__FILE__, array(&$this, 'bmltwf_install'));
         }
 
         public function bmltwf_load_textdomain() {
-            $this->debug_log("setting textdomain to ".dirname( plugin_basename(__FILE__) ) . '/lang/');
-            $a = load_plugin_textdomain( 'bmlt-workflow', false, dirname( plugin_basename(__FILE__) ) . '/lang/' );
-            $this->debug_log("plugin textdomain returns");
-            if($a)
-            {
-                $this->debug_log("true");
-            } else
-            {
-                $this->debug_log("false");
-            }
+            load_plugin_textdomain( 'bmlt-workflow', false, dirname( plugin_basename(__FILE__) ) . '/lang' );
+            wp_set_script_translations( 'bmltwf-admin-options-js', 'bmlt-workflow' );
+            wp_set_script_translations( 'bmltwf-admin-service-bodies-js', 'bmlt-workflow' );
+            wp_set_script_translations( 'bmltwf-admin-submissions', 'bmlt-workflow' );
+            wp_set_script_translations( 'bmltwf-meeting-update-form-js', 'bmlt-workflow' );
         }
 
         public function bmltwf_meeting_update_form($atts = [], $content = null, $tag = '')
@@ -110,9 +105,9 @@ if (!class_exists('bmltwf_plugin')) {
             }
             // $this->debug_log(("inside shortcode setup"));
             // base css and js for this page
-            $this->prevent_cache_enqueue_script('bmltwf-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
+            $this->prevent_cache_enqueue_script('bmltwf-meeting-update-form-js', array('jquery','wp-i18n'), 'js/meeting_update_form.js');
             $this->prevent_cache_enqueue_style('bmltwf-meeting-update-form-css', false, 'css/meeting_update_form.css');
-            $this->prevent_cache_enqueue_script('bmltwf-general-js', array('jquery'), 'js/script_includes.js');
+            $this->prevent_cache_enqueue_script('bmltwf-general-js', array('jquery','wp-i18n'), 'js/script_includes.js');
             wp_enqueue_style('dashicons');
 
             // jquery validation
@@ -175,7 +170,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             // $this->debug_log("adding script " . $script);
             $status = wp_add_inline_script('bmltwf-meeting-update-form-js', $script, 'before');
-            $this->prevent_cache_enqueue_script('bmltwf-meeting-update-form-js', array('jquery'), 'js/meeting_update_form.js');
+            // $this->prevent_cache_enqueue_script('bmltwf-meeting-update-form-js', array('jquery','wp-i18n'), 'js/meeting_update_form.js');
 
             ob_start();
             include('public/meeting_update_form.php');
@@ -231,8 +226,8 @@ if (!class_exists('bmltwf_plugin')) {
             $this->register_select2();
             wp_register_script('jqueryvalidate', plugin_dir_url(__FILE__) . '/thirdparty/js/jquery-validation@1.19.3/dist/jquery.validate.min.js', array('jquery'), '1.0', true);
             wp_register_script('jqueryvalidateadditional', plugin_dir_url(__FILE__) . '/thirdparty/js/jquery-validation@1.19.3/dist/additional-methods.min.js', array('jquery', 'jqueryvalidate'), '1.0', true);
-            $this->prevent_cache_register_script('bmltwf-general-js', array('jquery'), 'js/script_includes.js');
-            $this->prevent_cache_register_script('bmltwf-meeting-update-form-js', array('jquery', 'jqueryvalidate', 'jqueryvalidateadditional'), 'js/meeting_update_form.js');
+            $this->prevent_cache_register_script('bmltwf-general-js', array('jquery','wp-i18n'), 'js/script_includes.js');
+            $this->prevent_cache_register_script('bmltwf-meeting-update-form-js', array('jquery', 'jqueryvalidate', 'jqueryvalidateadditional','wp-i18n'), 'js/meeting_update_form.js');
             $this->prevent_cache_register_style('bmltwf-meeting-update-form-css', false, 'css/meeting_update_form.css');
             $this->debug_log("scripts and styles registered");
         }
@@ -247,14 +242,14 @@ if (!class_exists('bmltwf_plugin')) {
                 return;
             }
 
-            $this->prevent_cache_enqueue_script('bmltwfjs', array('jquery'), 'js/script_includes.js');
+            $this->prevent_cache_enqueue_script('bmltwfjs', array('jquery','wp-i18n'), 'js/script_includes.js');
 
             switch ($hook) {
 
                 case ('toplevel_page_bmltwf-settings'):
                     // base css and scripts for this page
                     $this->prevent_cache_enqueue_style('bmltwf-admin-css', false, 'css/admin_options.css');
-                    $this->prevent_cache_enqueue_script('admin_options_js', array('jquery'), 'js/admin_options.js');
+                    $this->prevent_cache_enqueue_script('bmltwf-admin-options-js', array('jquery','wp-i18n'), 'js/admin_options.js');
 
                     // clipboard
                     wp_enqueue_script('clipboard');
@@ -280,14 +275,14 @@ if (!class_exists('bmltwf_plugin')) {
                         $script .= '"your_own_key";';
                     }
 
-                    wp_add_inline_script('admin_options_js', $script, 'before');
+                    wp_add_inline_script('bmltwf-admin-options-js', $script, 'before');
                     break;
 
                 case ('bmlt-workflow_page_bmltwf-submissions'):
                 case ('toplevel_page_bmltwf-submissions'):
 
                     // base css and scripts for this page
-                    $this->prevent_cache_enqueue_script('admin_submissions_js', array('jquery'), 'js/admin_submissions.js');
+                    $this->prevent_cache_enqueue_script('bmltwf-admin-submissions-js', array('jquery','wp-i18n'), 'js/admin_submissions.js');
                     $this->prevent_cache_enqueue_style('bmltwf-admin-submissions-css', false, 'css/admin_submissions.css');
 
                     // jquery dialog
@@ -385,13 +380,13 @@ if (!class_exists('bmltwf_plugin')) {
                     }
                     $script .= 'var bmltwf_datatables_delete_enabled = ' . $show_delete . ';';
 
-                    wp_add_inline_script('admin_submissions_js', $script, 'before');
+                    wp_add_inline_script('bmltwf-admin-submissions-js', $script, 'before');
 
                     break;
 
                 case ('bmlt-workflow_page_bmltwf-service-bodies'):
                     // base css and scripts for this page
-                    $this->prevent_cache_enqueue_script('admin_service_bodies_js', array('jquery'), 'js/admin_service_bodies.js');
+                    $this->prevent_cache_enqueue_script('bmltwf-admin-service-bodies-js', array('jquery','wp-i18n'), 'js/admin_service_bodies.js');
                     $this->prevent_cache_enqueue_style('bmltwf-admin-submissions-css', false, 'css/admin_service_bodies.css');
 
                     // select2
@@ -401,7 +396,7 @@ if (!class_exists('bmltwf_plugin')) {
                     // make sure our rest url is populated
                     $script = 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/servicebodies') . '; ';
                     $script .= 'var wp_users_url = ' . json_encode(get_rest_url() . 'wp/v2/users') . '; ';
-                    wp_add_inline_script('admin_service_bodies_js', $script, 'before');
+                    wp_add_inline_script('bmltwf-admin-service-bodies-js', $script, 'before');
                     break;
             }
         }
