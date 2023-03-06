@@ -90,10 +90,6 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_load_textdomain() {
             load_plugin_textdomain( 'bmlt-workflow', false, dirname( plugin_basename(__FILE__) ) . '/lang' );
-            wp_set_script_translations( 'bmltwf-admin-options-js', 'bmlt-workflow' );
-            wp_set_script_translations( 'bmltwf-admin-service-bodies-js', 'bmlt-workflow' );
-            wp_set_script_translations( 'bmltwf-admin-submissions', 'bmlt-workflow' );
-            wp_set_script_translations( 'bmltwf-meeting-update-form-js', 'bmlt-workflow' );
         }
 
         public function bmltwf_meeting_update_form($atts = [], $content = null, $tag = '')
@@ -168,10 +164,18 @@ if (!class_exists('bmltwf_plugin')) {
             }
             $script .= 'var bmltwf_service_bodies = ' . json_encode($result) . '; ';
 
-            // $this->debug_log("adding script " . $script);
             $status = wp_add_inline_script('bmltwf-meeting-update-form-js', $script, 'before');
-            // $this->prevent_cache_enqueue_script('bmltwf-meeting-update-form-js', array('jquery','wp-i18n'), 'js/meeting_update_form.js');
 
+            $a = wp_set_script_translations( 'bmltwf-meeting-update-form-js', 'bmlt-workflow',plugin_dir_path(__FILE__).'lang/');
+
+            if($a ===true)
+            {
+                $this->debug_log("script translation succeeded");
+            } else
+            {
+                $this->debug_log("script translation failed");
+
+            }
             ob_start();
             include('public/meeting_update_form.php');
             $content .= ob_get_clean();
@@ -276,6 +280,8 @@ if (!class_exists('bmltwf_plugin')) {
                     }
 
                     wp_add_inline_script('bmltwf-admin-options-js', $script, 'before');
+                    wp_set_script_translations( 'bmltwf-admin-options-js', 'bmlt-workflow',plugin_dir_path(__FILE__).'lang/' );
+
                     break;
 
                 case ('bmlt-workflow_page_bmltwf-submissions'):
@@ -381,6 +387,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_datatables_delete_enabled = ' . $show_delete . ';';
 
                     wp_add_inline_script('bmltwf-admin-submissions-js', $script, 'before');
+                    wp_set_script_translations( 'bmltwf-admin-submissions', 'bmlt-workflow',plugin_dir_path(__FILE__).'lang/' );
 
                     break;
 
@@ -397,6 +404,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $script = 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/servicebodies') . '; ';
                     $script .= 'var wp_users_url = ' . json_encode(get_rest_url() . 'wp/v2/users') . '; ';
                     wp_add_inline_script('bmltwf-admin-service-bodies-js', $script, 'before');
+                    wp_set_script_translations( 'bmltwf-admin-service-bodies-js', 'bmlt-workflow',plugin_dir_path(__FILE__).'lang/' );
                     break;
             }
         }

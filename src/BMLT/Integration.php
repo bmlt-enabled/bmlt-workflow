@@ -622,8 +622,7 @@ class Integration
                 }
             }
         }
-        $this->debug_log("NEWFORMAT");
-        $this->debug_log(($newformat));
+        $this->debug_log("NEWFORMAT size ".count($newformat));
 
         return $newformat;
     }

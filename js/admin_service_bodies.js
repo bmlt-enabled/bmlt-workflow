@@ -91,7 +91,7 @@ jQuery(document).ready(function ($) {
   // get the permissions, and the userlist from wordpress, and create our select lists
   var parameters = { detail: "true" };
 
-  respsblist = $.ajax({
+  var respsblist = $.ajax({
     url: bmltwf_admin_bmltwf_service_bodies_rest_url,
     dataType: "json",
     data: parameters,
@@ -103,14 +103,14 @@ jQuery(document).ready(function ($) {
     .done(function (response) {
 
       // paginate wordpress user response
-      pagesize = 10;
-      page = 1;
-      firstsep = "?";
+      var pagesize = 10;
+      var page = 1;
+      var firstsep = "?";
       if (wp_users_url.includes("?")) {
         firstsep = "&";
       }
 
-      thisresp = $.ajax({
+      var thisresp = $.ajax({
         url: wp_users_url + firstsep + "per_page=" + pagesize + "&page=" + page,
         dataType: "json",
         sblist: response,
@@ -118,13 +118,13 @@ jQuery(document).ready(function ($) {
           xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
         },
       }).done(function (response) {
-        pg = thisresp.getResponseHeader("x-wp-totalpages");
+        var pg = thisresp.getResponseHeader("x-wp-totalpages");
 
         if (pg != null) {
-          totalpages = parseInt(pg);
-          range = [...Array(totalpages).keys()].map((x) => x + 1);
+          var totalpages = parseInt(pg);
+          var range = [...Array(totalpages).keys()].map((x) => x + 1);
 
-          users = {};
+          var users = {};
           var allAJAX = range.map((page) => {
             return $.ajax({
               url: wp_users_url + firstsep + "per_page=" + pagesize + "&page=" + page,
