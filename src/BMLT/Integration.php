@@ -286,7 +286,7 @@ class Integration
         }
 
         $auth_details = json_decode(\wp_remote_retrieve_body($response), true);
-        $this->debug_log($auth_details['access_token']);
+        // $this->debug_log($auth_details['access_token']);
 
         return true;
     }
@@ -579,6 +579,20 @@ class Integration
         return $newformats;
     }
 
+    private $bmlt_langmap = array(
+        "en_EN"=>"en",
+        "fr_FR"=>"fr",
+        "de_DE"=>"de",
+        "dk_DK"=>"dk",
+        "es_ES"=>"es",
+        "fa_FA"=>"fa",
+        "it_IT"=>"it",
+        "pl_PL"=>"pl",
+        "pt_PT"=>"pt",
+        "ru_RU"=>"ru",
+        "sv_SE"=>"sv",
+    );
+
     public function getMeetingFormats()
     {
         if ($this->is_v3_server()) {
@@ -603,23 +617,37 @@ class Integration
         $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token));
         $ret = \wp_remote_get($url, $args);
         $formatarr = json_decode(\wp_remote_retrieve_body($ret), 1);
+        $this->debug_log("FORMATARR");
+        $this->debug_log($formatarr);
 
         $newformat = array();
         foreach ($formatarr as $key => $value) {
-            $formatid = $value['id'];
+
+            $newvalue = array();
+            $locale = get_locale();
+            $ourlang = $this->bmlt_langmap[$locale];
+            $newvalue['world_id'] = $value['worldId'];
+            $newvalue['type'] = $value['type'];        
+
             foreach ($value['translations'] as $key1 => $value1) {
-                // just add english for now
-                if ($value1['language'] === 'en') {
-                    $newvalue = array();
-                    $newvalue['world_id'] = $value['worldId'];
-                    $newvalue['type'] = $value['type'];        
+        
+                if ($value1['language'] === 'en' && (!(array_key_exists('lang', $newvalue)))) {
                     $newvalue['lang'] = 'en';
                     $newvalue['description_string'] = $value1['description'];
                     $newvalue['name_string'] = $value1['name'];
                     $newvalue['key_string'] = $value1['key'];            
-                    $newformat[$formatid] = $newvalue;
-                    break;
                 }
+                elseif ($value1['language'] === $ourlang) {
+                    $newvalue['lang'] = $ourlang;
+                    $newvalue['description_string'] = $value1['description'];
+                    $newvalue['name_string'] = $value1['name'];
+                    $newvalue['key_string'] = $value1['key'];
+                }
+            }
+            if(array_key_exists('lang', $newvalue))
+            {
+                $formatid = $value['id'];
+                $newformat[$formatid] = $newvalue;
             }
         }
         $this->debug_log("NEWFORMAT size ".count($newformat));
@@ -629,16 +657,15 @@ class Integration
 
     public function getMeetingFormatsv2()
     {
-
         $req = array();
         $req['admin_action'] = 'get_format_info';
-
+        $locale = get_locale();
+        $req['lang'] = $this->bmlt_langmap[$locale];
         // get an xml for a workaround
         $response = $this->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve meeting formats','bmlt-workflow'));
         }
-
         $xml = simplexml_load_string(\wp_remote_retrieve_body($response));
         $formatarr = json_decode(json_encode($xml), 1);
 
@@ -1116,21 +1143,24 @@ class Integration
         $this->debug_log("AUTH URL = " . $url);
         $ret = $this->post($url, $postargs, null);
         $ret = \wp_remote_post($url, $this->set_args(null, http_build_query($postargs)));
-        $this->debug_log("returns");
-        $this->debug_log($ret);
+        // $this->debug_log("returns");
+        // $this->debug_log($ret);
 
         if ((is_wp_error($ret)) || (\wp_remote_retrieve_response_code($ret) != 200)) {
             return new \WP_Error('bmltwf', __('authenticateRootServer: Server Failure','bmlt-workflow'));
         }
         $body = wp_remote_retrieve_body($ret);
-        $this->debug_log("BODY");
-        $this->debug_log($body);
+        // $this->debug_log("BODY");
+        // $this->debug_log($body);
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $body)) // best way I could find to check for invalid login
         {
             $this->cookies = null;
             return new \WP_Error('bmltwf', __('authenticateRootServer: Authentication Failure','bmlt-workflow'));
         }
-
+        $a = \wp_remote_retrieve_cookie($ret,'PHPSESSID');
+        $this->debug_log("setting cookies");
+        $this->debug_log($a);
+        // $this->cookies = \wp_remote_retrieve_cookie($ret,'PHPSESSID');
         $this->cookies = \wp_remote_retrieve_cookies($ret);
         return true;
     }
@@ -1193,7 +1223,7 @@ class Integration
         return $ret;
     }
 
-    private function getv3($url, $cookies = null)
+    private function getv3($url)
     {
             $this->debug_log("inside get v3");
 
@@ -1263,6 +1293,7 @@ class Integration
                 case ('admin_action'):
                 case ('meeting_id'):
                 case ('flat');
+                case ('lang'):
                     $newargs .= $key . '=' . $value;
                     break;
                 default:

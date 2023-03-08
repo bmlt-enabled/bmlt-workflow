@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 // Copyright (C) 2022 nigel.bmlt@gmail.com
 //
 // This file is part of bmlt-workflow.
@@ -15,28 +16,28 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-"use strict";
+/* global wp, jQuery, google */
+/* global clear_notices, notice_success, notice_error, fetchJsonp */
+/* global bmltwf_gmaps_key, bmltwf_auto_geocoding_enabled, bmltwf_optional_location_nation, bmltwf_optional_location_sub_province, bmltwf_optional_location_province */
+/* global bmltwf_do_states_and_provinces, bmltwf_counties_and_sub_provinces, bmltwf_remove_virtual_meeting_details_on_venue_change, bmltwf_bmlt_server_address */
+/* global bmltwf_default_closed_meetings, bmltwf_bmlt_formats, bmltwf_datatables_delete_enabled, bmltwf_admin_submissions_rest_url, bmltwf_admin_bmltwf_service_bodies */
+/* global bmltwf_optional_location_province_displayname, bmltwf_optional_location_sub_province_displayname, bmltwf_optional_location_nation_displayname */
+/* global bmltwf_bmltserver_geolocate_rest_url, bmltwf_optional_postcode_displayname */
 
 const { __ } = wp.i18n;
 
-let map;
-
-function gm_authFailure() {
-  notice_error(__("Google Maps API Authentication failure - BMLT API key restrictions must allow this web client client to access the Javascript API",'bmlt-workflow'), "bmltwf-quickedit-error-message");
-}
-
 function initMap(origlat = null, origlng = null) {
-  var lat;
-  var lng;
+  let lat;
+  let lng;
 
   if (origlat && origlng) {
-    if (typeof origlat === "string") {
+    if (typeof origlat === 'string') {
       lat = parseFloat(origlat);
     } else {
       lat = origlat;
     }
 
-    if (typeof origlng === "string") {
+    if (typeof origlng === 'string') {
       lng = parseFloat(origlng);
     } else {
       lng = origlng;
@@ -44,956 +45,981 @@ function initMap(origlat = null, origlng = null) {
 
     const mapOptions = {
       zoom: 16,
-      center: { lat: lat, lng: lng },
+      center: { lat, lng },
     };
 
-    map = new google.maps.Map(document.getElementById("bmltwf_quickedit_map"), mapOptions);
+    const map = new google.maps.Map(document.getElementById('bmltwf_quickedit_map'), mapOptions);
 
     const marker = new google.maps.Marker({
-      position: { lat: lat, lng: lng },
-      map: map,
+      position: { lat, lng },
+      map,
     });
     const infowindow = new google.maps.InfoWindow({
-      content: "<p>Marker Location:" + marker.getPosition() + "</p>",
+      content: `<p>Marker Location:${marker.getPosition()}</p>`,
     });
 
-    google.maps.event.addListener(marker, "click", () => {
+    google.maps.event.addListener(marker, 'click', () => {
       infowindow.open(map, marker);
     });
   }
 }
 
 function mysql2localdate(data) {
-  var t = data.split(/[- :]/);
-  var d = new Date(Date.UTC(t[0], t[1] - 1, t[2], t[3], t[4], t[5]));
-  var ds = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2) + " " + ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
+  const t = data.split(/[- :]/);
+  const d = new Date(Date.UTC(t[0], t[1] - 1, t[2], t[3], t[4], t[5]));
+  const ds = `${d.getFullYear()}-${(`0${d.getMonth() + 1}`).slice(-2)}-${(`0${d.getDate()}`).slice(-2)} ${(`0${d.getHours()}`).slice(-2)}:${(`0${d.getMinutes()}`).slice(-2)}`;
   return ds;
 }
 
-var bmltwf_changedata = {};
-
-var venue_types = {
-  1: __("Face to face",'bmlt-workflow'),
-  2: __("Virtual Meeting",'bmlt-workflow'),
-  3: __("Hybrid Meeting",'bmlt-workflow'),
-  4: __("Temporarily Closed",'bmlt-workflow'),
+const venue_types = {
+  1: __('Face to face', 'bmlt-workflow'),
+  2: __('Virtual Meeting', 'bmlt-workflow'),
+  3: __('Hybrid Meeting', 'bmlt-workflow'),
+  4: __('Temporarily Closed', 'bmlt-workflow'),
 };
 
 jQuery(document).ready(function ($) {
-  weekdays = [__("Error",'bmlt-workflow'), __("Sunday",'bmlt-workflow'), __("Monday",'bmlt-workflow'), __("Tuesday",'bmlt-workflow'),
-   __("Wednesday",'bmlt-workflow'), __("Thursday",'bmlt-workflow'), __("Friday",'bmlt-workflow'), __("Saturday",'bmlt-workflow')];
+  let bmltwf_changedata = {};
 
-  $.getScript("https://maps.googleapis.com/maps/api/js?key=" + bmltwf_gmaps_key + "&callback=initMap&v=weekly&async=2");
+  const weekdays = [__('Error', 'bmlt-workflow'), __('Sunday', 'bmlt-workflow'), __('Monday', 'bmlt-workflow'), __('Tuesday', 'bmlt-workflow'),
+    __('Wednesday', 'bmlt-workflow'), __('Thursday', 'bmlt-workflow'), __('Friday', 'bmlt-workflow'), __('Saturday', 'bmlt-workflow')];
+
+  $.getScript(`https://maps.googleapis.com/maps/api/js?key=${bmltwf_gmaps_key}&callback=initMap&v=weekly&async=2`);
 
   if (!bmltwf_auto_geocoding_enabled) {
-    $("#optional_auto_geocode_enabled").hide();
+    $('#optional_auto_geocode_enabled').hide();
   } else {
-    $("#optional_auto_geocode_enabled").show();
+    $('#optional_auto_geocode_enabled').show();
   }
 
   // hide / show / required our optional fields
   switch (bmltwf_optional_location_nation) {
-    case "hidden":
-    case "":
-      $("#optional_location_nation").hide();
+    case 'hidden':
+    case '':
+      $('#optional_location_nation').hide();
       break;
-    case "display":
-      $("#optional_location_nation").show();
+    case 'display':
+      $('#optional_location_nation').show();
       break;
-    case "displayrequired":
-      $("#optional_location_nation").show();
-      $("#location_nation_label").append('<span class="bmltwf-required-field"> *</span>');
+    case 'displayrequired':
+      $('#optional_location_nation').show();
+      $('#location_nation_label').append('<span class="bmltwf-required-field"> *</span>');
+      break;
+    default:
       break;
   }
 
   switch (bmltwf_optional_location_sub_province) {
-    case "hidden":
-    case "":
-      $("#optional_location_sub_province").hide();
+    case 'hidden':
+    case '':
+      $('#optional_location_sub_province').hide();
       break;
-    case "display":
-      $("#optional_location_sub_province").show();
+    case 'display':
+      $('#optional_location_sub_province').show();
       break;
-    case "displayrequired":
-      $("#optional_location_sub_province").show();
-      $("#location_sub_province_label").append('<span class="bmltwf-required-field"> *</span>');
+    case 'displayrequired':
+      $('#optional_location_sub_province').show();
+      $('#location_sub_province_label').append('<span class="bmltwf-required-field"> *</span>');
+      break;
+    default:
       break;
   }
 
   switch (bmltwf_optional_location_province) {
-    case "hidden":
-    case "":
-      $("#optional_location_province").hide();
+    case 'hidden':
+    case '':
+      $('#optional_location_province').hide();
       break;
-    case "display":
-      $("#optional_location_province").show();
+    case 'display':
+      $('#optional_location_province').show();
       break;
-    case "displayrequired":
-      $("#optional_location_province").show();
-      $("#location_province_label").append('<span class="bmltwf-required-field"> *</span>');
+    case 'displayrequired':
+      $('#optional_location_province').show();
+      $('#location_province_label').append('<span class="bmltwf-required-field"> *</span>');
+      break;
+    default:
       break;
   }
 
   // fill in counties and sub provinces
   if (bmltwf_counties_and_sub_provinces === false) {
-    $("#optional_location_sub_province").append('<input class="quickedit-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">');
+    $('#optional_location_sub_province').append('<input class="quickedit-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">');
   } else {
-    var appendstr = '<select class="quickedit-input" id="quickedit_location_sub_province" name="quickedit_location_sub_province">';
-    bmltwf_counties_and_sub_provinces.forEach(function (item, index) {
-      appendstr += '<option value="' + item + '">' + item + "</option>";
+    let appendstr = '<select class="quickedit-input" id="quickedit_location_sub_province" name="quickedit_location_sub_province">';
+    bmltwf_counties_and_sub_provinces.forEach(function (item) {
+      appendstr += `<option value="${item}">${item}</option>`;
     });
-    appendstr += "</select>";
-    $("#optional_location_sub_province").append(appendstr);
+    appendstr += '</select>';
+    $('#optional_location_sub_province').append(appendstr);
   }
 
   if (bmltwf_do_states_and_provinces === false) {
-    $("#optional_location_province").append('<input class="quickedit-input" type="text" name="quickedit_location_province" size="50" id="quickedit_location_province">');
+    $('#optional_location_province').append('<input class="quickedit-input" type="text" name="quickedit_location_province" size="50" id="quickedit_location_province">');
   } else {
-    var appendstr = '<select class="quickedit-input" id="quickedit_location_province" name="quickedit_location_province">';
-    bmltwf_do_states_and_provinces.forEach(function (item, index) {
-      appendstr += '<option value="' + item + '">' + item + "</option>";
+    let appendstr = '<select class="quickedit-input" id="quickedit_location_province" name="quickedit_location_province">';
+    bmltwf_do_states_and_provinces.forEach(function (item) {
+      appendstr += `<option value="${item}">${item}</option>`;
     });
-    appendstr += "</select>";
-    $("#optional_location_province").append(appendstr);
+    appendstr += '</select>';
+    $('#optional_location_province').append(appendstr);
   }
 
   function add_highlighted_changes_to_quickedit(bmltwf_requested) {
     // fill in and highlight the changes - use extend to clone
-    changes_requested = $.extend(true, {}, bmltwf_requested);
+    const changes_requested = $.extend(true, {}, bmltwf_requested);
 
-    if ("format_shared_id_list" in changes_requested) {
-      changes_requested["format_shared_id_list"] = changes_requested["format_shared_id_list"].split(",");
+    if ('format_shared_id_list' in changes_requested) {
+      changes_requested.format_shared_id_list = changes_requested.format_shared_id_list.split(',');
     }
 
-    if ("duration_time" in changes_requested) {
-      var durationarr = changes_requested["duration_time"].split(":");
+    if ('duration_time' in changes_requested) {
+      const durationarr = changes_requested.duration_time.split(':');
       // hoping we got hours, minutes and seconds here
-      if (durationarr.length == 3) {
-        changes_requested["duration_hours"] = durationarr[0];
-        changes_requested["duration_minutes"] = durationarr[1];
-        delete changes_requested["duration_time"];
+      if (durationarr.length === 3) {
+        changes_requested.duration_hours = durationarr[0];
+        changes_requested.duration_minutes = durationarr[1];
+        delete changes_requested.duration_time;
       }
     }
 
     // some special handling for deletion of fields
-    for (var key in changes_requested) {
+    // for (const key in changes_requested)
+    Object.keys(changes_requested).forEach((key) => {
       switch (key) {
-        case "original_virtual_meeting_additional_info":
+        case 'original_virtual_meeting_additional_info':
           if (
-            (!("virtual_meeting_additional_info" in changes_requested) || changes_requested["virtual_meeting_additional_info"] === "") &&
-            bmltwf_remove_virtual_meeting_details_on_venue_change === "true"
+            (!('virtual_meeting_additional_info' in changes_requested) || changes_requested.virtual_meeting_additional_info === '')
+            && bmltwf_remove_virtual_meeting_details_on_venue_change === 'true'
           ) {
-            changes_requested["virtual_meeting_additional_info"] = __("(deleted)",'bmlt-workflow');
+            changes_requested.virtual_meeting_additional_info = __('(deleted)', 'bmlt-workflow');
           }
           break;
-        case "original_phone_meeting_number":
-          if ((!("phone_meeting_number" in changes_requested) || changes_requested["phone_meeting_number"] === "") && bmltwf_remove_virtual_meeting_details_on_venue_change === "true") {
-            changes_requested["phone_meeting_number"] = __("(deleted)",'bmlt-workflow');
+        case 'original_phone_meeting_number':
+          if ((!('phone_meeting_number' in changes_requested) || changes_requested.phone_meeting_number === '') && bmltwf_remove_virtual_meeting_details_on_venue_change === 'true') {
+            changes_requested.phone_meeting_number = __('(deleted)', 'bmlt-workflow');
           }
           break;
-        case "original_virtual_meeting_link":
-          if ((!("virtual_meeting_link" in changes_requested) || changes_requested["virtual_meeting_link"] === "") && bmltwf_remove_virtual_meeting_details_on_venue_change === "true") {
-            changes_requested["virtual_meeting_link"] = __("(deleted)",'bmlt-workflow');
+        case 'original_virtual_meeting_link':
+          if ((!('virtual_meeting_link' in changes_requested) || changes_requested.virtual_meeting_link === '') && bmltwf_remove_virtual_meeting_details_on_venue_change === 'true') {
+            changes_requested.virtual_meeting_link = __('(deleted)', 'bmlt-workflow');
           }
+          break;
+        default:
           break;
       }
-    }
+    });
 
     Object.keys(changes_requested).forEach((element) => {
-      if ($("#quickedit_" + element).length) {
-        if (element === "format_shared_id_list") {
-          $(".quickedit_format_shared_id_list-select2").addClass("bmltwf-changed");
+      if ($(`#quickedit_${element}`).length) {
+        if (element === 'format_shared_id_list') {
+          $('.quickedit_format_shared_id_list-select2').addClass('bmltwf-changed');
         } else {
-          $("#quickedit_" + element).addClass("bmltwf-changed");
+          $(`#quickedit_${element}`).addClass('bmltwf-changed');
         }
-        $("#quickedit_" + element).val(changes_requested[element]);
-        $("#quickedit_" + element).trigger("change");
+        $(`#quickedit_${element}`).val(changes_requested[element]);
+        $(`#quickedit_${element}`).trigger('change');
       }
     });
     // trigger adding of highlights when input changes
-    $(".quickedit-input").on("input.bmltwf-highlight", function () {
-      $(this).addClass("bmltwf-changed");
+    $('.quickedit-input').on('input.bmltwf-highlight', function () {
+      $(this).addClass('bmltwf-changed');
     });
-    $("#quickedit_format_shared_id_list").on("change.bmltwf-highlight", function () {
-      $(".quickedit_format_shared_id_list-select2").addClass("bmltwf-changed");
+    $('#quickedit_format_shared_id_list').on('change.bmltwf-highlight', function () {
+      $('.quickedit_format_shared_id_list-select2').addClass('bmltwf-changed');
     });
+  }
+
+  function update_gmaps(lat, long) {
+    initMap(lat, long);
+    $('#bmltwf_quickedit_map').show();
   }
 
   function populate_and_open_quickedit(id) {
     // clear quickedit
 
     // remove our change handler
-    $(".quickedit-input").off("input.bmltwf-highlight");
-    $("#quickedit_format_shared_id_list").off("change.bmltwf-highlight");
+    $('.quickedit-input').off('input.bmltwf-highlight');
+    $('#quickedit_format_shared_id_list').off('change.bmltwf-highlight');
     // remove the highlighting
-    $(".quickedit-input").removeClass("bmltwf-changed");
-    $(".quickedit_format_shared_id_list-select2").removeClass("bmltwf-changed");
+    $('.quickedit-input').removeClass('bmltwf-changed');
+    $('.quickedit_format_shared_id_list-select2').removeClass('bmltwf-changed');
 
     // remove any content from the input fields
-    $(".quickedit-input").val("");
+    $('.quickedit-input').val('');
 
     // hide map and let it be shown later if required
-    $("#bmltwf_quickedit_map").hide();
+    $('#bmltwf_quickedit_map').hide();
 
     clear_notices();
     // fill quickedit
 
     // if it's a meeting change, fill from bmlt first
-    if (bmltwf_changedata[id].submission_type == "reason_change") {
-      var meeting_id = bmltwf_changedata[id]["meeting_id"];
-      var search_results_address =
-        bmltwf_bmlt_server_address + "client_interface/jsonp/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=" + meeting_id + "&lang_enum=en&&recursive=1&sort_keys=start_time";
+    if (bmltwf_changedata[id].submission_type === 'reason_change') {
+      const { meeting_id } = bmltwf_changedata[id];
+      const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=${meeting_id}&lang_enum=en&&recursive=1&sort_keys=start_time`;
 
       fetchJsonp(search_results_address)
         .then((response) => response.json())
         .then((data) => {
           // fill in all the bmlt stuff
-          var item = data[0];
+          const item = data[0];
           if (!Object.keys(data).length) {
-            var a = {};
-            a["responseJSON"] = {};
-            a["responseJSON"]["message"] = __("Error retrieving BMLT data - meeting possibly removed",'bmlt-workflow');
-            notice_error(a, "bmltwf-error-message");
+            const a = {};
+            a.responseJSON = {};
+            a.responseJSON.message = __('Error retrieving BMLT data - meeting possibly removed', 'bmlt-workflow');
+            notice_error(a, 'bmltwf-error-message');
           } else {
             // split up the duration so we can use it in the select
-            if ("duration_time" in item) {
-              var durationarr = item["duration_time"].split(":");
+            if ('duration_time' in item) {
+              const durationarr = item.duration_time.split(':');
               // hoping we got hours, minutes and seconds here
-              if (durationarr.length == 3) {
-                $("#quickedit_duration_hours").val(durationarr[0]);
-                $("#quickedit_duration_minutes").val(durationarr[1]);
+              if (durationarr.length === 3) {
+                $('#quickedit_duration_hours').val(durationarr[0]);
+                $('#quickedit_duration_minutes').val(durationarr[1]);
               }
             }
 
             // split up the format list so we can use it in the select
-            if ("format_shared_id_list" in item) {
-              item["format_shared_id_list"] = item["format_shared_id_list"].split(",");
+            if ('format_shared_id_list' in item) {
+              item.format_shared_id_list = item.format_shared_id_list.split(',');
             }
 
             Object.keys(item).forEach((element) => {
-              if ($("#quickedit_" + element).length) {
-                $("#quickedit_" + element).val(item[element]);
-                $("#quickedit_" + element).trigger("change");
+              if ($(`#quickedit_${element}`).length) {
+                $(`#quickedit_${element}`).val(item[element]);
+                $(`#quickedit_${element}`).trigger('change');
               }
             });
             add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
 
-            if (item["longitude"] && item["latitude"]) {
-              lat = item["latitude"];
-              long = item["longitude"];
+            if (item.longitude && item.latitude) {
+              const lat = item.latitude;
+              const long = item.longitude;
               update_gmaps(lat, long);
             } else {
-              $("#quickedit_gmaps").hide();
+              $('#quickedit_gmaps').hide();
             }
-            $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
+            $('#bmltwf_submission_quickedit_dialog').data('id', id).dialog('open');
           }
         });
-    } else if (bmltwf_changedata[id].submission_type == "reason_new") {
+    } else if (bmltwf_changedata[id].submission_type === 'reason_new') {
       // won't have a geolocation for a new meeting
-      $("#quickedit_gmaps").hide();
+      $('#quickedit_gmaps').hide();
       add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
-      $("#bmltwf_submission_quickedit_dialog").data("id", id).dialog("open");
+      $('#bmltwf_submission_quickedit_dialog').data('id', id).dialog('open');
     }
   }
 
   // default close meeting radio button
-  if (bmltwf_default_closed_meetings === "delete") {
-    $("#close_delete").prop("checked", true);
+  if (bmltwf_default_closed_meetings === 'delete') {
+    $('#close_delete').prop('checked', true);
   } else {
-    $("#close_unpublish").prop("checked", true);
+    $('#close_unpublish').prop('checked', true);
   }
 
-  var formatdata = [];
+  const formatdata = [];
 
   // delete hybrid/TC etc
   Object.keys(bmltwf_bmlt_formats).forEach((key) => {
-    var key_string = bmltwf_bmlt_formats[key]["key_string"];
-    if (!(key_string === "HY" || key_string === "VM" || key_string === "TC")) {
-      formatdata.push({ text: "(" + bmltwf_bmlt_formats[key]["key_string"] + ")-" + bmltwf_bmlt_formats[key]["name_string"], id: key });
+    const { key_string } = bmltwf_bmlt_formats[key];
+    if (!(key_string === 'HY' || key_string === 'VM' || key_string === 'TC')) {
+      formatdata.push({ text: `(${bmltwf_bmlt_formats[key].key_string})-${bmltwf_bmlt_formats[key].name_string}`, id: key });
     }
   });
 
-  $("#quickedit_format_shared_id_list").select2({
-    placeholder: "Select from available formats",
+  $('#quickedit_format_shared_id_list').select2({
+    placeholder: 'Select from available formats',
     multiple: true,
-    width: "100%",
+    width: '100%',
     data: formatdata,
-    selectionCssClass: ":all:",
-    dropdownParent: $("#bmltwf_submission_quickedit_dialog"),
+    selectionCssClass: ':all:',
+    dropdownParent: $('#bmltwf_submission_quickedit_dialog'),
   });
-  $("#quickedit_format_shared_id_list").trigger("change");
+  $('#quickedit_format_shared_id_list').trigger('change');
 
-  var datatable = $("#dt-submission").DataTable({
-    dom: "Bfrtip",
+  const datatable = $('#dt-submission').DataTable({
+    dom: 'Bfrtip',
     select: true,
     searching: true,
-    order: [[5, "desc"]],
+    order: [[5, 'desc']],
     buttons: [
       {
-        name: "approve",
-        text: __("Approve",'bmlt-workflow'),
+        name: 'approve',
+        text: __('Approve', 'bmlt-workflow'),
         enabled: false,
-        action: function (e, dt, button, config) {
-          var id = dt.row(".selected").data()["id"];
-          var reason = dt.row(".selected").data()["submission_type"];
-          if (reason === "reason_close") {
+        action(e, dt) {
+          const { id } = dt.row('.selected').data();
+          const reason = dt.row('.selected').data().submission_type;
+          if (reason === 'reason_close') {
             // clear text area from before
-            $("#bmltwf_submission_approve_close_dialog_textarea").val("");
-            $("#bmltwf_submission_approve_close_dialog").data("id", id).dialog("open");
+            $('#bmltwf_submission_approve_close_dialog_textarea').val('');
+            $('#bmltwf_submission_approve_close_dialog').data('id', id).dialog('open');
           } else {
             // clear text area from before
-            $("#bmltwf_submission_approve_dialog_textarea").val("");
-            $("#bmltwf_submission_approve_dialog").data("id", id).dialog("open");
+            $('#bmltwf_submission_approve_dialog_textarea').val('');
+            $('#bmltwf_submission_approve_dialog').data('id', id).dialog('open');
           }
         },
       },
       {
-        name: "reject",
-        text: __("Reject",'bmlt-workflow'),
+        name: 'reject',
+        text: __('Reject', 'bmlt-workflow'),
         enabled: false,
-        action: function (e, dt, button, config) {
-          var id = dt.row(".selected").data()["id"];
+        action(e, dt) {
+          const { id } = dt.row('.selected').data();
           // clear text area from before
-          $("#bmltwf_submission_reject_dialog_textarea").val("");
-          $("#bmltwf_submission_reject_dialog").data("id", id).dialog("open");
+          $('#bmltwf_submission_reject_dialog_textarea').val('');
+          $('#bmltwf_submission_reject_dialog').data('id', id).dialog('open');
         },
       },
       {
-        name: "quickedit",
-        text: __("QuickEdit",'bmlt-workflow'),
-        extend: "selected",
-        action: function (e, dt, button, config) {
-          var id = dt.row(".selected").data()["id"];
+        name: 'quickedit',
+        text: __('QuickEdit', 'bmlt-workflow'),
+        extend: 'selected',
+        action(e, dt) {
+          const { id } = dt.row('.selected').data();
           populate_and_open_quickedit(id);
         },
       },
       {
-        name: "delete",
-        text: __("Delete",'bmlt-workflow'),
+        name: 'delete',
+        text: __('Delete', 'bmlt-workflow'),
         enabled: bmltwf_datatables_delete_enabled,
-        extend: "selected",
-        action: function (e, dt, button, config) {
-          var id = dt.row(".selected").data()["id"];
-          $("#bmltwf_submission_delete_dialog").data("id", id).dialog("open");
+        extend: 'selected',
+        action(e, dt) {
+          const { id } = dt.row('.selected').data();
+          $('#bmltwf_submission_delete_dialog').data('id', id).dialog('open');
         },
       },
     ],
     ajax: {
       url: bmltwf_admin_submissions_rest_url,
-      beforeSend: function (xhr) {
-        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+      beforeSend(xhr) {
+        xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
       },
-      dataSrc: function (json) {
+      dataSrc(json) {
         bmltwf_changedata = {};
-        for (var i = 0, ien = json.length; i < ien; i++) {
-          json[i]["changes_requested"]["submission_type"] = json[i]["submission_type"];
+        // eslint-disable-next-line prefer-const
+        let newjson = JSON.parse(JSON.stringify(json));
+        for (let i = 0, ien = newjson.length; i < ien; i += 1) {
+          newjson[i].changes_requested.submission_type = newjson[i].submission_type;
           // store the json for us to use in quick editor
-          bmltwf_changedata[json[i]["id"]] = json[i];
+          bmltwf_changedata[newjson[i].id] = newjson[i];
         }
-        return json;
+        return newjson;
       },
     },
     columns: [
       {
-        name: "id",
-        data: "id",
+        name: 'id',
+        data: 'id',
       },
       {
-        name: "submitter_name",
-        data: "submitter_name",
+        name: 'submitter_name',
+        data: 'submitter_name',
       },
       {
-        name: "submitter_email",
-        data: "submitter_email",
+        name: 'submitter_email',
+        data: 'submitter_email',
       },
       {
-        name: "service_body_bigint",
-        data: "service_body_bigint",
-        render: function (data, type, row) {
+        name: 'service_body_bigint',
+        data: 'service_body_bigint',
+        render(data) {
           if (data in bmltwf_admin_bmltwf_service_bodies) {
-            return bmltwf_admin_bmltwf_service_bodies[data]["name"];
-          } else {
-            return "<b>"+__("Service body ID",'bmlt-workflow')+" " + data + " "+__("no longer shown to users",'bmlt-workflow')+"</b>";
+            return bmltwf_admin_bmltwf_service_bodies[data].name;
           }
+          return `<b>${__('Service body ID', 'bmlt-workflow')} ${data} ${__('no longer shown to users', 'bmlt-workflow')}</b>`;
         },
       },
       {
-        name: "changes_requested",
-        data: "changes_requested",
-        render: function (data, type, row) {
-          var summary = "";
-          var submission_type = "";
-          var namestr = "";
-          var original = "";
-          switch (data["submission_type"]) {
-            case "reason_new":
-              submission_type = __("New Meeting",'bmlt-workflow');
-              namestr = data["meeting_name"];
-              meeting_day = weekdays[data["weekday_tinyint"]];
-              meeting_time = data["start_time"];
+        name: 'changes_requested',
+        data: 'changes_requested',
+        render(data) {
+          let summary = '';
+          let submission_type = '';
+          let namestr = '';
+          let original = '';
+          let meeting_day = '';
+          let meeting_time = '';
+          switch (data.submission_type) {
+            case 'reason_new':
+              submission_type = __('New Meeting', 'bmlt-workflow');
+              namestr = data.meeting_name;
+              meeting_day = weekdays[data.weekday_tinyint];
+              meeting_time = data.start_time;
               break;
-            case "reason_close":
-              submission_type = __("Close Meeting",'bmlt-workflow');
+            case 'reason_close':
+              submission_type = __('Close Meeting', 'bmlt-workflow');
               // console.log(data);
-              namestr = data["meeting_name"];
-              meeting_day = weekdays[data["weekday_tinyint"]];
-              meeting_time = data["start_time"];
+              namestr = data.meeting_name;
+              meeting_day = weekdays[data.weekday_tinyint];
+              meeting_time = data.start_time;
               break;
-            case "reason_change":
-              submission_type = __("Modify Meeting",'bmlt-workflow');
-              namestr = data["original_meeting_name"];
-              meeting_day = weekdays[data["original_weekday_tinyint"]];
-              meeting_time = data["original_start_time"];
-              original = __("Original",'bmlt-workflow')+" ";
+            case 'reason_change':
+              submission_type = __('Modify Meeting', 'bmlt-workflow');
+              namestr = data.original_meeting_name;
+              meeting_day = weekdays[data.original_weekday_tinyint];
+              meeting_time = data.original_start_time;
+              original = `${__('Original', 'bmlt-workflow')} `;
               break;
             default:
-              submission_type = data["submission_type"];
+              submission_type = data.submission_type;
           }
-          summary = __("Submission Type",'bmlt-workflow')+": " + submission_type + "<br>";
-          if (namestr !== "") {
-            summary += __('Meeting Name','bmlt-workflow')+": " + namestr + "<br>";
+          summary = `${__('Submission Type', 'bmlt-workflow')}: ${submission_type}<br>`;
+          if (namestr !== '') {
+            summary += `${__('Meeting Name', 'bmlt-workflow')}: ${namestr}<br>`;
           }
-          if (meeting_day !== "" && meeting_time != "") {
-            summary += original + __('Time','bmlt-workflow')+": " + meeting_day + " " + meeting_time;
+          if (meeting_day !== '' && meeting_time !== '') {
+            summary += `${original + __('Time', 'bmlt-workflow')}: ${meeting_day} ${meeting_time}`;
           }
           return summary;
         },
       },
       {
-        name: "submission_time",
-        data: "submission_time",
-        render: function (data, type, row) {
+        name: 'submission_time',
+        data: 'submission_time',
+        render(data) {
           return mysql2localdate(data);
         },
       },
       {
-        name: "change_time",
-        data: "change_time",
-        render: function (data, type, row) {
-          if (data === "0000-00-00 00:00:00") {
-            return "(no change made)";
+        name: 'change_time',
+        data: 'change_time',
+        render(data) {
+          if (data === '0000-00-00 00:00:00') {
+            return '(no change made)';
           }
           return mysql2localdate(data);
         },
       },
       {
-        name: "changed_by",
-        data: "changed_by",
+        name: 'changed_by',
+        data: 'changed_by',
       },
       {
-        name: "change_made",
-        data: "change_made",
-        defaultContent: "",
-        render: function (data, type, row) {
+        name: 'change_made',
+        data: 'change_made',
+        defaultContent: '',
+        render(data) {
           if (data === null) {
-            return __("None - Pending",'bmlt-workflow');
+            return __('None - Pending', 'bmlt-workflow');
           }
           switch (data) {
-            case "approved":
-              return __("Approved",'bmlt-workflow');
-            case "rejected":
-              return __("Rejected",'bmlt-workflow');
-            case "updated":
-              return __("Updated",'bmlt-workflow');
+            case 'approved':
+              return __('Approved', 'bmlt-workflow');
+            case 'rejected':
+              return __('Rejected', 'bmlt-workflow');
+            case 'updated':
+              return __('Updated', 'bmlt-workflow');
+            default:
+              return data;
           }
-          return data;
         },
       },
       {
-        className: "dt-control",
+        className: 'dt-control',
         orderable: false,
         data: null,
-        defaultContent: "",
+        defaultContent: '',
       },
     ],
   });
 
-  $("#dt-submission_wrapper .dt-buttons").append(
-    __("Filter",'bmlt-workflow')+": <select id='dt-submission-filters'><option value='all'>"+__('All','bmlt-workflow')+"</option><option value='pending'>"+__('Pending','bmlt-workflow')+"</option><option value='approved'>"+__('Approved','bmlt-workflow')+"</option><option value='rejected'>"+__('Rejected','bmlt-workflow')+"</option></select>"
+  $('#dt-submission_wrapper .dt-buttons').append(
+    `${__('Filter', 'bmlt-workflow')}: <select id='dt-submission-filters'><option value='all'>${__('All', 'bmlt-workflow')}</option><option value='pending'>${__('Pending', 'bmlt-workflow')}</option><option value='approved'>${__('Approved', 'bmlt-workflow')}</option><option value='rejected'>${__('Rejected', 'bmlt-workflow')}</option></select>`,
   );
-  $("#dt-submission-filters").change(function (e) {
-    $("#dt-submission").DataTable().draw();
+  $('#dt-submission-filters').change(function () {
+    $('#dt-submission').DataTable().draw();
   });
 
   // filter on column 8
-  $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-    var selectedItem = $("#dt-submission-filters").val();
-    var category = data[8];
-    if (selectedItem === "all") {
+  $.fn.dataTable.ext.search.push(function (settings, data) {
+    const selectedItem = $('#dt-submission-filters').val();
+    const category = data[8];
+    if (selectedItem === 'all') {
       return true;
     }
-    if (selectedItem === "pending" && category.includes(__("Pending",'bmlt-workflow'))) {
+    if (selectedItem === 'pending' && category.includes(__('Pending', 'bmlt-workflow'))) {
       return true;
     }
-    if (selectedItem === "approved" && category.includes(__("Approved",'bmlt-workflow'))) {
+    if (selectedItem === 'approved' && category.includes(__('Approved', 'bmlt-workflow'))) {
       return true;
     }
-    if (selectedItem === "rejected" && category.includes(__("Rejected",'bmlt-workflow'))) {
+    if (selectedItem === 'rejected' && category.includes(__('Rejected', 'bmlt-workflow'))) {
       return true;
     }
     return false;
   });
 
-  $("#dt-submission")
+  $('#dt-submission')
     .DataTable()
-    .on("select deselect", function () {
-      var actioned = true;
+    .on('select deselect', function () {
+      let actioned = true;
       // handle optional delete
-      $("#dt-submission").DataTable().button("delete:name").enable(bmltwf_datatables_delete_enabled);
+      $('#dt-submission').DataTable().button('delete:name').enable(bmltwf_datatables_delete_enabled);
 
-      if ($("#dt-submission").DataTable().row({ selected: true }).count()) {
-        var change_made = $("#dt-submission").DataTable().row({ selected: true }).data()["change_made"];
-        var submission_type = $("#dt-submission").DataTable().row({ selected: true }).data()["submission_type"];
-        var actioned = change_made === "approved" || change_made === "rejected";
-        var cantquickedit = change_made === "approved" || change_made === "rejected" || submission_type === "reason_close";
-        $("#dt-submission").DataTable().button("approve:name").enable(!actioned);
-        $("#dt-submission").DataTable().button("reject:name").enable(!actioned);
-        $("#dt-submission").DataTable().button("quickedit:name").enable(!cantquickedit);
+      if ($('#dt-submission').DataTable().row({ selected: true }).count()) {
+        const { change_made } = $('#dt-submission').DataTable().row({ selected: true }).data();
+        const { submission_type } = $('#dt-submission').DataTable().row({ selected: true }).data();
+        actioned = change_made === 'approved' || change_made === 'rejected';
+        const cantquickedit = change_made === 'approved' || change_made === 'rejected' || submission_type === 'reason_close';
+        $('#dt-submission').DataTable().button('approve:name').enable(!actioned);
+        $('#dt-submission').DataTable().button('reject:name').enable(!actioned);
+        $('#dt-submission').DataTable().button('quickedit:name').enable(!cantquickedit);
       } else {
-        $("#dt-submission").DataTable().button("approve:name").enable(false);
-        $("#dt-submission").DataTable().button("reject:name").enable(false);
-        $("#dt-submission").DataTable().button("quickedit:name").enable(false);
+        $('#dt-submission').DataTable().button('approve:name').enable(false);
+        $('#dt-submission').DataTable().button('reject:name').enable(false);
+        $('#dt-submission').DataTable().button('quickedit:name').enable(false);
       }
     });
 
   function column(col, key, value) {
-    output = '<div class="c' + col + 'k">';
+    let output = `<div class="c${col}k">`;
     output += key;
-    output += ":</div>";
-    output += '<div class="c' + col + 'v">';
+    output += ':</div>';
+    output += `<div class="c${col}v">`;
     output += value;
-    output += "</div>";
+    output += '</div>';
     return output;
   }
 
   // child rows
   function format(rows) {
     // clone the requested info
-    d = $.extend(true, {}, rows);
+    const d = $.extend(true, {}, rows);
 
-    col_meeting_details = 1;
-    col_personal_details = 2;
-    col_virtual_meeting_details = 3;
-    col_fso_other = 4;
+    const col_meeting_details = 1;
+    const col_personal_details = 2;
+    const col_virtual_meeting_details = 3;
+    const col_fso_other = 4;
 
-    table = '<div class="header">';
-    table += '<div class="cell-hdr h' + col_personal_details + '">'+__('Personal Details','bmlt-workflow')+'</div>';
-    table += '<div class="cell-hdr h' + col_meeting_details + '">'+__('Updated Meeting Details','bmlt-workflow')+'</div>';
-    table += '<div class="cell-hdr h' + col_virtual_meeting_details + '">'+__('Updated Virtual Meeting Details','bmlt-workflow')+'</div>';
-    table += '<div class="cell-hdr h' + col_fso_other + '">'+__('FSO Request and Other Info','bmlt-workflow')+'</div>';
+    let table = '<div class="header">';
+    table += `<div class="cell-hdr h${col_personal_details}">${__('Personal Details', 'bmlt-workflow')}</div>`;
+    table += `<div class="cell-hdr h${col_meeting_details}">${__('Updated Meeting Details', 'bmlt-workflow')}</div>`;
+    table += `<div class="cell-hdr h${col_virtual_meeting_details}">${__('Updated Virtual Meeting Details', 'bmlt-workflow')}</div>`;
+    table += `<div class="cell-hdr h${col_fso_other}">${__('FSO Request and Other Info', 'bmlt-workflow')}</div>`;
     table += '</div><div class="gridbody">';
 
-    for (var key in d) {
+    Object.keys(d).forEach((key) => {
       switch (key) {
-        case "action_message":
-          if (d["action_message"] != "" && d["action_message"] != null) {
-            table += column(col_fso_other, __("Message to submitter",'bmlt-workflow'), d[key]);
+        case 'action_message':
+          if (d.action_message !== '' && d.action_message != null) {
+            table += column(col_fso_other, __('Message to submitter', 'bmlt-workflow'), d[key]);
           }
           break;
-        case "submitter_email":
-          table += column(col_personal_details, __("Submitter Email",'bmlt-workflow'), d[key]);
+        case 'submitter_email':
+          table += column(col_personal_details, __('Submitter Email', 'bmlt-workflow'), d[key]);
           break;
-        case "submitter_name":
-          table += column(col_personal_details, __("Submitter Name",'bmlt-workflow'), d[key]);
+        case 'submitter_name':
+          table += column(col_personal_details, __('Submitter Name', 'bmlt-workflow'), d[key]);
+          break;
+        default:
           break;
       }
-    }
+    });
 
-    c = d["changes_requested"];
+    const c = d.changes_requested;
 
     // some special handling for deletion of fields
-    for (var key in c) {
+    Object.keys(c).forEach((key) => {
       switch (key) {
-        case "original_virtual_meeting_additional_info":
-          if ((!("virtual_meeting_additional_info" in c) || c["virtual_meeting_additional_info"] === "") && bmltwf_remove_virtual_meeting_details_on_venue_change === "true") {
-            d["changes_requested"]["virtual_meeting_additional_info"] = __("(deleted)",'bmlt-workflow');
+        case 'original_virtual_meeting_additional_info':
+          if ((!('virtual_meeting_additional_info' in c) || c.virtual_meeting_additional_info === '') && bmltwf_remove_virtual_meeting_details_on_venue_change === 'true') {
+            d.changes_requested.virtual_meeting_additional_info = __('(deleted)', 'bmlt-workflow');
           }
           break;
-        case "original_phone_meeting_number":
-          if ((!("phone_meeting_number" in c) || c["phone_meeting_number"] === "") && bmltwf_remove_virtual_meeting_details_on_venue_change === "true") {
-            d["changes_requested"]["phone_meeting_number"] = __("(deleted)",'bmlt-workflow');
+        case 'original_phone_meeting_number':
+          if ((!('phone_meeting_number' in c) || c.phone_meeting_number === '') && bmltwf_remove_virtual_meeting_details_on_venue_change === 'true') {
+            d.changes_requested.phone_meeting_number = __('(deleted)', 'bmlt-workflow');
           }
           break;
-        case "original_virtual_meeting_link":
-          if ((!("virtual_meeting_link" in c) || c["virtual_meeting_link"] === "") && bmltwf_remove_virtual_meeting_details_on_venue_change === "true") {
-            d["changes_requested"]["virtual_meeting_link"] = __("(deleted)",'bmlt-workflow');
+        case 'original_virtual_meeting_link':
+          if ((!('virtual_meeting_link' in c) || c.virtual_meeting_link === '') && bmltwf_remove_virtual_meeting_details_on_venue_change === 'true') {
+            d.changes_requested.virtual_meeting_link = __('(deleted)', 'bmlt-workflow');
           }
+          break;
+        default:
           break;
       }
-    }
+    });
 
     // fill in the sub menu
 
-    for (var key in c) {
+    Object.keys(c).forEach((key) => {
       switch (key) {
-        case "meeting_name":
-          mname = __("Meeting Name (new)",'bmlt-workflow');
-          if (d["submission_type"] === "reason_close") {
-            mname = __("Meeting Name",'bmlt-workflow');
+        case 'meeting_name':
+        {
+          let mname = __('Meeting Name (new)', 'bmlt-workflow');
+          if (d.submission_type === 'reason_close') {
+            mname = __('Meeting Name', 'bmlt-workflow');
           }
           table += column(col_meeting_details, mname, c[key]);
           break;
-        case "venue_type":
-          vtype = venue_types[c[key]];
-          if ("original_venue_type" in c) {
-            ovtype = venue_types[c["original_venue_type"]];
-            table += column(col_meeting_details, __("Venue Type",'bmlt-workflow'), ovtype + " → " + vtype);
+        }
+        case 'venue_type':
+        {
+          const vtype = venue_types[c[key]];
+          if ('original_venue_type' in c) {
+            const ovtype = venue_types[c.original_venue_type];
+            table += column(col_meeting_details, __('Venue Type', 'bmlt-workflow'), `${ovtype} → ${vtype}`);
           } else {
-            table += column(col_meeting_details, __("Venue Type",'bmlt-workflow'), vtype);
+            table += column(col_meeting_details, __('Venue Type', 'bmlt-workflow'), vtype);
           }
           break;
-        case "start_time":
-          table += column(col_meeting_details, __("Start Time",'bmlt-workflow'), c[key]);
+        }
+        case 'start_time':
+          table += column(col_meeting_details, __('Start Time', 'bmlt-workflow'), c[key]);
           break;
-        case "duration_time":
-          var durationarr = d["changes_requested"].duration_time.split(":");
-          table += column(col_meeting_details, __("Duration",'bmlt-workflow'), durationarr[0] + "h" + durationarr[1] + "m");
+        case 'duration_time':
+        {
+          const durationarr = d.changes_requested.duration_time.split(':');
+          table += column(col_meeting_details, __('Duration', 'bmlt-workflow'), `${durationarr[0]}h${durationarr[1]}m`);
           break;
-        case "location_text":
-          table += column(col_meeting_details, __("Location",'bmlt-workflow'), c[key]);
+        }
+        case 'location_text':
+          table += column(col_meeting_details, __('Location', 'bmlt-workflow'), c[key]);
           break;
-        case "location_street":
-          table += column(col_meeting_details, __("Street",'bmlt-workflow'), c[key]);
+        case 'location_street':
+          table += column(col_meeting_details, __('Street', 'bmlt-workflow'), c[key]);
           break;
-        case "location_info":
-          table += column(col_meeting_details, __("Location Info",'bmlt-workflow'), c[key]);
+        case 'location_info':
+          table += column(col_meeting_details, __('Location Info', 'bmlt-workflow'), c[key]);
           break;
-        case "location_municipality":
-          table += column(col_meeting_details, __("Municipality",'bmlt-workflow'), c[key]);
+        case 'location_municipality':
+          table += column(col_meeting_details, __('Municipality', 'bmlt-workflow'), c[key]);
           break;
-        case "location_province":
+        case 'location_province':
           table += column(col_meeting_details, bmltwf_optional_location_province_displayname, c[key]);
           break;
-        case "location_sub_province":
+        case 'location_sub_province':
           table += column(col_meeting_details, bmltwf_optional_location_sub_province_displayname, c[key]);
           break;
-        case "location_nation":
+        case 'location_nation':
           table += column(col_meeting_details, bmltwf_optional_location_nation_displayname, c[key]);
           break;
-        case "location_postal_code_1":
+        case 'location_postal_code_1':
           table += column(col_meeting_details, bmltwf_optional_postcode_displayname, c[key]);
           break;
-        case "group_relationship":
-          table += column(col_personal_details,__( "Relationship to Group",'bmlt-workflow'), c[key]);
+        case 'group_relationship':
+          table += column(col_personal_details, __('Relationship to Group', 'bmlt-workflow'), c[key]);
           break;
-        case "weekday_tinyint":
-          table += column(col_meeting_details, __("Meeting Day",'bmlt-workflow'), weekdays[c[key]]);
+        case 'weekday_tinyint':
+          table += column(col_meeting_details, __('Meeting Day', 'bmlt-workflow'), weekdays[c[key]]);
           break;
-        case "starter_kit_postal_address":
-          if (c["starter_kit_required"] === "yes") {
-            table += column(col_fso_other, __("Starter Kit Postal Address",'bmlt-workflow'), c[key]);
+        case 'starter_kit_postal_address':
+          if (c.starter_kit_required === 'yes') {
+            table += column(col_fso_other, __('Starter Kit Postal Address', 'bmlt-workflow'), c[key]);
           }
           break;
-        case "additional_info":
-          table += column(col_fso_other, __("Additional Info",'bmlt-workflow'), c[key]);
+        case 'additional_info':
+          table += column(col_fso_other, __('Additional Info', 'bmlt-workflow'), c[key]);
           break;
-        case "other_reason":
-          table += column(col_fso_other, __("Other Reason",'bmlt-workflow'), c[key]);
+        case 'other_reason':
+          table += column(col_fso_other, __('Other Reason', 'bmlt-workflow'), c[key]);
           break;
-        case "contact_number":
-          table += column(col_personal_details, __("Contact number (confidential)",'bmlt-workflow'), c[key]);
+        case 'contact_number':
+          table += column(col_personal_details, __('Contact number (confidential)', 'bmlt-workflow'), c[key]);
           break;
-        case "add_contact":
-          table += column(col_personal_details, __("Add contact details to meeting",'bmlt-workflow'), d["changes_requested"].add_contact === "yes" ? "Yes" : "No");
+        case 'add_contact':
+          table += column(col_personal_details, __('Add contact details to meeting', 'bmlt-workflow'), d.changes_requested.add_contact === 'yes' ? 'Yes' : 'No');
           break;
-        case "virtual_meeting_additional_info":
-          table += column(col_virtual_meeting_details, __("Virtual Meeting Additional Info",'bmlt-workflow'), c[key]);
+        case 'virtual_meeting_additional_info':
+          table += column(col_virtual_meeting_details, __('Virtual Meeting Additional Info', 'bmlt-workflow'), c[key]);
           break;
-        case "phone_meeting_number":
-          table += column(col_virtual_meeting_details, __("Virtual Meeting Phone Details",'bmlt-workflow'), c[key]);
+        case 'phone_meeting_number':
+          table += column(col_virtual_meeting_details, __('Virtual Meeting Phone Details', 'bmlt-workflow'), c[key]);
           break;
-        case "virtual_meeting_link":
-          table += column(col_virtual_meeting_details, __("Virtual Meeting Link",'bmlt-workflow'), c[key]);
+        case 'virtual_meeting_link':
+          table += column(col_virtual_meeting_details, __('Virtual Meeting Link', 'bmlt-workflow'), c[key]);
           break;
 
-        case "format_shared_id_list":
-          friendlyname = __("Meeting Formats",'bmlt-workflow');
+        case 'format_shared_id_list':
+        {
+          const friendlyname = __('Meeting Formats', 'bmlt-workflow');
           // convert the meeting formats to human readable
-          friendlydata = "";
-          strarr = d["changes_requested"]["format_shared_id_list"].split(",");
+          let friendlydata = '';
+          const strarr = d.changes_requested.format_shared_id_list.split(',');
           strarr.forEach((element) => {
-            friendlydata += "(" + bmltwf_bmlt_formats[element]["key_string"] + ")-" + bmltwf_bmlt_formats[element]["name_string"] + " ";
+            friendlydata += `(${bmltwf_bmlt_formats[element].key_string})-${bmltwf_bmlt_formats[element].name_string} `;
           });
           table += column(col_meeting_details, friendlyname, friendlydata);
 
           break;
+        }
+        default:
+          break;
       }
-    }
+    });
 
-    table += "</div>";
+    table += '</div>';
     return table;
   }
 
-  $("#dt-submission tbody").on("click", "td.dt-control", function (event ) {
-    var tr = $(this).closest("tr");
-    var row = datatable.row(tr);
+  $('#dt-submission tbody').on('click', 'td.dt-control', function (event) {
+    const tr = $(this).closest('tr');
+    const row = datatable.row(tr);
 
     event.stopPropagation();
-    
+
     if (row.child.isShown()) {
       // This row is already open - close it
       row.child.hide();
-      tr.removeClass("shown");
+      tr.removeClass('shown');
     } else {
       // Open this row
       row.child(format(row.data())).show();
-      tr.addClass("shown");
+      tr.addClass('shown');
     }
   });
 
   function bmltwf_create_generic_modal(dialogid, title, width, maxwidth) {
-    $("#" + dialogid).dialog({
-      title: title,
+    $(`#${dialogid}`).dialog({
+      title,
       autoOpen: false,
       draggable: false,
-      width: width,
+      width,
       maxWidth: maxwidth,
       modal: true,
       resizable: false,
       closeOnEscape: true,
       position: {
-        my: "center",
-        at: "center",
+        my: 'center',
+        at: 'center',
         of: window,
       },
       buttons: {
-        Ok: function () {
-          fn = window[this.id + "_ok"];
-          if (typeof fn === "function") fn($(this).data("id"));
+        Ok() {
+          const fn = window[`${this.id}_ok`];
+          if (typeof fn === 'function') fn($(this).data('id'));
         },
-        Cancel: function () {
-          $(this).dialog("close");
+        Cancel() {
+          $(this).dialog('close');
         },
       },
-      open: function () {
-        var $this = $(this);
+      open() {
+        const $this = $(this);
         // close dialog by clicking the overlay behind it
-        $(".ui-widget-overlay").on("click", function () {
-          $this.dialog("close");
+        $('.ui-widget-overlay').on('click', function () {
+          $this.dialog('close');
         });
       },
-      create: function () {
-        $(".ui-dialog-titlebar-close").addClass("ui-button");
+      create() {
+        $('.ui-dialog-titlebar-close').addClass('ui-button');
       },
     });
   }
 
-  function bmltwf_create_quickedit_modal(dialogid, title, width, maxwidth) {
-    $("#" + dialogid).dialog({
-      title: title,
-      classes: { "ui-dialog-content": "quickedit" },
-      autoOpen: false,
-      draggable: false,
-      width: width,
-      maxWidth: maxwidth,
-      modal: true,
-      resizable: false,
-      closeOnEscape: true,
-      position: {
-        my: "center",
-        at: "center",
-        of: window,
-      },
-      buttons: [
-        {
-          text: __("Check Geolocate",'bmlt-workflow'),
-          click: function () {
-            geolocate_handler($(this).data("id"));
-          },
-          disabled: !bmltwf_auto_geocoding_enabled,
-        },
-        {
-          text: __("Save",'bmlt-workflow'),
-          click: function () {
-            save_handler($(this).data("id"));
-          },
-        },
-        {
-          text: __("Cancel",'bmlt-workflow'),
-          click: function () {
-            $(this).dialog("close");
-          },
-        },
-      ],
-      open: function () {
-        var $this = $(this);
-        // close dialog by clicking the overlay behind it
-        $(".ui-widget-overlay").on("click", function () {
-          $this.dialog("close");
-        });
-      },
-      create: function () {
-        $(".ui-dialog-titlebar-close").addClass("ui-button");
-      },
-    });
-  }
+  function geolocate_handler() {
+    const locfields = ['location_street', 'location_municipality', 'location_province', 'location_postal_code_1', 'location_sub_province', 'location_nation'];
+    const locdata = [];
 
-  bmltwf_create_generic_modal("bmltwf_submission_delete_dialog", __("Delete Submission",'bmlt-workflow'), "auto", "auto");
-  bmltwf_create_generic_modal("bmltwf_submission_approve_dialog", __("Approve Submission",'bmlt-workflow'), "auto", "auto");
-  bmltwf_create_generic_modal("bmltwf_submission_approve_close_dialog", __("Approve Submission",'bmlt-workflow'), "auto", "auto");
-  bmltwf_create_generic_modal("bmltwf_submission_reject_dialog", __("Reject Submission",'bmlt-workflow'), "auto", "auto");
-  bmltwf_create_quickedit_modal("bmltwf_submission_quickedit_dialog", __("Submission QuickEdit",'bmlt-workflow'), "auto", "auto");
-
-  bmltwf_submission_approve_dialog_ok = function (id) {
-    clear_notices();
-    generic_approve_handler(id, "POST", "/approve", "bmltwf_submission_approve");
-  };
-
-  bmltwf_submission_approve_close_dialog_ok = function (id) {
-    clear_notices();
-    generic_approve_handler(id, "POST", "/approve", "bmltwf_submission_approve_close");
-  };
-
-  bmltwf_submission_reject_dialog_ok = function (id) {
-    clear_notices();
-    generic_approve_handler(id, "POST", "/reject", "bmltwf_submission_reject");
-  };
-  bmltwf_submission_delete_dialog_ok = function (id) {
-    clear_notices();
-    generic_approve_handler(id, "DELETE", "", "bmltwf_submission_delete");
-  };
-
-  function generic_approve_handler(id, action, url, slug) {
-    parameters = {};
-    if ($("#" + slug + "_dialog_textarea").length) {
-      var action_message = $("#" + slug + "_dialog_textarea")
-        .val()
-        .trim();
-      if (action_message !== "") {
-        parameters["action_message"] = action_message;
-      }
-    }
-
-    // delete/unpublish handling on the approve+close dialog
-    if (slug === "bmltwf_submission_approve_close") {
-      option = $("#" + slug + '_dialog input[name="close_action"]:checked').attr("id");
-      if (option === "close_delete") {
-        parameters["delete"] = true;
-      } else {
-        parameters["delete"] = false;
-      }
-    }
-
-    $.ajax({
-      url: bmltwf_admin_submissions_rest_url + id + url,
-      type: action,
-      dataType: "json",
-      contentType: "application/json",
-      data: JSON.stringify(parameters),
-      beforeSend: function (xhr) {
-        clear_notices();
-        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
-      },
-    })
-      .done(function (response) {
-        notice_success(response, "bmltwf-error-message");
-        // reload the table to pick up any changes
-        $("#dt-submission").DataTable().ajax.reload();
-        // reset the buttons correctly
-        $("#dt-submission").DataTable().rows().deselect();
-      })
-      .fail(function (xhr) {
-        notice_error(xhr, "bmltwf-error-message");
-      });
-    $("#" + slug + "_dialog").dialog("close");
-  }
-
-  function geolocate_handler(id) {
-    var locfields = ["location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation"];
-    var locdata = [];
-
-    locfields.forEach((item, i) => {
-      var el = "#quickedit_" + item;
-      var val = $(el).val();
-      if (val != "") {
+    locfields.forEach((item) => {
+      const el = `#quickedit_${item}`;
+      const val = $(el).val();
+      if (val !== '') {
         locdata.push(val);
       }
-    });
+      const address = `address=${locdata.join(',')}`;
 
-    var address = "address=" + locdata.join(",");
-
-    $.ajax({
-      url: bmltwf_bmltserver_geolocate_rest_url,
-      type: "GET",
-      dataType: "json",
-      contentType: "application/json",
-      data: encodeURI(address),
-      beforeSend: function (xhr) {
-        clear_notices();
-        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
-      },
-    })
-      .done(function (response) {
-        var lat = response["latitude"];
-        var long = response["longitude"];
-        $("#quickedit_latitude").val(lat);
-        $("#quickedit_longitude").val(long);
-        update_gmaps(lat, long);
-        notice_success(response, "bmltwf-quickedit-error-message");
+      $.ajax({
+        url: bmltwf_bmltserver_geolocate_rest_url,
+        type: 'GET',
+        dataType: 'json',
+        contentType: 'application/json',
+        data: encodeURI(address),
+        beforeSend(xhr) {
+          clear_notices();
+          xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
+        },
       })
-      .fail(function (xhr) {
-        notice_error(xhr, "bmltwf-quickedit-error-message");
-      });
-  }
-
-  function update_gmaps(lat, long) {
-    initMap(lat, long);
-    $("#bmltwf_quickedit_map").show();
+        .done(function (response) {
+          const lat = response.latitude;
+          const long = response.longitude;
+          $('#quickedit_latitude').val(lat);
+          $('#quickedit_longitude').val(long);
+          update_gmaps(lat, long);
+          notice_success(response, 'bmltwf-quickedit-error-message');
+        })
+        .fail(function (xhr) {
+          notice_error(xhr, 'bmltwf-quickedit-error-message');
+        });
+    });
   }
 
   function save_handler(id) {
-    parameters = {};
-    changes_requested = {};
-    quickedit_changes_requested = {};
+    const parameters = {};
+    const quickedit_changes_requested = {};
 
     clear_notices();
 
     // pull out all the changed elements
-    $(".bmltwf-changed").each(function () {
-      if ($(this).is("textarea,select,input")) {
-        var short_id = $(this).attr("id").replace("quickedit_", "");
+    $('.bmltwf-changed').each(function () {
+      if ($(this).is('textarea,select,input')) {
+        const short_id = $(this).attr('id').replace('quickedit_', '');
         // turn the format list into a comma seperated array
-        if (short_id === "format_shared_id_list") {
-          quickedit_changes_requested[short_id] = $(this).val().join(",");
-        }
+        if (short_id === 'format_shared_id_list') {
+          quickedit_changes_requested[short_id] = $(this).val().join(',');
+        } else if (short_id === 'duration_hours' || short_id === 'duration_minutes') {
         // reconstruct our duration from the select list
-        else if (short_id === "duration_hours" || short_id === "duration_minutes") {
           // add duration entirely if either minutes or hours have changed
-          quickedit_changes_requested["duration_time"] = $("#quickedit_duration_hours").val() + ":" + $("#quickedit_duration_minutes").val() + ":00";
-        } else if ((short_id === "virtual_meeting_additional_info" || short_id === "phone_meeting_number" || short_id === "virtual_meeting_link") && ($(this).val() === "(deleted)")) {
-        {
+          quickedit_changes_requested.duration_time = `${$('#quickedit_duration_hours').val()}:${$('#quickedit_duration_minutes').val()}:00`;
+        } else if ((short_id === 'virtual_meeting_additional_info' || short_id === 'phone_meeting_number' || short_id === 'virtual_meeting_link') && ($(this).val() === '(deleted)')) {
           delete quickedit_changes_requested[short_id];
-        }
         } else {
           quickedit_changes_requested[short_id] = $(this).val();
         }
       }
     });
 
-    parameters["changes_requested"] = quickedit_changes_requested;
+    parameters.changes_requested = quickedit_changes_requested;
 
     $.ajax({
       url: bmltwf_admin_submissions_rest_url + id,
-      type: "PATCH",
-      dataType: "json",
-      contentType: "application/json",
+      type: 'PATCH',
+      dataType: 'json',
+      contentType: 'application/json',
       data: JSON.stringify(parameters),
-      beforeSend: function (xhr) {
+      beforeSend(xhr) {
         clear_notices();
-        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+        xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
       },
     })
       .done(function (response) {
-        notice_success(response, "bmltwf-error-message");
+        notice_success(response, 'bmltwf-error-message');
 
         // reload the table to pick up any changes
-        $("#dt-submission").DataTable().ajax.reload();
+        $('#dt-submission').DataTable().ajax.reload();
         // reset the buttons correctly
-        $("#dt-submission").DataTable().rows().deselect();
+        $('#dt-submission').DataTable().rows().deselect();
       })
       .fail(function (xhr) {
-        notice_error(xhr, "bmltwf-error-message");
+        notice_error(xhr, 'bmltwf-error-message');
       });
-    $("#bmltwf_submission_quickedit_dialog").dialog("close");
+    $('#bmltwf_submission_quickedit_dialog').dialog('close');
   }
+
+  function bmltwf_create_quickedit_modal(dialogid, title, width, maxwidth) {
+    $(`#${dialogid}`).dialog({
+      title,
+      classes: { 'ui-dialog-content': 'quickedit' },
+      autoOpen: false,
+      draggable: false,
+      width,
+      maxWidth: maxwidth,
+      modal: true,
+      resizable: false,
+      closeOnEscape: true,
+      position: {
+        my: 'center',
+        at: 'center',
+        of: window,
+      },
+      buttons: [
+        {
+          text: __('Check Geolocate', 'bmlt-workflow'),
+          click() {
+            geolocate_handler($(this).data('id'));
+          },
+          disabled: !bmltwf_auto_geocoding_enabled,
+        },
+        {
+          text: __('Save', 'bmlt-workflow'),
+          click() {
+            save_handler($(this).data('id'));
+          },
+        },
+        {
+          text: __('Cancel', 'bmlt-workflow'),
+          click() {
+            $(this).dialog('close');
+          },
+        },
+      ],
+      open() {
+        const $this = $(this);
+        // close dialog by clicking the overlay behind it
+        $('.ui-widget-overlay').on('click', function () {
+          $this.dialog('close');
+        });
+      },
+      create() {
+        $('.ui-dialog-titlebar-close').addClass('ui-button');
+      },
+    });
+  }
+
+  function generic_approve_handler(id, action, url, slug) {
+    const parameters = {};
+    if ($(`#${slug}_dialog_textarea`).length) {
+      const action_message = $(`#${slug}_dialog_textarea`)
+        .val()
+        .trim();
+      if (action_message !== '') {
+        parameters.action_message = action_message;
+      }
+    }
+
+    // delete/unpublish handling on the approve+close dialog
+    if (slug === 'bmltwf_submission_approve_close') {
+      const option = $(`#${slug}_dialog input[name="close_action"]:checked`).attr('id');
+      if (option === 'close_delete') {
+        parameters.delete = true;
+      } else {
+        parameters.delete = false;
+      }
+    }
+
+    $.ajax({
+      url: bmltwf_admin_submissions_rest_url + id + url,
+      type: action,
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify(parameters),
+      beforeSend(xhr) {
+        clear_notices();
+        xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
+      },
+    })
+      .done(function (response) {
+        notice_success(response, 'bmltwf-error-message');
+        // reload the table to pick up any changes
+        $('#dt-submission').DataTable().ajax.reload();
+        // reset the buttons correctly
+        $('#dt-submission').DataTable().rows().deselect();
+      })
+      .fail(function (xhr) {
+        notice_error(xhr, 'bmltwf-error-message');
+      });
+    $(`#${slug}_dialog`).dialog('close');
+  }
+
+  bmltwf_create_generic_modal('bmltwf_submission_delete_dialog', __('Delete Submission', 'bmlt-workflow'), 'auto', 'auto');
+  bmltwf_create_generic_modal('bmltwf_submission_approve_dialog', __('Approve Submission', 'bmlt-workflow'), 'auto', 'auto');
+  bmltwf_create_generic_modal('bmltwf_submission_approve_close_dialog', __('Approve Submission', 'bmlt-workflow'), 'auto', 'auto');
+  bmltwf_create_generic_modal('bmltwf_submission_reject_dialog', __('Reject Submission', 'bmlt-workflow'), 'auto', 'auto');
+  bmltwf_create_quickedit_modal('bmltwf_submission_quickedit_dialog', __('Submission QuickEdit', 'bmlt-workflow'), 'auto', 'auto');
+
+  // eslint-disable-next-line no-undef
+  bmltwf_submission_approve_dialog_ok = function (id) {
+    clear_notices();
+    generic_approve_handler(id, 'POST', '/approve', 'bmltwf_submission_approve');
+  };
+
+  // eslint-disable-next-line no-undef
+  bmltwf_submission_approve_close_dialog_ok = function (id) {
+    clear_notices();
+    generic_approve_handler(id, 'POST', '/approve', 'bmltwf_submission_approve_close');
+  };
+
+  // eslint-disable-next-line no-undef
+  bmltwf_submission_reject_dialog_ok = function (id) {
+    clear_notices();
+    generic_approve_handler(id, 'POST', '/reject', 'bmltwf_submission_reject');
+  };
+  // eslint-disable-next-line no-undef
+  bmltwf_submission_delete_dialog_ok = function (id) {
+    clear_notices();
+    generic_approve_handler(id, 'DELETE', '', 'bmltwf_submission_delete');
+  };
 });

@@ -15,174 +15,175 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-"use strict";
+/* eslint no-undef: "error" */
+
+/* global wp, jQuery */
+/* global clear_notices, turn_on_spinner, turn_off_spinner, notice_success, notice_error */
+/* global bmltwf_admin_bmltwf_service_bodies_rest_url */
+/* global wp_users_url */
 
 const { __ } = wp.i18n;
 
 jQuery(document).ready(function ($) {
- 
   function attach_select_options_for_sbid(sblist, userlist, sbid, selectid) {
     Object.keys(userlist).forEach((item) => {
-      var wp_uid = userlist[item]["id"];
-      var username = userlist[item]["slug"];
-      var membership = sblist[sbid]["membership"];
-      var selected = false;
+      const wp_uid = userlist[item].id;
+      const username = userlist[item].slug;
+      const { membership } = sblist[sbid];
+      let selected = false;
       if (membership.includes(wp_uid)) {
         selected = true;
       }
-      var opt = new Option(username, wp_uid, false, selected);
+      const opt = new Option(username, wp_uid, false, selected);
       $(selectid).append(opt);
       // console.log(opt);
     });
-    $(selectid).trigger("change");
+    $(selectid).trigger('change');
   }
 
   function create_service_area_permission_post() {
-    ret = {};
-    $(".bmltwf-userlist").each(function () {
+    const ret = {};
+    $('.bmltwf-userlist').each(function () {
       // console.log("got real id " + $(this).data("id"));
-      id = $(this).data("id");
+      const id = $(this).data('id');
       // console.log("got name " + $(this).data("name"));
-      sbname = $(this).data("name");
+      const sbname = $(this).data('name');
       // console.log("select vals = "+ $(this).val());
-      membership = $(this).val();
+      const membership = $(this).val();
       // console.log("got show_on_form = "+ $(this).data("show_on_form"));
-      show_on_form = $(this).data("show_on_form");
+      const show_on_form = $(this).data('show_on_form');
 
-      ret[id] = { name: sbname, show_on_form: show_on_form, membership: membership };
+      ret[id] = { name: sbname, show_on_form, membership };
     });
     return ret;
   }
 
-  $("#bmltwf_submit").on("click", function () {
-    $("#bmltwf-userlist-table tbody tr").each(function () {
-      tr = $(this);
-      checked = $(tr).find("input:checkbox").prop("checked");
-      select = $(tr).find("select");
-      select.data("show_on_form", checked);
+  $('#bmltwf_submit').on('click', function () {
+    $('#bmltwf-userlist-table tbody tr').each(function () {
+      const tr = $(this);
+      const checked = $(tr).find('input:checkbox').prop('checked');
+      const select = $(tr).find('select');
+      select.data('show_on_form', checked);
     });
-    post = create_service_area_permission_post();
+    const post = create_service_area_permission_post();
 
     clear_notices();
 
     $.ajax({
       url: bmltwf_admin_bmltwf_service_bodies_rest_url,
-      method: "POST",
+      method: 'POST',
       data: JSON.stringify(post),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
       processData: false,
-      beforeSend: function (xhr) {
-        turn_on_spinner("#bmltwf-submit-spinner");
+      beforeSend(xhr) {
+        turn_on_spinner('#bmltwf-submit-spinner');
 
-        xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+        xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
       },
     })
       .done(function (response) {
-        turn_off_spinner("#bmltwf-submit-spinner");
-        notice_success(response, "bmltwf-error-message");
+        turn_off_spinner('#bmltwf-submit-spinner');
+        notice_success(response, 'bmltwf-error-message');
       })
       .fail(function (xhr) {
-        turn_off_spinner("#bmltwf-submit-spinner");
-        notice_error(xhr, "bmltwf-error-message");
+        turn_off_spinner('#bmltwf-submit-spinner');
+        notice_error(xhr, 'bmltwf-error-message');
       });
   });
 
   // get the permissions, and the userlist from wordpress, and create our select lists
-  var parameters = { detail: "true" };
+  const parameters = { detail: 'true' };
 
-  var respsblist = $.ajax({
+  const respsblist = $.ajax({
     url: bmltwf_admin_bmltwf_service_bodies_rest_url,
-    dataType: "json",
+    dataType: 'json',
     data: parameters,
-    beforeSend: function (xhr) {
-      turn_on_spinner("#bmltwf-form-spinner");
-      xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+    beforeSend(xhr) {
+      turn_on_spinner('#bmltwf-form-spinner');
+      xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
     },
   })
     .done(function (response) {
-
       // paginate wordpress user response
-      var pagesize = 10;
-      var page = 1;
-      var firstsep = "?";
-      if (wp_users_url.includes("?")) {
-        firstsep = "&";
+      const pagesize = 10;
+      const page = 1;
+      let firstsep = '?';
+      if (wp_users_url.includes('?')) {
+        firstsep = '&';
       }
 
-      var thisresp = $.ajax({
-        url: wp_users_url + firstsep + "per_page=" + pagesize + "&page=" + page,
-        dataType: "json",
+      const thisresp = $.ajax({
+        url: `${wp_users_url + firstsep}per_page=${pagesize}&page=${page}`,
+        dataType: 'json',
         sblist: response,
-        beforeSend: function (xhr) {
-          xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
+        beforeSend(xhr) {
+          xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
         },
-      }).done(function (response) {
-        var pg = thisresp.getResponseHeader("x-wp-totalpages");
+      }).done(function () {
+        const pg = thisresp.getResponseHeader('x-wp-totalpages');
 
         if (pg != null) {
-          var totalpages = parseInt(pg);
-          var range = [...Array(totalpages).keys()].map((x) => x + 1);
+          const totalpages = parseInt(pg, 10);
+          const range = [...Array(totalpages).keys()].map((x) => x + 1);
 
-          var users = {};
-          var allAJAX = range.map((page) => {
-            return $.ajax({
-              url: wp_users_url + firstsep + "per_page=" + pagesize + "&page=" + page,
-              dataType: "json",
-              beforeSend: function (xhr) {
-                xhr.setRequestHeader("X-WP-Nonce", $("#_wprestnonce").val());
-              },
-            }).done(function (data) {
-              Object.keys(data).forEach((item) => {
-                users[data[item]["id"]] = data[item];
-              });
+          const users = {};
+          const allAJAX = range.map(() => $.ajax({
+            url: `${wp_users_url + firstsep}per_page=${pagesize}&page=${page}`,
+            dataType: 'json',
+            beforeSend(xhr) {
+              xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
+            },
+          }).done(function (data) {
+            Object.keys(data).forEach((item) => {
+              users[data[item].id] = data[item];
             });
-          });
+          }));
 
           Promise.all(allAJAX).then(function () {
-            var sblist = respsblist.responseJSON;
-            var userlist = users;
+            const sblist = respsblist.responseJSON;
+            const userlist = users;
             Object.keys(sblist).forEach((item) => {
-              var id = "bmltwf_userlist_id_" + item;
-              var cbid = "bmltwf_userlist_checkbox_id_" + item;
-              var checked = sblist[item]["show_on_form"] ? "checked" : "";
-              var appendstr = "<tr>";
+              const id = `bmltwf_userlist_id_${item}`;
+              const cbid = `bmltwf_userlist_checkbox_id_${item}`;
+              const checked = sblist[item].show_on_form ? 'checked' : '';
+              let appendstr = '<tr>';
 
-              appendstr += "<td>" + sblist[item]["name"] + "</td>";
-              appendstr += '<td><div class="grow-wrap"><textarea onInput="this.parentNode.dataset.replicatedValue = this.value" disabled>' + sblist[item]["description"] + "</textarea></div></td>";
-              appendstr += '<td><select class="bmltwf-userlist" id="' + id + '" style="width: auto"></select></td>';
-              appendstr += '<td class="bmltwf-center-checkbox"><input type="checkbox" id="' + cbid + '" ' + checked + "></td>";
-              appendstr += "</tr>";
-              $("#bmltwf-userlist-table tbody").append(appendstr);
+              appendstr += `<td>${sblist[item].name}</td>`;
+              appendstr += `<td><div class="grow-wrap"><textarea onInput="this.parentNode.dataset.replicatedValue = this.value" disabled>${sblist[item].description}</textarea></div></td>`;
+              appendstr += `<td><select class="bmltwf-userlist" id="${id}" style="width: auto"></select></td>`;
+              appendstr += `<td class="bmltwf-center-checkbox"><input type="checkbox" id="${cbid}" ${checked}></td>`;
+              appendstr += '</tr>';
+              $('#bmltwf-userlist-table tbody').append(appendstr);
               // store metadata away for later
-              $("#" + id).data("id", item);
-              $("#" + id).data("name", sblist[item]["name"]);
+              $(`#${id}`).data('id', item);
+              $(`#${id}`).data('name', sblist[item].name);
 
-              $(".bmltwf-userlist").select2({
+              $('.bmltwf-userlist').select2({
                 multiple: true,
-                width: "100%",
+                width: '100%',
               });
 
-              attach_select_options_for_sbid(sblist, userlist, item, "#" + id);
+              attach_select_options_for_sbid(sblist, userlist, item, `#${id}`);
             });
 
             // update the auto size boxes
-            $(".grow-wrap textarea").trigger("input");
+            $('.grow-wrap textarea').trigger('input');
 
             // turn off spinner
-            turn_off_spinner("#bmltwf-form-spinner");
+            turn_off_spinner('#bmltwf-form-spinner');
             // turn on table
-            $("#bmltwf-userlist-table").show();
-            $("#bmltwf_submit").show();
+            $('#bmltwf-userlist-table').show();
+            $('#bmltwf_submit').show();
           });
         } else {
-          turn_off_spinner("#bmltwf-form-spinner");
-          notice_error(__("Error retrieving wordpress users",'bmlt-workflow'), "bmltwf-error-message");
+          turn_off_spinner('#bmltwf-form-spinner');
+          notice_error(__('Error retrieving wordpress users', 'bmlt-workflow'), 'bmltwf-error-message');
         }
       });
     })
     .fail(function (xhr) {
-      turn_off_spinner("#bmltwf-form-spinner");
-      notice_error(xhr, "bmltwf-error-message");
+      turn_off_spinner('#bmltwf-form-spinner');
+      notice_error(xhr, 'bmltwf-error-message');
     });
 });

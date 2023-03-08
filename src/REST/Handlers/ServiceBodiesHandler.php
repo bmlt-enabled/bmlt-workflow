@@ -51,7 +51,7 @@ class ServiceBodiesHandler
         global $wpdb;
 
         $params = $request->get_params();
-        $this->debug_log(($params));
+        // $this->debug_log(($params));
         // only an admin can get the service bodies detail (permissions) information
         if ((!empty($params['detail'])) && ($params['detail'] == "true") && (current_user_can('manage_options'))) {
             // detail list
