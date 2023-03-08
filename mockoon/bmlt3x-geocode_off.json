@@ -1,11 +1,11 @@
 {
   "uuid": "ed20d597-c329-4dcf-8fe7-58692c6368f5",
-  "lastMigration": 25,
+  "lastMigration": 27,
   "name": "Bmlt3x geo off",
   "endpointPrefix": "",
   "latency": 0,
   "port": 3002,
-  "hostname": "0.0.0.0",
+  "hostname": "",
   "folders": [],
   "routes": [
     {
@@ -33,7 +33,8 @@
         }
       ],
       "enabled": true,
-      "responseMode": null
+      "responseMode": null,
+      "type": "http"
     },
     {
       "uuid": "6d7d701e-adac-4b42-9066-e87ebf82ae06",
@@ -73,7 +74,8 @@
         }
       ],
       "enabled": true,
-      "responseMode": null
+      "responseMode": null,
+      "type": "http"
     },
     {
       "uuid": "ae0b72ea-9f4a-4d70-9fde-1796fd62d636",
@@ -113,7 +115,8 @@
         }
       ],
       "enabled": true,
-      "responseMode": null
+      "responseMode": null,
+      "type": "http"
     },
     {
       "uuid": "d05d19de-28e5-4b07-8870-3f1c19cc4495",
@@ -153,7 +156,8 @@
         }
       ],
       "enabled": true,
-      "responseMode": null
+      "responseMode": null,
+      "type": "http"
     },
     {
       "uuid": "cc867816-7dad-4721-b4bc-8b6a8b6a842a",
@@ -193,7 +197,8 @@
         }
       ],
       "enabled": true,
-      "responseMode": null
+      "responseMode": null,
+      "type": "http"
     },
     {
       "uuid": "0dcc95bd-3fc1-45dc-bd1a-fa4eb4edb459",
@@ -233,7 +238,8 @@
         }
       ],
       "enabled": true,
-      "responseMode": null
+      "responseMode": null,
+      "type": "http"
     },
     {
       "uuid": "e9e05ae9-2995-4ac0-976c-f651a06ee630",
@@ -357,7 +363,8 @@
         }
       ],
       "enabled": true,
-      "responseMode": null
+      "responseMode": null,
+      "type": "http"
     },
     {
       "uuid": "1f6cb089-11c8-495b-b5e9-26f8783d89db",
@@ -397,7 +404,8 @@
         }
       ],
       "enabled": true,
-      "responseMode": null
+      "responseMode": null,
+      "type": "http"
     },
     {
       "uuid": "4ac993a8-4faa-427f-add3-6401b4ecf75e",
@@ -437,7 +445,8 @@
         }
       ],
       "enabled": true,
-      "responseMode": null
+      "responseMode": null,
+      "type": "http"
     },
     {
       "uuid": "e2df2223-d249-413c-b96d-6bc804bf5d7f",
@@ -485,7 +494,8 @@
         }
       ],
       "enabled": true,
-      "responseMode": null
+      "responseMode": null,
+      "type": "http"
     },
     {
       "uuid": "cb3e1535-297a-4bbd-9da1-b20c92da991d",
@@ -525,7 +535,8 @@
         }
       ],
       "enabled": true,
-      "responseMode": null
+      "responseMode": null,
+      "type": "http"
     }
   ],
   "rootChildren": [

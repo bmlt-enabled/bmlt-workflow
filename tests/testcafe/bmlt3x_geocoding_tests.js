@@ -40,6 +40,7 @@ fixture`bmlt3x_geocoding_tests_fixture`
 
     // geocoding disabled on port 3002
     await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3002","hidden");
+    await set_language_single(t, "en");
 
   });
 

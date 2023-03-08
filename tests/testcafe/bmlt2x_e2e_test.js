@@ -37,7 +37,7 @@ fixture`bmlt2x_e2e_test_fixture`
   .beforeEach(async (t) => {
     await waitfor(userVariables.admin_logon_page_single);
     await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3000"),"hidden";
-    // await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,"bmlt2x","8000"),"hidden";
+    await set_language_single(t, "en");
   
   });
 

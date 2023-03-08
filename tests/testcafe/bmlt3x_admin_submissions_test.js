@@ -36,6 +36,7 @@ fixture`bmlt3x_admin_submissions_fixture`
 .beforeEach(async (t) => {
 
   await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001","hidden");
+  await set_language_single(t, "en");
 
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
 });
@@ -399,6 +400,7 @@ test('Quickedit_Change_Meeting', async t => {
 
 test('Quickedit_States_Dropdowns', async t => {
   await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3003","display");
+  await set_language_single(t, "en");
   await t.navigateTo(userVariables.admin_submissions_page_single);
   // change meeting = row 1
   var row = 1;

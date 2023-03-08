@@ -15,4 +15,5 @@ module.exports = {
     camelcase: 'off',
     'max-len': 'off',
   },
+  ignorePatterns: ['tests/**', 'node_modules/**'],
 };

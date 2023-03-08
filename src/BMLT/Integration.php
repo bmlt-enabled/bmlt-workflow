@@ -616,6 +616,8 @@ class Integration
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/formats';
         $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token));
         $ret = \wp_remote_get($url, $args);
+        $this->debug_log("body");
+        $this->debug_log(\wp_remote_retrieve_body($ret));
         $formatarr = json_decode(\wp_remote_retrieve_body($ret), 1);
         $this->debug_log("FORMATARR");
         $this->debug_log($formatarr);

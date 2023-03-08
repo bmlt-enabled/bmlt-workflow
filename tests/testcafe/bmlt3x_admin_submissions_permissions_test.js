@@ -36,6 +36,7 @@ fixture`bmlt3x_admin_submissions_permissions_fixture`
 .beforeEach(async (t) => {
   await waitfor(userVariables.admin_logon_page_single);
   await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001","hidden");
+  await set_language_single(t, "en");
 });
 
 test("Can_View_Submissions_As_Priv_User", async (t) => {

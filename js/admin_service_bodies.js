@@ -128,8 +128,8 @@ jQuery(document).ready(function ($) {
           const range = [...Array(totalpages).keys()].map((x) => x + 1);
 
           const users = {};
-          const allAJAX = range.map(() => $.ajax({
-            url: `${wp_users_url + firstsep}per_page=${pagesize}&page=${page}`,
+          const allAJAX = range.map((thispage) => $.ajax({
+            url: `${wp_users_url + firstsep}per_page=${pagesize}&page=${thispage}`,
             dataType: 'json',
             beforeSend(xhr) {
               xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
