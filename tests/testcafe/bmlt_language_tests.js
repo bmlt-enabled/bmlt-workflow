@@ -16,6 +16,8 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 import { uf } from "./models/meeting_update_form";
+import { ao } from "./models/admin_options"
+
 import { Selector, Role, ClientFunction } from "testcafe";
 
 import { 
@@ -69,6 +71,52 @@ test("Change_Wordpress_To_French_Check_User_Translations", async (t) => {
       }, { dependencies: { selector } });
 
     await t.expect(getText(0)).eql('(B)-Débutants')
+});
 
-  
+test("Change_Wordpress_To_English_Check_User_Translations", async (t) => {
+  await set_language_single(t, "en_EN");
+
+  await t.useRole(Role.anonymous());
+  await t.navigateTo(userVariables.formpage);
+
+  var selector = uf.update_reason;
+
+  var getText = ClientFunction((index) => {
+    const select = selector();
+    return select.options[index].text;
+    }, { dependencies: { selector } });
+
+    // check we've translated the php file
+    await t.expect(getText(1)).eql('New Meeting')
+    await select_dropdown_by_value(uf.update_reason,'reason_change');
+
+    // meeting selector
+    await t.click("#select2-meeting-searcher-container");
+    // check we've translated js on the fly
+    await t.expect(Selector('.select2-search__field').withAttribute('placeholder','Begin typing your meeting name').exists).ok();
+    // search for our meeting
+    await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
+    await t.pressKey("enter");
+
+    selector = uf.display_format_shared_id_list;
+
+    // check we've translated a getformat call correctly
+    getText = ClientFunction((index) => {
+      const select = selector();
+      return select.options[index].text;
+      }, { dependencies: { selector } });
+
+    await t.expect(getText(0)).eql('(B)-Beginners')
+
+});
+
+test("Change_Wordpress_To_French_Check_Admin_Translations", async (t) => {
+  await set_language_single(t, "fr_FR");
+
+  await t.useRole(bmltwf_admin);
+  await t.navigateTo(userVariables.admin_settings_page_single);
+
+    // check we've translated the php file
+    await t.expect(ao.backup_button.withText('Configuration de sauvegarde').exists).ok();
+
 });

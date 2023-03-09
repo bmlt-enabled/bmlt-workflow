@@ -1019,7 +1019,7 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br><br>';
             echo '</div>';
             echo '<br>';
-            echo '<button type="button" id="bmltwf_backup">Backup Configuration</button>   <button type="button" id="bmltwf_restore">';
+            echo '<button type="button" id="bmltwf_backup">'.__('Backup Configuration','bmlt-workflow').'</button>   <button type="button" id="bmltwf_restore">';
             echo __('Restore Configuration','bmlt-workflow');
             echo '</button><input type="file" id="bmltwf_file_selector" accept=".json,application/json" style="display:none">';
             echo '<span class="spinner" id="bmltwf-backup-spinner"></span><br>';
@@ -1117,7 +1117,7 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br><br>';
             echo '</div>';
 
-            echo '<br><label for="bmltwf_delete_closed_meetings"><b>Close meeting default:</b></label><select id="bmltwf_delete_closed_meetings" name="bmltwf_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>';
+            echo '<br><label for="bmltwf_delete_closed_meetings"><b>'.__('Close meeting default','bmlt_workflow').':</b></label><select id="bmltwf_delete_closed_meetings" name="bmltwf_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>';
             echo __('Unpublish','bmlt-workflow');
             echo '</option><option name="delete" value="delete" ' . $delete . '>';
             echo __('Delete','bmlt-workflow');
@@ -1178,9 +1178,9 @@ if (!class_exists('bmltwf_plugin')) {
             echo __('Remove virtual meeting details when meetings are changed to face to face','bmlt-workflow');
             echo ':</b></label><select id="bmltwf_remove_virtual_meeting_details_on_venue_change" name="bmltwf_remove_virtual_meeting_details_on_venue_change"><option name="';
             echo __('True','bmlt-workflow');
-            echo '" value="true" ' . $do_remove . '>True</option><option name="';
+            echo '" value="true" ' . $do_remove . '>'.__('True','bmlt-workflow').'</option><option name="';
             echo __('False','bmlt-workflow');
-            echo '" value="false" ' . $do_not_remove . '>False</option>';
+            echo '" value="false" ' . $do_not_remove . '>'.__('False','bmlt-workflow').'</option>';
             echo '<br><br>';
         }
 

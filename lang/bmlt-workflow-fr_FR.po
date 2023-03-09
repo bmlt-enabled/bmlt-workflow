@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BMLT Workflow 1.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bmlt-workflow\n"
-"POT-Creation-Date: 2023-03-08 22:15+1100\n"
-"PO-Revision-Date: 2023-03-08 22:15+1100\n"
+"POT-Creation-Date: 2023-03-09 17:50+1100\n"
+"PO-Revision-Date: 2023-03-09 17:51+1100\n"
 "Last-Translator: \n"
 "Language-Team: nigel-bmlt <nigel-bmlt@gmail.com>\n"
 "Language: fr\n"
@@ -638,6 +638,10 @@ msgid ""
 "entries and plugin settings."
 msgstr ""
 
+#: bmlt-workflow.php:1022
+msgid "Backup Configuration"
+msgstr "Configuration de sauvegarde"
+
 #: bmlt-workflow.php:1023
 #, fuzzy
 msgid "Restore Configuration"
@@ -706,6 +710,11 @@ msgid ""
 "servants."
 msgstr ""
 
+#: bmlt-workflow.php:1120
+#, fuzzy
+msgid "Close meeting default"
+msgstr "Nouvelle réunion"
+
 #: bmlt-workflow.php:1142
 msgid ""
 "This option determines whether trusted servants are able to delete "
@@ -722,11 +731,11 @@ msgstr ""
 msgid "Trusted servants can delete submissions:"
 msgstr ""
 
-#: bmlt-workflow.php:1151 bmlt-workflow.php:1180
+#: bmlt-workflow.php:1151 bmlt-workflow.php:1180 bmlt-workflow.php:1181
 msgid "True"
 msgstr ""
 
-#: bmlt-workflow.php:1153 bmlt-workflow.php:1182
+#: bmlt-workflow.php:1153 bmlt-workflow.php:1182 bmlt-workflow.php:1183
 msgid "False"
 msgstr ""
 
