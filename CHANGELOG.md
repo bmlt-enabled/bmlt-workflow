@@ -1,3 +1,6 @@
+## 1.1.1 (Mar 9, 2023)
+- Fixing broken phpunit test cases
+
 ## 1.1.0 (Mar 9, 2023)
 - Feature: Multi language support in both backend and frontend (thanks @klodd65 !)
 - #145 Bug: geolocate fails on good address #14 (thanks @cdiddy1979 !)
