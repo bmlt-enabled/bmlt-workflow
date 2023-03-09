@@ -75,7 +75,8 @@ Line: $errorLine
         Functions\when('\wp_remote_request')->returnArg();
         Functions\when('\wp_remote_retrieve_response_message')->returnArg();
         Functions\when('\wp_remote_retrieve_cookie')->justReturn("");
-
+        Functions\when('__')->returnArg();
+        Functions\when('\get_locale')->justReturn('en_EN');
         Functions\when('\unserialize')->returnArg();
         Functions\when('\get_option')->alias(function($value) {
             if($value === 'bmltwf_bmlt_password')

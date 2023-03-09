@@ -63,6 +63,7 @@ Line: $errorLine
             require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/wp-db.php');
         }
 
+        Functions\when('__')->returnArg();
 
         Brain\Monkey\setUp();
 
@@ -83,7 +84,6 @@ Line: $errorLine
         Functions\when('get_option')->justReturn("false");
         Functions\when('current_user_can')->justReturn(true);
         Functions\when('get_current_user_id')->justReturn("1");
-
         $controller = new Controller(true);
         $response = $controller->delete_submission_permissions_check("{'hello':'hi'}");
         $this->assertNotInstanceOf(\WP_Error::class, $response);

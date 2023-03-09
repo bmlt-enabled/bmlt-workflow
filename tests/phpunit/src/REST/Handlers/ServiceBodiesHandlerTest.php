@@ -74,6 +74,7 @@ Line: $errorLine
         Functions\when('\current_time')->justReturn('2022-03-23 09:22:44');
         Functions\when('\absint')->returnArg();
         Functions\when('wp_remote_post')->returnArg();
+        Functions\when('__')->returnArg();
     }
 
     protected function tearDown(): void
