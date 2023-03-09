@@ -64,6 +64,7 @@ Line: $errorLine
         if (!class_exists('wpdb')){
             require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/wp-db.php');
         }
+        Functions\when('__')->returnArg();
 
         Brain\Monkey\setUp();
     }

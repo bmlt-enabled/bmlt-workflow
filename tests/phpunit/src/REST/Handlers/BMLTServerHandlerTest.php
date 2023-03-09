@@ -73,6 +73,7 @@ Line: $errorLine
         Functions\when('\absint')->returnArg();
         Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\get_option')->justReturn("failure");
+        Functions\when('__')->returnArg();
 
     }
 
