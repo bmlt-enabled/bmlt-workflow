@@ -270,3 +270,17 @@ export async function uncheck_checkbox(t, s) {
     await t.click(s);
   }
 }
+
+export async function set_language_single(t, lang)
+{
+  await t.navigateTo(userVariables.wordpress_general_options_single)
+  if(lang === "en_EN")
+  {
+    await select_dropdown_by_text(Selector("#WPLANG"),"English (United States)");
+  }
+  else
+  {
+    await select_dropdown_by_value(Selector("#WPLANG"),lang);
+  }
+  await t.click(Selector("#submit"));
+}

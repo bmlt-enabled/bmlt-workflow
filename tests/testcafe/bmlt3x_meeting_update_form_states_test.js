@@ -25,7 +25,8 @@ import {
   bmltwf_admin,
   restore_from_backup, 
   select_dropdown_by_value,
-  myip
+  myip,
+  set_language_single
   } from "./helpers/helper.js";
 
 import { userVariables } from "../../.testcaferc";
@@ -36,6 +37,7 @@ fixture`bmlt3x_meeting_update_form_states_test_fixture`
   await waitfor(userVariables.admin_logon_page_single);
   // 3002 is the states/subprovinces on host
   await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3003","display");
+  await set_language_single(t, "en_EN");
 
   // log in as noone
   await t.useRole(Role.anonymous());

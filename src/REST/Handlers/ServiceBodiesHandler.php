@@ -51,7 +51,7 @@ class ServiceBodiesHandler
         global $wpdb;
 
         $params = $request->get_params();
-        $this->debug_log(($params));
+        // $this->debug_log(($params));
         // only an admin can get the service bodies detail (permissions) information
         if ((!empty($params['detail'])) && ($params['detail'] == "true") && (current_user_can('manage_options'))) {
             // detail list
@@ -159,7 +159,7 @@ class ServiceBodiesHandler
         if (!is_array($permissions)) {
             $this->debug_log("error not array");
 
-            return $this->bmltwf_rest_error('Invalid service bodies post', 422);
+            return $this->bmltwf_rest_error(__('Invalid service bodies API call','bmlt-workflow'), 422);
         }
         foreach ($permissions as $sb => $arr) {
             if ((!is_array($arr)) || (!array_key_exists('membership', $arr)) || (!array_key_exists('show_on_form', $arr))) {
@@ -173,7 +173,7 @@ class ServiceBodiesHandler
                 //     $this->debug_log($sb . " error show_on_form");
                 // }
 
-                return $this->bmltwf_rest_error('Invalid service bodies post', 422);
+                return $this->bmltwf_rest_error(__('Invalid service bodies API call','bmlt-workflow'), 422);
             }
             $members = $arr['membership'];
             foreach ($members as $member) {
@@ -189,7 +189,7 @@ class ServiceBodiesHandler
         $uids = $wpdb->get_col('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name, 0);
         $this->add_remove_caps($uids);
 
-        return $this->bmltwf_rest_success('Updated Service Bodies');
+        return $this->bmltwf_rest_success(__('Updated Service Bodies','bmlt-workflow'));
     }
 
 
@@ -210,9 +210,9 @@ class ServiceBodiesHandler
             $result = $wpdb->query('DELETE from ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name);
             $this->debug_log("Delete service bodies");
             $this->debug_log(($result));
-            return $this->bmltwf_rest_success('Deleted Service Bodies');
+            return $this->bmltwf_rest_success(__('Deleted Service Bodies','bmlt-workflow'));
         } else {
-            return $this->bmltwf_rest_success('Nothing was performed');
+            return $this->bmltwf_rest_success(__('Nothing was changed','bmlt-workflow'));
         }
     }
 }

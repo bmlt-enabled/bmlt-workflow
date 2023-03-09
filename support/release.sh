@@ -65,6 +65,13 @@ fi
 sed -i'.bak' "s/define('BMLTWF_DEBUG', true);/define('BMLTWF_DEBUG', false);/g" ./config.php
 rm config.php.bak
 
+wp i18n make-json lang --no-purge
+if [ $? != 0 ]
+then
+    echo "i18n creation failed"
+    exit 1
+fi
+
 export DOIT='n'
 echo "Are you ok to merge $BRANCH into main as release $RELEASE? [yN]"
 read DOIT

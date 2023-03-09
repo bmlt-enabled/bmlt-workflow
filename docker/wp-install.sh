@@ -22,6 +22,7 @@ done
 
 wp db create
 wp core install --url=$URL --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com --path=/var/www/html
+wp language core install fr_FR
 
 mkdir /var/www/html/wp-content/plugins/bmlt-workflow
 sync-plugin.sh

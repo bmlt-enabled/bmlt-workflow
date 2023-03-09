@@ -43,6 +43,7 @@ module.exports = {
     admin_service_bodies_page_single: siteurl_single + admin_service_bodies_page,
     admin_settings_page_single: siteurl_single + admin_settings_page,
     admin_options_page_single: siteurl_single + admin_options_page,
+    wordpress_general_options_single: siteurl_single + '/wp-admin/options-general.php',
     admin_logon_single: username_single,
     admin_password_single: password_single,
     submission_reviewer_user: username_submission_single,
