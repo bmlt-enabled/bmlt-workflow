@@ -1,3 +1,7 @@
+## 1.1.0 (Mar 9, 2023)
+- Feature: Multi language support in both backend and frontend (thanks @klodd65 !)
+- #145 Bug: geolocate fails on good address #14 (thanks @cdiddy1979 !)
+
 ## 1.0.29 (Mar 5, 2023)
 - Feature: Admins and superadmins (with manage_options capability) have full visibility of the workflow submissions pane
 - Feature (disabled for now): First cut of multi language support

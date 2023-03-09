@@ -28,6 +28,7 @@ import {
   click_dt_button_by_index,
   click_dialog_button_by_index,
   bmltwf_admin,
+  set_language_single,
   myip
 } from "./helpers/helper.js";
 
@@ -39,7 +40,7 @@ fixture`bmlt2x_geocoding_tests_fixture`
   .beforeEach(async (t) => {
 
     await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, myip(), "3000","hidden");
-    await set_language_single(t, "en");
+    await set_language_single(t, "en_EN");
 
     await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
   });

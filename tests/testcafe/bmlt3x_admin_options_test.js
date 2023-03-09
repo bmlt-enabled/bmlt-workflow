@@ -28,8 +28,7 @@ import {
   restore_from_backup, 
   bmltwf_admin, 
   click_dialog_button_by_index, 
-  click_dt_button_by_index,
-  click_table_row_column,
+  set_language_single,
   select_dropdown_by_text, 
   select_dropdown_by_value, 
   check_checkbox,
@@ -62,7 +61,7 @@ fixture`bmlt3x_admin_options_fixture`
   .beforeEach(async (t) => {
     await waitfor(userVariables.admin_logon_page_single);
     await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001","hidden");
-    await set_language_single(t, "en");
+    await set_language_single(t, "en_EN");
     await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
   });
 

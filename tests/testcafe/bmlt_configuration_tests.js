@@ -31,7 +31,7 @@ fixture`bmlt_configuration_test_fixture`
   .beforeEach(async (t) => {
     await waitfor(userVariables.admin_logon_page_single);
     await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3000"),"hidden";  
-    await set_language_single(t, "en");
+    await set_language_single(t, "en_EN");
   });
 
 test("Change_BMLT_To_Unsupported_Version", async (t) => {
