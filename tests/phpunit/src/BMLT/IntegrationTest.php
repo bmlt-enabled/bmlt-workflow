@@ -277,6 +277,32 @@ Line: $errorLine
     }
 
     /**
+     * @covers bmltwf\BMLT\Integration::wp_locale_to_bmlt_locale
+     */
+    public function test_can_call_wp_locale_to_bmlt_locale_with_french(): void
+    {
+        Functions\when('\get_locale')->justReturn('fr_FR');
+
+        $integration = new Integration(null, "2.0.0");
+
+        $response = $integration->wp_locale_to_bmlt_locale();
+        $this->assertEquals($response, "fr");
+    }
+    
+    /**
+     * @covers bmltwf\BMLT\Integration::wp_locale_to_bmlt_locale
+     */
+    public function test_can_call_wp_locale_to_bmlt_locale_with_untranslated_language(): void
+    {
+        Functions\when('\get_locale')->justReturn('zz_ZZ');
+
+        $integration = new Integration(null, "2.0.0");
+
+        $response = $integration->wp_locale_to_bmlt_locale();
+        $this->assertEquals($response, "en");
+    }
+
+    /**
      * @covers bmltwf\BMLT\Integration::getMeetingFormatsv2
      */
     public function test_cant_call_getMeetingFormatsv2_with_invalid_bmlt_details(): void
