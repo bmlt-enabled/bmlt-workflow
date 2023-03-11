@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the BMLT Workflow plugin.
 msgid ""
 msgstr ""
-"Project-Id-Version: BMLT Workflow 1.1.1\n"
+"Project-Id-Version: BMLT Workflow 1.1.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bmlt-workflow\n"
 "Last-Translator: nigel-bmlt <nigel-bmlt@gmail.com>\n"
 "Language-Team: nigel-bmlt <nigel-bmlt@gmail.com>\n"
