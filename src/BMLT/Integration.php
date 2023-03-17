@@ -593,6 +593,18 @@ class Integration
         "sv_SE"=>"sv",
     );
 
+    public function wp_locale_to_bmlt_locale()
+    {
+        $locale = get_locale();
+        // default language is english
+        $ourlang = 'en';
+        if(array_key_exists($locale,$this->bmlt_langmap))
+        {
+            $ourlang = $this->bmlt_langmap[$locale];
+        }
+        return $ourlang;
+    }
+
     public function getMeetingFormats()
     {
         if ($this->is_v3_server()) {
@@ -622,12 +634,13 @@ class Integration
         $this->debug_log("FORMATARR");
         $this->debug_log($formatarr);
 
+        $ourlang = $this->wp_locale_to_bmlt_locale();
+
         $newformat = array();
         foreach ($formatarr as $key => $value) {
 
             $newvalue = array();
-            $locale = get_locale();
-            $ourlang = $this->bmlt_langmap[$locale];
+
             $newvalue['world_id'] = $value['worldId'];
             $newvalue['type'] = $value['type'];        
 
@@ -661,8 +674,9 @@ class Integration
     {
         $req = array();
         $req['admin_action'] = 'get_format_info';
-        $locale = get_locale();
-        $req['lang'] = $this->bmlt_langmap[$locale];
+
+        $req['lang'] = $this->wp_locale_to_bmlt_locale();
+
         // get an xml for a workaround
         $response = $this->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {

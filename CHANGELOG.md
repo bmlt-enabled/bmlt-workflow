@@ -1,3 +1,6 @@
+## 1.1.2 (Mar 10, 2023)
+- #160 Getting an error in the logs - Undefined array key...Integration.php on line 630 #160 (thanks @brustar64 !)
+
 ## 1.1.1 (Mar 9, 2023)
 - Fixing broken phpunit test cases
 
