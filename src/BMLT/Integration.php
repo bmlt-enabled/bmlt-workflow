@@ -130,6 +130,15 @@ class Integration
             unset($meeting['format_shared_id_list']);
         }
 
+        $this->debug_log($meeting);
+        // venue type can't be a 4 for BMLT 3.x #161
+        $here = $meeting['venueType'] ?? false;
+        $this->debug_log(gettype($here));
+        if ($here && $here === '4') {
+            $meeting['venueType'] = '2';
+            $meeting['temporarilyVirtual'] = true;
+        }
+
         // day starts at 0 for BMLT 3.x
         $here = $meeting['day'] ?? false;
         if ($here) {
