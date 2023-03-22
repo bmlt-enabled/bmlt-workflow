@@ -333,6 +333,22 @@ class SubmissionsHandler
         $submitter_name = $result['submitter_name'];
         $submitter_phone = $change['contact_number']??'';
 
+        // handle fso request
+        // $this->debug_log("starter kit");
+        // $this->debug_log($change['starter_kit_required']);
+        // $this->debug_log($change);
+        // $this->debug_log($change['starter_kit_postal_address']);
+        if ((!empty($change['starter_kit_required'])) && ($change['starter_kit_required'] === 'yes') && (!empty($change['starter_kit_postal_address']))) {
+            $this->debug_log("starter kit requested");
+            $starter_kit_required = true;
+            $starter_kit_postal_address = $change['starter_kit_postal_address'];
+        }
+        else
+        {
+            $this->debug_log("starter kit not requested");
+            $starter_kit_required = false;
+        }
+
         $add_contact = false;
         if ((!empty($change['add_contact'])) && ($change['add_contact'] === 'yes')) {
             $add_contact = true;
@@ -555,13 +571,20 @@ class SubmissionsHandler
         wp_mail($to_address, $subject, $body, $headers);
 
         // only do FSO features if option is enabled
-        if (get_option('bmltwf_fso_feature') == 'display') {
+        $this->debug_log("FSO REQUEST2");
+        if (get_option('bmltwf_fso_feature') === 'display') {
             //
             // send FSO email
             //
+            $this->debug_log("FSO REQUEST1");
 
             if ($submission_type == "reason_new") {
-                if ((!empty($change['starter_kit_required'])) && ($change['starter_kit_required'] === 'yes') && (!empty($change['starter_kit_postal_address']))) {
+                $this->debug_log("FSO REQUEST");
+                $this->debug_log($change);
+                if ($starter_kit_required) {
+
+                    $change['starter_kit_postal_address']=$starter_kit_postal_address;
+
                     $this->debug_log("We're sending a starter kit");
                     $template = get_option('bmltwf_fso_email_template');
                     if (!empty($template)) {
@@ -581,7 +604,7 @@ class SubmissionsHandler
                         $body = $template;
                         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
                         $this->debug_log("FSO email");
-                        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . ($headers));
+                        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));
 
                         wp_mail($to_address, $subject, $body, $headers);
                     } else {

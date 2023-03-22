@@ -483,38 +483,35 @@ jQuery(document).ready(function ($) {
 
   update_meeting_list(bmltwf_service_bodies_querystr);
 
-  function is_virtual_meeting_additional_info_filled() {
-    return ($('#virtual_meeting_additional_info').val().length > 0);
-  }
+  // function is_virtual_meeting_additional_info_empty() {
+  //   return ($('#virtual_meeting_additional_info').val().length === 0);
+  // }
 
-  function is_virtual_meeting_link_filled() {
-    return ($('#virtual_meeting_link').val().length > 0);
-  }
+  // function is_virtual_meeting_link_empty() {
+  //   return ($('#virtual_meeting_link').val().length === 0);
+  // }
 
-  function is_phone_meeting_number_filled() {
-    return ($('#phone_meeting_number').val().length > 0);
-  }
+  // function is_phone_meeting_number_empty() {
+  //   return ($('#phone_meeting_number').val().length === 0);
+  // }
 
   $('#meeting_update_form').validate({
-    rules: {
-      virtual_meeting_link: {
-        required: is_virtual_meeting_additional_info_filled,
-      },
-      virtual_meeting_additional_info: {
-        required: is_virtual_meeting_link_filled,
-      },
-      phone_meeting_number: {
-        required: is_phone_meeting_number_filled && !(is_virtual_meeting_additional_info_filled && is_virtual_meeting_link_filled),
-        // required: true,
-      },
-    },
-    messages: {
-      virtual_meeting_link: 'you need to fill in the meeting additional info',
-      virtual_meeting_additional_info: 'you need to fill in the meeting link',
-      phone_meeting_number: 'you need at least phone number for virtual meeting, or fill in the meeting link and additional info',
-    },
+    // rules: {
+    //   virtual_meeting_link: {
+    //     required: (is_virtual_meeting_additional_info_empty || is_virtual_meeting_link_empty) && is_phone_meeting_number_empty,
+    //   },
+    //   virtual_meeting_additional_info: {
+    //     required: (is_virtual_meeting_link_empty || is_virtual_meeting_additional_info_empty) && is_phone_meeting_number_empty,
+    //   },
+    //   phone_meeting_number: {
+    //     required: is_phone_meeting_number_empty && is_virtual_meeting_additional_info_empty && is_virtual_meeting_link_empty,
+    //   },
+    // },
+    // messages: {
+    //   phone_meeting_number: 'You must provide at least a phone number for a Virtual Meeting, or fill in both the Virtual Meeting link and Virtual Meeting additional information',
+    // },
     submitHandler() {
-      // real_submit_handler();
+      real_submit_handler();
     },
   });
 

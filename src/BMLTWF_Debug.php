@@ -28,5 +28,19 @@ trait BMLTWF_Debug
             error_log(debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] . ": " . $out);
         }
     }
-    
+
+    public function debug_bmlt_payload($url=null,$method=null,$body=null)
+    {
+        if (BMLTWF_DEBUG)
+        {
+            error_log(debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] . ": BMLT Payload ");
+            $out = print_r($url, true);
+            error_log(debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] . ": " . $out);
+            $out = print_r($method?$method:'GET', true);
+            error_log(debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] . ": " . $out);
+            $out = print_r($body?$body:'(null)', true);
+            error_log(debug_backtrace( DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'] . ": " . $out);
+        }
+    }
+
 }
