@@ -53,8 +53,7 @@ You can add fields to the email templates to substitute content from the form su
 The following fields are currently supported:
 
 Within fso template body only:
-- `{field:first_name}`
-- `{field:last_name}`
+- `{field:submitter_name}`
 - `{field:meeting_name}`
 - `{field:starter_kit_postal_address}`
 

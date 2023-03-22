@@ -820,31 +820,32 @@ jQuery(document).ready(function ($) {
       if (val !== '') {
         locdata.push(val);
       }
-      const address = `address=${locdata.join(',')}`;
-
-      $.ajax({
-        url: bmltwf_bmltserver_geolocate_rest_url,
-        type: 'GET',
-        dataType: 'json',
-        contentType: 'application/json',
-        data: encodeURI(address),
-        beforeSend(xhr) {
-          clear_notices();
-          xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
-        },
-      })
-        .done(function (response) {
-          const lat = response.latitude;
-          const long = response.longitude;
-          $('#quickedit_latitude').val(lat);
-          $('#quickedit_longitude').val(long);
-          update_gmaps(lat, long);
-          notice_success(response, 'bmltwf-quickedit-error-message');
-        })
-        .fail(function (xhr) {
-          notice_error(xhr, 'bmltwf-quickedit-error-message');
-        });
     });
+
+    const address = `address=${locdata.join(',')}`;
+
+    $.ajax({
+      url: bmltwf_bmltserver_geolocate_rest_url,
+      type: 'GET',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: encodeURI(address),
+      beforeSend(xhr) {
+        clear_notices();
+        xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
+      },
+    })
+      .done(function (response) {
+        const lat = response.latitude;
+        const long = response.longitude;
+        $('#quickedit_latitude').val(lat);
+        $('#quickedit_longitude').val(long);
+        update_gmaps(lat, long);
+        notice_success(response, 'bmltwf-quickedit-error-message');
+      })
+      .fail(function (xhr) {
+        notice_error(xhr, 'bmltwf-quickedit-error-message');
+      });
   }
 
   function save_handler(id) {
