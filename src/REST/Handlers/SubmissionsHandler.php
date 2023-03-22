@@ -571,15 +571,12 @@ class SubmissionsHandler
         wp_mail($to_address, $subject, $body, $headers);
 
         // only do FSO features if option is enabled
-        $this->debug_log("FSO REQUEST2");
         if (get_option('bmltwf_fso_feature') === 'display') {
             //
             // send FSO email
             //
-            $this->debug_log("FSO REQUEST1");
 
             if ($submission_type == "reason_new") {
-                $this->debug_log("FSO REQUEST");
                 $this->debug_log($change);
                 if ($starter_kit_required) {
 
