@@ -207,6 +207,8 @@ class SubmissionsHandler
             "location_postal_code_1",
             "weekday_tinyint",
             "format_shared_id_list",
+            "location_sub_province",
+            "location_nation",
             "virtual_meeting_additional_info",
             "phone_meeting_number",
             "virtual_meeting_link",
