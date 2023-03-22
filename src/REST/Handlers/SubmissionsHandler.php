@@ -480,16 +480,16 @@ class SubmissionsHandler
                 }
 
                 $bmlt_venue_type = $bmlt_meeting['venue_type'];
-                $this->debug_log("bmlt_meeting[venue_type]=");
-                $this->debug_log($bmlt_venue_type);
+                // $this->debug_log("bmlt_meeting[venue_type]=");
+                // $this->debug_log($bmlt_venue_type);
 
                 $change_venue_type = $change['venue_type'] ?? '0';
-                $this->debug_log("change[venue_type]=");
-                $this->debug_log($change_venue_type);
+                // $this->debug_log("change[venue_type]=");
+                // $this->debug_log($change_venue_type);
 
                 $is_change_to_f2f = (($change_venue_type == 1)&&($bmlt_venue_type != $change_venue_type));
-                $this->debug_log("is_change_to_f2f=");
-                $this->debug_log($is_change_to_f2f);
+                // $this->debug_log("is_change_to_f2f=");
+                // $this->debug_log($is_change_to_f2f);
 
                 // if bmltwf_remove_virtual_meeting_details_on_venue_change is true, then explicitly blank out our virtual meeting settings when the venue
                 // is changed to face to face
@@ -688,8 +688,8 @@ class SubmissionsHandler
     public function meeting_update_form_handler_rest($data)
     {
 
-        $this->debug_log("in rest handler");
-        $this->debug_log(($data));
+        // $this->debug_log("in rest handler");
+        // $this->debug_log(($data));
         $reason_new_bool = false;
         $reason_change_bool = false;
         $reason_close_bool = false;

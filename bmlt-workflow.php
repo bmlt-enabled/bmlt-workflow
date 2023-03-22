@@ -1064,6 +1064,8 @@ if (!class_exists('bmltwf_plugin')) {
         {
 
             $google_maps_key = get_option('bmltwf_google_maps_key');
+            $bmlt_key = '';
+            $your_own_key = '';
             echo '<div class="bmltwf_info_text">';
             echo '<br>';
             echo __('This plugin will try and use the google maps key from your BMLT Root Server for geolocation and displaying the map view.','bmlt-workflow');

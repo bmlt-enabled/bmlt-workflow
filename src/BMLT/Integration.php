@@ -647,11 +647,11 @@ class Integration
         $this->debug_bmlt_payload($url);
 
         $ret = \wp_remote_get($url, $args);
-        $this->debug_log("body");
-        $this->debug_log(\wp_remote_retrieve_body($ret));
+        // $this->debug_log("body");
+        // $this->debug_log(\wp_remote_retrieve_body($ret));
         $formatarr = json_decode(\wp_remote_retrieve_body($ret), 1);
-        $this->debug_log("FORMATARR");
-        $this->debug_log($formatarr);
+        // $this->debug_log("FORMATARR");
+        // $this->debug_log($formatarr);
 
         $ourlang = $this->wp_locale_to_bmlt_locale();
 
@@ -685,7 +685,7 @@ class Integration
             }
         }
         $this->debug_log("NEWFORMAT size ".count($newformat));
-        $this->debug_log($newformat);
+        // $this->debug_log($newformat);
 
         return $newformat;
     }
@@ -1071,7 +1071,7 @@ class Integration
 
     private function secrets_decrypt($password, $data)
     {
-        $this->debug_log($data);
+        // $this->debug_log($data);
         $config = array_map('base64_decode', $data['config']);
         $encrypted = base64_decode($data['encrypted']);
 
