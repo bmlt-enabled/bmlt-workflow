@@ -761,7 +761,7 @@ class SubmissionsHandler
             "meeting_name" => array("text", $reason_new_bool),
             "start_time" => array("time", $reason_new_bool),
             "duration_time" => array("time", $reason_new_bool),
-            "venue_type" => array("number", $reason_new_bool | $reason_change_bool),
+            "venue_type" => array("venue", $reason_new_bool | $reason_change_bool),
             // location text and street only required if its not a virtual meeting #75
             "location_text" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_street" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
@@ -792,7 +792,7 @@ class SubmissionsHandler
 
         // blank meeting id if not provided
         $sanitised_fields['meeting_id'] = 0;
-
+        
         // sanitise all provided fields and drop all others
         foreach ($subfields as $field => $validation) {
             $field_type = $validation[0];
@@ -800,6 +800,32 @@ class SubmissionsHandler
             // if the form field is required, check if the submission is empty or non existent
             if ($field_is_required && empty($data[$field])) {
                 return $this->bmltwf_rest_error(__('Form field','bmlt-workflow').' "' . $field . '" '.__('is required','bmlt-workflow').'.', 422);
+            }
+
+            // special handling for temporary virtual
+            if ($field === "venue_type" && $virtual_meeting_bool)
+            {
+                $phone_meeting_number_provided = $data["phone_meeting_number"]??false;
+                // $this->debug_log("phone meeting number");
+                // $this->debug_log($phone_meeting_number_provided);
+                $virtual_meeting_link_provided = $data["virtual_meeting_link"]??false;
+                // $this->debug_log(" meeting link");
+                // $this->debug_log($virtual_meeting_link_provided);
+                $virtual_meeting_additional_info_provided = $data["virtual_meeting_additional_info"]??false;
+                // $this->debug_log(" meeting info");
+                // $this->debug_log($virtual_meeting_additional_info_provided);
+
+                if($virtual_meeting_bool)
+                {
+                    // need to provide either phone number or both the link/additional info
+                    if(!$phone_meeting_number_provided)
+                    {
+                        if (!$virtual_meeting_link_provided || !$virtual_meeting_additional_info_provided)
+                        {
+                            return $this->bmltwf_rest_error(__('You must provide either a phone meeting number, or provide both a virtual meeting link and virtual meeting additional information.','bmlt-workflow').'.', 422);
+                        }
+                    }
+                }
             }
 
             // sanitise only fields that have been provided
@@ -822,6 +848,13 @@ class SubmissionsHandler
                     case ('number'):
                     case ('bigint'):
                         $data[$field] = intval($data[$field]);
+                        break;
+                    case ('venue'):
+                        $data[$field] = intval($data[$field]);
+                        if(($data[$field])<1 || $data[$field]>4)
+                        {
+                            return $this->invalid_form_field($field);
+                        }
                         break;
                     case ('weekday'):
                         if (!(($data[$field] >= 1) && ($data[$field] <= 7))) {
