@@ -803,7 +803,7 @@ class SubmissionsHandler
             }
 
             // special handling for temporary virtual
-            if ($field === "venue_type" && $virtual_meeting_bool)
+            if ($field === "venue_type" && $virtual_meeting_bool && ($data["update_reason"] !== 'reason_close'))
             {
                 $phone_meeting_number_provided = $data["phone_meeting_number"]??false;
                 // $this->debug_log("phone meeting number");
@@ -822,7 +822,7 @@ class SubmissionsHandler
                     {
                         if (!$virtual_meeting_link_provided || !$virtual_meeting_additional_info_provided)
                         {
-                            return $this->bmltwf_rest_error(__('You must provide either a phone meeting number, or provide both a virtual meeting link and virtual meeting additional information.','bmlt-workflow').'.', 422);
+                            return $this->bmltwf_rest_error(__('You must provide at least a phone number for a Virtual Meeting, or fill in both the Virtual Meeting link and Virtual Meeting additional information','bmlt-workflow').'.', 422);
                         }
                     }
                 }

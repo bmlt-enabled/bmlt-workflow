@@ -79,6 +79,8 @@ class Meeting_Update_Form {
         this.submit = Selector('#submit');
         this.success_page_header = Selector('#bmltwf_response_message');
         this.error_para = Selector('.bmltwf-error-message + .notice p');
+        // jquery validate error in virtual meeting details
+        this.groupName_error = Selector("#groupName-error");
     }
 }
 

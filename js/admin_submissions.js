@@ -221,14 +221,16 @@ jQuery(document).ready(function ($) {
       }
     });
     // trigger adding of highlights when input changes
-    $('.quickedit-input').on('input.bmltwf-highlight', function () {
-      $(this).addClass('bmltwf-changed');
+    $('.quickedit-input').on('input.bmltwf-highlight', function (event, arg) {
+      if (arg !== 'growwrap') {
+        $(this).addClass('bmltwf-changed');
+      }
     });
     $('#quickedit_format_shared_id_list').on('change.bmltwf-highlight', function () {
       $('.quickedit_format_shared_id_list-select2').addClass('bmltwf-changed');
     });
     // stretch our grow wrap boxes
-    $('.grow-wrap textarea').trigger('input');
+    $('.grow-wrap textarea').trigger('input', 'growwrap');
   }
 
   function update_gmaps(lat, long) {

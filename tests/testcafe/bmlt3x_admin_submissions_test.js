@@ -380,6 +380,7 @@ test('Quickedit_Change_Meeting', async t => {
     .expect(as.quickedit_location_text.hasClass("bmltwf-changed")).ok()
     .expect(as.quickedit_location_text.value).eql("update location")
     // these didnt change
+    .debug()
     .expect(as.quickedit_start_time.hasClass("bmltwf-changed")).notOk()
     .expect(as.quickedit_weekday_tinyint.hasClass("bmltwf-changed")).notOk()
     .expect(as.quickedit_duration_hours.hasClass("bmltwf-changed")).notOk()

@@ -222,7 +222,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
-            "venue_type" => 1
+            "venue_type" => "1"
 
         );
 

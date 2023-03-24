@@ -593,3 +593,61 @@ test("Change_Nothing_Check_Error", async (t) => {
     .match(/Nothing\ was\ changed/);
 });
 
+test("Failure_Invalid_Virtual_Meeting_Details", async (t) => {
+  await t.navigateTo(userVariables.formpage);
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+
+  // check our divs are visible
+  await t.expect(uf.update_reason.value).eql("reason_change");
+
+  // meeting selector
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "right");
+  await t.pressKey("enter");
+
+  // validate form is laid out correctly
+  await t.expect(uf.personal_details.visible).eql(true)
+  .expect(uf.meeting_details.visible).eql(true)
+  .expect(uf.additional_info_div.visible).eql(true);
+
+  // personal details
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "`12345`");
+
+  await select_dropdown_by_value(uf.group_relationship, "Group Member");
+
+  await select_dropdown_by_value(uf.venue_type, "2");
+  await t
+    .expect(uf.venue_type.value)
+    .eql("2")
+    .expect(uf.virtual_meeting_link.visible)
+    .eql(true)
+    .expect(uf.phone_meeting_number.visible)
+    .eql(true)
+    .expect(uf.virtual_meeting_additional_info.visible)
+    .eql(true)
+    // doesnt submit when all the fields are blank
+    .click(uf.submit)
+    .expect(uf.groupName_error.innerText)
+    .match(/You must provide/)
+    .typeText(uf.virtual_meeting_link, "https://us02web.zoom.us/j/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09")
+    // doesnt submit when text only in virtual meeting link
+    .click(uf.submit)
+    .expect(uf.groupName_error.innerText)
+    .match(/You must provide/)
+    // delete the virtual meeting link
+    .selectText(uf.virtual_meeting_link)
+    .pressKey('delete')
+    .typeText(uf.virtual_meeting_additional_info, "Zoom ID 83037287669 Passcode: testing")
+    // doesnt submit when text only in virtual meeting info
+    .click(uf.submit)
+    .expect(uf.groupName_error.innerText)
+    .match(/You must provide/)
+    // submits fine if we put in a phone number
+    .selectText(uf.virtual_meeting_additional_info)
+    .pressKey('delete')
+    .typeText(uf.phone_meeting_number, "+61 1800 253430 code #8303782669")
+    .click(uf.submit)
+    .expect(uf.success_page_header.innerText)
+    .match(/submission\ successful/);
+
+});
