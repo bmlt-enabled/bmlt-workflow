@@ -134,8 +134,8 @@ class Integration
         // venue type can't be a 4 for BMLT 3.x #161
         $here = $meeting['venueType'] ?? false;
         $this->debug_log(gettype($here));
-        if ($here && $here === '4') {
-            $meeting['venueType'] = '2';
+        if ($here && $here === 4) {
+            $meeting['venueType'] = 2;
             $meeting['temporarilyVirtual'] = true;
         }
 

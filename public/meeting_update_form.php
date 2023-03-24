@@ -144,7 +144,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                 <option value="1"><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
                                 <option value="2"><?php echo __( 'Yes - Virtual only', 'bmlt-workflow' ); ?></option>
                                 <option value="3"><?php echo __( 'Yes - Hybrid (Virtual and Face to Face)', 'bmlt-workflow' ); ?></option>
-                                <option value="4"><?php echo __( 'Yes - Temporary Virtual', 'bmlt-workflow' ); ?></option>
+                                <option value="4"><?php echo __( 'Yes - Temporarily Virtual', 'bmlt-workflow' ); ?></option>
                             </select>
 
                             <div id="location_fields">
