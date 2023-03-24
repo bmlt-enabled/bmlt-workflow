@@ -1,3 +1,7 @@
+## 1.1.4 (Mar 24, 2023)
+- Fix a couple of translation bugs
+- Actually fix #161 correctly :(
+
 ## 1.1.3 (Mar 24, 2023)
 - #167 Bug: FSO starter kit requests not being sent (thanks SinclairP !)
 - #170 Bug: Auto resize not working on quick view for some fields (thanks AnitaK !)
