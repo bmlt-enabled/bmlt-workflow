@@ -1,9 +1,13 @@
+## 1.1.4 (Mar 24, 2023)
+- Fix a couple of translation bugs
+- Actually fix #161 correctly :(
+
 ## 1.1.3 (Mar 24, 2023)
 - #167 Bug: FSO starter kit requests not being sent (thanks SinclairP !)
 - #170 Bug: Auto resize not working on quick view for some fields (thanks AnitaK !)
 - #171 Bug: County Field isn't work with Quick Edit Mode (thanks @Klodd65 !)
 - #161 Bug: Temporary Closures against BMLT3x failing to approve due to invalid venueType (thanks markd !)
-
+- Italian translation included
 ## 1.1.2 (Mar 10, 2023)
 - #160 Getting an error in the logs - Undefined array key...Integration.php on line 630 #160 (thanks @brustar64 !)
 
@@ -12,6 +16,7 @@
 
 ## 1.1.0 (Mar 9, 2023)
 - Feature: Multi language support in both backend and frontend (thanks @klodd65 !)
+- French translation included
 - #145 Bug: geolocate fails on good address #14 (thanks @cdiddy1979 !)
 
 ## 1.0.29 (Mar 5, 2023)

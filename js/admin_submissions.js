@@ -75,7 +75,7 @@ const venue_types = {
   1: __('Face to face', 'bmlt-workflow'),
   2: __('Virtual Meeting', 'bmlt-workflow'),
   3: __('Hybrid Meeting', 'bmlt-workflow'),
-  4: __('Temporarily Closed', 'bmlt-workflow'),
+  4: __('Temporarily Virtual', 'bmlt-workflow'),
 };
 
 jQuery(document).ready(function ($) {

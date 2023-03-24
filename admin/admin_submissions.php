@@ -224,7 +224,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <th><?php echo __( "Submission Time", 'bmlt-workflow' ); ?></th>
                     <th><?php echo __( "Change Time", 'bmlt-workflow' ); ?></th>
                     <th><?php echo __( "Changed By", 'bmlt-workflow' ); ?></th>
-                    <th><?php echo __( "Meeting Submissions", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Submission Status", 'bmlt-workflow' ); ?></th>
                     <th><?php echo __( "Change Made", 'bmlt-workflow' ); ?></th>
                 </tr>
             </thead>
@@ -238,7 +238,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <th><?php echo __( "Submission Time", 'bmlt-workflow' ); ?></th>
                     <th><?php echo __( "Change Time", 'bmlt-workflow' ); ?></th>
                     <th><?php echo __( "Changed By", 'bmlt-workflow' ); ?></th>
-                    <th><?php echo __( "Meeting Submissions", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "Submission Status", 'bmlt-workflow' ); ?></th>
                     <th><?php echo __( "Change Made", 'bmlt-workflow' ); ?></th>
                 </tr>
             </tfoot>
