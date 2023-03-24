@@ -207,6 +207,8 @@ class SubmissionsHandler
             "location_postal_code_1",
             "weekday_tinyint",
             "format_shared_id_list",
+            "location_sub_province",
+            "location_nation",
             "virtual_meeting_additional_info",
             "phone_meeting_number",
             "virtual_meeting_link",
@@ -332,6 +334,22 @@ class SubmissionsHandler
         $submitter_email = $result['submitter_email'];
         $submitter_name = $result['submitter_name'];
         $submitter_phone = $change['contact_number']??'';
+
+        // handle fso request
+        // $this->debug_log("starter kit");
+        // $this->debug_log($change['starter_kit_required']);
+        // $this->debug_log($change);
+        // $this->debug_log($change['starter_kit_postal_address']);
+        if ((!empty($change['starter_kit_required'])) && ($change['starter_kit_required'] === 'yes') && (!empty($change['starter_kit_postal_address']))) {
+            $this->debug_log("starter kit requested");
+            $starter_kit_required = true;
+            $starter_kit_postal_address = $change['starter_kit_postal_address'];
+        }
+        else
+        {
+            $this->debug_log("starter kit not requested");
+            $starter_kit_required = false;
+        }
 
         $add_contact = false;
         if ((!empty($change['add_contact'])) && ($change['add_contact'] === 'yes')) {
@@ -464,16 +482,16 @@ class SubmissionsHandler
                 }
 
                 $bmlt_venue_type = $bmlt_meeting['venue_type'];
-                $this->debug_log("bmlt_meeting[venue_type]=");
-                $this->debug_log($bmlt_venue_type);
+                // $this->debug_log("bmlt_meeting[venue_type]=");
+                // $this->debug_log($bmlt_venue_type);
 
                 $change_venue_type = $change['venue_type'] ?? '0';
-                $this->debug_log("change[venue_type]=");
-                $this->debug_log($change_venue_type);
+                // $this->debug_log("change[venue_type]=");
+                // $this->debug_log($change_venue_type);
 
                 $is_change_to_f2f = (($change_venue_type == 1)&&($bmlt_venue_type != $change_venue_type));
-                $this->debug_log("is_change_to_f2f=");
-                $this->debug_log($is_change_to_f2f);
+                // $this->debug_log("is_change_to_f2f=");
+                // $this->debug_log($is_change_to_f2f);
 
                 // if bmltwf_remove_virtual_meeting_details_on_venue_change is true, then explicitly blank out our virtual meeting settings when the venue
                 // is changed to face to face
@@ -555,24 +573,29 @@ class SubmissionsHandler
         wp_mail($to_address, $subject, $body, $headers);
 
         // only do FSO features if option is enabled
-        if (get_option('bmltwf_fso_feature') == 'display') {
+        if (get_option('bmltwf_fso_feature') === 'display') {
             //
             // send FSO email
             //
 
             if ($submission_type == "reason_new") {
-                if ((!empty($change['starter_kit_required'])) && ($change['starter_kit_required'] === 'yes') && (!empty($change['starter_kit_postal_address']))) {
+                $this->debug_log($change);
+                if ($starter_kit_required) {
+                    $template_fields=array('starter_kit_postal_address'=>$starter_kit_postal_address,
+                    'submitter_name' => $submitter_name,
+                    'meeting_name' => $change['meeting_name']);
+
                     $this->debug_log("We're sending a starter kit");
                     $template = get_option('bmltwf_fso_email_template');
                     if (!empty($template)) {
                         $subject = __('Starter Kit Request','bmlt-workflow');
                         $to_address = get_option('bmltwf_fso_email_address');
-                        $fso_subfields = array('first_name', 'last_name', 'meeting_name', 'starter_kit_postal_address');
+                        $fso_subfields = array('submitter_name', 'meeting_name', 'starter_kit_postal_address');
 
                         foreach ($fso_subfields as $field) {
                             $subfield = '{field:' . $field . '}';
-                            if (!empty($change[$field])) {
-                                $subwith = $change[$field];
+                            if (!empty($template_fields[$field])) {
+                                $subwith = $template_fields[$field];
                             } else {
                                 $subwith = '(blank)';
                             }
@@ -581,7 +604,7 @@ class SubmissionsHandler
                         $body = $template;
                         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
                         $this->debug_log("FSO email");
-                        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . ($headers));
+                        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));
 
                         wp_mail($to_address, $subject, $body, $headers);
                     } else {
@@ -668,8 +691,8 @@ class SubmissionsHandler
     public function meeting_update_form_handler_rest($data)
     {
 
-        $this->debug_log("in rest handler");
-        $this->debug_log(($data));
+        // $this->debug_log("in rest handler");
+        // $this->debug_log(($data));
         $reason_new_bool = false;
         $reason_change_bool = false;
         $reason_close_bool = false;
@@ -738,7 +761,7 @@ class SubmissionsHandler
             "meeting_name" => array("text", $reason_new_bool),
             "start_time" => array("time", $reason_new_bool),
             "duration_time" => array("time", $reason_new_bool),
-            "venue_type" => array("number", $reason_new_bool | $reason_change_bool),
+            "venue_type" => array("venue", $reason_new_bool | $reason_change_bool),
             // location text and street only required if its not a virtual meeting #75
             "location_text" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_street" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
@@ -769,7 +792,7 @@ class SubmissionsHandler
 
         // blank meeting id if not provided
         $sanitised_fields['meeting_id'] = 0;
-
+        
         // sanitise all provided fields and drop all others
         foreach ($subfields as $field => $validation) {
             $field_type = $validation[0];
@@ -777,6 +800,32 @@ class SubmissionsHandler
             // if the form field is required, check if the submission is empty or non existent
             if ($field_is_required && empty($data[$field])) {
                 return $this->bmltwf_rest_error(__('Form field','bmlt-workflow').' "' . $field . '" '.__('is required','bmlt-workflow').'.', 422);
+            }
+
+            // special handling for temporary virtual
+            if ($field === "venue_type" && $virtual_meeting_bool && ($data["update_reason"] !== 'reason_close'))
+            {
+                $phone_meeting_number_provided = $data["phone_meeting_number"]??false;
+                // $this->debug_log("phone meeting number");
+                // $this->debug_log($phone_meeting_number_provided);
+                $virtual_meeting_link_provided = $data["virtual_meeting_link"]??false;
+                // $this->debug_log(" meeting link");
+                // $this->debug_log($virtual_meeting_link_provided);
+                $virtual_meeting_additional_info_provided = $data["virtual_meeting_additional_info"]??false;
+                // $this->debug_log(" meeting info");
+                // $this->debug_log($virtual_meeting_additional_info_provided);
+
+                if($virtual_meeting_bool)
+                {
+                    // need to provide either phone number or both the link/additional info
+                    if(!$phone_meeting_number_provided)
+                    {
+                        if (!$virtual_meeting_link_provided || !$virtual_meeting_additional_info_provided)
+                        {
+                            return $this->bmltwf_rest_error(__('You must provide at least a phone number for a Virtual Meeting, or fill in both the Virtual Meeting link and Virtual Meeting additional information','bmlt-workflow').'.', 422);
+                        }
+                    }
+                }
             }
 
             // sanitise only fields that have been provided
@@ -799,6 +848,13 @@ class SubmissionsHandler
                     case ('number'):
                     case ('bigint'):
                         $data[$field] = intval($data[$field]);
+                        break;
+                    case ('venue'):
+                        $data[$field] = intval($data[$field]);
+                        if(($data[$field])<1 || $data[$field]>4)
+                        {
+                            return $this->invalid_form_field($field);
+                        }
                         break;
                     case ('weekday'):
                         if (!(($data[$field] >= 1) && ($data[$field] <= 7))) {

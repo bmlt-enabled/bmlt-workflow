@@ -26,6 +26,7 @@ use bmltwf\REST\Handlers\SubmissionsHandler;
 use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
 use function Patchwork\{redefine, getFunction, always};
+use function PHPUnit\Framework\once;
 
 require_once('config_phpunit.php');
 
@@ -221,7 +222,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
-            "venue_type" => 1
+            "venue_type" => "1"
 
         );
 
@@ -631,7 +632,6 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
         Functions\when('wp_mail')->justReturn('true');
-
         Functions\when('\get_option')->justReturn("success");
 
         $retrieve_single_response = $this->meeting;
@@ -903,6 +903,170 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
         $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv2);
+
+        $bmlt_input = '';
+
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
+        Functions\when('\wp_get_current_user')->justReturn($user);
+        Functions\when('\is_wp_error')->justReturn(false);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
+        Functions\when('\wp_mail')->justReturn('true');
+        Functions\when('\current_user_can')->justReturn('false');
+
+        // 
+        // $this->debug_log('APPROVEREQUEST');
+
+        // $this->debug_log(($request));
+
+        $response = $handlers->approve_submission_handler($request);
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+        $this->debug_log(($response));
+        $this->assertEquals('Approved submission id 14', $response->get_data()['message']);
+
+    }
+
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     */
+    public function test_can_approve_new_meeting_with_starter_kit_requested(): void
+    {
+        $test_submission_id = '14';
+
+        $body = '';
+
+        $request = $this->generate_approve_request($test_submission_id, $body);
+
+        $row = array(
+            'id' => $test_submission_id,
+            'submission_time' => '2022-03-23 09:25:53',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
+            'change_made' => 'NULL',
+            'submitter_name' => 'test submitter',
+            'submission_type' => 'reason_new',
+            'submitter_email' => 'a@a.com',
+            'meeting_id' => 3563,
+            'service_body_bigint' => '4',
+            'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_meeting_name":"Ashfield","starter_kit_required":"yes","starter_kit_postal_address":"1 test st"}',
+        );
+
+        global $wpdb;
+        $wpdb =  Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->shouldReceive(
+            [
+                'prepare' => 'nothing',
+                'get_row' => $row,
+                'get_results' => 'nothing'
+            ]
+        );
+        $wpdb->prefix = "";
+
+        $retrieve_single_response = $this->meeting;
+
+        Functions\when('\get_option')->justReturn("success");
+
+        $post_change_response = '[{"id_bigint":"3563"}]';
+
+
+        $bmlt_input = '';
+        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        // make updatemeeting just return true
+        $stub_bmltv2->shouldReceive('createMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv2);
+
+        $bmlt_input = '';
+
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
+        Functions\when('\wp_get_current_user')->justReturn($user);
+        Functions\when('\is_wp_error')->justReturn(false);
+        Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
+        // Functions\when('\wp_mail')->justReturn('true');
+        Functions\when('\current_user_can')->justReturn('false');
+
+        Functions\expect('\wp_mail')->once()->with('a@a.com', Mockery::any(), Mockery::any(), Mockery::any())->andReturn('true')
+        ->once()->with('fso@fso.com', Mockery::any(), Mockery::any(), Mockery::any())->andReturn('true');
+
+        Functions\when('\get_option')->alias(function($value) {
+            if($value === 'bmltwf_fso_email_address')
+            {
+                return "fso@fso.com";
+            }
+            elseif ($value === 'bmltwf_fso_feature')
+            {
+                return 'display';
+            }
+            else
+            {
+                return true;
+            }
+        });
+
+        // 
+        // $this->debug_log('APPROVEREQUEST');
+
+        // $this->debug_log(($request));
+
+        $response = $handlers->approve_submission_handler($request);
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+        $this->debug_log(($response));
+        $this->assertEquals('Approved submission id 14', $response->get_data()['message']);
+
+    }
+
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     */
+    public function test_can_approve_new_meeting(): void
+    {
+        $test_submission_id = '14';
+
+        $body = '';
+
+        $request = $this->generate_approve_request($test_submission_id, $body);
+
+        $row = array(
+            'id' => $test_submission_id,
+            'submission_time' => '2022-03-23 09:25:53',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
+            'change_made' => 'NULL',
+            'submitter_name' => 'test submitter',
+            'submission_type' => 'reason_new',
+            'submitter_email' => 'a@a.com',
+            'meeting_id' => 3563,
+            'service_body_bigint' => '4',
+            'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_meeting_name":"Ashfield"}',
+        );
+
+        global $wpdb;
+        $wpdb =  Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->shouldReceive(
+            [
+                'prepare' => 'nothing',
+                'get_row' => $row,
+                'get_results' => 'nothing'
+            ]
+        );
+        $wpdb->prefix = "";
+
+        $retrieve_single_response = $this->meeting;
+
+        Functions\when('\get_option')->justReturn("success");
+
+        $post_change_response = '[{"id_bigint":"3563"}]';
+
+
+        $bmlt_input = '';
+        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        // make updatemeeting just return true
+        $stub_bmltv2->shouldReceive('createMeeting')->andreturn(true);
         $handlers = new SubmissionsHandler($stub_bmltv2);
 
         $bmlt_input = '';

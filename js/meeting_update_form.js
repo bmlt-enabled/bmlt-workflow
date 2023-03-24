@@ -483,7 +483,43 @@ jQuery(document).ready(function ($) {
 
   update_meeting_list(bmltwf_service_bodies_querystr);
 
+  function is_virtual_meeting_additional_info_empty() {
+    return ($('#virtual_meeting_additional_info').val().length === 0);
+  }
+
+  function is_virtual_meeting_link_empty() {
+    return ($('#virtual_meeting_link').val().length === 0);
+  }
+
+  function is_phone_meeting_number_empty() {
+    return ($('#phone_meeting_number').val().length === 0);
+  }
+
   $('#meeting_update_form').validate({
+    groups: {
+      groupName: 'virtual_meeting_link virtual_meeting_additional_info phone_meeting_number',
+    },
+    errorPlacement(error, element) {
+      if (element.attr('id') === 'virtual_meeting_link' || element.attr('id') === 'virtual_meeting_additional_info' || element.attr('id') === 'phone_meeting_number') {
+        error.insertAfter('#phone_meeting_number');
+      }
+    },
+    rules: {
+      virtual_meeting_link: {
+        required: (is_virtual_meeting_additional_info_empty || is_virtual_meeting_link_empty) && is_phone_meeting_number_empty,
+      },
+      virtual_meeting_additional_info: {
+        required: (is_virtual_meeting_link_empty || is_virtual_meeting_additional_info_empty) && is_phone_meeting_number_empty,
+      },
+      phone_meeting_number: {
+        required: is_virtual_meeting_additional_info_empty && is_virtual_meeting_link_empty,
+      },
+    },
+    messages: {
+      virtual_meeting_link: __('You must provide at least a phone number for a Virtual Meeting, or fill in both the Virtual Meeting link and Virtual Meeting additional information'),
+      virtual_meeting_additional_info: __('You must provide at least a phone number for a Virtual Meeting, or fill in both the Virtual Meeting link and Virtual Meeting additional information'),
+      phone_meeting_number: __('You must provide at least a phone number for a Virtual Meeting, or fill in both the Virtual Meeting link and Virtual Meeting additional information'),
+    },
     submitHandler() {
       real_submit_handler();
     },

@@ -130,6 +130,15 @@ class Integration
             unset($meeting['format_shared_id_list']);
         }
 
+        $this->debug_log($meeting);
+        // venue type can't be a 4 for BMLT 3.x #161
+        $here = $meeting['venueType'] ?? false;
+        $this->debug_log(gettype($here));
+        if ($here && $here === '4') {
+            $meeting['venueType'] = '2';
+            $meeting['temporarilyVirtual'] = true;
+        }
+
         // day starts at 0 for BMLT 3.x
         $here = $meeting['day'] ?? false;
         if ($here) {
@@ -359,6 +368,8 @@ class Integration
 
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $meeting_id;
 
+        $this->debug_bmlt_payload($url,'PATCH',$change);
+
         $response = \wp_remote_request($url, $this->set_args(null, $change, array("Authorization" => "Bearer " . $this->v3_access_token), 'PATCH'));
         $this->debug_log("v3 wp_remote_request returns " . \wp_remote_retrieve_response_code($response));
         $this->debug_log(\wp_remote_retrieve_body($response));
@@ -455,7 +466,9 @@ class Integration
             }
         }
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/servicebodies';
-        $this->debug_log($url);
+
+        $this->debug_bmlt_payload($url);
+
         $response = \wp_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
         // $this->debug_log("v3 wp_remote_get returns " . \wp_remote_retrieve_response_code($response));
         // $this->debug_log(\wp_remote_retrieve_body($response));
@@ -526,6 +539,9 @@ class Integration
         }
 
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $meeting_id;
+
+        $this->debug_bmlt_payload($url,'DELETE');
+
         $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), 'DELETE');
         $response = \wp_remote_request($url, $args);
 
@@ -627,12 +643,15 @@ class Integration
 
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/formats';
         $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token));
+
+        $this->debug_bmlt_payload($url);
+
         $ret = \wp_remote_get($url, $args);
-        $this->debug_log("body");
-        $this->debug_log(\wp_remote_retrieve_body($ret));
+        // $this->debug_log("body");
+        // $this->debug_log(\wp_remote_retrieve_body($ret));
         $formatarr = json_decode(\wp_remote_retrieve_body($ret), 1);
-        $this->debug_log("FORMATARR");
-        $this->debug_log($formatarr);
+        // $this->debug_log("FORMATARR");
+        // $this->debug_log($formatarr);
 
         $ourlang = $this->wp_locale_to_bmlt_locale();
 
@@ -666,6 +685,7 @@ class Integration
             }
         }
         $this->debug_log("NEWFORMAT size ".count($newformat));
+        // $this->debug_log($newformat);
 
         return $newformat;
     }
@@ -794,12 +814,9 @@ class Integration
         $this->debug_log("*** ADMIN URL " . $url);
 
         $response = $this->getv2($url, $this->cookies);
-        // $this->debug_log("*** ADMIN PAGE");
-        // $this->debug_log("get returns " . \wp_remote_retrieve_response_code($response));
-        // $this->debug_log(\wp_remote_retrieve_body($response));
 
         preg_match('/"google_api_key":"(.*?)",/', \wp_remote_retrieve_body($response), $matches);
-        $this->debug_log("retrieved gmaps key ".$matches[1]);
+        $this->debug_log("retrieved gmaps key");
         $gmaps_key = $matches[1];
 
         \update_option('bmltwf_bmlt_google_maps_key', $gmaps_key);
@@ -848,6 +865,8 @@ class Integration
             }
         }
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings';
+
+        $this->debug_bmlt_payload($url,'POST',$meeting);
 
         $response = \wp_remote_post($url, $this->set_args(null, $meeting, array("Authorization" => "Bearer " . $this->v3_access_token)));
         // $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
@@ -1052,7 +1071,7 @@ class Integration
 
     private function secrets_decrypt($password, $data)
     {
-        $this->debug_log($data);
+        // $this->debug_log($data);
         $config = array_map('base64_decode', $data['config']);
         $encrypted = base64_decode($data['encrypted']);
 
@@ -1156,8 +1175,8 @@ class Integration
         );
         $url = get_option('bmltwf_bmlt_server_address') . "index.php";
 
-        $this->debug_log("AUTH URL = " . $url);
-        $ret = $this->post($url, $postargs, null);
+        $this->debug_bmlt_payload($url,$method='POST',$body='(login payload)');
+
         $ret = \wp_remote_post($url, $this->set_args(null, http_build_query($postargs)));
         // $this->debug_log("returns");
         // $this->debug_log($ret);
@@ -1191,10 +1210,7 @@ class Integration
         if ($headers) {
             $newheaders = array_merge($headers, $newheaders);
         }
-        // $this->debug_log('SET_ARGS headers');
-        // $this->debug_log($headers);
-        // $this->debug_log('SET_ARGS merged headers');
-        // $this->debug_log($newheaders);
+        
         $args = array(
             'timeout' => '120',
             'headers' => $newheaders,
@@ -1204,9 +1220,6 @@ class Integration
         if ($method) {
             $args['method'] = $method;
         }
-
-        // $this->debug_log("set_args:");
-        // $this->debug_log($args);
 
         return $args;
     }
@@ -1226,6 +1239,8 @@ class Integration
     {
         $this->debug_log("inside get v2");
 
+        $this->debug_bmlt_payload($url);
+
         $ret = \wp_remote_get($url, $this->set_args($cookies));
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
@@ -1234,6 +1249,8 @@ class Integration
                 return $ret;
             }
             // try once more in case it was a session timeout
+            $this->debug_bmlt_payload($url);
+
             $ret = wp_remote_get($url, $this->set_args($cookies));
         }
         return $ret;
@@ -1249,6 +1266,8 @@ class Integration
                     return $ret;
                 }
             }
+            $this->debug_bmlt_payload($url,$method=null);
+
             $ret = \wp_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
             return $ret;
     }
@@ -1265,12 +1284,15 @@ class Integration
                     return $ret;
                 }
             }
-            $ret = \wp_remote_post($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), http_build_query($postargs)));
+
+            $this->debug_bmlt_payload($url,'POST',http_build_query($postargs));
+
+            $ret = \wp_remote_post($url, $this->set_args(null, http_build_query($postargs), array("Authorization" => "Bearer " . $this->v3_access_token), 'POST'));
             return $ret;
+
         } else {
-            $this->debug_log("POSTING URL = " . $url);
-            $this->debug_log($this->set_args($cookies, http_build_query($postargs)));
-            // $this->debug_log("*********");
+            $this->debug_bmlt_payload($url,'POST',http_build_query($postargs));
+
             $ret = \wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
 
             $cookie = \wp_remote_retrieve_cookie($ret, 'laravel_session');
@@ -1289,6 +1311,8 @@ class Integration
                     return $ret;
                 }
 
+                $this->debug_bmlt_payload($url,'POST',http_build_query($postargs));
+
                 // try once more in case it was a session timeout
                 $ret = \wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
             }
@@ -1300,9 +1324,6 @@ class Integration
     {
 
 
-        $this->debug_log("POSTING SEMANTIC URL = " . $url);
-        // $this->debug_log(($this->set_args($cookies, http_build_query($postargs))));
-        // $this->debug_log("*********");
         $newargs = '';
         foreach ($postargs as $key => $value) {
             switch ($key) {
@@ -1321,6 +1342,9 @@ class Integration
             // chop trailing &
             $newargs = substr($newargs, 0, -1);
             // $this->debug_log("our post body is " . $newargs);
+
+            $this->debug_bmlt_payload($url,'POST',$newargs);
+
             $ret = \wp_remote_post($url, $this->set_args($cookies, $newargs));
             // $this->debug_log(($ret));
             return $ret;

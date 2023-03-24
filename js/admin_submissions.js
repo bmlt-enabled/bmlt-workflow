@@ -221,12 +221,16 @@ jQuery(document).ready(function ($) {
       }
     });
     // trigger adding of highlights when input changes
-    $('.quickedit-input').on('input.bmltwf-highlight', function () {
-      $(this).addClass('bmltwf-changed');
+    $('.quickedit-input').on('input.bmltwf-highlight', function (event, arg) {
+      if (arg !== 'growwrap') {
+        $(this).addClass('bmltwf-changed');
+      }
     });
     $('#quickedit_format_shared_id_list').on('change.bmltwf-highlight', function () {
       $('.quickedit_format_shared_id_list-select2').addClass('bmltwf-changed');
     });
+    // stretch our grow wrap boxes
+    $('.grow-wrap textarea').trigger('input', 'growwrap');
   }
 
   function update_gmaps(lat, long) {
@@ -299,15 +303,14 @@ jQuery(document).ready(function ($) {
             } else {
               $('#quickedit_gmaps').hide();
             }
-            $('#bmltwf_submission_quickedit_dialog').data('id', id).dialog('open');
           }
         });
     } else if (bmltwf_changedata[id].submission_type === 'reason_new') {
       // won't have a geolocation for a new meeting
       $('#quickedit_gmaps').hide();
       add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
-      $('#bmltwf_submission_quickedit_dialog').data('id', id).dialog('open');
     }
+    $('#bmltwf_submission_quickedit_dialog').data('id', id).dialog('open');
   }
 
   // default close meeting radio button
@@ -820,31 +823,32 @@ jQuery(document).ready(function ($) {
       if (val !== '') {
         locdata.push(val);
       }
-      const address = `address=${locdata.join(',')}`;
-
-      $.ajax({
-        url: bmltwf_bmltserver_geolocate_rest_url,
-        type: 'GET',
-        dataType: 'json',
-        contentType: 'application/json',
-        data: encodeURI(address),
-        beforeSend(xhr) {
-          clear_notices();
-          xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
-        },
-      })
-        .done(function (response) {
-          const lat = response.latitude;
-          const long = response.longitude;
-          $('#quickedit_latitude').val(lat);
-          $('#quickedit_longitude').val(long);
-          update_gmaps(lat, long);
-          notice_success(response, 'bmltwf-quickedit-error-message');
-        })
-        .fail(function (xhr) {
-          notice_error(xhr, 'bmltwf-quickedit-error-message');
-        });
     });
+
+    const address = `address=${locdata.join(',')}`;
+
+    $.ajax({
+      url: bmltwf_bmltserver_geolocate_rest_url,
+      type: 'GET',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: encodeURI(address),
+      beforeSend(xhr) {
+        clear_notices();
+        xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
+      },
+    })
+      .done(function (response) {
+        const lat = response.latitude;
+        const long = response.longitude;
+        $('#quickedit_latitude').val(lat);
+        $('#quickedit_longitude').val(long);
+        update_gmaps(lat, long);
+        notice_success(response, 'bmltwf-quickedit-error-message');
+      })
+      .fail(function (xhr) {
+        notice_error(xhr, 'bmltwf-quickedit-error-message');
+      });
   }
 
   function save_handler(id) {

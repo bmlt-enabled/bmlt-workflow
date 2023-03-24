@@ -138,13 +138,13 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             ?>
                             </select>
                             <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
-                            <label for="venue_type"><?php echo __( 'Is this a virtual, hybrid or temporarily closed in person meeting?', 'bmlt-workflow' ); ?></label>
+                            <label for="venue_type"><?php echo __( 'Is this a virtual, hybrid or temporarily virtual in person meeting?', 'bmlt-workflow' ); ?></label>
                             <select name="venue_type" id="venue_type">
                                 <option value="" disabled selected hidden><?php echo __( 'Select one', 'bmlt-workflow' ); ?></option>
                                 <option value="1"><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
                                 <option value="2"><?php echo __( 'Yes - Virtual only', 'bmlt-workflow' ); ?></option>
                                 <option value="3"><?php echo __( 'Yes - Hybrid (Virtual and Face to Face)', 'bmlt-workflow' ); ?></option>
-                                <option value="4"><?php echo __( 'Yes - Temporary Face to Face Closure', 'bmlt-workflow' ); ?></option>
+                                <option value="4"><?php echo __( 'Yes - Temporary Virtual', 'bmlt-workflow' ); ?></option>
                             </select>
 
                             <div id="location_fields">
@@ -198,7 +198,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <legend><?php echo __( 'Virtual Meeting Options', 'bmlt-workflow' ); ?></legend>
                     <div id="virtual_meeting_settings">
                         <div class="bmltwf_tooltip" tabindex="0">
-                            <label for="virtual_meeting_link"><?php echo __( 'Online Meeting Link', 'bmlt-workflow' ); ?>
+                            <label for="virtual_meeting_link"><?php echo __( 'Virtual Meeting Link', 'bmlt-workflow' ); ?>
                                 <span class="dashicons dashicons-info-outline"></span>
                             </label>
                             <div class="bmltwf_left">

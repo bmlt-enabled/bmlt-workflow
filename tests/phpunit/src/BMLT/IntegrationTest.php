@@ -647,7 +647,7 @@ Line: $errorLine
                 return(false);
             }});
 
-        Functions\expect('wp_remote_retrieve_body')->times(5)->andReturn('','','',$gmapskey,$json);
+        Functions\expect('wp_remote_retrieve_body')->times(4)->andReturn('','',$gmapskey,$json);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('wp_remote_get')->justReturn(array());
         Functions\when('update_option')->justReturn();

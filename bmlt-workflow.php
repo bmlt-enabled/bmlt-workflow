@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.2
+ * Version: 1.1.3
  * Requires at least: 5.2
  * Tested up to: 6.1.1
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.2');
+define('BMLTWF_PLUGIN_VERSION', '1.1.3');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -1064,6 +1064,8 @@ if (!class_exists('bmltwf_plugin')) {
         {
 
             $google_maps_key = get_option('bmltwf_google_maps_key');
+            $bmlt_key = '';
+            $your_own_key = '';
             echo '<div class="bmltwf_info_text">';
             echo '<br>';
             echo __('This plugin will try and use the google maps key from your BMLT Root Server for geolocation and displaying the map view.','bmlt-workflow');

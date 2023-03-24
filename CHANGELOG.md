@@ -1,3 +1,9 @@
+## 1.1.3 (Mar 24, 2023)
+- #167 Bug: FSO starter kit requests not being sent (thanks SinclairP !)
+- #170 Bug: Auto resize not working on quick view for some fields (thanks AnitaK !)
+- #171 Bug: County Field isn't work with Quick Edit Mode (thanks @Klodd65 !)
+- #161 Bug: Temporary Closures against BMLT3x failing to approve due to invalid venueType (thanks markd !)
+
 ## 1.1.2 (Mar 10, 2023)
 - #160 Getting an error in the logs - Undefined array key...Integration.php on line 630 #160 (thanks @brustar64 !)
 

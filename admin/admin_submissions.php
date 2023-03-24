@@ -166,7 +166,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <option value="1"><?php echo __( "Face to Face", 'bmlt-workflow' ); ?></option>
                 <option value="2"><?php echo __( "Virtual only", 'bmlt-workflow' ); ?></option>
                 <option value="3"><?php echo __( "Hybrid (Virtual and Face to Face)", 'bmlt-workflow' ); ?></option>
-                <option value="4"><?php echo __( "Temporary Face to Face Closure", 'bmlt-workflow' ); ?></option>
+                <option value="4"><?php echo __( "Temporarily Virtual Meeting", 'bmlt-workflow' ); ?></option>
             </select>
             <label for="quickedit_location_text"><?php echo __( "Location", 'bmlt-workflow' ); ?></label>
             <input type="text" name="quickedit_location_text" id="quickedit_location_text" class="quickedit-input">
