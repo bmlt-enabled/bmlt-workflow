@@ -140,24 +140,28 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                         </select>
                         <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
                         <label for="venue_type"><?php echo __( 'Is this a virtual, hybrid or temporarily virtual in person meeting?', 'bmlt-workflow' ); ?></label>
-                        <select class="meeting-input" name="venue_type" id="venue_type">
+                        <select class="meeting-input" name="venue_type" id="venue_type" required>
                             <option value="" disabled selected hidden><?php echo __( 'Select one', 'bmlt-workflow' ); ?></option>
-                            <option value="1"><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
+                            <option value="1"><?php echo __( 'No - Standard Face to Face meeting', 'bmlt-workflow' ); ?></option>
                             <option value="2"><?php echo __( 'Yes - Virtual only', 'bmlt-workflow' ); ?></option>
                             <option value="3"><?php echo __( 'Yes - Hybrid (Virtual and Face to Face)', 'bmlt-workflow' ); ?></option>
                             <option value="4"><?php echo __( 'Yes - Temporarily Virtual (venue closed but meeting is still running virtually)', 'bmlt-workflow' ); ?></option>
                         </select>
-                        <div class="bmltwf_tooltip" tabindex="0">
-                        <label for="published"><?php echo __( 'Temporary Meeting Closures - Is this meeting published in the public meeting list?', 'bmlt-workflow' ); ?></label>
-                        <select class="meeting-input" name="published" id="published">
-                            <option value="1"><?php echo __( 'Yes - Meeting will be shown in search', 'bmlt-workflow' ); ?></option>
-                            <option value="0"><?php echo __( 'No - Meeting will not be shown in search', 'bmlt-workflow' ); ?></option>
-                        </select>
-                        <div class="bmltwf_right">
-                            <?php echo __( 'You can use this option to temporarily hide your meeting, such as a temporary venue closure,', 'bmlt-workflow' ); ?>
-                            <br><?php echo __('or to reopen your meeting after it has been temporarily closed'); ?>
+                        <div id="publish_div">
+                            <div class="bmltwf_tooltip" tabindex="0">
+                                <label for="published"><?php echo __( 'Temporary Meeting Closures - Is this meeting published in the public meeting list?', 'bmlt-workflow' ); ?>
+                                    <span class="dashicons dashicons-info-outline"></span>
+                                </label>
+                                <div class="bmltwf_right">
+                                    <?php echo __( 'You can use this option to temporarily hide your meeting, such as a temporary venue closure,', 'bmlt-workflow' ); ?>
+                                    <br><?php echo __('or to reopen your meeting after it has been temporarily closed'); ?>
+                                </div>
+                            </div>
+                            <select class="meeting-input" name="published" id="published">
+                                <option value="1"><?php echo __( 'Yes - Meeting will be shown in search', 'bmlt-workflow' ); ?></option>
+                                <option value="0"><?php echo __( 'No - Meeting will not be shown in search', 'bmlt-workflow' ); ?></option>
+                            </select>
                         </div>
-
                         <div id="location_fields">
                             <label for="location_text"><?php echo __( 'Location (eg: a building name)', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
                             <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
