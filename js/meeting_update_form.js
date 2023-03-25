@@ -388,6 +388,7 @@ jQuery(document).ready(function ($) {
       const fields = [
         'meeting_name',
         'start_time',
+        'published',
         'location_street',
         'location_text',
         'location_info',
@@ -463,7 +464,7 @@ jQuery(document).ready(function ($) {
   }
 
   function update_meeting_list(bmltwf_service_bodies) {
-    const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&${bmltwf_service_bodies}recursive=1&sort_keys=meeting_name`;
+    const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&advanced_published=0&lang_enum=en&${bmltwf_service_bodies}recursive=1&sort_keys=meeting_name`;
 
     fetchJsonp(search_results_address)
       .then((response) => response.json())

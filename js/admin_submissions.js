@@ -260,7 +260,7 @@ jQuery(document).ready(function ($) {
     // if it's a meeting change, fill from bmlt first
     if (bmltwf_changedata[id].submission_type === 'reason_change') {
       const { meeting_id } = bmltwf_changedata[id];
-      const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&meeting_key=id_bigint&meeting_key_value=${meeting_id}&lang_enum=en&&recursive=1&sort_keys=start_time`;
+      const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&advanced_published=0&meeting_key=id_bigint&meeting_key_value=${meeting_id}&lang_enum=en&&recursive=1&sort_keys=start_time`;
 
       fetchJsonp(search_results_address)
         .then((response) => response.json())
@@ -668,6 +668,17 @@ jQuery(document).ready(function ($) {
             table += column(col_meeting_details, __('Venue Type', 'bmlt-workflow'), `${ovtype} → ${vtype}`);
           } else {
             table += column(col_meeting_details, __('Venue Type', 'bmlt-workflow'), vtype);
+          }
+          break;
+        }
+        case 'published':
+        {
+          const published = ((c[key] === '1') ? 'Yes' : 'No');
+          if ('original_published' in c) {
+            const opublished = ((c.original_published === '1') ? 'Yes' : 'No');
+            table += column(col_meeting_details, __('Published', 'bmlt-workflow'), `${opublished} → ${published}`);
+          } else {
+            table += column(col_meeting_details, __('Published', 'bmlt-workflow'), `${published}`);
           }
           break;
         }

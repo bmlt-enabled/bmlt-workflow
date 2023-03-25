@@ -207,7 +207,7 @@ class Integration
 
         $bmltwf_bmlt_server_address = get_option('bmltwf_bmlt_server_address');
 
-        $url = $bmltwf_bmlt_server_address . "client_interface/json/?switcher=GetSearchResults&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
+        $url = $bmltwf_bmlt_server_address . "client_interface/json/?switcher=GetSearchResults&advanced_published=0&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
         $headers = array(
             "Accept: */*",
         );

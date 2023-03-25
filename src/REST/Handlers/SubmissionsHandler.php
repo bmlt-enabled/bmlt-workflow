@@ -212,7 +212,8 @@ class SubmissionsHandler
             "virtual_meeting_additional_info",
             "phone_meeting_number",
             "virtual_meeting_link",
-            "venue_type"
+            "venue_type",
+            "published"
         );
 
         foreach ($quickedit_change as $key => $value) {
@@ -376,7 +377,8 @@ class SubmissionsHandler
             "virtual_meeting_additional_info",
             "phone_meeting_number",
             "virtual_meeting_link",
-            "venue_type"
+            "venue_type",
+            "published"
         );
 
         foreach ($change as $key => $value) {
@@ -688,16 +690,16 @@ class SubmissionsHandler
 
 
 
-    public function meeting_update_form_handler_rest($data)
+    public function meeting_update_form_handler_rest($request)
     {
+        $data = $request->get_json_params();
 
-        // $this->debug_log("in rest handler");
-        // $this->debug_log(($data));
         $reason_new_bool = false;
         $reason_change_bool = false;
         $reason_close_bool = false;
         $virtual_meeting_bool = false;
 
+        
         // strip blanks
         foreach ($data as $key => $value) {
             if (($data[$key] === "") || ($data[$key] === NULL)) {
@@ -786,6 +788,7 @@ class SubmissionsHandler
             "virtual_meeting_additional_info" => array("text", false),
             "phone_meeting_number" => array("text", false),
             "virtual_meeting_link" => array("url", false),
+            "published" => array("boolnum", $reason_change_bool)
         );
 
         $sanitised_fields = array();
@@ -793,12 +796,19 @@ class SubmissionsHandler
         // blank meeting id if not provided
         $sanitised_fields['meeting_id'] = 0;
         
+        $this->debug_log(('data'));
+        $this->debug_log(($data));
+        $this->debug_log("type");
+        $this->debug_log(gettype($data['published']));
+        $this->debug_log("empty");
+        $this->debug_log(empty($data['published']));
+
         // sanitise all provided fields and drop all others
         foreach ($subfields as $field => $validation) {
             $field_type = $validation[0];
             $field_is_required = $validation[1];
             // if the form field is required, check if the submission is empty or non existent
-            if ($field_is_required && empty($data[$field])) {
+            if ($field_is_required && !array_key_exists($field,$data)) {
                 return $this->bmltwf_rest_error(__('Form field','bmlt-workflow').' "' . $field . '" '.__('is required','bmlt-workflow').'.', 422);
             }
 
@@ -844,6 +854,12 @@ class SubmissionsHandler
                             return $this->invalid_form_field($field);
                         }
                         $data[$field] = trim($data[$field], ',');
+                        break;
+                    case ('boolnum'):
+                        if(($data[$field]!= '0') && ($data[$field] != '1'))
+                        {
+                            return $this->invalid_form_field($field);
+                        }
                         break;
                     case ('number'):
                     case ('bigint'):
@@ -973,7 +989,8 @@ class SubmissionsHandler
                     "virtual_meeting_additional_info",
                     "phone_meeting_number",
                     "virtual_meeting_link",
-                    "venue_type"
+                    "venue_type",
+                    "published"
 
                 );
 
