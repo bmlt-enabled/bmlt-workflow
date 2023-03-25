@@ -796,13 +796,6 @@ class SubmissionsHandler
         // blank meeting id if not provided
         $sanitised_fields['meeting_id'] = 0;
         
-        $this->debug_log(('data'));
-        $this->debug_log(($data));
-        $this->debug_log("type");
-        $this->debug_log(gettype($data['published']));
-        $this->debug_log("empty");
-        $this->debug_log(empty($data['published']));
-
         // sanitise all provided fields and drop all others
         foreach ($subfields as $field => $validation) {
             $field_type = $validation[0];
@@ -859,6 +852,10 @@ class SubmissionsHandler
                         if(($data[$field]!= '0') && ($data[$field] != '1'))
                         {
                             return $this->invalid_form_field($field);
+                        }
+                        else
+                        {
+                            $data[$field] = intval($data[$field]);
                         }
                         break;
                     case ('number'):
@@ -963,6 +960,8 @@ class SubmissionsHandler
                         $submission[$field] = $sanitised_fields[$field];
                     }
                 }
+                // always mark our submission as published for a new meeting
+                $submission['published'] = 1;
 
                 break;
             case ('reason_change'):

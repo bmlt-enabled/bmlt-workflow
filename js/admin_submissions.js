@@ -673,7 +673,7 @@ jQuery(document).ready(function ($) {
         }
         case 'published':
         {
-          const published = ((c[key] === '1') ? 'Yes' : 'No');
+          const published = ((c[key] === 1) ? 'Yes' : 'No');
           if ('original_published' in c) {
             const opublished = ((c.original_published === '1') ? 'Yes' : 'No');
             table += column(col_meeting_details, __('Published', 'bmlt-workflow'), `${opublished} → ${published}`);

@@ -448,6 +448,7 @@ jQuery(document).ready(function ($) {
             __("We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval.", 'bmlt-workflow'),
           );
           $('#meeting_content').show();
+          $('#publish_div').show();
           disable_field('service_body_bigint');
           enable_highlighting();
           break;
@@ -585,6 +586,7 @@ jQuery(document).ready(function ($) {
     switch (reason) {
       case 'reason_new':
         $('#meeting_content').show();
+        $('#publish_div').hide();
         $('#personal_details').show();
         $('#meeting_details').show();
         $('#additional_info_div').show();

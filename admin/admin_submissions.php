@@ -212,7 +212,6 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     </div>
 </div>
 
-
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>
     <h2><?php echo __( "Meeting Submissions", 'bmlt-workflow' ); ?></h2>
