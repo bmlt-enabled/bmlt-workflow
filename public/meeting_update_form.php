@@ -128,65 +128,78 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             $req = get_option('bmltwf_required_meeting_formats') === 'true';
                             if ($req) {
                                 echo '<span class="bmltwf-required-field"> *</span>';
-                            }
-                            echo '</label>';
-                            echo '<select class="display_format_shared_id_list-select2" name="display_format_shared_id_list" id="display_format_shared_id_list"';
-                            if ($req) {
-                                echo ' required';
-                            }
-                            echo '>';
-                            ?>
-                            </select>
-                            <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
-                            <label for="venue_type"><?php echo __( 'Is this a virtual, hybrid or temporarily virtual in person meeting?', 'bmlt-workflow' ); ?></label>
-                            <select name="venue_type" id="venue_type">
-                                <option value="" disabled selected hidden><?php echo __( 'Select one', 'bmlt-workflow' ); ?></option>
-                                <option value="1"><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
-                                <option value="2"><?php echo __( 'Yes - Virtual only', 'bmlt-workflow' ); ?></option>
-                                <option value="3"><?php echo __( 'Yes - Hybrid (Virtual and Face to Face)', 'bmlt-workflow' ); ?></option>
-                                <option value="4"><?php echo __( 'Yes - Temporarily Virtual', 'bmlt-workflow' ); ?></option>
-                            </select>
+                            }?>
+                        </label>
 
-                            <div id="location_fields">
-                                <label for="location_text"><?php echo __( 'Location (eg: a building name)', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
-                                <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
-                                <label for="location_street"><?php echo __( 'Street Address', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
-                                <input class="meeting-input" type="text" name="location_street" size="50" id="location_street" required>
-                                <label for="location_info"><?php echo __( 'Extra Location Info (eg: Near the park)', 'bmlt-workflow' ); ?></label>
-                                <input class="meeting-input" type="text" name="location_info" size="50" id="location_info">
-                            </div>
-                            <label for="location_municipality"><?php echo __( 'City/Town/Suburb', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
-                            <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
-                            <div id="optional_location_sub_province">
-                                <label id="location_sub_province_label" for="location_sub_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname')) ?></label>
-                            </div>
-                            <div id="optional_location_province">
-                                <label id="location_province_label" for="location_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_province_displayname')) ?></label>
-                            </div>
-                            <div id="optional_postcode">
-                                <label id="location_postal_code_1_label" for="location_postal_code_1"><?php echo sanitize_text_field(get_option('bmltwf_optional_postcode_displayname')) ?></label>
-                                <input class="meeting-input" type="text" name="location_postal_code_1" id="location_postal_code_1" required>
-                            </div>
-                            <div id="optional_location_nation">
-                                <label id="location_nation_label" for="location_nation"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname')) ?></label>
-                                <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
-                            </div>
+                        <?php echo '<select class="display_format_shared_id_list-select2" name="display_format_shared_id_list" id="display_format_shared_id_list"';
+                        if ($req) {
+                            echo ' required';
+                        }
+                        echo '>';
+                        ?>
+                        </select>
+                        <input type="hidden" name="format_shared_id_list" id="format_shared_id_list">
+                        <label for="venue_type"><?php echo __( 'Is this a virtual, hybrid or temporarily virtual in person meeting?', 'bmlt-workflow' ); ?></label>
+                        <select class="meeting-input" name="venue_type" id="venue_type" required>
+                            <option value="" disabled selected hidden><?php echo __( 'Select one', 'bmlt-workflow' ); ?></option>
+                            <option value="1"><?php echo __( 'No - Standard Face to Face meeting', 'bmlt-workflow' ); ?></option>
+                            <option value="2"><?php echo __( 'Yes - Virtual only', 'bmlt-workflow' ); ?></option>
+                            <option value="3"><?php echo __( 'Yes - Hybrid (Virtual and Face to Face)', 'bmlt-workflow' ); ?></option>
+                            <option value="4"><?php echo __( 'Yes - Temporarily Virtual (venue closed but meeting is still running virtually)', 'bmlt-workflow' ); ?></option>
+                        </select>
+                        <div id="publish_div">
                             <div class="bmltwf_tooltip" tabindex="0">
-                                <label for="service_body_bigint"><?php echo __( 'Service Body', 'bmlt-workflow' ); ?>
+                                <label for="published"><?php echo __( 'Temporary Meeting Closures - Is this meeting published in the public meeting list?', 'bmlt-workflow' ); ?>
                                     <span class="dashicons dashicons-info-outline"></span>
                                 </label>
                                 <div class="bmltwf_right">
-                                <?php echo __( 'Creating a new meeting and unsure of your service body?', 'bmlt-workflow' ); ?>
-                                    <br><?php echo __( "Pick the closest match and leave us a note in the 'Any Other Comments' section below", 'bmlt-workflow' ); ?>
-
-                                    <i></i>
+                                    <?php echo __( 'You can use this option to temporarily hide your meeting, such as a temporary venue closure,', 'bmlt-workflow' ); ?>
+                                    <br><?php echo __('or to reopen your meeting after it has been temporarily closed'); ?>
                                 </div>
                             </div>
-                            <select class="meeting-input" name="service_body_bigint" id="service_body_bigint">
-                                <option value="" disabled selected hidden><?php echo __( 'Select one', 'bmlt-workflow' ); ?></option>
+                            <select class="meeting-input" name="published" id="published">
+                                <option value="1"><?php echo __( 'Yes - Meeting will be shown in search', 'bmlt-workflow' ); ?></option>
+                                <option value="0"><?php echo __( 'No - Meeting will not be shown in search', 'bmlt-workflow' ); ?></option>
                             </select>
+                        </div>
+                        <div id="location_fields">
+                            <label for="location_text"><?php echo __( 'Location (eg: a building name)', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
+                            <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
+                            <label for="location_street"><?php echo __( 'Street Address', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
+                            <input class="meeting-input" type="text" name="location_street" size="50" id="location_street" required>
+                            <label for="location_info"><?php echo __( 'Extra Location Info (eg: Near the park)', 'bmlt-workflow' ); ?></label>
+                            <input class="meeting-input" type="text" name="location_info" size="50" id="location_info">
+                        </div>
+                        <label for="location_municipality"><?php echo __( 'City/Town/Suburb', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
+                        <input class="meeting-input" type="text" name="location_municipality" size="50" id="location_municipality" required>
+                        <div id="optional_location_sub_province">
+                            <label id="location_sub_province_label" for="location_sub_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname')) ?></label>
+                        </div>
+                        <div id="optional_location_province">
+                            <label id="location_province_label" for="location_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_province_displayname')) ?></label>
+                        </div>
+                        <div id="optional_postcode">
+                            <label id="location_postal_code_1_label" for="location_postal_code_1"><?php echo sanitize_text_field(get_option('bmltwf_optional_postcode_displayname')) ?></label>
+                            <input class="meeting-input" type="text" name="location_postal_code_1" id="location_postal_code_1" required>
+                        </div>
+                        <div id="optional_location_nation">
+                            <label id="location_nation_label" for="location_nation"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname')) ?></label>
+                            <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
+                        </div>
+                        <div class="bmltwf_tooltip" tabindex="0">
+                            <label for="service_body_bigint"><?php echo __( 'Service Body', 'bmlt-workflow' ); ?>
+                                <span class="dashicons dashicons-info-outline"></span>
+                            </label>
+                            <div class="bmltwf_right">
+                            <?php echo __( 'Creating a new meeting and unsure of your service body?', 'bmlt-workflow' ); ?>
+                                <br><?php echo __( "Pick the closest match and leave us a note in the 'Any Other Comments' section below", 'bmlt-workflow' ); ?>
 
-
+                                <i></i>
+                            </div>
+                        </div>
+                        <select class="meeting-input" name="service_body_bigint" id="service_body_bigint">
+                            <option value="" disabled selected hidden><?php echo __( 'Select one', 'bmlt-workflow' ); ?></option>
+                        </select>
                     </div>
                 </fieldset>
             </div>

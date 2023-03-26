@@ -388,6 +388,7 @@ jQuery(document).ready(function ($) {
       const fields = [
         'meeting_name',
         'start_time',
+        'published',
         'location_street',
         'location_text',
         'location_info',
@@ -447,6 +448,7 @@ jQuery(document).ready(function ($) {
             __("We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval.", 'bmlt-workflow'),
           );
           $('#meeting_content').show();
+          $('#publish_div').show();
           disable_field('service_body_bigint');
           enable_highlighting();
           break;
@@ -463,7 +465,7 @@ jQuery(document).ready(function ($) {
   }
 
   function update_meeting_list(bmltwf_service_bodies) {
-    const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&lang_enum=en&${bmltwf_service_bodies}recursive=1&sort_keys=meeting_name`;
+    const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&advanced_published=0&lang_enum=en&${bmltwf_service_bodies}recursive=1&sort_keys=meeting_name`;
 
     fetchJsonp(search_results_address)
       .then((response) => response.json())
@@ -584,6 +586,7 @@ jQuery(document).ready(function ($) {
     switch (reason) {
       case 'reason_new':
         $('#meeting_content').show();
+        $('#publish_div').hide();
         $('#personal_details').show();
         $('#meeting_details').show();
         $('#additional_info_div').show();

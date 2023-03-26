@@ -243,3 +243,181 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve", async (t) => {
 
 });
 
+test("Bmlt3x_Submit_Change_Meeting_With_Unpublish_And_Approve", async (t) => {
+  await t.navigateTo(userVariables.formpage);
+
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+
+  // check our divs are visible
+  await t.expect(uf.update_reason.value).eql("reason_change");
+
+  // meeting selector
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "insanity");
+  await t.pressKey("enter");
+
+  // validate form is laid out correctly
+  await t.expect(uf.personal_details.visible).eql(true).expect(uf.meeting_details.visible).eql(true).expect(uf.additional_info_div.visible).eql(true);
+
+  // personal details
+  await t
+    .typeText(uf.first_name, "first")
+    .typeText(uf.last_name, "last")
+    .typeText(uf.email_address, "test@test.com.zz")
+    .typeText(uf.contact_number, "`12345`")
+    .typeText(uf.location_text, "location")
+
+    .typeText(uf.meeting_name, "update", { replace: true })
+    // make sure highlighting is present
+    .expect(uf.meeting_name.hasClass("bmltwf-changed"))
+    .ok();
+
+    // unpublish this meeting
+  await select_dropdown_by_value(uf.published, "0");
+
+  // email dropdown
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
+
+  // group member dropdown
+  await select_dropdown_by_value(uf.group_relationship, "Group Member");
+  await t.expect(uf.group_relationship.value).eql("Group Member");
+
+  await t.typeText(uf.additional_info, "my additional info");
+  await t
+    .click(uf.submit)
+    .expect(Selector("#bmltwf_response_message").innerText)
+    .match(/submission\ successful/);
+
+  // switch to admin page
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+
+  // new meeting = row 0
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // approve
+  await click_dt_button_by_index(as.dt_submission_wrapper, 0);
+
+  await t.expect(as.approve_dialog_parent.visible).eql(true);
+
+  await t.typeText(as.approve_dialog_textarea, "I approve this request");
+  // press ok button
+  await click_dialog_button_by_index(as.approve_dialog_parent, 1);
+  // dialog closes after ok button
+  await t.expect(as.approve_dialog_parent.visible).eql(false);
+
+  var column = 8;
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
+  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
+
+});
+
+// test("Change_Meeting_Details_Check_Highlighting_And_Check_Submission_Dropdown", async (t) => {
+
+//   await t.navigateTo(userVariables.formpage);
+
+//   await select_dropdown_by_value(uf.update_reason, "reason_change");
+
+//   // check our divs are visible
+//   await t.expect(uf.update_reason.value).eql("reason_change");
+
+//   // meeting selector
+//   await t.click("#select2-meeting-searcher-container");
+//   await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
+//   await t.pressKey("enter");
+
+//   // validate form is laid out correctly
+//   await t.expect(uf.personal_details.visible).eql(true)
+//   .expect(uf.meeting_details.visible).eql(true)
+//   .expect(uf.additional_info_div.visible).eql(true);
+
+//   // personal details
+//   await t
+//     .typeText(uf.first_name, "first")
+//     .typeText(uf.last_name, "last")
+//     .typeText(uf.email_address, "test@test.com.zz")
+//     .typeText(uf.contact_number, "`12345`")
+
+//     .typeText(uf.meeting_name, "update")
+//     // make sure highlighting is present
+//     .expect(uf.meeting_name.hasClass("bmltwf-changed"))
+//     .ok();
+
+//   // virtual meeting settings
+//   await select_dropdown_by_value(uf.venue_type, "3");
+//   await t
+//     .expect(uf.venue_type.value)
+//     .eql("3")
+//     .expect(uf.virtual_meeting_link.visible)
+//     .eql(true)
+//     .expect(uf.phone_meeting_number.visible)
+//     .eql(true)
+//     .expect(uf.virtual_meeting_additional_info.visible)
+//     .eql(true);
+//   await t
+//     .typeText(uf.phone_meeting_number, "+61 1800 253430 code #8303782669")
+//     .expect(uf.phone_meeting_number.hasClass("bmltwf-changed"))
+//     .ok()
+//     .typeText(uf.virtual_meeting_link, "https://us02web.zoom.us/j/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09")
+//     .expect(uf.virtual_meeting_link.hasClass("bmltwf-changed"))
+//     .ok()
+//     .typeText(uf.virtual_meeting_additional_info, "Zoom ID 83037287669 Passcode: testing")
+//     .expect(uf.virtual_meeting_additional_info.hasClass("bmltwf-changed"))
+//     .ok();
+
+//   // meeting settings
+
+//   // weekday
+//   await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+//   // await t.debug();
+//   await t
+//     .expect(uf.weekday_tinyint.hasClass("bmltwf-changed"))
+//     .ok()
+//     // start time
+//     .typeText(uf.start_time, "10:40")
+//     .expect(uf.start_time.hasClass("bmltwf-changed"))
+//     .ok();
+
+//   // duration
+//   await select_dropdown_by_value(uf.duration_hours, "09");
+//   await t.expect(uf.duration_hours.hasClass("bmltwf-changed")).ok();
+//   await select_dropdown_by_value(uf.duration_minutes, "35");
+//   await t.expect(uf.duration_minutes.hasClass("bmltwf-changed")).ok();
+
+//   // format list
+//   await t.click(uf.format_list_clickable).pressKey("g u i d enter").expect(uf.format_list_clickable.hasClass("bmltwf-changed")).ok();
+
+//   await t
+//     .typeText(uf.location_text, "my location")
+//     .expect(uf.format_list_clickable.hasClass("bmltwf-changed"))
+//     .ok()
+//     .typeText(uf.location_street, "110 Avoca Street")
+//     .expect(uf.location_street.hasClass("bmltwf-changed"))
+//     .ok()
+//     .typeText(uf.location_info, "info")
+//     .expect(uf.location_info.hasClass("bmltwf-changed"))
+//     .ok()
+//     .typeText(uf.location_municipality, "Randwick")
+//     .expect(uf.location_municipality.hasClass("bmltwf-changed"))
+//     .ok()
+//     .typeText(uf.location_province, "VIC")
+//     .expect(uf.location_province.hasClass("bmltwf-changed"))
+//     .ok()
+//     .typeText(uf.location_postal_code_1, "2031")
+//     .expect(uf.location_postal_code_1.hasClass("bmltwf-changed"))
+//     .ok();
+
+//     await select_dropdown_by_value(uf.group_relationship, "Group Member");
+
+//     await t
+//     .click(uf.submit)
+//     .expect(Selector("#bmltwf_response_message").innerText)
+//     .match(/submission\ successful/);
+
+//   // switch to admin page
+//   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+
+//     // first row open the dropdown
+//     await click_table_row_column(as.dt_submission, 0, 9);
+  
+// });

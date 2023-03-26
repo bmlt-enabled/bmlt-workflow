@@ -54,6 +54,7 @@ class Meeting_Update_Form {
         this.format_list_clickable = Selector('.select2-selection--multiple');
         this.format_shared_id_list = Selector('#format_shared_id_list');
         this.display_format_shared_id_list_label = Selector('#display_format_shared_id_list_label')
+        this.published = Selector('#published');
         this.location_text = Selector('#location_text');
         this.location_street = Selector('#location_street');
         this.location_info = Selector('#location_info');

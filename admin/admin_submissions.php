@@ -168,6 +168,12 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <option value="3"><?php echo __( "Hybrid (Virtual and Face to Face)", 'bmlt-workflow' ); ?></option>
                 <option value="4"><?php echo __( "Temporarily Virtual Meeting", 'bmlt-workflow' ); ?></option>
             </select>
+            <label for="quickedit_published"><?php echo __( 'Meeting Published?', 'bmlt-workflow' ); ?></label>
+            <select class="quickedit-input" name="quickedit_published" id="quickedit_published">
+                <option value="1"><?php echo __( 'Yes', 'bmlt-workflow' ); ?></option>
+                <option value="0"><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
+            </select>
+
             <label for="quickedit_location_text"><?php echo __( "Location", 'bmlt-workflow' ); ?></label>
             <input type="text" name="quickedit_location_text" id="quickedit_location_text" class="quickedit-input">
             <label for="quickedit_location_street"><?php echo __( "Street", 'bmlt-workflow' ); ?></label>
@@ -205,7 +211,6 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         </div>
     </div>
 </div>
-
 
 <div class="wrap">
     <div id="icon-users" class="icon32"></div>

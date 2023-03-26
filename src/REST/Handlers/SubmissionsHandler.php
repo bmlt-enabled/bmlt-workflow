@@ -212,7 +212,8 @@ class SubmissionsHandler
             "virtual_meeting_additional_info",
             "phone_meeting_number",
             "virtual_meeting_link",
-            "venue_type"
+            "venue_type",
+            "published"
         );
 
         foreach ($quickedit_change as $key => $value) {
@@ -376,7 +377,8 @@ class SubmissionsHandler
             "virtual_meeting_additional_info",
             "phone_meeting_number",
             "virtual_meeting_link",
-            "venue_type"
+            "venue_type",
+            "published"
         );
 
         foreach ($change as $key => $value) {
@@ -688,16 +690,16 @@ class SubmissionsHandler
 
 
 
-    public function meeting_update_form_handler_rest($data)
+    public function meeting_update_form_handler_rest($request)
     {
+        $data = $request->get_json_params();
 
-        // $this->debug_log("in rest handler");
-        // $this->debug_log(($data));
         $reason_new_bool = false;
         $reason_change_bool = false;
         $reason_close_bool = false;
         $virtual_meeting_bool = false;
 
+        
         // strip blanks
         foreach ($data as $key => $value) {
             if (($data[$key] === "") || ($data[$key] === NULL)) {
@@ -786,6 +788,7 @@ class SubmissionsHandler
             "virtual_meeting_additional_info" => array("text", false),
             "phone_meeting_number" => array("text", false),
             "virtual_meeting_link" => array("url", false),
+            "published" => array("boolnum", $reason_change_bool)
         );
 
         $sanitised_fields = array();
@@ -798,7 +801,7 @@ class SubmissionsHandler
             $field_type = $validation[0];
             $field_is_required = $validation[1];
             // if the form field is required, check if the submission is empty or non existent
-            if ($field_is_required && empty($data[$field])) {
+            if ($field_is_required && !array_key_exists($field,$data)) {
                 return $this->bmltwf_rest_error(__('Form field','bmlt-workflow').' "' . $field . '" '.__('is required','bmlt-workflow').'.', 422);
             }
 
@@ -844,6 +847,16 @@ class SubmissionsHandler
                             return $this->invalid_form_field($field);
                         }
                         $data[$field] = trim($data[$field], ',');
+                        break;
+                    case ('boolnum'):
+                        if(($data[$field]!= '0') && ($data[$field] != '1'))
+                        {
+                            return $this->invalid_form_field($field);
+                        }
+                        else
+                        {
+                            $data[$field] = intval($data[$field]);
+                        }
                         break;
                     case ('number'):
                     case ('bigint'):
@@ -947,12 +960,13 @@ class SubmissionsHandler
                         $submission[$field] = $sanitised_fields[$field];
                     }
                 }
+                // always mark our submission as published for a new meeting
+                $submission['published'] = 1;
 
                 break;
             case ('reason_change'):
 
                 // change meeting - just add the deltas. no real reason to do this as bmlt result would be the same, but safe to filter it regardless
-                // $subject = 'Change meeting notification';
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
@@ -973,7 +987,8 @@ class SubmissionsHandler
                     "virtual_meeting_additional_info",
                     "phone_meeting_number",
                     "virtual_meeting_link",
-                    "venue_type"
+                    "venue_type",
+                    "published"
 
                 );
 
@@ -986,7 +1001,12 @@ class SubmissionsHandler
 
 
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
-                // $this->debug_log(($meeting));
+                if($this->bmlt_integration->is_v3_server())
+                {
+                    // change our meeting return to v2 format so we can handle original components
+                    $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
+                }
+                // $this->debug_log(($bmlt_meeting));
                 if (\is_wp_error($bmlt_meeting)) {
                     return $this->bmltwf_rest_error(__('Error retrieving meeting details','bmlt-workflow'), 422);
                 }
@@ -1030,7 +1050,7 @@ class SubmissionsHandler
                     {
                         $original_name = "original_".$field;
                         $submission[$original_name] = $bmlt_field;    
-                    }  
+                    }
                 }
 
                 if (!$submission_count) {
@@ -1070,6 +1090,12 @@ class SubmissionsHandler
 
                 // populate the meeting name/time/day so we dont need to do it again on the submission page
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
+                if($this->bmlt_integration->is_v3_server())
+                {
+                    // change our meeting return to v2 format so we can handle original components
+                    $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
+                }
+
                 if(\is_wp_error($bmlt_meeting))
                 {
                     return $this->bmltwf_rest_error(__('Error retrieving meeting details','bmlt-workflow'), 422);
@@ -1086,9 +1112,6 @@ class SubmissionsHandler
             default:
                 return $this->bmltwf_rest_error(__('Invalid meeting change','bmlt-workflow'), 422);
         }
-
-        $this->debug_log("SUBMISSION");
-        $this->debug_log(($submission));
 
         $submitter_name = $sanitised_fields['first_name'] . " " . $sanitised_fields['last_name'];
         $submitter_email = $sanitised_fields['email_address'];
