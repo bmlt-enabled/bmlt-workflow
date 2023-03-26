@@ -456,6 +456,38 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false
+        },
+        {
+          "uuid": "a1627aeb-56f4-4afc-bd55-1dc6604b2d4f",
+          "body": "[{\n  \"id\": 1602,\n  \"serviceBodyId\": 1009,\n  \"formatIds\": [\n    8,\n    17,\n    27\n  ],\n  \"venueType\": 1,\n  \"temporarilyVirtual\": false,\n  \"day\": 4,\n  \"startTime\": \"19:00\",\n  \"duration\": \"01:30\",\n  \"timeZone\": null,\n  \"latitude\": 41.92971,\n  \"longitude\": -74.012154,\n  \"published\": true,\n  \"email\": null,\n  \"worldId\": \"G00138018\",\n  \"name\": \"Freedom from Insanity Group\",\n  \"location_text\": \"Methodist Church\",\n  \"location_info\": null,\n  \"location_street\": \"122 Clinton Ave\",\n  \"location_city_subsection\": null,\n  \"location_neighborhood\": null,\n  \"location_municipality\": \"Kingston\",\n  \"location_sub_province\": \"Ulster\",\n  \"location_province\": \"NY\",\n  \"location_postal_code_1\": null,\n  \"location_nation\": \"USA\",\n  \"comments\": null,\n  \"zone\": null,\n  \"train_lines\": null,\n  \"bus_lines\": null,\n  \"contact_phone_2\": null,\n  \"contact_email_2\": null,\n  \"contact_name_2\": null,\n  \"contact_phone_1\": null,\n  \"contact_email_1\": null,\n  \"contact_name_1\": null,\n  \"phone_meeting_number\": null,\n  \"virtual_meeting_link\": null,\n  \"virtual_meeting_additional_info\": null\n}]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "meeting id 1602",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "meeting_key_value",
+              "value": "1602",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "query",
+              "modifier": "switcher",
+              "value": "GetSearchResults",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
         }
       ],
       "enabled": true,
@@ -789,6 +821,80 @@
       "enabled": true,
       "responseMode": null,
       "type": "http"
+    },
+    {
+      "uuid": "0d0771fa-3942-4fe6-a795-50eb59f2630e",
+      "documentation": "",
+      "method": "patch",
+      "endpoint": "main_server/api/v1/meetings/1602",
+      "responses": [
+        {
+          "uuid": "e5f4943d-18c4-42b0-9507-f3c2b861955f",
+          "latency": 0,
+          "statusCode": 204,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "published",
+              "value": "0",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "body": "{}"
+        },
+        {
+          "uuid": "00bac445-9cf2-4522-88db-3121a8826363",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 422,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "body",
+              "modifier": "published",
+              "value": "1",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        }
+      ],
+      "enabled": true,
+      "responseMode": null,
+      "type": "http"
     }
   ],
   "rootChildren": [
@@ -851,6 +957,10 @@
     {
       "type": "route",
       "uuid": "d8fedfbc-aa7d-4fc6-bc65-a3e5cfabb895"
+    },
+    {
+      "type": "route",
+      "uuid": "0d0771fa-3942-4fe6-a795-50eb59f2630e"
     }
   ],
   "proxyMode": false,

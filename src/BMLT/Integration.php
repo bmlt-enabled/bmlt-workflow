@@ -88,6 +88,52 @@ class Integration
         return new \WP_Error('bmltwf_error', $message, $data);
     }
 
+    public function convertv3meetingtov2($meeting)
+    {
+        $fromto = array();
+        $fromto['serviceBodyId'] = 'service_body_bigint';
+        $fromto['venueType'] = 'venue_type';
+        $fromto['day'] = 'weekday_tinyint';
+        $fromto['name'] = 'meeting_name';
+
+        // change all our fields over
+        foreach ($fromto as $from => $to) {
+            $here = $meeting[$from] ?? false;
+            if ($here) {
+                $meeting[$to] = $meeting[$from];
+                unset($meeting[$from]);
+            }
+        }
+
+        // special cases
+        $here = $meeting['duration'] ?? false;
+        if ($here) {
+            $meeting['duration_time'] = $meeting['duration'].":00";
+            unset($meeting['duration_time']);
+        }
+
+        $here = $meeting['startTime'] ?? false;
+        if ($here) {
+            $meeting['start_time'] = $meeting['startTime'].":00";
+            unset($meeting['startTime']);
+        }
+
+        $here = $meeting['formatIds'] ?? false;
+        if ($here) {
+            $meeting['format_shared_id_list'] = implode(',',$meeting['formatIds']);
+            unset($meeting['formatIds']);
+        }
+
+        // day starts at 0 for BMLT 3.x
+        $here = $meeting['day'] ?? false;
+        if ($here) {
+            $meeting['weekday_tinyint'] = $meeting['day'] + 1;
+            unset($meeting['day']);
+        }
+
+        return $meeting;
+    }
+
     private function convertv2meetingtov3($meeting)
     {
         $fromto = array();
@@ -214,8 +260,8 @@ class Integration
         $this->debug_log("wp_remote_get from url " . $url);
 
         $resp = wp_remote_get($url, array('headers' => $headers));
-        // $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
-        // $this->debug_log(\wp_remote_retrieve_body($resp));
+        $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
+        $this->debug_log(\wp_remote_retrieve_body($resp));
 
         if ((!is_array($resp)) ||  is_wp_error($resp)) {
             return $this->bmltwf_integration_error(__('Server error retrieving meeting','bmlt-workflow'), 500);
@@ -230,10 +276,6 @@ class Integration
         $meeting = $meetingarr[0];
         $this->debug_log("SINGLE MEETING");
         $this->debug_log(($meeting));
-        // how possibly can we get a meeting that is not the same as we asked for
-        if ((empty($meeting['id_bigint'])) || ($meeting['id_bigint'] != $meeting_id)) {
-            return $this->bmltwf_integration_error(__('Server error retrieving meeting','bmlt-workflow'), 500);
-        }
         return $meeting;
     }
 

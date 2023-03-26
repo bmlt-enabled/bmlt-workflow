@@ -675,7 +675,7 @@ jQuery(document).ready(function ($) {
         {
           const published = ((c[key] === 1) ? 'Yes' : 'No');
           if ('original_published' in c) {
-            const opublished = ((c.original_published === '1') ? 'Yes' : 'No');
+            const opublished = ((c.original_published === 1 || c.original_published === true) ? 'Yes' : 'No');
             table += column(col_meeting_details, __('Published', 'bmlt-workflow'), `${opublished} → ${published}`);
           } else {
             table += column(col_meeting_details, __('Published', 'bmlt-workflow'), `${published}`);

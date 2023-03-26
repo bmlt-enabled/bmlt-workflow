@@ -967,7 +967,6 @@ class SubmissionsHandler
             case ('reason_change'):
 
                 // change meeting - just add the deltas. no real reason to do this as bmlt result would be the same, but safe to filter it regardless
-                // $subject = 'Change meeting notification';
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
@@ -1002,7 +1001,12 @@ class SubmissionsHandler
 
 
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
-                // $this->debug_log(($meeting));
+                if($this->bmlt_integration->is_v3_server())
+                {
+                    // change our meeting return to v2 format so we can handle original components
+                    $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
+                }
+                // $this->debug_log(($bmlt_meeting));
                 if (\is_wp_error($bmlt_meeting)) {
                     return $this->bmltwf_rest_error(__('Error retrieving meeting details','bmlt-workflow'), 422);
                 }
@@ -1046,7 +1050,7 @@ class SubmissionsHandler
                     {
                         $original_name = "original_".$field;
                         $submission[$original_name] = $bmlt_field;    
-                    }  
+                    }
                 }
 
                 if (!$submission_count) {
@@ -1086,6 +1090,12 @@ class SubmissionsHandler
 
                 // populate the meeting name/time/day so we dont need to do it again on the submission page
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
+                if($this->bmlt_integration->is_v3_server())
+                {
+                    // change our meeting return to v2 format so we can handle original components
+                    $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
+                }
+
                 if(\is_wp_error($bmlt_meeting))
                 {
                     return $this->bmltwf_rest_error(__('Error retrieving meeting details','bmlt-workflow'), 422);
@@ -1102,9 +1112,6 @@ class SubmissionsHandler
             default:
                 return $this->bmltwf_rest_error(__('Invalid meeting change','bmlt-workflow'), 422);
         }
-
-        $this->debug_log("SUBMISSION");
-        $this->debug_log(($submission));
 
         $submitter_name = $sanitised_fields['first_name'] . " " . $sanitised_fields['last_name'];
         $submitter_email = $sanitised_fields['email_address'];

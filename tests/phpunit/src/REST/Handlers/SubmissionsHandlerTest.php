@@ -156,8 +156,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     public function test_can_close(): void
     {
         
-
-        $form_post = array(
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
             "update_reason" => "reason_close",
             "first_name" => "joe",
             "last_name" => "joe",
@@ -168,7 +170,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "additional_info" => "I'd like to close the meeting please",
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
-        );
+                );}};
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -210,8 +212,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_can_change_meeting_name(): void
     {
-
-        $form_post = array(
+        $form_post = new class{
+        public function get_json_params()
+        {
+            return  array(
             "update_reason" => "reason_change",
             "meeting_name" => "testing name change",
             "meeting_id" => "3277",
@@ -222,9 +226,11 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
-            "venue_type" => "1"
-
+            "venue_type" => "1",
+            "published" => "1"
         );
+        }
+    };
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -257,8 +263,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_cant_change_service_body(): void
     {
-
-        $form_post = array(
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
             "update_reason" => "reason_change",
             "meeting_name" => "testing name change",
             "meeting_id" => "3277",
@@ -269,8 +277,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
+            "published" => "1"
 
-        );
+        );}};
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -300,8 +309,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_can_change_meeting_format(): void
     {
-
-        $form_post = array(
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
             "update_reason" => "reason_change",
             "meeting_name" => "testing name change",
             "meeting_id" => "3277",
@@ -314,8 +325,11 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "venue_type" => "1",
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
-
-        );
+            "published" => "1"
+                );
+            }
+        };
+        
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -346,8 +360,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_can_change_if_meeting_format_has_leading_or_trailing_commas(): void
     {
-
-        $form_post = array(
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
             "update_reason" => "reason_change",
             "meeting_name" => "testing name change",
             "meeting_id" => "3277",
@@ -360,8 +376,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "format_shared_id_list" => ",,1,2,,,,",
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
-
-        );
+            "published" => "1"
+                );
+            }
+        };
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -394,8 +412,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_can_create_new_with_no_starter_kit_requested(): void
     {
-        
-        $form_post = array(
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
             "update_reason" => "reason_new",
             "meeting_name" => "testing name change",
             "meeting_id" => "3277",
@@ -418,7 +438,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
 
-        );
+                );}};
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -449,8 +469,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_can_create_new_with_alpha_postcode(): void
     {
-        
-        $form_post = array(
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
             "update_reason" => "reason_new",
             "meeting_name" => "testing name change",
             "meeting_id" => "3277",
@@ -472,8 +494,8 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
-
-        );
+                );}};
+        
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -504,8 +526,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_cant_create_new_with_bad_start_time(): void
     {
-        
-        $form_post = array(
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
             "update_reason" => "reason_new",
             "meeting_name" => "testing name change",
             "meeting_id" => "3277",
@@ -527,7 +551,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
 
-        );
+        );}};
 
         Functions\when('\get_option')->justReturn("success");
         global $wpdb;
@@ -548,8 +572,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_cant_create_new_with_bad_duration_time(): void
     {
-        
-        $form_post = array(
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return  array(
             "update_reason" => "reason_new",
             "meeting_name" => "testing name change",
             "meeting_id" => "3277",
@@ -571,7 +597,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
 
-        );
+        );}};
 
         Functions\when('\get_option')->justReturn("success");
 
@@ -594,7 +620,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     public function test_can_create_new_with_starter_kit_requested(): void
     {
         
-        $form_post = array(
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
             "update_reason" => "reason_new",
             "meeting_name" => "testing name change",
             "meeting_id" => "3277",
@@ -618,7 +647,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
 
-        );
+                );}};
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -704,8 +733,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_cant_change_if_format_list_has_garbage(): void
     {
-
-        $form_post = array(
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
             "update_reason" => "reason_change",
             "meeting_name" => "testing name change",
             "meeting_id" => "3277",
@@ -716,8 +747,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "format_shared_id_list" => "aeeaetalkj2,7,8,33,54,55",
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
-
-        );
+            "published" => "1"
+                );
+            }
+        };
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -743,8 +776,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_cant_change_if_weekday_is_too_big(): void
     {
-
-        $form_post = array(
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
             "update_reason" => "reason_change",
             "meeting_name" => "testing name change",
             "weekday_tinyint" => "9999",
@@ -755,8 +790,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
+            "published" => "1"
 
-        );
+                );}};
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -782,8 +818,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_cant_change_if_weekday_is_zero(): void
     {
-
-        $form_post = array(
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
             "update_reason" => "reason_change",
             "meeting_name" => "testing name change",
             "weekday_tinyint" => "0",
@@ -795,7 +833,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
 
-        );
+        );}};
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -821,8 +859,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_cant_change_if_weekday_is_garbage(): void
     {
-
-        $form_post = array(
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
             "update_reason" => "reason_change",
             "meeting_name" => "testing name change",
             "weekday_tinyint" => "aerear9",
@@ -833,8 +873,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
-
-        );
+            "published" => "1"
+                );
+            }
+        };
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
