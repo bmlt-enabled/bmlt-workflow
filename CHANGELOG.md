@@ -1,3 +1,6 @@
+## 1.1.5 (Mar 26, 2023)
+- #173 Feature: Feature: Support for publish/unpublish meetings - we now support user self publish/unpublish meetings using the change meeting option
+
 ## 1.1.4 (Mar 24, 2023)
 - Fix a couple of translation bugs
 - Actually fix #161 correctly :(
