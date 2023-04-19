@@ -1,252 +1,195 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: BMLT Workflow 1.1.5\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bmlt-workflow\n"
-"POT-Creation-Date: 2023-03-09 17:50+1100\n"
-"PO-Revision-Date: 2023-03-09 17:51+1100\n"
+"Project-Id-Version: Plugin NZ_NA\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
 "Last-Translator: \n"
-"Language-Team: nigel-bmlt <nigel-bmlt@gmail.com>\n"
+"Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.2.2\n"
-"X-Domain: bmlt-workflow\n"
-"X-Poedit-Basepath: ..\n"
-"X-Poedit-KeywordsList: __\n"
-"X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: assets\n"
-"X-Poedit-SearchPathExcluded-1: css\n"
-"X-Poedit-SearchPathExcluded-2: docker\n"
-"X-Poedit-SearchPathExcluded-3: images\n"
-"X-Poedit-SearchPathExcluded-4: lang\n"
-"X-Poedit-SearchPathExcluded-5: mockoon\n"
-"X-Poedit-SearchPathExcluded-6: support\n"
-"X-Poedit-SearchPathExcluded-7: tests\n"
-"X-Poedit-SearchPathExcluded-8: thirdparty\n"
-"X-Poedit-SearchPathExcluded-9: vendor\n"
-"X-Poedit-SearchPathExcluded-10: node_modules\n"
 
 #: admin/admin_options.php:35
-msgid "Plugin Version"
-msgstr ""
+msgid "Plugin Version "
+msgstr "Version de l'extension "
 
 #: admin/admin_options.php:39
-msgid ""
-"For BMLT Workflow plugin issues, bugs or suggestions please raise them at"
-msgstr ""
+msgid "For BMLT Workflow plugin issues, bugs or suggestions please raise them at"
+msgstr "Pour signaler tout problème, bogue ou pour nous faire une suggestion à propos de l'extension BMLT Workflow, vous pouvez nous les envoyer sur slack"
 
 #: admin/admin_options.php:41
 msgid " or chat to us on bmlt-enabled slack, <b>#wordpress-bmlt-workflow</b>!"
-msgstr ""
+msgstr " ou clavarder avec nous sur le canal slack <b>#wordpress-bmlt-workflow</b> !"
 
 #: admin/admin_options.php:43
 msgid "Plugin documentation can be found at"
-msgstr ""
+msgstr "La documentation de l'extension est disponible sur"
 
 #: admin/admin_options.php:60
-msgid ""
-"Enter your BMLT Root Server address, and a BMLT Root Server username and "
-"password."
-msgstr ""
+msgid "Enter your BMLT Root Server address, and a BMLT Root Server username and password."
+msgstr "Entrez l'adresse de votre serveur racine BMLT, puis un nom d'utilisateur et un mot de passe pour le serveur racine BMLT."
 
 #: admin/admin_options.php:65
-#, fuzzy
 msgid "BMLT Root Server Address"
-msgstr "Service Committee"
+msgstr "Adresse du serveur racine BMLT"
 
 #: admin/admin_options.php:69
 msgid "Username"
-msgstr ""
+msgstr "Nom d'utilisateur"
 
 #: admin/admin_options.php:72
 msgid "Password"
-msgstr ""
+msgstr "Mot de passe"
 
 #: admin/admin_options.php:79
-msgid ""
-"The BMLT root server username and password is used to action meeting "
-"approvals/rejections as well as perform any BMLT related actions on the "
-"Wordpress users behalf."
-msgstr ""
+msgid "The BMLT root server username and password is used to action meeting approvals/rejections as well as perform any BMLT related actions on the Wordpress users behalf."
+msgstr "Le nom d'utilisateur et le mot de passe du serveur racine BMLT sont utilisés pour approuver ou rejeter les réunions et pour effectuer toute action liée au BMLT au nom des utilisateurs de Wordpress."
 
 #: admin/admin_options.php:80
-msgid ""
-"This user must be configured as a service body administrator and have access "
-"within the BMLT Root Server to edit all service bodies that are used in "
-"BMLTWF form submissions."
-msgstr ""
+#, fuzzy
+msgid "This user must be configured as a service body administrator and have access within the BMLT Root Server to edit all service bodies that are used in BMLTWF form submissions."
+msgstr "Cet utilisateur doit être configuré comme admin d'un comité de service et avoir accès au serveur racine BMLT pour modifier tous les comités de service utilisées dans les formulaires de demande sur la BMLTWF."
 
 #: admin/admin_options.php:82
-msgid ""
-"The server address is the full URL to your BMLT Root Server installation. "
-"For example: <code>https://na.test.zzz/main_server/</code>"
-msgstr ""
+msgid "The server address is the full URL to your BMLT Root Server installation. For example: <code>https://na.test.zzz/main_server/</code>"
+msgstr "L'adresse du serveur est l'URL complète de votre installation de serveur racine BMLT. Par exemple : <code>https://na.test.zzz/main_server/</code>"
 
 #: admin/admin_options.php:92
-msgid ""
-"WARNING: If you proceed with the restore, your existing plugin "
-"configuration, including submissions, settings and service bodies will be "
-"removed."
-msgstr ""
+msgid "WARNING: If you proceed with the restore, your existing plugin configuration, including submissions, settings and service bodies will be removed."
+msgstr "ATTENTION : si vous poursuivez la restauration, la configuration EXISTANTE de l'extension sera supprimée, y compris les demandes, les envois, les paramètres et les comités de service."
 
 #: admin/admin_options.php:93 admin/admin_options.php:104
-msgid ""
-"this only affects the plugin configuration within Wordpress. Nothing outside "
-"of this, particularly any BMLT configuration, will be touched."
-msgstr ""
+msgid "this only affects the plugin configuration within Wordpress. Nothing outside of this, particularly any BMLT configuration, will be touched."
+msgstr "ceci affecte uniquement la configuration de l'extension dans Wordpress. Rien d'autre à l'extérieur de Wordpress, y compris toute configuration BMLT, ne sera touché."
 
 #: admin/admin_options.php:94 admin/admin_options.php:106
 msgid "Are you sure you wish to do this?"
-msgstr ""
+msgstr "Voulez-vous vraiment continuer?"
 
 #: admin/admin_options.php:101
-msgid ""
-"WARNING: Changing the BMLT Root Server settings will remove your service "
-"body configuration and existing submissions within the plugin."
-msgstr ""
+msgid "WARNING: Changing the BMLT Root Server settings will remove your service body configuration and existing submissions within the plugin."
+msgstr "ATTENTION : La modification des paramètres du serveur racine BMLT supprimera la configuration de vos comités de service et les demandes existantes dans l'extension."
 
 #: admin/admin_options.php:102
-msgid ""
-"Use the BACKUP option before pressing Ok if you do not wish to lose your "
-"submissions."
-msgstr ""
+msgid "Use the BACKUP option before pressing Ok if you do not wish to lose your submissions."
+msgstr "Utilisez l'option SAUVEGARDE avant d'appuyer sur OK si vous voulez conserver les demandes."
 
 #: admin/admin_options.php:103
-msgid ""
-"If you press Ok, your service bodies, service body permissions and ALL "
-"SUBMISSIONS will be removed."
-msgstr ""
+msgid "If you press Ok, your service bodies, service body permissions and ALL SUBMISSIONS will be removed."
+msgstr "En appuyant sur OK, vos comités de service, les autorisations de ceux-ci et TOUTES LES DEMANDES seront supprimés."
 
 #: admin/admin_options.php:108
 msgid "Yes I'm sure!"
-msgstr ""
+msgstr "Oui, allez-y je le veux!"
 
 #: admin/admin_service_bodies.php:26
 msgid "BMLTWF Plugin Error: BMLT Root Server not configured and tested."
-msgstr ""
+msgstr "Erreur de l'extension BMLTWF : le serveur racine BMLT n'est pas configuré ni testé."
 
 #: admin/admin_service_bodies.php:35
 #, fuzzy
 msgid "Service Body Configuration"
-msgstr "Service Committee"
+msgstr "Configuration de comité de service"
 
 #: admin/admin_service_bodies.php:38
-msgid ""
-"Service bodies are retrieved from BMLT Root Server using the BMLT Root "
-"Server details configured on the option page."
-msgstr ""
+msgid "Service bodies are retrieved from BMLT Root Server using the BMLT Root Server details configured on the option page."
+msgstr "Les comités de service sont récupérés à partir du serveur racine BMLT en utilisant les infos du serveur racine BMLT qui sont configurées sur la page d'options."
 
 #: admin/admin_service_bodies.php:39
-msgid ""
-"You can configure which service areas are visible to the end-users using the "
-"<code>Display on end-user Form</code> checkbox."
-msgstr ""
+msgid "You can configure which service areas are visible to the end-users using the <code>Display on end-user Form</code> checkbox."
+msgstr "Vous pouvez configurer les zones de service visibles pour les utilisateurs finaux à l'aide de la case à cocher <code>Afficher sur le formulaire de l'utilisateur final</code>."
 
+#. trouver la traduction
 #: admin/admin_service_bodies.php:40
-msgid ""
-"You can select users from your Wordpress userlist and grant them access to "
-"your service areas in the <code>Wordpress Users with Access</code> column. "
-"These users will only be given access to the submission admin page, and only "
-"submissions from their service areas will be visible to approve."
-msgstr ""
+#, fuzzy
+msgid "You can select users from your Wordpress userlist and grant them access to your service areas in the <code>Wordpress Users with Access</code> column. These users will only be given access to the submission admin page, and only submissions from their service areas will be visible to approve."
+msgstr "Vous pouvez sélectionner des utilisateurs dans la liste des utilisateurs Wordpress et leur accorder un accès à vos zones de service dans la colonne <code>Wordpress Users with Access</code>. Ces utilisateurs pourront uniquement accéder à la page d'administration des demandes et seules les demandes dans leur zone de service respective seront visibles pour approbation.\n"
 
 #: admin/admin_service_bodies.php:41
-msgid ""
-"Wordpress admins or multisite superadmins will always have access to all "
-"submissions, so there is no need to add them individually"
-msgstr ""
+msgid "Wordpress admins or multisite superadmins will always have access to all submissions, so there is no need to add them individually"
+msgstr "Les admin Wordpress ou les superadmin multisites auront toujours accès à toutes les demandes, il n'est donc pas nécessaire de les ajouter individuellement"
 
 #: admin/admin_service_bodies.php:42
-msgid ""
-"Note: Settings will only be applied when the 'Save Settings' button is "
-"pressed."
-msgstr ""
+msgid "Note: Settings will only be applied when the 'Save Settings' button is pressed."
+msgstr "Remarque : les paramètres sont uniquement appliqués quand le bouton « Sauvegarder les paramètres » est activé."
 
 #: admin/admin_service_bodies.php:50 admin/admin_submissions.php:222
 #: admin/admin_submissions.php:236 public/meeting_update_form.php:175
 msgid "Service Body"
-msgstr "Service Committee"
+msgstr "Comité de service"
 
 #: admin/admin_service_bodies.php:51
-#, fuzzy
 msgid "Description"
-msgstr "Durée"
+msgstr "Description"
 
 #: admin/admin_service_bodies.php:52
 msgid "Wordpress Users with Access"
-msgstr ""
+msgstr "Utilisateurs WordPress avec accès"
 
 #: admin/admin_service_bodies.php:53
 msgid "Display on end-user Form"
-msgstr ""
+msgstr "Affichage sur le formulaire de l'utilisateur final"
 
 #: admin/admin_service_bodies.php:59
 msgid "Save Settings"
-msgstr ""
+msgstr "Enregistrer les paramètres"
 
 #: admin/admin_submissions.php:30 admin/admin_submissions.php:40
 msgid "Approval note:"
-msgstr ""
+msgstr "Note d'approbation :"
 
 #: admin/admin_submissions.php:34
-msgid ""
-"You can use the quickedit function to make any extra changes before approval."
-msgstr ""
+msgid "You can use the quickedit function to make any extra changes before approval."
+msgstr "Vous pouvez utiliser la fonction d'édition rapide pour effectuer d'autres modifications avant l'approbation."
 
 #: admin/admin_submissions.php:35
 msgid "Are you sure you would like to approve the submission?"
-msgstr ""
+msgstr "Voulez-vous vraiment approuver cette demande?"
 
 #: admin/admin_submissions.php:44
-msgid ""
-"Choose whether you'd like the meeting to be deleted from BMLT, or marked as "
-"unpublished."
-msgstr ""
+msgid "Choose whether you'd like the meeting to be deleted from BMLT, or marked as unpublished."
+msgstr "Choisissez si vous voulez supprimer la réunion du BMLT ou la cocher comme étant dépubliée."
 
 #: admin/admin_submissions.php:45 bmlt-workflow.php:1121
 msgid "Unpublish"
-msgstr ""
+msgstr "Dépublier"
 
 #: admin/admin_submissions.php:46 bmlt-workflow.php:1123
 #: js/admin_submissions.js:386
 msgid "Delete"
-msgstr ""
+msgstr "Supprimer"
 
 #: admin/admin_submissions.php:51
-msgid ""
-"This change cannot be undone. Use this to remove an entirely unwanted "
-"submission from the list."
-msgstr ""
+msgid "This change cannot be undone. Use this to remove an entirely unwanted submission from the list."
+msgstr "Cette modification est irréversible. Utilisez cette fonctionnalité pour supprimer de la liste une demande complètement indésirable."
 
 #: admin/admin_submissions.php:52
 msgid "Are you sure you would like to delete this submission completely?"
-msgstr ""
+msgstr "Voulez-vous vraiment supprimer complètement cette demande?"
 
 #: admin/admin_submissions.php:61
 msgid "Are you sure you would like to reject this submission?"
-msgstr ""
+msgstr "Voulez-vous vraiment rejeter cette demande?"
 
 #: admin/admin_submissions.php:73
-msgid ""
-"Highlighted fields are from the user submission and your changes and will be "
-"stored when the QuickEdit is saved."
-msgstr ""
+#, fuzzy
+msgid "Highlighted fields are from the user submission and your changes and will be stored when the QuickEdit is saved."
+msgstr "Les champs en surbrillance proviennent de la demande de l'utilisateur et de vos modifications,  le tout sera conservé lors de l'enregistrement de QuickEdit."
 
 #: admin/admin_submissions.php:78 js/admin_submissions.js:471
 #: js/admin_submissions.js:655 src/REST/Handlers/SubmissionsHandler.php:1148
-#, fuzzy
 msgid "Meeting Name"
-msgstr "Détails de réunion"
+msgstr "Nom de la réunion"
 
 #: admin/admin_submissions.php:80 bmlt-workflow.php:1204
 #: js/admin_submissions.js:739 public/meeting_update_form.php:126
 #: src/REST/Handlers/SubmissionsHandler.php:1211
 #: src/REST/Handlers/SubmissionsHandler.php:1218
-#, fuzzy
 msgid "Meeting Formats"
-msgstr "Détails de réunion"
+msgstr "Formats de réunion"
 
 #: admin/admin_submissions.php:96 js/admin_submissions.js:672
 #: public/meeting_update_form.php:79
@@ -256,7 +199,7 @@ msgstr "Début de la réunion"
 
 #: admin/admin_submissions.php:101
 msgid "Weekday"
-msgstr ""
+msgstr "Jour de la semaine"
 
 #: admin/admin_submissions.php:103 js/admin_submissions.js:84
 #: js/meeting_update_form.js:26 public/meeting_update_form.php:69
@@ -310,37 +253,35 @@ msgstr "Durée"
 #: public/meeting_update_form.php:212
 #: src/REST/Handlers/SubmissionsHandler.php:1201
 msgid "Virtual Meeting Additional Info"
-msgstr "Information additionnelle"
+msgstr "Autres détails sur la réunion virtuelle"
 
 #: admin/admin_submissions.php:149 js/admin_submissions.js:731
 #: src/REST/Handlers/SubmissionsHandler.php:1204
-#, fuzzy
 msgid "Virtual Meeting Phone Details"
-msgstr "Détails de réunion virtuelle"
+msgstr "Détails du numéro de téléphone de la réunion virtuelle"
 
 #: admin/admin_submissions.php:153 js/admin_submissions.js:734
 #: src/REST/Handlers/SubmissionsHandler.php:1207
-#, fuzzy
 msgid "Virtual Meeting Link"
-msgstr "Détails de réunion virtuelle"
+msgstr "Lien de la réunion virtuelle"
 
 #: admin/admin_submissions.php:157 public/meeting_update_form.php:272
 msgid "Additional Information"
-msgstr "Autres commentaires"
+msgstr "Renseignements complémentaires"
 
 #: admin/admin_submissions.php:163 js/admin_submissions.js:665
 #: js/admin_submissions.js:667
 msgid "Venue Type"
-msgstr ""
+msgstr "Type de salle"
 
 #: admin/admin_submissions.php:165 public/meeting_update_form.php:143
 #: public/meeting_update_form.php:186 public/meeting_update_form.php:257
 msgid "Select one"
-msgstr "Tenue"
+msgstr "Faire un choix"
 
 #: admin/admin_submissions.php:166
 msgid "Face to Face"
-msgstr ""
+msgstr "En salle"
 
 #: admin/admin_submissions.php:167
 #, fuzzy
@@ -350,18 +291,17 @@ msgstr "Videoconférence"
 #: admin/admin_submissions.php:168
 #, fuzzy
 msgid "Hybrid (Virtual and Face to Face)"
-msgstr "Hybride (Vidéoconférence et présentielle)"
+msgstr "Hybride (Virtuelle et en salle)"
 
 #: admin/admin_submissions.php:169
 #, fuzzy
 msgid "Temporary Face to Face Closure"
-msgstr "Temporrairement fermé en présentielle et ouvert en vidéoconférence"
+msgstr "Salle temporairement fermée mais réunion virtuelle"
 
 #: admin/admin_submissions.php:171 js/admin_submissions.js:681
 #: src/REST/Handlers/SubmissionsHandler.php:1157
-#, fuzzy
 msgid "Location"
-msgstr "Durée"
+msgstr "Emplacement"
 
 #: admin/admin_submissions.php:173 js/admin_submissions.js:684
 #: src/REST/Handlers/SubmissionsHandler.php:1160
@@ -371,9 +311,8 @@ msgstr "Adresse"
 
 #: admin/admin_submissions.php:175 js/admin_submissions.js:687
 #: src/REST/Handlers/SubmissionsHandler.php:1163
-#, fuzzy
 msgid "Location Info"
-msgstr "Durée"
+msgstr "Détail sur l'emplacement"
 
 #: admin/admin_submissions.php:177 public/meeting_update_form.php:158
 msgid "City/Town/Suburb"
@@ -381,543 +320,507 @@ msgstr "Ville/Municipalité"
 
 #: admin/admin_submissions.php:198
 msgid "Meeting Geolocation (auto calculated)"
-msgstr ""
+msgstr "Géolocalisation de la réunion (calcul automatique)"
 
 #: admin/admin_submissions.php:199
 msgid "Latitude"
-msgstr ""
+msgstr "Latitude"
 
 #: admin/admin_submissions.php:201
 msgid "Longitude"
-msgstr ""
+msgstr "Longitude"
 
 #: admin/admin_submissions.php:212 admin/admin_submissions.php:227
 #: admin/admin_submissions.php:241
 msgid "Meeting Submissions"
-msgstr ""
+msgstr "Demandes de réunions"
 
 #: admin/admin_submissions.php:219 admin/admin_submissions.php:233
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
 #: admin/admin_submissions.php:220 admin/admin_submissions.php:234
 #: js/admin_submissions.js:615
 #, fuzzy
 msgid "Submitter Name"
-msgstr "Soumettre"
+msgstr "Nom du demandeur, demandeuse"
 
 #: admin/admin_submissions.php:221 admin/admin_submissions.php:235
 #: js/admin_submissions.js:612
 #, fuzzy
 msgid "Submitter Email"
-msgstr "Soumettre"
+msgstr "Adresse courriel demandeur, demandeuse"
 
 #: admin/admin_submissions.php:223 admin/admin_submissions.php:237
 msgid "Change Summary"
-msgstr ""
+msgstr "Modifier le résumé"
 
 #: admin/admin_submissions.php:224 admin/admin_submissions.php:238
 msgid "Submission Time"
-msgstr ""
+msgstr "Heure de la demande"
 
 #: admin/admin_submissions.php:225 admin/admin_submissions.php:239
 msgid "Change Time"
-msgstr ""
+msgstr "Modifier l'heure"
 
 #: admin/admin_submissions.php:226 admin/admin_submissions.php:240
 msgid "Changed By"
-msgstr ""
+msgstr "Modifié par"
 
 #: admin/admin_submissions.php:228 admin/admin_submissions.php:242
 msgid "Change Made"
-msgstr ""
+msgstr "Changements effectués"
 
 #: bmlt-workflow.php:442 bmlt-workflow.php:443
 #, fuzzy
 msgid "Configuration"
-msgstr "Service Committee"
+msgstr "Configuration"
 
 #: bmlt-workflow.php:452 bmlt-workflow.php:453
 msgid "Workflow Submissions"
-msgstr ""
+msgstr "Le flux des demandes"
 
 #: bmlt-workflow.php:462 bmlt-workflow.php:463
 #, fuzzy
 msgid "Service Bodies"
-msgstr "Service Committee"
+msgstr "Comités de service"
 
 #: bmlt-workflow.php:506
 #, fuzzy
 msgid "Email from address"
-msgstr "Courriel"
+msgstr "Courriel à partir de l'adresse"
 
 #: bmlt-workflow.php:518
 msgid "Google maps key"
-msgstr ""
+msgstr "Clé Google Maps"
 
 #: bmlt-workflow.php:530
 msgid "Default behaviour when closing meetings"
-msgstr ""
+msgstr "Séquence par défaut pour la fermeture des réunions"
 
 #: bmlt-workflow.php:542 bmlt-workflow.php:783
 msgid "Trusted servants can delete submissions"
-msgstr ""
+msgstr "Les membres de confiance peuvent supprimer les demandes"
 
 #: bmlt-workflow.php:555
 msgid "Remove virtual meeting details on venue change"
-msgstr ""
+msgstr "Supprimer les détails de la réunion virtuelle en cas de changement de lieu"
 
 #: bmlt-workflow.php:567
+#, fuzzy
 msgid "Option to enable displaying nation field to end users"
-msgstr ""
+msgstr "Activation de l'affichage du champ pays aux utilisateurs finaux"
 
 #: bmlt-workflow.php:579
 msgid "Display name for nation field"
-msgstr ""
+msgstr "Affichage du nom pour le champ pays"
 
 #: bmlt-workflow.php:591
+#, fuzzy
 msgid "Option to enable displaying subprovince field to end users"
-msgstr ""
+msgstr "Activation de l'affichage du champ province aux utilisateurs finaux"
 
 #: bmlt-workflow.php:603
 msgid "Display name for subprovince field"
-msgstr ""
+msgstr "Affichage du nom pour le champ Région administrative"
 
 #: bmlt-workflow.php:615 bmlt-workflow.php:627
 msgid "optional field for location_province"
-msgstr ""
+msgstr "champ facultatif pour location_province"
 
 #: bmlt-workflow.php:639 bmlt-workflow.php:651
 msgid "optional field for postcode"
-msgstr ""
+msgstr "champ facultatif pour le code postal"
 
 #: bmlt-workflow.php:663
 msgid "required field for meeting format"
-msgstr ""
+msgstr "champ obligatoire pour le format de la réunion"
 
 #: bmlt-workflow.php:675
 msgid "Email template for submitter"
-msgstr ""
+msgstr "Modèle de courriel pour le demandeur, demandeuse"
 
 #: bmlt-workflow.php:687
 msgid "Toggle for FSO feature"
-msgstr ""
+msgstr "Bouton à bascule pour la fonctionnalité Unité de service"
 
 #: bmlt-workflow.php:699
 msgid "Email template for FSO"
-msgstr ""
+msgstr "Modèle de courriel pour l'unité de service"
 
 #: bmlt-workflow.php:711
 #, fuzzy
 msgid "FSO email address"
-msgstr "Courriel"
+msgstr "Adresse courriel pour l'unité de service"
 
 #: bmlt-workflow.php:727
 #, fuzzy
 msgid "BMLT Root Server Configuration"
-msgstr "Service Committee"
+msgstr "Configuration du serveur racine BMLT"
 
 #: bmlt-workflow.php:735
 msgid "Backup and Restore"
-msgstr ""
+msgstr "Sauvegarde et restauration"
 
 #: bmlt-workflow.php:743
 msgid "Meeting Update Form Shortcode"
-msgstr ""
+msgstr "Shortcode pour le formulaire de mise à jour des réunions"
 
 #: bmlt-workflow.php:751
 msgid "Auto Geocoding Root Server Settings"
-msgstr ""
+msgstr "Paramètre de géocodage automatique du serveur racine"
 
 #: bmlt-workflow.php:759
 #, fuzzy
 msgid "Email From Address"
-msgstr "Courriel"
+msgstr "Adresse courriel"
 
 #: bmlt-workflow.php:767
 msgid "Google Maps Key"
-msgstr ""
+msgstr "Clé Google Maps"
 
 #: bmlt-workflow.php:775
 msgid "Default for close meeting submission"
-msgstr ""
+msgstr "Valeur par défaut pour une demande de réunion fermée"
 
 #: bmlt-workflow.php:791
 msgid "Remove Virtual Meeting details when venue is changed to 'face to face'"
-msgstr ""
+msgstr "Supprimer les infos de réunion virtuelle quand le format devient « en salle »"
 
 #: bmlt-workflow.php:799
 msgid "Optional form fields"
-msgstr ""
+msgstr "Champs facultatifs pour les formulaire"
 
 #: bmlt-workflow.php:807
 #, fuzzy
 msgid "Field Service Office configuration"
-msgstr "Service Committee"
+msgstr "Configuration"
 
 #: bmlt-workflow.php:815
 msgid "Email template used when sending a form submission notification"
-msgstr ""
+msgstr "Modèle de courriel à utiliser pour envoyer une notification d'envoi de formulaire"
 
 #: bmlt-workflow.php:831
 msgid "Invalid FSO Enabled setting."
-msgstr ""
+msgstr "Paramètres d'unité de service activés mais inexacts."
 
 #: bmlt-workflow.php:845
 msgid "Invalid Postcode setting."
-msgstr ""
+msgstr "Code postal inexact."
 
 #: bmlt-workflow.php:859
 msgid "Invalid Nation setting."
-msgstr ""
+msgstr "Paramètres de pays inexact."
 
 #: bmlt-workflow.php:872
 msgid "Invalid Sub Province setting."
-msgstr ""
+msgstr "Paramètres de région administrative inexacts."
 
 #: bmlt-workflow.php:890
 msgid "Invalid Province setting."
-msgstr ""
+msgstr "Paramètres de province inexacts."
 
 #: bmlt-workflow.php:904
 #, fuzzy
 msgid "Invalid email from address."
-msgstr "Courriel"
+msgstr "Courriel non valide depuis l'adresse."
 
 #: bmlt-workflow.php:915
 msgid "Invalid google maps key."
-msgstr ""
+msgstr "Clé Google Maps inexacte."
 
 #: bmlt-workflow.php:926
 #, fuzzy
 msgid "Invalid FSO email address."
-msgstr "Courriel"
+msgstr "Adresse courriel d'unité de service inexacte."
 
 #: bmlt-workflow.php:941
 msgid "Invalid \"delete closed meetings\" setting."
-msgstr ""
+msgstr "Le paramètre « Supprimer les réunions inactives » est inexact."
 
 #: bmlt-workflow.php:955
 msgid "Invalid \"meeting formats required\" setting."
-msgstr ""
+msgstr "Le paramètre « Formats de réunion obligatoires » est inexact."
 
 #: bmlt-workflow.php:969
 msgid "Invalid \"non admins can delete submissions\" setting."
-msgstr ""
+msgstr "Le paramètre « Permission aux non-admin de supprimer les demandes » est inexact."
 
 #: bmlt-workflow.php:983
 msgid "Invalid \"remove virtual meeting details on venue change\" setting."
-msgstr ""
+msgstr "Le paramètre « Supprimer les détails de la réunion virtuelle en cas de changement de lieu » est inexact."
 
 #: bmlt-workflow.php:991
 msgid "Your BMLT Root Server details are successfully configured."
-msgstr ""
+msgstr "Les informations de votre serveur racine BMLT ont été configurées avec succès."
 
 #: bmlt-workflow.php:994
 msgid "Your BMLT Root Server details are not configured correctly."
-msgstr ""
+msgstr "Les informations pour votre serveur racine BMLT ne sont pas configurés correctement."
 
 #: bmlt-workflow.php:997
 msgid "Your service bodies are successfully configured."
-msgstr ""
+msgstr "Vos comités de service ont été configurés avec succès."
 
 #: bmlt-workflow.php:1000
-msgid ""
-"Your service bodies are not configured and saved correctly. <a href=\"?"
-"bmltwf-submissions\">Fix</a>"
-msgstr ""
+msgid "Your service bodies are not configured and saved correctly. <a href=\"?bmltwf-submissions\">Fix</a>"
+msgstr "Vos comités de service ne sont pas configurés correctement ni sauvegardés adéquatement. <a href=\"?bmltwf-submissions\">Réparation</a>"
 
 #: bmlt-workflow.php:1009
 #, fuzzy
 msgid "Update BMLT Root Server Configuration"
-msgstr "Service Committee"
+msgstr "Mise à jour des paramètres du serveur racine BMLT"
 
 #: bmlt-workflow.php:1018
-msgid ""
-"Backup and Restore the entire plugin configuration, including all submission "
-"entries and plugin settings."
-msgstr ""
+msgid "Backup and Restore the entire plugin configuration, including all submission entries and plugin settings."
+msgstr "Sauvegarde et restauration de l'ensemble de la configuration de l'extension, y compris toutes les données de demande et les paramètres de l'extension."
 
 #: bmlt-workflow.php:1022
 msgid "Backup Configuration"
-msgstr "Configuration de sauvegarde"
+msgstr "Paramètres de sauvegarde"
 
 #: bmlt-workflow.php:1023
 #, fuzzy
 msgid "Restore Configuration"
-msgstr "Service Committee"
+msgstr "Paramètres de restauration"
 
 #: bmlt-workflow.php:1032
-msgid ""
-"Use the shortcode <code>[bmltwf-meeting-update-form]</code> to generate a "
-"form. The form will be associated with service bodies configured on the "
-"Service Bodies configuration page."
-msgstr ""
+msgid "Use the shortcode <code>[bmltwf-meeting-update-form]</code> to generate a form. The form will be associated with service bodies configured on the Service Bodies configuration page."
+msgstr "Utilisez le shortcode <code>[bmltwf-meeting-update-form]</code> pour générer un formulaire. Le formulaire sera associé aux comités de service configurés sur la page des paramètres de comités de service."
 
 #: bmlt-workflow.php:1043
 msgid "will"
-msgstr ""
+msgstr "sera"
 
 #: bmlt-workflow.php:1048
 msgid "will not"
-msgstr ""
+msgstr "ne sera pas"
 
 #: bmlt-workflow.php:1052
-msgid ""
-"This plugin honours the BMLT Root Server Auto Geocoding settings. The "
-"$auto_geocoding_enabled setting is set to "
-msgstr ""
+msgid "This plugin honours the BMLT Root Server Auto Geocoding settings. The $auto_geocoding_enabled setting is set to "
+msgstr "Cette extension respecte les paramètres de géocodage automatique du serveur racine BMLT. Le paramètre $auto_geocoding_enabled est défini à "
 
 #: bmlt-workflow.php:1055
 msgid "Meeting submissions "
-msgstr ""
+msgstr "Demandes de réunions "
 
 #: bmlt-workflow.php:1057
 msgid "be automatically geocoded on save"
-msgstr ""
+msgstr "enregistré automatiquement avec géocode"
 
 #: bmlt-workflow.php:1069
-msgid ""
-"This plugin will try and use the google maps key from your BMLT Root Server "
-"for geolocation and displaying the map view."
-msgstr ""
+msgid "This plugin will try and use the google maps key from your BMLT Root Server for geolocation and displaying the map view."
+msgstr "Cette extension tentera d'utiliser la clé Google Maps de votre serveur racine BMLT pour la géolocalisation et l'affichage de la carte."
 
 #: bmlt-workflow.php:1071
-msgid ""
-"You can also provide a dedicated google maps key below and this will be used "
-"in preference to the BMLT Root Server key."
-msgstr ""
+msgid "You can also provide a dedicated google maps key below and this will be used in preference to the BMLT Root Server key."
+msgstr "Vous pouvez aussi fournir une clé Google Maps spécifique ci-dessous, elle sera utilisée prioritairement par rapport à la clé du serveur racine du BMLT."
 
 #: bmlt-workflow.php:1080
 msgid "Google Maps Key from BMLT"
-msgstr ""
+msgstr "Clé Google Maps en provenance du BMLT"
 
 #: bmlt-workflow.php:1082
 msgid "Custom Google Maps Key"
-msgstr ""
+msgstr "Clé Google Maps personnalisée"
 
 #: bmlt-workflow.php:1094
-msgid ""
-"The sender (From:) address of meeting update notification emails. Can "
-"contain a display name and email in the form <code>Display Name &lt;"
-"example@example.com&gt;</code> or just a standard email address."
-msgstr ""
+msgid "The sender (From:) address of meeting update notification emails. Can contain a display name and email in the form <code>Display Name &lt;example@example.com&gt;</code> or just a standard email address."
+msgstr "L'adresse de l'expéditeur (De :) des courriels de notification de mise à jour des réunions. Elle peut contenir un nom d'affichage et une adresse électronique sous la forme <code>Display Name &lt;example@example.com&gt;</code> ou simplement une adresse courriel standard."
 
 #: bmlt-workflow.php:1116
-msgid ""
-"Trusted servants approving a \"Close Meeting\" request can choose to either "
-"Delete or Unpublish. This option selects the default for all trusted "
-"servants."
-msgstr ""
+msgid "Trusted servants approving a \"Close Meeting\" request can choose to either Delete or Unpublish. This option selects the default for all trusted servants."
+msgstr "Les membres de confiance qui approuvent une demande de « réunion fermée » peuvent choisir de la supprimer ou de la dépublier. Cette option définit la valeur par défaut pour tous les membres de confiance."
 
 #: bmlt-workflow.php:1120
 #, fuzzy
 msgid "Close meeting default"
-msgstr "Nouvelle réunion"
+msgstr "Paramètres par défaut de fermeture de réunion"
 
 #: bmlt-workflow.php:1142
-msgid ""
-"This option determines whether trusted servants are able to delete "
-"submissions from the submissions list."
-msgstr ""
+msgid "This option determines whether trusted servants are able to delete submissions from the submissions list."
+msgstr "Cette option détermine si les membres de confiance peuvent supprimer des demandes de la liste de demandes."
 
 #: bmlt-workflow.php:1144
-msgid ""
-"If this is set to false, then only Wordpress administrators will have delete "
-"submission functionality"
-msgstr ""
+msgid "If this is set to false, then only Wordpress administrators will have delete submission functionality"
+msgstr "Si cette valeur est définie sur faux, seuls les admin de Wordpress pourront utiliser la fonctionnalité de suppression des demandes"
 
 #: bmlt-workflow.php:1149
 msgid "Trusted servants can delete submissions:"
-msgstr ""
+msgstr "Les membres de confiance peuvent supprimer les demandes :"
 
 #: bmlt-workflow.php:1151 bmlt-workflow.php:1180 bmlt-workflow.php:1181
 msgid "True"
-msgstr ""
+msgstr "Vrai"
 
 #: bmlt-workflow.php:1153 bmlt-workflow.php:1182 bmlt-workflow.php:1183
 msgid "False"
-msgstr ""
+msgstr "Faux"
 
 #: bmlt-workflow.php:1171
-msgid ""
-"This option determines whether virtual meeting configuration, such as url, "
-"extra info and dialin number, are removed when the meeting venue type is "
-"changed to a face to face meeting."
-msgstr ""
+msgid "This option determines whether virtual meeting configuration, such as url, extra info and dialin number, are removed when the meeting venue type is changed to a face to face meeting."
+msgstr "Cette option définit si les paramètres de la réunion virtuelle, comme l'URL, les infos supplémentaires et le numéro d'appel téléphonique, sont supprimés lorsqu'une réunion devient une réunion en salle."
 
 #: bmlt-workflow.php:1173
-msgid ""
-"If this is set to false, the virtual meeting settings will be retained in "
-"BMLT."
-msgstr ""
+msgid "If this is set to false, the virtual meeting settings will be retained in BMLT."
+msgstr "Si ce paramètre est défini sur false, les paramètres de la réunion virtuelle seront conservés dans BMLT."
 
 #: bmlt-workflow.php:1178
-msgid ""
-"Remove virtual meeting details when meetings are changed to face to face"
-msgstr ""
+msgid "Remove virtual meeting details when meetings are changed to face to face"
+msgstr "Supprimer les infos des réunions virtuelles si elles deviennent des réunions en salle"
 
 #: bmlt-workflow.php:1191
-msgid ""
-"Optional form fields, available depending on how your service bodies use "
-"BMLT. These can be displayed, displayed and required, or hidden from your "
-"end users. You can also change the way some fields are labelled on the "
-"meeting change form."
-msgstr ""
+msgid "Optional form fields, available depending on how your service bodies use BMLT. These can be displayed, displayed and required, or hidden from your end users. You can also change the way some fields are labelled on the meeting change form."
+msgstr "Champs de formulaire facultatifs, disponibles en fonction de la manière dont les comités de service utilisent le BMLT. Ils peuvent être affichés, affichés et obligatoires, ou cachés aux utilisateurs finaux. Vous pouvez également modifier la façon dont certains champs sont étiquetés dans le formulaire de modification de réunion."
 
 #: bmlt-workflow.php:1196
 msgid "BMLT Field Name"
-msgstr ""
+msgstr "Nom du champ BMLT"
 
 #: bmlt-workflow.php:1198
 msgid "Show on form"
-msgstr ""
+msgstr "Afficher sur le formulaire"
 
 #: bmlt-workflow.php:1200
 msgid "Required Field"
-msgstr ""
+msgstr "Champ obligatoire"
 
 #: bmlt-workflow.php:1202
 msgid "Change displayname to"
-msgstr ""
+msgstr "Modifier le nom d'affichage avec"
 
 #: bmlt-workflow.php:1205 bmlt-workflow.php:1401
 #: src/REST/Handlers/SubmissionsHandler.php:1175
 #, fuzzy
 msgid "Nation"
-msgstr "Durée"
+msgstr "Pays"
 
 #: bmlt-workflow.php:1206
 msgid "State/Province"
-msgstr ""
+msgstr "État/Province"
 
 #: bmlt-workflow.php:1207
 msgid "County/Sub-Province"
-msgstr ""
+msgstr "Régions administratives"
 
 #: bmlt-workflow.php:1208
 msgid "Zip/Postal Code"
-msgstr ""
+msgstr "Code postal"
 
 #: bmlt-workflow.php:1268
-msgid ""
-"Enable this setting to display the starter kit option in the submission form "
-"and to configure the email address for your Field Service Office."
-msgstr ""
+msgid "Enable this setting to display the starter kit option in the submission form and to configure the email address for your Field Service Office."
+msgstr "Activez ce paramètre pour afficher l'option de trousse de démarrage dans le formulaire de demande et pour configurer l'adresse courriel de votre groupe de service."
 
 #: bmlt-workflow.php:1285
 #, fuzzy
 msgid "FSO Features"
-msgstr "Courriel"
+msgstr "Fonctionnalités Unités de service"
 
 #: bmlt-workflow.php:1289
 msgid "Disabled"
-msgstr ""
+msgstr "Désactivé"
 
 #: bmlt-workflow.php:1292
 msgid "Enabled"
-msgstr ""
+msgstr "Activé"
 
+#. FSO = unité de service
 #: bmlt-workflow.php:1299
 msgid "The email address to notify the FSO that starter kits are required."
-msgstr ""
+msgstr "L'adresse courriel sert à notifier à l'unité de service que des trousses de départ sont demandées."
 
 #: bmlt-workflow.php:1305
 #, fuzzy
 msgid "FSO Email Address"
-msgstr "Courriel"
+msgstr "Adresse courriel pour l'unité de service"
 
 #: bmlt-workflow.php:1311
-msgid ""
-"This template will be used when emailing the FSO about starter kit requests."
-msgstr ""
+msgid "This template will be used when emailing the FSO about starter kit requests."
+msgstr "Ce modèle sera utilisé pour envoyer des courriels à l'unité de service concernant les demandes de trousses de démarrage."
 
 #: bmlt-workflow.php:1320 bmlt-workflow.php:1340
 msgid "Copy default template to clipboard"
-msgstr ""
+msgstr "Copier le modèle par défaut dans le presse-papiers"
 
 #: bmlt-workflow.php:1331
-msgid ""
-"This template will be used when emailing a submitter about the meeting "
-"change they've requested."
-msgstr ""
+msgid "This template will be used when emailing a submitter about the meeting change they've requested."
+msgstr "Ce modèle sera utilisé pour répondre par courriel à une demande de modification de réunion."
 
 #: bmlt-workflow.php:1403
 msgid "Sub Province"
-msgstr ""
+msgstr "Régions administratives"
 
 #: bmlt-workflow.php:1405
 msgid "Province"
-msgstr ""
+msgstr "Province"
 
 #: bmlt-workflow.php:1407
 msgid "Postcode"
-msgstr ""
+msgstr "Code postal"
 
 #: js/admin_options.js:212
 #, fuzzy
 msgid "BMLT Root Server Version"
-msgstr "Service Committee"
+msgstr "Version du serveur racine BMLT"
 
 #: js/admin_service_bodies.js:181
 #, fuzzy
 msgid "Error retrieving wordpress users"
-msgstr "Service Committee"
+msgstr "Erreur de récupération des utilisateurs Wordpress"
 
 #: js/admin_submissions.js:75
 msgid "Face to face"
-msgstr ""
+msgstr "En salle"
 
 #: js/admin_submissions.js:76
 #, fuzzy
 msgid "Virtual Meeting"
-msgstr "Détails de réunion virtuelle"
+msgstr "Réunion virtuelle"
 
 #: js/admin_submissions.js:77
 #, fuzzy
 msgid "Hybrid Meeting"
-msgstr "Nouvelle réunion"
+msgstr "Réunion hybride"
 
 #: js/admin_submissions.js:78
 #, fuzzy
 msgid "Temporarily Closed"
-msgstr "Temporrairement fermé en présentielle et ouvert en vidéoconférence"
+msgstr "Temporairement fermée"
 
 #: js/admin_submissions.js:84 src/REST/Handlers/SubmissionsHandler.php:1184
 msgid "Error"
-msgstr ""
+msgstr "Erreur"
 
 #: js/admin_submissions.js:194 js/admin_submissions.js:199
 #: js/admin_submissions.js:204 js/admin_submissions.js:629
 #: js/admin_submissions.js:634 js/admin_submissions.js:639
 msgid "(deleted)"
-msgstr ""
+msgstr "(supprimé)"
 
 #: js/admin_submissions.js:269
 msgid "Error retrieving BMLT data - meeting possibly removed"
-msgstr ""
+msgstr "Erreur de récupération des données du BMLT - réunion possiblement supprimée"
 
 #: js/admin_submissions.js:348
 msgid "Approve"
-msgstr ""
+msgstr "Approuver"
 
 #: js/admin_submissions.js:366
 msgid "Reject"
-msgstr ""
+msgstr "Rejeter"
 
 #: js/admin_submissions.js:377
 msgid "QuickEdit"
-msgstr ""
+msgstr "QuickEdit"
 
 #: js/admin_submissions.js:432
 #, fuzzy
-#| msgid "Service Body"
 msgid "Service body ID"
-msgstr "Service Committee"
+msgstr "Id comité de service"
 
 #: js/admin_submissions.js:432
 msgid "no longer shown to users"
-msgstr ""
+msgstr "n'apparaît plus aux utilisateurs"
 
 #: js/admin_submissions.js:447 public/meeting_update_form.php:38
 #: src/REST/Handlers/SubmissionsHandler.php:628
@@ -925,90 +828,87 @@ msgid "New Meeting"
 msgstr "Nouvelle réunion"
 
 #: js/admin_submissions.js:453 src/REST/Handlers/SubmissionsHandler.php:631
-#, fuzzy
 msgid "Close Meeting"
-msgstr "Nouvelle réunion"
+msgstr "Fermer une réunion"
 
 #: js/admin_submissions.js:460 src/REST/Handlers/SubmissionsHandler.php:634
 #, fuzzy
 msgid "Modify Meeting"
-msgstr "Nouvelle réunion"
+msgstr "Modifier une réunion"
 
 #: js/admin_submissions.js:464
 msgid "Original"
-msgstr ""
+msgstr "Original"
 
 #: js/admin_submissions.js:469
 msgid "Submission Type"
-msgstr ""
+msgstr "Type de soumission"
 
 #: js/admin_submissions.js:474
 msgid "Time"
-msgstr ""
+msgstr "L'heure"
 
 #: js/admin_submissions.js:506
 msgid "None - Pending"
-msgstr ""
+msgstr "Aucun - En attente"
 
 #: js/admin_submissions.js:510 js/admin_submissions.js:530
 #: js/admin_submissions.js:546
 msgid "Approved"
-msgstr ""
+msgstr "Approuvé"
 
 #: js/admin_submissions.js:512 js/admin_submissions.js:530
 #: js/admin_submissions.js:549
 msgid "Rejected"
-msgstr ""
+msgstr "Rejeté"
 
 #: js/admin_submissions.js:514
 msgid "Updated"
-msgstr ""
+msgstr "Mise à jour"
 
 #: js/admin_submissions.js:530
 msgid "Filter"
-msgstr ""
+msgstr "Filtre"
 
 #: js/admin_submissions.js:530
 msgid "All"
-msgstr ""
+msgstr "Tous"
 
 #: js/admin_submissions.js:530 js/admin_submissions.js:543
 msgid "Pending"
-msgstr ""
+msgstr "En attente"
 
 #: js/admin_submissions.js:598
 #, fuzzy
-#| msgid "Personal Details (Confidential)"
 msgid "Personal Details"
-msgstr "Données personnelles (confidentiel)"
+msgstr "Coordonnées personnelles"
 
 #: js/admin_submissions.js:599
 #, fuzzy
-#| msgid "Meeting Details"
 msgid "Updated Meeting Details"
-msgstr "Détails de réunion"
+msgstr "Détails de réunion modifiés"
 
 #: js/admin_submissions.js:600
 #, fuzzy
 msgid "Updated Virtual Meeting Details"
-msgstr "Détails de réunion virtuelle"
+msgstr "Détails de réunion virtuelle modifiés"
 
 #: js/admin_submissions.js:601
 msgid "FSO Request and Other Info"
-msgstr ""
+msgstr "Demande d'une unité de service et autres informations"
 
 #: js/admin_submissions.js:608
 msgid "Message to submitter"
-msgstr ""
+msgstr "Message à l'auteur.e de la demande"
 
 #: js/admin_submissions.js:653
 #, fuzzy
 msgid "Meeting Name (new)"
-msgstr "Détails de réunion"
+msgstr "Nom de la réunion ( nouveau nom)"
 
 #: js/admin_submissions.js:690 src/REST/Handlers/SubmissionsHandler.php:1166
 msgid "Municipality"
-msgstr ""
+msgstr "Municipalité"
 
 #: js/admin_submissions.js:705 src/REST/Handlers/SubmissionsHandler.php:1181
 #, fuzzy
@@ -1019,118 +919,106 @@ msgstr "Relation au groupe"
 #: src/REST/Handlers/SubmissionsHandler.php:1185
 #, fuzzy
 msgid "Meeting Day"
-msgstr "Détails de réunion"
+msgstr "Jour de la réunion"
 
 #: js/admin_submissions.js:712 public/meeting_update_form.php:282
 msgid "Starter Kit Postal Address"
-msgstr "Adresse postale"
+msgstr "Adresse postale pour la trousse de départ"
 
 #: js/admin_submissions.js:716 src/REST/Handlers/SubmissionsHandler.php:1188
 #, fuzzy
 msgid "Additional Info"
-msgstr "Autres commentaires"
+msgstr "Autres renseignements"
 
 #: js/admin_submissions.js:719 src/REST/Handlers/SubmissionsHandler.php:1191
 #, fuzzy
 msgid "Other Reason"
-msgstr "Type de changement"
+msgstr "Autre motif"
 
 #: js/admin_submissions.js:722
 #, fuzzy
-#| msgid "Personal Details (Confidential)"
 msgid "Contact number (confidential)"
-msgstr "Données personnelles (confidentiel)"
+msgstr "Numéro de téléphone (confidentiel)"
 
 #: js/admin_submissions.js:725
 msgid "Add contact details to meeting"
-msgstr ""
+msgstr "Ajouter les coordonnées d'un contact pour la réunion"
 
 #: js/admin_submissions.js:920
 msgid "Check Geolocate"
-msgstr ""
+msgstr "Vérifier la géolocalisation"
 
 #: js/admin_submissions.js:927
 msgid "Save"
-msgstr ""
+msgstr "Enregistrer"
 
 #: js/admin_submissions.js:933
 msgid "Cancel"
-msgstr ""
+msgstr "Annuler"
 
 #: js/admin_submissions.js:997
 msgid "Delete Submission"
-msgstr ""
+msgstr "Supprimer la demande"
 
 #: js/admin_submissions.js:998 js/admin_submissions.js:999
 msgid "Approve Submission"
-msgstr ""
+msgstr "Approuver la  demande"
 
 #: js/admin_submissions.js:1000
 msgid "Reject Submission"
-msgstr ""
+msgstr "Rejeter la demande"
 
 #: js/admin_submissions.js:1001
 msgid "Submission QuickEdit"
-msgstr ""
+msgstr "Édition rapide de la demande"
 
 #: js/meeting_update_form.js:26
 msgid "none"
-msgstr ""
+msgstr "aucun"
 
 #: js/meeting_update_form.js:154
 msgid "Begin typing your meeting name"
-msgstr "Commencez à saisir le nom de votre réunion"
+msgstr "Commencez à entrer le nom de votre réunion"
 
 #: js/meeting_update_form.js:247
 msgid "Select from available formats"
-msgstr ""
+msgstr "Choisir parmi les formats disponibles"
 
 #: js/meeting_update_form.js:373
 msgid "Click to select"
-msgstr ""
+msgstr "Cliquez pour faire une sélection"
 
 #: js/meeting_update_form.js:447
-msgid ""
-"We've retrieved the details below from our system. Please make any changes "
-"and then submit your update. <br>Any changes you make to the content are "
-"highlighted and will be submitted for approval."
-msgstr ""
+msgid "We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval."
+msgstr "Nous avons récupéré les informations ci-dessous dans notre système. Vous pouvez modifier ces informations et envoyer votre mise à jour. <br>Toutes les modifications au contenu sont en surbrillance et seront envoyées pour approbation."
 
 #: js/meeting_update_form.js:455
-msgid ""
-"Verify you have selected the correct meeting, then add details to support "
-"the meeting close request in the Additional Information box.<br><br><b>Note: "
-"If you are submitting a temporary meeting closure, please instead use "
-"'Change existing meeting' and use the 'temporarily closed in person meeting' "
-"dropdown menu."
-msgstr ""
+msgid "Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box.<br><br><b>Note: If you are submitting a temporary meeting closure, please instead use 'Change existing meeting' and use the 'temporarily closed in person meeting' dropdown menu."
+msgstr "Vérifiez si vous avez sélectionné la bonne réunion, puis allez dans la case Autres informations pour expliquer votre demande de fermeture de réunion.<br><b>Prenez note : Si vous demandez la fermeture temporaire d'une réunion, vous devez plutôt sélectionner « Modifier une réunion existante »  et utiliser le menu déroulant « fermeture temporaire d'une réunion en personne »."
 
 #: js/meeting_update_form.js:557
-msgid ""
-"Please fill in the details of your new meeting, and then submit your update. "
-"<br><b>Note:</b> If your meeting convenes multiple times a week, please "
-"submit additional new meeting requests for each day you meet."
-msgstr ""
+msgid "Please fill in the details of your new meeting, and then submit your update. <br><b>Note:</b> If your meeting convenes multiple times a week, please submit additional new meeting requests for each day you meet."
+msgstr "Vous devez entrer les infos de votre nouvelle réunion, puis envoyer votre mise à jour. <br><b>Note:</b> Si votre réunion a lieu plusieurs fois par semaine, vous devez envoyer une nouvelle demande de réunion pour chaque jour où vous vous réunissez."
 
 #: js/script_includes.js:122 js/script_includes.js:123
 msgid "SUCCESS"
-msgstr ""
+msgstr "SUCCÈS"
 
 #: js/script_includes.js:133 js/script_includes.js:139
 msgid "ERROR"
-msgstr ""
+msgstr "ERREUR"
 
 #: public/meeting_update_form.php:35
 msgid "Reason For Update"
-msgstr "Mise jour de la liste de réunions"
+msgstr "Motif du changement"
 
 #: public/meeting_update_form.php:37
 msgid "Select Reason"
-msgstr "Type de changement"
+msgstr "Sélectionner un motif"
 
 #: public/meeting_update_form.php:39
 msgid "Change Existing Meeting (including Temporary Closure)"
-msgstr "Modification d’une réunion (incluant fermeture temporaire)"
+msgstr "Modification d’une réunion existante (y compris une fermeture temporaire)"
 
 #: public/meeting_update_form.php:40
 msgid "Permanently Close Meeting"
@@ -1138,7 +1026,7 @@ msgstr "Fermeture permanente d’une réunion"
 
 #: public/meeting_update_form.php:45
 msgid "Search For Meeting"
-msgstr "Recherche de réunion"
+msgstr "Rechercher une réunion"
 
 #: public/meeting_update_form.php:61
 msgid "Meeting Details"
@@ -1150,7 +1038,7 @@ msgstr "Nom du groupe"
 
 #: public/meeting_update_form.php:141
 msgid "Is this a virtual, hybrid or temporarily closed in person meeting?"
-msgstr "Tenue de réunion?"
+msgstr "Réunion virtuelle, hybride ou réunion en salle temporairement fermée?"
 
 #: public/meeting_update_form.php:144 public/meeting_update_form.php:251
 #: public/meeting_update_form.php:279
@@ -1159,65 +1047,63 @@ msgstr "Non"
 
 #: public/meeting_update_form.php:145
 msgid "Yes - Virtual only"
-msgstr "Videoconférence"
+msgstr "Oui, seulement virtuelle"
 
 #: public/meeting_update_form.php:146
 msgid "Yes - Hybrid (Virtual and Face to Face)"
-msgstr "Hybride (Vidéoconférence et présentielle)"
+msgstr "Oui, réunion hybride (Virtuelle et en salle)"
 
 #: public/meeting_update_form.php:147
 msgid "Yes - Temporary Face to Face Closure"
-msgstr "Temporrairement fermé en présentielle et ouvert en vidéoconférence"
+msgstr "Oui, temporairement fermée en salle et active en réunion virtuelle"
 
 #: public/meeting_update_form.php:151
 msgid "Location (eg: a building name)"
-msgstr "Emplacement (ex: Nom de l’édifice)"
+msgstr "Emplacement (ex : nom de l’édifice)"
 
 #: public/meeting_update_form.php:153
 msgid "Street Address"
-msgstr "Adresse"
+msgstr "Adresse civique"
 
 #: public/meeting_update_form.php:155
 msgid "Extra Location Info (eg: Near the park)"
-msgstr "Détails ( ex: 3e étage, entrée )"
+msgstr "Autres détails ( ex : 3e étage, près du parc )"
 
 #: public/meeting_update_form.php:179
 msgid "Creating a new meeting and unsure of your service body?"
-msgstr ""
+msgstr "Vous créez une nouvelle réunion et vous cherchez votre comité de service?"
 
 #: public/meeting_update_form.php:180
-msgid ""
-"Pick the closest match and leave us a note in the 'Any Other Comments' "
-"section below"
-msgstr ""
+msgid "Pick the closest match and leave us a note in the 'Any Other Comments' section below"
+msgstr "Choisissez la correspondance la plus proche et laissez-nous une note dans la section \"Autres commentaires\" ci-dessous"
 
 #: public/meeting_update_form.php:198
 msgid "Virtual Meeting Options"
-msgstr "Détails de réunion virtuelle"
+msgstr "Options de réunion virtuelle"
 
 #: public/meeting_update_form.php:201
 msgid "Online Meeting Link"
-msgstr "Lien de réunion"
+msgstr "Lien de réunion virtuelle"
 
 #: public/meeting_update_form.php:205
 msgid "A URL for the virtual meeting eg:"
-msgstr ""
+msgstr "Une URL pour la réunion virtuelle, par exemple :"
 
 #: public/meeting_update_form.php:216
 msgid "Additional information, such as a meeting ID and Password eg:"
-msgstr ""
+msgstr "Des infos supplémentaires, comme l'identifiant et le mot de passe de la réunion, par exemple :"
 
 #: public/meeting_update_form.php:223
 msgid "Phone Meeting Dial-in Number"
-msgstr "Numéro d’appel de la réunion téléphonique"
+msgstr "Numéro d’appel téléphonique de la réunion"
 
 #: public/meeting_update_form.php:228
 msgid "Any phone dialin details for this virtual meeting"
-msgstr ""
+msgstr "Détails de la composition du numéro de téléphone pour cette réunion virtuelle"
 
 #: public/meeting_update_form.php:241
 msgid "Personal Details (Confidential)"
-msgstr "Données personnelles (confidentiel)"
+msgstr "Informations personnelles (confidentielles)"
 
 #: public/meeting_update_form.php:242
 msgid "First Name"
@@ -1225,7 +1111,7 @@ msgstr "Prénom"
 
 #: public/meeting_update_form.php:244
 msgid "Last Initial"
-msgstr "Nom (1ère lettre)"
+msgstr "1ère lettre du nom de famille"
 
 #: public/meeting_update_form.php:246
 msgid "Email Address"
@@ -1233,7 +1119,7 @@ msgstr "Courriel"
 
 #: public/meeting_update_form.php:248
 msgid "Add your details as a contact for the group"
-msgstr "Ajoutez vos coordonnées en tant que contact pour le groupe"
+msgstr "Ajoutez vos coordonnées de contact pour le groupe"
 
 #: public/meeting_update_form.php:250 public/meeting_update_form.php:278
 msgid "Yes"
@@ -1245,7 +1131,7 @@ msgstr "Numéro de contact"
 
 #: public/meeting_update_form.php:255
 msgid "Relationship to group"
-msgstr "Relation au groupe"
+msgstr "Fonctions dans le groupe"
 
 #: public/meeting_update_form.php:258
 msgid "Group Member"
@@ -1253,15 +1139,15 @@ msgstr "Membre serviteur du groupe"
 
 #: public/meeting_update_form.php:259
 msgid "Area Trusted Servant"
-msgstr "Membre du CE local"
+msgstr "Membre de confiance unité de service locale"
 
 #: public/meeting_update_form.php:260
 msgid "Regional Trusted Servant"
-msgstr "Membre du CE régional"
+msgstr "Membre de confiance unité de service régionale"
 
 #: public/meeting_update_form.php:261
 msgid "NA Member"
-msgstr "Un membre NA"
+msgstr "Membre NA"
 
 #: public/meeting_update_form.php:262
 msgid "Not A Member"
@@ -1269,381 +1155,374 @@ msgstr "Non-membre"
 
 #: public/meeting_update_form.php:273
 msgid "Any Other Comments"
-msgstr ""
+msgstr "Autres commentaires"
 
 #: public/meeting_update_form.php:274
-msgid ""
-"Provide any more detail that may help us action your meeting change request"
-msgstr ""
+msgid "Provide any more detail that may help us action your meeting change request"
+msgstr "Fournissez tout autre information susceptible de faciliter le traitement de la demande de modification de réunion."
 
 #: public/meeting_update_form.php:276
 msgid "Starter Kit Required"
-msgstr "Kit de démarrage requis"
+msgstr "Trousse de démarrage requis"
 
 #: public/meeting_update_form.php:292
 msgid "Submit Form"
-msgstr "Soumettre"
+msgstr "Envoyer le formulaire"
 
 #: src/BMLT/Integration.php:212 src/BMLT/Integration.php:219
 #: src/BMLT/Integration.php:226
 msgid "Server error retrieving meeting"
-msgstr ""
+msgstr "Erreur de serveur lors de la récupération de la réunion"
 
 #: src/BMLT/Integration.php:258 src/BMLT/Integration.php:285
 msgid "check BMLT server address"
-msgstr ""
+msgstr "vérifier l'adresse du serveur BMLT"
 
 #: src/BMLT/Integration.php:262
 msgid "check username and password details"
-msgstr ""
+msgstr "vérifier les infos d'utilisateur et de mot de passe"
 
 #: src/BMLT/Integration.php:314
 msgid "BMLT Communication Error - Check the BMLT configuration settings"
-msgstr ""
+msgstr "Erreur de communication du BMLT - Vérifier les paramètres de configuration du BMLT"
 
 #: src/BMLT/Integration.php:325
 msgid "BMLT Communication Error - Meeting change failed"
-msgstr ""
+msgstr "Erreur de communication du BMLT - Échec de la modification de réunion"
 
 #: src/BMLT/Integration.php:387 src/BMLT/Integration.php:420
 #: src/BMLT/Integration.php:495 src/BMLT/Integration.php:549
 #: src/BMLT/Integration.php:918
-msgid ""
-"BMLT Root Server Communication Error - Check the BMLT Root Server "
-"configuration settings"
-msgstr ""
+msgid "BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings"
+msgstr "Erreur de communication du serveur racine du BMLT - Vérifier les paramètres de configuration du serveur racine du BMLT"
 
 #: src/BMLT/Integration.php:393
-msgid ""
-"No service bodies visible - Check the BMLT Root Server configuration settings"
-msgstr ""
+msgid "No service bodies visible - Check the BMLT Root Server configuration settings"
+msgstr "Aucun comité de service visible - Vérifiez les paramètres de configuration du serveur racine de BMLT"
 
 #: src/BMLT/Integration.php:509 src/BMLT/Integration.php:512
 msgid "BMLT Communication Error - Meeting deletion failed"
-msgstr ""
+msgstr "Erreur de communication BMLT - Échec de la suppression de la réunion"
 
 #: src/BMLT/Integration.php:556
 msgid "BMLT Root Server Communication Error - Cannot retrieve service bodies"
-msgstr ""
+msgstr "Erreur de communication du serveur racine du BMLT - Impossible de récupérer les comités de service"
 
 #: src/BMLT/Integration.php:669
 msgid "BMLT Configuration Error - Unable to retrieve meeting formats"
-msgstr ""
+msgstr "Erreur de configuration du BMLT - Impossible de récupérer les formats de réunion"
 
 #: src/BMLT/Integration.php:705 src/BMLT/Integration.php:731
 #: src/BMLT/Integration.php:936 src/BMLT/Integration.php:978
 msgid "BMLT Configuration Error - Unable to retrieve server info"
-msgstr ""
+msgstr "Erreur de configuration du BMLT - Impossible de récupérer les infos du serveur"
 
 #: src/BMLT/Integration.php:993
 msgid "Server error geolocating address: Could not retrieve google maps key."
-msgstr ""
+msgstr "Erreur du serveur liée à la géolocalisation de l'adresse : Impossible de récupérer la clé Google Maps."
 
 #: src/BMLT/Integration.php:1008
 msgid "Server error geolocating address: Could not perform google maps lookup"
-msgstr ""
+msgstr "Erreur du serveur liée à la géolocalisation de l'adresse : Impossible d'effectuer une recherche dans Google Maps"
 
 #: src/BMLT/Integration.php:1014
-msgid ""
-"Server error geolocating address: Nothing returned from google maps lookup"
-msgstr ""
+msgid "Server error geolocating address: Nothing returned from google maps lookup"
+msgstr "Erreur du serveur liée à la géolocalisation de l'adresse : Aucun retour de recherche par Google Maps"
 
 #: src/BMLT/Integration.php:1022
 msgid "Server error geolocating address: No google maps status code returned"
-msgstr ""
+msgstr "Erreur du serveur liée à la géolocalisation de l'adresse : Aucun retour de code de statut par Google Maps"
 
 #: src/BMLT/Integration.php:1026
 msgid "Server error geolocating address"
-msgstr ""
+msgstr "Erreur de serveur liée à la géolocalisation de l'adresse"
 
 #: src/BMLT/Integration.php:1030
-msgid ""
-"Could not geolocate meeting address. Please try amending the address with "
-"additional/correct details."
-msgstr ""
+msgid "Could not geolocate meeting address. Please try amending the address with additional/correct details."
+msgstr "Impossible de géolocaliser l'adresse de la réunion. Vous devez modifier l'adresse en ajoutant ou corrigeant les infos."
 
 #: src/BMLT/Integration.php:1080
 msgid "Error unpacking password."
-msgstr ""
+msgstr "Erreur de décompression du mot de passe."
 
 #: src/BMLT/Integration.php:1091
 msgid "Error decrypting password."
-msgstr ""
+msgstr "Erreur de déchiffrement du mot de passe."
 
 #: src/BMLT/Integration.php:1152
 msgid "authenticateRootServer: Server Failure"
-msgstr ""
+msgstr "authenticateRootServer : Échec du serveur"
 
 #: src/BMLT/Integration.php:1160
 msgid "authenticateRootServer: Authentication Failure"
-msgstr ""
+msgstr "authenticateRootServer : Échec de l'authentification"
 
 #: src/REST/Controller.php:262
 msgid "Access denied: You cannot view submissions."
-msgstr ""
+msgstr "Accès refusé : Vous ne pouvez pas consulter les demandes."
 
 #: src/REST/Controller.php:272
 msgid "Access denied: You cannot view a submission."
-msgstr ""
+msgstr "Accès refusé : Vous ne pouvez pas consulter une demande."
 
 #: src/REST/Controller.php:284
 msgid "Access denied: You cannot approve this submission."
-msgstr ""
+msgstr "Accès refusé : Vous ne pouvez pas approuver cette demande."
 
 #: src/REST/Controller.php:295
 msgid "Access denied: You cannot reject this submission."
-msgstr ""
+msgstr "Accès refusé : Vous ne pouvez pas rejeter cette demande."
 
 #: src/REST/Controller.php:315
 msgid "Access denied: You cannot delete this submission."
-msgstr ""
+msgstr "Accès refusé : Vous ne pouvez pas supprimer cette demande."
 
 #: src/REST/Controller.php:325
 msgid "Access denied: You cannot patch this submission."
-msgstr ""
+msgstr "Accès refusé : Vous ne pouvez pas réparer cette demande."
 
 #: src/REST/Controller.php:344 src/REST/Controller.php:354
 msgid "Access denied: You cannot post service_area updates."
-msgstr ""
+msgstr "Accès refusé : Vous ne pouvez pas publier de mises à jour de la zone_de_service."
 
 #: src/REST/Controller.php:365 src/REST/Controller.php:376
 msgid "Access denied: You cannot post server updates."
-msgstr ""
+msgstr "Accès refusé : Vous ne pouvez pas publier de mises à jour du serveur."
 
 #: src/REST/Controller.php:387
 msgid "Access denied: You cannot patch server updates."
-msgstr ""
+msgstr "Accès refusé : Vous ne pouvez pas réparer de mises à jour du serveur."
 
 #: src/REST/Controller.php:398
 msgid "Access denied: You cannot geolocate an address."
-msgstr ""
+msgstr "Accès refusé : Vous ne pouvez pas géolocaliser une adresse."
 
 #: src/REST/Controller.php:409
 msgid "Access denied: You cannot call the backup API."
-msgstr ""
+msgstr "Accès refusé : Vous ne pouvez pas appeler l'API de sauvegarde."
 
 #: src/REST/Controller.php:420
 msgid "Access denied: You cannot call the restore API."
-msgstr ""
+msgstr "Accès refusé : Vous ne pouvez pas appeler l'API de restauration."
 
 #: src/REST/Handlers/BMLTServerHandler.php:86
 msgid "Provided server does not appear to be a BMLT Root Server"
-msgstr ""
+msgstr "Le serveur fourni ne semble pas être un serveur racine BMLT"
 
 #: src/REST/Handlers/BMLTServerHandler.php:95
 #, fuzzy
 msgid "Provided BMLT Root Server is not supported"
-msgstr "Service Committee"
+msgstr "Le serveur racine BMLT fourni n'est pas pris en charge"
 
 #: src/REST/Handlers/BMLTServerHandler.php:105
 msgid "Empty BMLT username parameter"
-msgstr ""
+msgstr "Paramètre de nom d'utilisateur BMLT vide"
 
 #: src/REST/Handlers/BMLTServerHandler.php:112
 msgid "Empty BMLT password parameter"
-msgstr ""
+msgstr "Paramètre de mot de passe BMLT vide"
 
 #: src/REST/Handlers/BMLTServerHandler.php:121
 #, fuzzy
 msgid "BMLT Root Server Authentication test failed"
-msgstr "Service Committee"
+msgstr "Échec du test d'authentification du serveur racine BMLT"
 
 #: src/REST/Handlers/BMLTServerHandler.php:131
 msgid "BMLT Root Server and Authentication test succeeded."
-msgstr ""
+msgstr "Le serveur racine BMLT et le test d'authentification ont réussi."
 
 #: src/REST/Handlers/BMLTServerHandler.php:176
 msgid "BMLT Root Server and Authentication details updated."
-msgstr ""
+msgstr "Mises à jour du serveur racine et des infos d'authentification du BMLT."
 
 #: src/REST/Handlers/BMLTServerHandler.php:214
 msgid "No address provided"
-msgstr ""
+msgstr "Aucune adresse inscrite"
 
 #: src/REST/Handlers/OptionsHandler.php:58
 msgid "Restore file is missing the options section"
-msgstr ""
+msgstr "Il n'y a pas de section d'options avec le fichier de restauration"
 
 #: src/REST/Handlers/OptionsHandler.php:120
 msgid "Restore Successful"
-msgstr ""
+msgstr "Restauration réussie"
 
 #: src/REST/Handlers/OptionsHandler.php:164
 msgid "Backup Successful"
-msgstr ""
+msgstr "Sauvegarde réussie"
 
 #: src/REST/Handlers/ServiceBodiesHandler.php:162
 #: src/REST/Handlers/ServiceBodiesHandler.php:176
 msgid "Invalid service bodies API call"
-msgstr ""
+msgstr "Appel invalide de l'API des comités de service"
 
 #: src/REST/Handlers/ServiceBodiesHandler.php:192
 #, fuzzy
 msgid "Updated Service Bodies"
-msgstr "Service Committee"
+msgstr "Comités de service mis à jout"
 
 #: src/REST/Handlers/ServiceBodiesHandler.php:213
 #, fuzzy
 msgid "Deleted Service Bodies"
-msgstr "Service Committee"
+msgstr "Comités de service supprimés"
 
 #: src/REST/Handlers/ServiceBodiesHandler.php:215
 msgid "Nothing was changed"
-msgstr ""
+msgstr "Rien n'a été changé"
 
 #: src/REST/Handlers/SubmissionsHandler.php:82
 msgid "Deleted submission id "
-msgstr ""
+msgstr "Id␣ de la demande est supprimé "
 
 #: src/REST/Handlers/SubmissionsHandler.php:114
 msgid "Permission denied viewing submission id"
-msgstr ""
+msgstr "L'affichage de l'id de l'envoi n'est pas autorisé"
 
 #: src/REST/Handlers/SubmissionsHandler.php:137
 #: src/REST/Handlers/SubmissionsHandler.php:232
 #: src/REST/Handlers/SubmissionsHandler.php:326
 msgid "Approve/reject already performed for submission id"
-msgstr ""
+msgstr "L'approbation ou le rejet est déjà effectué pour l'id associé à l'envoi"
 
 #: src/REST/Handlers/SubmissionsHandler.php:145
 msgid "Reject message must be less than 1024 characters"
-msgstr ""
+msgstr "Le message de rejet doit comporter moins de 1024 caractères"
 
 #: src/REST/Handlers/SubmissionsHandler.php:171
 msgid "NA Meeting Change Request Rejection - Submission ID"
-msgstr ""
+msgstr "Rejet de modification de la réunion NA - ID de l'envoi"
 
 #: src/REST/Handlers/SubmissionsHandler.php:172
 msgid "Your meeting change has been rejected - change ID"
-msgstr ""
+msgstr "Votre modification de réunion a été rejetée - changer l'ID"
 
 #: src/REST/Handlers/SubmissionsHandler.php:175
 #: src/REST/Handlers/SubmissionsHandler.php:548
 #, fuzzy
 msgid "Message from trusted servant"
-msgstr "Membre du CE local"
+msgstr "Message d'un membre de confiance"
 
 #: src/REST/Handlers/SubmissionsHandler.php:183
 msgid "Rejected submission id"
-msgstr ""
+msgstr "Id de la demande rejetée"
 
 #: src/REST/Handlers/SubmissionsHandler.php:268
 msgid "Updated submission id"
-msgstr ""
+msgstr "Id de l'envoi modifié"
 
 #: src/REST/Handlers/SubmissionsHandler.php:312
 msgid "Approve message must be less than 1024 characters"
-msgstr ""
+msgstr "Le message d'approbation doit comporter moins de 1024 caractères"
 
 #: src/REST/Handlers/SubmissionsHandler.php:411
 #: src/REST/Handlers/SubmissionsHandler.php:935
 #: src/REST/Handlers/SubmissionsHandler.php:1019
 msgid "Error retrieving meeting details"
-msgstr ""
+msgstr "Erreur de récupération des infos de la réunion"
 
 #: src/REST/Handlers/SubmissionsHandler.php:521
 msgid "This change type cannot be approved"
-msgstr ""
+msgstr "Ce type de modification ne peut pas être approuvé"
 
 #: src/REST/Handlers/SubmissionsHandler.php:545
 msgid "NA Meeting Change Request Approval - Submission ID"
-msgstr ""
+msgstr "Approbation de la demande de modification d'une réunion NA - ID d'envoi"
 
 #: src/REST/Handlers/SubmissionsHandler.php:546
 msgid "Your meeting change has been approved - change ID"
-msgstr ""
+msgstr "Votre modification de réunion a été approuvée - ID de la modification"
 
 #: src/REST/Handlers/SubmissionsHandler.php:568
 #, fuzzy
 msgid "Starter Kit Request"
-msgstr "Kit de démarrage requis"
+msgstr "Demande de trousse de démarrage"
 
 #: src/REST/Handlers/SubmissionsHandler.php:620
 msgid "Approved submission id"
-msgstr ""
+msgstr "Id de l'approbation de la demande"
 
 #: src/REST/Handlers/SubmissionsHandler.php:663
 #: src/REST/Handlers/SubmissionsHandler.php:779
 msgid "Form field"
-msgstr ""
+msgstr "Champ du formulaire"
 
 #: src/REST/Handlers/SubmissionsHandler.php:663
 msgid "is invalid"
-msgstr ""
+msgstr "est incorrect"
 
 #: src/REST/Handlers/SubmissionsHandler.php:779
 msgid "is required"
-msgstr ""
+msgstr "est obligatoire"
 
 #: src/REST/Handlers/SubmissionsHandler.php:829
 msgid "Form processing error"
-msgstr ""
+msgstr "Erreur de traitement du formulaire"
 
 #: src/REST/Handlers/SubmissionsHandler.php:964
 msgid "Service body cannot be changed."
-msgstr ""
+msgstr "Le comité de service n'est pas modifiable."
 
 #: src/REST/Handlers/SubmissionsHandler.php:981
 msgid "Nothing was changed."
-msgstr ""
+msgstr "Rien n'a été changé."
 
 #: src/REST/Handlers/SubmissionsHandler.php:1031
 msgid "Invalid meeting change"
-msgstr ""
+msgstr "Modification de réunion inexacte"
 
 #: src/REST/Handlers/SubmissionsHandler.php:1044
 msgid "Meeting change request exceeds maximum size"
-msgstr ""
+msgstr "La modification de réunion dépasse la taille maximale"
 
 #: src/REST/Handlers/SubmissionsHandler.php:1087
 msgid "Form submission successful, submission id"
-msgstr ""
+msgstr "Envoi du formulaire réussie, id de l'envoi"
 
 #: src/REST/Handlers/SubmissionsHandler.php:1088
 msgid "Form submission successful, your submission id is"
-msgstr ""
+msgstr "Envoi du formulaire réussi,  l'identifiant est"
 
 #: src/REST/Handlers/SubmissionsHandler.php:1088
 msgid "You will also receive an email confirmation of your submission."
-msgstr ""
+msgstr "Vous recevrez aussi un courriel de confirmation pour votre demande."
 
 #: src/REST/Handlers/SubmissionsHandler.php:1105
 #, fuzzy
 msgid "Error retrieving service bodies"
-msgstr "Service Committee"
+msgstr "Erreur de récupération des comités de service"
 
 #: src/REST/Handlers/SubmissionsHandler.php:1111
 msgid "request received"
-msgstr ""
+msgstr "demande reçue"
 
 #: src/REST/Handlers/SubmissionsHandler.php:1111
 msgid "Change ID"
-msgstr ""
+msgstr "Modifier l'ID"
 
 #: src/REST/Handlers/SubmissionsHandler.php:1112
 msgid "Log in to"
-msgstr ""
+msgstr "Se connecter à"
 
 #: src/REST/Handlers/SubmissionsHandler.php:1112
 msgid "BMLTWF Submissions Page"
-msgstr ""
+msgstr "Page des demandes de la BMLTWF"
 
 #: src/REST/Handlers/SubmissionsHandler.php:1123
 msgid "NA Meeting Change Request Acknowledgement - Submission ID"
-msgstr ""
+msgstr "Accusé de réception de la demande de modification d'une réunion NA - ID de l'envoi"
 
 #: src/REST/Handlers/SubmissionsHandler.php:1169
 msgid "Province/State"
-msgstr ""
+msgstr "Province/État"
 
 #: src/REST/Handlers/SubmissionsHandler.php:1172
 msgid "SubProvince"
-msgstr ""
+msgstr "Régions administratives"
 
 #: src/REST/Handlers/SubmissionsHandler.php:1178
 msgid "PostCode"
-msgstr ""
+msgstr "Code postal"
 
 #: src/REST/Handlers/SubmissionsHandler.php:1198
 msgid "Add email to meeting"
-msgstr ""
+msgstr "Ajouter un courriel à la réunion"

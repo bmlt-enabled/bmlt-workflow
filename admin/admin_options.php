@@ -32,7 +32,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 echo '<hr class="bmltwf-error-message">';
 
 echo '<div class="wrap"><h5 align="right">';
-echo __( 'Plugin Version', 'bmlt-workflow');
+echo __( 'Plugin Version ', 'bmlt-workflow');
 echo BMLTWF_PLUGIN_VERSION;
 echo '</h5>';
 echo '<p><h4 align="center">';

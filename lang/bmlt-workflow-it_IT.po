@@ -1,9 +1,9 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: BMLT Workflow 1.1.5\n"
+"Project-Id-Version: BMLT Workflow 1.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/bmlt-workflow\n"
 "POT-Creation-Date: 2023-03-09 17:50+1100\n"
-"PO-Revision-Date: 2023-03-16 10:03-0500\n"
+"PO-Revision-Date: 2023-04-19 19:56+1000\n"
 "Last-Translator: \n"
 "Language-Team: nigel-bmlt <nigel-bmlt@gmail.com>\n"
 "Language: it_IT\n"
@@ -29,8 +29,8 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-10: node_modules\n"
 
 #: admin/admin_options.php:35
-msgid "Plugin Version"
-msgstr "Versione plugin"
+msgid "Plugin Version "
+msgstr "Versione plugin "
 
 #: admin/admin_options.php:39
 msgid ""

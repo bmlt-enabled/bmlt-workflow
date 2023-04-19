@@ -592,7 +592,7 @@ class SubmissionsHandler
                     if (!empty($template)) {
                         $subject = __('Starter Kit Request','bmlt-workflow');
                         $to_address = get_option('bmltwf_fso_email_address');
-                        $fso_subfields = array('submitter_name', 'meeting_name', 'starter_kit_postal_address');
+                        $fso_subfields = array('contact_number','submitter_name', 'meeting_name', 'starter_kit_postal_address');
 
                         foreach ($fso_subfields as $field) {
                             $subfield = '{field:' . $field . '}';
