@@ -1,3 +1,6 @@
+## 1.1.7 (Apr 19, 2023)
+- Release for broken language files
+
 ## 1.1.6 (Apr 19, 2023)
 - #155 Updated French Translation (thanks @Klodd65 !)
 - Added contact_number to FSO fields

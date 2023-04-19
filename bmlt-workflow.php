@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.6
+ * Version: 1.1.7
  * Requires at least: 5.2
  * Tested up to: 6.2
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.6');
+define('BMLTWF_PLUGIN_VERSION', '1.1.7');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -1316,7 +1316,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             $content = get_option('bmltwf_fso_email_template');
             $editor_id = 'bmltwf_fso_email_template';
-
+            
             wp_editor($content, $editor_id, array('media_buttons' => false));
             echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . esc_attr($editor_id) . '_default">';
             echo __('Copy default template to clipboard','bmlt-workflow');
