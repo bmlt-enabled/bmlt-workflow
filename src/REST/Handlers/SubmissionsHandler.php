@@ -345,6 +345,7 @@ class SubmissionsHandler
             $this->debug_log("starter kit requested");
             $starter_kit_required = true;
             $starter_kit_postal_address = $change['starter_kit_postal_address'];
+            $starter_kit_contact_number = $change['contact_number'];
         }
         else
         {
@@ -585,7 +586,8 @@ class SubmissionsHandler
                 if ($starter_kit_required) {
                     $template_fields=array('starter_kit_postal_address'=>$starter_kit_postal_address,
                     'submitter_name' => $submitter_name,
-                    'meeting_name' => $change['meeting_name']);
+                    'meeting_name' => $change['meeting_name'],
+                    'contact_number' => $starter_kit_contact_number);
 
                     $this->debug_log("We're sending a starter kit");
                     $template = get_option('bmltwf_fso_email_template');
