@@ -71,6 +71,9 @@ then
     echo "i18n creation failed"
     exit 1
 fi
+git add lang/*
+git commit -m "Update lang files"
+git push
 
 export DOIT='n'
 echo "Are you ok to merge $BRANCH into main as release $RELEASE? [yN]"
