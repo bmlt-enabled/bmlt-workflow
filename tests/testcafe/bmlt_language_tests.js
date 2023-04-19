@@ -117,6 +117,6 @@ test("Change_Wordpress_To_French_Check_Admin_Translations", async (t) => {
   await t.navigateTo(userVariables.admin_settings_page_single);
 
     // check we've translated the php file
-    await t.expect(ao.backup_button.withText('Configuration de sauvegarde').exists).ok();
+    await t.expect(ao.backup_button.withText('Paramètres de sauvegarde').exists).ok();
 
 });

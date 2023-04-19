@@ -17,7 +17,7 @@
 
 /* eslint no-undef: "error" */
 
-/* global wp, jQuery */
+/* global wp, jQuery, ClipboardJS */
 /* global clear_notices, turn_on_spinner, turn_off_spinner, notice_success, notice_error */
 /* global bmltwf_admin_restore_rest_url, bmltwf_admin_backup_rest_url, bmltwf_admin_bmltserver_rest_url, bmltwf_fso_feature */
 /* global bmltwf_bmlt_server_address, bmltwf_google_maps_key_select, bmltwf_admin_bmltwf_service_bodies_rest_url */
@@ -25,6 +25,10 @@
 const { __ } = wp.i18n;
 
 jQuery(document).ready(function ($) {
+  // clipboard
+  // eslint-disable-next-line no-unused-vars
+  const clip = new ClipboardJS('.clipboard-button');
+
   // form submit handler to massage form content before sending
 
   $('#bmltwf_options_form').submit(function () {

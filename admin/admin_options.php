@@ -21,8 +21,8 @@ if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // 
 
 use bmltwf\BMLTWF_Debug;
 
-$bmltwf_submitter_email_template_default = htmlentities(file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
-$bmltwf_fso_email_template_default = htmlentities(file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
+$bmltwf_submitter_email_template_default = file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html');
+$bmltwf_fso_email_template_default = file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html');
 
 echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_submitter_email_template_default">' . esc_textarea($bmltwf_submitter_email_template_default) . '</textarea></div>';
 echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_fso_email_template_default">' . esc_textarea($bmltwf_fso_email_template_default) . '</textarea></div>';
@@ -32,7 +32,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 echo '<hr class="bmltwf-error-message">';
 
 echo '<div class="wrap"><h5 align="right">';
-echo __( 'Plugin Version', 'bmlt-workflow');
+echo __( 'Plugin Version ', 'bmlt-workflow');
 echo BMLTWF_PLUGIN_VERSION;
 echo '</h5>';
 echo '<p><h4 align="center">';

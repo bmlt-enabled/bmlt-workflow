@@ -1,5 +1,11 @@
+## 1.1.6 (Apr 19, 2023)
+- #155 Updated French Translation (thanks @Klodd65 !)
+- Added contact_number to FSO fields
+- #169 Bug: Clipboard not working in config page
+- Tested on WordPress 6.2
+
 ## 1.1.5 (Mar 26, 2023)
-- #173 Feature: Feature: Support for publish/unpublish meetings - we now support user self publish/unpublish meetings using the change meeting option
+- #173 Feature: Support for publish/unpublish meetings - we now support user self publish/unpublish meetings using the change meeting option
 
 ## 1.1.4 (Mar 24, 2023)
 - Fix a couple of translation bugs
@@ -10,7 +16,7 @@
 - #170 Bug: Auto resize not working on quick view for some fields (thanks AnitaK !)
 - #171 Bug: County Field isn't work with Quick Edit Mode (thanks @Klodd65 !)
 - #161 Bug: Temporary Closures against BMLT3x failing to approve due to invalid venueType (thanks markd !)
-- Italian translation included
+- Italian translation included (thanks @californiasteve !)
 ## 1.1.2 (Mar 10, 2023)
 - #160 Getting an error in the logs - Undefined array key...Integration.php on line 630 #160 (thanks @brustar64 !)
 
