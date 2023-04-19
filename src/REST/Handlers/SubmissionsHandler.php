@@ -345,7 +345,7 @@ class SubmissionsHandler
             $this->debug_log("starter kit requested");
             $starter_kit_required = true;
             $starter_kit_postal_address = $change['starter_kit_postal_address'];
-            $starter_kit_contact_number = $change['contact_number'];
+            $starter_kit_contact_number = $change['contact_number'] ?? 'No phone number provided';
         }
         else
         {
