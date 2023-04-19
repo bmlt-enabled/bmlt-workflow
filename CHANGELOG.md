@@ -1,6 +1,7 @@
 ## 1.1.6 (Apr 19, 2023)
 - #155 Updated French Translation (thanks @Klodd65 !)
 - Added contact_number to FSO fields
+- #169 Bug: Clipboard not working in config page
 - Tested on WordPress 6.2
 
 ## 1.1.5 (Mar 26, 2023)
