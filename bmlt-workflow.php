@@ -1001,7 +1001,7 @@ if (!class_exists('bmltwf_plugin')) {
             echo '</div>';
             echo '<div id="bmltwf_server_version_yes" style="display: none;" ></div>';
             echo '<div id="bmltwf_server_version_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>';
-            echo '__(Cannot retrieve the BMLT Server Version';
+            echo __('Cannot retrieve the BMLT Server Version','bmlt-workflow');
             echo '</div>';
             echo '<div id="bmltwf_bmlt_server_version"></div>';
             echo '<br>';
