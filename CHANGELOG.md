@@ -1,3 +1,7 @@
+## 1.1.8 (Apr 19, 2023)
+- Update for italian translation (thanks (CaliforniaSteve!)
+- Tested against Wordpress 6.3
+
 ## 1.1.7 (Apr 19, 2023)
 - Release for broken language files
 
