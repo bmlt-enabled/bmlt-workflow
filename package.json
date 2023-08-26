@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "testcafe": "^2.1.0"
+    "testcafe": "^2.6.2"
   },
   "devDependencies": {
     "eslint": "^8.35.0",

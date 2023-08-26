@@ -20,15 +20,15 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.7
+ * Version: 1.1.8
  * Requires at least: 5.2
- * Tested up to: 6.2
+ * Tested up to: 6.3
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.7');
+define('BMLTWF_PLUGIN_VERSION', '1.1.8');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -1001,7 +1001,7 @@ if (!class_exists('bmltwf_plugin')) {
             echo '</div>';
             echo '<div id="bmltwf_server_version_yes" style="display: none;" ></div>';
             echo '<div id="bmltwf_server_version_no" style="display: none;" ><span class="dashicons dashicons-no" style="color: red;"></span>';
-            echo '__(Cannot retrieve the BMLT Server Version';
+            echo __('Cannot retrieve the BMLT Server Version','bmlt-workflow');
             echo '</div>';
             echo '<div id="bmltwf_bmlt_server_version"></div>';
             echo '<br>';
