@@ -57,7 +57,7 @@ test("Change_Wordpress_To_French_Check_User_Translations", async (t) => {
     // meeting selector
     await t.click("#select2-meeting-searcher-container");
     // check we've translated js on the fly
-    await t.expect(Selector('.select2-search__field').withAttribute('placeholder','Commencez à saisir le nom de votre réunion').exists).ok();
+    await t.expect(Selector('.select2-search__field').withAttribute('placeholder','Commencez à entrer le nom de votre réunion').exists).ok();
     // search for our meeting
     await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
     await t.pressKey("enter");
