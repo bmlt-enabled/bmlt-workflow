@@ -18,17 +18,17 @@
 
 /* global jQuery, __ */
 
-const defaultOptions = {
+const bmltwf_defaultOptions = {
   timeout: 300000,
   jsonpCallback: 'callback',
   jsonpCallbackFunction: null,
 };
 
-function generateCallbackFunction() {
+function bmltwf_generateCallbackFunction() {
   return `jsonp_${Date.now().toString()}_${Math.ceil(Math.random() * 100000).toString()}`;
 }
 
-function clearFunction(functionName) {
+function bmltwf_clearFunction(functionName) {
   // IE8 throws an exception when you try to delete a property on window
   // http://stackoverflow.com/a/1824228/751089
   try {
@@ -38,7 +38,7 @@ function clearFunction(functionName) {
   }
 }
 
-function removeScript(scriptId) {
+function bmltwf_removeScript(scriptId) {
   const script = document.getElementById(scriptId);
   if (script) {
     document.getElementsByTagName('head')[0].removeChild(script);
@@ -46,20 +46,20 @@ function removeScript(scriptId) {
 }
 
 // eslint-disable-next-line no-unused-vars
-function fetchJsonp(_url, options) {
+function bmltwf_fetchJsonp(_url, options) {
   if (!options) {
     // eslint-disable-next-line no-param-reassign
     options = {};
   }
   // to avoid param reassign
   let url = _url;
-  const timeout = options.timeout || defaultOptions.timeout;
-  const jsonpCallback = options.jsonpCallback || defaultOptions.jsonpCallback;
+  const timeout = options.timeout || bmltwf_defaultOptions.timeout;
+  const jsonpCallback = options.jsonpCallback || bmltwf_defaultOptions.jsonpCallback;
 
   let timeoutId;
 
   return new Promise(function (resolve, reject) {
-    const callbackFunction = options.jsonpCallbackFunction || generateCallbackFunction();
+    const callbackFunction = options.jsonpCallbackFunction || bmltwf_generateCallbackFunction();
     const scriptId = `${jsonpCallback}_${callbackFunction}`;
 
     window[callbackFunction] = function (response) {
@@ -73,9 +73,9 @@ function fetchJsonp(_url, options) {
 
       if (timeoutId) clearTimeout(timeoutId);
 
-      removeScript(scriptId);
+      bmltwf_removeScript(scriptId);
 
-      clearFunction(callbackFunction);
+      bmltwf_clearFunction(callbackFunction);
     };
 
     // Check if the user set their own params, and if not add a ? to start a list of params
@@ -98,10 +98,10 @@ function fetchJsonp(_url, options) {
     timeoutId = setTimeout(function () {
       reject(new Error(`JSONP request to ${_url} timed out`));
 
-      clearFunction(callbackFunction);
-      removeScript(scriptId);
+      bmltwf_clearFunction(callbackFunction);
+      bmltwf_removeScript(scriptId);
       window[callbackFunction] = function () {
-        clearFunction(callbackFunction);
+        bmltwf_clearFunction(callbackFunction);
       };
     }, timeout);
 
@@ -109,41 +109,41 @@ function fetchJsonp(_url, options) {
     jsonpScript.onerror = function () {
       reject(new Error(`JSONP request to ${_url} failed`));
 
-      clearFunction(callbackFunction);
-      removeScript(scriptId);
+      bmltwf_clearFunction(callbackFunction);
+      bmltwf_removeScript(scriptId);
       if (timeoutId) clearTimeout(timeoutId);
     };
   });
 }
 
 // eslint-disable-next-line no-unused-vars
-function notice_success(response, notice_class) {
+function bmltwf_notice_success(response, notice_class) {
   let msg = '';
-  if (response.message === '') { msg = `<div class="notice notice-success is-dismissible"><p><strong>${__('SUCCESS', 'bmlt-workflow')}: </strong><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>`; } else {
+  if (response.message === '') { msg = `<div class="notice notice-success is-dismissible"><p><strong>${__('SUCCESS', 'bmlt-workflow')}: </strong><button type="button" class="notice-dismiss" onclick="javascript: return bmltwf_dismiss_notice(this);"></button></div>`; } else {
     msg = `<div class="notice notice-success is-dismissible"><p id="bmltwf_error_class_${notice_class}"><strong>${__('SUCCESS', 'bmlt-workflow')}: </strong>${
       response.message
-    }.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>`;
+    }.</p><button type="button" class="notice-dismiss" onclick="javascript: return bmltwf_dismiss_notice(this);"></button></div>`;
   }
   jQuery(`.${notice_class}`).after(msg);
 }
 
-function notice_error(xhr, notice_class) {
+function bmltwf_notice_error(xhr, notice_class) {
   if (typeof xhr === 'string') {
     jQuery(`.${notice_class}`).after(
       `<div class="notice notice-error is-dismissible"><p id="bmltwf_error_class_${notice_class}"><strong>${__('ERROR', 'bmlt-workflow')}: </strong>${
         xhr
-      }.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>`,
+      }.</p><button type="button" class="notice-dismiss" onclick="javascript: return bmltwf_dismiss_notice(this);"></button></div>`,
     );
   } else {
     jQuery(`.${notice_class}`).after(
       `<div class="notice notice-error is-dismissible"><p id="bmltwf_error_class_${notice_class}"><strong>${__('ERROR', 'bmlt-workflow')}: </strong>${
         xhr.responseJSON.message
-      }.</p><button type="button" class="notice-dismiss" onclick="javascript: return dismiss_notice(this);"></button></div>`,
+      }.</p><button type="button" class="notice-dismiss" onclick="javascript: return bmltwf_dismiss_notice(this);"></button></div>`,
     );
   }
 }
 
-function dismiss_notice(element) {
+function bmltwf_dismiss_notice(element) {
   jQuery(element)
     .parent()
     .slideUp('normal', function () {
@@ -152,16 +152,16 @@ function dismiss_notice(element) {
   return false;
 }
 
-function clear_notices() {
+function bmltwf_clear_notices() {
   jQuery('.notice-dismiss').each(function (i, e) {
-    dismiss_notice(e);
+    bmltwf_dismiss_notice(e);
   });
 }
 
-function turn_off_spinner(element) {
+function bmltwf_turn_off_spinner(element) {
   jQuery(element).removeClass('is-active');
 }
 
-function turn_on_spinner(element) {
+function bmltwf_turn_on_spinner(element) {
   jQuery(element).addClass('is-active');
 }

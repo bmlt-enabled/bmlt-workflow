@@ -16,7 +16,7 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 /* global wp, jQuery */
-/* global fetchJsonp, clear_notices, turn_on_spinner, turn_off_spinner, notice_error */
+/* global bmltwf_fetchJsonp, bmltwf_clear_notices, bmltwf_turn_on_spinner, bmltwf_turn_off_spinner, bmltwf_notice_error */
 /* global bmltwf_fso_feature, bmltwf_counties_and_sub_provinces, bmltwf_do_states_and_provinces, bmltwf_bmlt_formats, bmltwf_service_bodies */
 /* global bmltwf_optional_location_nation, bmltwf_optional_postcode,, bmltwf_optional_location_sub_province, bmltwf_optional_location_province, bmltwf_bmlt_server_address */
 /* global bmltwf_form_submit_url */
@@ -155,7 +155,7 @@ jQuery(document).ready(function ($) {
   });
 
   function real_submit_handler() {
-    clear_notices();
+    bmltwf_clear_notices();
     // in case we disabled this we want to send it now
     enable_field('service_body_bigint');
 
@@ -187,19 +187,19 @@ jQuery(document).ready(function ($) {
       dataType: 'json',
       processData: false,
       beforeSend() {
-        turn_on_spinner('#bmltwf-submit-spinner');
+        bmltwf_turn_on_spinner('#bmltwf-submit-spinner');
         $('#submit').prop('disabled', true);
       },
     })
       .done(function (response) {
-        turn_off_spinner('#bmltwf-submit-spinner');
+        bmltwf_turn_off_spinner('#bmltwf-submit-spinner');
         $('#submit').prop('disabled', false);
         $('#form_replace').replaceWith(response.form_html);
       })
       .fail(function (xhr) {
-        turn_off_spinner('#bmltwf-submit-spinner');
+        bmltwf_turn_off_spinner('#bmltwf-submit-spinner');
         $('#submit').prop('disabled', false);
-        notice_error(xhr, 'bmltwf-error-message');
+        bmltwf_notice_error(xhr, 'bmltwf-error-message');
       });
   }
 
@@ -467,7 +467,7 @@ jQuery(document).ready(function ($) {
   function update_meeting_list(bmltwf_service_bodies) {
     const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&advanced_published=0&lang_enum=en&${bmltwf_service_bodies}recursive=1&sort_keys=meeting_name`;
 
-    fetchJsonp(search_results_address)
+    bmltwf_fetchJsonp(search_results_address)
       .then((response) => response.json())
       .then((mdata) => create_meeting_searcher(mdata));
   }
