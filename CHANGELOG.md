@@ -1,5 +1,8 @@
+## 1.1.9 (Sep 26, 2023)
+- Bugfix for javascript naming collision (thanks @Klodd64 !)
+
 ## 1.1.8 (Apr 19, 2023)
-- Update for italian translation (thanks (CaliforniaSteve!)
+- Update for italian translation (thanks @CaliforniaSteve!)
 - Tested against Wordpress 6.3
 
 ## 1.1.7 (Apr 19, 2023)
