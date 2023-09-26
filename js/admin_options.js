@@ -18,7 +18,7 @@
 /* eslint no-undef: "error" */
 
 /* global wp, jQuery, ClipboardJS */
-/* global clear_notices, turn_on_spinner, turn_off_spinner, notice_success, notice_error */
+/* global bmltwf_clear_notices, bmltwf_turn_on_spinner, bmltwf_turn_off_spinner, bmltwf_notice_success, bmltwf_notice_error */
 /* global bmltwf_admin_restore_rest_url, bmltwf_admin_backup_rest_url, bmltwf_admin_bmltserver_rest_url, bmltwf_fso_feature */
 /* global bmltwf_bmlt_server_address, bmltwf_google_maps_key_select, bmltwf_admin_bmltwf_service_bodies_rest_url */
 
@@ -99,7 +99,7 @@ jQuery(document).ready(function ($) {
 
   // perform a restore
   $('#bmltwf_file_selector').on('change', function () {
-    clear_notices();
+    bmltwf_clear_notices();
     $('#bmltwf_restore_warning_dialog').dialog('open');
   });
 
@@ -114,18 +114,18 @@ jQuery(document).ready(function ($) {
       data: e.target.result,
       processData: false,
       beforeSend(xhr) {
-        turn_on_spinner('#bmltwf-backup-spinner');
-        clear_notices();
+        bmltwf_turn_on_spinner('#bmltwf-backup-spinner');
+        bmltwf_clear_notices();
         xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
       },
     })
       .done(function (response) {
-        turn_off_spinner('#bmltwf-backup-spinner');
-        notice_success(response, 'bmltwf-error-message');
+        bmltwf_turn_off_spinner('#bmltwf-backup-spinner');
+        bmltwf_notice_success(response, 'bmltwf-error-message');
       })
       .fail(function (xhr) {
-        notice_error(xhr, 'bmltwf-error-message');
-        turn_off_spinner('#bmltwf-backup-spinner');
+        bmltwf_notice_error(xhr, 'bmltwf-error-message');
+        bmltwf_turn_off_spinner('#bmltwf-backup-spinner');
       });
   };
 
@@ -174,7 +174,7 @@ jQuery(document).ready(function ($) {
 
   // click handler for bmlt configuration popup
   $('#bmltwf_configure_bmlt_server').on('click', function () {
-    clear_notices();
+    bmltwf_clear_notices();
 
     hide_bmlt_validation();
 
@@ -189,7 +189,7 @@ jQuery(document).ready(function ($) {
         dataType: 'json',
         contentType: 'application/json',
         beforeSend(xhr) {
-          // clear_notices();
+          // bmltwf_clear_notices();
           xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
         },
       })
@@ -234,14 +234,14 @@ jQuery(document).ready(function ($) {
       dataType: 'json',
       processData: false,
       beforeSend(xhr) {
-        turn_on_spinner('#bmltwf-backup-spinner');
-        clear_notices();
+        bmltwf_turn_on_spinner('#bmltwf-backup-spinner');
+        bmltwf_clear_notices();
         xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
       },
     })
       .done(function (response) {
-        turn_off_spinner('#bmltwf-backup-spinner');
-        notice_success(response, 'bmltwf-error-message');
+        bmltwf_turn_off_spinner('#bmltwf-backup-spinner');
+        bmltwf_notice_success(response, 'bmltwf-error-message');
         const blob = new Blob([response.backup], { type: 'application/json' });
         const link = document.createElement('a');
         const b_elem = document.getElementById('bmltwf_backup_filename');
@@ -262,8 +262,8 @@ jQuery(document).ready(function ($) {
         link.click();
       })
       .fail(function (xhr) {
-        notice_error(xhr, 'bmltwf-error-message');
-        turn_off_spinner('#bmltwf-backup-spinner');
+        bmltwf_notice_error(xhr, 'bmltwf-error-message');
+        bmltwf_turn_off_spinner('#bmltwf-backup-spinner');
       });
   });
 
@@ -293,16 +293,16 @@ jQuery(document).ready(function ($) {
       contentType: 'application/json',
       data: JSON.stringify(parameters),
       beforeSend(xhr) {
-        clear_notices();
+        bmltwf_clear_notices();
         xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
       },
     })
       .done(function (response) {
-        notice_success(response, 'bmltwf-error-message');
+        bmltwf_notice_success(response, 'bmltwf-error-message');
         update_from_test_result(response);
       })
       .fail(function (xhr) {
-        notice_error(xhr, 'bmltwf-error-message');
+        bmltwf_notice_error(xhr, 'bmltwf-error-message');
         update_from_test_result(xhr.responseJSON.data);
       });
   }
@@ -321,16 +321,16 @@ jQuery(document).ready(function ($) {
         contentType: 'application/json',
         data: JSON.stringify(parameters),
         beforeSend(xhr) {
-          clear_notices();
+          bmltwf_clear_notices();
           xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
         },
       })
         .done(function (response) {
-          notice_success(response, 'options_dialog_bmltwf_error_message');
+          bmltwf_notice_success(response, 'options_dialog_bmltwf_error_message');
           resolve();
         })
         .fail(function (xhr) {
-          notice_error(xhr, 'options_dialog_bmltwf_error_message');
+          bmltwf_notice_error(xhr, 'options_dialog_bmltwf_error_message');
           reject();
         });
     });
@@ -361,13 +361,13 @@ jQuery(document).ready(function ($) {
       contentType: 'application/json',
       data: JSON.stringify(parameters),
       beforeSend(xhr) {
-        clear_notices();
+        bmltwf_clear_notices();
         xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
       },
     })
 
       .done(function (response) {
-        notice_success(response, 'options_dialog_bmltwf_error_message');
+        bmltwf_notice_success(response, 'options_dialog_bmltwf_error_message');
         $('#bmltwf_bmlt_server_address_test_yes').show();
         $('#bmltwf_bmlt_login_test_yes').show();
         $('#bmltwf_bmlt_server_address_test_no').hide();
@@ -397,7 +397,7 @@ jQuery(document).ready(function ($) {
         }
         enable_save_button(false);
 
-        notice_error(xhr, 'options_dialog_bmltwf_error_message');
+        bmltwf_notice_error(xhr, 'options_dialog_bmltwf_error_message');
       });
   }
 

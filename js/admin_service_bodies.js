@@ -18,7 +18,7 @@
 /* eslint no-undef: "error" */
 
 /* global wp, jQuery */
-/* global clear_notices, turn_on_spinner, turn_off_spinner, notice_success, notice_error */
+/* global bmltwf_clear_notices, bmltwf_turn_on_spinner, bmltwf_turn_off_spinner, bmltwf_notice_success, bmltwf_notice_error */
 /* global bmltwf_admin_bmltwf_service_bodies_rest_url */
 /* global wp_users_url */
 
@@ -67,7 +67,7 @@ jQuery(document).ready(function ($) {
     });
     const post = create_service_area_permission_post();
 
-    clear_notices();
+    bmltwf_clear_notices();
 
     $.ajax({
       url: bmltwf_admin_bmltwf_service_bodies_rest_url,
@@ -77,18 +77,18 @@ jQuery(document).ready(function ($) {
       dataType: 'json',
       processData: false,
       beforeSend(xhr) {
-        turn_on_spinner('#bmltwf-submit-spinner');
+        bmltwf_turn_on_spinner('#bmltwf-submit-spinner');
 
         xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
       },
     })
       .done(function (response) {
-        turn_off_spinner('#bmltwf-submit-spinner');
-        notice_success(response, 'bmltwf-error-message');
+        bmltwf_turn_off_spinner('#bmltwf-submit-spinner');
+        bmltwf_notice_success(response, 'bmltwf-error-message');
       })
       .fail(function (xhr) {
-        turn_off_spinner('#bmltwf-submit-spinner');
-        notice_error(xhr, 'bmltwf-error-message');
+        bmltwf_turn_off_spinner('#bmltwf-submit-spinner');
+        bmltwf_notice_error(xhr, 'bmltwf-error-message');
       });
   });
 
@@ -100,7 +100,7 @@ jQuery(document).ready(function ($) {
     dataType: 'json',
     data: parameters,
     beforeSend(xhr) {
-      turn_on_spinner('#bmltwf-form-spinner');
+      bmltwf_turn_on_spinner('#bmltwf-form-spinner');
       xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
     },
   })
@@ -171,19 +171,19 @@ jQuery(document).ready(function ($) {
             $('.grow-wrap textarea').trigger('input');
 
             // turn off spinner
-            turn_off_spinner('#bmltwf-form-spinner');
+            bmltwf_turn_off_spinner('#bmltwf-form-spinner');
             // turn on table
             $('#bmltwf-userlist-table').show();
             $('#bmltwf_submit').show();
           });
         } else {
-          turn_off_spinner('#bmltwf-form-spinner');
-          notice_error(__('Error retrieving wordpress users', 'bmlt-workflow'), 'bmltwf-error-message');
+          bmltwf_turn_off_spinner('#bmltwf-form-spinner');
+          bmltwf_notice_error(__('Error retrieving wordpress users', 'bmlt-workflow'), 'bmltwf-error-message');
         }
       });
     })
     .fail(function (xhr) {
-      turn_off_spinner('#bmltwf-form-spinner');
-      notice_error(xhr, 'bmltwf-error-message');
+      bmltwf_turn_off_spinner('#bmltwf-form-spinner');
+      bmltwf_notice_error(xhr, 'bmltwf-error-message');
     });
 });

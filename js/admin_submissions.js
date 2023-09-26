@@ -17,7 +17,7 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 /* global wp, jQuery, google */
-/* global clear_notices, notice_success, notice_error, fetchJsonp */
+/* global bmltwf_clear_notices, bmltwf_notice_success, bmltwf_notice_error, bmltwf_fetchJsonp */
 /* global bmltwf_gmaps_key, bmltwf_auto_geocoding_enabled, bmltwf_optional_location_nation, bmltwf_optional_location_sub_province, bmltwf_optional_location_province */
 /* global bmltwf_do_states_and_provinces, bmltwf_counties_and_sub_provinces, bmltwf_remove_virtual_meeting_details_on_venue_change, bmltwf_bmlt_server_address */
 /* global bmltwf_default_closed_meetings, bmltwf_bmlt_formats, bmltwf_datatables_delete_enabled, bmltwf_admin_submissions_rest_url, bmltwf_admin_bmltwf_service_bodies */
@@ -254,7 +254,7 @@ jQuery(document).ready(function ($) {
     // hide map and let it be shown later if required
     $('#bmltwf_quickedit_map').hide();
 
-    clear_notices();
+    bmltwf_clear_notices();
     // fill quickedit
 
     // if it's a meeting change, fill from bmlt first
@@ -262,7 +262,7 @@ jQuery(document).ready(function ($) {
       const { meeting_id } = bmltwf_changedata[id];
       const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&advanced_published=0&meeting_key=id_bigint&meeting_key_value=${meeting_id}&lang_enum=en&&recursive=1&sort_keys=start_time`;
 
-      fetchJsonp(search_results_address)
+      bmltwf_fetchJsonp(search_results_address)
         .then((response) => response.json())
         .then((data) => {
           // fill in all the bmlt stuff
@@ -271,7 +271,7 @@ jQuery(document).ready(function ($) {
             const a = {};
             a.responseJSON = {};
             a.responseJSON.message = __('Error retrieving BMLT data - meeting possibly removed', 'bmlt-workflow');
-            notice_error(a, 'bmltwf-error-message');
+            bmltwf_notice_error(a, 'bmltwf-error-message');
           } else {
             // split up the duration so we can use it in the select
             if ('duration_time' in item) {
@@ -845,7 +845,7 @@ jQuery(document).ready(function ($) {
       contentType: 'application/json',
       data: encodeURI(address),
       beforeSend(xhr) {
-        clear_notices();
+        bmltwf_clear_notices();
         xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
       },
     })
@@ -855,10 +855,10 @@ jQuery(document).ready(function ($) {
         $('#quickedit_latitude').val(lat);
         $('#quickedit_longitude').val(long);
         update_gmaps(lat, long);
-        notice_success(response, 'bmltwf-quickedit-error-message');
+        bmltwf_notice_success(response, 'bmltwf-quickedit-error-message');
       })
       .fail(function (xhr) {
-        notice_error(xhr, 'bmltwf-quickedit-error-message');
+        bmltwf_notice_error(xhr, 'bmltwf-quickedit-error-message');
       });
   }
 
@@ -866,7 +866,7 @@ jQuery(document).ready(function ($) {
     const parameters = {};
     const quickedit_changes_requested = {};
 
-    clear_notices();
+    bmltwf_clear_notices();
 
     // pull out all the changed elements
     $('.bmltwf-changed').each(function () {
@@ -896,12 +896,12 @@ jQuery(document).ready(function ($) {
       contentType: 'application/json',
       data: JSON.stringify(parameters),
       beforeSend(xhr) {
-        clear_notices();
+        bmltwf_clear_notices();
         xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
       },
     })
       .done(function (response) {
-        notice_success(response, 'bmltwf-error-message');
+        bmltwf_notice_success(response, 'bmltwf-error-message');
 
         // reload the table to pick up any changes
         $('#dt-submission').DataTable().ajax.reload();
@@ -909,7 +909,7 @@ jQuery(document).ready(function ($) {
         $('#dt-submission').DataTable().rows().deselect();
       })
       .fail(function (xhr) {
-        notice_error(xhr, 'bmltwf-error-message');
+        bmltwf_notice_error(xhr, 'bmltwf-error-message');
       });
     $('#bmltwf_submission_quickedit_dialog').dialog('close');
   }
@@ -992,19 +992,19 @@ jQuery(document).ready(function ($) {
       contentType: 'application/json',
       data: JSON.stringify(parameters),
       beforeSend(xhr) {
-        clear_notices();
+        bmltwf_clear_notices();
         xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
       },
     })
       .done(function (response) {
-        notice_success(response, 'bmltwf-error-message');
+        bmltwf_notice_success(response, 'bmltwf-error-message');
         // reload the table to pick up any changes
         $('#dt-submission').DataTable().ajax.reload();
         // reset the buttons correctly
         $('#dt-submission').DataTable().rows().deselect();
       })
       .fail(function (xhr) {
-        notice_error(xhr, 'bmltwf-error-message');
+        bmltwf_notice_error(xhr, 'bmltwf-error-message');
       });
     $(`#${slug}_dialog`).dialog('close');
   }
@@ -1017,24 +1017,24 @@ jQuery(document).ready(function ($) {
 
   // eslint-disable-next-line no-undef
   bmltwf_submission_approve_dialog_ok = function (id) {
-    clear_notices();
+    bmltwf_clear_notices();
     generic_approve_handler(id, 'POST', '/approve', 'bmltwf_submission_approve');
   };
 
   // eslint-disable-next-line no-undef
   bmltwf_submission_approve_close_dialog_ok = function (id) {
-    clear_notices();
+    bmltwf_clear_notices();
     generic_approve_handler(id, 'POST', '/approve', 'bmltwf_submission_approve_close');
   };
 
   // eslint-disable-next-line no-undef
   bmltwf_submission_reject_dialog_ok = function (id) {
-    clear_notices();
+    bmltwf_clear_notices();
     generic_approve_handler(id, 'POST', '/reject', 'bmltwf_submission_reject');
   };
   // eslint-disable-next-line no-undef
   bmltwf_submission_delete_dialog_ok = function (id) {
-    clear_notices();
+    bmltwf_clear_notices();
     generic_approve_handler(id, 'DELETE', '', 'bmltwf_submission_delete');
   };
 });
