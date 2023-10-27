@@ -108,8 +108,8 @@ class SubmissionsHandler
         }
         // $this->debug_log($sql);
         $result = $wpdb->get_row($sql, ARRAY_A);
-        $this->debug_log("RESULT");
-        $this->debug_log(($result));
+        // $this->debug_log("RESULT");
+        // $this->debug_log(($result));
         if (empty($result)) {
             return $this->bmltwf_rest_error(__('Permission denied viewing submission id','bmlt-workflow')." {$change_id}", 403);
         }
@@ -704,7 +704,9 @@ class SubmissionsHandler
         
         // strip blanks
         foreach ($data as $key => $value) {
+            $this->debug_log("stripping blank from ".$key);
             if (($data[$key] === "") || ($data[$key] === NULL)) {
+                $this->debug_log("stripped");
                 unset($data[$key]);
             }
         }
@@ -831,6 +833,15 @@ class SubmissionsHandler
                         }
                     }
                 }
+            }
+            $this->debug_log("field = ".$field);
+
+            if(isset($data[$field])){
+                $this->debug_log("isset(data[field]) = true");
+            }
+            else
+            {
+                $this->debug_log("isset(data[field]) = false");
             }
 
             // sanitise only fields that have been provided
@@ -1027,21 +1038,32 @@ class SubmissionsHandler
 
                     // if the field is blank in bmlt, but they submitted a change, add it to the list
                     if (!$bmlt_field && array_key_exists($field, $sanitised_fields) && !empty($sanitised_fields[$field])) {
-                        $this->debug_log("found a blank bmlt entry " . $field);
                         $submission[$field] = $sanitised_fields[$field];
                         $submission_count++;
 
                     }
                     // if the field is in bmlt and its different to the submitted item, add it to the list
                     else {
-
-                        if ($bmlt_field && array_key_exists($field, $sanitised_fields)) {
-                            if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
+                        if ($bmlt_field) {
+                            // if the field they submitted is not blank, check whats submitted is different to the bmlt field
+                            if (array_key_exists($field, $sanitised_fields)) {
+                                if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
+                                    // don't allow someone to modify a meeting service body
+                                    if ($field === 'service_body_bigint') {
+                                        return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
+                                    }
+                                    $submission[$field] = $sanitised_fields[$field];
+                                    $submission_count++;
+                                }
+                            }
+                            else
+                            // if they made the field entirely blank then it implies its different from the bmlt field
+                            {
                                 // don't allow someone to modify a meeting service body
                                 if ($field === 'service_body_bigint') {
                                     return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
                                 }
-                                $submission[$field] = $sanitised_fields[$field];
+                                $submission[$field] = "";
                                 $submission_count++;
                             }
                         }
@@ -1159,7 +1181,6 @@ class SubmissionsHandler
 
 
         $insert_id = $wpdb->insert_id;
-        // $this->debug_log("id = " . $insert_id);
         // last resort capture of the submission in our logs
         error_log("[bmltwf - submission log id = " . $insert_id . "]");
         error_log($log_submission);
@@ -1272,7 +1293,7 @@ class SubmissionsHandler
                     $table .= '<tr><td>'.__('Other Reason','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
                     break;
                 case "contact_number":
-                    $table .= "<tr><td>'.__('Contact number (confidential)','bmlt-workflow'.':</td><td>" . $value . '</td></tr>';
+                    $table .= "<tr><td>'.__('Contact number (confidential)','bmlt-workflow').':</td><td>" . $value . '</td></tr>';
                     break;
                 case "add_contact":
                     $result = ($value === 'yes' ? 'Yes' : 'No');

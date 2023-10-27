@@ -1,6 +1,6 @@
 {
   "uuid": "bf755f2b-eda7-4c30-b133-5421d5780e3e",
-  "lastMigration": 27,
+  "lastMigration": 28,
   "name": "Bmlt unsupported",
   "endpointPrefix": "",
   "latency": 0,
@@ -29,7 +29,8 @@
           "rulesOperator": "OR",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": true
+          "default": true,
+          "crudKey": "id"
         }
       ],
       "enabled": true,
@@ -70,7 +71,8 @@
           "rulesOperator": "OR",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": false
+          "default": false,
+          "crudKey": "id"
         }
       ],
       "enabled": true,
@@ -111,7 +113,8 @@
           "rulesOperator": "OR",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": false
+          "default": false,
+          "crudKey": "id"
         }
       ],
       "enabled": true,
@@ -152,7 +155,8 @@
           "rulesOperator": "OR",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": false
+          "default": false,
+          "crudKey": "id"
         }
       ],
       "enabled": true,
@@ -193,7 +197,8 @@
           "rulesOperator": "OR",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": false
+          "default": false,
+          "crudKey": "id"
         }
       ],
       "enabled": true,
@@ -234,7 +239,8 @@
           "rulesOperator": "OR",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": false
+          "default": false,
+          "crudKey": "id"
         }
       ],
       "enabled": true,
@@ -290,7 +296,8 @@
           "rulesOperator": "OR",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": true
+          "default": true,
+          "crudKey": "id"
         },
         {
           "uuid": "f61db6af-1aed-41b7-ac44-4fab575e7ec6",
@@ -327,7 +334,8 @@
           "rulesOperator": "AND",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": false
+          "default": false,
+          "crudKey": "id"
         },
         {
           "uuid": "2e4e11f7-0647-40b0-afb4-19128fc0d4d5",
@@ -359,7 +367,8 @@
           "rulesOperator": "AND",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": false
+          "default": false,
+          "crudKey": "id"
         },
         {
           "uuid": "492b7494-d03c-45fb-a00b-a7166169b634",
@@ -391,7 +400,8 @@
           "rulesOperator": "AND",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": false
+          "default": false,
+          "crudKey": "id"
         },
         {
           "uuid": "d343cef0-ad68-4452-8644-d7de597762e0",
@@ -423,7 +433,8 @@
           "rulesOperator": "AND",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": false
+          "default": false,
+          "crudKey": "id"
         },
         {
           "uuid": "d46f7265-bd41-4399-8fa6-9e15bcde2250",
@@ -455,7 +466,8 @@
           "rulesOperator": "AND",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": false
+          "default": false,
+          "crudKey": "id"
         }
       ],
       "enabled": true,
@@ -496,7 +508,8 @@
           "rulesOperator": "OR",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": false
+          "default": false,
+          "crudKey": "id"
         }
       ],
       "enabled": true,
@@ -537,7 +550,8 @@
           "rulesOperator": "OR",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": false
+          "default": false,
+          "crudKey": "id"
         }
       ],
       "enabled": true,
@@ -578,7 +592,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "body": "{}"
+          "body": "{}",
+          "crudKey": "id"
         }
       ],
       "enabled": true,
@@ -619,7 +634,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "body": "{}"
+          "body": "{}",
+          "crudKey": "id"
         }
       ],
       "enabled": true,
@@ -660,7 +676,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "body": "{}"
+          "body": "{}",
+          "crudKey": "id"
         }
       ],
       "enabled": true,
@@ -701,7 +718,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "body": "{}"
+          "body": "{}",
+          "crudKey": "id"
         }
       ],
       "enabled": true,
@@ -742,7 +760,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "body": "{}"
+          "body": "{}",
+          "crudKey": "id"
         }
       ],
       "enabled": true,
@@ -783,7 +802,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "body": "{}"
+          "body": "{}",
+          "crudKey": "id"
         }
       ],
       "enabled": true,

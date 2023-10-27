@@ -34,6 +34,7 @@ services:
       dockerfile: Dockerfile-wordpress-db
     restart: always
     tmpfs: /var/lib/mysql
+    platform: linux/x86_64
     environment:
       MYSQL_ROOT_PASSWORD: somewordpress
       MYSQL_DATABASE: wordpress
