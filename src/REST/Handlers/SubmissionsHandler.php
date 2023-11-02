@@ -1190,7 +1190,7 @@ class SubmissionsHandler
 
         $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['service_body_bigint']);
         $subject = '[bmlt-workflow] ' . $submission_type . ' '.__('request received','bmlt-workflow').' - ' . $sblist[$sanitised_fields['service_body_bigint']]['name'] . ' - '.__('Change ID','bmlt_workflow').' #' . $insert_id;
-        $body = __('Log in to','bmlt-workflow').' <a href="' . get_site_url() . '/wp-admin/admin.php?page=bmltwf-submissions">'.__('BMLTWF Submissions Page','bmlt-workflow').'</a> to review.';
+        $body = __('Log in to','bmlt-workflow').' <a href="' . get_site_url() . '/'.get_option('whl_page', 'wp-admin').'/admin.php?page=bmltwf-submissions">'.__('BMLTWF Submissions Page','bmlt-workflow').'</a> to review.';
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));
         wp_mail($to_address, $subject, $body, $headers);
