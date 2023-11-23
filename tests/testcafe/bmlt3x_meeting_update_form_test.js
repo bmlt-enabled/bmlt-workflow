@@ -555,8 +555,8 @@ test("Failure_Retype_Same_Extra_Location_And_Submit", async (t) => {
 
   await t
     .click(uf.submit)
-    .expect(uf.success_page_header.innerText)
-    .match(/submission\ successful/);
+    .expect(uf.error_para.innerText)
+    .match(/Nothing\ was\ changed/);
 });
 
 test("Success_Close_Meeting_And_Submit", async (t) => {
