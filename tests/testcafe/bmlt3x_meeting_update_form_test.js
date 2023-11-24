@@ -125,6 +125,7 @@ test("Success_New_Standard_Meeting_And_Submit", async (t) => {
     .match(/submission\ successful/);
 });
 
+
 test("Success_New_Hybrid_Meeting_And_Submit", async (t) => {
 
   await t.navigateTo(userVariables.formpage);
@@ -272,11 +273,7 @@ test("Success_New_Virtual_Meeting_And_Submit", async (t) => {
   await t
 
     // no location for virtual meeting
-    // .typeText(uf.location_text, "my location")
-    // .typeText(uf.location_street, "110 Avoca Street")
-    // .typeText(uf.location_info, "info")
     .typeText(uf.location_municipality, "Randwick")
-    // .typeText(uf.location_sub_province, 'subprovince')
     .typeText(uf.location_province, "NSW")
     .typeText(uf.location_postal_code_1, "2031");
 
@@ -425,6 +422,142 @@ test("Success_Change_Meeting_Name_And_Submit", async (t) => {
     .click(uf.submit)
     .expect(uf.success_page_header.innerText)
     .match(/submission\ successful/);
+});
+
+test("Success_Delete_Extra_Location_And_Submit", async (t) => {
+
+  await t.navigateTo(userVariables.formpage);
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+
+  await t.expect(uf.update_reason.value).eql("reason_change");
+
+  // meeting selector
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
+  await t.pressKey("enter");
+
+  // validate form is laid out correctly
+  await t.expect(uf.personal_details.visible).eql(true)
+  .expect(uf.meeting_details.visible).eql(true)
+  .expect(uf.additional_info_div.visible).eql(true);
+
+  // personal details
+  await t
+    .typeText(uf.first_name, "first")
+    .typeText(uf.last_name, "last")
+    .typeText(uf.email_address, "test@test.com.zz")
+    .typeText(uf.contact_number, "`12345`")
+    // delete the location info entirely
+    .selectText(uf.location_info)
+    .pressKey('delete')
+    // make sure highlighting is present
+    .expect(uf.location_info.hasClass("bmltwf-changed"))
+    .ok();
+
+  // email dropdown
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
+
+  // group member dropdown
+  await select_dropdown_by_value(uf.group_relationship, "Group Member");
+  await t.expect(uf.group_relationship.value).eql("Group Member");
+
+  await t.typeText(uf.additional_info, "my additional info");
+
+  await t
+    .click(uf.submit)
+    .expect(uf.success_page_header.innerText)
+    .match(/submission\ successful/);
+});
+
+test("Success_Change_Extra_Location_And_Submit", async (t) => {
+
+  await t.navigateTo(userVariables.formpage);
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+
+  await t.expect(uf.update_reason.value).eql("reason_change");
+
+  // meeting selector
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
+  await t.pressKey("enter");
+
+  // validate form is laid out correctly
+  await t.expect(uf.personal_details.visible).eql(true)
+  .expect(uf.meeting_details.visible).eql(true)
+  .expect(uf.additional_info_div.visible).eql(true);
+
+  // personal details
+  await t
+    .typeText(uf.first_name, "first")
+    .typeText(uf.last_name, "last")
+    .typeText(uf.email_address, "test@test.com.zz")
+    .typeText(uf.contact_number, "`12345`")
+    // change the location info entirely
+    .typeText(uf.location_info, "`12345`")
+    // make sure highlighting is present
+    .expect(uf.location_info.hasClass("bmltwf-changed"))
+    .ok();
+
+  // email dropdown
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
+
+  // group member dropdown
+  await select_dropdown_by_value(uf.group_relationship, "Group Member");
+  await t.expect(uf.group_relationship.value).eql("Group Member");
+
+  await t.typeText(uf.additional_info, "my additional info");
+
+  await t
+    .click(uf.submit)
+    .expect(uf.success_page_header.innerText)
+    .match(/submission\ successful/);
+});
+
+test("Failure_Retype_Same_Extra_Location_And_Submit", async (t) => {
+
+  await t.navigateTo(userVariables.formpage);
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+
+  await t.expect(uf.update_reason.value).eql("reason_change");
+
+  // meeting selector
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
+  await t.pressKey("enter");
+
+  // validate form is laid out correctly
+  await t.expect(uf.personal_details.visible).eql(true)
+  .expect(uf.meeting_details.visible).eql(true)
+  .expect(uf.additional_info_div.visible).eql(true);
+
+  // personal details
+  await t
+    .typeText(uf.first_name, "first")
+    .typeText(uf.last_name, "last")
+    .typeText(uf.email_address, "test@test.com.zz")
+    .typeText(uf.contact_number, "`12345`")
+    // delete the location info entirely
+    .selectText(uf.location_info)
+    .pressKey('delete')
+    // change the location info back to what it was
+    .typeText(uf.location_info, "Entrance at Fair Street")
+
+  // email dropdown
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
+
+  // group member dropdown
+  await select_dropdown_by_value(uf.group_relationship, "Group Member");
+  await t.expect(uf.group_relationship.value).eql("Group Member");
+
+  await t.typeText(uf.additional_info, "my additional info");
+
+  await t
+    .click(uf.submit)
+    .expect(uf.error_para.innerText)
+    .match(/Nothing\ was\ changed/);
 });
 
 test("Success_Close_Meeting_And_Submit", async (t) => {

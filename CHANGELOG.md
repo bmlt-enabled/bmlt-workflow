@@ -1,8 +1,12 @@
+## 1.1.10 (Oct 28, 2023)
+- #182 Bugfix for missing options if plugin initialise was not called - this may cause some very strange errors on required fields (thanks NA admin team in Australia !)
+- #181 Bugfix for invalid handling of deleted fields in a meeting submission (thanks @brustar64 !)
+
 ## 1.1.9 (Sep 26, 2023)
 - Bugfix for javascript naming collision (thanks @Klodd64 !)
 
 ## 1.1.8 (Apr 19, 2023)
-- Update for italian translation (thanks @CaliforniaSteve!)
+- Update for italian translation (thanks @CaliforniaSteve !)
 - Tested against Wordpress 6.3
 
 ## 1.1.7 (Apr 19, 2023)

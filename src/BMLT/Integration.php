@@ -175,6 +175,11 @@ class Integration
             // $meeting['formatIds'] = explode(',', $meeting['format_shared_id_list']);
             unset($meeting['format_shared_id_list']);
         }
+        else
+        // if we dont even have a format list, then v3 requires at least a blank array here
+        {
+            $meeting['formatIds'] = [];
+        }
 
         $this->debug_log($meeting);
         // venue type can't be a 4 for BMLT 3.x #161
@@ -897,7 +902,6 @@ class Integration
         $this->debug_log($meeting['formatIds']);
 
         $this->debug_log("inside createMeetingv3 auth");
-
 
         if (!$this->is_v3_token_valid()) {
             $ret =  $this->authenticateRootServer();
