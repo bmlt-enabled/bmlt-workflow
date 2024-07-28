@@ -46,16 +46,18 @@ function initMap(origlat = null, origlng = null) {
     const mapOptions = {
       zoom: 16,
       center: { lat, lng },
+      mapId: 'DEMO_MAP_ID',
     };
 
     const map = new google.maps.Map(document.getElementById('bmltwf_quickedit_map'), mapOptions);
 
-    const marker = new google.maps.Marker({
+    const marker = new google.maps.marker.AdvancedMarkerElement({
       position: { lat, lng },
       map,
+      title: 'Meeting Location',
     });
     const infowindow = new google.maps.InfoWindow({
-      content: `<p>Marker Location:${marker.getPosition()}</p>`,
+      content: `<p>Marker Location: ${marker.position.lat}, ${marker.position.lng}</p>`,
     });
 
     google.maps.event.addListener(marker, 'click', () => {
@@ -84,7 +86,7 @@ jQuery(document).ready(function ($) {
   const weekdays = [__('Error', 'bmlt-workflow'), __('Sunday', 'bmlt-workflow'), __('Monday', 'bmlt-workflow'), __('Tuesday', 'bmlt-workflow'),
     __('Wednesday', 'bmlt-workflow'), __('Thursday', 'bmlt-workflow'), __('Friday', 'bmlt-workflow'), __('Saturday', 'bmlt-workflow')];
 
-  $.getScript(`https://maps.googleapis.com/maps/api/js?key=${bmltwf_gmaps_key}&callback=initMap&v=weekly&async=2`);
+  $.getScript(`https://maps.googleapis.com/maps/api/js?key=${bmltwf_gmaps_key}&loading=async&libraries=marker&callback=initMap&v=weekly&async=2`);
 
   if (!bmltwf_auto_geocoding_enabled) {
     $('#optional_auto_geocode_enabled').hide();

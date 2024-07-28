@@ -44,7 +44,7 @@ services:
   wordpress-php8-singlesite:
     build:
       context: .
-      dockerfile: Dockerfile-wp-php8.1
+      dockerfile: Dockerfile-wp-php8.3
     depends_on:
       - wordpress-db
     ports:
@@ -73,7 +73,7 @@ services:
   wordpress-php8-multisitesingle:
     build:
       context: .
-      dockerfile: Dockerfile-wpmultisite-php8.1
+      dockerfile: Dockerfile-wpmultisite-php8.3
     depends_on:
       - wordpress-db
     ports:
@@ -104,7 +104,7 @@ services:
   wordpress-php8-multinetwork:
     build:
       context: .
-      dockerfile: Dockerfile-wpmultisite-php8.1
+      dockerfile: Dockerfile-wpmultisite-php8.3
     depends_on:
       - wordpress-db
     command: /usr/local/bin/wp-multisite-install.sh
@@ -134,7 +134,7 @@ services:
   # wordpress-php8-singlesite-bmlt3x:
   #   build:
   #     context: .
-  #     dockerfile: Dockerfile-wp-php8.1
+  #     dockerfile: Dockerfile-wp-php8.3
   #   depends_on:
   #     - wordpress-db
   #   tmpfs: 

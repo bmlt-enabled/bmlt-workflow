@@ -1,3 +1,8 @@
+## 1.1.11 (Jul 28, 2024)
+- Return error message when workflow account does not have access to any service bodies
+- Bugfix for location handling for LOCATION tagged formats (thanks @brustar64 !)
+- Clean up some google maps javascript errors
+
 ## 1.1.10 (Oct 28, 2023)
 - #182 Bugfix for missing options if plugin initialise was not called - this may cause some very strange errors on required fields (thanks NA admin team in Australia !)
 - #181 Bugfix for invalid handling of deleted fields in a meeting submission (thanks @brustar64 !)

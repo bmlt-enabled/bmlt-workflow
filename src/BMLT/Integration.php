@@ -525,9 +525,15 @@ class Integration
         }
 
         $response = json_decode(\wp_remote_retrieve_body($response), 1);
+        $sblist = [];
+
         foreach ($response as $key => $sb) {
             $sblist[$sb['id']] = array('name' => $sb['name'], 'description' => $sb['description']);
         }
+        if(!$sblist) {
+            return new \WP_Error('bmltwf', "No service bodies available - does your workflow user have access to any service bodies within BMLT?");
+        }
+
         return $sblist;
     }
 
@@ -632,10 +638,12 @@ class Integration
 
     private function removeLocations($format)
     {
+        // Remove virtual  meeting, temporarily closed, hybrid formats as these are handled seperately
+        $removableLocations = ["VM","TC","HY"];
         $realformats = $this->getMeetingFormats();
         $newformats = array();
         foreach ($format as $key => $value) {
-            if ($realformats[$value]['type'] != 'LOCATION') {
+            if (!in_array($realformats[$value]['key_string'],$removableLocations)) {
                 $newformats[] = $value;
             }
         }
