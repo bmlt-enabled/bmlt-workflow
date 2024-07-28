@@ -1,3 +1,6 @@
+## 1.1.12 (Jul 28, 2024)
+- Haven't done this release thing in a while...
+
 ## 1.1.11 (Jul 28, 2024)
 - Return error message when workflow account does not have access to any service bodies
 - Bugfix for location handling for LOCATION tagged formats (thanks @brustar64 !)
