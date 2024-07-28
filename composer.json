@@ -5,10 +5,10 @@
         }
     },
     "require-dev": {
-        "cyruscollier/wordpress-develop": "dev-master",
         "phpunit/phpunit": "^9",
         "brain/monkey": "2.*",
-        "mockery/mockery": "dev-master"
+        "mockery/mockery": "1.7.x-dev",
+        "cyruscollier/wordpress-develop": "dev-master"
     },
     "name": "bmlt-enabled/bmlt-workflow",
     "description": "dev dependencies for bmlt-workflow",

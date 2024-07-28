@@ -2,7 +2,7 @@
   {
     "options": {
         "bmltwf_db_version": "0.4.0",
-        "bmltwf_bmlt_server_address": "http:\/\/192.168.86.33:3001\/main_server\/",
+        "bmltwf_bmlt_server_address": "http:\/\/192.168.86.30:3001\/main_server\/",
         "bmltwf_bmlt_username": "bmlt-workflow-bot",
         "bmltwf_bmlt_password": "a:2:{s:6:\"config\";a:6:{s:4:\"size\";s:4:\"MzI=\";s:4:\"salt\";s:24:\"\/5ObzNuYZ\/Y5aoYTsr0sZw==\";s:9:\"limit_ops\";s:4:\"OA==\";s:9:\"limit_mem\";s:12:\"NTM2ODcwOTEy\";s:3:\"alg\";s:4:\"Mg==\";s:5:\"nonce\";s:16:\"VukDVzDkAaex\/jfB\";}s:9:\"encrypted\";s:44:\"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw==\";}",
         "bmltwf_bmlt_test_status": "success",
