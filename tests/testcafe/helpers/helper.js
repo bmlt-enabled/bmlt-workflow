@@ -46,13 +46,14 @@ export const bmltwf_submission_nopriv = Role(userVariables.admin_logon_page_sing
 });
 
 export const bmltwf_admin_multisingle = Role(userVariables.admin_logon_page_multisingle, async (t) => {
-  console.log("trying to log on to "+userVariables.admin_logon_page_multisingle+" using username "+userVariables.admin_password_multisingle+" password "+userVariables.admin_password_multisingle);
+  // console.log("trying to log on to "+userVariables.admin_logon_page_multisingle+" using username "+userVariables.admin_password_multisingle+" password "+userVariables.admin_password_multisingle);
   await t.typeText(wordpress_login.user_login, userVariables.admin_logon_multisingle).typeText(wordpress_login.user_pass, userVariables.admin_password_multisingle).click(wordpress_login.wp_submit);
   // await t.expect(wordpress_login.user_login.value).eql(userVariables.admin_logon_multisingle);
 
 });
 
 export const bmltwf_admin_multinetwork = Role(userVariables.admin_logon_page_multinetwork, async (t) => {
+  // console.log("trying to log on to "+userVariables.admin_logon_page_multinetwork+" using username "+userVariables.admin_password_multinetwork+" password "+userVariables.admin_password_multinetwork);
   await t.typeText(wordpress_login.user_login, userVariables.admin_logon_multinetwork).typeText(wordpress_login.user_pass, userVariables.admin_password_multinetwork).click(wordpress_login.wp_submit);
 });
 

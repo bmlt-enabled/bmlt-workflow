@@ -400,7 +400,7 @@ class SubmissionsHandler
         switch ($submission_type) {
             case 'reason_new':
 
-                if ($this->bmlt_integration->isAutoGeocodingEnabled()) {
+                if ($this->bmlt_integration->isAutoGeocodingEnabled('auto')) {
                     // run our geolocator on the address
                     $latlng = $this->do_geolocate($change);
                     if (is_wp_error($latlng)) {
@@ -440,7 +440,7 @@ class SubmissionsHandler
                     }
                 }
 
-                if ($this->bmlt_integration->isAutoGeocodingEnabled()) {
+                if ($this->bmlt_integration->isAutoGeocodingEnabled('auto')) {
                     $this->debug_log("auto geocoding enabled, performing geolocate");
                     $latlng = $this->do_geolocate($bmlt_meeting);
                     if (is_wp_error($latlng)) {

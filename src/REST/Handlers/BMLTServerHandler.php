@@ -221,9 +221,9 @@ class BMLTServerHandler
 
         $this->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
 
-        $change['latitude'] = $location['latitude'];
-        $change['longitude'] = $location['longitude'];
-        $change['message'] = 'Geolocation successful';
-        return $change;
+        // $change['latitude'] = $location['latitude'];
+        // $change['longitude'] = $location['longitude'];
+        $location['message'] = 'Geolocation successful';
+        return $location;
     }
 }
