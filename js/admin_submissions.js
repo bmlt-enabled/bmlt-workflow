@@ -54,14 +54,24 @@ function initMap(origlat = null, origlng = null) {
     const marker = new google.maps.marker.AdvancedMarkerElement({
       position: { lat, lng },
       map,
+      gmpDraggable: true,
       title: 'Meeting Location',
     });
+
     const infowindow = new google.maps.InfoWindow({
-      content: `<p>Marker Location: ${marker.position.lat}, ${marker.position.lng}</p>`,
+      content: `Marker Location: ${marker.position.lat}, ${marker.position.lng}`,
     });
 
     google.maps.event.addListener(marker, 'click', () => {
       infowindow.open(map, marker);
+    });
+
+    marker.addListener('dragend', () => {
+      jQuery('#quickedit_latitude').val(marker.position.lat);
+      jQuery('#quickedit_longitude').val(marker.position.lng);
+      infowindow.close();
+      infowindow.setContent(`Marker Location: ${marker.position.lat}, ${marker.position.lng}`);
+      infowindow.open(marker.map, marker);
     });
   }
 }
@@ -754,6 +764,12 @@ jQuery(document).ready(function ($) {
         case 'other_reason':
           table += column(col_fso_other, __('Other Reason', 'bmlt-workflow'), c[key]);
           break;
+        case 'latitude':
+          table += column(col_fso_other, __('Latitude (calculated)', 'bmlt-workflow'), c[key]);
+          break;
+        case 'longitude':
+          table += column(col_fso_other, __('Longitude (calculated)', 'bmlt-workflow'), c[key]);
+          break;
         case 'contact_number':
           table += column(col_personal_details, __('Contact number (confidential)', 'bmlt-workflow'), c[key]);
           break;
@@ -929,6 +945,11 @@ jQuery(document).ready(function ($) {
         }
       }
     });
+
+    if ($('#quickedit_latitude').val()) {
+      quickedit_changes_requested.latitude = $('#quickedit_latitude').val();
+      quickedit_changes_requested.longitude = $('#quickedit_longitude').val();
+    }
 
     parameters.changes_requested = quickedit_changes_requested;
 

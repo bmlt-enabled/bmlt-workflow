@@ -213,7 +213,9 @@ class SubmissionsHandler
             "phone_meeting_number",
             "virtual_meeting_link",
             "venue_type",
-            "published"
+            "published",
+            "latitude",
+            "longitude"
         );
 
         foreach ($quickedit_change as $key => $value) {
@@ -293,8 +295,8 @@ class SubmissionsHandler
         $this->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
 
         $latlng = array();
-        $latlng['latitude'] = $location['latitude'];
-        $latlng['longitude'] = $location['longitude'];
+        $latlng['latitude'] = $location['results'][0]['geometry']['location']['lat'];
+        $latlng['longitude'] = $location['results'][0]['geometry']['location']['lng'];
         return $latlng;
     }
 
@@ -379,7 +381,9 @@ class SubmissionsHandler
             "phone_meeting_number",
             "virtual_meeting_link",
             "venue_type",
-            "published"
+            "published",
+            "latitude",
+            "longitude"
         );
 
         foreach ($change as $key => $value) {
@@ -399,21 +403,22 @@ class SubmissionsHandler
         $this->debug_log("change type = " . $submission_type);
         switch ($submission_type) {
             case 'reason_new':
-
-                if ($this->bmlt_integration->isAutoGeocodingEnabled('auto')) {
-                    // run our geolocator on the address
-                    $latlng = $this->do_geolocate($change);
-                    if (is_wp_error($latlng)) {
-                        return $latlng;
+                if ((!array_key_exists('latitude',$change))&&(!array_key_exists('longitude',$change)))
+                {
+                    if ($this->bmlt_integration->isAutoGeocodingEnabled('auto')) {
+                        // run our geolocator on the address
+                        $latlng = $this->do_geolocate($change);
+                        if (is_wp_error($latlng)) {
+                            return $latlng;
+                        }
+                        $change['latitude'] = $latlng['latitude'];
+                        $change['longitude'] = $latlng['longitude'];
+                    } else {
+                        $latlng = $this->bmlt_integration->getDefaultLatLong();
+                        $change['latitude'] = $latlng['latitude'];
+                        $change['longitude'] = $latlng['longitude'];
                     }
-                    $change['latitude'] = $latlng['latitude'];
-                    $change['longitude'] = $latlng['longitude'];
-                } else {
-                    $latlng = $this->bmlt_integration->getDefaultLatLong();
-                    $change['latitude'] = $latlng['latitude'];
-                    $change['longitude'] = $latlng['longitude'];
                 }
-
                 $change['published'] = 1;
 
                 $response = $this->bmlt_integration->createMeeting($change);
@@ -440,50 +445,52 @@ class SubmissionsHandler
                     }
                 }
 
-                if ($this->bmlt_integration->isAutoGeocodingEnabled('auto')) {
-                    $this->debug_log("auto geocoding enabled, performing geolocate");
-                    $latlng = $this->do_geolocate($bmlt_meeting);
-                    if (is_wp_error($latlng)) {
-                        return $latlng;
-                    }
+                if ((!array_key_exists('latitude',$change))&&(!array_key_exists('longitude',$change)))
+                {
+                    if ($this->bmlt_integration->isAutoGeocodingEnabled('auto')) {
+                        $this->debug_log("auto geocoding enabled, performing geolocate");
+                        $latlng = $this->do_geolocate($bmlt_meeting);
+                        if (is_wp_error($latlng)) {
+                            return $latlng;
+                        }
 
-                    // add the new geo to the original change
-                    $change['latitude'] = $latlng['latitude'];
-                    $change['longitude'] = $latlng['longitude'];
-                } else {
-
-                    $latexists = false;
-                    $longexists = false;
-
-                    if ((array_key_exists('latitude',$bmlt_meeting)) && $bmlt_meeting['latitude'] != 0)
-                    {
-                        $this->debug_log("latitude found");
-                        $latexists = true;
-                    }
-                    else
-                    {
-                        $this->debug_log("latitude not found");
-                    }
-                    if ((array_key_exists('longitude',$bmlt_meeting)) && $bmlt_meeting['longitude'] != 0)
-                    {
-                        $this->debug_log("longitude found");
-                        $longexists = true;
-                    }
-                    else
-                    {
-                        $this->debug_log("longitude not found");
-                    }
-
-                    // update this only if we have no meeting lat/long already set
-                    if (!$latexists && !$longexists) {
-                        $this->debug_log("blank lat/long - updating to defaults");
-    
-                        $latlng = $this->bmlt_integration->getDefaultLatLong();
+                        // add the new geo to the original change
                         $change['latitude'] = $latlng['latitude'];
                         $change['longitude'] = $latlng['longitude'];
+                    } else {
+
+                        $latexists = false;
+                        $longexists = false;
+
+                        if ((array_key_exists('latitude',$bmlt_meeting)) && $bmlt_meeting['latitude'] != 0)
+                        {
+                            $this->debug_log("latitude found");
+                            $latexists = true;
+                        }
+                        else
+                        {
+                            $this->debug_log("latitude not found");
+                        }
+                        if ((array_key_exists('longitude',$bmlt_meeting)) && $bmlt_meeting['longitude'] != 0)
+                        {
+                            $this->debug_log("longitude found");
+                            $longexists = true;
+                        }
+                        else
+                        {
+                            $this->debug_log("longitude not found");
+                        }
+
+                        // update this only if we have no meeting lat/long already set
+                        if (!$latexists && !$longexists) {
+                            $this->debug_log("blank lat/long - updating to defaults");
+        
+                            $latlng = $this->bmlt_integration->getDefaultLatLong();
+                            $change['latitude'] = $latlng['latitude'];
+                            $change['longitude'] = $latlng['longitude'];
+                        }
                     }
                 }
-
                 $bmlt_venue_type = $bmlt_meeting['venue_type'];
                 // $this->debug_log("bmlt_meeting[venue_type]=");
                 // $this->debug_log($bmlt_venue_type);
