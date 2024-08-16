@@ -22,13 +22,16 @@
 /* global bmltwf_do_states_and_provinces, bmltwf_counties_and_sub_provinces, bmltwf_remove_virtual_meeting_details_on_venue_change, bmltwf_bmlt_server_address */
 /* global bmltwf_default_closed_meetings, bmltwf_bmlt_formats, bmltwf_datatables_delete_enabled, bmltwf_admin_submissions_rest_url, bmltwf_admin_bmltwf_service_bodies */
 /* global bmltwf_optional_location_province_displayname, bmltwf_optional_location_sub_province_displayname, bmltwf_optional_location_nation_displayname */
-/* global bmltwf_bmltserver_geolocate_rest_url, bmltwf_optional_postcode_displayname, bmltwf_zip_auto_geocoding, bmltwf_county_auto_geocoding */
+/* global bmltwf_bmltserver_geolocate_rest_url, bmltwf_optional_postcode, bmltwf_zip_auto_geocoding, bmltwf_county_auto_geocoding */
 
 const { __ } = wp.i18n;
 
 function initMap(origlat = null, origlng = null) {
   let lat;
   let lng;
+
+  // Show datatable once maps is loaded
+  jQuery('.dt-container').show();
 
   if (origlat && origlng) {
     if (typeof origlat === 'string') {
@@ -161,6 +164,22 @@ jQuery(document).ready(function ($) {
       break;
   }
 
+  switch (bmltwf_optional_postcode) {
+    case 'hidden':
+    case '':
+      $('#optional_postcode').hide();
+      break;
+    case 'display':
+      $('#optional_postcode').show();
+      break;
+    case 'displayrequired':
+      $('#optional_postcode').show();
+      $('#location_province_label').append('<span class="bmltwf-required-field"> *</span>');
+      break;
+    default:
+      break;
+  }
+
   // fill in counties and sub provinces
   if (bmltwf_counties_and_sub_provinces === false) {
     $('#optional_location_sub_province').append('<input class="quickedit-input" type="text" name="quickedit_location_sub_province" size="50" id="quickedit_location_sub_province">');
@@ -280,6 +299,7 @@ jQuery(document).ready(function ($) {
     }
 
     if (bmltwf_county_auto_geocoding) {
+      $('#optional_location_sub_province').show();
       $('#quickedit_location_sub_province').prop('disabled', true);
       $('#quickedit_location_sub_province_label').append(autocompleted);
     }
@@ -715,6 +735,16 @@ jQuery(document).ready(function ($) {
           }
           break;
         }
+        case 'virtualna_published': {
+          const published = c[key] === 1 ? 'Yes' : 'No';
+          if ('original_virtualna_published' in c) {
+            const opublished = c.original_published === 1 || c.original_published === true ? 'Yes' : 'No';
+            table += column(col_meeting_details, __('Virtual.na.org Published', 'bmlt-workflow'), `${opublished} → ${published}`);
+          } else {
+            table += column(col_meeting_details, __('Virtual.na.org Published', 'bmlt-workflow'), `${published}`);
+          }
+          break;
+        }
         case 'start_time':
           table += column(col_meeting_details, __('Start Time', 'bmlt-workflow'), c[key]);
           break;
@@ -745,7 +775,7 @@ jQuery(document).ready(function ($) {
           table += column(col_meeting_details, bmltwf_optional_location_nation_displayname, c[key]);
           break;
         case 'location_postal_code_1':
-          table += column(col_meeting_details, bmltwf_optional_postcode_displayname, c[key]);
+          table += column(col_meeting_details, bmltwf_optional_postcode, c[key]);
           break;
         case 'group_relationship':
           table += column(col_personal_details, __('Relationship to Group', 'bmlt-workflow'), c[key]);
@@ -862,7 +892,16 @@ jQuery(document).ready(function ($) {
   }
 
   function geolocate_handler() {
-    const locfields = ['location_street', 'location_municipality', 'location_province', 'location_postal_code_1', 'location_sub_province', 'location_nation'];
+    const locfields = ['location_street', 'location_municipality', 'location_province', 'location_nation'];
+
+    if (!bmltwf_zip_auto_geocoding) {
+      locfields.push('location_postal_code_1');
+    }
+
+    if (!bmltwf_county_auto_geocoding) {
+      locfields.push('location_sub_province');
+    }
+
     const locdata = [];
 
     locfields.forEach((item) => {

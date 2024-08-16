@@ -214,6 +214,7 @@ class SubmissionsHandler
             "virtual_meeting_link",
             "venue_type",
             "published",
+            "virtualna_published",
             "latitude",
             "longitude"
         );
@@ -382,6 +383,7 @@ class SubmissionsHandler
             "virtual_meeting_link",
             "venue_type",
             "published",
+            "virtualna_published",
             "latitude",
             "longitude"
         );
@@ -513,6 +515,27 @@ class SubmissionsHandler
                     $change["virtual_meeting_link"]="";
                 }
                 
+                if(array_key_exists('worldid_mixed',$bmlt_meeting) && array_key_exists('virtualna_published', $change))
+                {
+                    $this->debug_log("virtualna_published = ".$change['virtualna_published']);
+
+                    $orig_worldid = $bmlt_meeting['worldid_mixed'];
+                    $this->debug_log("original worldid = ".$orig_worldid);
+
+                    if($change["virtualna_published"] == 1)
+                    {
+                        $change["worldid_mixed"] = substr_replace($orig_worldid, 'U', 0, 1);
+                        unset($change["virtualna_published"]);
+                    }
+                    else
+                    {
+                        $change["worldid_mixed"] = substr_replace($orig_worldid, 'G', 0, 1);
+                        unset($change["virtualna_published"]);
+                    }
+                    $this->debug_log("new worldid = ".$change["worldid_mixed"]);
+
+                }
+
                 $response = $this->bmlt_integration->updateMeeting($change);
 
                 if (\is_wp_error(($response))) {
@@ -799,7 +822,8 @@ class SubmissionsHandler
             "virtual_meeting_additional_info" => array("text", false),
             "phone_meeting_number" => array("text", false),
             "virtual_meeting_link" => array("url", false),
-            "published" => array("boolnum", $reason_change_bool)
+            "published" => array("boolnum", $reason_change_bool),
+            "virtualna_published" => array("boolnum", $reason_change_bool && $virtual_meeting_bool)
         );
 
         $sanitised_fields = array();
@@ -1008,7 +1032,8 @@ class SubmissionsHandler
                     "phone_meeting_number",
                     "virtual_meeting_link",
                     "venue_type",
-                    "published"
+                    "published",
+                    "virtualna_published",
 
                 );
 

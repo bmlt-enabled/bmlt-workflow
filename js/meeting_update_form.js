@@ -389,6 +389,7 @@ jQuery(document).ready(function ($) {
         'meeting_name',
         'start_time',
         'published',
+        'virtualna_published',
         'location_street',
         'location_text',
         'location_info',

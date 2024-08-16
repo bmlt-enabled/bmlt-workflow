@@ -1139,6 +1139,9 @@ class Integration
         if (($geo['status'] === "ZERO_RESULTS") || empty($geo['results'][0]['geometry']['location']['lat']) || empty($geo['results'][0]['geometry']['location']['lng'])) {
             return new \WP_Error('bmltwf', __('Could not geolocate meeting address. Please try amending the address with additional/correct details.', 'bmlt-workflow'));
         } else {
+            // $location = array();
+            // $location['latitude'] = $geo['results'][0]['geometry']['location']['lat'];
+            // $location['longitude'] = $geo['results'][0]['geometry']['location']['lng'];
             return $geo;
         }
     }

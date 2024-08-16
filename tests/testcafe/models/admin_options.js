@@ -53,6 +53,7 @@ class Admin_Options {
         this.bmltwf_trusted_servants_can_delete_submissions = Selector("#bmltwf_trusted_servants_can_delete_submissions");
         this.bmltwf_google_maps_key_select = Selector("#bmltwf_google_maps_key_select");
         this.bmltwf_google_maps_key = Selector("#bmltwf_google_maps_key");
+        this.bmltwf_auto_geocoding_settings_text = Selector("#bmltwf_auto_geocoding_settings_text");
         this.submit = Selector('#submit');
         this.settings_updated = Selector("#setting-error-settings_updated");
     }

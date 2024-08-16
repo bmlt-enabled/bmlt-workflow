@@ -305,7 +305,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_remove_virtual_meeting_details_on_venue_change = "' . get_option('bmltwf_remove_virtual_meeting_details_on_venue_change') . '";';
                     $script .= 'var bmltwf_optional_location_sub_province_displayname = "' . sanitize_text_field(get_option('bmltwf_optional_location_sub_province_displayname')) . '";';
                     $script .= 'var bmltwf_optional_location_province_displayname = "' . sanitize_text_field(get_option('bmltwf_optional_location_province_displayname')) . '";';
-                    $script .= 'var bmltwf_optional_postcode_displayname = "' . sanitize_text_field(get_option('bmltwf_optional_postcode_displayname')) . '";';
+                    $script .= 'var bmltwf_optional_location_postal_code_1_displayname = "' . sanitize_text_field(get_option('bmltwf_optional_postcode_displayname')) . '";';
                     $script .= 'var bmltwf_optional_location_nation_displayname = "' . sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname')) . '";';
 
                     // add counties/states/provinces if they are populated
@@ -1010,7 +1010,7 @@ if (!class_exists('bmltwf_plugin')) {
                 $val = "false";
                 $val1 = __('will not', 'bmlt-workflow');
             }
-            echo '<div class="bmltwf_info_text">';
+            echo '<div class="bmltwf_info_text" id="bmltwf_auto_geocoding_settings_text">';
             echo '<br>';
             echo __('This plugin honours the BMLT Root Server Auto Geocoding settings. The $auto_geocoding_enabled setting is set to ', 'bmlt-workflow');
             echo '<b>' . $val . '</b>';

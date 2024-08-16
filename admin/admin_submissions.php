@@ -189,9 +189,10 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             <div id="optional_location_province">
                 <label id="quickedit_location_province_label" for="quickedit_location_province"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_province_displayname')) ?></label>
             </div>
-            <label id="quickedit_location_postal_code_1_label" for="quickedit_location_postal_code_1"><?php echo sanitize_text_field(get_option('bmltwf_optional_postcode_displayname')) ?></label>
-            <input class="quickedit-input" type="text" name="quickedit_location_postal_code_1" id="quickedit_location_postal_code_1" required>
-
+            <div id="optional_postcode">
+                <label id="quickedit_location_postal_code_1_label" for="quickedit_location_postal_code_1"><?php echo sanitize_text_field(get_option('bmltwf_optional_postcode_displayname')) ?></label>
+                <input class="quickedit-input" type="text" name="quickedit_location_postal_code_1" id="quickedit_location_postal_code_1" required>
+            </div>
             <div id="optional_location_nation">
                 <label id="location_nation_label" for="quickedit_location_nation"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname')) ?></label>
                 <input class="quickedit-input" type="text" name="quickedit_location_nation" size="50" id="quickedit_location_nation">
@@ -217,7 +218,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <h2><?php echo __( "Meeting Submissions", 'bmlt-workflow' ); ?></h2>
     <hr class="bmltwf-error-message">
 
-    <div class="dt-container">
+    <div class="dt-container" style="display: none;">
         <table id="dt-submission" class="display" style="width:90%">
             <thead>
                 <tr>
