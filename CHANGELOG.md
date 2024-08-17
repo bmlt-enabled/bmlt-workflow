@@ -1,3 +1,9 @@
+## 1.1.13 (Aug 13,2024)
+- Feature: Map marker in quickedit is now movable, mimicking the behaviour of BMLT UI
+- Support for the BMLT zip and county auto geocoding setting, which requires BMLT 3.1.1 or above (thanks @AdamH !)
+- #184 - Feature: Support for publish/unpublish meetings on the virtual.na.org site, by adjusting the worldid from U to G (thanks @brustar64 !)
+- Added deprecation of BMLT 2.x note to submissions page
+
 ## 1.1.12 (Jul 28, 2024)
 - Haven't done this release thing in a while...
 

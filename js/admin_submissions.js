@@ -17,18 +17,21 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 /* global wp, jQuery, google */
-/* global bmltwf_clear_notices, bmltwf_notice_success, bmltwf_notice_error, bmltwf_fetchJsonp */
+/* global bmltwf_clear_notices, bmltwf_notice_success, bmltwf_notice_error, bmltwf_fetchJsonp, bmltwf_is_v3_server */
 /* global bmltwf_gmaps_key, bmltwf_auto_geocoding_enabled, bmltwf_optional_location_nation, bmltwf_optional_location_sub_province, bmltwf_optional_location_province */
 /* global bmltwf_do_states_and_provinces, bmltwf_counties_and_sub_provinces, bmltwf_remove_virtual_meeting_details_on_venue_change, bmltwf_bmlt_server_address */
 /* global bmltwf_default_closed_meetings, bmltwf_bmlt_formats, bmltwf_datatables_delete_enabled, bmltwf_admin_submissions_rest_url, bmltwf_admin_bmltwf_service_bodies */
 /* global bmltwf_optional_location_province_displayname, bmltwf_optional_location_sub_province_displayname, bmltwf_optional_location_nation_displayname */
-/* global bmltwf_bmltserver_geolocate_rest_url, bmltwf_optional_postcode_displayname */
+/* global bmltwf_bmltserver_geolocate_rest_url, bmltwf_optional_postcode, bmltwf_zip_auto_geocoding, bmltwf_county_auto_geocoding */
 
 const { __ } = wp.i18n;
 
 function initMap(origlat = null, origlng = null) {
   let lat;
   let lng;
+
+  // Show datatable once maps is loaded
+  jQuery('.dt-container').show();
 
   if (origlat && origlng) {
     if (typeof origlat === 'string') {
@@ -54,14 +57,24 @@ function initMap(origlat = null, origlng = null) {
     const marker = new google.maps.marker.AdvancedMarkerElement({
       position: { lat, lng },
       map,
+      gmpDraggable: true,
       title: 'Meeting Location',
     });
+
     const infowindow = new google.maps.InfoWindow({
-      content: `<p>Marker Location: ${marker.position.lat}, ${marker.position.lng}</p>`,
+      content: `Marker Location: ${marker.position.lat}, ${marker.position.lng}`,
     });
 
     google.maps.event.addListener(marker, 'click', () => {
       infowindow.open(map, marker);
+    });
+
+    marker.addListener('dragend', () => {
+      jQuery('#quickedit_latitude').val(marker.position.lat);
+      jQuery('#quickedit_longitude').val(marker.position.lng);
+      infowindow.close();
+      infowindow.setContent(`Marker Location: ${marker.position.lat}, ${marker.position.lng}`);
+      infowindow.open(marker.map, marker);
     });
   }
 }
@@ -69,7 +82,7 @@ function initMap(origlat = null, origlng = null) {
 function mysql2localdate(data) {
   const t = data.split(/[- :]/);
   const d = new Date(Date.UTC(t[0], t[1] - 1, t[2], t[3], t[4], t[5]));
-  const ds = `${d.getFullYear()}-${(`0${d.getMonth() + 1}`).slice(-2)}-${(`0${d.getDate()}`).slice(-2)} ${(`0${d.getHours()}`).slice(-2)}:${(`0${d.getMinutes()}`).slice(-2)}`;
+  const ds = `${d.getFullYear()}-${`0${d.getMonth() + 1}`.slice(-2)}-${`0${d.getDate()}`.slice(-2)} ${`0${d.getHours()}`.slice(-2)}:${`0${d.getMinutes()}`.slice(-2)}`;
   return ds;
 }
 
@@ -83,10 +96,22 @@ const venue_types = {
 jQuery(document).ready(function ($) {
   let bmltwf_changedata = {};
 
-  const weekdays = [__('Error', 'bmlt-workflow'), __('Sunday', 'bmlt-workflow'), __('Monday', 'bmlt-workflow'), __('Tuesday', 'bmlt-workflow'),
-    __('Wednesday', 'bmlt-workflow'), __('Thursday', 'bmlt-workflow'), __('Friday', 'bmlt-workflow'), __('Saturday', 'bmlt-workflow')];
+  const weekdays = [
+    __('Error', 'bmlt-workflow'),
+    __('Sunday', 'bmlt-workflow'),
+    __('Monday', 'bmlt-workflow'),
+    __('Tuesday', 'bmlt-workflow'),
+    __('Wednesday', 'bmlt-workflow'),
+    __('Thursday', 'bmlt-workflow'),
+    __('Friday', 'bmlt-workflow'),
+    __('Saturday', 'bmlt-workflow'),
+  ];
 
   $.getScript(`https://maps.googleapis.com/maps/api/js?key=${bmltwf_gmaps_key}&loading=async&libraries=marker&callback=initMap&v=weekly&async=2`);
+
+  if (!bmltwf_is_v3_server) {
+    bmltwf_notice_error(__('Support for BMLT Server version 2.x will end soon. Please upgrade your BMLT Server version to 3.x or above.'), 'bmltwf-error-message');
+  }
 
   if (!bmltwf_auto_geocoding_enabled) {
     $('#optional_auto_geocode_enabled').hide();
@@ -137,6 +162,22 @@ jQuery(document).ready(function ($) {
       break;
     case 'displayrequired':
       $('#optional_location_province').show();
+      $('#location_province_label').append('<span class="bmltwf-required-field"> *</span>');
+      break;
+    default:
+      break;
+  }
+
+  switch (bmltwf_optional_postcode) {
+    case 'hidden':
+    case '':
+      $('#optional_postcode').hide();
+      break;
+    case 'display':
+      $('#optional_postcode').show();
+      break;
+    case 'displayrequired':
+      $('#optional_postcode').show();
       $('#location_province_label').append('<span class="bmltwf-required-field"> *</span>');
       break;
     default:
@@ -252,6 +293,20 @@ jQuery(document).ready(function ($) {
 
     // remove any content from the input fields
     $('.quickedit-input').val('');
+
+    // zip and county are disabled if the option is set
+
+    const autocompleted = ` (${__('autocompleted')})`;
+    if (bmltwf_zip_auto_geocoding) {
+      $('#quickedit_location_postal_code_1').prop('disabled', true);
+      $('#quickedit_location_postal_code_1_label').append(autocompleted);
+    }
+
+    if (bmltwf_county_auto_geocoding) {
+      $('#optional_location_sub_province').show();
+      $('#quickedit_location_sub_province').prop('disabled', true);
+      $('#quickedit_location_sub_province_label').append(autocompleted);
+    }
 
     // hide map and let it be shown later if required
     $('#bmltwf_quickedit_map').hide();
@@ -532,7 +587,10 @@ jQuery(document).ready(function ($) {
   });
 
   $('#dt-submission_wrapper .dt-buttons').append(
-    `${__('Filter', 'bmlt-workflow')}: <select id='dt-submission-filters'><option value='all'>${__('All', 'bmlt-workflow')}</option><option value='pending'>${__('Pending', 'bmlt-workflow')}</option><option value='approved'>${__('Approved', 'bmlt-workflow')}</option><option value='rejected'>${__('Rejected', 'bmlt-workflow')}</option></select>`,
+    `${__('Filter', 'bmlt-workflow')}: <select id='dt-submission-filters'><option value='all'>${__('All', 'bmlt-workflow')}</option><option value='pending'>${__(
+      'Pending',
+      'bmlt-workflow',
+    )}</option><option value='approved'>${__('Approved', 'bmlt-workflow')}</option><option value='rejected'>${__('Rejected', 'bmlt-workflow')}</option></select>`,
   );
   $('#dt-submission-filters').change(function () {
     $('#dt-submission').DataTable().draw();
@@ -653,8 +711,7 @@ jQuery(document).ready(function ($) {
 
     Object.keys(c).forEach((key) => {
       switch (key) {
-        case 'meeting_name':
-        {
+        case 'meeting_name': {
           let mname = __('Meeting Name (new)', 'bmlt-workflow');
           if (d.submission_type === 'reason_close') {
             mname = __('Meeting Name', 'bmlt-workflow');
@@ -662,8 +719,7 @@ jQuery(document).ready(function ($) {
           table += column(col_meeting_details, mname, c[key]);
           break;
         }
-        case 'venue_type':
-        {
+        case 'venue_type': {
           const vtype = venue_types[c[key]];
           if ('original_venue_type' in c) {
             const ovtype = venue_types[c.original_venue_type];
@@ -673,22 +729,30 @@ jQuery(document).ready(function ($) {
           }
           break;
         }
-        case 'published':
-        {
-          const published = ((c[key] === 1) ? 'Yes' : 'No');
+        case 'published': {
+          const published = c[key] === 1 ? 'Yes' : 'No';
           if ('original_published' in c) {
-            const opublished = ((c.original_published === 1 || c.original_published === true) ? 'Yes' : 'No');
+            const opublished = c.original_published === 1 || c.original_published === true ? 'Yes' : 'No';
             table += column(col_meeting_details, __('Published', 'bmlt-workflow'), `${opublished} → ${published}`);
           } else {
             table += column(col_meeting_details, __('Published', 'bmlt-workflow'), `${published}`);
           }
           break;
         }
+        case 'virtualna_published': {
+          const published = c[key] === '1' ? 'Yes' : 'No';
+          if ('original_virtualna_published' in c) {
+            const opublished = c.original_published === 1 || c.original_published === true ? 'Yes' : 'No';
+            table += column(col_meeting_details, __('Virtual.na.org Published', 'bmlt-workflow'), `${opublished} → ${published}`);
+          } else {
+            table += column(col_meeting_details, __('Virtual.na.org Published', 'bmlt-workflow'), `${published}`);
+          }
+          break;
+        }
         case 'start_time':
           table += column(col_meeting_details, __('Start Time', 'bmlt-workflow'), c[key]);
           break;
-        case 'duration_time':
-        {
+        case 'duration_time': {
           const durationarr = d.changes_requested.duration_time.split(':');
           table += column(col_meeting_details, __('Duration', 'bmlt-workflow'), `${durationarr[0]}h${durationarr[1]}m`);
           break;
@@ -715,7 +779,7 @@ jQuery(document).ready(function ($) {
           table += column(col_meeting_details, bmltwf_optional_location_nation_displayname, c[key]);
           break;
         case 'location_postal_code_1':
-          table += column(col_meeting_details, bmltwf_optional_postcode_displayname, c[key]);
+          table += column(col_meeting_details, bmltwf_optional_postcode, c[key]);
           break;
         case 'group_relationship':
           table += column(col_personal_details, __('Relationship to Group', 'bmlt-workflow'), c[key]);
@@ -734,6 +798,12 @@ jQuery(document).ready(function ($) {
         case 'other_reason':
           table += column(col_fso_other, __('Other Reason', 'bmlt-workflow'), c[key]);
           break;
+        case 'latitude':
+          table += column(col_fso_other, __('Latitude (calculated)', 'bmlt-workflow'), c[key]);
+          break;
+        case 'longitude':
+          table += column(col_fso_other, __('Longitude (calculated)', 'bmlt-workflow'), c[key]);
+          break;
         case 'contact_number':
           table += column(col_personal_details, __('Contact number (confidential)', 'bmlt-workflow'), c[key]);
           break;
@@ -750,8 +820,7 @@ jQuery(document).ready(function ($) {
           table += column(col_virtual_meeting_details, __('Virtual Meeting Link', 'bmlt-workflow'), c[key]);
           break;
 
-        case 'format_shared_id_list':
-        {
+        case 'format_shared_id_list': {
           const friendlyname = __('Meeting Formats', 'bmlt-workflow');
           // convert the meeting formats to human readable
           let friendlydata = '';
@@ -827,7 +896,16 @@ jQuery(document).ready(function ($) {
   }
 
   function geolocate_handler() {
-    const locfields = ['location_street', 'location_municipality', 'location_province', 'location_postal_code_1', 'location_sub_province', 'location_nation'];
+    const locfields = ['location_street', 'location_municipality', 'location_province', 'location_nation'];
+
+    if (!bmltwf_zip_auto_geocoding) {
+      locfields.push('location_postal_code_1');
+    }
+
+    if (!bmltwf_county_auto_geocoding) {
+      locfields.push('location_sub_province');
+    }
+
     const locdata = [];
 
     locfields.forEach((item) => {
@@ -852,8 +930,30 @@ jQuery(document).ready(function ($) {
       },
     })
       .done(function (response) {
-        const lat = response.latitude;
-        const long = response.longitude;
+        // const lat = response.latitude;
+        // const long = response.longitude;
+        const lat = response.results[0].geometry.location.lat;
+        const long = response.results[0].geometry.location.lng;
+
+        if (bmltwf_zip_auto_geocoding) {
+          // eslint-disable-next-line consistent-return
+          $.each(response.results[0].address_components, function (i, v) {
+            if (v.types.includes('postal_code')) {
+              $('#quickedit_location_postal_code_1').val(v.short_name);
+              return false;
+            }
+          });
+        }
+        if (bmltwf_county_auto_geocoding) {
+          // eslint-disable-next-line consistent-return
+          $.each(response.results[0].address_components, function (i, v) {
+            if (v.types.includes('administrative_area_level_2')) {
+              $('#quickedit_location_sub_province').val(v.short_name);
+              return false;
+            }
+          });
+        }
+
         $('#quickedit_latitude').val(lat);
         $('#quickedit_longitude').val(long);
         update_gmaps(lat, long);
@@ -878,16 +978,21 @@ jQuery(document).ready(function ($) {
         if (short_id === 'format_shared_id_list') {
           quickedit_changes_requested[short_id] = $(this).val().join(',');
         } else if (short_id === 'duration_hours' || short_id === 'duration_minutes') {
-        // reconstruct our duration from the select list
+          // reconstruct our duration from the select list
           // add duration entirely if either minutes or hours have changed
           quickedit_changes_requested.duration_time = `${$('#quickedit_duration_hours').val()}:${$('#quickedit_duration_minutes').val()}:00`;
-        } else if ((short_id === 'virtual_meeting_additional_info' || short_id === 'phone_meeting_number' || short_id === 'virtual_meeting_link') && ($(this).val() === '(deleted)')) {
+        } else if ((short_id === 'virtual_meeting_additional_info' || short_id === 'phone_meeting_number' || short_id === 'virtual_meeting_link') && $(this).val() === '(deleted)') {
           delete quickedit_changes_requested[short_id];
         } else {
           quickedit_changes_requested[short_id] = $(this).val();
         }
       }
     });
+
+    if ($('#quickedit_latitude').val()) {
+      quickedit_changes_requested.latitude = $('#quickedit_latitude').val();
+      quickedit_changes_requested.longitude = $('#quickedit_longitude').val();
+    }
 
     parameters.changes_requested = quickedit_changes_requested;
 
@@ -969,9 +1074,7 @@ jQuery(document).ready(function ($) {
   function generic_approve_handler(id, action, url, slug) {
     const parameters = {};
     if ($(`#${slug}_dialog_textarea`).length) {
-      const action_message = $(`#${slug}_dialog_textarea`)
-        .val()
-        .trim();
+      const action_message = $(`#${slug}_dialog_textarea`).val().trim();
       if (action_message !== '') {
         parameters.action_message = action_message;
       }

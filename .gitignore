@@ -17,6 +17,5 @@ hello.php
 /docker/bmlt.env
 /docker/bmlt3x.env
 /docker/bmlt2x.env
-/tests/testcafe/**
 /docker/logs/**
 /tests/testcafe/uploads/**

@@ -555,8 +555,8 @@ Line: $errorLine
         $this->debug_log(($response));
 
         $this->assertNotInstanceOf(\WP_Error::class, $response);
-        $this->assertIsNumeric($response['latitude']);
-        $this->assertIsNumeric($response['longitude']);
+        $this->assertIsNumeric($response['results'][0]['geometry']['location']['lat']);
+        $this->assertIsNumeric($response['results'][0]['geometry']['location']['lng']);
     }
 
     /**
@@ -659,8 +659,8 @@ Line: $errorLine
         $this->debug_log(($response));
 
         $this->assertNotInstanceOf(\WP_Error::class, $response);
-        $this->assertIsNumeric($response['latitude']);
-        $this->assertIsNumeric($response['longitude']);
+        $this->assertIsNumeric($response['results'][0]['geometry']['location']['lat']);
+        $this->assertIsNumeric($response['results'][0]['geometry']['location']['lng']);
     }
 
     /**

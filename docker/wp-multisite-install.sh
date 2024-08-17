@@ -33,8 +33,8 @@ EOF
 
 sed -i -e "s/RewriteBase \/placeholder\//RewriteBase \/$WORDPRESS_HOST\//" $sitelocalpath/.htaccess
 
-wp core multisite-install --path=$sitelocalpath --base=/$WORDPRESS_HOST/ --url=$siteurl --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com
 wp db create
+wp core multisite-install --path=$sitelocalpath --base=/$WORDPRESS_HOST/ --url=$siteurl --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com
 
 mkdir $sitelocalpath/wp-content/plugins/bmlt-workflow
 sync-plugin.sh $sitelocalpath

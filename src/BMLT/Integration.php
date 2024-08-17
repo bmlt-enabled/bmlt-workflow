@@ -44,9 +44,8 @@ class Integration
         }
 
         if (empty($root_server_version)) {
-            $version = \get_option('bmltwf_bmlt_server_version',false);
-            if(!$version)
-            {
+            $version = \get_option('bmltwf_bmlt_server_version', false);
+            if (!$version) {
                 \update_option("bmltwf_bmlt_server_version", $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address')));
             }
             $this->bmlt_root_server_version = $version;
@@ -79,9 +78,8 @@ class Integration
         $new_version = $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address'));
         $this->bmlt_root_server_version = $new_version;
         \update_option("bmltwf_bmlt_server_version", $new_version);
-
     }
-    
+
     private function bmltwf_integration_error_with_data($message, $code, array $data)
     {
         $data['status'] = $code;
@@ -108,19 +106,19 @@ class Integration
         // special cases
         $here = $meeting['duration'] ?? false;
         if ($here) {
-            $meeting['duration_time'] = $meeting['duration'].":00";
+            $meeting['duration_time'] = $meeting['duration'] . ":00";
             unset($meeting['duration_time']);
         }
 
         $here = $meeting['startTime'] ?? false;
         if ($here) {
-            $meeting['start_time'] = $meeting['startTime'].":00";
+            $meeting['start_time'] = $meeting['startTime'] . ":00";
             unset($meeting['startTime']);
         }
 
         $here = $meeting['formatIds'] ?? false;
         if ($here) {
-            $meeting['format_shared_id_list'] = implode(',',$meeting['formatIds']);
+            $meeting['format_shared_id_list'] = implode(',', $meeting['formatIds']);
             unset($meeting['formatIds']);
         }
 
@@ -141,6 +139,7 @@ class Integration
         $fromto['venue_type'] = 'venueType';
         $fromto['weekday_tinyint'] = 'day';
         $fromto['meeting_name'] = 'name';
+        $fromto['worldid_mixed'] = 'worldId';
 
         // dont need this any more
         unset($meeting['id_bigint']);
@@ -174,8 +173,7 @@ class Integration
             $meeting['formatIds'] = array_map('intval', explode(',', $meeting['format_shared_id_list']));
             // $meeting['formatIds'] = explode(',', $meeting['format_shared_id_list']);
             unset($meeting['format_shared_id_list']);
-        }
-        else
+        } else
         // if we dont even have a format list, then v3 requires at least a blank array here
         {
             $meeting['formatIds'] = [];
@@ -269,14 +267,14 @@ class Integration
         $this->debug_log(\wp_remote_retrieve_body($resp));
 
         if ((!is_array($resp)) ||  is_wp_error($resp)) {
-            return $this->bmltwf_integration_error(__('Server error retrieving meeting','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('Server error retrieving meeting', 'bmlt-workflow'), 500);
         }
 
         $body = wp_remote_retrieve_body($resp);
 
         $meetingarr = json_decode($body, true);
         if (empty($meetingarr[0])) {
-            return $this->bmltwf_integration_error(__('Server error retrieving meeting','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('Server error retrieving meeting', 'bmlt-workflow'), 500);
         }
         $meeting = $meetingarr[0];
         $this->debug_log("SINGLE MEETING");
@@ -311,11 +309,11 @@ class Integration
         $response_code = \wp_remote_retrieve_response_code($ret);
 
         if ($response_code != 200) {
-            return new \WP_Error('bmltwf', __('check BMLT server address','bmlt-workflow'));
+            return new \WP_Error('bmltwf', __('check BMLT server address', 'bmlt-workflow'));
         }
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
         {
-            return new \WP_Error('bmltwf', __('check username and password details','bmlt-workflow'));
+            return new \WP_Error('bmltwf', __('check username and password details', 'bmlt-workflow'));
         }
         return true;
     }
@@ -338,7 +336,7 @@ class Integration
         $response_code = \wp_remote_retrieve_response_code($response);
 
         if ($response_code != 200) {
-            return new \WP_Error('bmltwf', __('check BMLT server address','bmlt-workflow'));
+            return new \WP_Error('bmltwf', __('check BMLT server address', 'bmlt-workflow'));
         }
 
         $auth_details = json_decode(\wp_remote_retrieve_body($response), true);
@@ -367,7 +365,7 @@ class Integration
         $response = $this->postAuthenticatedRootServerRequest('', $changearr);
 
         if (is_wp_error($response)) {
-            return $this->bmltwf_integration_error(__('BMLT Communication Error - Check the BMLT configuration settings','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('BMLT Communication Error - Check the BMLT configuration settings', 'bmlt-workflow'), 500);
         }
 
         $this->debug_log("CHANGE RESPONSE" . \wp_remote_retrieve_response_code($response));
@@ -378,7 +376,7 @@ class Integration
 
         $dec = json_decode($rep, true);
         if (((isset($dec['error'])) && ($dec['error'] === true)) || (empty($dec[0]))) {
-            return $this->bmltwf_integration_error(__('BMLT Communication Error - Meeting change failed','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('BMLT Communication Error - Meeting change failed', 'bmlt-workflow'), 500);
         }
 
         return true;
@@ -415,8 +413,7 @@ class Integration
 
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $meeting_id;
 
-        $this->debug_bmlt_payload($url,'PATCH',$change);
-
+        $this->debug_bmlt_payload($url, 'PATCH', $change);
         $response = \wp_remote_request($url, $this->set_args(null, $change, array("Authorization" => "Bearer " . $this->v3_access_token), 'PATCH'));
         $this->debug_log("v3 wp_remote_request returns " . \wp_remote_retrieve_response_code($response));
         $this->debug_log(\wp_remote_retrieve_body($response));
@@ -442,13 +439,13 @@ class Integration
         $arr = $this->getServiceBodiesPermissionv2();
 
         if (is_wp_error($arr)) {
-            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 'bmlt-workflow'), 500);
         }
 
         // $this->debug_log($arr);
 
         if (empty($arr['service_body'])) {
-            return $this->bmltwf_integration_error(__('No service bodies visible - Check the BMLT Root Server configuration settings','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('No service bodies visible - Check the BMLT Root Server configuration settings', 'bmlt-workflow'), 500);
         }
 
         // create an array of the service bodies that we are able to see
@@ -475,7 +472,7 @@ class Integration
 
         $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServiceBodies', $req);
         if (is_wp_error($response)) {
-            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 'bmlt-workflow'), 500);
         }
 
         $arr = json_decode(\wp_remote_retrieve_body($response), 1);
@@ -530,7 +527,7 @@ class Integration
         foreach ($response as $key => $sb) {
             $sblist[$sb['id']] = array('name' => $sb['name'], 'description' => $sb['description']);
         }
-        if(!$sblist) {
+        if (!$sblist) {
             return new \WP_Error('bmltwf', "No service bodies available - does your workflow user have access to any service bodies within BMLT?");
         }
 
@@ -558,7 +555,7 @@ class Integration
         $response = $this->postAuthenticatedRootServerRequest('', $changearr);
 
         if (is_wp_error($response)) {
-            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 'bmlt-workflow'), 500);
         }
 
         // $rep = str_replace("'", '"', $response);
@@ -572,10 +569,10 @@ class Integration
         $this->debug_log(($arr));
 
         if ((isset($arr['success'])) && ($arr['success'] != 1)) {
-            return $this->bmltwf_integration_error(__('BMLT Communication Error - Meeting deletion failed','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('BMLT Communication Error - Meeting deletion failed', 'bmlt-workflow'), 500);
         }
         if ((!empty($arr['report'])) && ($arr['report'] != $meeting_id)) {
-            return $this->bmltwf_integration_error(__('BMLT Communication Error - Meeting deletion failed','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('BMLT Communication Error - Meeting deletion failed', 'bmlt-workflow'), 500);
         }
         return true;
     }
@@ -593,7 +590,7 @@ class Integration
 
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $meeting_id;
 
-        $this->debug_bmlt_payload($url,'DELETE');
+        $this->debug_bmlt_payload($url, 'DELETE');
 
         $args = $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), 'DELETE');
         $response = \wp_remote_request($url, $args);
@@ -615,20 +612,19 @@ class Integration
         // $this->debug_log(\wp_remote_retrieve_body($response));
         if (is_wp_error($response)) {
 
-            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 'bmlt-workflow'), 500);
         }
 
         $arr = json_decode(\wp_remote_retrieve_body($response), 1);
 
-        if ((!is_array($arr)) || (!array_key_exists('service_body', $arr)))
-        {
-            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Cannot retrieve service bodies','bmlt-workflow'), 500);
+        if ((!is_array($arr)) || (!array_key_exists('service_body', $arr))) {
+            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Cannot retrieve service bodies', 'bmlt-workflow'), 500);
         }
 
         // if this is just a single service body, then fix the array up
         if (!array_key_exists('0', $arr['service_body'])) {
             $newarr = array();
-            $newarr['service_body']=array();
+            $newarr['service_body'] = array();
             $newarr['service_body'][0] = $arr['service_body'];
             $arr = $newarr;
         }
@@ -639,11 +635,11 @@ class Integration
     private function removeLocations($format)
     {
         // Remove virtual  meeting, temporarily closed, hybrid formats as these are handled seperately
-        $removableLocations = ["VM","TC","HY"];
+        $removableLocations = ["VM", "TC", "HY"];
         $realformats = $this->getMeetingFormats();
         $newformats = array();
         foreach ($format as $key => $value) {
-            if (!in_array($realformats[$value]['key_string'],$removableLocations)) {
+            if (!in_array($realformats[$value]['key_string'], $removableLocations)) {
                 $newformats[] = $value;
             }
         }
@@ -651,17 +647,17 @@ class Integration
     }
 
     private $bmlt_langmap = array(
-        "en_EN"=>"en",
-        "fr_FR"=>"fr",
-        "de_DE"=>"de",
-        "dk_DK"=>"dk",
-        "es_ES"=>"es",
-        "fa_FA"=>"fa",
-        "it_IT"=>"it",
-        "pl_PL"=>"pl",
-        "pt_PT"=>"pt",
-        "ru_RU"=>"ru",
-        "sv_SE"=>"sv",
+        "en_EN" => "en",
+        "fr_FR" => "fr",
+        "de_DE" => "de",
+        "dk_DK" => "dk",
+        "es_ES" => "es",
+        "fa_FA" => "fa",
+        "it_IT" => "it",
+        "pl_PL" => "pl",
+        "pt_PT" => "pt",
+        "ru_RU" => "ru",
+        "sv_SE" => "sv",
     );
 
     public function wp_locale_to_bmlt_locale()
@@ -669,8 +665,7 @@ class Integration
         $locale = get_locale();
         // default language is english
         $ourlang = 'en';
-        if(array_key_exists($locale,$this->bmlt_langmap))
-        {
+        if (array_key_exists($locale, $this->bmlt_langmap)) {
             $ourlang = $this->bmlt_langmap[$locale];
         }
         return $ourlang;
@@ -716,30 +711,28 @@ class Integration
             $newvalue = array();
 
             $newvalue['world_id'] = $value['worldId'];
-            $newvalue['type'] = $value['type'];        
+            $newvalue['type'] = $value['type'];
 
             foreach ($value['translations'] as $key1 => $value1) {
-        
+
                 if ($value1['language'] === 'en' && (!(array_key_exists('lang', $newvalue)))) {
                     $newvalue['lang'] = 'en';
                     $newvalue['description_string'] = $value1['description'];
                     $newvalue['name_string'] = $value1['name'];
-                    $newvalue['key_string'] = $value1['key'];            
-                }
-                elseif ($value1['language'] === $ourlang) {
+                    $newvalue['key_string'] = $value1['key'];
+                } elseif ($value1['language'] === $ourlang) {
                     $newvalue['lang'] = $ourlang;
                     $newvalue['description_string'] = $value1['description'];
                     $newvalue['name_string'] = $value1['name'];
                     $newvalue['key_string'] = $value1['key'];
                 }
             }
-            if(array_key_exists('lang', $newvalue))
-            {
+            if (array_key_exists('lang', $newvalue)) {
                 $formatid = $value['id'];
                 $newformat[$formatid] = $newvalue;
             }
         }
-        $this->debug_log("NEWFORMAT size ".count($newformat));
+        $this->debug_log("NEWFORMAT size " . count($newformat));
         // $this->debug_log($newformat);
 
         return $newformat;
@@ -755,7 +748,7 @@ class Integration
         // get an xml for a workaround
         $response = $this->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
-            return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve meeting formats','bmlt-workflow'));
+            return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve meeting formats', 'bmlt-workflow'));
         }
         $xml = simplexml_load_string(\wp_remote_retrieve_body($response));
         $formatarr = json_decode(json_encode($xml), 1);
@@ -791,7 +784,7 @@ class Integration
         $response = \wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
 
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
-            return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info','bmlt-workflow'));
+            return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
         // $this->debug_log(\wp_remote_retrieve_body($response));  
         $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
@@ -815,9 +808,9 @@ class Integration
         // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
         // $this->debug_log("getMeetingCounties returns " . \wp_remote_retrieve_response_code($response));
         // $this->debug_log(\wp_remote_retrieve_body($response));
-        
+
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
-            return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info','bmlt-workflow'));
+            return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
         // $this->debug_log(\wp_remote_retrieve_body($response));  
         $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
@@ -841,18 +834,16 @@ class Integration
     public function getGmapsKey()
     {
 
-        $storedkey = get_option('bmltwf_google_maps_key','');
+        $storedkey = get_option('bmltwf_google_maps_key', '');
 
-        if ($storedkey != '')
-        {
+        if ($storedkey != '') {
             $this->debug_log("returning saved google maps key with length " . strval(strlen($storedkey)));
             return $storedkey;
         }
 
-        $storedkey = get_option('bmltwf_bmlt_google_maps_key','');
+        $storedkey = get_option('bmltwf_bmlt_google_maps_key', '');
 
-        if ($storedkey != '')
-        {
+        if ($storedkey != '') {
             $this->debug_log("returning bmlt google maps key with length " . strval(strlen($storedkey)));
             return $storedkey;
         }
@@ -920,7 +911,7 @@ class Integration
         }
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings';
 
-        $this->debug_bmlt_payload($url,'POST',$meeting);
+        $this->debug_bmlt_payload($url, 'POST', $meeting);
 
         $response = \wp_remote_post($url, $this->set_args(null, $meeting, array("Authorization" => "Bearer " . $this->v3_access_token)));
         // $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
@@ -964,7 +955,7 @@ class Integration
             unset($meetingformats[$key2]);
         }
         if ($meeting['venue_type'] !== 1) {
-            $key='';
+            $key = '';
             switch ($meeting['venue_type']) {
                 case "2":
                     $key = array_search('VM', array_column($formats, 'key_string'));
@@ -976,10 +967,10 @@ class Integration
                     $key = array_search('TC', array_column($formats, 'key_string'));
                     break;
             }
-            if (($key != '')&&(!in_array($key, $meetingformats))) {
+            if (($key != '') && (!in_array($key, $meetingformats))) {
                 $this->debug_log("adding key to meetingformats");
                 $this->debug_log($key);
-        
+
                 $meetingformats[] = $key;
             }
         }
@@ -1002,35 +993,56 @@ class Integration
         $this->debug_log("posted change");
 
         if (is_wp_error($response)) {
-            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 'bmlt-workflow'), 500);
         }
         return true;
     }
 
-    public function isAutoGeocodingEnabled()
+    public function isAutoGeocodingEnabled($geocoding_type)
     {
+        $this->debug_log("auto geocoding " . $geocoding_type);
+
+        if ((empty($geocoding_type) || ($geocoding_type !== 'auto') && ($geocoding_type !== 'county') && ($geocoding_type !== 'zip'))) {
+            $this->debug_log("auto geocoding check contains invalid geocoding type");
+            return false;
+        }
+
         if ($this->is_v3_server()) {
-            return $this->isAutoGeocodingEnabledv3();
+            return $this->isAutoGeocodingEnabledv3($geocoding_type);
         } else {
-            return $this->isAutoGeocodingEnabledv2();
+            return $this->isAutoGeocodingEnabledv2($geocoding_type);
         }
     }
 
-    private function isAutoGeocodingEnabledv3()
+    private function isAutoGeocodingEnabledv3($geocoding_type)
     {
+
         $response = \wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
-            return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info','bmlt-workflow'));
+            return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
         $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
+        $search = '';
 
-        if ((!empty($arr['auto_geocoding_enabled']))) {
-            return $arr['auto_geocoding_enabled'];
+        switch ($geocoding_type) {
+            case 'auto':
+                $search = 'auto_geocoding_enabled';
+                break;
+            case 'zip':
+                $search = 'zip_auto_geocoding_enabled';
+                break;
+            case 'county':
+                $search = 'county_auto_geocoding_enabled';
+                break;
+        }
+
+        if (!empty($arr[$search])) {
+            return $arr[$search];
         }
         return false;
     }
 
-    public function isAutoGeocodingEnabledv2()
+    public function isAutoGeocodingEnabledv2($geocoding_type)
     {
         $ret = $this->authenticateRootServer();
         if (is_wp_error($ret)) {
@@ -1041,7 +1053,19 @@ class Integration
 
         $resp = $this->get($url, $this->cookies);
 
-        preg_match('/"auto_geocoding_enabled":(?:(true)|(false)),/', wp_remote_retrieve_body($resp), $matches);
+        $search = '';
+        switch ($geocoding_type) {
+            case 'auto':
+                $search = 'auto_geocoding_enabled';
+            case 'zip':
+                $search = 'zip_auto_geocoding_enabled';
+            case 'county':
+                $search = 'county_auto_geocoding_enabled';
+        }
+        
+        preg_match('/"' . $search . '":(?:(true)|(false)),/', wp_remote_retrieve_body($resp), $matches);
+
+        // preg_match('/"auto_geocoding_enabled":(?:(true)|(false)),/', wp_remote_retrieve_body($resp), $matches);
         $this->debug_log("matches: ");
         $this->debug_log($matches);
         $auto = $matches[1] === "true" ? true : false;
@@ -1062,7 +1086,7 @@ class Integration
         $response = \wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
 
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
-            return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info','bmlt-workflow'));
+            return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
         // $this->debug_log(\wp_remote_retrieve_body($response));  
         $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
@@ -1077,7 +1101,7 @@ class Integration
     {
         $key = $this->getGmapsKey();
         if (\is_wp_error($key)) {
-            return $this->bmltwf_integration_error(__('Server error geolocating address: Could not retrieve google maps key.','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('Server error geolocating address: Could not retrieve google maps key.', 'bmlt-workflow'), 500);
         }
 
         $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($address) . "&key=" . $key;
@@ -1092,13 +1116,13 @@ class Integration
         $resp = \wp_remote_get($url, array('headers' => $headers));
 
         if ((!is_array($resp)) ||  is_wp_error($resp)) {
-            return $this->bmltwf_integration_error(__('Server error geolocating address: Could not perform google maps lookup','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('Server error geolocating address: Could not perform google maps lookup', 'bmlt-workflow'), 500);
         }
 
         $body = \wp_remote_retrieve_body($resp);
 
         if (!$body) {
-            return $this->bmltwf_integration_error(__('Server error geolocating address: Nothing returned from google maps lookup','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('Server error geolocating address: Nothing returned from google maps lookup', 'bmlt-workflow'), 500);
         }
 
         $this->debug_log("*** GMAPS RESPONSE");
@@ -1106,20 +1130,19 @@ class Integration
 
         $geo = json_decode($body, true);
         if ((empty($geo)) || (empty($geo['status']))) {
-            return $this->bmltwf_integration_error(__('Server error geolocating address: No google maps status code returned','bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('Server error geolocating address: No google maps status code returned', 'bmlt-workflow'), 500);
         }
-        if ($geo['status'] === "REQUEST_DENIED")
-        {
-            return $this->bmltwf_integration_error(__('Server error geolocating address','bmlt-workflow').': ' . $geo['error_message'], 500);
+        if ($geo['status'] === "REQUEST_DENIED") {
+            return $this->bmltwf_integration_error(__('Server error geolocating address', 'bmlt-workflow') . ': ' . $geo['error_message'], 500);
         }
 
         if (($geo['status'] === "ZERO_RESULTS") || empty($geo['results'][0]['geometry']['location']['lat']) || empty($geo['results'][0]['geometry']['location']['lng'])) {
-            return new \WP_Error('bmltwf', __('Could not geolocate meeting address. Please try amending the address with additional/correct details.','bmlt-workflow'));
+            return new \WP_Error('bmltwf', __('Could not geolocate meeting address. Please try amending the address with additional/correct details.', 'bmlt-workflow'));
         } else {
-            $location = array();
-            $location['latitude'] = $geo['results'][0]['geometry']['location']['lat'];
-            $location['longitude'] = $geo['results'][0]['geometry']['location']['lng'];
-            return $location;
+            // $location = array();
+            // $location['latitude'] = $geo['results'][0]['geometry']['location']['lat'];
+            // $location['longitude'] = $geo['results'][0]['geometry']['location']['lng'];
+            return $geo;
         }
     }
 
@@ -1164,7 +1187,7 @@ class Integration
         // $this->debug_log(($encrypted));
 
         if ($encrypted === false) {
-            return new \WP_Error('bmltwf', __('Error unpacking password.','bmlt-workflow'));
+            return new \WP_Error('bmltwf', __('Error unpacking password.', 'bmlt-workflow'));
         }
 
         if (defined('BMLTWF_RUNNING_UNDER_PHPUNIT')) {
@@ -1175,7 +1198,7 @@ class Integration
 
         $decrypted = $this->secrets_decrypt($nonce_salt, $encrypted);
         if ($decrypted === false) {
-            return new \WP_Error('bmltwf', __('Error decrypting password.','bmlt-workflow'));
+            return new \WP_Error('bmltwf', __('Error decrypting password.', 'bmlt-workflow'));
         }
         return $decrypted;
     }
@@ -1199,7 +1222,7 @@ class Integration
             $response = \wp_remote_post($url, array('body' => http_build_query($postargs)));
             // $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
             // $this->debug_log(\wp_remote_retrieve_body($response));
-    
+
             $response_code = \wp_remote_retrieve_response_code($response);
 
             if ($response_code != 200) {
@@ -1229,14 +1252,14 @@ class Integration
         );
         $url = get_option('bmltwf_bmlt_server_address') . "index.php";
 
-        $this->debug_bmlt_payload($url,$method='POST',$body='(login payload)');
+        $this->debug_bmlt_payload($url, $method = 'POST', $body = '(login payload)');
 
         $ret = \wp_remote_post($url, $this->set_args(null, http_build_query($postargs)));
         // $this->debug_log("returns");
         // $this->debug_log($ret);
 
         if ((is_wp_error($ret)) || (\wp_remote_retrieve_response_code($ret) != 200)) {
-            return new \WP_Error('bmltwf', __('authenticateRootServer: Server Failure','bmlt-workflow'));
+            return new \WP_Error('bmltwf', __('authenticateRootServer: Server Failure', 'bmlt-workflow'));
         }
         $body = wp_remote_retrieve_body($ret);
         // $this->debug_log("BODY");
@@ -1244,9 +1267,9 @@ class Integration
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $body)) // best way I could find to check for invalid login
         {
             $this->cookies = null;
-            return new \WP_Error('bmltwf', __('authenticateRootServer: Authentication Failure','bmlt-workflow'));
+            return new \WP_Error('bmltwf', __('authenticateRootServer: Authentication Failure', 'bmlt-workflow'));
         }
-        $a = \wp_remote_retrieve_cookie($ret,'PHPSESSID');
+        $a = \wp_remote_retrieve_cookie($ret, 'PHPSESSID');
         $this->debug_log("setting cookies");
         $this->debug_log($a);
         // $this->cookies = \wp_remote_retrieve_cookie($ret,'PHPSESSID');
@@ -1264,7 +1287,7 @@ class Integration
         if ($headers) {
             $newheaders = array_merge($headers, $newheaders);
         }
-        
+
         $args = array(
             'timeout' => '120',
             'headers' => $newheaders,
@@ -1282,9 +1305,7 @@ class Integration
     {
         if ($this->is_v3_server()) {
             return $this->getv3($url, $cookies);
-        }
-        else
-        {
+        } else {
             return $this->getv2($url, $cookies);
         }
     }
@@ -1312,18 +1333,18 @@ class Integration
 
     private function getv3($url)
     {
-            $this->debug_log("inside get v3");
+        $this->debug_log("inside get v3");
 
-            if (!$this->is_v3_token_valid()) {
-                $ret =  $this->authenticateRootServer();
-                if (is_wp_error($ret)) {
-                    return $ret;
-                }
+        if (!$this->is_v3_token_valid()) {
+            $ret =  $this->authenticateRootServer();
+            if (is_wp_error($ret)) {
+                return $ret;
             }
-            $this->debug_bmlt_payload($url,$method=null);
+        }
+        $this->debug_bmlt_payload($url, $method = null);
 
-            $ret = \wp_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
-            return $ret;
+        $ret = \wp_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
+        return $ret;
     }
 
     private function post($url, $postargs, $cookies = null)
@@ -1339,19 +1360,17 @@ class Integration
                 }
             }
 
-            $this->debug_bmlt_payload($url,'POST',http_build_query($postargs));
+            $this->debug_bmlt_payload($url, 'POST', http_build_query($postargs));
 
             $ret = \wp_remote_post($url, $this->set_args(null, http_build_query($postargs), array("Authorization" => "Bearer " . $this->v3_access_token), 'POST'));
             return $ret;
-
         } else {
-            $this->debug_bmlt_payload($url,'POST',http_build_query($postargs));
+            $this->debug_bmlt_payload($url, 'POST', http_build_query($postargs));
 
             $ret = \wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
 
             $cookie = \wp_remote_retrieve_cookie($ret, 'laravel_session');
-            if($cookie != "")
-            {
+            if ($cookie != "") {
                 // this is a bmlt3x server and we hit it with 2x.
                 $this->debug_log("ROOT SERVER VERSION UPGRADE DETECTED");
                 $this->update_root_server_version();
@@ -1365,7 +1384,7 @@ class Integration
                     return $ret;
                 }
 
-                $this->debug_bmlt_payload($url,'POST',http_build_query($postargs));
+                $this->debug_bmlt_payload($url, 'POST', http_build_query($postargs));
 
                 // try once more in case it was a session timeout
                 $ret = \wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
@@ -1397,7 +1416,7 @@ class Integration
             $newargs = substr($newargs, 0, -1);
             // $this->debug_log("our post body is " . $newargs);
 
-            $this->debug_bmlt_payload($url,'POST',$newargs);
+            $this->debug_bmlt_payload($url, 'POST', $newargs);
 
             $ret = \wp_remote_post($url, $this->set_args($cookies, $newargs));
             // $this->debug_log(($ret));

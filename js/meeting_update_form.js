@@ -389,6 +389,7 @@ jQuery(document).ready(function ($) {
         'meeting_name',
         'start_time',
         'published',
+        'virtualna_published',
         'location_street',
         'location_text',
         'location_info',
@@ -434,6 +435,18 @@ jQuery(document).ready(function ($) {
         $('#virtual_meeting_options').hide();
       } else {
         $('#virtual_meeting_options').show();
+      }
+
+      // allow meeting unpublish from virtual.na.org
+      if ('worldid_mixed' in mdata[id] && mdata[id].worldid_mixed !== '') {
+        if (mdata[id].worldid_mixed.charAt(0) === 'G') {
+          $('#virtualna_published').val(1);
+        } else {
+          $('#virtualna_published').val(0);
+        }
+        $('#virtualna_publish_div').show();
+      } else {
+        $('#virtualna_publish_div').hide();
       }
 
       // store the selected meeting ID away

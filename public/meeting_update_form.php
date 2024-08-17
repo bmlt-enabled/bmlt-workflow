@@ -243,6 +243,21 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             </div>
                         </div>
                         <textarea class="meeting-input" type="text" name="phone_meeting_number" maxlength="128" size="128" id="phone_meeting_number"></textarea>
+                        <div id="virtualna_publish_div">
+                            <div class="bmltwf_tooltip" tabindex="0">
+                                <label for="virtualna_published"><?php echo __( 'virtual.na.org - Is this meeting published in the global online meeting list?', 'bmlt-workflow' ); ?>
+                                    <span class="dashicons dashicons-info-outline"></span>
+                                </label>
+                                <div class="bmltwf_right">
+                                    <?php echo __( 'You can use this option to publish your virtual meeting', 'bmlt-workflow' ); ?>
+                                    <br><?php echo __('from the online meeting list at virtualna.org'); ?>
+                                </div>
+                            </div>
+                            <select class="meeting-input" name="virtualna_published" id="virtualna_published">
+                                <option value="1"><?php echo __( 'Yes - Meeting will be shown in the virtual.na.org list', 'bmlt-workflow' ); ?></option>
+                                <option value="0"><?php echo __( 'No - Meeting will not be shown in the virtual.na.org list', 'bmlt-workflow' ); ?></option>
+                            </select>
+                        </div>
                     </div>
                 </fieldset>
             </div>
