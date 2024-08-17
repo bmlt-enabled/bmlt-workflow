@@ -173,6 +173,11 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <option value="1"><?php echo __( 'Yes', 'bmlt-workflow' ); ?></option>
                 <option value="0"><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
             </select>
+            <label for="quickedit_virtualna_published"><?php echo __( 'Publish on virtual.na.org?', 'bmlt-workflow' ); ?></label>
+            <select class="quickedit-input" name="quickedit_virtualna_published" id="quickedit_virtualna_published">
+                <option value="1"><?php echo __( 'Yes', 'bmlt-workflow' ); ?></option>
+                <option value="0"><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
+            </select>
 
             <label for="quickedit_location_text"><?php echo __( "Location", 'bmlt-workflow' ); ?></label>
             <input type="text" name="quickedit_location_text" id="quickedit_location_text" class="quickedit-input">

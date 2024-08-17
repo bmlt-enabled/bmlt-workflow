@@ -514,7 +514,7 @@ class SubmissionsHandler
                     $change["phone_meeting_number"]="";
                     $change["virtual_meeting_link"]="";
                 }
-                
+                                
                 if(array_key_exists('worldid_mixed',$bmlt_meeting) && array_key_exists('virtualna_published', $change))
                 {
                     $this->debug_log("virtualna_published = ".$change['virtualna_published']);
@@ -522,14 +522,14 @@ class SubmissionsHandler
                     $orig_worldid = $bmlt_meeting['worldid_mixed'];
                     $this->debug_log("original worldid = ".$orig_worldid);
 
-                    if($change["virtualna_published"] == 1)
+                    if($change["virtualna_published"] === "1")
                     {
-                        $change["worldid_mixed"] = substr_replace($orig_worldid, 'U', 0, 1);
+                        $change["worldid_mixed"] = substr_replace($orig_worldid, 'G', 0, 1);
                         unset($change["virtualna_published"]);
                     }
                     else
                     {
-                        $change["worldid_mixed"] = substr_replace($orig_worldid, 'G', 0, 1);
+                        $change["worldid_mixed"] = substr_replace($orig_worldid, 'U', 0, 1);
                         unset($change["virtualna_published"]);
                     }
                     $this->debug_log("new worldid = ".$change["worldid_mixed"]);
@@ -1033,8 +1033,6 @@ class SubmissionsHandler
                     "virtual_meeting_link",
                     "venue_type",
                     "published",
-                    "virtualna_published",
-
                 );
 
                 $allowed_fields_extra = array(
@@ -1042,8 +1040,8 @@ class SubmissionsHandler
                     "group_relationship",
                     "add_contact",
                     "additional_info",
+                    "virtualna_published",
                 );
-
 
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
                 if($this->bmlt_integration->is_v3_server())
@@ -1115,7 +1113,7 @@ class SubmissionsHandler
 
                 // add in extra form fields (non BMLT fields) to the submission
                 foreach ($allowed_fields_extra as $field) {
-                    if (!empty($sanitised_fields[$field])) {
+                    if (array_key_exists($field, $sanitised_fields)) {
                         $submission[$field] = $sanitised_fields[$field];
                     }
                 }

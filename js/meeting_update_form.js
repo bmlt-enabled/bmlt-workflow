@@ -437,6 +437,13 @@ jQuery(document).ready(function ($) {
         $('#virtual_meeting_options').show();
       }
 
+      // allow meeting unpublish from virtual.na.org
+      if ('worldid_mixed' in mdata[id] && mdata[id].worldid_mixed !== '') {
+        $('#virtualna_publish_div').show();
+      } else {
+        $('#virtualna_publish_div').hide();
+      }
+
       // store the selected meeting ID away
       put_field('meeting_id', mdata[id].id_bigint);
 
