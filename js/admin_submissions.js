@@ -17,7 +17,7 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 /* global wp, jQuery, google */
-/* global bmltwf_clear_notices, bmltwf_notice_success, bmltwf_notice_error, bmltwf_fetchJsonp */
+/* global bmltwf_clear_notices, bmltwf_notice_success, bmltwf_notice_error, bmltwf_fetchJsonp, bmltwf_is_v3_server */
 /* global bmltwf_gmaps_key, bmltwf_auto_geocoding_enabled, bmltwf_optional_location_nation, bmltwf_optional_location_sub_province, bmltwf_optional_location_province */
 /* global bmltwf_do_states_and_provinces, bmltwf_counties_and_sub_provinces, bmltwf_remove_virtual_meeting_details_on_venue_change, bmltwf_bmlt_server_address */
 /* global bmltwf_default_closed_meetings, bmltwf_bmlt_formats, bmltwf_datatables_delete_enabled, bmltwf_admin_submissions_rest_url, bmltwf_admin_bmltwf_service_bodies */
@@ -108,6 +108,10 @@ jQuery(document).ready(function ($) {
   ];
 
   $.getScript(`https://maps.googleapis.com/maps/api/js?key=${bmltwf_gmaps_key}&loading=async&libraries=marker&callback=initMap&v=weekly&async=2`);
+
+  if (!bmltwf_is_v3_server) {
+    bmltwf_notice_error(__('Support for BMLT Server version 2.x will end soon. Please upgrade your BMLT Server version to 3.x or above.'), 'bmltwf-error-message');
+  }
 
   if (!bmltwf_auto_geocoding_enabled) {
     $('#optional_auto_geocode_enabled').hide();

@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.13
+ * Version: 1.1.14
  * Requires at least: 5.2
  * Tested up to: 6.6.1
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.13');
+define('BMLTWF_PLUGIN_VERSION', '1.1.14');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -314,6 +314,7 @@ if (!class_exists('bmltwf_plugin')) {
 
                     $meeting_states_and_provinces = $this->bmlt_integration->getMeetingStates();
                     $script .= "var bmltwf_do_states_and_provinces = " . json_encode($meeting_states_and_provinces) . ";";
+                    $script .= "var bmltwf_is_v3_server = " . json_encode($this->bmlt_integration->is_v3_server()) . ";";
 
                     // handling for zip and county auto geocoding
                     $script .= "var bmltwf_zip_auto_geocoding = " . json_encode($this->bmlt_integration->isAutoGeocodingEnabled('zip')) . ";";
