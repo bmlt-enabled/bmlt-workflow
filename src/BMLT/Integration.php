@@ -139,6 +139,7 @@ class Integration
         $fromto['venue_type'] = 'venueType';
         $fromto['weekday_tinyint'] = 'day';
         $fromto['meeting_name'] = 'name';
+        $fromto['worldid_mixed'] = 'worldId';
 
         // dont need this any more
         unset($meeting['id_bigint']);
@@ -413,7 +414,6 @@ class Integration
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $meeting_id;
 
         $this->debug_bmlt_payload($url, 'PATCH', $change);
-
         $response = \wp_remote_request($url, $this->set_args(null, $change, array("Authorization" => "Bearer " . $this->v3_access_token), 'PATCH'));
         $this->debug_log("v3 wp_remote_request returns " . \wp_remote_retrieve_response_code($response));
         $this->debug_log(\wp_remote_retrieve_body($response));

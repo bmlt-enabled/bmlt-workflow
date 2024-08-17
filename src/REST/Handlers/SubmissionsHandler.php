@@ -514,7 +514,7 @@ class SubmissionsHandler
                     $change["phone_meeting_number"]="";
                     $change["virtual_meeting_link"]="";
                 }
-                                
+
                 if(array_key_exists('worldid_mixed',$bmlt_meeting) && array_key_exists('virtualna_published', $change))
                 {
                     $this->debug_log("virtualna_published = ".$change['virtualna_published']);
@@ -522,7 +522,7 @@ class SubmissionsHandler
                     $orig_worldid = $bmlt_meeting['worldid_mixed'];
                     $this->debug_log("original worldid = ".$orig_worldid);
 
-                    if($change["virtualna_published"] === "1")
+                    if($change["virtualna_published"] === 1)
                     {
                         $change["worldid_mixed"] = substr_replace($orig_worldid, 'G', 0, 1);
                         unset($change["virtualna_published"]);
