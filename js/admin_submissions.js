@@ -367,6 +367,13 @@ jQuery(document).ready(function ($) {
       $('#quickedit_gmaps').hide();
       add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
     }
+    // Hide the publish to virtual na option if this isn't a virtual meeting
+    if ($('#quickedit_venue_type').val() !== '2') {
+      $('#optional_virtualna_published').hide();
+    } else {
+      $('#optional_virtualna_published').show();
+    }
+
     $('#bmltwf_submission_quickedit_dialog').data('id', id).dialog('open');
   }
 
