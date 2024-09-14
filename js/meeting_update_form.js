@@ -27,7 +27,7 @@ const weekdays = [__('none', 'bmlt-workflow'), __('Sunday', 'bmlt-workflow'), __
   __('Wednesday', 'bmlt-workflow'), __('Thursday', 'bmlt-workflow'), __('Friday', 'bmlt-workflow'), __('Saturday', 'bmlt-workflow')];
 
 jQuery(document).ready(function ($) {
-  function getQueryStringParameter(name) {
+  function get_query_string_parameter(name) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
   }
@@ -482,20 +482,26 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  function fetchMeetingDataByMeetingId(meeting_id) {
-    const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&advanced_published=0&meeting_key=id_bigint&meeting_key_value=${meeting_id}&lang_enum=en`;
-
-    return bmltwf_fetchJsonp(search_results_address)
-        .then((response) => response.json())
-        .then((mdata) => mdata[0]); // Assuming the response is an array and we need the first item
-  }
-
-  function update_meeting_list(bmltwf_service_bodies) {
+  function update_meeting_list(bmltwf_service_bodies, meeting_id = null) {
     const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&advanced_published=0&lang_enum=en&${bmltwf_service_bodies}recursive=1&sort_keys=meeting_name`;
 
     bmltwf_fetchJsonp(search_results_address)
       .then((response) => response.json())
-      .then((mdata) => create_meeting_searcher(mdata));
+      .then((mdata) => {
+        create_meeting_searcher(mdata);
+        if (meeting_id) {
+          const jump_to = mdata.findIndex((el) => el.id_bigint === meeting_id);
+          $('#update_reason').val('reason_change').trigger('change');
+          $('#meeting-searcher').val(jump_to).trigger('change').trigger({
+            type: 'select2:select',
+            params: {
+              data: {
+                id: jump_to,
+              },
+            },
+          });
+        }
+      });
   }
 
   let bmltwf_service_bodies_querystr = '';
@@ -509,28 +515,9 @@ jQuery(document).ready(function ($) {
     bmltwf_service_bodies_querystr += `services[]=${service_body_bigint}&`;
   });
 
-  const meeting_id = getQueryStringParameter('meeting_id');
+  const meeting_id = get_query_string_parameter('meeting_id');
 
-  if (meeting_id) {
-    fetchMeetingDataByMeetingId(meeting_id).then((meeting) => {
-      if (meeting) {
-        create_meeting_searcher([meeting])
-
-        // Trigger the select event to populate the form
-        jQuery('#update_reason').val('reason_change').trigger('change')
-        jQuery('#meeting-searcher').val(0).trigger({
-          type: 'select2:select',
-          params: {
-            data: {
-              id: 0
-            }
-          }
-        }).trigger('change')
-      }
-    });
-  } else {
-    update_meeting_list(bmltwf_service_bodies_querystr);
-  }
+  update_meeting_list(bmltwf_service_bodies_querystr, meeting_id);
 
   function is_virtual_meeting_additional_info_empty() {
     return ($('#virtual_meeting_additional_info').val().length === 0);
@@ -584,10 +571,15 @@ jQuery(document).ready(function ($) {
     }
   });
 
+  // if (meeting_id && jump_to) {
+  //   $('#update_reason').val('reason_change').trigger('change');
+  //   $('#meeting-searcher').val(jump_to);
+  // } else {
   // meeting logic before selection is made
   $('#meeting_selector').hide();
   $('#meeting_content').hide();
   $('#other_reason').prop('required', false);
+  // }
 
   $('#venue_type').on('change', function () {
     // show and hide the virtual meeting settings
