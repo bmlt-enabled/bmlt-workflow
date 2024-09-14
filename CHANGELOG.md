@@ -1,3 +1,7 @@
+## 1.1.16 (Sep 12, 2024)
+- Fixes reported bug #188 for virtual meeting publish displaying in quickedit (thanks @tempsaint !)
+- Add querystring parameter support for deep linking from crouton (thanks @dg !)
+
 ## 1.1.13 (Aug 13,2024)
 - Feature: Map marker in quickedit is now movable, mimicking the behaviour of BMLT UI
 - Support for the BMLT zip and county auto geocoding setting, which requires BMLT 3.1.1 or above (thanks @AdamH !)
