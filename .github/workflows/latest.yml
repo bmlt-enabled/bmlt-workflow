@@ -66,12 +66,8 @@ jobs:
           export ARTIFACT_FILENAME=${ARTIFACT_FILE}.zip
           echo "ARTIFACT_FILENAME=${ARTIFACT_FILENAME}" >> $GITHUB_ENV
           git archive --format=zip --output=${ARTIFACT_FILENAME} HEAD
-          unzip ${ARTIFACT_FILENAME}
-          rm ${ARTIFACT_FILENAME}
-          echo ${GITHUB_SHA} > ${ARTIFACT_FILE}/build.txt
-          find ./${ARTIFACT_FILE} -type d | xargs chmod 755
-          find ./${ARTIFACT_FILE} -name '*.php' | xargs chmod 644
-          zip -r -9 ${ARTIFACT_FILENAME} ${ARTIFACT_FILE}
+          echo ${GITHUB_SHA} > build.txt
+          zip ${ARTIFACT_FILENAME} build.txt
           mkdir artifacts/
           mv ${ARTIFACT_FILENAME} artifacts/
 
