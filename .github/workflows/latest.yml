@@ -86,6 +86,14 @@ jobs:
         run: |
           aws s3 cp artifacts/${ARTIFACT_FILENAME} s3://${{ secrets.S3_BUCKET }}/bmlt-workflow/${ARTIFACT_FILENAME}
 
+      - name: Publish Release to Latest WP 🎉
+        id: publish_latest
+        uses: bmlt-enabled/wordpress-releases-github-action@v1.3
+        with:
+          file: artifacts/${ARTIFACT_FILENAME}
+          s3_key: bmlt-workflow
+          aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
+
       - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
