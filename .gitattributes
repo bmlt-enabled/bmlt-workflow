@@ -12,3 +12,4 @@ config_phpunit.php export-ignore
 jsconfig.json export-ignore
 phpunit.xml.bak export-ignore
 .gitattributes export-ignore
+.gitignore export-ignore
