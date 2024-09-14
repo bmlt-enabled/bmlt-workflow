@@ -6,3 +6,9 @@ docker-compose.yml export-ignore
 Dockerfile export-ignore
 /.github export-ignore
 /tests export-ignore
+.eslintrc.js export-ignore
+.testcaferc.js export-ignore
+config_phpunit.php export-ignore
+jsconfig.json export-ignore
+phpunit.xml.bak export-ignore
+.gitattributes export-ignore
