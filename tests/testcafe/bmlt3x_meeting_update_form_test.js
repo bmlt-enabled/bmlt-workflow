@@ -125,6 +125,11 @@ test("Success_New_Standard_Meeting_And_Submit", async (t) => {
     .match(/submission\ successful/);
 });
 
+test("Success_Locate_Meeting_Via_QueryString", async (t) => {
+  await t.navigateTo(userVariables.formpage+"&meeting_id=1601")
+  .expect(uf.meeting_name.value)
+  .eql("A New Way Group");
+});
 
 test("Success_New_Hybrid_Meeting_And_Submit", async (t) => {
 

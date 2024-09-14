@@ -27,6 +27,11 @@ const weekdays = [__('none', 'bmlt-workflow'), __('Sunday', 'bmlt-workflow'), __
   __('Wednesday', 'bmlt-workflow'), __('Thursday', 'bmlt-workflow'), __('Friday', 'bmlt-workflow'), __('Saturday', 'bmlt-workflow')];
 
 jQuery(document).ready(function ($) {
+  function get_query_string_parameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
   function enable_highlighting() {
     // add highlighting trigger for general input fields
     $('.meeting-input').on('input.bmltwf-highlight', function () {
@@ -477,12 +482,26 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  function update_meeting_list(bmltwf_service_bodies) {
+  function update_meeting_list(bmltwf_service_bodies, meeting_id = null) {
     const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&advanced_published=0&lang_enum=en&${bmltwf_service_bodies}recursive=1&sort_keys=meeting_name`;
 
     bmltwf_fetchJsonp(search_results_address)
       .then((response) => response.json())
-      .then((mdata) => create_meeting_searcher(mdata));
+      .then((mdata) => {
+        create_meeting_searcher(mdata);
+        if (meeting_id) {
+          const jump_to = mdata.findIndex((el) => el.id_bigint === meeting_id);
+          $('#update_reason').val('reason_change').trigger('change');
+          $('#meeting-searcher').val(jump_to).trigger('change').trigger({
+            type: 'select2:select',
+            params: {
+              data: {
+                id: jump_to,
+              },
+            },
+          });
+        }
+      });
   }
 
   let bmltwf_service_bodies_querystr = '';
@@ -496,7 +515,9 @@ jQuery(document).ready(function ($) {
     bmltwf_service_bodies_querystr += `services[]=${service_body_bigint}&`;
   });
 
-  update_meeting_list(bmltwf_service_bodies_querystr);
+  const meeting_id = get_query_string_parameter('meeting_id');
+
+  update_meeting_list(bmltwf_service_bodies_querystr, meeting_id);
 
   function is_virtual_meeting_additional_info_empty() {
     return ($('#virtual_meeting_additional_info').val().length === 0);
@@ -550,10 +571,15 @@ jQuery(document).ready(function ($) {
     }
   });
 
+  // if (meeting_id && jump_to) {
+  //   $('#update_reason').val('reason_change').trigger('change');
+  //   $('#meeting-searcher').val(jump_to);
+  // } else {
   // meeting logic before selection is made
   $('#meeting_selector').hide();
   $('#meeting_content').hide();
   $('#other_reason').prop('required', false);
+  // }
 
   $('#venue_type').on('change', function () {
     // show and hide the virtual meeting settings
