@@ -65,7 +65,7 @@ jobs:
           export ARTIFACT_FILE=bmlt-workflow-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}
           export ARTIFACT_FILENAME=${ARTIFACT_FILE}.zip
           echo "ARTIFACT_FILENAME=${ARTIFACT_FILENAME}" >> $GITHUB_ENV
-          git archive --format=zip --output=${ARTIFACT_FILENAME} --prefix=${ARTIFACT_FILE}/ HEAD
+          git archive --format=zip --output=${ARTIFACT_FILENAME} HEAD
           unzip ${ARTIFACT_FILENAME}
           rm ${ARTIFACT_FILENAME}
           echo ${GITHUB_SHA} > ${ARTIFACT_FILE}/build.txt
