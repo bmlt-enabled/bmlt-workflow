@@ -90,7 +90,7 @@ jobs:
         id: publish_latest
         uses: bmlt-enabled/wordpress-releases-github-action@v1.3
         with:
-          file: artifacts/${ARTIFACT_FILENAME}
+          file: artifacts/${{ env.ARTIFACT_FILENAME }}
           s3_key: bmlt-workflow
           aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
 
