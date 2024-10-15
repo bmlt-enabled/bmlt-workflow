@@ -24,6 +24,8 @@ import { asb } from "./models/admin_service_bodies";
 
 fixture`bmlt3x_multisite_tests_fixture`.beforeEach(async (t) => {
   await waitfor(userVariables.admin_logon_page_multisingle);
+  await restore_from_backup(bmltwf_admin_multisingle, userVariables.admin_settings_page_multisingle_plugin, userVariables.admin_restore_json_multisingle_plugin,myip(),"3001","hidden");
+  await t.debug();
 });
 
 test("MultiSite_Single_Check_Options", async (t) => {
