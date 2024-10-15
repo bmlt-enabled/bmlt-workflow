@@ -65,13 +65,9 @@ jobs:
           export ARTIFACT_FILE=bmlt-workflow-${GITHUB_RUN_NUMBER}-${GITHUB_SHA}
           export ARTIFACT_FILENAME=${ARTIFACT_FILE}.zip
           echo "ARTIFACT_FILENAME=${ARTIFACT_FILENAME}" >> $GITHUB_ENV
-          git archive --format=zip --output=${ARTIFACT_FILENAME} --prefix=${ARTIFACT_FILE}/ HEAD
-          unzip ${ARTIFACT_FILENAME}
-          rm ${ARTIFACT_FILENAME}
-          echo ${GITHUB_SHA} > ${ARTIFACT_FILE}/build.txt
-          find ./${ARTIFACT_FILE} -type d | xargs chmod 755
-          find ./${ARTIFACT_FILE} -name '*.php' | xargs chmod 644
-          zip -r -9 ${ARTIFACT_FILENAME} ${ARTIFACT_FILE}
+          git archive --format=zip --output=${ARTIFACT_FILENAME} HEAD
+          echo ${GITHUB_SHA} > build.txt
+          zip ${ARTIFACT_FILENAME} build.txt
           mkdir artifacts/
           mv ${ARTIFACT_FILENAME} artifacts/
 
@@ -85,6 +81,14 @@ jobs:
       - name: copy artifact to s3
         run: |
           aws s3 cp artifacts/${ARTIFACT_FILENAME} s3://${{ secrets.S3_BUCKET }}/bmlt-workflow/${ARTIFACT_FILENAME}
+
+      - name: Publish Release to Latest WP 🎉
+        id: publish_latest
+        uses: bmlt-enabled/wordpress-releases-github-action@v1.3
+        with:
+          file: artifacts/${{ env.ARTIFACT_FILENAME }}
+          s3_key: bmlt-workflow
+          aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
 
       - uses: act10ns/slack@v1
         with:
