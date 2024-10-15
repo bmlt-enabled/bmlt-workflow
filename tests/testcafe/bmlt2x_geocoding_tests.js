@@ -74,7 +74,7 @@ test("Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) => {
     .eql(true);
 
   // personal details
-  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "`12345`");
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "123-456-7890");
 
   // email dropdown
   await select_dropdown_by_text(uf.add_contact, "Yes");
@@ -196,7 +196,7 @@ test("Submit_Change_Meeting_And_Approve_With_Geocoding_Disabled", async (t) => {
     .typeText(uf.first_name, "first")
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
-    .typeText(uf.contact_number, "`12345`")
+    .typeText(uf.contact_number, "123-456-7890")
     .typeText(uf.location_text, "location")
     .typeText(uf.meeting_name, "update", { replace: true })
     // make sure highlighting is present

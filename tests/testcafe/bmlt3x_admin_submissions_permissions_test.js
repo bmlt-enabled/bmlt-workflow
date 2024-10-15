@@ -41,9 +41,7 @@ fixture`bmlt3x_admin_submissions_permissions_fixture`
 });
 
 test("Can_View_Submissions_As_Priv_User", async (t) => {
-  
   await t.useRole(bmltwf_submission_reviewer).navigateTo(userVariables.admin_submissions_page_single)
-  // .debug()
   .expect(as.dt_submission_wrapper.visible).eql(true);
 
 });

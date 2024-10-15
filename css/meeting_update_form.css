@@ -54,8 +54,8 @@ div#form_replace.bmltwf_wide_form fieldset {
     margin: 4px 10px 0
 }
 
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
+input[type="tel"]::-webkit-inner-spin-button,
+input[type="tel"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   appearance: none;;
   margin: 0;
@@ -177,7 +177,7 @@ div#meeting_content.form-grid {
 }
 
 div#meeting_content.form-grid input[type='text'],
-div#meeting_content.form-grid input[type='number'],
+div#meeting_content.form-grid input[type='tel'],
 div#meeting_content.form-grid input[type='email'],
 div#meeting_content.form-grid input[type='time'],
 div#meeting_content.form-grid textarea:not(.select2-search__field),

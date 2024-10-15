@@ -64,7 +64,250 @@ test("Success_New_Standard_Meeting_And_Submit", async (t) => {
     .eql(true);
 
   // personal details
-  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "`12345`");
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "123-456-7890");
+
+  // email dropdown
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
+
+  // group member dropdown
+  await select_dropdown_by_value(uf.group_relationship, "Group Member");
+  await t.expect(uf.group_relationship.value).eql("Group Member");
+
+  // virtual meeting settings
+  await select_dropdown_by_value(uf.venue_type, "1");
+  await t
+    .expect(uf.venue_type.value)
+    .eql("1")
+    .expect(uf.virtual_meeting_link.visible)
+    .eql(false)
+    .expect(uf.phone_meeting_number.visible)
+    .eql(false)
+    .expect(uf.virtual_meeting_additional_info.visible)
+    .eql(false);
+
+  // meeting settings
+  await t.typeText(uf.meeting_name, "my test meeting");
+
+  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+
+  await t.typeText(uf.start_time, "10:40");
+
+  await select_dropdown_by_value(uf.duration_hours, "04");
+  await select_dropdown_by_value(uf.duration_minutes, "30");
+
+  // format list
+  await t.click(uf.format_list_clickable).pressKey("b e g enter").click(uf.format_list_clickable).pressKey("l i n enter");
+
+  await t
+
+    .typeText(uf.location_text, "my location")
+    .typeText(uf.location_street, "110 Avoca Street")
+    .typeText(uf.location_info, "info")
+    .typeText(uf.location_municipality, "Randwick")
+    // .typeText(uf.location_sub_province, 'subprovince')
+    .typeText(uf.location_province, "NSW")
+    .typeText(uf.location_postal_code_1, "2031");
+
+  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
+  await t.typeText(uf.additional_info, "my additional info");
+
+  await select_dropdown_by_value(uf.starter_kit_required, "yes");
+  await t
+    // .typeText(uf.starter_kit_postal_address, 'postal address')
+    .typeText(uf.starter_kit_postal_address, "postal address")
+    .expect(uf.starter_kit_postal_address.value)
+    .eql("postal address");
+
+  await t
+    .click(uf.submit)
+    .expect(uf.success_page_header.innerText)
+    .match(/submission\ successful/);
+});
+
+test("Success_New_Standard_Meeting_Aus_Mobile_Phone_Format_And_Submit", async (t) => {
+
+  await t.navigateTo(userVariables.formpage);
+
+  await select_dropdown_by_value(uf.update_reason, "reason_new");
+
+  // check our divs are visible
+  await t
+    .expect(uf.update_reason.value)
+    .eql("reason_new")
+
+    // validate form is laid out correctly
+    .expect(uf.personal_details.visible)
+    .eql(true)
+    .expect(uf.meeting_details.visible)
+    .eql(true)
+    .expect(uf.additional_info_div.visible)
+    .eql(true);
+
+  // personal details
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "`+61 419 419 419`");
+
+  // email dropdown
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
+
+  // group member dropdown
+  await select_dropdown_by_value(uf.group_relationship, "Group Member");
+  await t.expect(uf.group_relationship.value).eql("Group Member");
+
+  // virtual meeting settings
+  await select_dropdown_by_value(uf.venue_type, "1");
+  await t
+    .expect(uf.venue_type.value)
+    .eql("1")
+    .expect(uf.virtual_meeting_link.visible)
+    .eql(false)
+    .expect(uf.phone_meeting_number.visible)
+    .eql(false)
+    .expect(uf.virtual_meeting_additional_info.visible)
+    .eql(false);
+
+  // meeting settings
+  await t.typeText(uf.meeting_name, "my test meeting");
+
+  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+
+  await t.typeText(uf.start_time, "10:40");
+
+  await select_dropdown_by_value(uf.duration_hours, "04");
+  await select_dropdown_by_value(uf.duration_minutes, "30");
+
+  // format list
+  await t.click(uf.format_list_clickable).pressKey("b e g enter").click(uf.format_list_clickable).pressKey("l i n enter");
+
+  await t
+
+    .typeText(uf.location_text, "my location")
+    .typeText(uf.location_street, "110 Avoca Street")
+    .typeText(uf.location_info, "info")
+    .typeText(uf.location_municipality, "Randwick")
+    // .typeText(uf.location_sub_province, 'subprovince')
+    .typeText(uf.location_province, "NSW")
+    .typeText(uf.location_postal_code_1, "2031");
+
+  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
+  await t.typeText(uf.additional_info, "my additional info");
+
+  await select_dropdown_by_value(uf.starter_kit_required, "yes");
+  await t
+    // .typeText(uf.starter_kit_postal_address, 'postal address')
+    .typeText(uf.starter_kit_postal_address, "postal address")
+    .expect(uf.starter_kit_postal_address.value)
+    .eql("postal address");
+
+  await t
+    .click(uf.submit)
+    .expect(uf.success_page_header.innerText)
+    .match(/submission\ successful/);
+});
+
+test("Success_New_Standard_Meeting_Aus_Local_Phone_Format_And_Submit", async (t) => {
+
+  await t.navigateTo(userVariables.formpage);
+
+  await select_dropdown_by_value(uf.update_reason, "reason_new");
+
+  // check our divs are visible
+  await t
+    .expect(uf.update_reason.value)
+    .eql("reason_new")
+
+    // validate form is laid out correctly
+    .expect(uf.personal_details.visible)
+    .eql(true)
+    .expect(uf.meeting_details.visible)
+    .eql(true)
+    .expect(uf.additional_info_div.visible)
+    .eql(true);
+
+  // personal details
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "`(02) 2184 4382`");
+
+  // email dropdown
+  await select_dropdown_by_text(uf.add_contact, "Yes");
+  await t.expect(uf.add_contact.value).eql("yes");
+
+  // group member dropdown
+  await select_dropdown_by_value(uf.group_relationship, "Group Member");
+  await t.expect(uf.group_relationship.value).eql("Group Member");
+
+  // virtual meeting settings
+  await select_dropdown_by_value(uf.venue_type, "1");
+  await t
+    .expect(uf.venue_type.value)
+    .eql("1")
+    .expect(uf.virtual_meeting_link.visible)
+    .eql(false)
+    .expect(uf.phone_meeting_number.visible)
+    .eql(false)
+    .expect(uf.virtual_meeting_additional_info.visible)
+    .eql(false);
+
+  // meeting settings
+  await t.typeText(uf.meeting_name, "my test meeting");
+
+  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+
+  await t.typeText(uf.start_time, "10:40");
+
+  await select_dropdown_by_value(uf.duration_hours, "04");
+  await select_dropdown_by_value(uf.duration_minutes, "30");
+
+  // format list
+  await t.click(uf.format_list_clickable).pressKey("b e g enter").click(uf.format_list_clickable).pressKey("l i n enter");
+
+  await t
+
+    .typeText(uf.location_text, "my location")
+    .typeText(uf.location_street, "110 Avoca Street")
+    .typeText(uf.location_info, "info")
+    .typeText(uf.location_municipality, "Randwick")
+    // .typeText(uf.location_sub_province, 'subprovince')
+    .typeText(uf.location_province, "NSW")
+    .typeText(uf.location_postal_code_1, "2031");
+
+  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
+  await t.typeText(uf.additional_info, "my additional info");
+
+  await select_dropdown_by_value(uf.starter_kit_required, "yes");
+  await t
+    // .typeText(uf.starter_kit_postal_address, 'postal address')
+    .typeText(uf.starter_kit_postal_address, "postal address")
+    .expect(uf.starter_kit_postal_address.value)
+    .eql("postal address");
+
+  await t
+    .click(uf.submit)
+    .expect(uf.success_page_header.innerText)
+    .match(/submission\ successful/);
+});
+
+test("Success_New_Standard_Meeting_US_Phone_Format_And_Submit", async (t) => {
+
+  await t.navigateTo(userVariables.formpage);
+
+  await select_dropdown_by_value(uf.update_reason, "reason_new");
+
+  // check our divs are visible
+  await t
+    .expect(uf.update_reason.value)
+    .eql("reason_new")
+
+    // validate form is laid out correctly
+    .expect(uf.personal_details.visible)
+    .eql(true)
+    .expect(uf.meeting_details.visible)
+    .eql(true)
+    .expect(uf.additional_info_div.visible)
+    .eql(true);
+
+  // personal details
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "`(419) 143 4343`");
 
   // email dropdown
   await select_dropdown_by_text(uf.add_contact, "Yes");
@@ -151,7 +394,7 @@ test("Success_New_Hybrid_Meeting_And_Submit", async (t) => {
     .eql(true);
 
   // personal details
-  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "`12345`");
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "123-456-7890");
 
   // email dropdown
   await select_dropdown_by_text(uf.add_contact, "Yes");
@@ -236,7 +479,7 @@ test("Success_New_Virtual_Meeting_And_Submit", async (t) => {
     .eql(true);
 
   // personal details
-  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "`12345`");
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "123-456-7890");
 
   // email dropdown
   await select_dropdown_by_text(uf.add_contact, "Yes");
@@ -318,7 +561,7 @@ test("Success_New_Tempclosure_Meeting_And_Submit", async (t) => {
     .eql(true);
 
   // personal details
-  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "`12345`");
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "123-456-7890");
 
   // email dropdown
   await select_dropdown_by_text(uf.add_contact, "Yes");
@@ -406,7 +649,7 @@ test("Success_Change_Meeting_Name_And_Submit", async (t) => {
     .typeText(uf.first_name, "first")
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
-    .typeText(uf.contact_number, "`12345`")
+    .typeText(uf.contact_number, "123-456-7890")
 
     .typeText(uf.meeting_name, "update")
     // make sure highlighting is present
@@ -451,7 +694,7 @@ test("Success_Delete_Extra_Location_And_Submit", async (t) => {
     .typeText(uf.first_name, "first")
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
-    .typeText(uf.contact_number, "`12345`")
+    .typeText(uf.contact_number, "123-456-7890")
     // delete the location info entirely
     .selectText(uf.location_info)
     .pressKey('delete')
@@ -497,7 +740,7 @@ test("Success_Change_Extra_Location_And_Submit", async (t) => {
     .typeText(uf.first_name, "first")
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
-    .typeText(uf.contact_number, "`12345`")
+    .typeText(uf.contact_number, "123-456-7890")
     // change the location info entirely
     .typeText(uf.location_info, "`12345`")
     // make sure highlighting is present
@@ -542,7 +785,7 @@ test("Failure_Retype_Same_Extra_Location_And_Submit", async (t) => {
     .typeText(uf.first_name, "first")
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
-    .typeText(uf.contact_number, "`12345`")
+    .typeText(uf.contact_number, "123-456-7890")
     // delete the location info entirely
     .selectText(uf.location_info)
     .pressKey('delete')
@@ -587,7 +830,7 @@ test("Success_Close_Meeting_And_Submit", async (t) => {
     .typeText(uf.first_name, "first")
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
-    .typeText(uf.contact_number, "`12345`")
+    .typeText(uf.contact_number, "123-456-7890")
 
     .typeText(uf.meeting_name, "update");
 
@@ -631,7 +874,7 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
     .typeText(uf.first_name, "first")
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
-    .typeText(uf.contact_number, "`12345`")
+    .typeText(uf.contact_number, "123-456-7890")
 
     .typeText(uf.meeting_name, "update")
     // make sure highlighting is present
@@ -721,7 +964,7 @@ test("Change_Nothing_Check_Error", async (t) => {
   .expect(uf.additional_info_div.visible).eql(true);
 
   // personal details
-  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "`12345`");
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "123-456-7890");
 
   await select_dropdown_by_value(uf.group_relationship, "Group Member");
 
@@ -749,7 +992,7 @@ test("Failure_Invalid_Virtual_Meeting_Details", async (t) => {
   .expect(uf.additional_info_div.visible).eql(true);
 
   // personal details
-  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "`12345`");
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "123-456-7890");
 
   await select_dropdown_by_value(uf.group_relationship, "Group Member");
 

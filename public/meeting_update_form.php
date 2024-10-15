@@ -279,7 +279,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                         <option value="no" selected><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
                     </select>
                     <label for="contact_number"><?php echo __( 'Contact Number', 'bmlt-workflow' ); ?></label>
-                    <input type="number" name="contact_number" id="contact_number">
+                    <input type="tel" name="contact_number" id="contact_number">
                     <label for="group_relationship"><?php echo __( 'Relationship to group', 'bmlt-workflow' ); ?><span class="bmltwf-required-field">*</span></label>
                     <select name="group_relationship" id="group_relationship" required>
                         <option value="" disabled selected hidden><?php echo __( 'Select one', 'bmlt-workflow' ); ?></option>

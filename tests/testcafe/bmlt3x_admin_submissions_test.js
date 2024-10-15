@@ -473,7 +473,6 @@ test('Quickedit_Hides_Virtual_Meeting_Publish', async t => {
 
 }).requestHooks(submissionslogger);
 
-
 const submissions1logger = RequestLogger(/bmltwf\/v1\/submissions\/93/,
 {
 logRequestBody: true,

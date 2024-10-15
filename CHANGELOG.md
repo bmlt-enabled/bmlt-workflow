@@ -1,3 +1,6 @@
+## 1.1.17 (Oct 14, 2024)
+- Fixes contact phone number format limitation on end user form (thanks @adamH !)
+
 ## 1.1.16 (Sep 12, 2024)
 - Fixes reported bug #188 for virtual meeting publish displaying in quickedit (thanks @tempsaint !)
 - Add querystring parameter support for deep linking from crouton (thanks @dg !)

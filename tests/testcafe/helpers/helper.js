@@ -29,16 +29,19 @@ export function randstr() {
 }
 
 export const bmltwf_admin = Role(userVariables.admin_logon_page_single, async (t) => {
+  await t.click(wordpress_login.user_login);
   // console.log("trying to log on to "+userVariables.admin_logon_page_single+" using username "+userVariables.admin_password_single+" password "+userVariables.admin_password_single);
   await t.typeText(wordpress_login.user_login, userVariables.admin_logon_single).typeText(wordpress_login.user_pass, userVariables.admin_password_single).click(wordpress_login.wp_submit);
   // await t.expect(wordpress_login.user_login.value).eql(userVariables.admin_logon_single);
 });
 
 export const bmltwf_submission_reviewer = Role(userVariables.admin_logon_page_single, async (t) => {
+  await t.click(wordpress_login.user_login);
   await t.typeText(wordpress_login.user_login, userVariables.submission_reviewer_user).typeText(wordpress_login.user_pass, userVariables.submission_reviewer_pass).click(wordpress_login.wp_submit);
 });
 
 export const bmltwf_submission_nopriv = Role(userVariables.admin_logon_page_single, async (t) => {
+  await t.click(wordpress_login.user_login);
   await t
     .typeText(wordpress_login.user_login, userVariables.submission_reviewer_nopriv_user)
     .typeText(wordpress_login.user_pass, userVariables.submission_reviewer_nopriv_pass)
@@ -46,6 +49,7 @@ export const bmltwf_submission_nopriv = Role(userVariables.admin_logon_page_sing
 });
 
 export const bmltwf_admin_multisingle = Role(userVariables.admin_logon_page_multisingle, async (t) => {
+  await t.click(wordpress_login.user_login);
   // console.log("trying to log on to "+userVariables.admin_logon_page_multisingle+" using username "+userVariables.admin_password_multisingle+" password "+userVariables.admin_password_multisingle);
   await t.typeText(wordpress_login.user_login, userVariables.admin_logon_multisingle).typeText(wordpress_login.user_pass, userVariables.admin_password_multisingle).click(wordpress_login.wp_submit);
   // await t.expect(wordpress_login.user_login.value).eql(userVariables.admin_logon_multisingle);
@@ -53,6 +57,7 @@ export const bmltwf_admin_multisingle = Role(userVariables.admin_logon_page_mult
 });
 
 export const bmltwf_admin_multinetwork = Role(userVariables.admin_logon_page_multinetwork, async (t) => {
+  await t.click(wordpress_login.user_login);
   // console.log("trying to log on to "+userVariables.admin_logon_page_multinetwork+" using username "+userVariables.admin_password_multinetwork+" password "+userVariables.admin_password_multinetwork);
   await t.typeText(wordpress_login.user_login, userVariables.admin_logon_multinetwork).typeText(wordpress_login.user_pass, userVariables.admin_password_multinetwork).click(wordpress_login.wp_submit);
 });
@@ -247,8 +252,8 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
   };
 
   await t.useRole(role).navigateTo(settings_page);
-
   const nonce = await Selector("#_wprestnonce").value;
+  await t.debug();
   const resp = await t.request(restore_json, {
     method: "POST",
     body: restorebody,
@@ -257,6 +262,8 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
       "X-WP-Nonce": nonce,
     },
   });
+
+  // console.log("nonce = "+nonce);
   // console.log(restore_json);
   // console.log(resp);
 }
