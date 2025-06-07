@@ -1,3 +1,6 @@
+## 1.1.18 (Jun 7, 2024)
+- Fixes incorrect generation of world ID codes when meetings were selected for unpublish on virtual-na.org (thanks @anitak!)
+
 ## 1.1.17 (Oct 14, 2024)
 - Fixes contact phone number format limitation on end user form (thanks @adamH !)
 

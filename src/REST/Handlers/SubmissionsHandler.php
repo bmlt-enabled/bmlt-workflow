@@ -520,20 +520,35 @@ class SubmissionsHandler
                     $this->debug_log("virtualna_published = ".$change['virtualna_published']);
 
                     $orig_worldid = $bmlt_meeting['worldid_mixed'];
-                    $this->debug_log("original worldid = ".$orig_worldid);
-
-                    if($change["virtualna_published"] === 1)
+                    if(strlen($orig_worldid))
                     {
-                        $change["worldid_mixed"] = substr_replace($orig_worldid, 'G', 0, 1);
+
+                        $this->debug_log("original worldid = ".$orig_worldid);
+
+                        $new_char = 'U';
+                        if($change["virtualna_published"] === 1)
+                        {
+                            $new_char = 'G';
+                        }
+
+                        if(is_numeric(substr($orig_worldid, 0, 1)))
+                        {
+                            $change["worldid_mixed"] = $new_char . $orig_worldid;
+                        }
+                        else
+                        {
+                            $orig_worldid[0] = $new_char;
+                            $change["worldid_mixed"] = $orig_worldid;
+                        }
+
                         unset($change["virtualna_published"]);
+
+                        $this->debug_log("new worldid = ".$change["worldid_mixed"]);
                     }
                     else
                     {
-                        $change["worldid_mixed"] = substr_replace($orig_worldid, 'U', 0, 1);
-                        unset($change["virtualna_published"]);
+                        $this->debug_log("no worldid available to amend");
                     }
-                    $this->debug_log("new worldid = ".$change["worldid_mixed"]);
-
                 }
 
                 $response = $this->bmlt_integration->updateMeeting($change);
