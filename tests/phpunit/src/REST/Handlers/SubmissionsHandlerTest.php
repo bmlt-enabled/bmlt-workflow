@@ -85,11 +85,12 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $this->setVerboseErrorHandler();
         $basedir = getcwd();
         require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
-                require_once($basedir . '/vendor/php-stubs/wordpress-stubs/wordpress-stubs.php');
+                require_once($basedir . '/vendor/autoload.php');
                 if (!defined('OBJECT')) {
                     define('OBJECT', 'OBJECT');
                 }
-        
+        require_once($basedir . '/vendor/wp/wp-settings.php');
+
         Brain\Monkey\setUp();
         Functions\when('sanitize_text_field')->returnArg();
         Functions\when('sanitize_email')->returnArg();
@@ -326,9 +327,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             }
         };
         
-
+xdebug_break();
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
         /** @var Mockery::mock $wpdb test */
         // handle db insert of submission
         $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
