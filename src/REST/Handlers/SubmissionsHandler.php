@@ -1290,6 +1290,7 @@ class SubmissionsHandler
         $table = '';
         $this->populate_formats();
         foreach ($submission as $key => $value) {
+            if (!is_string($value) || (is_string($value) && !empty($value))) {
             switch ($key) {
                 case "meeting_name":
                     $table .= '<tr><td>'.__('Meeting Name','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
@@ -1365,6 +1366,7 @@ class SubmissionsHandler
                     $table .= '<tr><td>'.__('Meeting Formats','bmlt-workflow').':</td><td>' . $friendlydata . '</td></tr>';
                     break;
             }
+        }
         }
 
         return $table;

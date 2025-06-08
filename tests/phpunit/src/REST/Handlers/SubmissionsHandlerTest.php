@@ -85,15 +85,11 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $this->setVerboseErrorHandler();
         $basedir = getcwd();
         require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-error.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-http-response.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-response.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-request.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/endpoints/class-wp-rest-controller.php');
-        if (!class_exists('wpdb')) {
-            require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/wp-db.php');
-        }
-
+                require_once($basedir . '/vendor/php-stubs/wordpress-stubs/wordpress-stubs.php');
+                if (!defined('OBJECT')) {
+                    define('OBJECT', 'OBJECT');
+                }
+        
         Brain\Monkey\setUp();
         Functions\when('sanitize_text_field')->returnArg();
         Functions\when('sanitize_email')->returnArg();
@@ -345,14 +341,23 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\get_option')->justReturn("success");
 
         $retrieve_single_response = $this->meeting;
-        
         $bmlt_input = '';
         $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
         
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
+        print_r($response);
         $this->assertEquals(200, $response->get_status());
+    }
+
+
+    public function test_abc(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('WPDB');
+        $this->assertEquals(200, 201);
+
     }
 
     /**
@@ -382,7 +387,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         };
 
         global $wpdb;
-        $wpdb = Mockery::mock('wpdb');
+        $wpdb = Mockery::mock('WPDB');
         /** @var Mockery::mock $wpdb test */
         // handle db insert of submission
         $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
