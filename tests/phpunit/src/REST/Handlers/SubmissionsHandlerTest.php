@@ -27,7 +27,6 @@ use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
 use function Patchwork\{redefine, getFunction, always};
 use function PHPUnit\Framework\once;
-
 require_once('config_phpunit.php');
 
 
@@ -84,14 +83,20 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         
         $this->setVerboseErrorHandler();
         $basedir = getcwd();
-        require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
-                require_once($basedir . '/vendor/autoload.php');
-                if (!defined('OBJECT')) {
-                    define('OBJECT', 'OBJECT');
-                }
-        require_once($basedir . '/vendor/wp/wp-settings.php');
 
+        require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
+        require_once($basedir . '/vendor/autoload.php');
+        require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
+        require_once($basedir . '/vendor/wp/wp-includes/class-wp-error.php');
+        require_once($basedir . '/vendor/wp/wp-includes/class-wp-http-response.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/endpoints/class-wp-rest-controller.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/class-wp-rest-response.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/class-wp-rest-request.php');
+        if (!class_exists('wpdb')) {
+            require_once($basedir . '/vendor/wp/wp-includes/wp-db.php');
+        }
         Brain\Monkey\setUp();
+
         Functions\when('sanitize_text_field')->returnArg();
         Functions\when('sanitize_email')->returnArg();
         Functions\when('sanitize_textarea_field')->returnArg();
@@ -171,6 +176,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
+
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
         // handle db insert of submission
@@ -328,9 +334,12 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         };
         
 xdebug_break();
+
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
         $wpdb->prefix = "";
+        $response =  Mockery::mock('WP_REST_Response');
+        $response->shouldReceive('set_status')->andReturn("hello");
         /** @var Mockery::mock $wpdb test */
         // handle db insert of submission
         $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
