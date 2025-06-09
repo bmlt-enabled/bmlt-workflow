@@ -361,17 +361,18 @@ jQuery(document).ready(function ($) {
               $('#quickedit_gmaps').hide();
             }
           }
+
+          // Hide the publish to virtual na option if this isn't a virtual meeting
+          if ($('#quickedit_venue_type').val() !== '2') {
+            $('#optional_virtualna_published').hide();
+          } else {
+            $('#optional_virtualna_published').show();
+          }
         });
     } else if (bmltwf_changedata[id].submission_type === 'reason_new') {
       // won't have a geolocation for a new meeting
       $('#quickedit_gmaps').hide();
       add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
-    }
-    // Hide the publish to virtual na option if this isn't a virtual meeting
-    if ($('#quickedit_venue_type').val() !== '2') {
-      $('#optional_virtualna_published').hide();
-    } else {
-      $('#optional_virtualna_published').show();
     }
 
     $('#bmltwf_submission_quickedit_dialog').data('id', id).dialog('open');

@@ -105,7 +105,8 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('wp_json_encode')->justReturn('{"contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","service_body_bigint":2,"additional_info":"my additional info","meeting_name":"virtualmeeting randwick","weekday_tinyint":"2","start_time":"20:30:00"}');
         Functions\when('get_site_url')->justReturn('http://127.0.0.1/wordpress');
         Functions\when('__')->returnArg();
-
+        Functions\when('wp_is_json_media_type')->justReturn(true);
+        
         $this->meeting = ' { "id_bigint": "3563", "worldid_mixed": "", "shared_group_id_bigint": "", "service_body_bigint": "3", "weekday_tinyint": "2", "venue_type": "1", "start_time": "19:00:00", "duration_time": "01:15:00", "time_zone": "", "formats": "BT", "lang_enum": "en", "longitude": "0", "latitude": "0", "distance_in_km": "", "distance_in_miles": "", "email_contact": "", "meeting_name": "Test Monday Night Meeting", "location_text": "Glebe Town Hall", "location_info": "", "location_street": "160 Johns Road", "location_city_subsection": "", "location_neighborhood": "", "location_municipality": "Glebe", "location_sub_province": "", "location_province": "NSW", "location_postal_code_1": "NSW", "location_nation": "", "comments": "", "train_lines": "", "bus_lines": "", "contact_phone_2": "", "contact_email_2": "", "contact_name_2": "", "contact_phone_1": "", "contact_email_1": "", "contact_name_1": "", "zone": "", "phone_meeting_number": "", "virtual_meeting_link": "", "virtual_meeting_additional_info": "", "published": "1", "root_server_uri": "http:", "format_shared_id_list": "3" } ';
 
     }
@@ -141,13 +142,26 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
-            ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1, "longitude" => 1))
             ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp, true))
             ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats, true))
             ->shouldReceive('isAutoGeocodingEnabled')->andreturn(true)
             ->shouldReceive('is_v3_server')->andreturn(false)
             ->shouldReceive('getServiceBodies')->andreturn(array("1"=> array("name"=>"test"),"3"=> array("name"=>"test"),"6"=> array("name"=>"test"),"99"=> array("name"=>"test")));
 
+        $bmlt->shouldReceive('geolocateAddress')
+        ->andReturn([
+            'results' => [
+                [
+                    'geometry' => [
+                        'location' => [
+                            'lat' => 37.7749,
+                            'lng' => -122.4194
+                        ]
+                    ]
+                ]
+            ]
+        ]);
+        
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
         return $bmlt;
     }
@@ -261,6 +275,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $this->assertEquals(200, $response->get_status());
     }
 
+
     /**
      * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
@@ -333,8 +348,6 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             }
         };
         
-xdebug_break();
-
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
         $wpdb->prefix = "";
@@ -362,14 +375,6 @@ xdebug_break();
         $this->assertEquals(200, $response->get_status());
     }
 
-
-    public function test_abc(): void
-    {
-        global $wpdb;
-        $wpdb = Mockery::mock('WPDB');
-        $this->assertEquals(200, 201);
-
-    }
 
     /**
      * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
@@ -914,6 +919,52 @@ xdebug_break();
     }
 
     /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::worldid_publish_to_virtualna
+     */
+    public function test_worldid_publish_to_virtualna(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->prefix = "";
+
+        $bmlt_input = '';
+        $handler = new SubmissionsHandler($this->stub_bmltv2($this->meeting, $bmlt_input));
+
+        $worldid = "12345";
+        $new_worldid = $handler->worldid_publish_to_virtualna(true, $worldid);
+        $this->assertEquals($new_worldid, "G12345");
+        $worldid = "G12345";
+        $new_worldid = $handler->worldid_publish_to_virtualna(true, $worldid);
+        $this->assertEquals($new_worldid, "G12345");
+        $worldid = "U12345";
+        $new_worldid = $handler->worldid_publish_to_virtualna(true, $worldid);
+        $this->assertEquals($new_worldid, "G12345");
+        $worldid = "";
+        $new_worldid = $handler->worldid_publish_to_virtualna(true, $worldid);
+        $this->assertEquals($new_worldid, "G");
+        $worldid = "12345";
+        $new_worldid = $handler->worldid_publish_to_virtualna(false, $worldid);
+        $this->assertEquals($new_worldid, "U12345");
+        $worldid = "U12345";
+        $new_worldid = $handler->worldid_publish_to_virtualna(false, $worldid);
+        $this->assertEquals($new_worldid, "U12345");
+        $worldid = "G12345";
+        $new_worldid = $handler->worldid_publish_to_virtualna(false, $worldid);
+        $this->assertEquals($new_worldid, "U12345");
+        $worldid = "";
+        $new_worldid = $handler->worldid_publish_to_virtualna(false, $worldid);
+        $this->assertEquals($new_worldid, "U");
+        $worldid = "G";
+        $new_worldid = $handler->worldid_publish_to_virtualna(false, $worldid);
+        $this->assertEquals($new_worldid, "U");
+        $worldid = "U";
+        $new_worldid = $handler->worldid_publish_to_virtualna(true, $worldid);
+        $this->assertEquals($new_worldid, "G");
+
+    }
+
+    /**
      * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
      */
     public function test_can_approve_change_meeting(): void
@@ -971,7 +1022,8 @@ xdebug_break();
         Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
         Functions\when('\current_user_can')->justReturn('false');
-
+        Functions\when('\wp_is_json_media_type')->justReturn('true');
+        
         // 
         // $this->debug_log('APPROVEREQUEST');
 

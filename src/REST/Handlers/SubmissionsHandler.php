@@ -293,11 +293,11 @@ class SubmissionsHandler
             return $location;
         }
 
-        $this->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
-
         $latlng = array();
         $latlng['latitude'] = $location['results'][0]['geometry']['location']['lat'];
         $latlng['longitude'] = $location['results'][0]['geometry']['location']['lng'];
+        $this->debug_log("GMAPS location lookup returns = " .  $latlng['latitude']  . " " . $latlng['longitude']);
+
         return $latlng;
     }
 
@@ -515,40 +515,12 @@ class SubmissionsHandler
                     $change["virtual_meeting_link"]="";
                 }
 
-                if(array_key_exists('worldid_mixed',$bmlt_meeting) && array_key_exists('virtualna_published', $change))
+                // If we have a virtualna_published setting, modify worldid appropriately
+                if(array_key_exists('virtualna_published', $change))
                 {
                     $this->debug_log("virtualna_published = ".$change['virtualna_published']);
-
-                    $orig_worldid = $bmlt_meeting['worldid_mixed'];
-                    if(strlen($orig_worldid))
-                    {
-
-                        $this->debug_log("original worldid = ".$orig_worldid);
-
-                        $new_char = 'U';
-                        if($change["virtualna_published"] === 1)
-                        {
-                            $new_char = 'G';
-                        }
-
-                        if(is_numeric(substr($orig_worldid, 0, 1)))
-                        {
-                            $change["worldid_mixed"] = $new_char . $orig_worldid;
-                        }
-                        else
-                        {
-                            $orig_worldid[0] = $new_char;
-                            $change["worldid_mixed"] = $orig_worldid;
-                        }
-
-                        unset($change["virtualna_published"]);
-
-                        $this->debug_log("new worldid = ".$change["worldid_mixed"]);
-                    }
-                    else
-                    {
-                        $this->debug_log("no worldid available to amend");
-                    }
+                    $change["worldid_mixed"] = $this->worldid_publish_to_virtualna(($change["virtualna_published"]=== 1)?true:false, $bmlt_meeting['worldid_mixed']);
+                    $this->debug_log("new worldid = ".$change["worldid_mixed"]);
                 }
 
                 $response = $this->bmlt_integration->updateMeeting($change);
@@ -692,6 +664,27 @@ class SubmissionsHandler
         return $this->bmltwf_rest_success(__('Approved submission id','bmlt-workflow').' ' . $change_id);
     }
 
+
+    function worldid_publish_to_virtualna(bool $publish, string $worldid): string
+    {
+
+        $new_char = 'U';
+        if($publish)
+        {
+            $new_char = 'G';
+        }
+        $new_worldid = "";
+        if(is_numeric(substr($worldid, 0, 1)))
+        {
+            $new_worldid = $new_char . $worldid;
+        }
+        else
+        {
+            $new_worldid = $worldid;
+            $new_worldid[0] = $new_char;
+        }
+        return $new_worldid;
+    }
 
     private function submission_type_to_friendlyname($reason)
     {

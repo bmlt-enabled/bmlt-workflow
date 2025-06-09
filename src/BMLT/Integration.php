@@ -704,7 +704,6 @@ class Integration
         // $this->debug_log($formatarr);
 
         $ourlang = $this->wp_locale_to_bmlt_locale();
-
         $newformat = array();
         foreach ($formatarr as $key => $value) {
 

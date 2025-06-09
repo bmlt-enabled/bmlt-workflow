@@ -77,6 +77,8 @@ Line: $errorLine
         Functions\when('\absint')->returnArg();
         Functions\when('wp_remote_post')->returnArg();
         Functions\when('__')->returnArg();
+        Functions\when('wp_is_json_media_type')->justReturn(true);
+        Functions\when('\get_option')->justReturn("success");
     }
 
     protected function tearDown(): void

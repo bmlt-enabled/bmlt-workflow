@@ -804,7 +804,11 @@ Line: $errorLine
     
     public function test_changeMeeting_against_v3_with_valid_meeting(): void
     {
-        Functions\when('\wp_remote_retrieve_body')->justReturn('<html></html>');
+        xdebug_break();
+
+        // Functions\when('\wp_remote_retrieve_body')->justReturn('<html></html>');
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
+
         Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
         $change = array('id_bigint' => 1,'location_text' => 'updated');
 
@@ -821,7 +825,9 @@ Line: $errorLine
     public function test_updateMeeting_against_v3_with_invalid_meeting(): void
     {
 
-        Functions\when('\wp_remote_retrieve_body')->justReturn('<html></html>');
+        // Functions\when('\wp_remote_retrieve_body')->justReturn('<html></html>');
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
+
         Functions\when('wp_remote_retrieve_response_code')->justReturn(404);
         $change = array('id_bigint' => 1,'location_text' => 'updated');
 
@@ -839,7 +845,7 @@ Line: $errorLine
     public function test_updateMeeting_against_v3_with_invalid_change(): void
     {
 
-        Functions\when('\wp_remote_retrieve_body')->justReturn('<html></html>');
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(422);
         $change = array('id_bigint' => 1,'location_text' => 'updated');
 

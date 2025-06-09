@@ -77,6 +77,7 @@ Line: $errorLine
         Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\get_option')->justReturn("failure");
         Functions\when('__')->returnArg();
+        Functions\when('wp_is_json_media_type')->justReturn(true);
 
     }
 

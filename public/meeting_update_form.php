@@ -250,7 +250,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                 </label>
                                 <div class="bmltwf_right">
                                     <?php echo __( 'You can use this option to publish your virtual meeting', 'bmlt-workflow' ); ?>
-                                    <br><?php echo __('from the online meeting list at virtualna.org'); ?>
+                                    <br><?php echo __('to the online meeting list at virtualna.org', 'bmlt-workflow'); ?>
                                 </div>
                             </div>
                             <select class="meeting-input" name="virtualna_published" id="virtualna_published">
