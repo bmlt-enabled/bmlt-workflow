@@ -12,11 +12,11 @@
       "uuid": "cb4b5940-cead-4e49-98bd-495f63601bdc",
       "documentation": "",
       "method": "get",
-      "endpoint": "",
+      "endpoint": "main_server/api/v1/meetings/2562",
       "responses": [
         {
           "uuid": "80f6427d-eb6e-4b1e-9e73-e572895b5189",
-          "body": "{}",
+          "body": "{\"id\":2562,\"serviceBodyId\":1009,\"formatIds\":[3,17,36],\"venueType\":1,\"temporarilyVirtual\":false,\"day\":2,\"startTime\":\"18:30\",\"duration\":\"01:30\",\"timeZone\":null,\"latitude\":42.2516169,\"longitude\":-73.7890075,\"published\":true,\"email\":null,\"worldId\":null,\"name\":\"2nd Chance Group\",\"location_text\":null,\"location_info\":null,\"location_street\":\"360 Warren Street\",\"location_city_subsection\":null,\"location_neighborhood\":null,\"location_municipality\":\"Hudson\",\"location_sub_province\":\"Columbia\",\"location_province\":\"NY\",\"location_postal_code_1\":null,\"location_nation\":\"US\",\"comments\":null,\"zone\":null,\"train_lines\":null,\"bus_lines\":null,\"contact_phone_2\":null,\"contact_email_2\":null,\"contact_name_2\":null,\"contact_phone_1\":null,\"contact_email_1\":null,\"contact_name_1\":null,\"phone_meeting_number\":null,\"virtual_meeting_link\":null,\"virtual_meeting_additional_info\":null}",
           "latency": 0,
           "statusCode": 200,
           "label": "",
@@ -993,6 +993,35 @@
       ],
       "enabled": true,
       "responseMode": null
+    },
+    {
+      "uuid": "a27e7528-6ffa-40e7-b6b6-2b7727fbfdfa",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "main_server/api/v1/meetings/3687",
+      "responses": [
+        {
+          "uuid": "b0f54d60-0d6f-42b1-b273-0ea2d1c1cd11",
+          "body": "{\"id\":3687,\"serviceBodyId\":1009,\"formatIds\":[3,17,36],\"venueType\":1,\"temporarilyVirtual\":false,\"day\":2,\"startTime\":\"18:30\",\"duration\":\"01:30\",\"timeZone\":null,\"latitude\":42.2516169,\"longitude\":-73.7890075,\"published\":true,\"email\":null,\"worldId\":null,\"name\":\"testing 3687\",\"location_text\":null,\"location_info\":null,\"location_street\":\"360 Warren Street\",\"location_city_subsection\":null,\"location_neighborhood\":null,\"location_municipality\":\"Hudson\",\"location_sub_province\":\"Columbia\",\"location_province\":\"NY\",\"location_postal_code_1\":null,\"location_nation\":\"US\",\"comments\":\"heres a bunch of comments\",\"zone\":null,\"train_lines\":null,\"bus_lines\":null,\"contact_phone_2\":null,\"contact_email_2\":null,\"contact_name_2\":null,\"contact_phone_1\":null,\"contact_email_1\":null,\"contact_name_1\":null,\"phone_meeting_number\":null,\"virtual_meeting_link\":null,\"virtual_meeting_additional_info\":null}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null,
+      "type": "http"
     }
   ],
   "rootChildren": [
@@ -1063,6 +1092,10 @@
     {
       "type": "route",
       "uuid": "60625671-14e0-4123-90e0-dc505dc9a7dd"
+    },
+    {
+      "type": "route",
+      "uuid": "a27e7528-6ffa-40e7-b6b6-2b7727fbfdfa"
     }
   ],
   "proxyMode": false,

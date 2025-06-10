@@ -317,58 +317,58 @@ jQuery(document).ready(function ($) {
     // if it's a meeting change, fill from bmlt first
     if (bmltwf_changedata[id].submission_type === 'reason_change') {
       const { meeting_id } = bmltwf_changedata[id];
-      const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&advanced_published=0&meeting_key=id_bigint&meeting_key_value=${meeting_id}&lang_enum=en&&recursive=1&sort_keys=start_time`;
+      // const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&advanced_published=0&meeting_key=id_bigint&meeting_key_value=${meeting_id}&lang_enum=en&&recursive=1&sort_keys=start_time`;
 
-      bmltwf_fetchJsonp(search_results_address)
-        .then((response) => response.json())
-        .then((data) => {
-          // fill in all the bmlt stuff
-          const item = data[0];
-          if (!Object.keys(data).length) {
-            const a = {};
-            a.responseJSON = {};
-            a.responseJSON.message = __('Error retrieving BMLT data - meeting possibly removed', 'bmlt-workflow');
-            bmltwf_notice_error(a, 'bmltwf-error-message');
-          } else {
-            // split up the duration so we can use it in the select
-            if ('duration_time' in item) {
-              const durationarr = item.duration_time.split(':');
-              // hoping we got hours, minutes and seconds here
-              if (durationarr.length === 3) {
-                $('#quickedit_duration_hours').val(durationarr[0]);
-                $('#quickedit_duration_minutes').val(durationarr[1]);
-              }
-            }
-
-            // split up the format list so we can use it in the select
-            if ('format_shared_id_list' in item) {
-              item.format_shared_id_list = item.format_shared_id_list.split(',');
-            }
-
-            Object.keys(item).forEach((element) => {
-              if ($(`#quickedit_${element}`).length) {
-                $(`#quickedit_${element}`).val(item[element]);
-                $(`#quickedit_${element}`).trigger('change');
-              }
-            });
-            add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
-
-            if (item.longitude && item.latitude) {
-              const lat = item.latitude;
-              const long = item.longitude;
-              update_gmaps(lat, long);
-            } else {
-              $('#quickedit_gmaps').hide();
-            }
+      // bmltwf_fetchJsonp(search_results_address)
+      //   .then((response) => response.json())
+      //   .then((data) => {
+      //     // fill in all the bmlt stuff
+      //     const item = data[0];
+      const item = bmltwf_changedata[id].bmlt_meeting_data;
+      if (!Object.keys(item).length) {
+        const a = {};
+        a.responseJSON = {};
+        a.responseJSON.message = __('Error retrieving BMLT data - meeting possibly removed', 'bmlt-workflow');
+        bmltwf_notice_error(a, 'bmltwf-error-message');
+      } else {
+        // split up the duration so we can use it in the select
+        if ('duration_time' in item) {
+          const durationarr = item.duration_time.split(':');
+          // hoping we got hours, minutes and seconds here
+          if (durationarr.length === 3) {
+            $('#quickedit_duration_hours').val(durationarr[0]);
+            $('#quickedit_duration_minutes').val(durationarr[1]);
           }
+        }
 
-          // Hide the publish to virtual na option if this isn't a virtual meeting
-          if ($('#quickedit_venue_type').val() !== '2') {
-            $('#optional_virtualna_published').hide();
-          } else {
-            $('#optional_virtualna_published').show();
+        // split up the format list so we can use it in the select
+        if ('format_shared_id_list' in item) {
+          item.format_shared_id_list = item.format_shared_id_list.split(',');
+        }
+
+        Object.keys(item).forEach((element) => {
+          if ($(`#quickedit_${element}`).length) {
+            $(`#quickedit_${element}`).val(item[element]);
+            $(`#quickedit_${element}`).trigger('change');
           }
         });
+        add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
+
+        if (item.longitude && item.latitude) {
+          const lat = item.latitude;
+          const long = item.longitude;
+          update_gmaps(lat, long);
+        } else {
+          $('#quickedit_gmaps').hide();
+        }
+      }
+
+      // Hide the publish to virtual na option if this isn't a virtual meeting
+      if ($('#quickedit_venue_type').val() !== '2') {
+        $('#optional_virtualna_published').hide();
+      } else {
+        $('#optional_virtualna_published').show();
+      }
     } else if (bmltwf_changedata[id].submission_type === 'reason_new') {
       // won't have a geolocation for a new meeting
       $('#quickedit_gmaps').hide();

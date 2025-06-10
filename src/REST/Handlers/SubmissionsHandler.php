@@ -67,6 +67,8 @@ class SubmissionsHandler
         // $this->debug_log(($result));
         foreach ($result as $key => $value) {
             $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 2);
+            $this->debug_log( $this->bmlt_integration->getMeeting($result[$key]['meeting_id']));
+            $result[$key]['bmlt_meeting_data'] = $this->bmlt_integration->getMeeting($result[$key]['meeting_id']);
         }
         return $result;
     }

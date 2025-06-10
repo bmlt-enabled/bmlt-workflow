@@ -425,6 +425,35 @@ class Integration
         return true;
     }
 
+    public function getMeeting($meeting_id)
+    {
+
+        $this->debug_log("inside getMeeting auth");
+
+        if (!$meeting_id) {
+            return new \WP_Error('bmltwf', 'getMeeting: No meeting ID present');
+        }
+
+        if (!$this->is_v3_token_valid()) {
+            $ret =  $this->authenticateRootServer();
+            if (is_wp_error($ret)) {
+                $this->debug_log("exiting getMeeting authenticateRootServer failed");
+                return $ret;
+            }
+        }
+        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $meeting_id;
+
+        $response = \wp_remote_request($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), 'GET'));
+        $this->debug_log("v3 wp_remote_request returns " . \wp_remote_retrieve_response_code($response));
+        $this->debug_log(\wp_remote_retrieve_body($response));
+
+        if (\wp_remote_retrieve_response_code($response) != 200) {
+            return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
+        }
+
+        return json_decode(\wp_remote_retrieve_body($response));
+    }
+
     public function getServiceBodies()
     {
         if ($this->is_v3_server()) {
@@ -1219,9 +1248,7 @@ class Integration
             $url = get_option('bmltwf_bmlt_server_address') . "api/v1/auth/token";
             $this->debug_log($url);
             $response = \wp_remote_post($url, array('body' => http_build_query($postargs)));
-            // $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
-            // $this->debug_log(\wp_remote_retrieve_body($response));
-
+            
             $response_code = \wp_remote_retrieve_response_code($response);
 
             if ($response_code != 200) {
