@@ -314,7 +314,6 @@ if (!class_exists('bmltwf_plugin')) {
 
                     $meeting_states_and_provinces = $this->bmlt_integration->getMeetingStates();
                     $script .= "var bmltwf_do_states_and_provinces = " . json_encode($meeting_states_and_provinces) . ";";
-                    $script .= "var bmltwf_is_v3_server = " . json_encode($this->bmlt_integration->is_v3_server()) . ";";
 
                     // handling for zip and county auto geocoding
                     $script .= "var bmltwf_zip_auto_geocoding = " . json_encode($this->bmlt_integration->isAutoGeocodingEnabled('zip')) . ";";

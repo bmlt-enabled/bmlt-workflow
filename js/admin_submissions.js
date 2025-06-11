@@ -17,9 +17,9 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 /* global wp, jQuery, google */
-/* global bmltwf_clear_notices, bmltwf_notice_success, bmltwf_notice_error, bmltwf_fetchJsonp, bmltwf_is_v3_server */
+/* global bmltwf_clear_notices, bmltwf_notice_success, bmltwf_notice_error */
 /* global bmltwf_gmaps_key, bmltwf_auto_geocoding_enabled, bmltwf_optional_location_nation, bmltwf_optional_location_sub_province, bmltwf_optional_location_province */
-/* global bmltwf_do_states_and_provinces, bmltwf_counties_and_sub_provinces, bmltwf_remove_virtual_meeting_details_on_venue_change, bmltwf_bmlt_server_address */
+/* global bmltwf_do_states_and_provinces, bmltwf_counties_and_sub_provinces, bmltwf_remove_virtual_meeting_details_on_venue_change */
 /* global bmltwf_default_closed_meetings, bmltwf_bmlt_formats, bmltwf_datatables_delete_enabled, bmltwf_admin_submissions_rest_url, bmltwf_admin_bmltwf_service_bodies */
 /* global bmltwf_optional_location_province_displayname, bmltwf_optional_location_sub_province_displayname, bmltwf_optional_location_nation_displayname */
 /* global bmltwf_bmltserver_geolocate_rest_url, bmltwf_optional_postcode, bmltwf_zip_auto_geocoding, bmltwf_county_auto_geocoding */
@@ -108,10 +108,6 @@ jQuery(document).ready(function ($) {
   ];
 
   $.getScript(`https://maps.googleapis.com/maps/api/js?key=${bmltwf_gmaps_key}&loading=async&libraries=marker&callback=initMap&v=weekly&async=2`);
-
-  if (!bmltwf_is_v3_server) {
-    bmltwf_notice_error(__('Support for BMLT Server version 2.x will end soon. Please upgrade your BMLT Server version to 3.x or above.'), 'bmltwf-error-message');
-  }
 
   if (!bmltwf_auto_geocoding_enabled) {
     $('#optional_auto_geocode_enabled').hide();
@@ -316,14 +312,6 @@ jQuery(document).ready(function ($) {
 
     // if it's a meeting change, fill from bmlt first
     if (bmltwf_changedata[id].submission_type === 'reason_change') {
-      const { meeting_id } = bmltwf_changedata[id];
-      // const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&advanced_published=0&meeting_key=id_bigint&meeting_key_value=${meeting_id}&lang_enum=en&&recursive=1&sort_keys=start_time`;
-
-      // bmltwf_fetchJsonp(search_results_address)
-      //   .then((response) => response.json())
-      //   .then((data) => {
-      //     // fill in all the bmlt stuff
-      //     const item = data[0];
       const item = bmltwf_changedata[id].bmlt_meeting_data;
       if (!Object.keys(item).length) {
         const a = {};

@@ -197,20 +197,10 @@ class Integration
         return $meeting;
     }
 
-    public function is_v3_server()
-    {
-        if (version_compare($this->bmlt_root_server_version, "3.0.0-rc0", "lt")) {
-            return false;
-        } else {
-            $this->debug_log("using v3 auth");
-            return true;
-        }
-    }
-
     public function is_supported_server($server)
     {
         $version = $this->bmltwf_get_remote_server_version($server);
-        if (version_compare($version, "2.16.4", "lt")) {
+        if (version_compare($version, "3.0.0-rc0", "lt")) {
             $this->debug_log("unsupported server version");
             return false;
         } else {
@@ -284,43 +274,6 @@ class Integration
 
     public function testServerAndAuth($username, $password, $server)
     {
-        $rsv = $this->bmltwf_get_remote_server_version($server);
-        if (version_compare($rsv, "3.0.0", "lt")) {
-            $ret = $this->testServerAndAuthv2($username, $password, $server);
-        } else {
-            $ret = $this->testServerAndAuthv3($username, $password, $server);
-        }
-
-        return $ret;
-    }
-
-    public function testServerAndAuthv2($username, $password, $server)
-    {
-
-        $postargs = array(
-            'admin_action' => 'login',
-            'c_comdef_admin_login' => $username,
-            'c_comdef_admin_password' => $password
-        );
-        $url = $server . "index.php";
-        $this->debug_log($url);
-        $ret = \wp_remote_post($url, array('body' => http_build_query($postargs)));
-
-        $response_code = \wp_remote_retrieve_response_code($ret);
-
-        if ($response_code != 200) {
-            return new \WP_Error('bmltwf', __('check BMLT server address', 'bmlt-workflow'));
-        }
-        if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
-        {
-            return new \WP_Error('bmltwf', __('check username and password details', 'bmlt-workflow'));
-        }
-        return true;
-    }
-
-    public function testServerAndAuthv3($username, $password, $server)
-    {
-
 
         $postargs = array(
             'username' => $username,
@@ -345,44 +298,7 @@ class Integration
         return true;
     }
 
-    public function updateMeeting($change)
-    {
-        if ($this->is_v3_server()) {
-            return $this->updateMeetingv3($change);
-        } else {
-            return $this->updateMeetingv2($change);
-        }
-    }
-
-    private function updateMeetingv2($change)
-    {
-        $changearr = array();
-        $changearr['bmlt_ajax_callback'] = 1;
-        $changearr['set_meeting_change'] = json_encode($change);
-        $this->debug_log("CHANGE");
-        $this->debug_log(($changearr));
-
-        $response = $this->postAuthenticatedRootServerRequest('', $changearr);
-
-        if (is_wp_error($response)) {
-            return $this->bmltwf_integration_error(__('BMLT Communication Error - Check the BMLT configuration settings', 'bmlt-workflow'), 500);
-        }
-
-        $this->debug_log("CHANGE RESPONSE" . \wp_remote_retrieve_response_code($response));
-        $this->debug_log(\wp_remote_retrieve_body($response));
-
-        $json = wp_remote_retrieve_body($response);
-        $rep = str_replace("'", '"', $json);
-
-        $dec = json_decode($rep, true);
-        if (((isset($dec['error'])) && ($dec['error'] === true)) || (empty($dec[0]))) {
-            return $this->bmltwf_integration_error(__('BMLT Communication Error - Meeting change failed', 'bmlt-workflow'), 500);
-        }
-
-        return true;
-    }
-
-    private function updateMeetingv3($change)
+    function updateMeeting($change)
     {
         $this->debug_log("CHANGE before");
         $this->debug_log($change);
@@ -454,81 +370,7 @@ class Integration
         return json_decode(\wp_remote_retrieve_body($response));
     }
 
-    public function getServiceBodies()
-    {
-        if ($this->is_v3_server()) {
-            return $this->getServiceBodiesv3();
-        } else {
-            return $this->getServiceBodiesv2();
-        }
-    }
-
-    private function getServiceBodiesv2()
-    {
-        $arr = $this->getServiceBodiesPermissionv2();
-
-        if (is_wp_error($arr)) {
-            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 'bmlt-workflow'), 500);
-        }
-
-        // $this->debug_log($arr);
-
-        if (empty($arr['service_body'])) {
-            return $this->bmltwf_integration_error(__('No service bodies visible - Check the BMLT Root Server configuration settings', 'bmlt-workflow'), 500);
-        }
-
-        // create an array of the service bodies that we are able to see
-        $editable = array();
-        foreach ($arr['service_body'] as $key => $sb) {
-
-            $this->debug_log("checking key = ");
-            $this->debug_log($key);
-            $this->debug_log("sb = ");
-            $this->debug_log($sb);
-
-            $permissions = $sb['permissions'] ?? 0;
-            $id = $sb['id'] ?? 0;
-
-            if ($id) {
-                if (($permissions === 2) || ($permissions === 3)) {
-                    $editable[$id] = true;
-                }
-            }
-        }
-
-        $req = array();
-        $req['admin_action'] = 'get_service_body_info';
-
-        $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServiceBodies', $req);
-        if (is_wp_error($response)) {
-            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 'bmlt-workflow'), 500);
-        }
-
-        $arr = json_decode(\wp_remote_retrieve_body($response), 1);
-
-        // $this->debug_log("SERVICE BODY JSON");
-        // $this->debug_log(($arr));
-
-        // make our list of editable service bodies
-        foreach ($arr as $key => $value) {
-
-            $id = $value['id'] ?? 0;
-            $name = $value['name'] ?? 0;
-            $description = $value['description'] ?? '';
-
-            // must have an id and name
-            if ($id && $name) {
-                // check we can see the service body from permissions above
-                $is_editable = $editable[$id] ?? false;
-                if ($is_editable) {
-                    $sblist[$id] = array('name' => $name, 'description' => $description);
-                }
-            }
-        }
-        return $sblist;
-    }
-
-    private function getServiceBodiesv3()
+    function getServiceBodies()
     {
         $this->debug_log("inside getServiceBodies v3 auth");
         if (!$this->is_v3_token_valid()) {
@@ -563,50 +405,7 @@ class Integration
         return $sblist;
     }
 
-    public function deleteMeeting($meeting_id)
-    {
-        if ($this->is_v3_server()) {
-            return $this->deleteMeetingv3($meeting_id);
-        } else {
-            return $this->deleteMeetingv2($meeting_id);
-        }
-    }
-
-    private function deleteMeetingv2($meeting_id)
-    {
-        $changearr = array();
-        $changearr['bmlt_ajax_callback'] = 1;
-        $changearr['delete_meeting'] = $meeting_id;
-
-        $this->debug_log("DELETE SEND");
-        $this->debug_log(($changearr));
-
-        $response = $this->postAuthenticatedRootServerRequest('', $changearr);
-
-        if (is_wp_error($response)) {
-            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 'bmlt-workflow'), 500);
-        }
-
-        // $rep = str_replace("'", '"', $response);
-        // $this->debug_log("JSON RESPONSE");
-        // $this->debug_log(($rep));
-
-        // $arr = json_decode($rep, true);
-        $arr = json_decode(\wp_remote_retrieve_body($response), 1);
-
-        $this->debug_log("DELETE RESPONSE");
-        $this->debug_log(($arr));
-
-        if ((isset($arr['success'])) && ($arr['success'] != 1)) {
-            return $this->bmltwf_integration_error(__('BMLT Communication Error - Meeting deletion failed', 'bmlt-workflow'), 500);
-        }
-        if ((!empty($arr['report'])) && ($arr['report'] != $meeting_id)) {
-            return $this->bmltwf_integration_error(__('BMLT Communication Error - Meeting deletion failed', 'bmlt-workflow'), 500);
-        }
-        return true;
-    }
-
-    private function deleteMeetingv3($meeting_id)
+    function deleteMeeting($meeting_id)
     {
         $this->debug_log("inside deleteMeeting v3 auth");
 
@@ -702,15 +501,6 @@ class Integration
 
     public function getMeetingFormats()
     {
-        if ($this->is_v3_server()) {
-            return $this->getMeetingFormatsv3();
-        } else {
-            return $this->getMeetingFormatsv2();
-        }
-    }
-
-    public function getMeetingFormatsv3()
-    {
         $this->debug_log("inside getMeetingFormats v3 auth");
 
         if (!$this->is_v3_token_valid()) {
@@ -766,30 +556,6 @@ class Integration
         return $newformat;
     }
 
-    public function getMeetingFormatsv2()
-    {
-        $req = array();
-        $req['admin_action'] = 'get_format_info';
-
-        $req['lang'] = $this->wp_locale_to_bmlt_locale();
-
-        // get an xml for a workaround
-        $response = $this->postAuthenticatedRootServerRequestSemantic('local_server/server_admin/xml.php', $req);
-        if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
-            return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve meeting formats', 'bmlt-workflow'));
-        }
-        $xml = simplexml_load_string(\wp_remote_retrieve_body($response));
-        $formatarr = json_decode(json_encode($xml), 1);
-
-        $newformat = array();
-        foreach ($formatarr['row'] as $key => $value) {
-            $formatid = $value['id'];
-            unset($value['id']);
-            $newformat[$formatid] = $value;
-        }
-
-        return $newformat;
-    }
 
     public function is_valid_bmlt_server($server)
     {
@@ -898,61 +664,7 @@ class Integration
         return $gmaps_key;
     }
 
-    public function createMeeting($meeting)
-    {
-        if ($this->is_v3_server()) {
-            return $this->createMeetingv3($meeting);
-        } else {
-            return $this->createMeetingv2($meeting);
-        }
-    }
-
-    private function createMeetingv3($meeting)
-    {
-        $this->debug_log("CHANGE before");
-        $this->debug_log($meeting);
-
-        $meeting = $this->convertv2meetingtov3($meeting);
-
-        $this->debug_log("CHANGE after");
-        $this->debug_log($meeting);
-
-        $this->debug_log("json");
-        $this->debug_log(json_encode($meeting));
-
-        $this->debug_log("formatsIds before");
-        $this->debug_log($meeting['formatIds']);
-
-        $meeting['formatIds'] = $this->removeLocations($meeting['formatIds']);
-
-        $this->debug_log("formatsIds after");
-        $this->debug_log($meeting['formatIds']);
-
-        $this->debug_log("inside createMeetingv3 auth");
-
-        if (!$this->is_v3_token_valid()) {
-            $ret =  $this->authenticateRootServer();
-            if (is_wp_error($ret)) {
-                $this->debug_log("exiting createMeetingv3 authenticateRootServer failed");
-                return $ret;
-            }
-        }
-        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings';
-
-        $this->debug_bmlt_payload($url, 'POST', $meeting);
-
-        $response = \wp_remote_post($url, $this->set_args(null, $meeting, array("Authorization" => "Bearer " . $this->v3_access_token)));
-        // $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
-        // $this->debug_log(\wp_remote_retrieve_body($response));
-
-        if (\wp_remote_retrieve_response_code($response) != 201) {
-            return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
-        }
-
-        return true;
-    }
-
-    private function createMeetingv2($meeting)
+    function createMeeting($meeting)
     {
         $this->debug_log("meeting = ");
         $this->debug_log($meeting);
@@ -994,6 +706,8 @@ class Integration
                 case "4":
                     $key = array_search('TC', array_column($formats, 'key_string'));
                     break;
+                default:
+                    return $this->bmltwf_integration_error(__('Invalid venue type specified', 'bmlt-workflow'), 500);
             }
             if (($key != '') && (!in_array($key, $meetingformats))) {
                 $this->debug_log("adding key to meetingformats");
@@ -1026,24 +740,15 @@ class Integration
         return true;
     }
 
-    public function isAutoGeocodingEnabled($geocoding_type)
+    function isAutoGeocodingEnabled($geocoding_type)
     {
+
         $this->debug_log("auto geocoding " . $geocoding_type);
 
         if ((empty($geocoding_type) || ($geocoding_type !== 'auto') && ($geocoding_type !== 'county') && ($geocoding_type !== 'zip'))) {
             $this->debug_log("auto geocoding check contains invalid geocoding type");
             return false;
         }
-
-        if ($this->is_v3_server()) {
-            return $this->isAutoGeocodingEnabledv3($geocoding_type);
-        } else {
-            return $this->isAutoGeocodingEnabledv2($geocoding_type);
-        }
-    }
-
-    private function isAutoGeocodingEnabledv3($geocoding_type)
-    {
 
         $response = \wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
@@ -1069,45 +774,6 @@ class Integration
         }
         return false;
     }
-
-    public function isAutoGeocodingEnabledv2($geocoding_type)
-    {
-        $ret = $this->authenticateRootServer();
-        if (is_wp_error($ret)) {
-            return $ret;
-        }
-
-        $url = get_option('bmltwf_bmlt_server_address') . "index.php";
-
-        $resp = $this->get($url, $this->cookies);
-
-        $search = '';
-        switch ($geocoding_type) {
-            case 'auto':
-                $search = 'auto_geocoding_enabled';
-            case 'zip':
-                $search = 'zip_auto_geocoding_enabled';
-            case 'county':
-                $search = 'county_auto_geocoding_enabled';
-        }
-        
-        preg_match('/"' . $search . '":(?:(true)|(false)),/', wp_remote_retrieve_body($resp), $matches);
-
-        // preg_match('/"auto_geocoding_enabled":(?:(true)|(false)),/', wp_remote_retrieve_body($resp), $matches);
-        $this->debug_log("matches: ");
-        $this->debug_log($matches);
-        $auto = $matches[1] === "true" ? true : false;
-        $this->debug_log("auto geocoding check returns ");
-
-        if ($auto) {
-            $this->debug_log("true");
-        } else {
-            $this->debug_log("false");
-        }
-
-        return $auto;
-    }
-
 
     public function getDefaultLatLong()
     {
@@ -1199,15 +865,6 @@ class Integration
         }
     }
 
-    private function authenticateRootServer()
-    {
-        if ($this->is_v3_server()) {
-            return $this->authenticateRootServerv3();
-        } else {
-            return $this->authenticateRootServerv2();
-        }
-    }
-
     private function decodeBMLTPassword()
     {
         $encrypted = get_option('bmltwf_bmlt_password');
@@ -1231,7 +888,7 @@ class Integration
         return $decrypted;
     }
 
-    private function authenticateRootServerv3()
+    function authenticateRootServer()
     {
         $decrypted = $this->decodeBMLTPassword();
         if (\is_wp_error($decrypted)) {
@@ -1262,7 +919,7 @@ class Integration
         return true;
     }
 
-    private function authenticateRootServerv2()
+    function authenticateRootServerv2()
     {
 
         $decrypted = $this->decodeBMLTPassword();
@@ -1327,13 +984,20 @@ class Integration
         return $args;
     }
 
-    private function get($url, $cookies = null)
+    private function getv3($url)
     {
-        if ($this->is_v3_server()) {
-            return $this->getv3($url, $cookies);
-        } else {
-            return $this->getv2($url, $cookies);
+        $this->debug_log("inside get v3");
+
+        if (!$this->is_v3_token_valid()) {
+            $ret =  $this->authenticateRootServer();
+            if (is_wp_error($ret)) {
+                return $ret;
+            }
         }
+        $this->debug_bmlt_payload($url, $method = null);
+
+        $ret = \wp_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
+        return $ret;
     }
 
     private function getv2($url, $cookies = null)
@@ -1357,9 +1021,9 @@ class Integration
         return $ret;
     }
 
-    private function getv3($url)
+    private function post($url, $postargs, $cookies = null)
     {
-        $this->debug_log("inside get v3");
+        $this->debug_log("inside post v3 auth");
 
         if (!$this->is_v3_token_valid()) {
             $ret =  $this->authenticateRootServer();
@@ -1367,61 +1031,15 @@ class Integration
                 return $ret;
             }
         }
-        $this->debug_bmlt_payload($url, $method = null);
 
-        $ret = \wp_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
+        $this->debug_bmlt_payload($url, 'POST', http_build_query($postargs));
+
+        $ret = \wp_remote_post($url, $this->set_args(null, http_build_query($postargs), array("Authorization" => "Bearer " . $this->v3_access_token), 'POST'));
         return $ret;
-    }
-
-    private function post($url, $postargs, $cookies = null)
-    {
-
-        if ($this->is_v3_server()) {
-            $this->debug_log("inside post v3 auth");
-
-            if (!$this->is_v3_token_valid()) {
-                $ret =  $this->authenticateRootServer();
-                if (is_wp_error($ret)) {
-                    return $ret;
-                }
-            }
-
-            $this->debug_bmlt_payload($url, 'POST', http_build_query($postargs));
-
-            $ret = \wp_remote_post($url, $this->set_args(null, http_build_query($postargs), array("Authorization" => "Bearer " . $this->v3_access_token), 'POST'));
-            return $ret;
-        } else {
-            $this->debug_bmlt_payload($url, 'POST', http_build_query($postargs));
-
-            $ret = \wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
-
-            $cookie = \wp_remote_retrieve_cookie($ret, 'laravel_session');
-            if ($cookie != "") {
-                // this is a bmlt3x server and we hit it with 2x.
-                $this->debug_log("ROOT SERVER VERSION UPGRADE DETECTED");
-                $this->update_root_server_version();
-                return $this->bmltwf_integration_error("Wrong server version - updating. Please refresh.", "bmltwf_bmlt_integration");
-            }
-
-            if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', \wp_remote_retrieve_body($ret))) // best way I could find to check for invalid login
-            {
-                $ret =  $this->authenticateRootServer();
-                if (is_wp_error($ret)) {
-                    return $ret;
-                }
-
-                $this->debug_bmlt_payload($url, 'POST', http_build_query($postargs));
-
-                // try once more in case it was a session timeout
-                $ret = \wp_remote_post($url, $this->set_args($cookies, http_build_query($postargs)));
-            }
-            return $ret;
-        }
     }
 
     private function postsemantic($url, $postargs, $cookies = null)
     {
-
 
         $newargs = '';
         foreach ($postargs as $key => $value) {
