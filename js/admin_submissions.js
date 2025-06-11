@@ -222,7 +222,6 @@ jQuery(document).ready(function ($) {
     }
 
     // some special handling for deletion of fields
-    // for (const key in changes_requested)
     Object.keys(changes_requested).forEach((key) => {
       switch (key) {
         case 'original_virtual_meeting_additional_info':
@@ -250,8 +249,8 @@ jQuery(document).ready(function ($) {
 
     Object.keys(changes_requested).forEach((element) => {
       if ($(`#quickedit_${element}`).length) {
-        if (element === 'format_shared_id_list') {
-          $('.quickedit_format_shared_id_list-select2').addClass('bmltwf-changed');
+        if (element === 'formatIds') {
+          $('.quickedit_formatIds-select2').addClass('bmltwf-changed');
         } else {
           $(`#quickedit_${element}`).addClass('bmltwf-changed');
         }
@@ -265,8 +264,8 @@ jQuery(document).ready(function ($) {
         $(this).addClass('bmltwf-changed');
       }
     });
-    $('#quickedit_format_shared_id_list').on('change.bmltwf-highlight', function () {
-      $('.quickedit_format_shared_id_list-select2').addClass('bmltwf-changed');
+    $('#quickedit_formatIds').on('change.bmltwf-highlight', function () {
+      $('.quickedit_formatIds-select2').addClass('bmltwf-changed');
     });
     // stretch our grow wrap boxes
     $('.grow-wrap textarea').trigger('input', 'growwrap');
@@ -282,10 +281,10 @@ jQuery(document).ready(function ($) {
 
     // remove our change handler
     $('.quickedit-input').off('input.bmltwf-highlight');
-    $('#quickedit_format_shared_id_list').off('change.bmltwf-highlight');
+    $('#quickedit_formatIds').off('change.bmltwf-highlight');
     // remove the highlighting
     $('.quickedit-input').removeClass('bmltwf-changed');
-    $('.quickedit_format_shared_id_list-select2').removeClass('bmltwf-changed');
+    $('.quickedit_formatIds-select2').removeClass('bmltwf-changed');
 
     // remove any content from the input fields
     $('.quickedit-input').val('');
@@ -307,6 +306,8 @@ jQuery(document).ready(function ($) {
     // hide map and let it be shown later if required
     $('#bmltwf_quickedit_map').hide();
 
+    // hide comments and let it be shown later if required
+    $('#quickedit_comments').hide();
     bmltwf_clear_notices();
     // fill quickedit
 
@@ -320,18 +321,13 @@ jQuery(document).ready(function ($) {
         bmltwf_notice_error(a, 'bmltwf-error-message');
       } else {
         // split up the duration so we can use it in the select
-        if ('duration_time' in item) {
-          const durationarr = item.duration_time.split(':');
-          // hoping we got hours, minutes and seconds here
-          if (durationarr.length === 3) {
+        if ('duration' in item) {
+          const durationarr = item.duration.split(':');
+          // hoping we got hours and minutes here
+          if (durationarr.length === 2) {
             $('#quickedit_duration_hours').val(durationarr[0]);
             $('#quickedit_duration_minutes').val(durationarr[1]);
           }
-        }
-
-        // split up the format list so we can use it in the select
-        if ('format_shared_id_list' in item) {
-          item.format_shared_id_list = item.format_shared_id_list.split(',');
         }
 
         Object.keys(item).forEach((element) => {
@@ -340,6 +336,11 @@ jQuery(document).ready(function ($) {
             $(`#quickedit_${element}`).trigger('change');
           }
         });
+        if (item.published === true) {
+          $('#quickedit_published').val('true');
+        } else {
+          $('#quickedit_published').val('false');
+        }
         add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
 
         if (item.longitude && item.latitude) {
@@ -357,6 +358,7 @@ jQuery(document).ready(function ($) {
       } else {
         $('#optional_virtualna_published').show();
       }
+      $('#quickedit_comments').show();
     } else if (bmltwf_changedata[id].submission_type === 'reason_new') {
       // won't have a geolocation for a new meeting
       $('#quickedit_gmaps').hide();
@@ -383,7 +385,7 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  $('#quickedit_format_shared_id_list').select2({
+  $('#quickedit_formatIds').select2({
     placeholder: 'Select from available formats',
     multiple: true,
     width: '100%',
@@ -391,7 +393,7 @@ jQuery(document).ready(function ($) {
     selectionCssClass: ':all:',
     dropdownParent: $('#bmltwf_submission_quickedit_dialog'),
   });
-  $('#quickedit_format_shared_id_list').trigger('change');
+  $('#quickedit_formatIds').trigger('change');
 
   const datatable = $('#dt-submission').DataTable({
     dom: 'Bfrtip',

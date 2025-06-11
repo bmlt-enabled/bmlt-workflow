@@ -77,14 +77,14 @@ wp_nonce_field('wp_rest', '_wprestnonce');
         <div class="form-grid-col1">
             <label for="quickedit_meeting_name"><?php echo __( "Meeting Name", 'bmlt-workflow' ); ?></label>
             <input type="text" name="quickedit_meeting_name" id="quickedit_meeting_name" class="quickedit-input">
-            <label for="quickedit_format_shared_id_list"><?php echo __( "Meeting Formats", 'bmlt-workflow' ); ?>
+            <label for="quickedit_formatIds"><?php echo __( "Meeting Formats", 'bmlt-workflow' ); ?>
                 <?php
                 $req = get_option('bmltwf_required_meeting_formats') === 'true';
                 if ($req) {
                     echo '<span class="bmltwf-required-field"> *</span>';
                 }
                 echo '</label>';
-                echo '<select class="quickedit_format_shared_id_list-select2" name="quickedit_format_shared_id_list" id="quickedit_format_shared_id_list" style="width: auto"';
+                echo '<select class="quickedit_formatIds-select2" name="quickedit_formatIds" id="quickedit_formatIds" style="width: auto"';
                 if ($req) {
                     echo ' required';
                 }
@@ -93,13 +93,13 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 </select>
                 <div class="grid-flex-container">
                     <div class="grid-flex-item">
-                        <label for="quickedit_start_time"><?php echo __( "Start Time", 'bmlt-workflow' ); ?></label>
-                        <input type="time" name="quickedit_start_time" id="quickedit_start_time" class="quickedit-input">
+                        <label for="quickedit_startTime"><?php echo __( "Start Time", 'bmlt-workflow' ); ?></label>
+                        <input type="time" name="quickedit_startTime" id="quickedit_startTime" class="quickedit-input">
 
                     </div>
                     <div class="grid-flex-item">
-                        <label for="quickedit_weekday_tinyint"><?php echo __( "Weekday", 'bmlt-workflow' ); ?></label>
-                        <select class="quickedit-input" name="quickedit_weekday_tinyint" id="quickedit_weekday_tinyint">
+                        <label for="quickedit_day"><?php echo __( "Weekday", 'bmlt-workflow' ); ?></label>
+                        <select class="quickedit-input" name="quickedit_day" id="quickedit_day">
                             <option value="1"><?php echo __( "Sunday", 'bmlt-workflow' ); ?></option>
                             <option value="2"><?php echo __( "Monday", 'bmlt-workflow' ); ?></option>
                             <option value="3"><?php echo __( "Tuesday", 'bmlt-workflow' ); ?></option>
@@ -154,14 +154,18 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <div class="grow-wrap">
                     <textarea class="dialog_textarea quickedit-input" id="quickedit_virtual_meeting_link" name="quickedit_virtual_meeting_link" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
                 </div>
-                <label for="quickedit_additional_info"><?php echo __( "Additional Information", 'bmlt-workflow' ); ?></label>
+                <label for="quickedit_additional_info"><?php echo __( "Additional Information (From Submission)", 'bmlt-workflow' ); ?></label>
                 <div class="grow-wrap">
                     <textarea class="dialog_textarea quickedit-input" id="quickedit_additional_info" name="quickedit_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value" disabled></textarea>
                 </div>
-        </div>
+                <label for="quickedit_comments"><?php echo __( "Meeting Comments (From BMLT)", 'bmlt-workflow' ); ?></label>
+                <div class="grow-wrap">
+                    <textarea class="dialog_textarea quickedit-input" id="quickedit_comments" name="quickedit_comments" onInput="this.parentNode.dataset.replicatedValue = this.value" disabled></textarea>
+                </div>
+            </div>
         <div class="form-grid-col2">
-            <label for="quickedit_venue_type"><?php echo __( "Venue Type", 'bmlt-workflow' ); ?></label>
-            <select name="quickedit_venue_type" id="quickedit_venue_type" class="quickedit-input">
+            <label for="quickedit_venueType"><?php echo __( "Venue Type", 'bmlt-workflow' ); ?></label>
+            <select name="quickedit_venueType" id="quickedit_venueType" class="quickedit-input">
                 <option value="" disabled selected hidden><?php echo __( "Select one", 'bmlt-workflow' ); ?></option>
                 <option value="1"><?php echo __( "Face to Face", 'bmlt-workflow' ); ?></option>
                 <option value="2"><?php echo __( "Virtual only", 'bmlt-workflow' ); ?></option>
@@ -170,8 +174,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </select>
             <label for="quickedit_published"><?php echo __( 'Meeting Published?', 'bmlt-workflow' ); ?></label>
             <select class="quickedit-input" name="quickedit_published" id="quickedit_published">
-                <option value="1"><?php echo __( 'Yes', 'bmlt-workflow' ); ?></option>
-                <option value="0"><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
+                <option value='true'><?php echo __( 'Yes', 'bmlt-workflow' ); ?></option>
+                <option value='false'><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
             </select>
             <div id='optional_virtualna_published'>
                 <label for="quickedit_virtualna_published"><?php echo __( 'Publish on virtual.na.org?', 'bmlt-workflow' ); ?></label>
