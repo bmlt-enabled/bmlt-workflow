@@ -352,7 +352,7 @@ jQuery(document).ready(function ($) {
       }
 
       // Hide the publish to virtual na option if this isn't a virtual meeting
-      if ($('#quickedit_venue_type').val() !== '2') {
+      if ($('#quickedit_venueType').val() !== '2') {
         $('#optional_virtualna_published').hide();
       } else {
         $('#optional_virtualna_published').show();
@@ -504,20 +504,20 @@ jQuery(document).ready(function ($) {
               submission_type = __('New Meeting', 'bmlt-workflow');
               namestr = data.name;
               meeting_day = weekdays[data.day];
-              meeting_time = data.start_time;
+              meeting_time = data.startTime;
               break;
             case 'reason_close':
               submission_type = __('Close Meeting', 'bmlt-workflow');
               // console.log(data);
               namestr = data.name;
               meeting_day = weekdays[data.day];
-              meeting_time = data.start_time;
+              meeting_time = data.startTime;
               break;
             case 'reason_change':
               submission_type = __('Modify Meeting', 'bmlt-workflow');
               namestr = data.original_name;
               meeting_day = weekdays[data.original_day];
-              meeting_time = data.original_start_time;
+              meeting_time = data.original_startTime;
               original = `${__('Original', 'bmlt-workflow')} `;
               break;
             default:
@@ -716,9 +716,9 @@ jQuery(document).ready(function ($) {
           table += column(col_meeting_details, mname, c[key]);
           break;
         }
-        case 'venue_type': {
+        case 'venueType': {
           const vtype = venue_types[c[key]];
-          if ('original_venue_type' in c) {
+          if ('original_venueType' in c) {
             const ovtype = venue_types[c.original_venue_type];
             table += column(col_meeting_details, __('Venue Type', 'bmlt-workflow'), `${ovtype} → ${vtype}`);
           } else {

@@ -35,14 +35,14 @@ class Admin_Submissions {
         // quickedit fields
         this.quickedit_name = Selector("#quickedit_name");
         this.quickedit_formatIds = Selector("#quickedit_formatIds");
-        this.quickedit_start_time = Selector("#quickedit_start_time");
+        this.quickedit_startTime = Selector("#quickedit_startTime");
         this.quickedit_duration_hours = Selector("#quickedit_duration_hours");
         this.quickedit_duration_minutes = Selector("#quickedit_duration_minutes");
         this.quickedit_virtual_meeting_additional_info = Selector("#quickedit_virtual_meeting_additional_info");
         this.quickedit_phone_meeting_number = Selector("#quickedit_phone_meeting_number");
         this.quickedit_virtual_meeting_link = Selector("#quickedit_virtual_meeting_link");
         this.quickedit_additional_info = Selector("#quickedit_additional_info");
-        this.quickedit_venue_type = Selector("#quickedit_venue_type");
+        this.quickedit_venueType = Selector("#quickedit_venueType");
         this.quickedit_day = Selector("#quickedit_day");
         this.quickedit_location_text = Selector("#quickedit_location_text");
         this.quickedit_location_street = Selector("#quickedit_location_street");

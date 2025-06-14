@@ -38,7 +38,7 @@ class Meeting_Update_Form {
         this.contact_number = Selector('#contact_number');
         this.group_relationship = Selector('#group_relationship');
         this.virtual_meeting_options = Selector('#virtual_meeting_options');
-        this.venue_type = Selector('#venue_type');
+        this.venueType = Selector('#venueType');
         this.virtual_meeting_settings = Selector('#virtual_meeting_settings');
         this.virtual_meeting_link = Selector('#virtual_meeting_link');
         this.virtual_meeting_additional_info = Selector('#virtual_meeting_additional_info');
@@ -46,7 +46,7 @@ class Meeting_Update_Form {
         this.meeting_details = Selector('#meeting_details');
         this.name = Selector('#name');
         this.day = Selector('#day');
-        this.start_time = Selector('#start_time');
+        this.startTime = Selector('#startTime');
         this.duration_hours = Selector('#duration_hours');
         this.duration_minutes = Selector('#duration_minutes');
         this.duration = Selector('#duration');

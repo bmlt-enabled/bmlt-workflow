@@ -207,14 +207,14 @@ class SubmissionsHandler
             "location_municipality",
             "location_province",
             "location_postal_code_1",
-            "weekday",
+            "day",
             "formatIds",
             "location_sub_province",
             "location_nation",
             "virtual_meeting_additional_info",
             "phone_meeting_number",
             "virtual_meeting_link",
-            "venue_type",
+            "venueType",
             "published",
             "virtualna_published",
             "latitude",
@@ -375,7 +375,7 @@ class SubmissionsHandler
             "location_municipality",
             "location_province",
             "location_postal_code_1",
-            "weekday",
+            "day",
             "service_body_bigint",
             "formatIds",
             "location_sub_province",
@@ -383,7 +383,7 @@ class SubmissionsHandler
             "virtual_meeting_additional_info",
             "phone_meeting_number",
             "virtual_meeting_link",
-            "venue_type",
+            "venueType",
             "published",
             "virtualna_published",
             "latitude",
@@ -495,15 +495,15 @@ class SubmissionsHandler
                         }
                     }
                 }
-                $bmlt_venue_type = $bmlt_meeting['venue_type'];
-                // $this->debug_log("bmlt_meeting[venue_type]=");
-                // $this->debug_log($bmlt_venue_type);
+                $bmlt_venueType = $bmlt_meeting['venueType'];
+                // $this->debug_log("bmlt_meeting[venueType]=");
+                // $this->debug_log($bmlt_venueType);
 
-                $change_venue_type = $change['venue_type'] ?? '0';
-                // $this->debug_log("change[venue_type]=");
-                // $this->debug_log($change_venue_type);
+                $change_venueType = $change['venueType'] ?? '0';
+                // $this->debug_log("change[venueType]=");
+                // $this->debug_log($change_venueType);
 
-                $is_change_to_f2f = (($change_venue_type == 1)&&($bmlt_venue_type != $change_venue_type));
+                $is_change_to_f2f = (($change_venueType == 1)&&($bmlt_venueType != $change_venueType));
                 // $this->debug_log("is_change_to_f2f=");
                 // $this->debug_log($is_change_to_f2f);
 
@@ -758,8 +758,8 @@ class SubmissionsHandler
             $reason_close_bool = ($data['update_reason'] === 'reason_close');
             // handle meeting formats
             $this->populate_formats();
-            $venue_type = $data['venue_type'] ?? '0';
-            $virtual_meeting_bool = ($venue_type !== '1');
+            $venueType = $data['venueType'] ?? '0';
+            $virtual_meeting_bool = ($venueType !== '1');
 
             $require_postcode = false;
             if (get_option('bmltwf_optional_postcode') === 'displayrequired') {
@@ -807,13 +807,13 @@ class SubmissionsHandler
             "name" => array("text", $reason_new_bool),
             "startTime" => array("time", $reason_new_bool),
             "duration" => array("time", $reason_new_bool),
-            "venue_type" => array("venue", $reason_new_bool | $reason_change_bool),
+            "venueType" => array("venue", $reason_new_bool | $reason_change_bool),
             // location text and street only required if its not a virtual meeting #75
             "location_text" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_street" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_info" => array("text", false),
             "location_municipality" => array("text", $reason_new_bool),
-            "weekday" => array("weekday", $reason_new_bool),
+            "day" => array("day", $reason_new_bool),
             "service_body_bigint" => array("bigint", $reason_new_bool),
             "email_address" => array("email", true),
             "contact_number" => array("text", false),
@@ -851,7 +851,7 @@ class SubmissionsHandler
             }
 
             // special handling for temporary virtual
-            if ($field === "venue_type" && $virtual_meeting_bool && ($data["update_reason"] !== 'reason_close'))
+            if ($field === "venueType" && $virtual_meeting_bool && ($data["update_reason"] !== 'reason_close'))
             {
                 $phone_meeting_number_provided = $data["phone_meeting_number"]??false;
                 // $this->debug_log("phone meeting number");
@@ -924,7 +924,7 @@ class SubmissionsHandler
                         }
                         break;
                     case ('day'):
-                        if (!(($data[$field] >= 1) && ($data[$field] <= 7))) {
+                        if (!(($data[$field] >= 0) && ($data[$field] <= 6))) {
                             return $this->invalid_form_field($field);
                         }
                         break;
@@ -992,7 +992,7 @@ class SubmissionsHandler
                     "location_postal_code_1",
                     "location_nation",
                     "location_sub_province",
-                    "weekday",
+                    "day",
                     "service_body_bigint",
                     "formatIds",
                     "contact_number",
@@ -1004,7 +1004,7 @@ class SubmissionsHandler
                     "virtual_meeting_link",
                     "starter_kit_required",
                     "starter_kit_postal_address",
-                    "venue_type"
+                    "venueType"
                 );
 
                 // new meeting - add all fields to the changes requested
@@ -1035,13 +1035,13 @@ class SubmissionsHandler
                     "location_postal_code_1",
                     "location_nation",
                     "location_sub_province",
-                    "weekday",
+                    "day",
                     "service_body_bigint",
                     "formatIds",
                     "virtual_meeting_additional_info",
                     "phone_meeting_number",
                     "virtual_meeting_link",
-                    "venue_type",
+                    "venueType",
                     "published",
                 );
 
@@ -1055,7 +1055,7 @@ class SubmissionsHandler
 
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
                 // change our meeting return to v2 format so we can handle original components. This is a holdover from original v2 support.
-                $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
+                // $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
                 // $this->debug_log(($bmlt_meeting));
                 if (\is_wp_error($bmlt_meeting)) {
                     return $this->bmltwf_rest_error(__('Error retrieving meeting details','bmlt-workflow'), 422);
@@ -1152,7 +1152,7 @@ class SubmissionsHandler
                 // populate the meeting name/time/day so we dont need to do it again on the submission page
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
                 // change our meeting return to v2 format so we can handle original components
-                $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
+                // $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
 
                 if(\is_wp_error($bmlt_meeting))
                 {
@@ -1317,7 +1317,7 @@ class SubmissionsHandler
                 case "group_relationship":
                     $table .= '<tr><td>'.__('Relationship to Group','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
                     break;
-                case "weekday":
+                case "day":
                     $weekdays = [__('Error'), __('Sunday','bmlt-workflow'), __('Monday','bmlt-workflow'), __('Tuesday','bmlt-workflow'), __('Wednesday','bmlt-workflow'), __('Thursday','bmlt-workflow'), __('Friday','bmlt-workflow'), __('Saturday','bmlt-workflow')];
                     $table .= '<tr><td>'.__('Meeting Day','bmlt-workflow').':</td><td>' . $weekdays[$value] . '</td></tr>';
                     break;

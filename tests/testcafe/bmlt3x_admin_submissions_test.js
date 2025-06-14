@@ -302,11 +302,11 @@ await t.useRole(bmltwf_admin);
     // "phone_meeting_number":"12345",
     // "virtual_meeting_link":"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09",
     // "starter_kit_required":"no",
-    // "venue_type":3}',
+    // "venueType":3}',
     .expect(as.quickedit_name.hasClass("bmltwf-changed")).ok()
     .expect(as.quickedit_name.value).eql("my test meeting")
-    .expect(as.quickedit_start_time.hasClass("bmltwf-changed")).ok()
-    .expect(as.quickedit_start_time.value).eql("10:40:00")
+    .expect(as.quickedit_startTime.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_startTime.value).eql("10:40:00")
     .expect(as.quickedit_day.hasClass("bmltwf-changed")).ok()
     .expect(as.quickedit_day.value).eql("4")
     .expect(as.quickedit_duration_hours.hasClass("bmltwf-changed")).ok()
@@ -321,8 +321,8 @@ await t.useRole(bmltwf_admin);
     .expect(as.quickedit_virtual_meeting_link.value).eql("https://us02web.zoom.us/j/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09")
     .expect(as.quickedit_additional_info.hasClass("bmltwf-changed")).ok()
     .expect(as.quickedit_additional_info.value).eql("some extra info")
-    .expect(as.quickedit_venue_type.hasClass("bmltwf-changed")).ok()
-    .expect(as.quickedit_venue_type.value).eql("3")
+    .expect(as.quickedit_venueType.hasClass("bmltwf-changed")).ok()
+    .expect(as.quickedit_venueType.value).eql("3")
     .expect(as.quickedit_location_text.hasClass("bmltwf-changed")).ok()
     .expect(as.quickedit_location_text.value).eql("my location")
     .expect(as.quickedit_location_street.hasClass("bmltwf-changed")).ok()
@@ -355,7 +355,7 @@ test('Quickedit_Change_Meeting', async t => {
     // changes_requested: '{
     // "name":"update",
     // "original_name":"2nd Chance Group",
-    // "original_start_time":"18:30:00",
+    // "original_startTime":"18:30:00",
     // "original_duration":"01:30:00",
     // "location_text":"update location",
     // "original_location_street":"360 Warren Street",
@@ -366,7 +366,7 @@ test('Quickedit_Change_Meeting', async t => {
     // "original_day":"3",
     // "original_service_body_bigint":"1009",
     // "original_formatIds":"3,17,36",
-    // "original_venue_type":"1",
+    // "original_venueType":"1",
     // "contact_number":"12345",
     // "group_relationship":"Group Member",
     // "add_contact":"yes",
@@ -380,14 +380,14 @@ test('Quickedit_Change_Meeting', async t => {
     .expect(as.quickedit_location_text.hasClass("bmltwf-changed")).ok()
     .expect(as.quickedit_location_text.value).eql("update location")
     // these didnt change
-    .expect(as.quickedit_start_time.hasClass("bmltwf-changed")).notOk()
+    .expect(as.quickedit_startTime.hasClass("bmltwf-changed")).notOk()
     .expect(as.quickedit_day.hasClass("bmltwf-changed")).notOk()
     .expect(as.quickedit_duration_hours.hasClass("bmltwf-changed")).notOk()
     .expect(as.quickedit_duration_minutes.hasClass("bmltwf-changed")).notOk()
     .expect(as.quickedit_virtual_meeting_additional_info.hasClass("bmltwf-changed")).notOk()
     .expect(as.quickedit_phone_meeting_number.hasClass("bmltwf-changed")).notOk()
     .expect(as.quickedit_virtual_meeting_link.hasClass("bmltwf-changed")).notOk()
-    .expect(as.quickedit_venue_type.hasClass("bmltwf-changed")).notOk()
+    .expect(as.quickedit_venueType.hasClass("bmltwf-changed")).notOk()
     .expect(as.quickedit_location_street.hasClass("bmltwf-changed")).notOk()
     .expect(as.quickedit_location_info.hasClass("bmltwf-changed")).notOk()
     .expect(as.quickedit_location_municipality.hasClass("bmltwf-changed")).notOk()

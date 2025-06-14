@@ -198,7 +198,7 @@ msgid "Start Time"
 msgstr "Début de la réunion"
 
 #: admin/admin_submissions.php:101
-msgid "Weekday"
+msgid "day"
 msgstr "Jour de la semaine"
 
 #: admin/admin_submissions.php:103 js/admin_submissions.js:84

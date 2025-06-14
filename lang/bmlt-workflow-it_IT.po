@@ -300,7 +300,7 @@ msgid "Start Time"
 msgstr "Ora Inizio"
 
 #: admin/admin_submissions.php:101
-msgid "Weekday"
+msgid "day"
 msgstr "Giorno della settimana"
 
 #: admin/admin_submissions.php:103 js/admin_submissions.js:84

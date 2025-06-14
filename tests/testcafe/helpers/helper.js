@@ -155,7 +155,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         meeting_id: "0",
         service_body_bigint: "1047",
         changes_requested: 
-        '{"name":"my test meeting","startTime":"10:40:00","duration":"04:30:00","location_text":"my location","location_street":"110 avoca st","location_info":"info","location_municipality":"Randwick","location_province":"NSW","location_postal_code_1":"2031","day":"4","service_body_bigint":1009,"formatIds":"2,5","contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"some extra info","virtual_meeting_additional_info":"Zoom ID 83037287669 Passcode: testing","phone_meeting_number":"12345","virtual_meeting_link":"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09","starter_kit_required":"no","venue_type":3}',
+        '{"name":"my test meeting","startTime":"10:40:00","duration":"04:30:00","location_text":"my location","location_street":"110 avoca st","location_info":"info","location_municipality":"Randwick","location_province":"NSW","location_postal_code_1":"2031","day":"4","service_body_bigint":1009,"formatIds":"2,5","contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"some extra info","virtual_meeting_additional_info":"Zoom ID 83037287669 Passcode: testing","phone_meeting_number":"12345","virtual_meeting_link":"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09","starter_kit_required":"no","venueType":3}',
         action_message: null,
       },
       {
@@ -169,7 +169,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         submitter_email: "test@example.com",
         meeting_id: "2562",
         service_body_bigint: "1009",
-        changes_requested: '{"name":"update","original_name":"2nd Chance Group","original_start_time":"18:30:00","original_duration":"01:30:00","location_text":"update location","original_location_street":"360 Warren Street","original_location_municipality":"Hudson","original_location_province":"NY","original_location_nation":"US","original_location_sub_province":"Columbia","original_day":"3","original_service_body_bigint":"1009","original_formatIds":"3,17,36","original_venue_type":"1","contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"please action asap"}',
+        changes_requested: '{"name":"update","original_name":"2nd Chance Group","original_startTime":"18:30:00","original_duration":"01:30:00","location_text":"update location","original_location_street":"360 Warren Street","original_location_municipality":"Hudson","original_location_province":"NY","original_location_nation":"US","original_location_sub_province":"Columbia","original_day":"3","original_service_body_bigint":"1009","original_formatIds":"3,17,36","original_venueType":"1","contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"please action asap"}',
         action_message: null
       },
       {

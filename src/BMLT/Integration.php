@@ -86,57 +86,57 @@ class Integration
         return new \WP_Error('bmltwf_error', $message, $data);
     }
 
-    public function convertv3meetingtov2($meeting)
-    {
-        $fromto = array();
-        $fromto['serviceBodyId'] = 'service_body_bigint';
-        $fromto['venueType'] = 'venue_type';
-        $fromto['day'] = 'day';
-        $fromto['name'] = 'name';
+    // public function convertv3meetingtov2($meeting)
+    // {
+    //     $fromto = array();
+    //     $fromto['serviceBodyId'] = 'service_body_bigint';
+    //     $fromto['venueType'] = 'venueType';
+    //     $fromto['day'] = 'day';
+    //     $fromto['name'] = 'name';
 
-        // change all our fields over
-        foreach ($fromto as $from => $to) {
-            $here = $meeting[$from] ?? false;
-            if ($here) {
-                $meeting[$to] = $meeting[$from];
-                unset($meeting[$from]);
-            }
-        }
+    //     // change all our fields over
+    //     foreach ($fromto as $from => $to) {
+    //         $here = $meeting[$from] ?? false;
+    //         if ($here) {
+    //             $meeting[$to] = $meeting[$from];
+    //             unset($meeting[$from]);
+    //         }
+    //     }
 
-        // special cases
-        $here = $meeting['duration'] ?? false;
-        if ($here) {
-            $meeting['duration'] = $meeting['duration'] . ":00";
-            unset($meeting['duration']);
-        }
+    //     // special cases
+    //     $here = $meeting['duration'] ?? false;
+    //     if ($here) {
+    //         $meeting['duration'] = $meeting['duration'] . ":00";
+    //         unset($meeting['duration']);
+    //     }
 
-        $here = $meeting['startTime'] ?? false;
-        if ($here) {
-            $meeting['start_time'] = $meeting['startTime'] . ":00";
-            unset($meeting['startTime']);
-        }
+    //     $here = $meeting['startTime'] ?? false;
+    //     if ($here) {
+    //         $meeting['startTime'] = $meeting['startTime'] . ":00";
+    //         unset($meeting['startTime']);
+    //     }
 
-        $here = $meeting['formatIds'] ?? false;
-        if ($here) {
-            $meeting['formatIds'] = implode(',', $meeting['formatIds']);
-            unset($meeting['formatIds']);
-        }
+    //     $here = $meeting['formatIds'] ?? false;
+    //     if ($here) {
+    //         $meeting['formatIds'] = implode(',', $meeting['formatIds']);
+    //         unset($meeting['formatIds']);
+    //     }
 
-        // day starts at 0 for BMLT 3.x
-        $here = $meeting['day'] ?? false;
-        if ($here) {
-            $meeting['day'] = $meeting['day'] + 1;
-            unset($meeting['day']);
-        }
+    //     // day starts at 0 for BMLT 3.x
+    //     $here = $meeting['day'] ?? false;
+    //     if ($here) {
+    //         $meeting['day'] = $meeting['day'] + 1;
+    //         unset($meeting['day']);
+    //     }
 
-        return $meeting;
-    }
+    //     return $meeting;
+    // }
 
     private function convertv2meetingtov3($meeting)
     {
         $fromto = array();
         $fromto['service_body_bigint'] = 'serviceBodyId';
-        $fromto['venue_type'] = 'venueType';
+        $fromto['venueType'] = 'venueType';
         $fromto['day'] = 'day';
         $fromto['name'] = 'name';
         $fromto['worldid_mixed'] = 'worldId';
@@ -161,11 +161,11 @@ class Integration
             unset($meeting['duration']);
         }
 
-        $here = $meeting['start_time'] ?? false;
+        $here = $meeting['startTime'] ?? false;
         if ($here) {
-            $time = explode(':', $meeting['start_time']);
+            $time = explode(':', $meeting['startTime']);
             $meeting['startTime'] = $time[0] . ":" . $time[1];
-            unset($meeting['start_time']);
+            unset($meeting['startTime']);
         }
 
         $here = $meeting['formatIds'] ?? false;
@@ -672,7 +672,7 @@ class Integration
         $meeting['id_bigint'] = 0;
 
         $this->debug_log("venue type");
-        $this->debug_log($meeting['venue_type']);
+        $this->debug_log($meeting['venueType']);
         $this->debug_log("meeting formats before");
         $this->debug_log($meeting['formatIds']);
         $formats = $this->getMeetingFormats();
@@ -680,7 +680,7 @@ class Integration
         $this->debug_log($formats);
 
         $meetingformats = explode(',', $meeting['formatIds']);
-        // bmlt2x doesn't handle the venue_type field
+        // bmlt2x doesn't handle the venueType field
         // remove all the invalid venue types from the format list
         $key = array_search('VM', array_column($formats, 'key_string'));
         if (($key2 = array_search($key, $meetingformats)) !== false) {
@@ -694,9 +694,9 @@ class Integration
         if (($key2 = array_search($key, $meetingformats)) !== false) {
             unset($meetingformats[$key2]);
         }
-        if ($meeting['venue_type'] !== 1) {
+        if ($meeting['venueType'] !== 1) {
             $key = '';
-            switch ($meeting['venue_type']) {
+            switch ($meeting['venueType']) {
                 case "2":
                     $key = array_search('VM', array_column($formats, 'key_string'));
                     break;

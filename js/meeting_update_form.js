@@ -38,7 +38,7 @@ jQuery(document).ready(function ($) {
       $(this).addClass('bmltwf-changed');
     });
     // add highlighting trigger for select2
-    $('#display_formatIds').on('change.bmltwf-highlight', function () {
+    $('#display_format_shared_id_list').on('change.bmltwf-highlight', function () {
       $('.select2-selection--multiple').addClass('bmltwf-changed');
     });
   }
@@ -68,7 +68,7 @@ jQuery(document).ready(function ($) {
   }
 
   function enable_edits() {
-    enable_field('name');
+    enable_field('meeting_name');
     enable_field('start_time');
     enable_field('duration_minutes');
     enable_field('duration_hours');
@@ -80,8 +80,8 @@ jQuery(document).ready(function ($) {
     enable_field('location_postal_code_1');
     enable_field('location_sub_province');
     enable_field('location_nation');
-    enable_field('display_formatIds');
-    enable_field('day');
+    enable_field('display_format_shared_id_list');
+    enable_field('weekday_tinyint');
     enable_field('service_body_bigint');
     enable_field('virtual_meeting_additional_info');
     enable_field('phone_meeting_number');
@@ -90,7 +90,7 @@ jQuery(document).ready(function ($) {
   }
 
   function disable_edits() {
-    disable_field('name');
+    disable_field('meeting_name');
     disable_field('start_time');
     disable_field('duration_minutes');
     disable_field('duration_hours');
@@ -102,8 +102,8 @@ jQuery(document).ready(function ($) {
     disable_field('location_postal_code_1');
     disable_field('location_sub_province');
     disable_field('location_nation');
-    disable_field('display_formatIds');
-    disable_field('day');
+    disable_field('display_format_shared_id_list');
+    disable_field('weekday_tinyint');
     disable_field('service_body_bigint');
     disable_field('virtual_meeting_additional_info');
     disable_field('phone_meeting_number');
@@ -112,9 +112,10 @@ jQuery(document).ready(function ($) {
   }
 
   function clear_form() {
-    clear_field('name');
+    clear_field('meeting_name');
     clear_field('start_time');
-    clear_field('duration');
+    clear_field('duration_minutes');
+    clear_field('duration_hours');
     clear_field('location_street');
     clear_field('location_text');
     clear_field('location_info');
@@ -127,7 +128,7 @@ jQuery(document).ready(function ($) {
     clear_field('last_name');
     clear_field('contact_number');
     clear_field('email_address');
-    clear_field('display_formatIds');
+    clear_field('display_format_shared_id_list');
     clear_field('meeting_id');
     clear_field('additional_info');
     clear_field('meeting_searcher');
@@ -140,7 +141,7 @@ jQuery(document).ready(function ($) {
     $('#venue_type').val('');
     $('#service_body_bigint').val('');
     // reset select2
-    $('#display_formatIds').val(null).trigger('change');
+    $('#display_format_shared_id_list').val(null).trigger('change');
     $('#meeting-searcher').val(null).trigger('change');
     // set email selector to no
     $('#add-email').val('no');
@@ -149,7 +150,7 @@ jQuery(document).ready(function ($) {
   function disable_and_clear_highlighting() {
     // disable the highlighting triggers
     $('.meeting-input').off('input.bmltwf-highlight');
-    $('#display_formatIds').off('change.bmltwf-highlight');
+    $('#display_format_shared_id_list').off('change.bmltwf-highlight');
     // remove the highlighting css
     $('.meeting-input').removeClass('bmltwf-changed');
     $('.select2-selection--multiple').removeClass('bmltwf-changed');
@@ -165,10 +166,10 @@ jQuery(document).ready(function ($) {
     enable_field('service_body_bigint');
 
     // prevent displayable list from being submitted
-    $('#display_formatIds').attr('disabled', 'disabled');
-    // turn the format list into a single string and move it into the submitted formatIds
-    $('#formatIds').val($('#display_formatIds').val().join(','));
-    // $("#formatIds").val($("#display_formatIds").val());
+    $('#display_format_shared_id_list').attr('disabled', 'disabled');
+    // turn the format list into a single string and move it into the submitted format_shared_id_list
+    $('#format_shared_id_list').val($('#display_format_shared_id_list').val().join(','));
+    // $("#format_shared_id_list").val($("#display_format_shared_id_list").val());
 
     // time control by default doesn't add extra seconds, so add them to be compaitble with BMLT
     if ($('#start_time').val().length === 5) {
@@ -177,7 +178,7 @@ jQuery(document).ready(function ($) {
 
     // construct our duration
     const str = `${$('#duration_hours').val()}:${$('#duration_minutes').val()}:00`;
-    put_field('duration', str);
+    put_field('duration_time', str);
 
     if ($('#venue_type') === 4) {
       put_field('venue_type', 1);
@@ -248,7 +249,7 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  $('#display_formatIds').select2({
+  $('#display_format_shared_id_list').select2({
     placeholder: __('Select from available formats', 'bmlt-workflow'),
     multiple: true,
     data: formatdata,
@@ -329,7 +330,7 @@ jQuery(document).ready(function ($) {
 
     // create friendly meeting details for meeting searcher
     for (let i = 0, { length } = mdata; i < length; i += 1) {
-      let str = `${mdata[i].name} [ ${weekdays[mdata[i].day]}, ${mdata[i].start_time} ]`;
+      let str = `${mdata[i].meeting_name} [ ${weekdays[mdata[i].weekday_tinyint]}, ${mdata[i].start_time} ]`;
       let city = '';
       if (mdata[i].location_municipality !== '') {
         city = `${mdata[i].location_municipality}, `;
@@ -388,10 +389,10 @@ jQuery(document).ready(function ($) {
       const { data } = e.params;
       const { id } = data;
       // set the weekday format
-      $('#day').val(mdata[id].day);
+      $('#weekday_tinyint').val(mdata[id].weekday_tinyint);
 
       const fields = [
-        'name',
+        'meeting_name',
         'start_time',
         'published',
         'virtualna_published',
@@ -417,13 +418,13 @@ jQuery(document).ready(function ($) {
       });
 
       // seperate handler for formats
-      if ('formatIds' in mdata[id]) {
-        const meeting_formats = mdata[id].formatIds.split(',');
-        put_field('display_formatIds', meeting_formats);
+      if ('format_shared_id_list' in mdata[id]) {
+        const meeting_formats = mdata[id].format_shared_id_list.split(',');
+        put_field('display_format_shared_id_list', meeting_formats);
       }
 
       // handle duration in the select dropdowns
-      const durationarr = mdata[id].duration.split(':');
+      const durationarr = mdata[id].duration_time.split(':');
       // hoping we got both hours, minutes and seconds here
       if (durationarr.length === 3) {
         $('#duration_hours').val(durationarr[0]);

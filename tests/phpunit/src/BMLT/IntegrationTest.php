@@ -529,7 +529,7 @@ EOD;
                 "service_body_bigint" => "1050",
                 "formatIds" => "7",
                 "virtual_meeting_link" => "https://www.google.com",
-                "venue_type" => "3",
+                "venueType" => "3",
                 "latitude" => "40.7127753",
                 "longitude" => "-74.0059728",
                 "published" => "1"
@@ -561,7 +561,7 @@ EOD;
                 "service_body_bigint" => "1050",
                 "formatIds" => "7",
                 "virtual_meeting_link" => "https://www.google.com",
-                "venue_type" => "10",
+                "venueType" => "10",
                 "latitude" => "40.7127753",
                 "longitude" => "-74.0059728",
                 "published" => "1"

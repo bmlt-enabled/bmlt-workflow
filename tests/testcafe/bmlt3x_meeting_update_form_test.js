@@ -75,9 +75,9 @@ test("Success_New_Standard_Meeting_And_Submit", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.venue_type, "1");
+  await select_dropdown_by_value(uf.venueType, "1");
   await t
-    .expect(uf.venue_type.value)
+    .expect(uf.venueType.value)
     .eql("1")
     .expect(uf.virtual_meeting_link.visible)
     .eql(false)
@@ -91,7 +91,7 @@ test("Success_New_Standard_Meeting_And_Submit", async (t) => {
 
   await select_dropdown_by_text(uf.day, "Monday");
 
-  await t.typeText(uf.start_time, "10:40");
+  await t.typeText(uf.startTime, "10:40");
 
   await select_dropdown_by_value(uf.duration_hours, "04");
   await select_dropdown_by_value(uf.duration_minutes, "30");
@@ -156,9 +156,9 @@ test("Success_New_Standard_Meeting_Aus_Mobile_Phone_Format_And_Submit", async (t
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.venue_type, "1");
+  await select_dropdown_by_value(uf.venueType, "1");
   await t
-    .expect(uf.venue_type.value)
+    .expect(uf.venueType.value)
     .eql("1")
     .expect(uf.virtual_meeting_link.visible)
     .eql(false)
@@ -172,7 +172,7 @@ test("Success_New_Standard_Meeting_Aus_Mobile_Phone_Format_And_Submit", async (t
 
   await select_dropdown_by_text(uf.day, "Monday");
 
-  await t.typeText(uf.start_time, "10:40");
+  await t.typeText(uf.startTime, "10:40");
 
   await select_dropdown_by_value(uf.duration_hours, "04");
   await select_dropdown_by_value(uf.duration_minutes, "30");
@@ -237,9 +237,9 @@ test("Success_New_Standard_Meeting_Aus_Local_Phone_Format_And_Submit", async (t)
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.venue_type, "1");
+  await select_dropdown_by_value(uf.venueType, "1");
   await t
-    .expect(uf.venue_type.value)
+    .expect(uf.venueType.value)
     .eql("1")
     .expect(uf.virtual_meeting_link.visible)
     .eql(false)
@@ -253,7 +253,7 @@ test("Success_New_Standard_Meeting_Aus_Local_Phone_Format_And_Submit", async (t)
 
   await select_dropdown_by_text(uf.day, "Monday");
 
-  await t.typeText(uf.start_time, "10:40");
+  await t.typeText(uf.startTime, "10:40");
 
   await select_dropdown_by_value(uf.duration_hours, "04");
   await select_dropdown_by_value(uf.duration_minutes, "30");
@@ -318,9 +318,9 @@ test("Success_New_Standard_Meeting_US_Phone_Format_And_Submit", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.venue_type, "1");
+  await select_dropdown_by_value(uf.venueType, "1");
   await t
-    .expect(uf.venue_type.value)
+    .expect(uf.venueType.value)
     .eql("1")
     .expect(uf.virtual_meeting_link.visible)
     .eql(false)
@@ -334,7 +334,7 @@ test("Success_New_Standard_Meeting_US_Phone_Format_And_Submit", async (t) => {
 
   await select_dropdown_by_text(uf.day, "Monday");
 
-  await t.typeText(uf.start_time, "10:40");
+  await t.typeText(uf.startTime, "10:40");
 
   await select_dropdown_by_value(uf.duration_hours, "04");
   await select_dropdown_by_value(uf.duration_minutes, "30");
@@ -405,9 +405,9 @@ test("Success_New_Hybrid_Meeting_And_Submit", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.venue_type, "3");
+  await select_dropdown_by_value(uf.venueType, "3");
   await t
-    .expect(uf.venue_type.value)
+    .expect(uf.venueType.value)
     .eql("3")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)
@@ -425,7 +425,7 @@ test("Success_New_Hybrid_Meeting_And_Submit", async (t) => {
 
   await select_dropdown_by_text(uf.day, "Monday");
 
-  await t.typeText(uf.start_time, "10:40");
+  await t.typeText(uf.startTime, "10:40");
 
   await select_dropdown_by_value(uf.duration_hours, "04");
   await select_dropdown_by_value(uf.duration_minutes, "30");
@@ -490,9 +490,9 @@ test("Success_New_Virtual_Meeting_And_Submit", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.venue_type, "2");
+  await select_dropdown_by_value(uf.venueType, "2");
   await t
-    .expect(uf.venue_type.value)
+    .expect(uf.venueType.value)
     .eql("2")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)
@@ -510,7 +510,7 @@ test("Success_New_Virtual_Meeting_And_Submit", async (t) => {
 
   await select_dropdown_by_text(uf.day, "Monday");
 
-  await t.typeText(uf.start_time, "10:40");
+  await t.typeText(uf.startTime, "10:40");
 
   await select_dropdown_by_value(uf.duration_hours, "04");
   await select_dropdown_by_value(uf.duration_minutes, "30");
@@ -572,9 +572,9 @@ test("Success_New_Tempclosure_Meeting_And_Submit", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.venue_type, "4");
+  await select_dropdown_by_value(uf.venueType, "4");
   await t
-    .expect(uf.venue_type.value)
+    .expect(uf.venueType.value)
     .eql("4")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)
@@ -592,7 +592,7 @@ test("Success_New_Tempclosure_Meeting_And_Submit", async (t) => {
 
   await select_dropdown_by_text(uf.day, "Monday");
 
-  await t.typeText(uf.start_time, "10:40");
+  await t.typeText(uf.startTime, "10:40");
 
   await select_dropdown_by_value(uf.duration_hours, "04");
   await select_dropdown_by_value(uf.duration_minutes, "30");
@@ -882,9 +882,9 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
     .ok();
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.venue_type, "3");
+  await select_dropdown_by_value(uf.venueType, "3");
   await t
-    .expect(uf.venue_type.value)
+    .expect(uf.venueType.value)
     .eql("3")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)
@@ -912,8 +912,8 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
     .expect(uf.day.hasClass("bmltwf-changed"))
     .ok()
     // start time
-    .typeText(uf.start_time, "10:40")
-    .expect(uf.start_time.hasClass("bmltwf-changed"))
+    .typeText(uf.startTime, "10:40")
+    .expect(uf.startTime.hasClass("bmltwf-changed"))
     .ok();
 
   // duration
@@ -996,9 +996,9 @@ test("Failure_Invalid_Virtual_Meeting_Details", async (t) => {
 
   await select_dropdown_by_value(uf.group_relationship, "Group Member");
 
-  await select_dropdown_by_value(uf.venue_type, "2");
+  await select_dropdown_by_value(uf.venueType, "2");
   await t
-    .expect(uf.venue_type.value)
+    .expect(uf.venueType.value)
     .eql("2")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)

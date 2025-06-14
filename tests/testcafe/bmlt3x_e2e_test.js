@@ -99,9 +99,9 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
   };
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.venue_type, "3");
+  await select_dropdown_by_value(uf.venueType, "3");
   await t
-    .expect(uf.venue_type.value)
+    .expect(uf.venueType.value)
     .eql("3")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)
@@ -120,7 +120,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
 
   await select_dropdown_by_text(uf.day, "Monday");
 
-  await t.typeText(uf.start_time, "10:40");
+  await t.typeText(uf.startTime, "10:40");
 
   await select_dropdown_by_value(uf.duration_hours, "04");
   await select_dropdown_by_value(uf.duration_minutes, "30");
@@ -344,9 +344,9 @@ test("Bmlt3x_Submit_Change_Meeting_With_Unpublish_And_Approve", async (t) => {
 //     .ok();
 
 //   // virtual meeting settings
-//   await select_dropdown_by_value(uf.venue_type, "3");
+//   await select_dropdown_by_value(uf.venueType, "3");
 //   await t
-//     .expect(uf.venue_type.value)
+//     .expect(uf.venueType.value)
 //     .eql("3")
 //     .expect(uf.virtual_meeting_link.visible)
 //     .eql(true)
@@ -374,8 +374,8 @@ test("Bmlt3x_Submit_Change_Meeting_With_Unpublish_And_Approve", async (t) => {
 //     .expect(uf.day.hasClass("bmltwf-changed"))
 //     .ok()
 //     // start time
-//     .typeText(uf.start_time, "10:40")
-//     .expect(uf.start_time.hasClass("bmltwf-changed"))
+//     .typeText(uf.startTime, "10:40")
+//     .expect(uf.startTime.hasClass("bmltwf-changed"))
 //     .ok();
 
 //   // duration

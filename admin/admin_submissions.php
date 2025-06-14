@@ -98,7 +98,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
 
                     </div>
                     <div class="grid-flex-item">
-                        <label for="quickedit_day"><?php echo __( "Weekday", 'bmlt-workflow' ); ?></label>
+                        <label for="quickedit_day"><?php echo __( "day", 'bmlt-workflow' ); ?></label>
                         <select class="quickedit-input" name="quickedit_day" id="quickedit_day">
                             <option value="0"><?php echo __( "Sunday", 'bmlt-workflow' ); ?></option>
                             <option value="1"><?php echo __( "Monday", 'bmlt-workflow' ); ?></option>

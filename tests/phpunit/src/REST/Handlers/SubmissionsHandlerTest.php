@@ -102,12 +102,12 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('sanitize_textarea_field')->returnArg();
         Functions\when('absint')->returnArg();
         Functions\when('current_time')->justReturn('2022-03-23 09:22:44');
-        Functions\when('wp_json_encode')->justReturn('{"contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","service_body_bigint":2,"additional_info":"my additional info","name":"virtualmeeting randwick","weekday":"2","startTime":"20:30:00"}');
+        Functions\when('wp_json_encode')->justReturn('{"contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","service_body_bigint":2,"additional_info":"my additional info","name":"virtualmeeting randwick","day":"2","startTime":"20:30:00"}');
         Functions\when('get_site_url')->justReturn('http://127.0.0.1/wordpress');
         Functions\when('__')->returnArg();
         Functions\when('wp_is_json_media_type')->justReturn(true);
         
-        $this->meeting = ' { "id_bigint": "3563", "worldid_mixed": "", "shared_group_id_bigint": "", "service_body_bigint": "3", "weekday": "2", "venue_type": "1", "startTime": "19:00:00", "duration": "01:15:00", "time_zone": "", "formats": "BT", "lang_enum": "en", "longitude": "0", "latitude": "0", "distance_in_km": "", "distance_in_miles": "", "email_contact": "", "name": "Test Monday Night Meeting", "location_text": "Glebe Town Hall", "location_info": "", "location_street": "160 Johns Road", "location_city_subsection": "", "location_neighborhood": "", "location_municipality": "Glebe", "location_sub_province": "", "location_province": "NSW", "location_postal_code_1": "NSW", "location_nation": "", "comments": "", "train_lines": "", "bus_lines": "", "contact_phone_2": "", "contact_email_2": "", "contact_name_2": "", "contact_phone_1": "", "contact_email_1": "", "contact_name_1": "", "zone": "", "phone_meeting_number": "", "virtual_meeting_link": "", "virtual_meeting_additional_info": "", "published": "1", "root_server_uri": "http:", "formatIds": "3" } ';
+        $this->meeting = ' { "id_bigint": "3563", "worldid_mixed": "", "shared_group_id_bigint": "", "service_body_bigint": "3", "day": "2", "venueType": "1", "startTime": "19:00:00", "duration": "01:15:00", "time_zone": "", "formats": "BT", "lang_enum": "en", "longitude": "0", "latitude": "0", "distance_in_km": "", "distance_in_miles": "", "email_contact": "", "name": "Test Monday Night Meeting", "location_text": "Glebe Town Hall", "location_info": "", "location_street": "160 Johns Road", "location_city_subsection": "", "location_neighborhood": "", "location_municipality": "Glebe", "location_sub_province": "", "location_province": "NSW", "location_postal_code_1": "NSW", "location_nation": "", "comments": "", "train_lines": "", "bus_lines": "", "contact_phone_2": "", "contact_email_2": "", "contact_name_2": "", "contact_phone_1": "", "contact_email_1": "", "contact_name_1": "", "zone": "", "phone_meeting_number": "", "virtual_meeting_link": "", "virtual_meeting_additional_info": "", "published": "1", "root_server_uri": "http:", "formatIds": "3" } ';
 
     }
 
@@ -133,7 +133,39 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         return $request;
     }
 
-    private function stub_bmltv2($json_meeting, &$bmlt_input)
+    // private function stub_bmltv3($json_meeting, &$bmlt_input)
+    // {
+    //     $resp = $json_meeting;
+    //     $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
+    //     // $bmlt = Mockery::mock('overload:bmltwf\BMLT\Integration');
+    //     $bmlt = \Mockery::mock('Integration');
+
+    //     /** @var Mockery::mock $bmlt test */
+    //     $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
+    //         ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp, true))
+    //         ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats, true))
+    //         ->shouldReceive('isAutoGeocodingEnabled')->andreturn(true)
+    //         ->shouldReceive('getServiceBodies')->andreturn(array("1"=> array("name"=>"test"),"3"=> array("name"=>"test"),"6"=> array("name"=>"test"),"99"=> array("name"=>"test")));
+
+    //     $bmlt->shouldReceive('geolocateAddress')
+    //     ->andReturn([
+    //         'results' => [
+    //             [
+    //                 'geometry' => [
+    //                     'location' => [
+    //                         'lat' => 37.7749,
+    //                         'lng' => -122.4194
+    //                     ]
+    //                 ]
+    //             ]
+    //         ]
+    //     ]);
+        
+    //     Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
+    //     return $bmlt;
+    // }
+
+    private function stub_bmltv3($json_meeting, &$bmlt_input)
     {
         $resp = $json_meeting;
         $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
@@ -211,7 +243,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\get_option')->justReturn("success");
         
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->debug_log("TEST RESPONSE");
@@ -242,7 +274,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
-            "venue_type" => "1",
+            "venueType" => "1",
             "published" => "1"
         );
         }
@@ -263,10 +295,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         Functions\when('\get_option')->justReturn("success");
 
-        $resp = '{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"6","weekday":"2","venue_type":"1","startTime":"19:00:00","duration":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","formatIds":"3"}';
+        $resp = '{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"6","day":"2","venueType":"1","startTime":"19:00:00","duration":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","formatIds":"3"}';
         
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($resp, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($resp, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
         
         $this->debug_log(($response));
@@ -308,14 +340,14 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $resp = '{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"6","weekday":"2","venue_type":"1","startTime":"19:00:00","duration":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","formatIds":"3"}';
+        $resp = '{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"6","day":"2","venueType":"1","startTime":"19:00:00","duration":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","formatIds":"3"}';
 
         $bmlt_input = '';
 
         Functions\when('\get_option')->justReturn("success");
         
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($resp, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($resp, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(\WP_Error::class, $response);
@@ -339,7 +371,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
             "formatIds" => "1",
-            "venue_type" => "1",
+            "venueType" => "1",
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
             "published" => "1"
@@ -365,7 +397,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         $retrieve_single_response = $this->meeting;
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
@@ -389,7 +421,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "meeting_id" => "3277",
             "first_name" => "joe",
             "last_name" => "joe",
-            "venue_type" => "1",
+            "venueType" => "1",
             "service_body_bigint" => "3",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
@@ -417,7 +449,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $retrieve_single_response = $this->meeting;
         
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
         
         $this->debug_log(($response));
@@ -446,13 +478,13 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "location_municipality" => "test municipality",
             "location_province" => "test province",
             "location_postal_code_1" => "12345",
-            "weekday" => "1",
+            "day" => "1",
             "service_body_bigint" => "99",
             "formatIds" => "1",
             "starter_kit_required" => "no",
             "first_name" => "joe",
             "last_name" => "joe",
-            "venue_type" => "1",
+            "venueType" => "1",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",
@@ -476,7 +508,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $retrieve_single_response = $this->meeting;
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->debug_log(($response));
@@ -503,13 +535,13 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "location_municipality" => "test municipality",
             "location_province" => "test province",
             "location_postal_code_1" => "P85 FG02",
-            "weekday" => "1",
+            "day" => "1",
             "service_body_bigint" => "99",
             "formatIds" => "1",
             "starter_kit_required" => "no",
             "first_name" => "joe",
             "last_name" => "joe",
-            "venue_type" => "1",
+            "venueType" => "1",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",
@@ -533,7 +565,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $retrieve_single_response = $this->meeting;
         
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->debug_log(($response));
@@ -560,7 +592,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "location_municipality" => "test municipality",
             "location_province" => "test province",
             "location_postal_code_1" => "12345",
-            "weekday" => "1",
+            "day" => "1",
             "service_body_bigint" => "99",
             "formatIds" => "1",
             "starter_kit_required" => "no",
@@ -582,7 +614,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $retrieve_single_response = $this->meeting;
         
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
         $this->assertInstanceOf(WP_Error::class, $response);
     }
@@ -606,7 +638,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "location_municipality" => "test municipality",
             "location_province" => "test province",
             "location_postal_code_1" => "12345",
-            "weekday" => "1",
+            "day" => "1",
             "service_body_bigint" => "99",
             "formatIds" => "1",
             "starter_kit_required" => "no",
@@ -629,7 +661,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $retrieve_single_response = $this->meeting;
         
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
         $this->assertInstanceOf(WP_Error::class, $response);
     }
@@ -654,14 +686,14 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "location_municipality" => "test municipality",
             "location_province" => "test province",
             "location_postal_code_1" => "12345",
-            "weekday" => "1",
+            "day" => "1",
             "service_body_bigint" => "99",
             "formatIds" => "1",
             "starter_kit_required" => "yes",
             "starter_kit_postal_address" => "my house",
             "first_name" => "joe",
             "last_name" => "joe",
-            "venue_type" => "1",
+            "venueType" => "1",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
             "group_relationship" => "Group Member",
@@ -686,7 +718,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $retrieve_single_response = $this->meeting;
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->debug_log(($response));
@@ -715,7 +747,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     //         "location_municipality" => "test municipality",
     //         "location_province" => "test province",
     //         "location_postal_code_1" => "12345",
-    //         "weekday" => "1",
+    //         "day" => "1",
     //         "service_body_bigint" => "99",
     //         "formatIds" => "1",
     //         "first_name" => "joe",
@@ -741,7 +773,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     //     Functions\when('\get_option')->justReturn("success");
 
     //     $bmlt_input = '';
-    //     $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+    //     $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
     //     $response = $handlers->meeting_update_form_handler_rest($form_post);
 
     //     $this->assertInstanceOf(WP_Error::class, $response);
@@ -785,7 +817,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $retrieve_single_response = $this->meeting;
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -802,7 +834,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
                 return array(
             "update_reason" => "reason_change",
             "name" => "testing name change",
-            "weekday" => "9999",
+            "day" => "9999",
             "meeting_id" => "3277",
             "first_name" => "joe",
             "last_name" => "joe",
@@ -827,7 +859,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $retrieve_single_response = $this->meeting;
         
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -844,7 +876,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
                 return array(
             "update_reason" => "reason_change",
             "name" => "testing name change",
-            "weekday" => "0",
+            "day" => "0",
             "meeting_id" => "3277",
             "first_name" => "joe",
             "last_name" => "joe",
@@ -868,7 +900,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $retrieve_single_response = $this->meeting;
         
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -885,7 +917,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
                 return array(
             "update_reason" => "reason_change",
             "name" => "testing name change",
-            "weekday" => "aerear9",
+            "day" => "aerear9",
             "meeting_id" => "3277",
             "first_name" => "joe",
             "last_name" => "joe",
@@ -911,7 +943,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $retrieve_single_response = $this->meeting;
         
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -928,7 +960,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $wpdb->prefix = "";
 
         $bmlt_input = '';
-        $handler = new SubmissionsHandler($this->stub_bmltv2($this->meeting, $bmlt_input));
+        $handler = new SubmissionsHandler($this->stub_bmltv3($this->meeting, $bmlt_input));
 
         $worldid = "12345";
         $new_worldid = $handler->worldid_publish_to_virtualna(true, $worldid);
@@ -985,7 +1017,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_email' => 'a@a.com',
             'meeting_id' => 3563,
             'service_body_bigint' => '4',
-            'changes_requested' => '{"name":"Ashfield change name","weekday":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield"}',
+            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield"}',
         );
 
         global $wpdb;
@@ -1008,10 +1040,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
         $bmlt_input = '';
 
@@ -1059,7 +1091,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_email' => 'a@a.com',
             'meeting_id' => 3563,
             'service_body_bigint' => '4',
-            'changes_requested' => '{"name":"Ashfield change name","weekday":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield","starter_kit_required":"yes","starter_kit_postal_address":"1 test st"}',
+            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield","starter_kit_required":"yes","starter_kit_postal_address":"1 test st"}',
         );
 
         global $wpdb;
@@ -1082,10 +1114,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('createMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('createMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
         $bmlt_input = '';
 
@@ -1150,7 +1182,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_email' => 'a@a.com',
             'meeting_id' => 3563,
             'service_body_bigint' => '4',
-            'changes_requested' => '{"name":"Ashfield change name","weekday":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield"}',
+            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield"}',
         );
 
         global $wpdb;
@@ -1173,10 +1205,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('createMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('createMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
         $bmlt_input = '';
 
@@ -1238,10 +1270,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\get_option')->justReturn("success");
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
         $post_change_response = '[{"published":"0", "success":"true"}]';
 
@@ -1310,15 +1342,15 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         Functions\when('\get_option')->justReturn("success");
 
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('deleteMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('deleteMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
 
         global $wpdb;
@@ -1377,7 +1409,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_email' => 'a@a.com',
             'meeting_id' => 3563,
             'service_body_bigint' => '4',
-            'changes_requested' => '{"name":"Ashfield change name","weekday":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","add_contact":"yes","additional_info":"pls approve","original_name":"Ashfield"}',
+            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","add_contact":"yes","additional_info":"pls approve","original_name":"Ashfield"}',
         );
 
         $retrieve_single_response = $this->meeting;
@@ -1393,10 +1425,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -1448,7 +1480,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_email' => 'a@a.com',
             'meeting_id' => 3563,
             'service_body_bigint' => '4',
-            'changes_requested' => '{"name":"Ashfield change name","weekday":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","add_contact":"yes","additional_info":"pls approve","original_name":"Ashfield"}',
+            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","add_contact":"yes","additional_info":"pls approve","original_name":"Ashfield"}',
         );
 
         $retrieve_single_response = $this->meeting;
@@ -1463,16 +1495,16 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\get_option')->justReturn("success");
 
 
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
 
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
         $post_change_response = '[{"id_bigint":"3563"}]';
 
@@ -1541,10 +1573,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make deletemeeting just return true
-        $stub_bmltv2->shouldReceive('deleteMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('deleteMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
         $post_change_response = '[{"id_bigint":"3563"}]';
 
@@ -1608,10 +1640,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
         $post_change_response = '[{"report":"3563", "success":"true"}]';
 
