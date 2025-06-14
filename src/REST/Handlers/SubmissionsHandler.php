@@ -198,17 +198,17 @@ class SubmissionsHandler
         $quickedit_change = $request->get_param('changes_requested');
 
         $change_subfields = array(
-            "meeting_name",
-            "start_time",
-            "duration_time",
+            "name",
+            "startTime",
+            "duration",
             "location_text",
             "location_street",
             "location_info",
             "location_municipality",
             "location_province",
             "location_postal_code_1",
-            "weekday_tinyint",
-            "format_shared_id_list",
+            "weekday",
+            "formatIds",
             "location_sub_province",
             "location_nation",
             "virtual_meeting_additional_info",
@@ -365,19 +365,19 @@ class SubmissionsHandler
 
         // strip out anything that somehow made it this far, before we send it to bmlt
         $change_subfields = array(
-            "meeting_name",
+            "name",
             "meeting_id",
-            "start_time",
-            "duration_time",
+            "startTime",
+            "duration",
             "location_text",
             "location_street",
             "location_info",
             "location_municipality",
             "location_province",
             "location_postal_code_1",
-            "weekday_tinyint",
+            "weekday",
             "service_body_bigint",
-            "format_shared_id_list",
+            "formatIds",
             "location_sub_province",
             "location_nation",
             "virtual_meeting_additional_info",
@@ -605,7 +605,7 @@ class SubmissionsHandler
                 if ($starter_kit_required) {
                     $template_fields=array('starter_kit_postal_address'=>$starter_kit_postal_address,
                     'submitter_name' => $submitter_name,
-                    'meeting_name' => $change['meeting_name'],
+                    'name' => $change['name'],
                     'contact_number' => $starter_kit_contact_number);
 
                     $this->debug_log("We're sending a starter kit");
@@ -613,7 +613,7 @@ class SubmissionsHandler
                     if (!empty($template)) {
                         $subject = __('Starter Kit Request','bmlt-workflow');
                         $to_address = get_option('bmltwf_fso_email_address');
-                        $fso_subfields = array('contact_number','submitter_name', 'meeting_name', 'starter_kit_postal_address');
+                        $fso_subfields = array('contact_number','submitter_name', 'name', 'starter_kit_postal_address');
 
                         foreach ($fso_subfields as $field) {
                             $subfield = '{field:' . $field . '}';
@@ -804,21 +804,21 @@ class SubmissionsHandler
             "meeting_id" => array("number", $reason_change_bool | $reason_close_bool),
             "first_name" => array("text", true),
             "last_name" => array("text", true),
-            "meeting_name" => array("text", $reason_new_bool),
-            "start_time" => array("time", $reason_new_bool),
-            "duration_time" => array("time", $reason_new_bool),
+            "name" => array("text", $reason_new_bool),
+            "startTime" => array("time", $reason_new_bool),
+            "duration" => array("time", $reason_new_bool),
             "venue_type" => array("venue", $reason_new_bool | $reason_change_bool),
             // location text and street only required if its not a virtual meeting #75
             "location_text" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_street" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_info" => array("text", false),
             "location_municipality" => array("text", $reason_new_bool),
-            "weekday_tinyint" => array("weekday", $reason_new_bool),
+            "weekday" => array("weekday", $reason_new_bool),
             "service_body_bigint" => array("bigint", $reason_new_bool),
             "email_address" => array("email", true),
             "contact_number" => array("text", false),
             // optional #93
-            "format_shared_id_list" => array("commaseperatednumbers",  $reason_new_bool && $require_meeting_formats),
+            "formatIds" => array("commaseperatednumbers",  $reason_new_bool && $require_meeting_formats),
             "additional_info" => array("textarea", $reason_close_bool),
             "starter_kit_postal_address" => array("textarea", false),
             "starter_kit_required" => array("text", $reason_new_bool && $fso_feature),
@@ -923,7 +923,7 @@ class SubmissionsHandler
                             return $this->invalid_form_field($field);
                         }
                         break;
-                    case ('weekday'):
+                    case ('day'):
                         if (!(($data[$field] >= 1) && ($data[$field] <= 7))) {
                             return $this->invalid_form_field($field);
                         }
@@ -981,9 +981,9 @@ class SubmissionsHandler
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
-                    "meeting_name",
-                    "start_time",
-                    "duration_time",
+                    "name",
+                    "startTime",
+                    "duration",
                     "location_text",
                     "location_street",
                     "location_info",
@@ -992,9 +992,9 @@ class SubmissionsHandler
                     "location_postal_code_1",
                     "location_nation",
                     "location_sub_province",
-                    "weekday_tinyint",
+                    "weekday",
                     "service_body_bigint",
-                    "format_shared_id_list",
+                    "formatIds",
                     "contact_number",
                     "group_relationship",
                     "add_contact",
@@ -1024,9 +1024,9 @@ class SubmissionsHandler
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
-                    "meeting_name",
-                    "start_time",
-                    "duration_time",
+                    "name",
+                    "startTime",
+                    "duration",
                     "location_text",
                     "location_street",
                     "location_info",
@@ -1035,9 +1035,9 @@ class SubmissionsHandler
                     "location_postal_code_1",
                     "location_nation",
                     "location_sub_province",
-                    "weekday_tinyint",
+                    "weekday",
                     "service_body_bigint",
-                    "format_shared_id_list",
+                    "formatIds",
                     "virtual_meeting_additional_info",
                     "phone_meeting_number",
                     "virtual_meeting_link",
@@ -1054,11 +1054,8 @@ class SubmissionsHandler
                 );
 
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
-                if($this->bmlt_integration->is_v3_server())
-                {
-                    // change our meeting return to v2 format so we can handle original components
-                    $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
-                }
+                // change our meeting return to v2 format so we can handle original components. This is a holdover from original v2 support.
+                $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
                 // $this->debug_log(($bmlt_meeting));
                 if (\is_wp_error($bmlt_meeting)) {
                     return $this->bmltwf_rest_error(__('Error retrieving meeting details','bmlt-workflow'), 422);
@@ -1154,11 +1151,8 @@ class SubmissionsHandler
 
                 // populate the meeting name/time/day so we dont need to do it again on the submission page
                 $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
-                if($this->bmlt_integration->is_v3_server())
-                {
-                    // change our meeting return to v2 format so we can handle original components
-                    $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
-                }
+                // change our meeting return to v2 format so we can handle original components
+                $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
 
                 if(\is_wp_error($bmlt_meeting))
                 {
@@ -1167,9 +1161,9 @@ class SubmissionsHandler
                 $this->debug_log("BMLT MEETING");
                 $this->debug_log(($bmlt_meeting));
 
-                $submission['meeting_name'] = $bmlt_meeting['meeting_name'];
-                $submission['weekday_tinyint'] = $bmlt_meeting['weekday_tinyint'];
-                $submission['start_time'] = $bmlt_meeting['start_time'];
+                $submission['name'] = $bmlt_meeting['name'];
+                $submission['day'] = $bmlt_meeting['day'];
+                $submission['startTime'] = $bmlt_meeting['startTime'];
 
                 break;
 
@@ -1287,13 +1281,13 @@ class SubmissionsHandler
         foreach ($submission as $key => $value) {
             if (!is_string($value) || (is_string($value) && !empty($value))) {
             switch ($key) {
-                case "meeting_name":
+                case "name":
                     $table .= '<tr><td>'.__('Meeting Name','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
                     break;
-                case "start_time":
+                case "startTime":
                     $table .= '<tr><td>'.__('Start Time','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
                     break;
-                case "duration_time":
+                case "duration":
                     $table .= '<tr><td>'.__('Duration','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
                     break;
                 case "location_text":
@@ -1323,7 +1317,7 @@ class SubmissionsHandler
                 case "group_relationship":
                     $table .= '<tr><td>'.__('Relationship to Group','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
                     break;
-                case "weekday_tinyint":
+                case "weekday":
                     $weekdays = [__('Error'), __('Sunday','bmlt-workflow'), __('Monday','bmlt-workflow'), __('Tuesday','bmlt-workflow'), __('Wednesday','bmlt-workflow'), __('Thursday','bmlt-workflow'), __('Friday','bmlt-workflow'), __('Saturday','bmlt-workflow')];
                     $table .= '<tr><td>'.__('Meeting Day','bmlt-workflow').':</td><td>' . $weekdays[$value] . '</td></tr>';
                     break;
@@ -1350,7 +1344,7 @@ class SubmissionsHandler
                     $table .= '<tr><td>'.__('Virtual Meeting Link','bmlt-workflow').'</td><td>' . $value . '</td></tr>';
                     break;
 
-                case "format_shared_id_list":
+                case "formatIds":
                     $friendlyname = __('Meeting Formats','bmlt-workflow');
                     // convert the meeting formats to human readable
                     $friendlydata = "";

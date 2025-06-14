@@ -54,7 +54,7 @@ The following fields are currently supported:
 
 Within fso template body only:
 - `{field:submitter_name}`
-- `{field:meeting_name}`
+- `{field:name}`
 - `{field:starter_kit_postal_address}`
 
 Within submitter template body only:

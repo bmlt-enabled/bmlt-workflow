@@ -519,15 +519,15 @@ EOD;
 
         Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
         $meeting = array(
-                "meeting_name" => "lkj",
-                "start_time" => "11:01:00",
-                "duration_time" => "01:00:00",
+                "name" => "lkj",
+                "startTime" => "11:01:00",
+                "duration" => "01:00:00",
                 "location_text" => "lkjlk",
                 "location_street" => "lkjlkj",
                 "location_municipality" => "New York",
-                "weekday_tinyint" => "1",
+                "day" => "1",
                 "service_body_bigint" => "1050",
-                "format_shared_id_list" => "7",
+                "formatIds" => "7",
                 "virtual_meeting_link" => "https://www.google.com",
                 "venue_type" => "3",
                 "latitude" => "40.7127753",
@@ -551,15 +551,15 @@ EOD;
 
         Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
         $invalid_meeting = array(
-                "meeting_name" => "lkj",
-                "start_time" => "11:01:00",
-                "duration_time" => "01:00:00",
+                "name" => "lkj",
+                "startTime" => "11:01:00",
+                "duration" => "01:00:00",
                 "location_text" => "lkjlk",
                 "location_street" => "lkjlkj",
                 "location_municipality" => "New York",
-                "weekday_tinyint" => "1",
+                "day" => "1",
                 "service_body_bigint" => "1050",
-                "format_shared_id_list" => "7",
+                "formatIds" => "7",
                 "virtual_meeting_link" => "https://www.google.com",
                 "venue_type" => "10",
                 "latitude" => "40.7127753",

@@ -97,7 +97,6 @@ jQuery(document).ready(function ($) {
   let bmltwf_changedata = {};
 
   const weekdays = [
-    __('Error', 'bmlt-workflow'),
     __('Sunday', 'bmlt-workflow'),
     __('Monday', 'bmlt-workflow'),
     __('Tuesday', 'bmlt-workflow'),
@@ -207,17 +206,17 @@ jQuery(document).ready(function ($) {
     // fill in and highlight the changes - use extend to clone
     const changes_requested = $.extend(true, {}, bmltwf_requested);
 
-    if ('format_shared_id_list' in changes_requested) {
-      changes_requested.format_shared_id_list = changes_requested.format_shared_id_list.split(',');
+    if ('formatIds' in changes_requested) {
+      changes_requested.formatIds = changes_requested.formatIds.split(',');
     }
 
-    if ('duration_time' in changes_requested) {
-      const durationarr = changes_requested.duration_time.split(':');
+    if ('duration' in changes_requested) {
+      const durationarr = changes_requested.duration.split(':');
       // hoping we got hours, minutes and seconds here
       if (durationarr.length === 3) {
         changes_requested.duration_hours = durationarr[0];
         changes_requested.duration_minutes = durationarr[1];
-        delete changes_requested.duration_time;
+        delete changes_requested.duration;
       }
     }
 
@@ -503,21 +502,21 @@ jQuery(document).ready(function ($) {
           switch (data.submission_type) {
             case 'reason_new':
               submission_type = __('New Meeting', 'bmlt-workflow');
-              namestr = data.meeting_name;
-              meeting_day = weekdays[data.weekday_tinyint];
+              namestr = data.name;
+              meeting_day = weekdays[data.day];
               meeting_time = data.start_time;
               break;
             case 'reason_close':
               submission_type = __('Close Meeting', 'bmlt-workflow');
               // console.log(data);
-              namestr = data.meeting_name;
-              meeting_day = weekdays[data.weekday_tinyint];
+              namestr = data.name;
+              meeting_day = weekdays[data.day];
               meeting_time = data.start_time;
               break;
             case 'reason_change':
               submission_type = __('Modify Meeting', 'bmlt-workflow');
-              namestr = data.original_meeting_name;
-              meeting_day = weekdays[data.original_weekday_tinyint];
+              namestr = data.original_name;
+              meeting_day = weekdays[data.original_day];
               meeting_time = data.original_start_time;
               original = `${__('Original', 'bmlt-workflow')} `;
               break;
@@ -709,7 +708,7 @@ jQuery(document).ready(function ($) {
 
     Object.keys(c).forEach((key) => {
       switch (key) {
-        case 'meeting_name': {
+        case 'name': {
           let mname = __('Meeting Name (new)', 'bmlt-workflow');
           if (d.submission_type === 'reason_close') {
             mname = __('Meeting Name', 'bmlt-workflow');
@@ -747,11 +746,11 @@ jQuery(document).ready(function ($) {
           }
           break;
         }
-        case 'start_time':
+        case 'startTime':
           table += column(col_meeting_details, __('Start Time', 'bmlt-workflow'), c[key]);
           break;
-        case 'duration_time': {
-          const durationarr = d.changes_requested.duration_time.split(':');
+        case 'duration': {
+          const durationarr = d.changes_requested.duration.split(':');
           table += column(col_meeting_details, __('Duration', 'bmlt-workflow'), `${durationarr[0]}h${durationarr[1]}m`);
           break;
         }
@@ -782,7 +781,7 @@ jQuery(document).ready(function ($) {
         case 'group_relationship':
           table += column(col_personal_details, __('Relationship to Group', 'bmlt-workflow'), c[key]);
           break;
-        case 'weekday_tinyint':
+        case 'day':
           table += column(col_meeting_details, __('Meeting Day', 'bmlt-workflow'), weekdays[c[key]]);
           break;
         case 'starter_kit_postal_address':
@@ -818,11 +817,11 @@ jQuery(document).ready(function ($) {
           table += column(col_virtual_meeting_details, __('Virtual Meeting Link', 'bmlt-workflow'), c[key]);
           break;
 
-        case 'format_shared_id_list': {
+        case 'formatIds': {
           const friendlyname = __('Meeting Formats', 'bmlt-workflow');
           // convert the meeting formats to human readable
           let friendlydata = '';
-          const strarr = d.changes_requested.format_shared_id_list.split(',');
+          const strarr = d.changes_requested.formatIds.split(',');
           strarr.forEach((element) => {
             friendlydata += `(${bmltwf_bmlt_formats[element].key_string})-${bmltwf_bmlt_formats[element].name_string} `;
           });
@@ -973,12 +972,12 @@ jQuery(document).ready(function ($) {
       if ($(this).is('textarea,select,input')) {
         const short_id = $(this).attr('id').replace('quickedit_', '');
         // turn the format list into a comma seperated array
-        if (short_id === 'format_shared_id_list') {
+        if (short_id === 'formatIds') {
           quickedit_changes_requested[short_id] = $(this).val().join(',');
         } else if (short_id === 'duration_hours' || short_id === 'duration_minutes') {
           // reconstruct our duration from the select list
           // add duration entirely if either minutes or hours have changed
-          quickedit_changes_requested.duration_time = `${$('#quickedit_duration_hours').val()}:${$('#quickedit_duration_minutes').val()}:00`;
+          quickedit_changes_requested.duration = `${$('#quickedit_duration_hours').val()}:${$('#quickedit_duration_minutes').val()}:00`;
         } else if ((short_id === 'virtual_meeting_additional_info' || short_id === 'phone_meeting_number' || short_id === 'virtual_meeting_link') && $(this).val() === '(deleted)') {
           delete quickedit_changes_requested[short_id];
         } else {

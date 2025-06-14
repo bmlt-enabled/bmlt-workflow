@@ -87,9 +87,9 @@ test("Success_New_Standard_Meeting_And_Submit", async (t) => {
     .eql(false);
 
   // meeting settings
-  await t.typeText(uf.meeting_name, "my test meeting");
+  await t.typeText(uf.name, "my test meeting");
 
-  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+  await select_dropdown_by_text(uf.day, "Monday");
 
   await t.typeText(uf.start_time, "10:40");
 
@@ -168,9 +168,9 @@ test("Success_New_Standard_Meeting_Aus_Mobile_Phone_Format_And_Submit", async (t
     .eql(false);
 
   // meeting settings
-  await t.typeText(uf.meeting_name, "my test meeting");
+  await t.typeText(uf.name, "my test meeting");
 
-  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+  await select_dropdown_by_text(uf.day, "Monday");
 
   await t.typeText(uf.start_time, "10:40");
 
@@ -249,9 +249,9 @@ test("Success_New_Standard_Meeting_Aus_Local_Phone_Format_And_Submit", async (t)
     .eql(false);
 
   // meeting settings
-  await t.typeText(uf.meeting_name, "my test meeting");
+  await t.typeText(uf.name, "my test meeting");
 
-  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+  await select_dropdown_by_text(uf.day, "Monday");
 
   await t.typeText(uf.start_time, "10:40");
 
@@ -330,9 +330,9 @@ test("Success_New_Standard_Meeting_US_Phone_Format_And_Submit", async (t) => {
     .eql(false);
 
   // meeting settings
-  await t.typeText(uf.meeting_name, "my test meeting");
+  await t.typeText(uf.name, "my test meeting");
 
-  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+  await select_dropdown_by_text(uf.day, "Monday");
 
   await t.typeText(uf.start_time, "10:40");
 
@@ -370,7 +370,7 @@ test("Success_New_Standard_Meeting_US_Phone_Format_And_Submit", async (t) => {
 
 test("Success_Locate_Meeting_Via_QueryString", async (t) => {
   await t.navigateTo(userVariables.formpage+"&meeting_id=1601")
-  .expect(uf.meeting_name.value)
+  .expect(uf.name.value)
   .eql("A New Way Group");
 });
 
@@ -421,9 +421,9 @@ test("Success_New_Hybrid_Meeting_And_Submit", async (t) => {
     .typeText(uf.virtual_meeting_additional_info, "Zoom ID 83037287669 Passcode: testing");
 
   // meeting settings
-  await t.typeText(uf.meeting_name, "my test meeting");
+  await t.typeText(uf.name, "my test meeting");
 
-  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+  await select_dropdown_by_text(uf.day, "Monday");
 
   await t.typeText(uf.start_time, "10:40");
 
@@ -506,9 +506,9 @@ test("Success_New_Virtual_Meeting_And_Submit", async (t) => {
     .typeText(uf.virtual_meeting_additional_info, "Zoom ID 83037287669 Passcode: testing");
 
   // meeting settings
-  await t.typeText(uf.meeting_name, "my test meeting");
+  await t.typeText(uf.name, "my test meeting");
 
-  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+  await select_dropdown_by_text(uf.day, "Monday");
 
   await t.typeText(uf.start_time, "10:40");
 
@@ -588,9 +588,9 @@ test("Success_New_Tempclosure_Meeting_And_Submit", async (t) => {
     .typeText(uf.virtual_meeting_additional_info, "Zoom ID 83037287669 Passcode: testing");
 
   // meeting settings
-  await t.typeText(uf.meeting_name, "my test meeting");
+  await t.typeText(uf.name, "my test meeting");
 
-  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+  await select_dropdown_by_text(uf.day, "Monday");
 
   await t.typeText(uf.start_time, "10:40");
 
@@ -627,7 +627,7 @@ test("Success_New_Tempclosure_Meeting_And_Submit", async (t) => {
     .match(/submission\ successful/);
 });
 
-test("Success_Change_Meeting_Name_And_Submit", async (t) => {
+test("Success_Change_name_And_Submit", async (t) => {
 
   await t.navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_change");
@@ -651,9 +651,9 @@ test("Success_Change_Meeting_Name_And_Submit", async (t) => {
     .typeText(uf.email_address, "test@test.com.zz")
     .typeText(uf.contact_number, "123-456-7890")
 
-    .typeText(uf.meeting_name, "update")
+    .typeText(uf.name, "update")
     // make sure highlighting is present
-    .expect(uf.meeting_name.hasClass("bmltwf-changed"))
+    .expect(uf.name.hasClass("bmltwf-changed"))
     .ok();
 
   // email dropdown
@@ -832,7 +832,7 @@ test("Success_Close_Meeting_And_Submit", async (t) => {
     .typeText(uf.email_address, "test@test.com.zz")
     .typeText(uf.contact_number, "123-456-7890")
 
-    .typeText(uf.meeting_name, "update");
+    .typeText(uf.name, "update");
 
   // email dropdown
   await select_dropdown_by_text(uf.add_contact, "Yes");
@@ -876,9 +876,9 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
     .typeText(uf.email_address, "test@test.com.zz")
     .typeText(uf.contact_number, "123-456-7890")
 
-    .typeText(uf.meeting_name, "update")
+    .typeText(uf.name, "update")
     // make sure highlighting is present
-    .expect(uf.meeting_name.hasClass("bmltwf-changed"))
+    .expect(uf.name.hasClass("bmltwf-changed"))
     .ok();
 
   // virtual meeting settings
@@ -906,10 +906,10 @@ test("Change_Meeting_Details_Check_Highlighting", async (t) => {
   // meeting settings
 
   // weekday
-  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+  await select_dropdown_by_text(uf.day, "Monday");
   // await t.debug();
   await t
-    .expect(uf.weekday_tinyint.hasClass("bmltwf-changed"))
+    .expect(uf.day.hasClass("bmltwf-changed"))
     .ok()
     // start time
     .typeText(uf.start_time, "10:40")

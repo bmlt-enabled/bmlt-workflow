@@ -91,8 +91,8 @@ class Integration
         $fromto = array();
         $fromto['serviceBodyId'] = 'service_body_bigint';
         $fromto['venueType'] = 'venue_type';
-        $fromto['day'] = 'weekday_tinyint';
-        $fromto['name'] = 'meeting_name';
+        $fromto['day'] = 'day';
+        $fromto['name'] = 'name';
 
         // change all our fields over
         foreach ($fromto as $from => $to) {
@@ -106,8 +106,8 @@ class Integration
         // special cases
         $here = $meeting['duration'] ?? false;
         if ($here) {
-            $meeting['duration_time'] = $meeting['duration'] . ":00";
-            unset($meeting['duration_time']);
+            $meeting['duration'] = $meeting['duration'] . ":00";
+            unset($meeting['duration']);
         }
 
         $here = $meeting['startTime'] ?? false;
@@ -118,14 +118,14 @@ class Integration
 
         $here = $meeting['formatIds'] ?? false;
         if ($here) {
-            $meeting['format_shared_id_list'] = implode(',', $meeting['formatIds']);
+            $meeting['formatIds'] = implode(',', $meeting['formatIds']);
             unset($meeting['formatIds']);
         }
 
         // day starts at 0 for BMLT 3.x
         $here = $meeting['day'] ?? false;
         if ($here) {
-            $meeting['weekday_tinyint'] = $meeting['day'] + 1;
+            $meeting['day'] = $meeting['day'] + 1;
             unset($meeting['day']);
         }
 
@@ -137,8 +137,8 @@ class Integration
         $fromto = array();
         $fromto['service_body_bigint'] = 'serviceBodyId';
         $fromto['venue_type'] = 'venueType';
-        $fromto['weekday_tinyint'] = 'day';
-        $fromto['meeting_name'] = 'name';
+        $fromto['day'] = 'day';
+        $fromto['name'] = 'name';
         $fromto['worldid_mixed'] = 'worldId';
 
         // dont need this any more
@@ -154,11 +154,11 @@ class Integration
         }
 
         // special cases
-        $here = $meeting['duration_time'] ?? false;
+        $here = $meeting['duration'] ?? false;
         if ($here) {
-            $time = explode(':', $meeting['duration_time']);
+            $time = explode(':', $meeting['duration']);
             $meeting['duration'] = $time[0] . ":" . $time[1];
-            unset($meeting['duration_time']);
+            unset($meeting['duration']);
         }
 
         $here = $meeting['start_time'] ?? false;
@@ -168,11 +168,11 @@ class Integration
             unset($meeting['start_time']);
         }
 
-        $here = $meeting['format_shared_id_list'] ?? false;
+        $here = $meeting['formatIds'] ?? false;
         if ($here) {
-            $meeting['formatIds'] = array_map('intval', explode(',', $meeting['format_shared_id_list']));
-            // $meeting['formatIds'] = explode(',', $meeting['format_shared_id_list']);
-            unset($meeting['format_shared_id_list']);
+            $meeting['formatIds'] = array_map('intval', explode(',', $meeting['formatIds']));
+            // $meeting['formatIds'] = explode(',', $meeting['formatIds']);
+            unset($meeting['formatIds']);
         } else
         // if we dont even have a format list, then v3 requires at least a blank array here
         {
@@ -674,12 +674,12 @@ class Integration
         $this->debug_log("venue type");
         $this->debug_log($meeting['venue_type']);
         $this->debug_log("meeting formats before");
-        $this->debug_log($meeting['format_shared_id_list']);
+        $this->debug_log($meeting['formatIds']);
         $formats = $this->getMeetingFormats();
         $this->debug_log("real formats");
         $this->debug_log($formats);
 
-        $meetingformats = explode(',', $meeting['format_shared_id_list']);
+        $meetingformats = explode(',', $meeting['formatIds']);
         // bmlt2x doesn't handle the venue_type field
         // remove all the invalid venue types from the format list
         $key = array_search('VM', array_column($formats, 'key_string'));
@@ -719,10 +719,10 @@ class Integration
         $this->debug_log("at end meetingformats = ");
         $this->debug_log($meetingformats);
 
-        $meeting['format_shared_id_list'] = implode(',', $meetingformats);
+        $meeting['formatIds'] = implode(',', $meetingformats);
 
         $this->debug_log("meeting formats after");
-        $this->debug_log($meeting['format_shared_id_list']);
+        $this->debug_log($meeting['formatIds']);
 
         // handle publish/unpublish here
         $changearr = array();

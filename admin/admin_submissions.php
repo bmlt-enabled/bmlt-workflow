@@ -75,8 +75,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </div>
         </div>
         <div class="form-grid-col1">
-            <label for="quickedit_meeting_name"><?php echo __( "Meeting Name", 'bmlt-workflow' ); ?></label>
-            <input type="text" name="quickedit_meeting_name" id="quickedit_meeting_name" class="quickedit-input">
+            <label for="quickedit_name"><?php echo __( "Meeting Name", 'bmlt-workflow' ); ?></label>
+            <input type="text" name="quickedit_name" id="quickedit_name" class="quickedit-input">
             <label for="quickedit_formatIds"><?php echo __( "Meeting Formats", 'bmlt-workflow' ); ?>
                 <?php
                 $req = get_option('bmltwf_required_meeting_formats') === 'true';
@@ -100,13 +100,13 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <div class="grid-flex-item">
                         <label for="quickedit_day"><?php echo __( "Weekday", 'bmlt-workflow' ); ?></label>
                         <select class="quickedit-input" name="quickedit_day" id="quickedit_day">
-                            <option value="1"><?php echo __( "Sunday", 'bmlt-workflow' ); ?></option>
-                            <option value="2"><?php echo __( "Monday", 'bmlt-workflow' ); ?></option>
-                            <option value="3"><?php echo __( "Tuesday", 'bmlt-workflow' ); ?></option>
-                            <option value="4"><?php echo __( "Wednesday", 'bmlt-workflow' ); ?></option>
-                            <option value="5"><?php echo __( "Thursday", 'bmlt-workflow' ); ?></option>
-                            <option value="6"><?php echo __( "Friday", 'bmlt-workflow' ); ?></option>
-                            <option value="7"><?php echo __( "Saturday", 'bmlt-workflow' ); ?></option>
+                            <option value="0"><?php echo __( "Sunday", 'bmlt-workflow' ); ?></option>
+                            <option value="1"><?php echo __( "Monday", 'bmlt-workflow' ); ?></option>
+                            <option value="2"><?php echo __( "Tuesday", 'bmlt-workflow' ); ?></option>
+                            <option value="3"><?php echo __( "Wednesday", 'bmlt-workflow' ); ?></option>
+                            <option value="4"><?php echo __( "Thursday", 'bmlt-workflow' ); ?></option>
+                            <option value="5"><?php echo __( "Friday", 'bmlt-workflow' ); ?></option>
+                            <option value="6"><?php echo __( "Saturday", 'bmlt-workflow' ); ?></option>
                         </select>
                     </div>
                     <div class="grid-flex-double">

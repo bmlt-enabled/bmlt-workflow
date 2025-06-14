@@ -78,7 +78,7 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   var meeting = {
-    meeting_name: "my test meeting 99999",
+    name: "my test meeting 99999",
     location_text: "the church",
     location_street: "105 avoca street",
     location_info: "info",
@@ -108,9 +108,9 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve", async (t) => {
     .typeText(uf.virtual_meeting_additional_info, meeting.virtual_meeting_additional_info);
 
   // meeting settings
-  await t.typeText(uf.meeting_name, meeting.meeting_name);
+  await t.typeText(uf.name, meeting.name);
 
-  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+  await select_dropdown_by_text(uf.day, "Monday");
 
   await t.typeText(uf.start_time, "10:40");
 
@@ -193,9 +193,9 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve", async (t) => {
     .typeText(uf.contact_number, "123-456-7890")
     .typeText(uf.location_text, "location")
 
-    .typeText(uf.meeting_name, "update", { replace: true })
+    .typeText(uf.name, "update", { replace: true })
     // make sure highlighting is present
-    .expect(uf.meeting_name.hasClass("bmltwf-changed"))
+    .expect(uf.name.hasClass("bmltwf-changed"))
     .ok();
 
   // email dropdown
