@@ -119,7 +119,8 @@ if (!class_exists('bmltwf_plugin')) {
 
             // inline scripts
             $script  = 'var bmltwf_form_submit_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/submissions') . '; ';
-            $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
+            $script  = 'var bmltwf_bmltserver_meetings_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/bmltserver/meetings') . '; ';
+
             // optional fields
             $script .= 'var bmltwf_optional_location_nation = "' . get_option('bmltwf_optional_location_nation') . '";';
             $script .= 'var bmltwf_optional_location_sub_province = "' . get_option('bmltwf_optional_location_sub_province') . '";';

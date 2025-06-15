@@ -52,6 +52,16 @@ class BMLTServerHandler
         return $this->bmltwf_rest_success($response);
     }
 
+    public function get_bmltserver_meetings_handler($request)
+    {
+
+        $this->debug_log('get all meetings');
+
+        $response = $this->bmlt_integration->getAllMeetings();
+
+        return $this->bmltwf_rest_success($response);
+    }
+
     // This is for testing username/password/server combination
     public function post_bmltserver_handler($request)
     {

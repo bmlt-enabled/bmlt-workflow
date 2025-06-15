@@ -370,6 +370,52 @@ class Integration
         return json_decode(\wp_remote_retrieve_body($response));
     }
 
+    public function getAllMeetings()
+    {
+        $service_bodies = implode(',', array_keys($this->getServiceBodies()));
+        $this->debug_log("service_bodies");
+        $this->debug_log($service_bodies);
+        $this->debug_log("inside getMeeting auth");
+
+        if (!$this->is_v3_token_valid()) {
+            $ret =  $this->authenticateRootServer();
+            if (is_wp_error($ret)) {
+                $this->debug_log("exiting getMeeting authenticateRootServer failed");
+                return $ret;
+            }
+        }
+        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings';
+        $url = add_query_arg(array('serviceBodyIds' => $service_bodies), $url);
+        $this->debug_log($this->v3_access_token);
+        $response = \wp_remote_request($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), 'GET'));
+        $this->debug_log("v3 wp_remote_request returns " . \wp_remote_retrieve_response_code($response));
+        $this->debug_log(\wp_remote_retrieve_body($response));
+
+        if (\wp_remote_retrieve_response_code($response) != 200) {
+            return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
+        }
+
+        $remove_fields = [
+            'contact_phone_2',
+            'contact_email_2',
+            'contact_name_2',
+            'contact_phone_1',
+            'contact_email_1',
+            'contact_name_1',
+            'comments'
+        ];
+        $body = json_decode(\wp_remote_retrieve_body($response),true);
+        foreach ($body as &$meeting) {
+            foreach ($remove_fields as $field) {
+                if (isset($meeting[$field])) {
+                    unset($meeting[$field]);
+                }
+            }
+        }
+
+        return json_encode($body);
+    }
+
     function getServiceBodies()
     {
         $this->debug_log("inside getServiceBodies v3 auth");
