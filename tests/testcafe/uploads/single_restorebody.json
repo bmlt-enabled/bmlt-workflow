@@ -32,8 +32,8 @@
             "submission_type": "reason_new",
             "submitter_email": "test@test.com.zz",
             "meeting_id": "0",
-            "service_body_bigint": "2",
-            "changes_requested": "{\"name\":\"my test meeting\",\"startTime\":\"10:40:00\",\"duration\":\"04:30:00\",\"location_text\":\"my location\",\"location_street\":\"110 Avoca Street\",\"location_info\":\"info\",\"location_municipality\":\"Randwick\",\"location_province\":\"NSW\",\"location_postal_code_1\":2031,\"day\":\"2\",\"service_body_bigint\":2,\"formatIds\":\"1,2,56\",\"contact_number\":\"12345\",\"group_relationship\":\"Group Member\",\"add_contact\":\"yes\",\"additional_info\":\"my additional info\",\"virtual_meeting_additional_info\":\"Zoom ID 83037287669 Passcode: testing\",\"phone_meeting_number\":\"+61 1800 253430 code #8303782669\",\"virtual_meeting_link\":\"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09\"}",
+            "serviceBodyId": "2",
+            "changes_requested": "{\"name\":\"my test meeting\",\"startTime\":\"10:40:00\",\"duration\":\"04:30:00\",\"location_text\":\"my location\",\"location_street\":\"110 Avoca Street\",\"location_info\":\"info\",\"location_municipality\":\"Randwick\",\"location_province\":\"NSW\",\"location_postal_code_1\":2031,\"day\":\"2\",\"serviceBodyId\":2,\"formatIds\":\"1,2,56\",\"contact_number\":\"12345\",\"group_relationship\":\"Group Member\",\"add_contact\":\"yes\",\"additional_info\":\"my additional info\",\"virtual_meeting_additional_info\":\"Zoom ID 83037287669 Passcode: testing\",\"phone_meeting_number\":\"+61 1800 253430 code #8303782669\",\"virtual_meeting_link\":\"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09\"}",
             "action_message": null
         },
         {
@@ -46,7 +46,7 @@
             "submission_type": "reason_change",
             "submitter_email": "test@test.com.zz",
             "meeting_id": "2",
-            "service_body_bigint": "2",
+            "serviceBodyId": "2",
             "changes_requested": "{\"name\":\"virtualmeeting randwickupdate\",\"contact_number\":\"12345\",\"group_relationship\":\"Group Member\",\"add_contact\":\"yes\",\"additional_info\":\"my additional info\",\"original_name\":\"virtualmeeting randwick\",\"original_day\":\"2\",\"original_startTime\":\"20:30:00\"}",
             "action_message": null
         },
@@ -60,26 +60,26 @@
             "submission_type": "reason_close",
             "submitter_email": "test@test.com.zz",
             "meeting_id": "2",
-            "service_body_bigint": "2",
-            "changes_requested": "{\"contact_number\":\"12345\",\"group_relationship\":\"Group Member\",\"add_contact\":\"yes\",\"service_body_bigint\":2,\"additional_info\":\"my additional info\",\"name\":\"virtualmeeting randwick\",\"day\":\"2\",\"startTime\":\"20:30:00\"}",
+            "serviceBodyId": "2",
+            "changes_requested": "{\"contact_number\":\"12345\",\"group_relationship\":\"Group Member\",\"add_contact\":\"yes\",\"serviceBodyId\":2,\"additional_info\":\"my additional info\",\"name\":\"virtualmeeting randwick\",\"day\":\"2\",\"startTime\":\"20:30:00\"}",
             "action_message": null
         }
     ],
     "service_bodies": [
         {
-            "service_body_bigint": "1",
+            "serviceBodyId": "1",
             "service_body_name": "toplevel",
             "service_body_description": "",
             "show_on_form": "1"
         },
         {
-            "service_body_bigint": "2",
+            "serviceBodyId": "2",
             "service_body_name": "a-level1",
             "service_body_description": "",
             "show_on_form": "1"
         },
         {
-            "service_body_bigint": "3",
+            "serviceBodyId": "3",
             "service_body_name": "b-level1",
             "service_body_description": "",
             "show_on_form": "1"
@@ -87,15 +87,15 @@
     ],
     "service_bodies_access": [
         {
-            "service_body_bigint": "1",
+            "serviceBodyId": "1",
             "wp_uid": "1"
         },
         {
-            "service_body_bigint": "2",
+            "serviceBodyId": "2",
             "wp_uid": "1"
         },
         {
-            "service_body_bigint": "3",
+            "serviceBodyId": "3",
             "wp_uid": "1"
         }
     ]

@@ -71,7 +71,7 @@ class ServiceBodiesHandler
                 $idlist[]=$key;
             }
 
-            $our_stored_sbs = $wpdb->get_col('SELECT service_body_bigint FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ';', 0);
+            $our_stored_sbs = $wpdb->get_col('SELECT serviceBodyId FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ';', 0);
 
             // search through the list of service bodies from bmlt
             // if they exist in both our db and bmlt, then remove them from processing
@@ -96,21 +96,21 @@ class ServiceBodiesHandler
             $this->debug_log($toadd);
             // delete the ones that no longer exist
             foreach ($todelete as $key=>$value) {
-                $sql = $wpdb->prepare('DELETE from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' where service_body_bigint="%d";', $value);
+                $sql = $wpdb->prepare('DELETE from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' where serviceBodyId="%d";', $value);
                 $wpdb->query($sql);
-                $sql = $wpdb->prepare('DELETE from ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' where service_body_bigint="%d";', $value);
+                $sql = $wpdb->prepare('DELETE from ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' where serviceBodyId="%d";', $value);
                 $wpdb->query($sql);
             }
 
             // add the new ones
             foreach ($toadd as $value) {
-                $sql = $wpdb->prepare('INSERT into ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s", service_body_bigint="%d", show_on_form=0', $sblist[$value]['name'], $sblist[$value]['description'], $value);
+                $sql = $wpdb->prepare('INSERT into ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s", serviceBodyId="%d", show_on_form=0', $sblist[$value]['name'], $sblist[$value]['description'], $value);
                 $wpdb->query($sql);
             }
 
             // update any values that may have changed since last time we looked
             foreach ($idlist as $value) {
-                $sql = $wpdb->prepare('UPDATE ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s" where service_body_bigint="%d"', $sblist[$value]['name'], $sblist[$value]['description'], $value);
+                $sql = $wpdb->prepare('UPDATE ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' set service_body_name="%s", service_body_description="%s" where serviceBodyId="%d"', $sblist[$value]['name'], $sblist[$value]['description'], $value);
                 $wpdb->query($sql);
             }
 
@@ -118,17 +118,17 @@ class ServiceBodiesHandler
             foreach ($sblist as $key => $value) {
                 $this->debug_log("getting memberships for " . $key);
 
-                $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' where service_body_bigint = "%d"', $key);
+                $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' where serviceBodyId = "%d"', $key);
                 $result = $wpdb->get_col($sql, 0);
                 $sblist[$key]['membership'] = implode(',', $result);
             }
 
             // get the form display settings
-            $sqlresult = $wpdb->get_results('SELECT service_body_bigint,show_on_form FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name, ARRAY_A);
+            $sqlresult = $wpdb->get_results('SELECT serviceBodyId,show_on_form FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name, ARRAY_A);
 
             foreach ($sqlresult as $key => $value) {
                     $bool = $value['show_on_form'] ? (true) : (false);
-                    $sblist[$value['service_body_bigint']]['show_on_form'] = $bool;
+                    $sblist[$value['serviceBodyId']]['show_on_form'] = $bool;
             }
             $this->debug_log("returning sblist ");
             $this->debug_log($sblist);
@@ -140,7 +140,7 @@ class ServiceBodiesHandler
 
             // create simple service area list (names of service areas that are enabled by admin with show_on_form)
             foreach ($result as $key => $value) {
-                $sblist[$value['service_body_bigint']]['name'] = $value['service_body_name'];
+                $sblist[$value['serviceBodyId']]['name'] = $value['service_body_name'];
             }
         }
         return $this->bmltwf_rest_success($sblist);
@@ -177,12 +177,12 @@ class ServiceBodiesHandler
             }
             $members = $arr['membership'];
             foreach ($members as $member) {
-                $sql = $wpdb->prepare('INSERT into ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' SET wp_uid = "%d", service_body_bigint="%d"', $member, $sb);
+                $sql = $wpdb->prepare('INSERT into ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' SET wp_uid = "%d", serviceBodyId="%d"', $member, $sb);
                 $wpdb->query($sql);
             }
             // update show/hide
             $show_on_form = $arr['show_on_form'];
-            $sql = $wpdb->prepare('UPDATE ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' SET show_on_form = "%d" where service_body_bigint="%d"', $show_on_form, $sb);
+            $sql = $wpdb->prepare('UPDATE ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' SET show_on_form = "%d" where serviceBodyId="%d"', $show_on_form, $sb);
             $wpdb->query($sql);
         }
 

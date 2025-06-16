@@ -129,7 +129,7 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve", async (t) => {
     .typeText(uf.location_province, meeting.location_province)
     .typeText(uf.location_postal_code_1, meeting.location_postal_code_1);
 
-  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
+  await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");

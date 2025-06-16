@@ -70,7 +70,7 @@ class Meeting_Update_Form {
         this.location_postal_code_1 = Selector('#location_postal_code_1');
         this.location_postal_code_1_label = Selector('#location_postal_code_1_label');
         this.optional_location_nation = Selector('#optional_location_nation');
-        this.service_body_bigint = Selector('#service_body_bigint');
+        this.serviceBodyId = Selector('#serviceBodyId');
         this.additional_info_div = Selector('#additional_info_div');
         this.additional_info = Selector('#additional_info');
         this.starter_pack = Selector('#starter_pack');

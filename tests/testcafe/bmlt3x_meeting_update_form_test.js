@@ -109,7 +109,7 @@ test("Success_New_Standard_Meeting_And_Submit", async (t) => {
     .typeText(uf.location_province, "NSW")
     .typeText(uf.location_postal_code_1, "2031");
 
-  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
+  await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -190,7 +190,7 @@ test("Success_New_Standard_Meeting_Aus_Mobile_Phone_Format_And_Submit", async (t
     .typeText(uf.location_province, "NSW")
     .typeText(uf.location_postal_code_1, "2031");
 
-  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
+  await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -271,7 +271,7 @@ test("Success_New_Standard_Meeting_Aus_Local_Phone_Format_And_Submit", async (t)
     .typeText(uf.location_province, "NSW")
     .typeText(uf.location_postal_code_1, "2031");
 
-  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
+  await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -352,7 +352,7 @@ test("Success_New_Standard_Meeting_US_Phone_Format_And_Submit", async (t) => {
     .typeText(uf.location_province, "NSW")
     .typeText(uf.location_postal_code_1, "2031");
 
-  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
+  await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -443,7 +443,7 @@ test("Success_New_Hybrid_Meeting_And_Submit", async (t) => {
     .typeText(uf.location_province, "NSW")
     .typeText(uf.location_postal_code_1, "2031");
 
-  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
+  await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -525,7 +525,7 @@ test("Success_New_Virtual_Meeting_And_Submit", async (t) => {
     .typeText(uf.location_province, "NSW")
     .typeText(uf.location_postal_code_1, "2031");
 
-  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
+  await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -611,7 +611,7 @@ test("Success_New_Tempclosure_Meeting_And_Submit", async (t) => {
     .typeText(uf.location_province, "NSW")
     .typeText(uf.location_postal_code_1, "2031");
 
-  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
+  await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");

@@ -113,17 +113,17 @@ Line: $errorLine
 
         $dblookup = array(
             '0' => array(
-                "service_body_bigint" => "1",
+                "serviceBodyId" => "1",
                 "service_body_name" => "toplevel",
                 "show_on_form" => "1"
             ),
             '1' => array(
-                "service_body_bigint" => "2",
+                "serviceBodyId" => "2",
                 "service_body_name" => "a-level1",
                 "show_on_form" => "1"
             ),
             '2' => array(
-                "service_body_bigint" => "3",
+                "serviceBodyId" => "3",
                 "service_body_name" => "b-level1",
                 "show_on_form" => "1"
             )

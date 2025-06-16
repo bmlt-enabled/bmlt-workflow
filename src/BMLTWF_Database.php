@@ -110,25 +110,25 @@ class BMLTWF_Database
             $this->bmltwf_drop_tables();
 
             $sql = "CREATE TABLE " . $this->bmltwf_service_bodies_table_name . " (
-            service_body_bigint bigint(20) NOT NULL,
+            serviceBodyId bigint(20) NOT NULL,
             service_body_name tinytext NOT NULL,
             service_body_description text,
             show_on_form bool,
-            PRIMARY KEY (service_body_bigint)
+            PRIMARY KEY (serviceBodyId)
         ) $charset_collate;";
 
             $wpdb->query($sql);
 
             $sql = "CREATE TABLE " . $this->bmltwf_service_bodies_access_table_name . " (
-            service_body_bigint bigint(20) NOT NULL,
+            serviceBodyId bigint(20) NOT NULL,
             wp_uid bigint(20) unsigned  NOT NULL,
-            FOREIGN KEY (service_body_bigint) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(service_body_bigint) 
+            FOREIGN KEY (serviceBodyId) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(serviceBodyId) 
         ) $charset_collate;";
 
             $wpdb->query($sql);
 
             $sql = "CREATE TABLE " . $this->bmltwf_submissions_table_name . " (
-            id bigint(20) NOT NULL AUTO_INCREMENT,
+            change_id bigint(20) NOT NULL AUTO_INCREMENT,
             submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
             change_time datetime DEFAULT '0000-00-00 00:00:00',
             changed_by varchar(10),
@@ -136,12 +136,12 @@ class BMLTWF_Database
             submitter_name tinytext NOT NULL,
             submission_type tinytext NOT NULL,
             submitter_email varchar(320) NOT NULL,
-            meeting_id bigint(20) unsigned,
-            service_body_bigint bigint(20) NOT NULL,
+            id bigint(20) unsigned,
+            serviceBodyId bigint(20) NOT NULL,
             changes_requested varchar(2048),
             action_message varchar(1024),
-            PRIMARY KEY (id),
-            FOREIGN KEY (service_body_bigint) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(service_body_bigint) 
+            PRIMARY KEY (change_id),
+            FOREIGN KEY (serviceBodyId) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(serviceBodyId) 
         ) $charset_collate;";
 
             $wpdb->query($sql);

@@ -60,15 +60,17 @@ class SubmissionsHandler
         }
         else
         {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId where a.wp_uid =%d', $current_uid);
         }
         // $this->debug_log($sql);
         $result = $wpdb->get_results($sql, ARRAY_A);
         // $this->debug_log(($result));
         foreach ($result as $key => $value) {
-            $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 2);
-            $this->debug_log( $this->bmlt_integration->getMeeting($result[$key]['meeting_id']));
-            $result[$key]['bmlt_meeting_data'] = $this->bmlt_integration->getMeeting($result[$key]['meeting_id']);
+
+            $this->debug_log(json_decode($result[$key]['changes_requested'], true,3));
+            $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 3);
+            $this->debug_log( $this->bmlt_integration->getMeeting($result[$key]['id']));
+            $result[$key]['bmlt_meeting_data'] = $this->bmlt_integration->getMeeting($result[$key]['id']);
         }
         return $result;
     }
@@ -106,7 +108,7 @@ class SubmissionsHandler
         }
         else
         {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
         }
         // $this->debug_log($sql);
         $result = $wpdb->get_row($sql, ARRAY_A);
@@ -366,7 +368,7 @@ class SubmissionsHandler
         // strip out anything that somehow made it this far, before we send it to bmlt
         $change_subfields = array(
             "name",
-            "meeting_id",
+            "id",
             "startTime",
             "duration",
             "location_text",
@@ -376,7 +378,7 @@ class SubmissionsHandler
             "location_province",
             "location_postal_code_1",
             "day",
-            "service_body_bigint",
+            "serviceBodyId",
             "formatIds",
             "location_sub_province",
             "location_nation",
@@ -429,14 +431,13 @@ class SubmissionsHandler
 
                 break;
             case 'reason_change':
-                // needs an id_bigint not a meeting_id
-                $change['id_bigint'] = $result['meeting_id'];
+                $change['id'] = $result['id'];
 
                 $this->debug_log("CHANGE");
                 $this->debug_log(($change));
 
                 // geolocate based on changes - apply the changes to the BMLT version, then geolocate
-                $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($result['meeting_id']);
+                $bmlt_meeting = $this->bmlt_integration->getMeeting($result['id']);
                 if (is_wp_error($bmlt_meeting)) {
                     return $this->bmltwf_rest_error(__('Error retrieving meeting details','bmlt-workflow'), 422);
                 }
@@ -539,7 +540,7 @@ class SubmissionsHandler
                 // are we doing a delete or an unpublish on close?
                 if ((!empty($params['delete'])) && ($params['delete'] == "true")) {
 
-                    $resp = $this->bmlt_integration->deleteMeeting($result['meeting_id']);
+                    $resp = $this->bmlt_integration->deleteMeeting($result['id']);
 
                     if (\is_wp_error(($resp))) {
                         return $resp;
@@ -547,7 +548,7 @@ class SubmissionsHandler
                 } else {
                     // unpublish by default
                     $change['published'] = 0;
-                    $change['id_bigint'] = $result['meeting_id'];
+                    $change['id_bigint'] = $result['id'];
                     $resp = $this->bmlt_integration->updateMeeting($change);
 
                     if (\is_wp_error(($resp))) {
@@ -709,7 +710,7 @@ class SubmissionsHandler
         global $wpdb;
 
         $emails = array();
-        $sql = $wpdb->prepare('SELECT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' where service_body_bigint="%d"', $id);
+        $sql = $wpdb->prepare('SELECT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' where serviceBodyId="%d"', $id);
         $result = $wpdb->get_col($sql);
         foreach ($result as $key => $value) {
             $user = get_user_by('ID', $value);
@@ -801,7 +802,7 @@ class SubmissionsHandler
 
         $subfields = array(
             "update_reason" => array("text", true),
-            "meeting_id" => array("number", $reason_change_bool | $reason_close_bool),
+            "id" => array("number", $reason_change_bool | $reason_close_bool),
             "first_name" => array("text", true),
             "last_name" => array("text", true),
             "name" => array("text", $reason_new_bool),
@@ -814,11 +815,11 @@ class SubmissionsHandler
             "location_info" => array("text", false),
             "location_municipality" => array("text", $reason_new_bool),
             "day" => array("day", $reason_new_bool),
-            "service_body_bigint" => array("bigint", $reason_new_bool),
+            "serviceBodyId" => array("bigint", $reason_new_bool),
             "email_address" => array("email", true),
             "contact_number" => array("text", false),
             // optional #93
-            "formatIds" => array("commaseperatednumbers",  $reason_new_bool && $require_meeting_formats),
+            "formatIds" => array("object",  $reason_new_bool && $require_meeting_formats),
             "additional_info" => array("textarea", $reason_close_bool),
             "starter_kit_postal_address" => array("textarea", false),
             "starter_kit_required" => array("text", $reason_new_bool && $fso_feature),
@@ -839,7 +840,7 @@ class SubmissionsHandler
         $sanitised_fields = array();
 
         // blank meeting id if not provided
-        $sanitised_fields['meeting_id'] = 0;
+        $sanitised_fields['id'] = 0;
         
         // sanitise all provided fields and drop all others
         foreach ($subfields as $field => $validation) {
@@ -896,11 +897,15 @@ class SubmissionsHandler
                             return $this->invalid_form_field($field);
                         }
                         break;
-                    case ('commaseperatednumbers'):
-                        if (preg_match("/[^0-9,]/", $data[$field])) {
+                    case ('object'):
+                        if (!is_array($data[$field])) {
                             return $this->invalid_form_field($field);
                         }
-                        $data[$field] = trim($data[$field], ',');
+                        foreach ($data[$field] as $item) {
+                            if (!is_numeric($item)) {
+                                return $this->invalid_form_field($field);
+                            }
+                        }
                         break;
                     case ('boolnum'):
                         if(($data[$field]!= '0') && ($data[$field] != '1'))
@@ -964,9 +969,9 @@ class SubmissionsHandler
 
         // ensure service body is correctly set
 
-        if (empty($sanitised_fields['service_body_bigint'])) {
+        if (empty($sanitised_fields['serviceBodyId'])) {
             // we should never have a blank service body unless it is 'other' request
-            return $this->bmltwf_rest_error('Form field "service_body_bigint" is required.', 422);
+            return $this->bmltwf_rest_error('Form field "serviceBodyId" is required.', 422);
         }
 
         // main switch for meeting change type
@@ -993,7 +998,7 @@ class SubmissionsHandler
                     "location_nation",
                     "location_sub_province",
                     "day",
-                    "service_body_bigint",
+                    "serviceBodyId",
                     "formatIds",
                     "contact_number",
                     "group_relationship",
@@ -1036,7 +1041,7 @@ class SubmissionsHandler
                     "location_nation",
                     "location_sub_province",
                     "day",
-                    "service_body_bigint",
+                    "serviceBodyId",
                     "formatIds",
                     "virtual_meeting_additional_info",
                     "phone_meeting_number",
@@ -1053,10 +1058,9 @@ class SubmissionsHandler
                     "virtualna_published",
                 );
 
-                $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
-                // change our meeting return to v2 format so we can handle original components. This is a holdover from original v2 support.
-                // $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
-                // $this->debug_log(($bmlt_meeting));
+                $bmlt_meeting = $this->bmlt_integration->getMeeting($sanitised_fields['id']);
+                $this->debug_log("Getting info for meeting ". $sanitised_fields['id']);
+                $this->debug_log(($bmlt_meeting));
                 if (\is_wp_error($bmlt_meeting)) {
                     return $this->bmltwf_rest_error(__('Error retrieving meeting details','bmlt-workflow'), 422);
                 }
@@ -1068,49 +1072,95 @@ class SubmissionsHandler
                 }
 
                 $submission_count = 0;
+
+                $this->debug_log("Sanitised fields");
+                $this->debug_log($sanitised_fields);
+
                 // if the user submitted something different to what is in bmlt, save it in changes
+                // foreach ($allowed_fields as $field) {
+
+                //     $bmlt_field = $bmlt_meeting[$field] ?? false;
+                //     $this->debug_log("Checking ". $field);
+
+                //     // if the field is blank in bmlt, but they submitted a change, add it to the list
+                //     if (!$bmlt_field && array_key_exists($field, $sanitised_fields) && !empty($sanitised_fields[$field])) {
+                //         $submission[$field] = $sanitised_fields[$field];
+                //         $submission_count++;
+
+                //     }
+                //     // if the field is in bmlt and its different to the submitted item, add it to the list
+                //     else {
+                //         if ($bmlt_field) {
+                //             // if the field they submitted is not blank, check whats submitted is different to the bmlt field
+                //             if (array_key_exists($field, $sanitised_fields)) {
+                //                 if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
+                //                     // don't allow someone to modify a meeting service body
+                //                     if ($field === 'serviceBodyId') {
+                //                         return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
+                //                     }
+                //                     $submission[$field] = $sanitised_fields[$field];
+                //                     $submission_count++;
+                //                 }
+                //             }
+                //             else
+                //             // if they made the field entirely blank then it implies its different from the bmlt field
+                //             {
+                //                 // don't allow someone to modify a meeting service body
+                //                 if ($field === 'serviceBodyId') {
+                //                     return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
+                //                 }
+                //                 $submission[$field] = "";
+                //                 $submission_count++;
+                //             }
+                //         }
+                //     }
+                //     $this->debug_log("going to add original " . $field . " for ".$bmlt_field );
+                //     $this->debug_log("empty(".$bmlt_field.") = ". empty($bmlt_field));
+                //     // store away the original meeting details so we know what changed
+                //     if (!empty($bmlt_field))
+                //     {
+                //         $original_name = "original_".$field;
+                //         $submission[$original_name] = $bmlt_field;    
+                //     }
+                // }
+
+                // Compare submitted fields with BMLT data and track changes
                 foreach ($allowed_fields as $field) {
-
                     $bmlt_field = $bmlt_meeting[$field] ?? false;
-
-                    // if the field is blank in bmlt, but they submitted a change, add it to the list
-                    if (!$bmlt_field && array_key_exists($field, $sanitised_fields) && !empty($sanitised_fields[$field])) {
-                        $submission[$field] = $sanitised_fields[$field];
+                    $this->debug_log("Checking " . $field);
+                    
+                    // Check if field exists in submitted data
+                    $field_submitted = array_key_exists($field, $sanitised_fields);
+                    $submitted_value = $field_submitted ? $sanitised_fields[$field] : null;
+                    
+                    // Case 1: Field doesn't exist in BMLT but was submitted with a value
+                    if (($bmlt_field === false || $bmlt_field === null || $bmlt_field === '') && 
+                        $field_submitted && !empty($submitted_value)) {
+                        $submission[$field] = $submitted_value;
                         $submission_count++;
-
                     }
-                    // if the field is in bmlt and its different to the submitted item, add it to the list
-                    else {
-                        if ($bmlt_field) {
-                            // if the field they submitted is not blank, check whats submitted is different to the bmlt field
-                            if (array_key_exists($field, $sanitised_fields)) {
-                                if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
-                                    // don't allow someone to modify a meeting service body
-                                    if ($field === 'service_body_bigint') {
-                                        return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
-                                    }
-                                    $submission[$field] = $sanitised_fields[$field];
-                                    $submission_count++;
-                                }
-                            }
-                            else
-                            // if they made the field entirely blank then it implies its different from the bmlt field
-                            {
-                                // don't allow someone to modify a meeting service body
-                                if ($field === 'service_body_bigint') {
-                                    return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
-                                }
-                                $submission[$field] = "";
-                                $submission_count++;
-                            }
+                    // Case 2: Field exists in BMLT and was submitted with a different value
+                    elseif ($bmlt_field !== false && $field_submitted && $bmlt_field != $submitted_value) {
+                        // Don't allow service body changes
+                        if ($field === 'serviceBodyId') {
+                            return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
                         }
+                        $submission[$field] = $submitted_value;
+                        $submission_count++;
                     }
-
-                    // store away the original meeting details so we know what changed
-                    if ($bmlt_field)
-                    {
-                        $original_name = "original_".$field;
-                        $submission[$original_name] = $bmlt_field;    
+                    // Case 3: Field exists in BMLT but was not submitted (implying deletion)
+                    elseif ($bmlt_field !== false && !$field_submitted) {
+                        // Don't allow service body changes
+                        if ($field === 'serviceBodyId') {
+                            return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
+                        }
+                        $submission[$field] = "";
+                        $submission_count++;
+                    }
+                    
+                    // Store original value for reference
+                    if ($bmlt_field !== false && $bmlt_field !== null && ($bmlt_field !== '' || is_numeric($bmlt_field))) {
+                        $submission["original_" . $field] = $bmlt_field;
                     }
                 }
 
@@ -1139,7 +1189,7 @@ class SubmissionsHandler
                     "contact_number",
                     "group_relationship",
                     "add_contact",
-                    "service_body_bigint",
+                    "serviceBodyId",
                     "additional_info",
                 );
 
@@ -1150,7 +1200,7 @@ class SubmissionsHandler
                 }
 
                 // populate the meeting name/time/day so we dont need to do it again on the submission page
-                $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
+                $bmlt_meeting = $this->bmlt_integration->getMeeting($sanitised_fields['id']);
                 // change our meeting return to v2 format so we can handle original components
                 // $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
 
@@ -1175,12 +1225,11 @@ class SubmissionsHandler
         $submitter_email = $sanitised_fields['email_address'];
 
         // max size check for #7
-        $chg = wp_json_encode($submission, 0, 1);
+        $chg = wp_json_encode($submission, 0, 2);
 
         if (strlen($chg) >= 2048) {
             return $this->bmltwf_rest_error(__('Meeting change request exceeds maximum size','bmlt-workflow'), 422);
         }
-
         // insert into submissions db
         global $wpdb;
 
@@ -1188,12 +1237,12 @@ class SubmissionsHandler
             $this->BMLTWF_Database->bmltwf_submissions_table_name,
             array(
                 'submission_time'   => current_time('mysql', true),
-                'meeting_id' => $sanitised_fields['meeting_id'],
+                'id' => $sanitised_fields['id'],
                 'submitter_name' => $submitter_name,
                 'submission_type'  => $reason,
                 'submitter_email' => $submitter_email,
-                'changes_requested' => wp_json_encode($submission, 0, 1),
-                'service_body_bigint' => $sanitised_fields['service_body_bigint']
+                'changes_requested' => $chg,
+                'serviceBodyId' => $sanitised_fields['serviceBodyId']
             ),
             array(
                 '%s',
@@ -1205,12 +1254,12 @@ class SubmissionsHandler
         );
         $log_submission = json_encode(array(
             'submission_time'   => current_time('mysql', true),
-            'meeting_id' => $sanitised_fields['meeting_id'],
+            'id' => $sanitised_fields['id'],
             'submitter_name' => $submitter_name,
             'submission_type'  => $reason,
             'submitter_email' => $submitter_email,
-            'changes_requested' => wp_json_encode($submission, 0, 1),
-            'service_body_bigint' => $sanitised_fields['service_body_bigint']
+            'changes_requested' => $chg,
+            'serviceBodyId' => $sanitised_fields['serviceBodyId']
         ));
 
 
@@ -1243,8 +1292,8 @@ class SubmissionsHandler
         $this->debug_log("retrieved sblist ");
         $this->debug_log($sblist);
 
-        $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['service_body_bigint']);
-        $subject = '[bmlt-workflow] ' . $submission_type . ' '.__('request received','bmlt-workflow').' - ' . $sblist[$sanitised_fields['service_body_bigint']]['name'] . ' - '.__('Change ID','bmlt_workflow').' #' . $insert_id;
+        $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['serviceBodyId']);
+        $subject = '[bmlt-workflow] ' . $submission_type . ' '.__('request received','bmlt-workflow').' - ' . $sblist[$sanitised_fields['serviceBodyId']]['name'] . ' - '.__('Change ID','bmlt_workflow').' #' . $insert_id;
         $body = __('Log in to','bmlt-workflow').' <a href="' . get_site_url() . '/wp-admin/admin.php?page=bmltwf-submissions">'.__('BMLTWF Submissions Page','bmlt-workflow').'</a> to review.';
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));

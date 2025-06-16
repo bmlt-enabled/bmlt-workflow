@@ -469,7 +469,7 @@ jQuery(document).ready(function ($) {
     columns: [
       {
         name: 'id',
-        data: 'id',
+        data: 'change_id',
       },
       {
         name: 'submitter_name',
@@ -480,8 +480,8 @@ jQuery(document).ready(function ($) {
         data: 'submitter_email',
       },
       {
-        name: 'service_body_bigint',
-        data: 'service_body_bigint',
+        name: 'serviceBodyId',
+        data: 'serviceBodyId',
         render(data) {
           if (data in bmltwf_admin_bmltwf_service_bodies) {
             return bmltwf_admin_bmltwf_service_bodies[data].name;
@@ -872,8 +872,8 @@ jQuery(document).ready(function ($) {
       },
       buttons: {
         Ok() {
-          const fn = window[`${this.id}_ok`];
-          if (typeof fn === 'function') fn($(this).data('id'));
+          const fn = window[`${this.change_id}_ok`];
+          if (typeof fn === 'function') fn($(this).data('change_id'));
         },
         Cancel() {
           $(this).dialog('close');
@@ -1038,14 +1038,14 @@ jQuery(document).ready(function ($) {
         {
           text: __('Check Geolocate', 'bmlt-workflow'),
           click() {
-            geolocate_handler($(this).data('id'));
+            geolocate_handler($(this).data('change_id'));
           },
           disabled: !bmltwf_auto_geocoding_enabled,
         },
         {
           text: __('Save', 'bmlt-workflow'),
           click() {
-            save_handler($(this).data('id'));
+            save_handler($(this).data('change_id'));
           },
         },
         {

@@ -47,7 +47,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <select name="meeting-searcher" class="meeting-searcher" id="meeting-searcher">
                     <option></option>
                 </select>
-                <input type="hidden" name="meeting_id" id="meeting_id" value="">
+                <input type="hidden" name="id" id="id" value="">
             </div>
         </div>
         <div id="meeting_content" class="form-grid">
@@ -187,7 +187,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             <input class="meeting-input" type="text" name="location_nation" size="50" id="location_nation">
                         </div>
                         <div class="bmltwf_tooltip" tabindex="0">
-                            <label for="service_body_bigint"><?php echo __( 'Service Body', 'bmlt-workflow' ); ?>
+                            <label for="serviceBodyId"><?php echo __( 'Service Body', 'bmlt-workflow' ); ?>
                                 <span class="dashicons dashicons-info-outline"></span>
                             </label>
                             <div class="bmltwf_right">
@@ -197,7 +197,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                                 <i></i>
                             </div>
                         </div>
-                        <select class="meeting-input" name="service_body_bigint" id="service_body_bigint">
+                        <select class="meeting-input" name="serviceBodyId" id="serviceBodyId">
                             <option value="" disabled selected hidden><?php echo __( 'Select one', 'bmlt-workflow' ); ?></option>
                         </select>
                     </div>

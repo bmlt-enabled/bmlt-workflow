@@ -82,7 +82,7 @@ jQuery(document).ready(function ($) {
     enable_field('location_nation');
     enable_field('display_formatIds');
     enable_field('day');
-    enable_field('service_body_bigint');
+    enable_field('serviceBodyId');
     enable_field('virtual_meeting_additional_info');
     enable_field('phone_meeting_number');
     enable_field('virtual_meeting_link');
@@ -104,7 +104,7 @@ jQuery(document).ready(function ($) {
     disable_field('location_nation');
     disable_field('display_formatIds');
     disable_field('day');
-    disable_field('service_body_bigint');
+    disable_field('serviceBodyId');
     disable_field('virtual_meeting_additional_info');
     disable_field('phone_meeting_number');
     disable_field('virtual_meeting_link');
@@ -129,7 +129,7 @@ jQuery(document).ready(function ($) {
     clear_field('contact_number');
     clear_field('email_address');
     clear_field('display_formatIds');
-    clear_field('meeting_id');
+    clear_field('id');
     clear_field('additional_info');
     clear_field('meeting_searcher');
     clear_field('starter_kit_postal_address');
@@ -139,7 +139,7 @@ jQuery(document).ready(function ($) {
     // placeholder for these select elements
     $('#group_relationship').val('');
     $('#venueType').val('');
-    $('#service_body_bigint').val('');
+    $('#serviceBodyId').val('');
     // reset select2
     $('#display_formatIds').val(null).trigger('change');
     $('#meeting-searcher').val(null).trigger('change');
@@ -163,13 +163,13 @@ jQuery(document).ready(function ($) {
   function real_submit_handler() {
     bmltwf_clear_notices();
     // in case we disabled this we want to send it now
-    enable_field('service_body_bigint');
+    enable_field('serviceBodyId');
 
     // prevent displayable list from being submitted
     $('#display_formatIds').attr('disabled', 'disabled');
     // turn the format list into a single string and move it into the submitted formatIds
-    $('#formatIds').val($('#display_formatIds').val().join(','));
-    // $("#formatIds").val($("#display_formatIds").val());
+    // $('#formatIds').val($('#display_formatIds').val().join(','));
+    // $('#formatIds').val($('#display_formatIds').val());
 
     // time control by default doesn't add extra seconds, so add them to be compaitble with BMLT
     if ($('#startTime').val().length === 5) {
@@ -185,10 +185,13 @@ jQuery(document).ready(function ($) {
       put_field('temporarilyVirtual', 'true');
     }
 
+    const form_submit = $('#meeting_update_form').serializeObject();
+    form_submit.formatIds = $('#display_formatIds').val();
+
     $.ajax({
       url: bmltwf_form_submit_url,
       method: 'POST',
-      data: JSON.stringify($('#meeting_update_form').serializeObject()),
+      data: JSON.stringify(form_submit),
       contentType: 'application/json; charset=utf-8',
       dataType: 'json',
       processData: false,
@@ -413,7 +416,13 @@ jQuery(document).ready(function ($) {
       // populate form fields from bmlt if they exist
       fields.forEach(function (item) {
         if (item in mdata[id]) {
-          put_field(item, mdata[id][item]);
+          if (mdata[id][item] === true) {
+            put_field(item, '1');
+          } else if (mdata[id][item] === false) {
+            put_field(item, '0');
+          } else {
+            put_field(item, mdata[id][item]);
+          }
         }
       });
 
@@ -431,13 +440,13 @@ jQuery(document).ready(function ($) {
         $('#duration_minutes').val(durationarr[1]);
       }
       // handle service body in the select dropdown
-      $('#service_body_bigint').val(mdata[id].service_body_bigint);
+      $('#serviceBodyId').val(mdata[id].serviceBodyId);
 
       const { venueType } = mdata[id];
       // doesn't handle if they have both selected in BMLT
       // virtual_meeting_options
       $('#venueType').val(venueType);
-      if (venueType === '1') {
+      if (venueType === 1) {
         $('#virtual_meeting_options').hide();
       } else {
         $('#virtual_meeting_options').show();
@@ -456,7 +465,7 @@ jQuery(document).ready(function ($) {
       }
 
       // store the selected meeting ID away
-      put_field('meeting_id', mdata[id].id_bigint);
+      put_field('id', mdata[id].id);
 
       // different form behaviours after meeting selection depending on the change type
       const reason = $('#update_reason').val();
@@ -468,7 +477,7 @@ jQuery(document).ready(function ($) {
           );
           $('#meeting_content').show();
           $('#publish_div').show();
-          disable_field('service_body_bigint');
+          disable_field('serviceBodyId');
           enable_highlighting();
           break;
         case 'reason_close':
@@ -483,26 +492,7 @@ jQuery(document).ready(function ($) {
     });
   }
 
-  function update_meeting_list(bmltwf_service_bodies, meeting_id = null) {
-    // const search_results_address = `${bmltwf_bmlt_server_address}/jsonp/?switcher=GetSearchResults&advanced_published=0&lang_enum=en&${bmltwf_service_bodies}recursive=1&sort_keys=name`;
-
-    // bmltwf_fetchJsonp(search_results_address)
-    //   .then((response) => response.json())
-    //   .then((mdata) => {
-    //     create_meeting_searcher(mdata);
-    //     if (meeting_id) {
-    //       const jump_to = mdata.findIndex((el) => el.id_bigint === meeting_id);
-    //       $('#update_reason').val('reason_change').trigger('change');
-    //       $('#meeting-searcher').val(jump_to).trigger('change').trigger({
-    //         type: 'select2:select',
-    //         params: {
-    //           data: {
-    //             id: jum
-    //           },p_to,
-    //         },
-    //       });
-    //     }
-    //   });
+  function update_meeting_list(id = null) {
     $.ajax({
       url: bmltwf_bmltserver_meetings_rest_url,
       type: 'GET',
@@ -516,8 +506,8 @@ jQuery(document).ready(function ($) {
       .done(function (response) {
         const mdata = JSON.parse(response.message);
         create_meeting_searcher(mdata);
-        if (meeting_id) {
-          const jump_to = mdata.findIndex((el) => el.id_bigint === meeting_id);
+        if (id) {
+          const jump_to = mdata.findIndex((el) => el.id === id);
           $('#update_reason').val('reason_change').trigger('change');
           $('#meeting-searcher').val(jump_to).trigger('change').trigger({
             type: 'select2:select',
@@ -528,23 +518,23 @@ jQuery(document).ready(function ($) {
             },
           });
         }
+      })
+      .fail(function () {
+        $('#instructions').html('<div class="bmltwf-error">Failed to load meeting data. Please try again later.</div>');
       });
   }
 
-  let bmltwf_service_bodies_querystr = '';
-
   Object.keys(bmltwf_service_bodies).forEach((item) => {
     // console.log(response);
-    const service_body_bigint = item;
+    const serviceBodyId = item;
     const service_body_name = bmltwf_service_bodies[item].name;
-    const opt = new Option(service_body_name, service_body_bigint, false, false);
-    $('#service_body_bigint').append(opt);
-    bmltwf_service_bodies_querystr += `services[]=${service_body_bigint}&`;
+    const opt = new Option(service_body_name, serviceBodyId, false, false);
+    $('#serviceBodyId').append(opt);
   });
 
-  const meeting_id = get_query_string_parameter('meeting_id');
+  const id = get_query_string_parameter('id');
 
-  update_meeting_list(bmltwf_service_bodies_querystr, meeting_id);
+  update_meeting_list(id);
 
   function is_virtual_meeting_additional_info_empty() {
     return ($('#virtual_meeting_additional_info').val().length === 0);
@@ -598,7 +588,7 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  // if (meeting_id && jump_to) {
+  // if (id && jump_to) {
   //   $('#update_reason').val('reason_change').trigger('change');
   //   $('#meeting-searcher').val(jump_to);
   // } else {
@@ -611,19 +601,19 @@ jQuery(document).ready(function ($) {
   $('#venueType').on('change', function () {
     // show and hide the virtual meeting settings
 
-    if (this.value === '1') {
+    if (this.value === 1) {
       $('#virtual_meeting_options').hide();
       $('#location_fields').show();
     } else {
       $('#virtual_meeting_options').show();
       switch (this.value) {
-        case '2':
+        case 2:
           $('#location_fields').hide();
           break;
-        case '3':
+        case 3:
           $('#location_fields').show();
           break;
-        case '4':
+        case 4:
           $('#location_fields').show();
           break;
         default:

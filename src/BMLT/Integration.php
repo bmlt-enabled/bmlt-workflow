@@ -89,7 +89,7 @@ class Integration
     // public function convertv3meetingtov2($meeting)
     // {
     //     $fromto = array();
-    //     $fromto['serviceBodyId'] = 'service_body_bigint';
+    //     $fromto['serviceBodyId'] = 'serviceBodyId';
     //     $fromto['venueType'] = 'venueType';
     //     $fromto['day'] = 'day';
     //     $fromto['name'] = 'name';
@@ -135,7 +135,7 @@ class Integration
     private function convertv2meetingtov3($meeting)
     {
         $fromto = array();
-        $fromto['service_body_bigint'] = 'serviceBodyId';
+        $fromto['serviceBodyId'] = 'serviceBodyId';
         $fromto['venueType'] = 'venueType';
         $fromto['day'] = 'day';
         $fromto['name'] = 'name';
@@ -235,42 +235,42 @@ class Integration
         }
     }
 
-    /**
-     * retrieve_single_meeting
-     *
-     * @param  int $meeting_id
-     * @return void
-     */
-    public function retrieve_single_meeting($meeting_id)
-    {
+    // /**
+    //  * retrieve_single_meeting
+    //  *
+    //  * @param  int $meeting_id
+    //  * @return void
+    //  */
+    // public function retrieve_single_meeting($meeting_id)
+    // {
 
-        $bmltwf_bmlt_server_address = get_option('bmltwf_bmlt_server_address');
+    //     $bmltwf_bmlt_server_address = get_option('bmltwf_bmlt_server_address');
 
-        $url = $bmltwf_bmlt_server_address . "client_interface/json/?switcher=GetSearchResults&advanced_published=0&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
-        $headers = array(
-            "Accept: */*",
-        );
-        $this->debug_log("wp_remote_get from url " . $url);
+    //     $url = $bmltwf_bmlt_server_address . "client_interface/json/?switcher=GetSearchResults&advanced_published=0&meeting_key=id_bigint&lang_enum=en&meeting_key_value=" . $meeting_id;
+    //     $headers = array(
+    //         "Accept: */*",
+    //     );
+    //     $this->debug_log("wp_remote_get from url " . $url);
 
-        $resp = wp_remote_get($url, array('headers' => $headers));
-        $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
-        $this->debug_log(\wp_remote_retrieve_body($resp));
+    //     $resp = wp_remote_get($url, array('headers' => $headers));
+    //     $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
+    //     $this->debug_log(\wp_remote_retrieve_body($resp));
 
-        if ((!is_array($resp)) ||  is_wp_error($resp)) {
-            return $this->bmltwf_integration_error(__('Server error retrieving meeting', 'bmlt-workflow'), 500);
-        }
+    //     if ((!is_array($resp)) ||  is_wp_error($resp)) {
+    //         return $this->bmltwf_integration_error(__('Server error retrieving meeting', 'bmlt-workflow'), 500);
+    //     }
 
-        $body = wp_remote_retrieve_body($resp);
+    //     $body = wp_remote_retrieve_body($resp);
 
-        $meetingarr = json_decode($body, true);
-        if (empty($meetingarr[0])) {
-            return $this->bmltwf_integration_error(__('Server error retrieving meeting', 'bmlt-workflow'), 500);
-        }
-        $meeting = $meetingarr[0];
-        $this->debug_log("SINGLE MEETING");
-        $this->debug_log(($meeting));
-        return $meeting;
-    }
+    //     $meetingarr = json_decode($body, true);
+    //     if (empty($meetingarr[0])) {
+    //         return $this->bmltwf_integration_error(__('Server error retrieving meeting', 'bmlt-workflow'), 500);
+    //     }
+    //     $meeting = $meetingarr[0];
+    //     $this->debug_log("SINGLE MEETING");
+    //     $this->debug_log(($meeting));
+    //     return $meeting;
+    // }
 
     public function testServerAndAuth($username, $password, $server)
     {
@@ -367,7 +367,7 @@ class Integration
             return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
         }
 
-        return json_decode(\wp_remote_retrieve_body($response));
+        return json_decode(\wp_remote_retrieve_body($response),true);
     }
 
     public function getAllMeetings()

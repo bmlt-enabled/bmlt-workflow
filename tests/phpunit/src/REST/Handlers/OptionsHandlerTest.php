@@ -94,17 +94,17 @@ Line: $errorLine
 
         $dblookup = array(
             '0' => array(
-                "service_body_bigint" => "2",
+                "serviceBodyId" => "2",
                 "service_body_name" => "Sydney Metro",
                 "show_on_form" => "1"
             ),
             '1' => array(
-                "service_body_bigint" =>"3",
+                "serviceBodyId" =>"3",
                 "service_body_name" =>"Sydney North",
                 "show_on_form" =>"1"
             ),
             '2' => array(
-                "service_body_bigint" => "4",
+                "serviceBodyId" => "4",
                 "service_body_name" =>"Sydney South",
                 "show_on_form" =>"1"
             )
@@ -153,17 +153,17 @@ Line: $errorLine
 
 //         $dblookup = array(
 //             '0' => array(
-//                 "service_body_bigint" => "2",
+//                 "serviceBodyId" => "2",
 //                 "service_body_name" => "Sydney Metro",
 //                 "show_on_form" => "1"
 //             ),
 //             '1' => array(
-//                 "service_body_bigint" =>"3",
+//                 "serviceBodyId" =>"3",
 //                 "service_body_name" =>"Sydney North",
 //                 "show_on_form" =>"1"
 //             ),
 //             '2' => array(
-//                 "service_body_bigint" => "4",
+//                 "serviceBodyId" => "4",
 //                 "service_body_name" =>"Sydney South",
 //                 "show_on_form" =>"1"
 //             )
