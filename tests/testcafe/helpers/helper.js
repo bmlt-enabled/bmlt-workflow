@@ -144,7 +144,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
     },
     submissions: [
       {
-        id: "93",
+        change_id: "93",
         submission_time: "2022-05-15 12:32:38",
         change_time: "0000-00-00 00:00:00",
         changed_by: null,
@@ -152,14 +152,14 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         submitter_name: "first last",
         submission_type: "reason_new",
         submitter_email: "test@test.com.zz",
-        meeting_id: "0",
+        id: "0",
         serviceBodyId: "1047",
         changes_requested: 
         '{"name":"my test meeting","startTime":"10:40:00","duration":"04:30:00","location_text":"my location","location_street":"110 avoca st","location_info":"info","location_municipality":"Randwick","location_province":"NSW","location_postal_code_1":"2031","day":"4","serviceBodyId":1009,"formatIds":"2,5","contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"some extra info","virtual_meeting_additional_info":"Zoom ID 83037287669 Passcode: testing","phone_meeting_number":"12345","virtual_meeting_link":"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09","starter_kit_required":"no","venueType":3}',
         action_message: null,
       },
       {
-        id: "94",
+        change_id: "94",
         submission_time: "2023-02-13 11:24:59",
         change_time: "0000-00-00 00:00:00",
         changed_by: null,
@@ -167,13 +167,13 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         submitter_name: "first l",
         submission_type: "reason_change",
         submitter_email: "test@example.com",
-        meeting_id: "2562",
+        id: "2562",
         serviceBodyId: "1009",
         changes_requested: '{"name":"update","original_name":"2nd Chance Group","original_startTime":"18:30:00","original_duration":"01:30:00","location_text":"update location","original_location_street":"360 Warren Street","original_location_municipality":"Hudson","original_location_province":"NY","original_location_nation":"US","original_location_sub_province":"Columbia","original_day":"3","original_serviceBodyId":"1009","original_formatIds":"3,17,36","original_venueType":"1","contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"please action asap"}',
         action_message: null
       },
       {
-        id: "95",
+        change_id: "95",
         submission_time: "2023-02-13 11:28:23",
         change_time: "0000-00-00 00:00:00",
         changed_by: null,
@@ -181,7 +181,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         submitter_name: "oiu oiu",
         submission_type: "reason_close",
         submitter_email: "oiu@oiu.com",
-        meeting_id: "2562",
+        id: "2562",
         serviceBodyId: "1009",
         changes_requested: '{"contact_number":"","group_relationship":"Group Member","add_contact":"yes","serviceBodyId":1009,"additional_info":"close it now","name":"2nd Chance Group","day":"3","startTime":"18:30:00"}',
         action_message: null

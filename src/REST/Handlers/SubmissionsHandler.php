@@ -1397,8 +1397,8 @@ class SubmissionsHandler
                     $friendlyname = __('Meeting Formats','bmlt-workflow');
                     // convert the meeting formats to human readable
                     $friendlydata = "";
-                    $strarr = explode(',', $value);
-                    foreach ($strarr as $key) {
+                    // $strarr = explode(',', $value);
+                    foreach ($value as $key) {
                         $friendlydata .= "(" . $this->formats[$key]["key_string"] . ")-" . $this->formats[$key]["name_string"] . " ";
                     }
                     $table .= '<tr><td>'.__('Meeting Formats','bmlt-workflow').':</td><td>' . $friendlydata . '</td></tr>';

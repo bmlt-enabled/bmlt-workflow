@@ -107,7 +107,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('__')->returnArg();
         Functions\when('wp_is_json_media_type')->justReturn(true);
         
-        $this->meeting = ' { "id_bigint": "3563", "worldid_mixed": "", "shared_group_id_bigint": "", "serviceBodyId": "3", "day": "2", "venueType": "1", "startTime": "19:00:00", "duration": "01:15:00", "time_zone": "", "formats": "BT", "lang_enum": "en", "longitude": "0", "latitude": "0", "distance_in_km": "", "distance_in_miles": "", "email_contact": "", "name": "Test Monday Night Meeting", "location_text": "Glebe Town Hall", "location_info": "", "location_street": "160 Johns Road", "location_city_subsection": "", "location_neighborhood": "", "location_municipality": "Glebe", "location_sub_province": "", "location_province": "NSW", "location_postal_code_1": "NSW", "location_nation": "", "comments": "", "train_lines": "", "bus_lines": "", "contact_phone_2": "", "contact_email_2": "", "contact_name_2": "", "contact_phone_1": "", "contact_email_1": "", "contact_name_1": "", "zone": "", "phone_meeting_number": "", "virtual_meeting_link": "", "virtual_meeting_additional_info": "", "published": "1", "root_server_uri": "http:", "formatIds": "3" } ';
+        $this->meeting = ' { "id_bigint": "3563", "worldid_mixed": "", "shared_group_id_bigint": "", "serviceBodyId": "3", "day": "2", "venueType": "1", "startTime": "19:00:00", "duration": "01:15:00", "time_zone": "", "formats": "BT", "lang_enum": "en", "longitude": "0", "latitude": "0", "distance_in_km": "", "distance_in_miles": "", "email_contact": "", "name": "Test Monday Night Meeting", "location_text": "Glebe Town Hall", "location_info": "", "location_street": "160 Johns Road", "location_city_subsection": "", "location_neighborhood": "", "location_municipality": "Glebe", "location_sub_province": "", "location_province": "NSW", "location_postal_code_1": "NSW", "location_nation": "", "comments": "", "train_lines": "", "bus_lines": "", "contact_phone_2": "", "contact_email_2": "", "contact_name_2": "", "contact_phone_1": "", "contact_email_1": "", "contact_name_1": "", "zone": "", "phone_meeting_number": "", "virtual_meeting_link": "", "virtual_meeting_additional_info": "", "published": "1", "root_server_uri": "http:", "formatIds": ["3"] } ';
 
     }
 
@@ -211,7 +211,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "first_name" => "joe",
             "last_name" => "joe",
             "email_address" => "joe@joe.com",
-            "meeting_id" => "3277",
+            "id" => "3277",
             "serviceBodyId" => "1",
             "submit" => "Submit Form",
             "additional_info" => "I'd like to close the meeting please",
@@ -266,7 +266,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             return  array(
             "update_reason" => "reason_change",
             "name" => "testing name change",
-            "meeting_id" => "3277",
+            "id" => "3277",
             "first_name" => "joe",
             "last_name" => "joe",
             "serviceBodyId" => "6",
@@ -295,7 +295,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         Functions\when('\get_option')->justReturn("success");
 
-        $resp = '{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","serviceBodyId":"6","day":"2","venueType":"1","startTime":"19:00:00","duration":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","formatIds":"3"}';
+        $resp = '{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","serviceBodyId":"6","day":"2","venueType":"1","startTime":"19:00:00","duration":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","formatIds":["3"]}';
         
         $bmlt_input = '';
         $handlers = new SubmissionsHandler($this->stub_bmltv3($resp, $bmlt_input));
@@ -318,7 +318,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
                 return array(
             "update_reason" => "reason_change",
             "name" => "testing name change",
-            "meeting_id" => "3277",
+            "id" => "3277",
             "first_name" => "joe",
             "last_name" => "joe",
             "serviceBodyId" => "1", // changing from 6 to 1
@@ -340,7 +340,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $resp = '{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","serviceBodyId":"6","day":"2","venueType":"1","startTime":"19:00:00","duration":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","formatIds":"3"}';
+        $resp = '{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","serviceBodyId":"6","day":"2","venueType":"1","startTime":"19:00:00","duration":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","formatIds":["3"]}';
 
         $bmlt_input = '';
 
@@ -364,13 +364,13 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
                 return array(
             "update_reason" => "reason_change",
             "name" => "testing name change",
-            "meeting_id" => "3277",
+            "id" => "3277",
             "first_name" => "joe",
             "last_name" => "joe",
             "serviceBodyId" => "3",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
-            "formatIds" => "1",
+            "formatIds" => ["1"],
             "venueType" => "1",
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
@@ -407,56 +407,56 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     }
 
 
-    /**
-     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
-     */
-    public function test_can_change_if_meeting_format_has_leading_or_trailing_commas(): void
-    {
-        $form_post = new class{
-            public function get_json_params()
-            {
-                return array(
-            "update_reason" => "reason_change",
-            "name" => "testing name change",
-            "meeting_id" => "3277",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "venueType" => "1",
-            "serviceBodyId" => "3",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "formatIds" => ",,1,2,,,,",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
-            "published" => "1"
-                );
-            }
-        };
+    // /**
+    //  * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+    //  */
+    // public function test_can_change_if_meeting_format_has_leading_or_trailing_commas(): void
+    // {
+    //     $form_post = new class{
+    //         public function get_json_params()
+    //         {
+    //             return array(
+    //         "update_reason" => "reason_change",
+    //         "name" => "testing name change",
+    //         "id" => "3277",
+    //         "first_name" => "joe",
+    //         "last_name" => "joe",
+    //         "venueType" => "1",
+    //         "serviceBodyId" => "3",
+    //         "email_address" => "joe@joe.com",
+    //         "submit" => "Submit Form",
+    //         "formatIds" => ",,1,2,,,,",
+    //         "group_relationship" => "Group Member",
+    //         "add_contact" => "yes",
+    //         "published" => "1"
+    //             );
+    //         }
+    //     };
 
-        global $wpdb;
-        $wpdb = Mockery::mock('WPDB');
-        /** @var Mockery::mock $wpdb test */
-        // handle db insert of submission
-        $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
-        // handle email to service body
-        $wpdb->shouldReceive('prepare')->andReturn(true);
-        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
-        Functions\when('wp_mail')->justReturn('true');
+    //     global $wpdb;
+    //     $wpdb = Mockery::mock('WPDB');
+    //     /** @var Mockery::mock $wpdb test */
+    //     // handle db insert of submission
+    //     $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
+    //     // handle email to service body
+    //     $wpdb->shouldReceive('prepare')->andReturn(true);
+    //     $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+    //     Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
+    //     Functions\when('wp_mail')->justReturn('true');
 
-        Functions\when('\get_option')->justReturn("success");
+    //     Functions\when('\get_option')->justReturn("success");
 
-        $retrieve_single_response = $this->meeting;
+    //     $retrieve_single_response = $this->meeting;
         
-        $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
-        $response = $handlers->meeting_update_form_handler_rest($form_post);
+    //     $bmlt_input = '';
+    //     $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
+    //     $response = $handlers->meeting_update_form_handler_rest($form_post);
         
-        $this->debug_log(($response));
+    //     $this->debug_log(($response));
 
-        $this->assertInstanceOf(WP_REST_Response::class, $response);
-        $this->assertEquals(200, $response->get_status());
-    }
+    //     $this->assertInstanceOf(WP_REST_Response::class, $response);
+    //     $this->assertEquals(200, $response->get_status());
+    // }
 
 
     /**
@@ -470,7 +470,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
                 return array(
             "update_reason" => "reason_new",
             "name" => "testing name change",
-            "meeting_id" => "3277",
+            "id" => "3277",
             "startTime" => "10:00:00",
             "duration" => "01:00:00",
             "location_text" => "test location",
@@ -480,7 +480,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "location_postal_code_1" => "12345",
             "day" => "1",
             "serviceBodyId" => "99",
-            "formatIds" => "1",
+            "formatIds" => ["1"],
             "starter_kit_required" => "no",
             "first_name" => "joe",
             "last_name" => "joe",
@@ -527,7 +527,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
                 return array(
             "update_reason" => "reason_new",
             "name" => "testing name change",
-            "meeting_id" => "3277",
+            "id" => "3277",
             "startTime" => "10:00:00",
             "duration" => "01:00:00",
             "location_text" => "test location",
@@ -537,7 +537,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "location_postal_code_1" => "P85 FG02",
             "day" => "1",
             "serviceBodyId" => "99",
-            "formatIds" => "1",
+            "formatIds" => ["1"],
             "starter_kit_required" => "no",
             "first_name" => "joe",
             "last_name" => "joe",
@@ -584,7 +584,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
                 return array(
             "update_reason" => "reason_new",
             "name" => "testing name change",
-            "meeting_id" => "3277",
+            "id" => "3277",
             "startTime" => "12345",
             "duration" => "01:00:00",
             "location_text" => "test location",
@@ -594,7 +594,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "location_postal_code_1" => "12345",
             "day" => "1",
             "serviceBodyId" => "99",
-            "formatIds" => "1",
+            "formatIds" => ["1"],
             "starter_kit_required" => "no",
             "first_name" => "joe",
             "last_name" => "joe",
@@ -630,7 +630,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
                 return  array(
             "update_reason" => "reason_new",
             "name" => "testing name change",
-            "meeting_id" => "3277",
+            "id" => "3277",
             "startTime" => "10:00:00",
             "duration" => "9999",
             "location_text" => "test location",
@@ -640,7 +640,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "location_postal_code_1" => "12345",
             "day" => "1",
             "serviceBodyId" => "99",
-            "formatIds" => "1",
+            "formatIds" => ["1"],
             "starter_kit_required" => "no",
             "first_name" => "joe",
             "last_name" => "joe",
@@ -678,7 +678,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
                 return array(
             "update_reason" => "reason_new",
             "name" => "testing name change",
-            "meeting_id" => "3277",
+            "id" => "3277",
             "startTime" => "10:00:00",
             "duration" => "01:00:00",
             "location_text" => "test location",
@@ -688,7 +688,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "location_postal_code_1" => "12345",
             "day" => "1",
             "serviceBodyId" => "99",
-            "formatIds" => "1",
+            "formatIds" => ["1"],
             "starter_kit_required" => "yes",
             "starter_kit_postal_address" => "my house",
             "first_name" => "joe",
@@ -739,7 +739,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     //     $form_post = array(
     //         "update_reason" => "reason_new",
     //         "name" => "testing name change",
-    //         "meeting_id" => "3277",
+    //         "id" => "3277",
     //         "startTime" => "10:00:00",
     //         "duration" => "01:00:00",
     //         "location_text" => "test location",
@@ -749,7 +749,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     //         "location_postal_code_1" => "12345",
     //         "day" => "1",
     //         "serviceBodyId" => "99",
-    //         "formatIds" => "1",
+    //         "formatIds" => ["1"],
     //         "first_name" => "joe",
     //         "last_name" => "joe",
     //         "email_address" => "joe@joe.com",
@@ -791,12 +791,12 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
                 return array(
             "update_reason" => "reason_change",
             "name" => "testing name change",
-            "meeting_id" => "3277",
+            "id" => "3277",
             "first_name" => "joe",
             "last_name" => "joe",
             "email_address" => "joe@joe.com",
             "submit" => "Submit Form",
-            "formatIds" => "aeeaetalkj2,7,8,33,54,55",
+            "formatIds" => ["aeeaetalk","2","7","8","33","54","55"],
             "group_relationship" => "Group Member",
             "add_contact" => "yes",
             "published" => "1"
@@ -835,7 +835,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "update_reason" => "reason_change",
             "name" => "testing name change",
             "day" => "9999",
-            "meeting_id" => "3277",
+            "id" => "3277",
             "first_name" => "joe",
             "last_name" => "joe",
             "email_address" => "joe@joe.com",
@@ -877,7 +877,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "update_reason" => "reason_change",
             "name" => "testing name change",
             "day" => "0",
-            "meeting_id" => "3277",
+            "id" => "3277",
             "first_name" => "joe",
             "last_name" => "joe",
             "email_address" => "joe@joe.com",
@@ -918,7 +918,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             "update_reason" => "reason_change",
             "name" => "testing name change",
             "day" => "aerear9",
-            "meeting_id" => "3277",
+            "id" => "3277",
             "first_name" => "joe",
             "last_name" => "joe",
             "email_address" => "joe@joe.com",
@@ -1017,7 +1017,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_email' => 'a@a.com',
             'meeting_id' => 3563,
             'serviceBodyId' => '4',
-            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield"}',
+            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":["1","4","8","14","54","55"],"group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield"}',
         );
 
         global $wpdb;
@@ -1091,7 +1091,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_email' => 'a@a.com',
             'meeting_id' => 3563,
             'serviceBodyId' => '4',
-            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield","starter_kit_required":"yes","starter_kit_postal_address":"1 test st"}',
+            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":["1","4","8","14","54","55"],"group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield","starter_kit_required":"yes","starter_kit_postal_address":"1 test st"}',
         );
 
         global $wpdb;
@@ -1182,7 +1182,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_email' => 'a@a.com',
             'meeting_id' => 3563,
             'serviceBodyId' => '4',
-            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield"}',
+            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":["1","4","8","14","54","55"],"group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield"}',
         );
 
         global $wpdb;
@@ -1409,7 +1409,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_email' => 'a@a.com',
             'meeting_id' => 3563,
             'serviceBodyId' => '4',
-            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","add_contact":"yes","additional_info":"pls approve","original_name":"Ashfield"}',
+            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":["1","4","8","14","54","55"],"group_relationship":"Group Member","add_contact":"yes","additional_info":"pls approve","original_name":"Ashfield"}',
         );
 
         $retrieve_single_response = $this->meeting;
@@ -1480,7 +1480,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_email' => 'a@a.com',
             'meeting_id' => 3563,
             'serviceBodyId' => '4',
-            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":"1,4,8,14,54,55","group_relationship":"Group Member","add_contact":"yes","additional_info":"pls approve","original_name":"Ashfield"}',
+            'changes_requested' => '{"name":"Ashfield change name","day":"5","formatIds":["1","4","8","14","54","55"],"group_relationship":"Group Member","add_contact":"yes","additional_info":"pls approve","original_name":"Ashfield"}',
         );
 
         $retrieve_single_response = $this->meeting;

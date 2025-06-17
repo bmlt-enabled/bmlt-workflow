@@ -88,8 +88,9 @@ test("Backup", async (t) => {
 
   await t.expect(backup.options.bmltwf_db_version).eql("0.4.0");
   // find a specific meeting
-  let obj = backup.submissions.find((o) => o.id === "94");
+  let obj = backup.submissions.find((o) => o.change_id === "94");
   // console.log(obj);
+  // await t.debug();
   await t.expect(obj.submitter_name).eql("first l").expect(obj.submission_type).eql("reason_change");
 })  .requestHooks(logger);
 
@@ -117,7 +118,7 @@ test("Restore", async (t) => {
     },
     "submissions": [
         {
-            "id": "22222",
+            "change_id": "22222",
             "submission_time": "2022-05-15 12:32:38",
             "change_time": "0000-00-00 00:00:00",
             "changed_by": null,
@@ -125,7 +126,7 @@ test("Restore", async (t) => {
             "submitter_name": "first last",
             "submission_type": "reason_new",
             "submitter_email": "restoretest",
-            "meeting_id": "0",
+            "id": "0",
             "serviceBodyId": "2",
             "changes_requested": "{\"name\":\"my test meeting\",\"startTime\":\"10:40:00\",\"duration\":\"04:30:00\",\"location_text\":\"my location\",\"location_street\":\"110 Avoca Street\",\"location_info\":\"info\",\"location_municipality\":\"Randwick\",\"location_province\":\"NSW\",\"location_postal_code_1\":2031,\"day\":\"2\",\"serviceBodyId\":2,\"formatIds\":\"1,2,56\",\"contact_number\":\"12345\",\"group_relationship\":\"Group Member\",\"add_contact\":\"yes\",\"additional_info\":\"my additional info\",\"virtual_meeting_additional_info\":\"Zoom ID 83037287669 Passcode: testing\",\"phone_meeting_number\":\"+61 1800 253430 code #8303782669\",\"virtual_meeting_link\":\"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09\"}",
             "action_message": null
@@ -261,8 +262,7 @@ test("Check_Optional_Fields", async (t) => {
 
   await t.useRole(Role.anonymous())
     .navigateTo(userVariables.formpage);
-  await select_dropdown_by_value(uf.update_reason, "reason_new");
-
+    await select_dropdown_by_value(uf.update_reason, "reason_new");
   await t
     .expect(uf.optional_location_nation.visible)
     .eql(true)
