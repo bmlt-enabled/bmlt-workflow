@@ -55,6 +55,7 @@ test("Approve_New_Meeting", async (t) => {
   // press ok button
   await click_dialog_button_by_index(as.approve_dialog_parent, 1);
   // dialog closes after ok button
+  // await t.debug();
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
@@ -106,6 +107,7 @@ test("Approve_Close_Meeting_With_Unpublish", async (t) => {
   // dialog closes after ok button
   await t.expect(as.approve_close_dialog_parent.visible).eql(false);
   var column = 8;
+  // await t.debug();
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 });

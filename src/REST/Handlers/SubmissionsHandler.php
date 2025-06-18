@@ -64,11 +64,13 @@ class SubmissionsHandler
         }
         // $this->debug_log($sql);
         $result = $wpdb->get_results($sql, ARRAY_A);
-        // $this->debug_log(($result));
+        $this->debug_log("result:");
+        $this->debug_log(($result));
         foreach ($result as $key => $value) {
-
+            $this->debug_log("changes requested:");
             $this->debug_log(json_decode($result[$key]['changes_requested'], true,3));
             $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 3);
+            $this->debug_log("id:");
             $this->debug_log( $this->bmlt_integration->getMeeting($result[$key]['id']));
             $result[$key]['bmlt_meeting_data'] = $this->bmlt_integration->getMeeting($result[$key]['id']);
         }
@@ -80,7 +82,7 @@ class SubmissionsHandler
 
         global $wpdb;
 
-        $sql = $wpdb->prepare('DELETE FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+        $sql = $wpdb->prepare('DELETE FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where change_id="%d" limit 1', $request['change_id']);
         $wpdb->query($sql, ARRAY_A);
 
         return $this->bmltwf_rest_success(__('Deleted submission id ','bmlt-workflow') . $request['id']);
@@ -90,7 +92,7 @@ class SubmissionsHandler
     {
         global $wpdb;
 
-        $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+        $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where change_id="%d" limit 1', $request['change_id']);
         $result = $wpdb->get_results($sql, ARRAY_A);
 
         return $result;
@@ -104,16 +106,16 @@ class SubmissionsHandler
         $current_uid = $this_user->get('ID');
         if(current_user_can('manage_options'))
         {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where id=%d', $change_id);
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where change_id=%d', $change_id);
         }
         else
         {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId where a.wp_uid =%d and s.change_id="%d" limit 1', $current_uid, $change_id);
         }
-        // $this->debug_log($sql);
+        $this->debug_log($sql);
         $result = $wpdb->get_row($sql, ARRAY_A);
-        // $this->debug_log("RESULT");
-        // $this->debug_log(($result));
+        $this->debug_log("RESULT");
+        $this->debug_log(($result));
         if (empty($result)) {
             return $this->bmltwf_rest_error(__('Permission denied viewing submission id','bmlt-workflow')." {$change_id}", 403);
         }
@@ -156,12 +158,12 @@ class SubmissionsHandler
         $username = $current_user->user_login;
 
         $sql = $wpdb->prepare(
-            'UPDATE ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'UPDATE ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where change_id="%d" limit 1',
             'rejected',
             $username,
             current_time('mysql', true),
             $message,
-            $request['id']
+            $request['change_id']
         );
 
         $result = $wpdb->get_results($sql, ARRAY_A);
@@ -263,13 +265,13 @@ class SubmissionsHandler
         $username = $current_user->user_login;
 
         $sql = $wpdb->prepare(
-            'UPDATE ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' set changes_requested = "%s",change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'UPDATE ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' set changes_requested = "%s",change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where change_id="%d" limit 1',
             json_encode($merged_change),
             'updated',
             $username,
             current_time('mysql', true),
             NULL,
-            $request['id']
+            $request['change_id']
         );
         // $this->debug_log(($sql));
 
@@ -311,8 +313,10 @@ class SubmissionsHandler
 
         // body parameters
         $params = $request->get_json_params();
+        $this->debug_log("params:");
+        $this->debug_log($params);
         // url parameters from parsed route
-        $change_id = $request->get_param('id');
+        $change_id = $request->get_param('change_id');
 
         // clean/validate supplied approval message
         $message = '';
@@ -329,6 +333,8 @@ class SubmissionsHandler
         if (is_wp_error($result)) {
             return $result;
         }
+        $this->debug_log("submission");
+        $this->debug_log($result);
 
         // can't approve an already actioned submission
         $change_made = $result['change_made'];
@@ -548,7 +554,7 @@ class SubmissionsHandler
                 } else {
                     // unpublish by default
                     $change['published'] = 0;
-                    $change['id_bigint'] = $result['id'];
+                    $change['id'] = $result['id'];
                     $resp = $this->bmlt_integration->updateMeeting($change);
 
                     if (\is_wp_error(($resp))) {
@@ -566,15 +572,18 @@ class SubmissionsHandler
         $username = $current_user->user_login;
 
         $sql = $wpdb->prepare(
-            'UPDATE ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'UPDATE ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where change_id="%d" limit 1',
             'approved',
             $username,
             current_time('mysql', true),
             $message,
-            $request['id']
+            $request['change_id']
         );
-
+        $this->debug_log("SQL");
+        $this->debug_log($sql);
         $result = $wpdb->get_results($sql, ARRAY_A);
+        $this->debug_log("RESULT");
+        $this->debug_log($result);
 
         $from_address = get_option('bmltwf_email_from_address');
 

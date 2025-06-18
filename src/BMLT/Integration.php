@@ -132,70 +132,70 @@ class Integration
     //     return $meeting;
     // }
 
-    private function convertv2meetingtov3($meeting)
-    {
-        $fromto = array();
-        $fromto['serviceBodyId'] = 'serviceBodyId';
-        $fromto['venueType'] = 'venueType';
-        $fromto['day'] = 'day';
-        $fromto['name'] = 'name';
-        $fromto['worldid_mixed'] = 'worldId';
+    // private function convertv2meetingtov3($meeting)
+    // {
+    //     $fromto = array();
+    //     $fromto['serviceBodyId'] = 'serviceBodyId';
+    //     $fromto['venueType'] = 'venueType';
+    //     $fromto['day'] = 'day';
+    //     $fromto['name'] = 'name';
+    //     $fromto['worldid_mixed'] = 'worldId';
 
-        // dont need this any more
-        unset($meeting['id_bigint']);
+    //     // dont need this any more
+    //     unset($meeting['id_bigint']);
 
-        // change all our fields over
-        foreach ($fromto as $from => $to) {
-            $here = $meeting[$from] ?? false;
-            if ($here) {
-                $meeting[$to] = $meeting[$from];
-                unset($meeting[$from]);
-            }
-        }
+    //     // change all our fields over
+    //     foreach ($fromto as $from => $to) {
+    //         $here = $meeting[$from] ?? false;
+    //         if ($here) {
+    //             $meeting[$to] = $meeting[$from];
+    //             unset($meeting[$from]);
+    //         }
+    //     }
 
-        // special cases
-        $here = $meeting['duration'] ?? false;
-        if ($here) {
-            $time = explode(':', $meeting['duration']);
-            $meeting['duration'] = $time[0] . ":" . $time[1];
-            unset($meeting['duration']);
-        }
+    //     // special cases
+    //     $here = $meeting['duration'] ?? false;
+    //     if ($here) {
+    //         $time = explode(':', $meeting['duration']);
+    //         $meeting['duration'] = $time[0] . ":" . $time[1];
+    //         unset($meeting['duration']);
+    //     }
 
-        $here = $meeting['startTime'] ?? false;
-        if ($here) {
-            $time = explode(':', $meeting['startTime']);
-            $meeting['startTime'] = $time[0] . ":" . $time[1];
-            unset($meeting['startTime']);
-        }
+    //     $here = $meeting['startTime'] ?? false;
+    //     if ($here) {
+    //         $time = explode(':', $meeting['startTime']);
+    //         $meeting['startTime'] = $time[0] . ":" . $time[1];
+    //         unset($meeting['startTime']);
+    //     }
 
-        $here = $meeting['formatIds'] ?? false;
-        if ($here) {
-            $meeting['formatIds'] = array_map('intval', explode(',', $meeting['formatIds']));
-            // $meeting['formatIds'] = explode(',', $meeting['formatIds']);
-            unset($meeting['formatIds']);
-        } else
-        // if we dont even have a format list, then v3 requires at least a blank array here
-        {
-            $meeting['formatIds'] = [];
-        }
+    //     $here = $meeting['formatIds'] ?? false;
+    //     if ($here) {
+    //         $meeting['formatIds'] = array_map('intval', explode(',', $meeting['formatIds']));
+    //         // $meeting['formatIds'] = explode(',', $meeting['formatIds']);
+    //         unset($meeting['formatIds']);
+    //     } else
+    //     // if we dont even have a format list, then v3 requires at least a blank array here
+    //     {
+    //         $meeting['formatIds'] = [];
+    //     }
 
-        $this->debug_log($meeting);
-        // venue type can't be a 4 for BMLT 3.x #161
-        $here = $meeting['venueType'] ?? false;
-        $this->debug_log(gettype($here));
-        if ($here && $here === 4) {
-            $meeting['venueType'] = 2;
-            $meeting['temporarilyVirtual'] = true;
-        }
+    //     $this->debug_log($meeting);
+    //     // venue type can't be a 4 for BMLT 3.x #161
+    //     $here = $meeting['venueType'] ?? false;
+    //     $this->debug_log(gettype($here));
+    //     if ($here && $here === 4) {
+    //         $meeting['venueType'] = 2;
+    //         $meeting['temporarilyVirtual'] = true;
+    //     }
 
-        // day starts at 0 for BMLT 3.x
-        $here = $meeting['day'] ?? false;
-        if ($here) {
-            $meeting['day'] = $meeting['day'] - 1;
-        }
+    //     // day starts at 0 for BMLT 3.x
+    //     $here = $meeting['day'] ?? false;
+    //     if ($here) {
+    //         $meeting['day'] = $meeting['day'] - 1;
+    //     }
 
-        return $meeting;
-    }
+    //     return $meeting;
+    // }
 
     public function is_supported_server($server)
     {
@@ -300,14 +300,7 @@ class Integration
 
     function updateMeeting($change)
     {
-        $this->debug_log("CHANGE before");
-        $this->debug_log($change);
-
-        $meeting_id = $change['id_bigint'] ?? false;
-
-        $change = $this->convertv2meetingtov3($change);
-
-        $this->debug_log("CHANGE after");
+        $this->debug_log("updateMeeting change");
         $this->debug_log($change);
         if (array_key_exists('formatIds', $change)) {
             $change['formatIds'] = $this->removeLocations($change['formatIds']);
@@ -315,7 +308,7 @@ class Integration
 
         $this->debug_log("inside updateMeetingv3 auth");
 
-        if (!$meeting_id) {
+        if (!array_key_exists('id', $change)) {
             return new \WP_Error('bmltwf', 'updateMeetingv3: No meeting ID present');
         }
 
@@ -327,7 +320,7 @@ class Integration
             }
         }
 
-        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $meeting_id;
+        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $change['id'];
 
         $this->debug_bmlt_payload($url, 'PATCH', $change);
         $response = \wp_remote_request($url, $this->set_args(null, $change, array("Authorization" => "Bearer " . $this->v3_access_token), 'PATCH'));
@@ -506,7 +499,7 @@ class Integration
         return $arr;
     }
 
-    private function removeLocations($format)
+    private function removeLocations(array $format): array
     {
         // Remove virtual  meeting, temporarily closed, hybrid formats as these are handled seperately
         $removableLocations = ["VM", "TC", "HY"];

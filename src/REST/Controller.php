@@ -72,7 +72,7 @@ class Controller extends \WP_REST_Controller
 		// GET submissions/<id>
 		register_rest_route(
 			$this->bmltwf_rest_namespace,
-			'/' . $this->bmltwf_submissions_rest_base . '/(?P<id>[\d]+)',
+			'/' . $this->bmltwf_submissions_rest_base . '/(?P<change_id>[\d]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -97,7 +97,7 @@ class Controller extends \WP_REST_Controller
 		);
 
 		// POST submissions/<id>/approve
-		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_submissions_rest_base . '/(?P<id>[\d]+)/approve', array(
+		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_submissions_rest_base . '/(?P<change_id>[\d]+)/approve', array(
 			'methods'             => \WP_REST_Server::CREATABLE,
 			'callback'            => array($this, 'approve_submission'),
 			'permission_callback' => array($this, 'approve_submission_action_permissions_check'),
@@ -112,7 +112,7 @@ class Controller extends \WP_REST_Controller
 			],
 		));
 		// POST submissions/<id>/reject
-		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_submissions_rest_base . '/(?P<id>[\d]+)/reject', array(
+		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_submissions_rest_base . '/(?P<change_id>[\d]+)/reject', array(
 			'methods'             => \WP_REST_Server::CREATABLE,
 			'callback'            => array($this, 'reject_submission'),
 			'permission_callback' => array($this, 'reject_submission_action_permissions_check'),
