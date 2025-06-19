@@ -703,79 +703,44 @@ class Integration
         return $gmaps_key;
     }
 
+
     function createMeeting($meeting)
     {
-        $this->debug_log("meeting = ");
+        $this->debug_log("createMeeting change");
         $this->debug_log($meeting);
-        // workaround for semantic new meeting bug
-        $meeting['id_bigint'] = 0;
 
-        $this->debug_log("venue type");
-        $this->debug_log($meeting['venueType']);
-        $this->debug_log("meeting formats before");
-        $this->debug_log($meeting['formatIds']);
-        $formats = $this->getMeetingFormats();
-        $this->debug_log("real formats");
-        $this->debug_log($formats);
+        $this->debug_log("json");
+        $this->debug_log(json_encode($meeting));
 
-        $meetingformats = explode(',', $meeting['formatIds']);
-        // bmlt2x doesn't handle the venueType field
-        // remove all the invalid venue types from the format list
-        $key = array_search('VM', array_column($formats, 'key_string'));
-        if (($key2 = array_search($key, $meetingformats)) !== false) {
-            unset($meetingformats[$key2]);
-        }
-        $key = array_search('HY', array_column($formats, 'key_string'));
-        if (($key2 = array_search($key, $meetingformats)) !== false) {
-            unset($meetingformats[$key2]);
-        }
-        $key = array_search('TC', array_column($formats, 'key_string'));
-        if (($key2 = array_search($key, $meetingformats)) !== false) {
-            unset($meetingformats[$key2]);
-        }
-        if ($meeting['venueType'] !== 1) {
-            $key = '';
-            switch ($meeting['venueType']) {
-                case "2":
-                    $key = array_search('VM', array_column($formats, 'key_string'));
-                    break;
-                case "3":
-                    $key = array_search('HY', array_column($formats, 'key_string'));
-                    break;
-                case "4":
-                    $key = array_search('TC', array_column($formats, 'key_string'));
-                    break;
-                default:
-                    return $this->bmltwf_integration_error(__('Invalid venue type specified', 'bmlt-workflow'), 500);
-            }
-            if (($key != '') && (!in_array($key, $meetingformats))) {
-                $this->debug_log("adding key to meetingformats");
-                $this->debug_log($key);
-
-                $meetingformats[] = $key;
-            }
-        }
-        $this->debug_log("at end meetingformats = ");
-        $this->debug_log($meetingformats);
-
-        $meeting['formatIds'] = implode(',', $meetingformats);
-
-        $this->debug_log("meeting formats after");
+        $this->debug_log("formatsIds before");
         $this->debug_log($meeting['formatIds']);
 
-        // handle publish/unpublish here
-        $changearr = array();
-        $changearr['bmlt_ajax_callback'] = 1;
-        $changearr['set_meeting_change'] = json_encode($meeting);
-        $this->debug_log("posting change");
-        $this->debug_log($changearr);
+        $meeting['formatIds'] = $this->removeLocations($meeting['formatIds']);
 
-        $response = $this->postAuthenticatedRootServerRequest('', $changearr);
-        $this->debug_log("posted change");
+        $this->debug_log("formatsIds after");
+        $this->debug_log($meeting['formatIds']);
 
-        if (is_wp_error($response)) {
-            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 'bmlt-workflow'), 500);
+        $this->debug_log("inside createMeetingv3 auth");
+
+        if (!$this->is_v3_token_valid()) {
+            $ret =  $this->authenticateRootServer();
+            if (is_wp_error($ret)) {
+                $this->debug_log("exiting createMeetingv3 authenticateRootServer failed");
+                return $ret;
+            }
         }
+        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings';
+
+        $this->debug_bmlt_payload($url, 'POST', $meeting);
+
+        $response = \wp_remote_post($url, $this->set_args(null, $meeting, array("Authorization" => "Bearer " . $this->v3_access_token)));
+        // $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
+        // $this->debug_log(\wp_remote_retrieve_body($response));
+
+        if (\wp_remote_retrieve_response_code($response) != 201) {
+            return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
+        }
+
         return true;
     }
 

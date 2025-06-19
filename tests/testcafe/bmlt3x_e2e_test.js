@@ -163,7 +163,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
   await click_dt_button_by_index(as.dt_submission_wrapper, 0);
 
   await t.expect(as.approve_dialog_parent.visible).eql(true);
-
+await t.debug();
   await t.typeText(as.approve_dialog_textarea, "I approve this request");
   // press ok button
   await click_dialog_button_by_index(as.approve_dialog_parent, 1);

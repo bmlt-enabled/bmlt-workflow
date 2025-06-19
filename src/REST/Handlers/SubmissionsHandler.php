@@ -127,7 +127,7 @@ class SubmissionsHandler
         global $wpdb;
 
 
-        $change_id = $request->get_param('id');
+        $change_id = $request->get_param('change_id');
 
         $this->debug_log("rejection request for id " . $change_id);
 
@@ -194,7 +194,7 @@ class SubmissionsHandler
         global $wpdb;
 
 
-        $change_id = $request->get_param('id');
+        $change_id = $request->get_param('change_id');
 
         $this->debug_log("patch request for id " . $change_id);
 
@@ -313,8 +313,6 @@ class SubmissionsHandler
 
         // body parameters
         $params = $request->get_json_params();
-        $this->debug_log("params:");
-        $this->debug_log($params);
         // url parameters from parsed route
         $change_id = $request->get_param('change_id');
 
@@ -525,7 +523,7 @@ class SubmissionsHandler
                 }
 
                 // If we have a virtualna_published setting, modify worldid appropriately
-                if(array_key_exists('virtualna_published', $change))
+                if(array_key_exists('virtualna_published', $change) && array_key_exists('worldid_mixed',$bmlt_meeting))
                 {
                     $this->debug_log("virtualna_published = ".$change['virtualna_published']);
                     $change["worldid_mixed"] = $this->worldid_publish_to_virtualna(($change["virtualna_published"]=== 1)?true:false, $bmlt_meeting['worldid_mixed']);
@@ -592,8 +590,8 @@ class SubmissionsHandler
         //
 
         $to_address = $submitter_email;
-        $subject = __('NA Meeting Change Request Approval - Submission ID','bmlt-workflow')." " . $request['id'];
-        $body = __('Your meeting change has been approved - change ID','bmlt-workflow')." (" . $request['id'] . ")";
+        $subject = __('NA Meeting Change Request Approval - Submission ID','bmlt-workflow')." " . $request['change_id'];
+        $body = __('Your meeting change has been approved - change ID','bmlt-workflow')." (" . $request['change_id'] . ")";
         if (!empty($message)) {
             $body .= '<br><br>'.__('Message from trusted servant','bmlt-workflow').':<br><br>' . $message;
         }

@@ -67,16 +67,15 @@ test("Bmlt3x_Submit_New_Meeting_And_Check_Zip_And_County_Geolocation", async (t)
   var row = 1;
   await click_table_row_column(as.dt_submission, row, 0);
   // quickedit
-  // await t.debug();
 
   await click_dt_button_by_index(as.dt_submission_wrapper, 2);
   await t.expect(as.quickedit_location_postal_code_1.withAttribute("disabled").exists).ok()
     .expect(as.quickedit_location_sub_province.withAttribute("disabled").exists).ok()
     // Click geolocate button
     .click(as.quickedit_dialog_parent.find("button.ui-corner-all").nth(1))
-    .expect(as.quickedit_location_sub_province.value).eql("Armidale Regional Council")
+    .expect(as.quickedit_location_sub_province.value).eql("Columbia County")
     .drag(".yNHHyP-marker-view",50,50)
-    .expect(as.quickedit_latitude.value).eql("-30.51726828259111")
+    .expect(as.quickedit_latitude.value).eql("42.2507838299369")
     .typeText(as.quickedit_location_municipality, "adelaide", { replace: true})
     .click(as.quickedit_dialog_parent.find("button.ui-corner-all").nth(1))
     .expect(as.quickedit_location_sub_province.value).eql("Tea Tree Gully")

@@ -263,9 +263,11 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
     },
   });
 
-  // console.log("nonce = "+nonce);
-  // console.log(restore_json);
-  // console.log(resp);
+  console.log("nonce = "+nonce);
+  console.log(restore_json);
+  console.log(resp);
+  console.log(settings_page);
+
 }
 
 export async function check_checkbox(t, s) {

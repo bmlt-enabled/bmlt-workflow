@@ -410,7 +410,6 @@ test('Quickedit_States_Dropdowns', async t => {
   await click_table_row_column(as.dt_submission,row,0);
   // quickedit
   await click_dt_button_by_index(as.dt_submission_wrapper,2);
-
   await t
   .expect(as.quickedit_dialog_parent.visible).eql(true)
   .expect(as.quickedit_location_sub_province.hasClass("bmltwf-changed")).notOk()
@@ -450,7 +449,7 @@ test('Quickedit_Saves_No_Changes_Correctly', async t => {
 
 }).requestHooks(submissionslogger);
 
-const submissions2logger = RequestLogger(/bmltwf\/v1\/submissions\/93/,
+const submissions2logger = RequestLogger(/bmltwf\/v1\/submissions\/94/,
 {
   logRequestBody: true,
 }
@@ -458,8 +457,8 @@ const submissions2logger = RequestLogger(/bmltwf\/v1\/submissions\/93/,
 
 test('Quickedit_Hides_Virtual_Meeting_Publish', async t => {
 
-  // new meeting = row 2
-  var row = 2;
+  // change meeting = row 1
+  var row = 1;
   await click_table_row_column(as.dt_submission,row,0);
   // quickedit
   await click_dt_button_by_index(as.dt_submission_wrapper,2);
@@ -470,10 +469,10 @@ test('Quickedit_Hides_Virtual_Meeting_Publish', async t => {
   await t.click(as.quickedit_dialog_parent.find("button.ui-corner-all").nth(2))
   .wait(1000);
 
-  var f = JSON.parse(submissionslogger.requests[0].request.body.toString());
+  var f = JSON.parse(submissions2logger.requests[0].request.body.toString());
   await t.expect(f.changes_requested.virtualna_published).typeOf("undefined");
 
-}).requestHooks(submissionslogger);
+}).requestHooks(submissions2logger);
 
 const submissions1logger = RequestLogger(/bmltwf\/v1\/submissions\/93/,
 {
