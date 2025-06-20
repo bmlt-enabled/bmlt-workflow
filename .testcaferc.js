@@ -15,7 +15,7 @@ const admin_backup_json_path = "/index.php?rest_route=/bmltwf/v1/options/backup"
 const backuppath = "/index.php" + sitejsonurl + admin_backup_json_path;
 const admin_restore_json_path = "/index.php?rest_route=/bmltwf/v1/options/restore";
 const restorepath = "/index.php" + sitejsonurl + admin_restore_json_path;
-
+const admin_restore_json_path_multisite = "/wp-json/bmltwf/v1/options/restore"
 const execSync = require("child_process").execSync;
 
 // web addresses
@@ -71,7 +71,7 @@ module.exports = {
     admin_logon_multisingle: username_multisingle,
     admin_password_multisingle: password_multisingle,
     admin_backup_json_multisingle: siteurl_multisingle + multisite_plugin + backuppath,
-    admin_restore_json_multisingle_plugin: siteurl_multisingle + multisite_plugin + admin_restore_json_path,
+    admin_restore_json_multisingle_plugin: siteurl_multisingle + multisite_plugin + admin_restore_json_path_multisite,
 
     // multisite network install
     formpage_multinetwork: siteurl_multinetwork + formpage2,

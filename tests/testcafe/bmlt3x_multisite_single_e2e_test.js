@@ -18,6 +18,7 @@
 import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
 import { Selector, Role } from "testcafe";
+import { RequestLogger } from "testcafe";
 
 import { 
   click_table_row_column, 
@@ -35,6 +36,8 @@ import { userVariables } from "../../.testcaferc";
 fixture`bmlt3x_multisite_single_e2e_test_fixture`
   // .page(userVariables.admin_submissions_page_single)
   .beforeEach(async (t) => {
+    console.log(userVariables.admin_logon_page_multisingle);
+    console.log(userVariables.admin_settings_page_multisingle_plugin);
     await waitfor(userVariables.admin_logon_page_multisingle);
     await restore_from_backup(bmltwf_admin_multisingle, userVariables.admin_settings_page_multisingle_plugin, userVariables.admin_restore_json_multisingle_plugin,myip(),"3001","hidden");
   });
@@ -49,7 +52,6 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve", async (t) => {
     location_postal_code_1: "2032",
   };
   // console.log(userVariables.formpage_multisingle);
-
   await t.navigateTo(userVariables.formpage_multisingle);
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 
@@ -165,12 +167,11 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve", async (t) => {
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
-});
+})
 
 test("Multisite_Single_Submit_Change_Meeting_And_Approve", async (t) => {
-  // await t.debug();
   await t.navigateTo(userVariables.formpage_multisingle);
-
+  
   // console.log(userVariables.formpage_multisingle);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
@@ -235,4 +236,4 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve", async (t) => {
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
-});
+})

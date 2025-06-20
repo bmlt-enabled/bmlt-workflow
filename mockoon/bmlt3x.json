@@ -1106,6 +1106,48 @@
       ],
       "enabled": true,
       "responseMode": null
+    },
+    {
+      "uuid": "053e1999-2812-45a8-ac36-9c8632a7d318",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "main_server/api/v1/meetings/1602",
+      "responses": [
+        {
+          "uuid": "62f2f88d-011d-4acb-935e-5ce04ba28a63",
+          "body": "{\"id\":1602,\"serviceBodyId\":1009,\"formatIds\":[8,17,27],\"venueType\":1,\"temporarilyVirtual\":false,\"day\":4,\"startTime\":\"19:00\",\"duration\":\"01:30\",\"timeZone\":null,\"latitude\":41.92971,\"longitude\":-74.012154,\"published\":true,\"email\":null,\"worldId\":\"G00138018\",\"name\":\"Freedom from Insanity Group\",\"location_text\":\"Methodist Church\",\"location_info\":null,\"location_street\":\"122 Clinton Ave\",\"location_city_subsection\":null,\"location_neighborhood\":null,\"location_municipality\":\"Kingston\",\"location_sub_province\":\"Ulster\",\"location_province\":\"NY\",\"location_postal_code_1\":null,\"location_nation\":\"USA\",\"comments\":null,\"zone\":null,\"train_lines\":null,\"bus_lines\":null,\"contact_phone_2\":null,\"contact_email_2\":null,\"contact_name_2\":null,\"contact_phone_1\":null,\"contact_email_1\":null,\"contact_name_1\":null,\"phone_meeting_number\":null,\"virtual_meeting_link\":null,\"virtual_meeting_additional_info\":null}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -1188,6 +1230,10 @@
     {
       "type": "route",
       "uuid": "79e5c644-83bf-4d8d-9a04-c59cb00926a2"
+    },
+    {
+      "type": "route",
+      "uuid": "053e1999-2812-45a8-ac36-9c8632a7d318"
     }
   ],
   "proxyMode": false,

@@ -907,7 +907,6 @@ class Integration
             );
             $this->debug_log("inside authenticateRootServer v3 auth");
             $url = get_option('bmltwf_bmlt_server_address') . "api/v1/auth/token";
-            $this->debug_log($url);
             $response = \wp_remote_post($url, array('body' => http_build_query($postargs)));
             
             $response_code = \wp_remote_retrieve_response_code($response);

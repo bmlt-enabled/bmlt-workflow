@@ -72,7 +72,6 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) 
     .eql(true)
     .expect(uf.additional_info_div.visible)
     .eql(true);
-
   // personal details
   await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "123-456-7890");
 
