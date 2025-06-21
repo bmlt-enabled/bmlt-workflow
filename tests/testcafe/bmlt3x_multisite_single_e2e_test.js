@@ -18,7 +18,6 @@
 import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
 import { Selector, Role } from "testcafe";
-import { RequestLogger } from "testcafe";
 
 import { 
   click_table_row_column, 

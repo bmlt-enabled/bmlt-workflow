@@ -507,7 +507,7 @@ jQuery(document).ready(function ($) {
         const mdata = JSON.parse(response.message);
         create_meeting_searcher(mdata);
         if (id) {
-          const jump_to = mdata.findIndex((el) => el.id === id);
+          const jump_to = mdata.findIndex((el) => el.id === parseInt(id,10));
           $('#update_reason').val('reason_change').trigger('change');
           $('#meeting-searcher').val(jump_to).trigger('change').trigger({
             type: 'select2:select',
@@ -532,7 +532,7 @@ jQuery(document).ready(function ($) {
     $('#serviceBodyId').append(opt);
   });
 
-  const id = get_query_string_parameter('id');
+  const id = get_query_string_parameter('meeting_id');
 
   update_meeting_list(id);
 
@@ -601,19 +601,19 @@ jQuery(document).ready(function ($) {
   $('#venueType').on('change', function () {
     // show and hide the virtual meeting settings
 
-    if (this.value === 1) {
+    if (this.value === '1') {
       $('#virtual_meeting_options').hide();
       $('#location_fields').show();
     } else {
       $('#virtual_meeting_options').show();
       switch (this.value) {
-        case 2:
+        case '2':
           $('#location_fields').hide();
           break;
-        case 3:
+        case '3':
           $('#location_fields').show();
           break;
-        case 4:
+        case '4':
           $('#location_fields').show();
           break;
         default:

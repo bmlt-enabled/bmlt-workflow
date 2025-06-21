@@ -55,7 +55,7 @@ test("Approve_New_Meeting", async (t) => {
   // press ok button
   await click_dialog_button_by_index(as.approve_dialog_parent, 1);
   // dialog closes after ok button
-  await t.debug();
+  // await t.debug();
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;

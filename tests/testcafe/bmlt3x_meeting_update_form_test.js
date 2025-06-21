@@ -843,7 +843,6 @@ test("Success_Close_Meeting_And_Submit", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   await t.typeText(uf.additional_info, "my additional info");
-
   await t
     .click(uf.submit)
     .expect(uf.success_page_header.innerText)
@@ -970,7 +969,8 @@ test("Change_Nothing_Check_Error", async (t) => {
 
   await t
     .click(uf.submit)
-    .expect(uf.error_para.innerText)
+    await t.debug();
+    await t.expect(uf.error_para.innerText)
     .match(/Nothing\ was\ changed/);
 });
 

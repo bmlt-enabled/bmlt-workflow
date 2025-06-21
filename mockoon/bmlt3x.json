@@ -953,48 +953,6 @@
       "type": "http"
     },
     {
-      "uuid": "60625671-14e0-4123-90e0-dc505dc9a7dd",
-      "type": "http",
-      "documentation": "",
-      "method": "post",
-      "endpoint": "main_server/api/v1/meetings",
-      "responses": [
-        {
-          "uuid": "4fa3efce-0b90-4686-b1b8-bd6ccc03b691",
-          "latency": 0,
-          "statusCode": 404,
-          "label": "",
-          "headers": [
-            {
-              "key": "content-security-policy",
-              "value": "default-src 'none'"
-            },
-            {
-              "key": "content-type",
-              "value": "text/html; charset=utf-8"
-            },
-            {
-              "key": "x-content-type-options",
-              "value": "nosniff"
-            }
-          ],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": false,
-          "crudKey": "id",
-          "body": "{}"
-        }
-      ],
-      "enabled": true,
-      "responseMode": null
-    },
-    {
       "uuid": "a27e7528-6ffa-40e7-b6b6-2b7727fbfdfa",
       "documentation": "",
       "method": "get",
@@ -1148,6 +1106,90 @@
       ],
       "enabled": true,
       "responseMode": null
+    },
+    {
+      "uuid": "29fe91f6-489c-4ad0-a87f-558220d7b68a",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "main_server/api/v1/meetings/1637",
+      "responses": [
+        {
+          "uuid": "bf0e830f-ab74-4e1b-9ba1-21f617d69c3d",
+          "body": "{\"id\":1637,\"serviceBodyId\":1009,\"formatIds\":[12,17],\"venueType\":1,\"temporarilyVirtual\":false,\"day\":5,\"startTime\":\"19:00\",\"duration\":\"01:30\",\"timeZone\":null,\"latitude\":41.7465764,\"longitude\":-74.3495224,\"published\":true,\"email\":null,\"worldId\":\"G00007795\",\"name\":\"Do the Right Thing Group\",\"location_text\":\"Family of Ellenville\",\"location_info\":null,\"location_street\":\"221 Towpath Street\",\"location_city_subsection\":null,\"location_neighborhood\":null,\"location_municipality\":\"Ellenville\",\"location_sub_province\":\"Ulster\",\"location_province\":\"NY\",\"location_postal_code_1\":null,\"location_nation\":\"USA\",\"comments\":null,\"zone\":null,\"train_lines\":null,\"bus_lines\":null,\"contact_phone_2\":null,\"contact_email_2\":null,\"contact_name_2\":null,\"contact_phone_1\":null,\"contact_email_1\":null,\"contact_name_1\":null,\"phone_meeting_number\":null,\"virtual_meeting_link\":null,\"virtual_meeting_additional_info\":null}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "a90d4ee2-7b64-48b9-9838-08a48bf32bf8",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "main_server/api/v1/meetings/1567",
+      "responses": [
+        {
+          "uuid": "da4ef169-2d80-400f-a4e3-5a73a1d49f9a",
+          "body": "{\"id\":1567,\"serviceBodyId\":1009,\"formatIds\":[14,17,26,40,51],\"venueType\":1,\"temporarilyVirtual\":false,\"day\":3,\"startTime\":\"19:00\",\"duration\":\"01:30\",\"timeZone\":null,\"latitude\":41.9321262,\"longitude\":-74.0171518,\"published\":true,\"email\":null,\"worldId\":\"G00012097\",\"name\":\"Lifeline Group\",\"location_text\":\"St. James Methodist Church\",\"location_info\":\"Entrance at Fair Street\",\"location_street\":\"35 Pearl Street\",\"location_city_subsection\":null,\"location_neighborhood\":null,\"location_municipality\":\"Kingston\",\"location_sub_province\":\"Ulster\",\"location_province\":\"NY\",\"location_postal_code_1\":null,\"location_nation\":\"USA\",\"comments\":null,\"zone\":null,\"train_lines\":null,\"bus_lines\":null,\"contact_phone_2\":null,\"contact_email_2\":null,\"contact_name_2\":null,\"contact_phone_1\":null,\"contact_email_1\":null,\"contact_name_1\":null,\"phone_meeting_number\":null,\"virtual_meeting_link\":null,\"virtual_meeting_additional_info\":null}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -1217,10 +1259,6 @@
     },
     {
       "type": "route",
-      "uuid": "60625671-14e0-4123-90e0-dc505dc9a7dd"
-    },
-    {
-      "type": "route",
       "uuid": "a27e7528-6ffa-40e7-b6b6-2b7727fbfdfa"
     },
     {
@@ -1234,6 +1272,14 @@
     {
       "type": "route",
       "uuid": "053e1999-2812-45a8-ac36-9c8632a7d318"
+    },
+    {
+      "type": "route",
+      "uuid": "29fe91f6-489c-4ad0-a87f-558220d7b68a"
+    },
+    {
+      "type": "route",
+      "uuid": "a90d4ee2-7b64-48b9-9838-08a48bf32bf8"
     }
   ],
   "proxyMode": false,

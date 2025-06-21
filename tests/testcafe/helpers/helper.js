@@ -253,9 +253,9 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
 
   await t.useRole(role).navigateTo(settings_page);
   const nonce = await Selector("#_wprestnonce").value;
-   await t.debug();
   const resp = await t.request(restore_json, {
     method: "POST",
+    withCredentials: true, 
     body: restorebody,
     headers: {
       "Content-Type": "application/json",
@@ -263,10 +263,10 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
     },
   });
 
-  console.log("nonce = "+nonce);
-  console.log(restore_json);
-  console.log(resp);
-  console.log(settings_page);
+  // console.log("nonce = "+nonce);
+  // console.log(restore_json);
+  // console.log(resp);
+  // console.log(settings_page);
 
 }
 

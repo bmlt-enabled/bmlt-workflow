@@ -959,6 +959,7 @@ class SubmissionsHandler
                         if (!preg_match('/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:00$/', $data[$field])) {
                             return $this->invalid_form_field($field);
                         }
+                        $data[$field] = substr($data[$field], 0, 5);
                         break;
                     default:
                         return $this->bmltwf_rest_error(__('Form processing error','bmlt-workflow'), 500);
@@ -1143,6 +1144,8 @@ class SubmissionsHandler
                     // Case 1: Field doesn't exist in BMLT but was submitted with a value
                     if (($bmlt_field === false || $bmlt_field === null || $bmlt_field === '') && 
                         $field_submitted && !empty($submitted_value)) {
+                        // $this->debug_log("Case 1 adding " . $field);
+
                         $submission[$field] = $submitted_value;
                         $submission_count++;
                     }
@@ -1152,6 +1155,12 @@ class SubmissionsHandler
                         if ($field === 'serviceBodyId') {
                             return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
                         }
+                        // $this->debug_log("Case 2 adding " . $field);
+                        // $this->debug_log("Type of bmlt_field: " . gettype($bmlt_field));
+                        // $this->debug_log("bmlt_field: " . $bmlt_field);
+                        // $this->debug_log("Type of submitted_value: " . gettype($submitted_value));
+                        // $this->debug_log("submitted_value: " . $submitted_value);
+
                         $submission[$field] = $submitted_value;
                         $submission_count++;
                     }
@@ -1161,6 +1170,7 @@ class SubmissionsHandler
                         if ($field === 'serviceBodyId') {
                             return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
                         }
+                        // $this->debug_log("Case 3 adding " . $field);
                         $submission[$field] = "";
                         $submission_count++;
                     }
@@ -1174,6 +1184,8 @@ class SubmissionsHandler
                 if (!$submission_count) {
                     return $this->bmltwf_rest_error(__('Nothing was changed.','bmlt-workflow'), 422);
                 }
+                $this->debug_log("submission");
+                $this->debug_log($submission);
 
                 // add in extra form fields (non BMLT fields) to the submission
                 foreach ($allowed_fields_extra as $field) {

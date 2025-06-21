@@ -206,10 +206,6 @@ jQuery(document).ready(function ($) {
     // fill in and highlight the changes - use extend to clone
     const changes_requested = $.extend(true, {}, bmltwf_requested);
 
-    if ('formatIds' in changes_requested) {
-      changes_requested.formatIds = changes_requested.formatIds.split(',');
-    }
-
     if ('duration' in changes_requested) {
       const durationarr = changes_requested.duration.split(':');
       // hoping we got hours, minutes and seconds here
