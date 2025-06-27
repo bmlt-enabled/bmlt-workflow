@@ -21,7 +21,7 @@ namespace bmltwf;
 class BMLTWF_Database
 {
     use \bmltwf\BMLTWF_Debug;
-    public $bmltwf_db_version = '0.4.0';
+    public $bmltwf_db_version = '1.1.18';
     public $bmltwf_submissions_table_name;
     public $bmltwf_service_bodies_table_name;
     public $bmltwf_service_bodies_access_table_name;
@@ -158,6 +158,68 @@ class BMLTWF_Database
         if ($upgrade) {
             delete_option('bmltwf_db_version');
             add_option('bmltwf_db_version', $this->bmltwf_db_version);
+
+            if (version_compare($installed_version, '1.1.18', '<')) {
+                // Rename 'id' column to 'change_id' in submissions table
+                $sql = "ALTER TABLE " . $this->bmltwf_submissions_table_name . " CHANGE COLUMN id change_id bigint(20) unsigned;";
+                $wpdb->query($sql);
+                $this->debug_log("renamed id column to change_id in submissions table");
+                $sql = "ALTER TABLE " . $this->bmltwf_submissions_table_name . " CHANGE COLUMN meeting_id id bigint(20) unsigned;";
+                $wpdb->query($sql);
+                $this->debug_log("renamed meeting_id column to id in submissions table");
+                $sql = "UPDATE " . $this->bmltwf_submissions_table_name . " 
+                SET changes_requested = REPLACE(changes_requested, '\"original_start_time\":', '\"original_startTime\":')
+                WHERE changes_requested LIKE '%original_start_time%'";
+                $wpdb->query($sql);
+                $this->debug_log("updated original_start_time to original_startTime in changes_requested JSON");
+                $sql = "UPDATE " . $this->bmltwf_submissions_table_name . " 
+                SET changes_requested = REPLACE(changes_requested, '\"start_time\":', '\"startTime\":')
+                WHERE changes_requested LIKE '%start_time%'";
+                $wpdb->query($sql);
+                $this->debug_log("updated start_time to startTime in changes_requested JSON");
+                $sql = "UPDATE " . $this->bmltwf_submissions_table_name . " 
+                SET changes_requested = REPLACE(changes_requested, '\"original_duration_time\":', '\"original_duration\":')
+                WHERE changes_requested LIKE '%original_duration_time%'";
+                $wpdb->query($sql);
+                $this->debug_log("updated original_start_time to original_startTime in changes_requested JSON");
+                $sql = "UPDATE " . $this->bmltwf_submissions_table_name . " 
+                SET changes_requested = REPLACE(changes_requested, '\"duration_time\":', '\"duration\":')
+                WHERE changes_requested LIKE '%duration_time%'";
+                $wpdb->query($sql);
+                $this->debug_log("updated start_time to startTime in changes_requested JSON");
+                $results = $wpdb->get_results("SELECT change_id, changes_requested FROM " . $this->bmltwf_submissions_table_name . " WHERE changes_requested LIKE '%weekday_tinyint%'");
+
+                foreach ($results as $row) {
+                    $json_data = json_decode($row->changes_requested, true);
+                    $updated = false;
+                    
+                    if (isset($json_data['weekday_tinyint'])) {
+                        $json_data['day'] = intval($json_data['weekday_tinyint']) - 1;
+                        unset($json_data['weekday_tinyint']);
+                        $this->debug_log("updated weekday_tinyint to day in changes_requested JSON for id ".$row->change_id);
+
+                        $updated = true;
+                    }
+                    
+                    if (isset($json_data['original_weekday_tinyint'])) {
+                        $json_data['original_day'] = intval($json_data['original_weekday_tinyint']) - 1;
+                        unset($json_data['original_weekday_tinyint']);
+                        $this->debug_log("updated original_weekday_tinyint to original_day in changes_requested JSON for id ".$row->change_id);
+                        $updated = true;
+                    }
+                    
+                    if ($updated) {
+                        $updated_json = json_encode($json_data);
+                        $wpdb->update(
+                            $this->bmltwf_submissions_table_name,
+                            array('changes_requested' => $updated_json),
+                            array('change_id' => $row->change_id)
+                        );
+                    }
+                }
+                    
+            }
+
             return 2; // upgrade performed
         }
 
