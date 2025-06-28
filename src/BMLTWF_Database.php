@@ -160,6 +160,12 @@ class BMLTWF_Database
             add_option('bmltwf_db_version', $this->bmltwf_db_version);
 
             if (version_compare($installed_version, '1.1.18', '<')) {
+                $sql = "ALTER TABLE " . $this->bmltwf_service_bodies_table_name . " CHANGE COLUMN service_body_bigint serviceBodyId bigint(20) NOT NULL;";
+                $wpdb->query($sql);
+                $this->debug_log("renamed service_body_bigint column to serviceBodyId in bmltwf_service_bodies table");
+                $sql = "ALTER TABLE " . $this->bmltwf_service_bodies_access_table_name . " CHANGE COLUMN service_body_bigint serviceBodyId bigint(20) NOT NULL;";
+                $wpdb->query($sql);
+                $this->debug_log("renamed service_body_bigint column to serviceBodyId in bmltwf_service_bodies_access table");
                 // Rename 'id' column to 'change_id' in submissions table
                 $sql = "ALTER TABLE " . $this->bmltwf_submissions_table_name . " CHANGE COLUMN id change_id bigint(20) unsigned;";
                 $wpdb->query($sql);
