@@ -396,6 +396,9 @@ jQuery(document).ready(function ($) {
     select: true,
     searching: true,
     order: [[5, 'desc']],
+    processing: true,
+    serverSide: true,
+    pageLength: 10,
     buttons: [
       {
         name: 'approve',
@@ -451,13 +454,18 @@ jQuery(document).ready(function ($) {
       beforeSend(xhr) {
         xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
       },
+      data(d) {
+        return {
+          first: d.start,
+          last: d.start + d.length - 1,
+          total: d.recordsTotal || 0,
+        };
+      },
       dataSrc(json) {
         bmltwf_changedata = {};
-        // eslint-disable-next-line prefer-const
-        let newjson = JSON.parse(JSON.stringify(json));
+        const newjson = JSON.parse(JSON.stringify(json.data || json));
         for (let i = 0, ien = newjson.length; i < ien; i += 1) {
           newjson[i].changes_requested.submission_type = newjson[i].submission_type;
-          // store the json for us to use in quick editor
           bmltwf_changedata[newjson[i].change_id] = newjson[i];
         }
         return newjson;

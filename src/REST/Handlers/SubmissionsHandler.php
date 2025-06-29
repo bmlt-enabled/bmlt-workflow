@@ -47,21 +47,41 @@ class SubmissionsHandler
     
     }
 
-    public function get_submissions_handler()
+    public function get_submissions_handler($request)
     {
         global $wpdb;
+
+          // Get pagination parameters
+        $first = intval($request->get_param('first') ?? 0);
+        $last = intval($request->get_param('last') ?? 20);
+        $total = intval($request->get_param('total') ?? 0);
+        
+        // Calculate LIMIT and OFFSET
+        $limit = $last - $first + 1;
+        $offset = $first;
 
         // only show submissions we have access to
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
         if(current_user_can('manage_options'))
         {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name);
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' ORDER BY change_id DESC LIMIT %d OFFSET %d', $limit, $offset);
         }
         else
         {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId where a.wp_uid =%d', $current_uid);
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId where a.wp_uid =%d ORDER BY s.change_id DESC LIMIT %d OFFSET %d', $current_uid, $limit, $offset);
         }
+        
+        if(current_user_can('manage_options'))
+        {
+            $total_sql = $wpdb->prepare('SELECT COUNT(*) FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name);
+        }
+        else
+        {
+            $total_sql = $wpdb->prepare('SELECT COUNT(*) FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId where a.wp_uid =%d', $current_uid);
+        }
+        $total_count = $wpdb->get_var($total_sql);
+
         // $this->debug_log($sql);
         $result = $wpdb->get_results($sql, ARRAY_A);
         $this->debug_log("result:");
@@ -74,7 +94,11 @@ class SubmissionsHandler
             $this->debug_log( $this->bmlt_integration->getMeeting($result[$key]['id']));
             $result[$key]['bmlt_meeting_data'] = $this->bmlt_integration->getMeeting($result[$key]['id']);
         }
-        return $result;
+        return array(
+            'data' => $result,
+            'recordsTotal' => intval($total_count),
+            'recordsFiltered' => intval($total_count)
+        );
     }
 
     public function delete_submission_handler($request)

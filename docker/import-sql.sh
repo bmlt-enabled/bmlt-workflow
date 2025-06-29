@@ -1,4 +1,5 @@
 #!/bin/bash
+export sitelocalpath=/var/www/html
 
 # Drop existing tables first
 mysql -h$WORDPRESS_DB_HOST -u$WORDPRESS_DB_USER -p$WORDPRESS_DB_PASSWORD $WORDPRESS_DB_NAME -e "

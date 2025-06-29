@@ -166,6 +166,9 @@ class BMLTWF_Database
                 $sql = "ALTER TABLE " . $this->bmltwf_service_bodies_access_table_name . " CHANGE COLUMN service_body_bigint serviceBodyId bigint(20) NOT NULL;";
                 $wpdb->query($sql);
                 $this->debug_log("renamed service_body_bigint column to serviceBodyId in bmltwf_service_bodies_access table");
+                $sql = "ALTER TABLE " . $this->bmltwf_submissions_table_name . " CHANGE COLUMN service_body_bigint serviceBodyId bigint(20) NOT NULL;";
+                $wpdb->query($sql);
+                $this->debug_log("renamed service_body_bigint column to serviceBodyId in submissions table");
                 // Rename 'id' column to 'change_id' in submissions table
                 $sql = "ALTER TABLE " . $this->bmltwf_submissions_table_name . " CHANGE COLUMN id change_id bigint(20) unsigned;";
                 $wpdb->query($sql);
@@ -193,6 +196,18 @@ class BMLTWF_Database
                 WHERE changes_requested LIKE '%duration_time%'";
                 $wpdb->query($sql);
                 $this->debug_log("updated start_time to startTime in changes_requested JSON");
+                $sql = "UPDATE " . $this->bmltwf_submissions_table_name . " 
+                        SET changes_requested = REPLACE(changes_requested, '\"meeting_name\":', '\"name\":')
+                        WHERE changes_requested LIKE '%meeting_name%'";
+                $wpdb->query($sql);
+                $this->debug_log("updated meeting_name to name in changes_requested JSON");
+
+                $sql = "UPDATE " . $this->bmltwf_submissions_table_name . " 
+                        SET changes_requested = REPLACE(changes_requested, '\"original_meeting_name\":', '\"original_name\":')
+                        WHERE changes_requested LIKE '%original_meeting_name%'";
+                $wpdb->query($sql);
+                $this->debug_log("updated original_meeting_name to original_name in changes_requested JSON");
+
                 $results = $wpdb->get_results("SELECT change_id, changes_requested FROM " . $this->bmltwf_submissions_table_name . " WHERE changes_requested LIKE '%weekday_tinyint%'");
 
                 foreach ($results as $row) {

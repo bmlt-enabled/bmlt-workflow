@@ -1190,6 +1190,174 @@
       ],
       "enabled": true,
       "responseMode": null
+    },
+    {
+      "uuid": "1f533cd8-f4a1-422f-99be-5c9c31894b97",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "main_server/api/v1/meetings/2751",
+      "responses": [
+        {
+          "uuid": "2ebd2eb4-76e3-44e1-a9f5-c0d75c80a272",
+          "body": "{\"id\":2751,\"serviceBodyId\":18,\"formatIds\":[8,32,33],\"venueType\":3,\"temporarilyVirtual\":false,\"day\":6,\"startTime\":\"15:30\",\"duration\":\"01:30\",\"timeZone\":null,\"latitude\":-37.8252586,\"longitude\":144.9982151,\"published\":true,\"email\":\"hlkridge@gmail.com\",\"worldId\":\"G00318258\",\"name\":\"Saturday 'Womens Recovery Meeting'\",\"location_text\":\"Richmond Library\",\"location_info\":\"Meeting Room Level 1. Enter via Church Street\",\"location_street\":\"415 Church Street\",\"location_city_subsection\":null,\"location_neighborhood\":null,\"location_municipality\":\"Richmond\",\"location_sub_province\":\"Yarra City\",\"location_province\":\"VIC\",\"location_postal_code_1\":\"3121\",\"location_nation\":\"AU\",\"comments\":null,\"train_lines\":null,\"bus_lines\":null,\"contact_phone_2\":null,\"contact_email_2\":null,\"contact_name_2\":null,\"contact_phone_1\":null,\"contact_email_1\":\"hlkridge@gmail.com\",\"contact_name_1\":\"Hannah\",\"zone\":null,\"phone_meeting_number\":\"+61370182005,,723683690#\",\"virtual_meeting_link\":\"https://us02web.zoom.us/j/723683690\",\"virtual_meeting_additional_info\":\"Zoom Meeting ID: 723683690\"}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "efc7eec6-dd59-4e67-9628-634db31eef6b",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "main_server/api/v1/meetings/3817",
+      "responses": [
+        {
+          "uuid": "54dc1b79-b6dc-4d1b-86d8-93ccda4787ba",
+          "body": "{\"id\":3817,\"serviceBodyId\":16,\"formatIds\":[1,7,17],\"venueType\":1,\"temporarilyVirtual\":false,\"day\":4,\"startTime\":\"18:00\",\"duration\":\"01:30\",\"timeZone\":null,\"latitude\":-37.8255428,\"longitude\":140.7778939,\"published\":true,\"email\":null,\"worldId\":\"U\",\"name\":\"New Beginnings Mount Gambier\",\"location_text\":\"Uniting Church\",\"location_info\":\"Enter through the back of church\",\"location_street\":\"26 Elizabeth Street\",\"location_city_subsection\":null,\"location_neighborhood\":null,\"location_municipality\":\"Mount Gambier\",\"location_sub_province\":null,\"location_province\":\"South Australia\",\"location_postal_code_1\":\"5290\",\"location_nation\":null,\"comments\":null,\"train_lines\":null,\"bus_lines\":null,\"contact_phone_2\":null,\"contact_email_2\":null,\"contact_name_2\":null,\"contact_phone_1\":\"0406951698\",\"contact_email_1\":\"michael.evans261279@gmail.com\",\"contact_name_1\":\"Michael E\",\"zone\":null,\"phone_meeting_number\":null,\"virtual_meeting_link\":null,\"virtual_meeting_additional_info\":null}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "c86fb707-6e36-4a54-8515-63b8bfb84f40",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "main_server/api/v1/meetings/2826",
+      "responses": [
+        {
+          "uuid": "eae34665-d4bc-43c6-af42-847cb2c72eb6",
+          "body": "{\"id\":2826,\"serviceBodyId\":12,\"formatIds\":[1,33],\"venueType\":1,\"temporarilyVirtual\":false,\"day\":2,\"startTime\":\"18:30\",\"duration\":\"01:00\",\"timeZone\":null,\"latitude\":-33.5000357,\"longitude\":151.3208147,\"published\":true,\"email\":null,\"worldId\":\"G00232156\",\"name\":\"Woy Woy - Umina Beginners\",\"location_text\":\"Peninsula Community Centre\",\"location_info\":null,\"location_street\":\"93 McMasters Road\",\"location_city_subsection\":null,\"location_neighborhood\":null,\"location_municipality\":\"Woy Woy\",\"location_sub_province\":null,\"location_province\":\"NSW\",\"location_postal_code_1\":\"2256\",\"location_nation\":\"AU\",\"comments\":null,\"train_lines\":null,\"bus_lines\":null,\"contact_phone_2\":null,\"contact_email_2\":null,\"contact_name_2\":null,\"contact_phone_1\":\"0414816163\",\"contact_email_1\":\"neil.a.docherty@gmail.com\",\"contact_name_1\":\"Neil D\",\"zone\":null,\"phone_meeting_number\":null,\"virtual_meeting_link\":null,\"virtual_meeting_additional_info\":null}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "477b55ce-bfa8-4883-960e-fbf5024638b8",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "main_server/api/v1/meetings/2274",
+      "responses": [
+        {
+          "uuid": "096c1cbd-0408-4315-be79-cb73e06e80eb",
+          "body": "{\"id\":2274,\"serviceBodyId\":19,\"formatIds\":[8,14,17],\"venueType\":1,\"temporarilyVirtual\":false,\"day\":3,\"startTime\":\"19:00\",\"duration\":\"01:00\",\"timeZone\":null,\"latitude\":-31.8580187,\"longitude\":115.7549593,\"published\":true,\"email\":null,\"worldId\":\"G00231339\",\"name\":\"North Beach Wed\",\"location_text\":\"Anglican Church\",\"location_info\":\"Entrance on George Street\",\"location_street\":\"23 James Street\",\"location_city_subsection\":null,\"location_neighborhood\":null,\"location_municipality\":\"North Beach\",\"location_sub_province\":null,\"location_province\":\"WA\",\"location_postal_code_1\":\"6020\",\"location_nation\":\"AU\",\"comments\":null,\"train_lines\":null,\"bus_lines\":null,\"contact_phone_2\":null,\"contact_email_2\":null,\"contact_name_2\":null,\"contact_phone_1\":null,\"contact_email_1\":null,\"contact_name_1\":null,\"zone\":null,\"phone_meeting_number\":null,\"virtual_meeting_link\":null,\"virtual_meeting_additional_info\":null}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -1280,6 +1448,22 @@
     {
       "type": "route",
       "uuid": "a90d4ee2-7b64-48b9-9838-08a48bf32bf8"
+    },
+    {
+      "type": "route",
+      "uuid": "1f533cd8-f4a1-422f-99be-5c9c31894b97"
+    },
+    {
+      "type": "route",
+      "uuid": "efc7eec6-dd59-4e67-9628-634db31eef6b"
+    },
+    {
+      "type": "route",
+      "uuid": "c86fb707-6e36-4a54-8515-63b8bfb84f40"
+    },
+    {
+      "type": "route",
+      "uuid": "477b55ce-bfa8-4883-960e-fbf5024638b8"
     }
   ],
   "proxyMode": false,
