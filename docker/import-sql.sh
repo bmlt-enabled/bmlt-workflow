@@ -16,3 +16,5 @@ for sql_file in /sql-import/*.sql; do
 done
 
 wp option --path=$sitelocalpath update 'bmltwf_db_version' '0.4.0'
+wp plugin deactivate --path=$sitelocalpath "bmlt-workflow"
+wp plugin activate --path=$sitelocalpath "bmlt-workflow"

@@ -27,6 +27,7 @@ COPY ./wp-install.sh /usr/local/bin/wp-install.sh
 COPY ./wp-install-dbupgrade.sh /usr/local/bin/wp-install-dbupgrade.sh
 COPY ./sync-plugin.sh /usr/local/bin/sync-plugin.sh
 COPY ./import-sql.sh /usr/local/bin/import-sql.sh
+COPY ./import-sql.php /usr/local/bin/import-sql.php
 RUN chmod +x /usr/local/bin/wp
 RUN chmod +x /usr/local/bin/wp-cli.phar
 RUN chmod +x /usr/local/bin/wp-install.sh

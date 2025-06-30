@@ -22,6 +22,7 @@ const execSync = require("child_process").execSync;
 const siteurl_single = "http://wordpress-php8-singlesite"
 const siteurl_multisingle = "http://wordpress-php8-multisitesingle:81/wordpress-php8-multisitesingle";
 const siteurl_multinetwork = "http://wordpress-php8-multinetwork:82/wordpress-php8-multinetwork";
+const siteurl_dbupgrade = "http://wordpress-php8-dbupgrade:83";
 
 const username_single = 'admin';
 const password_single = 'admin';
@@ -93,6 +94,12 @@ module.exports = {
     admin_backup_json_multinetwork: siteurl_multinetwork + multisite_plugin + backuppath,
     admin_restore_json_multinetwork_plugin: siteurl_multinetwork + multisite_plugin + admin_restore_json_path,
     admin_restore_json_multinetwork_plugin2: siteurl_multinetwork + multisite_plugin2 + admin_restore_json_path,
+
+    // dbupgrade
+    dbupgrade_bounce_sql: siteurl_dbupgrade + '/import-sql.php',
+    dbupgrade_formpage: siteurl_dbupgrade + '/index.php' + formpage,
+    admin_logon_page_dbupgrade: siteurl_dbupgrade + admin_logon_page,
+    admin_submissions_page_dbupgrade: siteurl_dbupgrade + admin_submissions_page,
 
     waitfor: "sh docker/wait-for.sh",
     bmlt2x_login_page: "http://localhost:8000/main_server/index.php",
