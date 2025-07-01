@@ -208,8 +208,8 @@ jQuery(document).ready(function ($) {
 
     if ('duration' in changes_requested) {
       const durationarr = changes_requested.duration.split(':');
-      // hoping we got hours, minutes and seconds here
-      if (durationarr.length === 3) {
+      // hoping we got hours, minutes here
+      if (durationarr.length === 2) {
         changes_requested.duration_hours = durationarr[0];
         changes_requested.duration_minutes = durationarr[1];
         delete changes_requested.duration;
@@ -332,9 +332,9 @@ jQuery(document).ready(function ($) {
           }
         });
         if (item.published === true) {
-          $('#quickedit_published').val('true');
+          $('#quickedit_published').val('1');
         } else {
-          $('#quickedit_published').val('false');
+          $('#quickedit_published').val('0');
         }
         add_highlighted_changes_to_quickedit(bmltwf_changedata[change_id].changes_requested);
 
@@ -742,7 +742,7 @@ jQuery(document).ready(function ($) {
           break;
         }
         case 'virtualna_published': {
-          const published = c[key] === '1' ? 'Yes' : 'No';
+          const published = c[key] === 1 ? 'Yes' : 'No';
           if ('original_virtualna_published' in c) {
             const opublished = c.original_published === 1 || c.original_published === true ? 'Yes' : 'No';
             table += column(col_meeting_details, __('Virtual.na.org Published', 'bmlt-workflow'), `${opublished} → ${published}`);
@@ -826,8 +826,8 @@ jQuery(document).ready(function ($) {
           const friendlyname = __('Meeting Formats', 'bmlt-workflow');
           // convert the meeting formats to human readable
           let friendlydata = '';
-          const strarr = d.changes_requested.formatIds.split(',');
-          strarr.forEach((element) => {
+          // const strarr = d.changes_requested.formatIds.split(',');
+          d.changes_requested.formatIds.forEach((element) => {
             friendlydata += `(${bmltwf_bmlt_formats[element].key_string})-${bmltwf_bmlt_formats[element].name_string} `;
           });
           table += column(col_meeting_details, friendlyname, friendlydata);

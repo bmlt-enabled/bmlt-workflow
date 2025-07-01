@@ -129,8 +129,8 @@ class BMLTWF_Database
 
             $sql = "CREATE TABLE " . $this->bmltwf_submissions_table_name . " (
             change_id bigint(20) NOT NULL AUTO_INCREMENT,
-            submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
-            change_time datetime DEFAULT '0000-00-00 00:00:00',
+            submission_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            change_time datetime NULL DEFAULT NULL,
             changed_by varchar(10),
             change_made varchar(10),
             submitter_name tinytext NOT NULL,
@@ -170,7 +170,7 @@ class BMLTWF_Database
                 $wpdb->query($sql);
                 $this->debug_log("renamed service_body_bigint column to serviceBodyId in submissions table");
                 // Rename 'id' column to 'change_id' in submissions table
-                $sql = "ALTER TABLE " . $this->bmltwf_submissions_table_name . " CHANGE COLUMN id change_id bigint(20) unsigned;";
+                $sql = "ALTER TABLE " . $this->bmltwf_submissions_table_name . " CHANGE COLUMN id change_id bigint(20) unsigned NOT NULL AUTO_INCREMENT;";
                 $wpdb->query($sql);
                 $this->debug_log("renamed id column to change_id in submissions table");
                 $sql = "ALTER TABLE " . $this->bmltwf_submissions_table_name . " CHANGE COLUMN meeting_id id bigint(20) unsigned;";

@@ -174,8 +174,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
             </select>
             <label for="quickedit_published"><?php echo __( 'Meeting Published?', 'bmlt-workflow' ); ?></label>
             <select class="quickedit-input" name="quickedit_published" id="quickedit_published">
-                <option value='true'><?php echo __( 'Yes', 'bmlt-workflow' ); ?></option>
-                <option value='false'><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
+                <option value="1"><?php echo __( 'Yes', 'bmlt-workflow' ); ?></option>
+                <option value="0"><?php echo __( 'No', 'bmlt-workflow' ); ?></option>
             </select>
             <div id='optional_virtualna_published'>
                 <label for="quickedit_virtualna_published"><?php echo __( 'Publish on virtual.na.org?', 'bmlt-workflow' ); ?></label>

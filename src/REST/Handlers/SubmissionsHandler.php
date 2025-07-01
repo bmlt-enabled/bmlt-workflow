@@ -865,7 +865,7 @@ class SubmissionsHandler
             "phone_meeting_number" => array("text", false),
             "virtual_meeting_link" => array("url", false),
             "published" => array("boolnum", $reason_change_bool),
-            "virtualna_published" => array("boolnum", $reason_change_bool && $virtual_meeting_bool)
+            "virtualna_published" => array("boolnum", ($reason_change_bool||$reason_new_bool) && $virtual_meeting_bool)
         );
 
         $sanitised_fields = array();
@@ -1041,6 +1041,7 @@ class SubmissionsHandler
                     "virtual_meeting_link",
                     "starter_kit_required",
                     "starter_kit_postal_address",
+                    "virtualna_published",
                     "venueType"
                 );
 
@@ -1108,54 +1109,6 @@ class SubmissionsHandler
                 $this->debug_log("Sanitised fields");
                 $this->debug_log($sanitised_fields);
 
-                // if the user submitted something different to what is in bmlt, save it in changes
-                // foreach ($allowed_fields as $field) {
-
-                //     $bmlt_field = $bmlt_meeting[$field] ?? false;
-                //     $this->debug_log("Checking ". $field);
-
-                //     // if the field is blank in bmlt, but they submitted a change, add it to the list
-                //     if (!$bmlt_field && array_key_exists($field, $sanitised_fields) && !empty($sanitised_fields[$field])) {
-                //         $submission[$field] = $sanitised_fields[$field];
-                //         $submission_count++;
-
-                //     }
-                //     // if the field is in bmlt and its different to the submitted item, add it to the list
-                //     else {
-                //         if ($bmlt_field) {
-                //             // if the field they submitted is not blank, check whats submitted is different to the bmlt field
-                //             if (array_key_exists($field, $sanitised_fields)) {
-                //                 if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
-                //                     // don't allow someone to modify a meeting service body
-                //                     if ($field === 'serviceBodyId') {
-                //                         return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
-                //                     }
-                //                     $submission[$field] = $sanitised_fields[$field];
-                //                     $submission_count++;
-                //                 }
-                //             }
-                //             else
-                //             // if they made the field entirely blank then it implies its different from the bmlt field
-                //             {
-                //                 // don't allow someone to modify a meeting service body
-                //                 if ($field === 'serviceBodyId') {
-                //                     return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
-                //                 }
-                //                 $submission[$field] = "";
-                //                 $submission_count++;
-                //             }
-                //         }
-                //     }
-                //     $this->debug_log("going to add original " . $field . " for ".$bmlt_field );
-                //     $this->debug_log("empty(".$bmlt_field.") = ". empty($bmlt_field));
-                //     // store away the original meeting details so we know what changed
-                //     if (!empty($bmlt_field))
-                //     {
-                //         $original_name = "original_".$field;
-                //         $submission[$original_name] = $bmlt_field;    
-                //     }
-                // }
-
                 // Compare submitted fields with BMLT data and track changes
                 foreach ($allowed_fields as $field) {
                     $bmlt_field = $bmlt_meeting[$field] ?? false;
@@ -1179,12 +1132,6 @@ class SubmissionsHandler
                         if ($field === 'serviceBodyId') {
                             return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
                         }
-                        // $this->debug_log("Case 2 adding " . $field);
-                        // $this->debug_log("Type of bmlt_field: " . gettype($bmlt_field));
-                        // $this->debug_log("bmlt_field: " . $bmlt_field);
-                        // $this->debug_log("Type of submitted_value: " . gettype($submitted_value));
-                        // $this->debug_log("submitted_value: " . $submitted_value);
-
                         $submission[$field] = $submitted_value;
                         $submission_count++;
                     }

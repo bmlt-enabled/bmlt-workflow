@@ -50,7 +50,6 @@ test("DbUpgrade_Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
   };
 
   await t.navigateTo(userVariables.dbupgrade_formpage);
-
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 // await t.debug();
   // check our divs are visible
@@ -146,7 +145,7 @@ test("DbUpgrade_Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
     .click(uf.submit)
     .expect(uf.success_page_header.innerText)
     .match(/submission\ successful/);
-
+    await t.debug();
   // switch to admin page
   await t.useRole(bmltwf_dbupgrade_admin).navigateTo(userVariables.admin_submissions_page_dbupgrade);
 

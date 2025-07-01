@@ -507,7 +507,7 @@ jQuery(document).ready(function ($) {
         const mdata = JSON.parse(response.message);
         create_meeting_searcher(mdata);
         if (id) {
-          const jump_to = mdata.findIndex((el) => el.id === parseInt(id,10));
+          const jump_to = mdata.findIndex((el) => el.id === parseInt(id, 10));
           $('#update_reason').val('reason_change').trigger('change');
           $('#meeting-searcher').val(jump_to).trigger('change').trigger({
             type: 'select2:select',
@@ -525,7 +525,6 @@ jQuery(document).ready(function ($) {
   }
 
   Object.keys(bmltwf_service_bodies).forEach((item) => {
-    // console.log(response);
     const serviceBodyId = item;
     const service_body_name = bmltwf_service_bodies[item].name;
     const opt = new Option(service_body_name, serviceBodyId, false, false);
