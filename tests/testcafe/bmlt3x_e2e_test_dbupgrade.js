@@ -145,6 +145,8 @@ test("DbUpgrade_Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
     .click(uf.submit)
     .expect(uf.success_page_header.innerText)
     .match(/submission\ successful/);
+
+  await t.debug();
   // switch to admin page
   await t.useRole(bmltwf_dbupgrade_admin).navigateTo(userVariables.admin_submissions_page_dbupgrade);
 

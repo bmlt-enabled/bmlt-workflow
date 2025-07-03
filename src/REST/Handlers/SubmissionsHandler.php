@@ -456,6 +456,11 @@ class SubmissionsHandler
                 $change['published'] = 1;
 
                 $response = $this->bmlt_integration->createMeeting($change);
+                $this->debug_log("CreateMeeting Response");
+                $this->debug_log(($response));
+                if (is_wp_error($response)) {
+                    return $this->bmltwf_rest_error(__('Error adding meeting','bmlt-workflow'), 422);
+                }
 
                 break;
             case 'reason_change':
@@ -845,12 +850,12 @@ class SubmissionsHandler
             "location_street" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_info" => array("text", false),
             "location_municipality" => array("text", $reason_new_bool),
-            "day" => array("day", $reason_new_bool),
-            "serviceBodyId" => array("bigint", $reason_new_bool),
+            "day" => array("number", $reason_new_bool),
+            "serviceBodyId" => array("number", $reason_new_bool),
             "email_address" => array("email", true),
             "contact_number" => array("text", false),
             // optional #93
-            "formatIds" => array("object",  $reason_new_bool && $require_meeting_formats),
+            "formatIds" => array("intarray", $reason_new_bool && $require_meeting_formats),
             "additional_info" => array("textarea", $reason_close_bool),
             "starter_kit_postal_address" => array("textarea", false),
             "starter_kit_required" => array("text", $reason_new_bool && $fso_feature),
@@ -923,12 +928,7 @@ class SubmissionsHandler
                     case ('text'):
                         $data[$field] = sanitize_text_field($data[$field]);
                         break;
-                    case ('yesno'):
-                        if (($data[$field] !== 'yes') && ($data[$field] !== 'no')) {
-                            return $this->invalid_form_field($field);
-                        }
-                        break;
-                    case ('object'):
+                    case ('intarray'):
                         if (!is_array($data[$field])) {
                             return $this->invalid_form_field($field);
                         }
@@ -936,6 +936,12 @@ class SubmissionsHandler
                             if (!is_numeric($item)) {
                                 return $this->invalid_form_field($field);
                             }
+                            $data[$field][$key] = intval($item);
+                        }
+                        break;
+                    case ('yesno'):
+                        if (($data[$field] !== 'yes') && ($data[$field] !== 'no')) {
+                            return $this->invalid_form_field($field);
                         }
                         break;
                     case ('boolnum'):
