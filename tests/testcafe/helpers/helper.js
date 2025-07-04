@@ -253,7 +253,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
 
   await t.useRole(role).navigateTo(settings_page);
   const nonce = await Selector("#_wprestnonce").value;
-  await t.debug();
+  // await t.debug();
   const resp = await t.request(restore_json, {
     method: "POST",
     body: restorebody,

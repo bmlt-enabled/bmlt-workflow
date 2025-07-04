@@ -914,13 +914,20 @@ class Integration
         $this->debug_bmlt_payload($url, 'POST', $meeting);
 
         $response = \wp_remote_post($url, $this->set_args(null, $meeting, array("Authorization" => "Bearer " . $this->v3_access_token)));
-        // $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
-        // $this->debug_log(\wp_remote_retrieve_body($response));
+        $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
+        $this->debug_log(\wp_remote_retrieve_body($response));
+        $this->debug_log("response message");
+        $this->debug_log(\wp_remote_retrieve_response_message($response));
+        $this->debug_log("entire response");
+        $this->debug_log($response);
+
+        $body = \wp_remote_retrieve_body($response);
+        $json_data = json_decode($body, true);
+        $error_message = isset($json_data['message']) ? $json_data['message'] : \wp_remote_retrieve_response_message($response);
 
         if (\wp_remote_retrieve_response_code($response) != 201) {
-            return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
+            return new \WP_Error('bmltwf', $error_message);
         }
-
         return true;
     }
 

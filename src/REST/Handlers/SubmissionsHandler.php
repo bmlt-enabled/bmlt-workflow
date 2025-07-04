@@ -425,6 +425,11 @@ class SubmissionsHandler
 
                 $response = $this->bmlt_integration->createMeeting($change);
 
+                if (is_wp_error($response)) {
+                    $error_message = $response->get_error_message();
+                    return $this->bmltwf_rest_error(__('Error creating meeting','bmlt-workflow') . ': ' . $error_message, 422);
+                }
+
                 break;
             case 'reason_change':
                 // needs an id_bigint not a meeting_id
@@ -515,31 +520,31 @@ class SubmissionsHandler
                     $change["virtual_meeting_link"]="";
                 }
 
-                if(array_key_exists('worldid_mixed',$bmlt_meeting) && array_key_exists('virtualna_published', $change))
-                {
-                    $this->debug_log("virtualna_published = ".$change['virtualna_published']);
+                // if(array_key_exists('worldid_mixed',$bmlt_meeting) && array_key_exists('virtualna_published', $change))
+                // {
+                //     $this->debug_log("virtualna_published = ".$change['virtualna_published']);
 
-                    $orig_worldid = $bmlt_meeting['worldid_mixed'];
-                    $this->debug_log("original worldid = ".$orig_worldid);
+                //     $orig_worldid = $bmlt_meeting['worldid_mixed'];
+                //     $this->debug_log("original worldid = ".$orig_worldid);
 
-                    if($change["virtualna_published"] === 1)
-                    {
-                        $change["worldid_mixed"] = substr_replace($orig_worldid, 'G', 0, 1);
-                        unset($change["virtualna_published"]);
-                    }
-                    else
-                    {
-                        $change["worldid_mixed"] = substr_replace($orig_worldid, 'U', 0, 1);
-                        unset($change["virtualna_published"]);
-                    }
-                    $this->debug_log("new worldid = ".$change["worldid_mixed"]);
+                //     if($change["virtualna_published"] === 1)
+                //     {
+                //         $change["worldid_mixed"] = substr_replace($orig_worldid, 'G', 0, 1);
+                //         unset($change["virtualna_published"]);
+                //     }
+                //     else
+                //     {
+                //         $change["worldid_mixed"] = substr_replace($orig_worldid, 'U', 0, 1);
+                //         unset($change["virtualna_published"]);
+                //     }
+                //     $this->debug_log("new worldid = ".$change["worldid_mixed"]);
 
-                }
+                // }
 
                 $response = $this->bmlt_integration->updateMeeting($change);
-
-                if (\is_wp_error(($response))) {
-                    return $response;
+                if (is_wp_error($response)) {
+                    $error_message = $response->get_error_message();
+                    return $this->bmltwf_rest_error(__('Error updating meeting','bmlt-workflow') . ': ' . $error_message, 422);
                 }
 
                 break;
@@ -559,11 +564,12 @@ class SubmissionsHandler
                     // unpublish by default
                     $change['published'] = 0;
                     $change['id_bigint'] = $result['meeting_id'];
-                    $resp = $this->bmlt_integration->updateMeeting($change);
-
-                    if (\is_wp_error(($resp))) {
-                        return $resp;
+                    $response = $this->bmlt_integration->updateMeeting($change);
+                    if (is_wp_error($response)) {
+                        $error_message = $response->get_error_message();
+                        return $this->bmltwf_rest_error(__('Error updating meeting','bmlt-workflow') . ': ' . $error_message, 422);
                     }
+
                 }
 
                 break;
