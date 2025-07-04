@@ -453,7 +453,7 @@ class SubmissionsHandler
                         $change['longitude'] = $latlng['longitude'];
                     }
                 }
-                $change['published'] = 1;
+                $change['published'] = true;
 
                 $response = $this->bmlt_integration->createMeeting($change);
                 $this->debug_log("CreateMeeting Response");
@@ -580,7 +580,7 @@ class SubmissionsHandler
                     }
                 } else {
                     // unpublish by default
-                    $change['published'] = 0;
+                    $change['published'] = false;
                     $change['id'] = $result['id'];
                     $resp = $this->bmlt_integration->updateMeeting($change);
 
@@ -1059,7 +1059,7 @@ class SubmissionsHandler
                     }
                 }
                 // always mark our submission as published for a new meeting
-                $submission['published'] = 1;
+                $submission['published'] = true;
 
                 break;
             case ('reason_change'):

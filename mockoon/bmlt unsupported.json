@@ -1,6 +1,6 @@
 {
   "uuid": "bf755f2b-eda7-4c30-b133-5421d5780e3e",
-  "lastMigration": 28,
+  "lastMigration": 33,
   "name": "Bmlt unsupported",
   "endpointPrefix": "",
   "latency": 0,
@@ -43,12 +43,14 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null,
-      "type": "http"
+      "type": "http",
+      "streamingMode": null,
+      "streamingInterval": 0
     },
     {
       "uuid": "50b14503-7ad4-41dc-94f1-5a73c17431ac",
@@ -100,7 +102,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "f61db6af-1aed-41b7-ac44-4fab575e7ec6",
@@ -138,7 +141,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "2e4e11f7-0647-40b0-afb4-19128fc0d4d5",
@@ -171,7 +175,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "492b7494-d03c-45fb-a00b-a7166169b634",
@@ -204,7 +209,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "d343cef0-ad68-4452-8644-d7de597762e0",
@@ -237,7 +243,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "d46f7265-bd41-4399-8fa6-9e15bcde2250",
@@ -270,12 +277,14 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null,
-      "type": "http"
+      "type": "http",
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -319,5 +328,6 @@
       "value": ""
     }
   ],
-  "data": []
+  "data": [],
+  "callbacks": []
 }
