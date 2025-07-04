@@ -424,8 +424,6 @@ class SubmissionsHandler
                 $change['published'] = 1;
 
                 $response = $this->bmlt_integration->createMeeting($change);
-                $this->debug_log("changemeeting response");
-                $this->debug_log($response);
 
                 if (is_wp_error($response)) {
                     $error_message = $response->get_error_message();
@@ -544,9 +542,9 @@ class SubmissionsHandler
                 // }
 
                 $response = $this->bmlt_integration->updateMeeting($change);
-
-                if (\is_wp_error(($response))) {
-                    return $response;
+                if (is_wp_error($response)) {
+                    $error_message = $response->get_error_message();
+                    return $this->bmltwf_rest_error(__('Error updating meeting','bmlt-workflow') . ': ' . $error_message, 422);
                 }
 
                 break;
@@ -566,11 +564,12 @@ class SubmissionsHandler
                     // unpublish by default
                     $change['published'] = 0;
                     $change['id_bigint'] = $result['meeting_id'];
-                    $resp = $this->bmlt_integration->updateMeeting($change);
-
-                    if (\is_wp_error(($resp))) {
-                        return $resp;
+                    $response = $this->bmlt_integration->updateMeeting($change);
+                    if (is_wp_error($response)) {
+                        $error_message = $response->get_error_message();
+                        return $this->bmltwf_rest_error(__('Error updating meeting','bmlt-workflow') . ': ' . $error_message, 422);
                     }
+
                 }
 
                 break;

@@ -1,5 +1,6 @@
 ## 1.1.18 (Jul 4, 2025)
 - Disables virtualna_publish handling temporarily (thanks @adamH !)
+- Adds correct error handling to meeting approvals
 
 ## 1.1.17 (Oct 14, 2024)
 - Fixes contact phone number format limitation on end user form (thanks @adamH !)
