@@ -424,6 +424,13 @@ class SubmissionsHandler
                 $change['published'] = 1;
 
                 $response = $this->bmlt_integration->createMeeting($change);
+                $this->debug_log("changemeeting response");
+                $this->debug_log($response);
+
+                if (is_wp_error($response)) {
+                    $error_message = $response->get_error_message();
+                    return $this->bmltwf_rest_error(__('Error creating meeting','bmlt-workflow') . ': ' . $error_message, 422);
+                }
 
                 break;
             case 'reason_change':
