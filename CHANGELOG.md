@@ -1,3 +1,6 @@
+## 1.1.19 (Jul 4, 2025)
+- Broken github workflows
+
 ## 1.1.18 (Jul 4, 2025)
 - Disables virtualna_publish handling temporarily (thanks @adamH !)
 - Adds correct error handling to meeting approvals
