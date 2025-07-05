@@ -158,7 +158,32 @@ class BMLTWF_Database
             $this->upgradeJsonFields();
         }
 
+        
         return 2;
+    }
+    private function fixDateTimeColumns()
+    {
+        global $wpdb;
+        
+        // Temporarily disable strict mode
+        $wpdb->query("SET sql_mode = ''");
+        
+        // Fix invalid datetime values
+        $wpdb->query("UPDATE " . $this->bmltwf_submissions_table_name . " SET submission_time = '1970-01-01 00:00:01' WHERE submission_time = '0000-00-00 00:00:00'");
+        $wpdb->query("UPDATE " . $this->bmltwf_submissions_table_name . " SET change_time = NULL WHERE change_time = '0000-00-00 00:00:00'");
+        
+        // Re-enable strict mode
+        $wpdb->query("SET sql_mode = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION'");
+        
+        // Fix datetime columns and auto-increment
+        $sql = "ALTER TABLE " . $this->bmltwf_submissions_table_name . " 
+                MODIFY COLUMN submission_time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                MODIFY COLUMN change_time datetime NULL DEFAULT NULL,
+                MODIFY COLUMN change_id bigint(20) NOT NULL AUTO_INCREMENT,
+                AUTO_INCREMENT = 1402";
+        $wpdb->query($sql);
+        
+        $this->debug_log("datetime columns and auto-increment fixed");
     }
 
     private function upgradeTableStructure()
@@ -176,7 +201,9 @@ class BMLTWF_Database
         foreach ($alterQueries as $sql) {
             $wpdb->query($sql);
         }
-        
+
+        $this->fixDateTimeColumns();
+
         $this->debug_log("table structure upgraded");
     }
 
@@ -234,17 +261,17 @@ class BMLTWF_Database
             
             // Convert format fields to arrays
             if (isset($json_data['format_shared_id_list']) && is_string($json_data['format_shared_id_list'])) {
-                $json_data['formatIds'] = explode(',', $json_data['format_shared_id_list']);
+                $json_data['formatIds'] = array_map('intval', explode(',', $json_data['format_shared_id_list']));
                 unset($json_data['format_shared_id_list']);
                 $updated = true;
             }
-            
+
             if (isset($json_data['original_format_shared_id_list']) && is_string($json_data['original_format_shared_id_list'])) {
-                $json_data['original_formatIds'] = explode(',', $json_data['original_format_shared_id_list']);
+                $json_data['original_formatIds'] = array_map('intval', explode(',', $json_data['original_format_shared_id_list']));
                 unset($json_data['original_format_shared_id_list']);
                 $updated = true;
             }
-            
+
             // Convert time fields to HH:MM
             $time_fields = ['original_startTime', 'original_duration', 'duration', 'startTime'];
             foreach ($time_fields as $field) {

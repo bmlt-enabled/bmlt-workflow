@@ -549,7 +549,7 @@ jQuery(document).ready(function ($) {
         name: 'change_time',
         data: 'change_time',
         render(data) {
-          if (data === '0000-00-00 00:00:00') {
+          if ((data === '0000-00-00 00:00:00') || (data === null)) {
             return '(no change made)';
           }
           return mysql2localdate(data);

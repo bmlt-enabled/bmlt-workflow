@@ -456,10 +456,9 @@ class SubmissionsHandler
                 $change['published'] = true;
 
                 $response = $this->bmlt_integration->createMeeting($change);
-                $this->debug_log("CreateMeeting Response");
-                $this->debug_log(($response));
                 if (is_wp_error($response)) {
-                    return $this->bmltwf_rest_error(__('Error adding meeting','bmlt-workflow'), 422);
+                    $error_message = $response->get_error_message();
+                    return $this->bmltwf_rest_error(__('Error creating meeting','bmlt-workflow') . ': ' . $error_message, 422);
                 }
 
                 break;
@@ -561,8 +560,9 @@ class SubmissionsHandler
 
                 $response = $this->bmlt_integration->updateMeeting($change);
 
-                if (\is_wp_error(($response))) {
-                    return $response;
+                if (is_wp_error($response)) {
+                    $error_message = $response->get_error_message();
+                    return $this->bmltwf_rest_error(__('Error updating meeting','bmlt-workflow') . ': ' . $error_message, 422);
                 }
 
                 break;
@@ -573,19 +573,21 @@ class SubmissionsHandler
                 // are we doing a delete or an unpublish on close?
                 if ((!empty($params['delete'])) && ($params['delete'] == "true")) {
 
-                    $resp = $this->bmlt_integration->deleteMeeting($result['id']);
+                    $response = $this->bmlt_integration->deleteMeeting($result['id']);
 
-                    if (\is_wp_error(($resp))) {
-                        return $resp;
+                    if (is_wp_error($response)) {
+                        $error_message = $response->get_error_message();
+                        return $this->bmltwf_rest_error(__('Error deleting meeting','bmlt-workflow') . ': ' . $error_message, 422);
                     }
                 } else {
                     // unpublish by default
                     $change['published'] = false;
                     $change['id'] = $result['id'];
-                    $resp = $this->bmlt_integration->updateMeeting($change);
+                    $response = $this->bmlt_integration->updateMeeting($change);
 
-                    if (\is_wp_error(($resp))) {
-                        return $resp;
+                    if (is_wp_error($response)) {
+                        $error_message = $response->get_error_message();
+                        return $this->bmltwf_rest_error(__('Error updating meeting','bmlt-workflow') . ': ' . $error_message, 422);
                     }
                 }
 
@@ -624,7 +626,6 @@ class SubmissionsHandler
         if (!empty($message)) {
             $body .= '<br><br>'.__('Message from trusted servant','bmlt-workflow').':<br><br>' . $message;
         }
-
 
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         $this->debug_log("Approval email");
@@ -930,14 +931,16 @@ class SubmissionsHandler
                         break;
                     case ('intarray'):
                         if (!is_array($data[$field])) {
-                            return $this->invalid_form_field($field);
-                        }
-                        foreach ($data[$field] as $item) {
-                            if (!is_numeric($item)) {
                                 return $this->invalid_form_field($field);
                             }
-                            $data[$field][$key] = intval($item);
-                        }
+                            $clean_array = array();
+                            foreach ($data[$field] as $item) {
+                                if (!is_numeric($item)) {
+                                    return $this->invalid_form_field($field);
+                                }
+                                $clean_array[] = intval($item);
+                            }
+                            $data[$field] = $clean_array;
                         break;
                     case ('yesno'):
                         if (($data[$field] !== 'yes') && ($data[$field] !== 'no')) {

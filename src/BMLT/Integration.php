@@ -323,7 +323,17 @@ class Integration
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $change['id'];
 
         $this->debug_bmlt_payload($url, 'PATCH', $change);
-        $response = \wp_remote_request($url, $this->set_args(null, $change, array("Authorization" => "Bearer " . $this->v3_access_token), 'PATCH'));
+        
+        $response = \wp_remote_request($url, array(
+            'method' => 'PATCH',
+            'headers' => array(
+                'Authorization' => 'Bearer ' . $this->v3_access_token,
+                'Content-Type' => 'application/json'
+            ),
+            'body' => json_encode($change),
+            'timeout' => 60
+        ));
+
         $this->debug_log("v3 wp_remote_request returns " . \wp_remote_retrieve_response_code($response));
         $this->debug_log(\wp_remote_retrieve_body($response));
 
@@ -733,7 +743,15 @@ class Integration
 
         $this->debug_bmlt_payload($url, 'POST', $meeting);
 
-        $response = \wp_remote_post($url, $this->set_args(null, $meeting, array("Authorization" => "Bearer " . $this->v3_access_token)));
+        $response = \wp_remote_post($url, array(
+            'headers' => array(
+                'Authorization' => 'Bearer ' . $this->v3_access_token,
+                'Content-Type' => 'application/json'
+            ),
+            'body' => json_encode($meeting),
+            'timeout' => 60
+        ));
+
         $this->debug_log("v3 wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
         $this->debug_log(\wp_remote_retrieve_body($response));
 
@@ -1040,36 +1058,6 @@ class Integration
         return $ret;
     }
 
-    private function postsemantic($url, $postargs, $cookies = null)
-    {
-
-        $newargs = '';
-        foreach ($postargs as $key => $value) {
-            switch ($key) {
-                case ('admin_action'):
-                case ('meeting_id'):
-                case ('flat');
-                case ('lang'):
-                    $newargs .= $key . '=' . $value;
-                    break;
-                default:
-                    $newargs .= "meeting_field[]=" . $key . ',' . $value;
-            }
-            $newargs .= '&';
-        }
-        if ($newargs != '') {
-            // chop trailing &
-            $newargs = substr($newargs, 0, -1);
-            // $this->debug_log("our post body is " . $newargs);
-
-            $this->debug_bmlt_payload($url, 'POST', $newargs);
-
-            $ret = \wp_remote_post($url, $this->set_args($cookies, $newargs));
-            // $this->debug_log(($ret));
-            return $ret;
-        }
-    }
-
     /**
      * postAuthenticatedRootServerRequest
      *
@@ -1107,26 +1095,4 @@ class Integration
         return $val;
     }
 
-    /**
-     * postAuthenticatedRootServerRequestSemantic
-     *
-     * @param  string $url
-     * @param  array $postargs
-     * @return array|\WP_Error
-     */
-    public function postAuthenticatedRootServerRequestSemantic($url, $postargs)
-    {
-
-        $ret =  $this->authenticateRootServer();
-
-        if (is_wp_error($ret)) {
-            return $ret;
-        }
-
-        if (!(is_array($postargs))) {
-            return $this->bmltwf_integration_error("Missing post parameters", "bmltwf_bmlt_integration");
-        }
-
-        return $this->postsemantic(get_option('bmltwf_bmlt_server_address') . $url, $postargs, $this->cookies);
-    }
 }
