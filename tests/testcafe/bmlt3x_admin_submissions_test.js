@@ -55,8 +55,8 @@ test("Approve_New_Meeting", async (t) => {
   // press ok button
   await click_dialog_button_by_index(as.approve_dialog_parent, 1);
   // dialog closes after ok button
-  // await t.debug();
   await t.expect(as.approve_dialog_parent.visible).eql(false);
+  // await t.debug();
 
   var column = 8;
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
@@ -126,6 +126,7 @@ test("Approve_Close_Meeting_With_Delete", async (t) => {
   await click_table_row_column(as.dt_submission, row, 0);
   // approve
   await click_dt_button_by_index(as.dt_submission_wrapper, 0);
+await t.debug();
 
   await t.expect(as.approve_close_dialog_parent.visible).eql(true);
 
@@ -134,7 +135,6 @@ test("Approve_Close_Meeting_With_Delete", async (t) => {
   await click_dialog_button_by_index(as.approve_close_dialog_parent, 1);
   // dialog closes after ok button
   await t.expect(as.approve_close_dialog_parent.visible).eql(false);
-
   var column = 8;
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});

@@ -63,7 +63,7 @@ class BMLTWF_Database
         $installed_version = get_option('bmltwf_db_version');
         
         if ($installed_version === false || $this->checkTablesExist() < 3) {
-            return $this->performFreshInstall();
+            return $this->performFreshInstall($desired_version);
         }
 
         if (version_compare($desired_version, $installed_version, 'eq')) {
@@ -89,61 +89,105 @@ class BMLTWF_Database
         return $count;
     }
 
-    private function performFreshInstall()
+    private function performFreshInstall($version = null)
     {
         global $wpdb;
         
         $this->debug_log("fresh install");
         $charset_collate = $wpdb->get_charset_collate();
         $this->bmltwf_drop_tables();
-        $this->createTables($charset_collate);
+        $this->createTables($charset_collate, $version);
         
         delete_option('bmltwf_db_version');
-        add_option('bmltwf_db_version', $this->bmltwf_db_version);
+        add_option('bmltwf_db_version', $version ?: $this->bmltwf_db_version);
         $this->debug_log("fresh install: db version installed");
         
         return 1;
     }
 
-    private function createTables($charset_collate)
+    public function createTables($charset_collate, $version = null)
     {
         global $wpdb;
         
-        $sql = "CREATE TABLE " . $this->bmltwf_service_bodies_table_name . " (
-            serviceBodyId bigint(20) NOT NULL,
-            service_body_name tinytext NOT NULL,
-            service_body_description text,
-            show_on_form bool,
-            PRIMARY KEY (serviceBodyId)
-        ) $charset_collate;";
-        $wpdb->query($sql);
-
-        $sql = "CREATE TABLE " . $this->bmltwf_service_bodies_access_table_name . " (
-            serviceBodyId bigint(20) NOT NULL,
-            wp_uid bigint(20) unsigned  NOT NULL,
-            FOREIGN KEY (serviceBodyId) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(serviceBodyId) 
-        ) $charset_collate;";
-        $wpdb->query($sql);
-
-        $sql = "CREATE TABLE " . $this->bmltwf_submissions_table_name . " (
-            change_id bigint(20) NOT NULL AUTO_INCREMENT,
-            submission_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
-            change_time datetime NULL DEFAULT NULL,
-            changed_by varchar(10),
-            change_made varchar(10),
-            submitter_name tinytext NOT NULL,
-            submission_type tinytext NOT NULL,
-            submitter_email varchar(320) NOT NULL,
-            id bigint(20) unsigned,
-            serviceBodyId bigint(20) NOT NULL,
-            changes_requested varchar(2048),
-            action_message varchar(1024),
-            PRIMARY KEY (change_id),
-            FOREIGN KEY (serviceBodyId) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(serviceBodyId) 
-        ) $charset_collate;";
-        $wpdb->query($sql);
+        if ($version === null) {
+            $version = $this->bmltwf_db_version;
+        }
         
-        $this->debug_log("fresh install: tables created");
+        $this->bmltwf_drop_tables();
+        
+        if (version_compare($version, '1.1.18', '<')) {
+            // Create tables for version 0.4.0 format
+            $sql = "CREATE TABLE " . $this->bmltwf_service_bodies_table_name . " (
+                service_body_bigint bigint(20) NOT NULL,
+                service_body_name tinytext NOT NULL,
+                service_body_description text,
+                show_on_form bool,
+                PRIMARY KEY (service_body_bigint)
+            ) $charset_collate;";
+            $wpdb->query($sql);
+
+            $sql = "CREATE TABLE " . $this->bmltwf_service_bodies_access_table_name . " (
+                service_body_bigint bigint(20) NOT NULL,
+                wp_uid bigint(20) unsigned  NOT NULL,
+                FOREIGN KEY (service_body_bigint) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(service_body_bigint) 
+            ) $charset_collate;";
+            $wpdb->query($sql);
+
+            $sql = "CREATE TABLE " . $this->bmltwf_submissions_table_name . " (
+                id bigint(20) NOT NULL AUTO_INCREMENT,
+                submission_time datetime DEFAULT '0000-00-00 00:00:00' NOT NULL,
+                change_time datetime DEFAULT '0000-00-00 00:00:00',
+                changed_by varchar(10),
+                change_made varchar(10),
+                submitter_name tinytext NOT NULL,
+                submission_type tinytext NOT NULL,
+                submitter_email varchar(320) NOT NULL,
+                meeting_id bigint(20) unsigned,
+                service_body_bigint bigint(20) NOT NULL,
+                changes_requested varchar(2048),
+                action_message varchar(1024),
+                PRIMARY KEY (id),
+                FOREIGN KEY (service_body_bigint) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(service_body_bigint) 
+            ) $charset_collate;";
+            $wpdb->query($sql);
+        } else {
+            // Create tables for current version format
+            $sql = "CREATE TABLE " . $this->bmltwf_service_bodies_table_name . " (
+                serviceBodyId bigint(20) NOT NULL,
+                service_body_name tinytext NOT NULL,
+                service_body_description text,
+                show_on_form bool,
+                PRIMARY KEY (serviceBodyId)
+            ) $charset_collate;";
+            $wpdb->query($sql);
+
+            $sql = "CREATE TABLE " . $this->bmltwf_service_bodies_access_table_name . " (
+                serviceBodyId bigint(20) NOT NULL,
+                wp_uid bigint(20) unsigned  NOT NULL,
+                FOREIGN KEY (serviceBodyId) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(serviceBodyId) 
+            ) $charset_collate;";
+            $wpdb->query($sql);
+
+            $sql = "CREATE TABLE " . $this->bmltwf_submissions_table_name . " (
+                change_id bigint(20) NOT NULL AUTO_INCREMENT,
+                submission_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                change_time datetime NULL DEFAULT NULL,
+                changed_by varchar(10),
+                change_made varchar(10),
+                submitter_name tinytext NOT NULL,
+                submission_type tinytext NOT NULL,
+                submitter_email varchar(320) NOT NULL,
+                id bigint(20) unsigned,
+                serviceBodyId bigint(20) NOT NULL,
+                changes_requested varchar(2048),
+                action_message varchar(1024),
+                PRIMARY KEY (change_id),
+                FOREIGN KEY (serviceBodyId) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(serviceBodyId) 
+            ) $charset_collate;";
+            $wpdb->query($sql);
+        }
+        
+        $this->debug_log("tables created for version " . $version);
     }
 
     private function performUpgrade($installed_version)

@@ -32,7 +32,7 @@ CREATE TABLE `wp_bmltwf_service_bodies` (
   `service_body_name` tinytext NOT NULL,
   `service_body_description` text DEFAULT NULL,
   `show_on_form` tinyint(1) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 --
 -- Dumping data for table `wp_bmltwf_service_bodies`

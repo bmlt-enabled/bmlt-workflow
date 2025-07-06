@@ -568,9 +568,9 @@ jQuery(document).ready(function ($) {
       },
     },
     messages: {
-      virtual_meeting_link: __('You must provide at least a phone number for a Virtual Meeting, or fill in both the Virtual Meeting link and Virtual Meeting additional information'),
-      virtual_meeting_additional_info: __('You must provide at least a phone number for a Virtual Meeting, or fill in both the Virtual Meeting link and Virtual Meeting additional information'),
-      phone_meeting_number: __('You must provide at least a phone number for a Virtual Meeting, or fill in both the Virtual Meeting link and Virtual Meeting additional information'),
+      virtual_meeting_link: __('You must provide at least a phone number for a Virtual Meeting, or fill in both the Virtual Meeting link and Virtual Meeting additional information', 'bmlt-workflow'),
+      virtual_meeting_additional_info: __('You must provide at least a phone number for a Virtual Meeting, or fill in both the Virtual Meeting link and Virtual Meeting additional information', 'bmlt-workflow'),
+      phone_meeting_number: __('You must provide at least a phone number for a Virtual Meeting, or fill in both the Virtual Meeting link and Virtual Meeting additional information', 'bmlt-workflow'),
     },
     submitHandler() {
       real_submit_handler();

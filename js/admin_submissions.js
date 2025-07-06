@@ -286,7 +286,7 @@ jQuery(document).ready(function ($) {
 
     // zip and county are disabled if the option is set
 
-    const autocompleted = ` (${__('autocompleted')})`;
+    const autocompleted = ` (${__('autocompleted', 'bmlt-workflow')})`;
     if (bmltwf_zip_auto_geocoding) {
       $('#quickedit_location_postal_code_1').prop('disabled', true);
       $('#quickedit_location_postal_code_1_label').append(autocompleted);

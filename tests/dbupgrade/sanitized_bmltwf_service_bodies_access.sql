@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `wp_bmltwf_service_bodies_access` (
   `service_body_bigint` bigint(20) NOT NULL,
   `wp_uid` bigint(20) UNSIGNED NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_520_ci;
 
 --
 -- Dumping data for table `wp_bmltwf_service_bodies_access`

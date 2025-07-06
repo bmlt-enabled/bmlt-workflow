@@ -86,7 +86,7 @@ test("Backup", async (t) => {
   // console.log(backup);
   await t.expect(f.message).eql("Backup Successful");
 
-  await t.expect(backup.options.bmltwf_db_version).eql("0.4.0");
+  await t.expect(backup.options.bmltwf_db_version).eql("1.1.8");
   // find a specific meeting
   let obj = backup.submissions.find((o) => o.change_id === "94");
   // console.log(obj);

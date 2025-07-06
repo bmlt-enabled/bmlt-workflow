@@ -30,3 +30,17 @@ MODIFY COLUMN change_time datetime NULL DEFAULT NULL,
 MODIFY COLUMN change_id bigint(20) NOT NULL AUTO_INCREMENT,
 AUTO_INCREMENT = 1402;
 "
+
+mysql -h$WORDPRESS_DB_HOST -u$WORDPRESS_DB_USER -p$WORDPRESS_DB_PASSWORD $WORDPRESS_DB_NAME -e "
+ALTER TABLE wp_bmltwf_submissions 
+ADD CONSTRAINT fk_submissions_servicebody 
+FOREIGN KEY (serviceBodyId) 
+REFERENCES wp_bmltwf_service_bodies(serviceBodyId);
+"
+
+mysql -h$WORDPRESS_DB_HOST -u$WORDPRESS_DB_USER -p$WORDPRESS_DB_PASSWORD $WORDPRESS_DB_NAME -e "
+ALTER TABLE wp_bmltwf_service_bodies_access
+ADD CONSTRAINT fk_submissions_access_servicebody 
+FOREIGN KEY (serviceBodyId) 
+REFERENCES wp_bmltwf_service_bodies(serviceBodyId);
+"

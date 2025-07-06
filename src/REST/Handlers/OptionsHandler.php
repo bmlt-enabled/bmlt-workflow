@@ -80,6 +80,12 @@ class OptionsHandler
             }
         }
 
+        // Drop and recreate tables for the backup database version
+        $this->BMLTWF_Database->bmltwf_drop_tables();
+        $backup_version = $params['options']['bmltwf_db_version'];
+        $charset_collate = $wpdb->get_charset_collate();
+        $this->BMLTWF_Database->createTables($charset_collate, $backup_version);
+
         // restore all the tables
 
         // service bodies table

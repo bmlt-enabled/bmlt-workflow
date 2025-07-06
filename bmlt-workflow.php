@@ -86,13 +86,27 @@ if (!class_exists('bmltwf_plugin')) {
             add_shortcode('bmltwf-meeting-update-form', array(&$this, 'bmltwf_meeting_update_form'));
             add_filter('plugin_action_links', array(&$this, 'bmltwf_add_plugin_link'), 10, 2);
             add_action('user_register', array(&$this, 'bmltwf_add_capability'), 10, 1);
-            add_action('init', array(&$this, 'bmltwf_load_textdomain'));
             register_activation_hook(__FILE__, array(&$this, 'bmltwf_install'));
         }
 
         public function bmltwf_load_textdomain()
         {
-            load_plugin_textdomain('bmlt-workflow', false, dirname(plugin_basename(__FILE__)) . '/lang');
+            $domain = 'bmlt-workflow';
+            $locale = get_locale();
+            $mofile = dirname(plugin_basename(__FILE__)) . '/lang/' . $domain . '-' . $locale . '.mo';
+            $path = plugin_dir_path(__FILE__) . 'lang/' . $domain . '-' . $locale . '.mo';
+            
+            // Debug output
+            error_log("BMLTWF Debug - Locale: " . $locale);
+            error_log("BMLTWF Debug - MO file path: " . $path);
+            error_log("BMLTWF Debug - MO file exists: " . (file_exists($path) ? 'YES' : 'NO'));
+            
+            $result = load_plugin_textdomain($domain, false, dirname(plugin_basename(__FILE__)) . '/lang');
+            error_log("BMLTWF Debug - load_plugin_textdomain result: " . ($result ? 'SUCCESS' : 'FAILED'));
+            
+            // Test translation
+            $test = __('New Meeting', $domain);
+            error_log("BMLTWF Debug - Translation test: " . $test);
         }
 
         public function bmltwf_meeting_update_form($atts = [], $content = null, $tag = '')
@@ -1415,6 +1429,6 @@ if (!class_exists('bmltwf_plugin')) {
             }
         }
     }
-
+    load_plugin_textdomain('bmlt-workflow', false, dirname(plugin_basename(__FILE__)) . '/lang');
     $start_plugin = new bmltwf_plugin();
 }
