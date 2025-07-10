@@ -1,0 +1,180 @@
+{
+  "rules": [
+    {
+      "name": "BMLT Workflow Development",
+      "description": "Core development tasks for the BMLT Workflow WordPress plugin",
+      "prompts": [
+        "Help me understand the BMLT Workflow plugin architecture and codebase structure",
+        "Explain how the plugin integrates with BMLT (Basic Meeting List Toolbox)",
+        "Show me how to add new features to the meeting update form",
+        "Help me debug issues with the REST API endpoints",
+        "Explain the WordPress admin interface and settings pages",
+        "Show me how to add new service body functionality",
+        "Help me understand the database schema and migrations",
+        "Explain how the plugin handles user permissions and capabilities",
+        "Show me how to add new form fields to the meeting submission form",
+        "Help me understand the geocoding and Google Maps integration"
+      ]
+    },
+    {
+      "name": "Version Management & GitHub Releases",
+      "description": "Managing plugin versions, changelog updates, and GitHub Actions release process",
+      "prompts": [
+        "Help me increment the plugin version from 1.1.19 to the next version",
+        "Update the CHANGELOG.md with a new release entry",
+        "Update version numbers in bmlt-workflow.php, readme.txt, and other files",
+        "Create a new feature branch using the support scripts",
+        "Help me prepare for a GitHub release by updating all version references",
+        "Show me how to create a git tag to trigger GitHub Actions release",
+        "Update the WordPress plugin header version information",
+        "Help me merge a feature branch into main for release",
+        "Show me how to handle version conflicts during release preparation",
+        "Explain the GitHub Actions release workflow and process"
+      ]
+    },
+    {
+      "name": "GitHub Issues & Bug Fixes",
+      "description": "Working with GitHub tickets, bug reports, and feature requests",
+      "prompts": [
+        "Help me create a new branch for GitHub issue #XXX",
+        "Show me how to implement a bug fix based on a GitHub issue description",
+        "Help me write commit messages that reference GitHub issues",
+        "Create a pull request description for a bug fix",
+        "Help me test a fix for a reported issue",
+        "Show me how to reproduce a bug from a GitHub issue",
+        "Help me implement a feature request from GitHub",
+        "Create documentation updates for a new feature",
+        "Help me write release notes for a bug fix",
+        "Show me how to validate a fix against the original issue"
+      ]
+    },
+    {
+      "name": "Testing & Quality Assurance",
+      "description": "PHPUnit tests, TestCafe E2E tests, and quality assurance processes",
+      "prompts": [
+        "Help me write PHPUnit tests for new functionality",
+        "Show me how to run the existing test suite",
+        "Help me debug failing PHPUnit tests",
+        "Create TestCafe E2E tests for new features",
+        "Help me understand the Mockoon mock server setup",
+        "Show me how to add test cases for BMLT integration",
+        "Help me fix test failures in the CI/CD pipeline",
+        "Create test data for new form fields",
+        "Help me understand the Docker testing environment",
+        "Show me how to run tests for different BMLT versions"
+      ]
+    },
+    {
+      "name": "GitHub Actions & CI/CD",
+      "description": "GitHub Actions workflows, continuous integration, and deployment processes",
+      "prompts": [
+        "Explain the GitHub Actions release workflow",
+        "Help me understand the pull request CI process",
+        "Show me how to debug GitHub Actions failures",
+        "Help me modify the release workflow for new requirements",
+        "Explain how the WordPress.org deployment works",
+        "Show me how to add new GitHub Actions jobs",
+        "Help me understand the Slack notifications in workflows",
+        "Show me how to test GitHub Actions locally",
+        "Help me optimize the CI/CD pipeline",
+        "Explain the difference between beta and stable releases"
+      ]
+    },
+    {
+      "name": "WordPress Plugin Development",
+      "description": "WordPress-specific development tasks and best practices",
+      "prompts": [
+        "Help me add new WordPress admin menu pages",
+        "Show me how to register new REST API endpoints",
+        "Help me create WordPress shortcodes",
+        "Show me how to handle WordPress plugin activation/deactivation",
+        "Help me add new WordPress settings and options",
+        "Show me how to enqueue scripts and styles properly",
+        "Help me understand WordPress hooks and filters",
+        "Show me how to add new user capabilities",
+        "Help me create WordPress AJAX handlers",
+        "Show me how to handle WordPress multisite functionality"
+      ]
+    },
+    {
+      "name": "Internationalization & Localization",
+      "description": "Working with translations, language files, and i18n/l10n",
+      "prompts": [
+        "Help me add new translatable strings to the plugin",
+        "Show me how to update the .pot file",
+        "Help me create new language files for translations",
+        "Show me how to handle pluralization in translations",
+        "Help me update existing translation files",
+        "Show me how to test translations in the plugin",
+        "Help me add JavaScript translations",
+        "Show me how to use the wp i18n make-json command",
+        "Help me understand the translation workflow",
+        "Show me how to add new languages to the plugin"
+      ]
+    },
+    {
+      "name": "BMLT Integration & API",
+      "description": "Working with BMLT server integration and API endpoints",
+      "prompts": [
+        "Help me understand the BMLT API integration",
+        "Show me how to add new BMLT API endpoints",
+        "Help me debug BMLT server connection issues",
+        "Show me how to handle BMLT version differences",
+        "Help me add new meeting format support",
+        "Show me how to work with service body data",
+        "Help me understand the geocoding integration",
+        "Show me how to handle BMLT authentication",
+        "Help me add new BMLT data synchronization",
+        "Show me how to test BMLT integration locally"
+      ]
+    },
+    {
+      "name": "Frontend Development",
+      "description": "JavaScript, CSS, and frontend user interface development",
+      "prompts": [
+        "Help me add new JavaScript functionality to the forms",
+        "Show me how to style new form elements",
+        "Help me debug JavaScript errors in the browser",
+        "Show me how to add new CSS classes and styles",
+        "Help me implement form validation",
+        "Show me how to work with Select2 and DataTables",
+        "Help me add new interactive features",
+        "Show me how to handle AJAX form submissions",
+        "Help me optimize frontend performance",
+        "Show me how to add responsive design elements"
+      ]
+    },
+    {
+      "name": "Database & Data Management",
+      "description": "Database operations, migrations, and data handling",
+      "prompts": [
+        "Help me understand the plugin database schema",
+        "Show me how to add new database tables",
+        "Help me create database migration scripts",
+        "Show me how to handle data backup and restore",
+        "Help me optimize database queries",
+        "Show me how to add new database fields",
+        "Help me understand the submissions data structure",
+        "Show me how to handle data validation",
+        "Help me create database indexes for performance",
+        "Show me how to handle data cleanup and maintenance"
+      ]
+    },
+    {
+      "name": "Documentation & User Support",
+      "description": "Creating documentation, user guides, and support materials",
+      "prompts": [
+        "Help me update the README.md file",
+        "Show me how to write user documentation",
+        "Help me create installation guides",
+        "Show me how to document new features",
+        "Help me write troubleshooting guides",
+        "Show me how to create developer documentation",
+        "Help me update the WordPress plugin description",
+        "Show me how to write changelog entries",
+        "Help me create FAQ sections",
+        "Show me how to document API endpoints"
+      ]
+    }
+  ]
+} 
