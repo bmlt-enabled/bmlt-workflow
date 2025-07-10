@@ -175,6 +175,22 @@
         "Help me create FAQ sections",
         "Show me how to document API endpoints"
       ]
+    },
+    {
+      "name": "GitHub CLI Automation",
+      "description": "Use the GitHub CLI (gh) to automate pull request and issue management for this project.",
+      "prompts": [
+        "Create a pull request for the current branch using gh pr create, with a descriptive title and body.",
+        "Comment on a GitHub issue using gh issue comment <number> --body '<comment>' to update stakeholders.",
+        "Close an issue with gh issue close <number> --comment '<reason>' after merging a PR.",
+        "List open pull requests with gh pr list.",
+        "Check PR status with gh pr status.",
+        "Merge a pull request using gh pr merge <number> --merge.",
+        "Assign reviewers to a PR with gh pr edit <number> --add-reviewer <username>.",
+        "View issue details with gh issue view <number>.",
+        "Reopen an issue with gh issue reopen <number>.",
+        "Label an issue or PR with gh issue edit <number> --add-label <label>."
+      ]
     }
   ]
 } 
