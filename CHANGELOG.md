@@ -1,3 +1,6 @@
+## 1.1.20 (Jul 10, 2025)
+- #193 Fix: Service Body selection in form now displays alphabetically with ID in parentheses (thanks @tempsaint !)
+
 ## 1.1.19 (Jul 4, 2025)
 - Broken github workflows
 

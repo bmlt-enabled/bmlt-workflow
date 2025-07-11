@@ -143,13 +143,21 @@ jQuery(document).ready(function ($) {
           Promise.all(allAJAX).then(function () {
             const sblist = respsblist.responseJSON;
             const userlist = users;
-            Object.keys(sblist).forEach((item) => {
+            
+            // Sort service bodies alphabetically by name
+            const sortedServiceBodies = Object.keys(sblist).sort((a, b) => {
+              const nameA = sblist[a].name.toLowerCase();
+              const nameB = sblist[b].name.toLowerCase();
+              return nameA.localeCompare(nameB);
+            });
+            
+            sortedServiceBodies.forEach((item) => {
               const id = `bmltwf_userlist_id_${item}`;
               const cbid = `bmltwf_userlist_checkbox_id_${item}`;
               const checked = sblist[item].show_on_form ? 'checked' : '';
               let appendstr = '<tr>';
 
-              appendstr += `<td>${sblist[item].name}</td>`;
+              appendstr += `<td>${sblist[item].name} (${item})</td>`;
               appendstr += `<td><div class="grow-wrap"><textarea onInput="this.parentNode.dataset.replicatedValue = this.value" disabled>${sblist[item].description}</textarea></div></td>`;
               appendstr += `<td><select class="bmltwf-userlist" id="${id}" style="width: auto"></select></td>`;
               appendstr += `<td class="bmltwf-center-checkbox"><input type="checkbox" id="${cbid}" ${checked}></td>`;

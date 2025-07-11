@@ -506,11 +506,19 @@ jQuery(document).ready(function ($) {
 
   let bmltwf_service_bodies_querystr = '';
 
-  Object.keys(bmltwf_service_bodies).forEach((item) => {
+  // Sort service bodies alphabetically by name
+  const sortedServiceBodies = Object.keys(bmltwf_service_bodies).sort((a, b) => {
+    const nameA = bmltwf_service_bodies[a].name.toLowerCase();
+    const nameB = bmltwf_service_bodies[b].name.toLowerCase();
+    return nameA.localeCompare(nameB);
+  });
+
+  sortedServiceBodies.forEach((item) => {
     // console.log(response);
     const service_body_bigint = item;
     const service_body_name = bmltwf_service_bodies[item].name;
-    const opt = new Option(service_body_name, service_body_bigint, false, false);
+    const display_name = `${service_body_name} (${service_body_bigint})`;
+    const opt = new Option(display_name, service_body_bigint, false, false);
     $('#service_body_bigint').append(opt);
     bmltwf_service_bodies_querystr += `services[]=${service_body_bigint}&`;
   });
