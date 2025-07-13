@@ -112,6 +112,24 @@ class OptionsHandler
         }
         $this->debug_log("submissions rows inserted :" . $cnt);
 
+        // Set auto increment to highest ID value + 1
+        if (!empty($params['submissions'])) {
+            $backup_version = $params['options']['bmltwf_db_version'];
+            $id_field = version_compare($backup_version, '1.1.18', '<') ? 'id' : 'change_id';
+            
+            $max_id = 0;
+            foreach ($params['submissions'] as $submission) {
+                if (isset($submission->$id_field) && $submission->$id_field > $max_id) {
+                    $max_id = $submission->$id_field;
+                }
+            }
+            
+            if ($max_id > 0) {
+                $next_id = $max_id + 1;
+                $wpdb->query("ALTER TABLE " . $this->BMLTWF_Database->bmltwf_submissions_table_name . " AUTO_INCREMENT = $next_id");
+                $this->debug_log("Set auto increment to: " . $next_id);
+            }
+        }
 
         // update the database to the latest version
         $this->BMLTWF_Database->bmltwf_db_upgrade($this->BMLTWF_Database->bmltwf_db_version, false);
@@ -140,8 +158,6 @@ class OptionsHandler
 
         $saveoptarr = array();
         foreach ($optarr as $key => $value) {
-            $this->debug_log("searching for " . $key . " in ");
-            $this->debug_log(($this->bmltwf_options));
 
             if (in_array($key, $this->bmltwf_options)) {
                 $this->debug_log("found " . $key);

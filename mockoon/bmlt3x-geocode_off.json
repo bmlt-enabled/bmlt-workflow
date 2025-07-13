@@ -662,6 +662,50 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "2d939539-d177-4276-bb7f-38755fe9da82",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "main_server/api/v1/meetings",
+      "responses": [
+        {
+          "uuid": "641402cd-fff7-403b-a432-8092a9f506b0",
+          "latency": 0,
+          "statusCode": 201,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": [],
+          "body": "{}"
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -716,6 +760,10 @@
     {
       "type": "route",
       "uuid": "bfabbf9f-d4be-47d0-89fd-dcad20a5faa2"
+    },
+    {
+      "type": "route",
+      "uuid": "2d939539-d177-4276-bb7f-38755fe9da82"
     }
   ],
   "proxyMode": false,

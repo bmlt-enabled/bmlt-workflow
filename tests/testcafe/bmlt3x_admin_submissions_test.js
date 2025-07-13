@@ -126,7 +126,7 @@ test("Approve_Close_Meeting_With_Delete", async (t) => {
   await click_table_row_column(as.dt_submission, row, 0);
   // approve
   await click_dt_button_by_index(as.dt_submission_wrapper, 0);
-await t.debug();
+// await t.debug();
 
   await t.expect(as.approve_close_dialog_parent.visible).eql(true);
 
@@ -285,8 +285,8 @@ await t.useRole(bmltwf_admin);
     .expect(as.quickedit_dialog_parent.visible).eql(true)
 
     // '{"name":"my test meeting",
-    // "startTime":"10:40:00",
-    // "duration":"04:30:00",
+    // "startTime":"10:40",
+    // "duration":"04:30",
     // "location_text":"my location",
     // "location_street":"110 avoca st",
     // "location_info":"info",
@@ -308,7 +308,7 @@ await t.useRole(bmltwf_admin);
     .expect(as.quickedit_name.hasClass("bmltwf-changed")).ok()
     .expect(as.quickedit_name.value).eql("my test meeting")
     .expect(as.quickedit_startTime.hasClass("bmltwf-changed")).ok()
-    .expect(as.quickedit_startTime.value).eql("10:40:00")
+    .expect(as.quickedit_startTime.value).eql("10:40")
     .expect(as.quickedit_day.hasClass("bmltwf-changed")).ok()
     .expect(as.quickedit_day.value).eql("4")
     .expect(as.quickedit_duration_hours.hasClass("bmltwf-changed")).ok()

@@ -140,7 +140,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         '<p>Attn: FSO.<br>\nPlease send a starter kit to the following meeting:\n</p>\n<hr><br>\n<table class="blueTable" style="border: 1px solid #1C6EA4;background-color: #EEEEEE;text-align: left;border-collapse: collapse;">\n    <thead style="background: #1C6EA4;border-bottom: 2px solid #444444;">\n        <tr>\n            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: none;">\n                <br>Field Name\n            </th>\n            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: 2px solid #D0E4F5;">\n                <br>Value\n            </th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Group Name</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:name}</td>\n        </tr>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Requester First Name</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:first_name}</td>\n        </tr>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Requester Last Name</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:last_name}</td>\n        </tr>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Starter Kit Postal Address</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:starter_kit_postal_address}\n            </td>\n        </tr>\n    </tbody>\n</table>\n',
       bmltwf_fso_email_address: "example@example.com",
       bmltwf_fso_feature: "display",
-      bmltwf_db_version: "0.4.0",
+      bmltwf_db_version: "1.1.18",
       bmltwf_bmlt_server_address: "http://" + host + ":" + port + "/main_server/",
       bmltwf_bmlt_username: "bmlt-workflow-bot",
       bmltwf_bmlt_test_status: "success",
@@ -160,7 +160,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         id: "0",
         serviceBodyId: "1047",
         changes_requested: 
-        '{"name":"my test meeting","startTime":"10:40:00","duration":"04:30:00","location_text":"my location","location_street":"110 avoca st","location_info":"info","location_municipality":"Randwick","location_province":"NSW","location_postal_code_1":"2031","day":"4","serviceBodyId":1009,"formatIds":["2","5"],"contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"some extra info","virtual_meeting_additional_info":"Zoom ID 83037287669 Passcode: testing","phone_meeting_number":"12345","virtual_meeting_link":"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09","starter_kit_required":"no","venueType":3}',
+        '{"name":"my test meeting","startTime":"10:40","duration":"04:30","location_text":"my location","location_street":"110 avoca st","location_info":"info","location_municipality":"Randwick","location_province":"NSW","location_postal_code_1":"2031","day":4,"serviceBodyId":1009,"formatIds":[2,5],"contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"some extra info","virtual_meeting_additional_info":"Zoom ID 83037287669 Passcode: testing","phone_meeting_number":"12345","virtual_meeting_link":"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09","starter_kit_required":"no","venueType":3}',
         action_message: null,
       },
       {
@@ -174,7 +174,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         submitter_email: "test@example.com",
         id: "2562",
         serviceBodyId: "1009",
-        changes_requested: '{"name":"update","original_name":"2nd Chance Group","original_startTime":"18:30:00","original_duration":"01:30:00","location_text":"update location","original_location_street":"360 Warren Street","original_location_municipality":"Hudson","original_location_province":"NY","original_location_nation":"US","original_location_sub_province":"Columbia","original_day":"3","original_serviceBodyId":"1009","original_formatIds":["3","17","36"],"original_venueType":"1","contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"please action asap"}',
+        changes_requested: '{"name":"update","original_name":"2nd Chance Group","original_startTime":"18:30","original_duration":"01:30","location_text":"update location","original_location_street":"360 Warren Street","original_location_municipality":"Hudson","original_location_province":"NY","original_location_nation":"US","original_location_sub_province":"Columbia","original_day":3,"original_serviceBodyId":"1009","original_formatIds":[3,17,36],"original_venueType":"1","contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","additional_info":"please action asap"}',
         action_message: null
       },
       {
@@ -188,7 +188,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         submitter_email: "oiu@oiu.com",
         id: "2562",
         serviceBodyId: "1009",
-        changes_requested: '{"contact_number":"","group_relationship":"Group Member","add_contact":"yes","serviceBodyId":1009,"additional_info":"close it now","name":"2nd Chance Group","day":"3","startTime":"18:30:00"}',
+        changes_requested: '{"contact_number":"","group_relationship":"Group Member","add_contact":"yes","serviceBodyId":1009,"additional_info":"close it now","name":"2nd Chance Group","day":3,"startTime":"18:30"}',
         action_message: null
     }
   ],
@@ -257,6 +257,11 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
   };
 
   await t.useRole(role).navigateTo(settings_page);
+  // await t.debug();
+  let my_cookies = await t.getCookies();
+// console.log(my_cookies);
+  let cookieHeader = my_cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
+
   const nonce = await Selector("#_wprestnonce").value;
   const resp = await t.request(restore_json, {
     method: "POST",
@@ -265,13 +270,17 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
     headers: {
       "Content-Type": "application/json",
       "X-WP-Nonce": nonce,
+      "Cookie": cookieHeader
     },
   });
 
   // console.log("nonce = "+nonce);
+  // console.log("SETTINGS PAGE");
+  // console.log(settings_page);
+  // console.log("RESTORE JSON");
   // console.log(restore_json);
   // console.log(resp);
-  // console.log(settings_page);
+  // await t.debug();
 
 }
 

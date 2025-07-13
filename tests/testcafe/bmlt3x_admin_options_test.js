@@ -86,7 +86,7 @@ test("Backup", async (t) => {
   // console.log(backup);
   await t.expect(f.message).eql("Backup Successful");
 
-  await t.expect(backup.options.bmltwf_db_version).eql("1.1.8");
+  await t.expect(backup.options.bmltwf_db_version).eql("1.1.18");
   // find a specific meeting
   let obj = backup.submissions.find((o) => o.change_id === "94");
   // console.log(obj);
@@ -102,7 +102,7 @@ test("Restore", async (t) => {
   const restoretest = String.raw`
   {
     "options": {
-        "bmltwf_db_version": "0.4.0",
+        "bmltwf_db_version": "1.1.18",
         "bmltwf_bmlt_server_address": "http:\/\/${myip()}:3001\/main_server\/",
         "bmltwf_bmlt_username": "bmlt-workflow-bot",
         "bmltwf_bmlt_password": "a:2:{s:6:\"config\";a:6:{s:4:\"size\";s:4:\"MzI=\";s:4:\"salt\";s:24:\"\/5ObzNuYZ\/Y5aoYTsr0sZw==\";s:9:\"limit_ops\";s:4:\"OA==\";s:9:\"limit_mem\";s:12:\"NTM2ODcwOTEy\";s:3:\"alg\";s:4:\"Mg==\";s:5:\"nonce\";s:16:\"VukDVzDkAaex\/jfB\";}s:9:\"encrypted\";s:44:\"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw==\";}",
@@ -128,7 +128,7 @@ test("Restore", async (t) => {
             "submitter_email": "restoretest",
             "id": "0",
             "serviceBodyId": "2",
-            "changes_requested": "{\"name\":\"my test meeting\",\"startTime\":\"10:40:00\",\"duration\":\"04:30:00\",\"location_text\":\"my location\",\"location_street\":\"110 Avoca Street\",\"location_info\":\"info\",\"location_municipality\":\"Randwick\",\"location_province\":\"NSW\",\"location_postal_code_1\":2031,\"day\":\"2\",\"serviceBodyId\":2,\"formatIds\":[\"1\",\"2\",\"56\"],\"contact_number\":\"12345\",\"group_relationship\":\"Group Member\",\"add_contact\":\"yes\",\"additional_info\":\"my additional info\",\"virtual_meeting_additional_info\":\"Zoom ID 83037287669 Passcode: testing\",\"phone_meeting_number\":\"+61 1800 253430 code #8303782669\",\"virtual_meeting_link\":\"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09\"}",
+            "changes_requested": "{\"name\":\"my test meeting\",\"startTime\":\"10:40\",\"duration\":\"04:30\",\"location_text\":\"my location\",\"location_street\":\"110 Avoca Street\",\"location_info\":\"info\",\"location_municipality\":\"Randwick\",\"location_province\":\"NSW\",\"location_postal_code_1\":2031,\"day\":\"2\",\"serviceBodyId\":2,\"formatIds\":[\"1\",\"2\",\"56\"],\"contact_number\":\"12345\",\"group_relationship\":\"Group Member\",\"add_contact\":\"yes\",\"additional_info\":\"my additional info\",\"virtual_meeting_additional_info\":\"Zoom ID 83037287669 Passcode: testing\",\"phone_meeting_number\":\"+61 1800 253430 code #8303782669\",\"virtual_meeting_link\":\"https:\\\/\\\/us02web.zoom.us\\\/j\\\/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09\"}",
             "action_message": null
         }
     ],

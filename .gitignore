@@ -19,3 +19,4 @@ hello.php
 /docker/bmlt2x.env
 /docker/logs/**
 /tests/testcafe/uploads/**
+_uploads_/**

@@ -969,7 +969,7 @@ test("Change_Nothing_Check_Error", async (t) => {
 
   await t
     .click(uf.submit)
-    await t.debug();
+    // await t.debug();
     await t.expect(uf.error_para.innerText)
     .match(/Nothing\ was\ changed/);
 });
