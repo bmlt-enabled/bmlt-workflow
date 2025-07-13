@@ -1506,6 +1506,137 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "dea3f6c6-6b7a-4721-9438-bcee7ae6de27",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "main_server/api/v1/meetings/2094",
+      "responses": [
+        {
+          "uuid": "834c5e0c-3373-4d40-a7db-97a85471d1d1",
+          "body": "{\"id\":2094,\"serviceBodyId\":15,\"formatIds\":[8,40],\"venueType\":1,\"temporarilyVirtual\":false,\"day\":5,\"startTime\":\"19:30\",\"duration\":\"01:15\",\"timeZone\":null,\"latitude\":-27.4697583,\"longitude\":153.049,\"published\":true,\"email\":null,\"worldId\":\"G00015849\",\"name\":\"New Farm Fri - Living Clean\",\"location_text\":\"New Farm Neighbourhood Centre\",\"location_info\":null,\"location_street\":\"967 Brunswick Street\",\"location_city_subsection\":null,\"location_neighborhood\":null,\"location_municipality\":\"New Farm\",\"location_sub_province\":null,\"location_province\":\"QLD\",\"location_postal_code_1\":\"4005\",\"location_nation\":\"AU\",\"comments\":null,\"train_lines\":null,\"bus_lines\":null,\"contact_phone_2\":null,\"contact_email_2\":null,\"contact_name_2\":null,\"contact_phone_1\":null,\"contact_email_1\":null,\"contact_name_1\":null,\"zone\":null,\"phone_meeting_number\":null,\"virtual_meeting_link\":null,\"virtual_meeting_additional_info\":null}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "ace06720-1c24-4fa8-b69d-2abd99a06b1b",
+      "type": "http",
+      "documentation": "",
+      "method": "patch",
+      "endpoint": "main_server/api/v1/meetings/2094",
+      "responses": [
+        {
+          "uuid": "eae36803-89e1-46e0-8b87-34f0e83a81ab",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 204,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "4a92660c-28a3-4728-8c37-4096d96dd2ad",
+      "type": "http",
+      "documentation": "",
+      "method": "patch",
+      "endpoint": "main_server/api/v1/meetings/2091",
+      "responses": [
+        {
+          "uuid": "a6ed04e0-1f85-436d-8dc7-1d515e627009",
+          "latency": 0,
+          "statusCode": 204,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -1620,6 +1751,18 @@
     {
       "type": "route",
       "uuid": "a7fe6b85-8607-41c9-a67f-80d84bbe9010"
+    },
+    {
+      "type": "route",
+      "uuid": "dea3f6c6-6b7a-4721-9438-bcee7ae6de27"
+    },
+    {
+      "type": "route",
+      "uuid": "ace06720-1c24-4fa8-b69d-2abd99a06b1b"
+    },
+    {
+      "type": "route",
+      "uuid": "4a92660c-28a3-4728-8c37-4096d96dd2ad"
     }
   ],
   "proxyMode": false,
