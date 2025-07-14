@@ -1,8 +1,10 @@
-## 1.1.18 (Jun 7, 2024)
+## 1.1.19 (Jun 14, 2025)
 - Fixes incorrect generation of world ID codes when meetings were selected for unpublish on virtual-na.org (thanks @anitak!)
 - Publish on virtualna.org selector wasn't appearing on quickedit. It is now :)
 - Deprecated support for BMLT 2.x
 - We now support retrieving/editing BMLT meeting comments in the quickedit dialog (thanks @brustar64 !)
+- We now sort the service body list in both the meeting update form and the service body editoer (thanks @dg for the code!)
+- Updated submission database schema to v1.1.18 due to no longer needing backwards compatibility with BMLT 2.x
 
 ## 1.1.17 (Oct 14, 2024)
 - Fixes contact phone number format limitation on end user form (thanks @adamH !)

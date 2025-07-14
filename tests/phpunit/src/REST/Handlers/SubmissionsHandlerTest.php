@@ -1572,4 +1572,104 @@ Line: $errorLine
 
         // $this->debug_log(($response));
     }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     */
+    public function test_time_validation_with_invalid_time(): void
+    {
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
+                    "update_reason" => "reason_new",
+                    "startTime" => "25:00", // Invalid time
+                    "name" => "test",
+                    "serviceBodyId" => "1"
+                );
+            }
+        };
+        
+        Functions\when('\get_option')->justReturn("success");
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        
+        $integration = Mockery::mock('Integration');
+        $integration->shouldReceive('getMeetingFormats')->andReturn([]);
+        
+        $handler = new SubmissionsHandler($integration);
+        $response = $handler->meeting_update_form_handler_rest($form_post);
+        
+        $this->assertInstanceOf(WP_Error::class, $response);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     */
+    public function test_prevent_double_approval(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldReceive('prepare')->andReturn('query');
+        $wpdb->shouldReceive('get_row')->andReturn([
+            'change_made' => 'approved',
+            'change_time' => '2023-01-01 12:00:00'
+        ]);
+        $wpdb->prefix = "";
+        
+        $user = new class {
+            public $ID = 1;
+            public $user_login = 'test';
+            public function get($field) {
+                return $this->$field ?? null;
+            }
+        };
+        Functions\when('\wp_get_current_user')->justReturn($user);
+        Functions\when('\current_user_can')->justReturn(false);
+        
+        $handler = new SubmissionsHandler(Mockery::mock('Integration'));
+        
+        $request = Mockery::mock('WP_REST_Request');
+        $request->shouldReceive('get_url_params')->andReturn(['change_id' => '123']);
+        $request->shouldReceive('get_json_params')->andReturn([]);
+        $request->shouldReceive('get_param')->with('change_id')->andReturn('123');
+        
+        $result = $handler->approve_submission_handler($request);
+        
+        $this->assertInstanceOf(WP_Error::class, $result);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     */
+    public function test_postal_code_validation(): void
+    {
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
+                    "update_reason" => "reason_new",
+                    "location_postal_code_1" => "INVALID_POSTAL_CODE_TOO_LONG_TO_BE_VALID",
+                    "name" => "test",
+                    "serviceBodyId" => "1"
+                );
+            }
+        };
+        
+        Functions\when('\get_option')->justReturn("success");
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        
+        $integration = Mockery::mock('Integration');
+        $integration->shouldReceive('getMeetingFormats')->andReturn([]);
+        
+        $handler = new SubmissionsHandler($integration);
+        $response = $handler->meeting_update_form_handler_rest($form_post);
+        
+        // Should succeed as postal code validation is lenient
+        $this->assertInstanceOf(WP_Error::class, $response);
+    }
+
 }

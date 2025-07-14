@@ -205,4 +205,72 @@ Line: $errorLine
         $this->assertEquals($BMLTWF_Database->bmltwf_db_upgrade($BMLTWF_Database->bmltwf_db_version, true), 1);
     }
 
+    /**
+     * @covers bmltwf\BMLTWF_Database::createTables
+     */
+    public function test_createTables_with_old_version(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldReceive('query')->atLeast()->once();
+        $wpdb->prefix = "";
+
+        $database = new BMLTWF_Database();
+        $database->createTables('utf8mb4_unicode_ci', '0.4.0');
+        
+        $this->assertTrue(true); // Test passes if no exceptions thrown
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::createTables
+     */
+    public function test_createTables_with_current_version(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldReceive('query')->atLeast()->once();
+        $wpdb->prefix = "";
+
+        $database = new BMLTWF_Database();
+        $database->createTables('utf8mb4_unicode_ci', '1.1.18');
+        
+        $this->assertTrue(true); // Test passes if no exceptions thrown
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::upgradeComplexJsonFields
+     */
+    public function test_upgradeComplexJsonFields_transforms_data(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        
+        $testData = [
+            (object)[
+                'change_id' => 1,
+                'changes_requested' => '{"weekday_tinyint":"2","format_shared_id_list":"1,2,3","original_weekday_tinyint":"3","original_format_shared_id_list":"4,5"}'
+            ]
+        ];
+        
+        $wpdb->shouldReceive('get_results')->andReturn($testData);
+        $wpdb->shouldReceive('update')->once()->with(
+            Mockery::any(),
+            Mockery::on(function($data) {
+                $json = json_decode($data['changes_requested'], true);
+                return isset($json['day']) && $json['day'] === 1 && 
+                       isset($json['formatIds']) && $json['formatIds'] === [1,2,3];
+            }),
+            ['change_id' => 1]
+        );
+
+        $database = new BMLTWF_Database();
+        $reflection = new ReflectionClass($database);
+        $method = $reflection->getMethod('upgradeComplexJsonFields');
+        $method->setAccessible(true);
+        $method->invoke($database);
+        
+        $this->assertTrue(true);
+    }
+
 }
