@@ -58,6 +58,10 @@ class BMLTServerHandler
         $this->debug_log('get all meetings');
 
         $response = $this->bmlt_integration->getAllMeetings();
+        
+        if (is_wp_error($response)) {
+            return $response;
+        }
 
         return $this->bmltwf_rest_success($response);
     }
@@ -229,11 +233,18 @@ class BMLTServerHandler
             return $location;
         }
 
-        $this->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
+        if (!isset($location['results'][0]['geometry']['location']['lat'], $location['results'][0]['geometry']['location']['lng'])) {
+            return $this->bmltwf_rest_error(__('Invalid geolocation response','bmlt-workflow'), 422);
+        }
 
-        // $change['latitude'] = $location['latitude'];
-        // $change['longitude'] = $location['longitude'];
-        $location['message'] = 'Geolocation successful';
-        return $location;
+        $lat = $location['results'][0]['geometry']['location']['lat'];
+        $lng = $location['results'][0]['geometry']['location']['lng'];
+        $this->debug_log("GMAPS location lookup returns = " . $lat . " " . $lng);
+
+        return array(
+            'latitude' => $lat,
+            'longitude' => $lng,
+            'message' => 'Geolocation successful'
+        );
     }
 }

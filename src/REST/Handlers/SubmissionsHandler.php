@@ -84,6 +84,9 @@ class SubmissionsHandler
 
         // $this->debug_log($sql);
         $result = $wpdb->get_results($sql, ARRAY_A);
+        if ($wpdb->last_error) {
+            return new \WP_Error('bmltwf', 'Database error: ' . $wpdb->last_error);
+        }
         $this->debug_log("result:");
         $this->debug_log(($result));
         foreach ($result as $key => $value) {
@@ -91,8 +94,12 @@ class SubmissionsHandler
             $this->debug_log(json_decode($result[$key]['changes_requested'], true,3));
             $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 3);
             $this->debug_log("id:");
-            $this->debug_log( $this->bmlt_integration->getMeeting($result[$key]['id']));
-            $result[$key]['bmlt_meeting_data'] = $this->bmlt_integration->getMeeting($result[$key]['id']);
+            $meeting_data = $this->bmlt_integration->getMeeting($result[$key]['id']);
+            if (is_wp_error($meeting_data)) {
+                $result[$key]['bmlt_meeting_data'] = null;
+            } else {
+                $result[$key]['bmlt_meeting_data'] = $meeting_data;
+            }
         }
         return array(
             'data' => $result,
@@ -107,9 +114,17 @@ class SubmissionsHandler
         global $wpdb;
 
         $sql = $wpdb->prepare('DELETE FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where change_id="%d" limit 1', $request['change_id']);
-        $wpdb->query($sql, ARRAY_A);
+        $result = $wpdb->query($sql);
+        
+        if ($wpdb->last_error) {
+            return $this->bmltwf_rest_error('Database error: ' . $wpdb->last_error, 500);
+        }
+        
+        if ($result === 0) {
+            return $this->bmltwf_rest_error(__('Submission not found','bmlt-workflow'), 404);
+        }
 
-        return $this->bmltwf_rest_success(__('Deleted submission id ','bmlt-workflow') . $request['id']);
+        return $this->bmltwf_rest_success(__('Deleted submission id ','bmlt-workflow') . $request['change_id']);
     }
 
     public function get_submission_handler($request)

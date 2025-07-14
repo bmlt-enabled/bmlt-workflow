@@ -221,6 +221,10 @@ class Integration
         // $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
         // $this->debug_log(\wp_remote_retrieve_body($resp));
 
+        if (is_wp_error($resp) || wp_remote_retrieve_response_code($resp) != 200) {
+            return false;
+        }
+
         libxml_use_internal_errors(true);
         $xml = simplexml_load_string(\wp_remote_retrieve_body($resp));
         if ($xml === false) {
@@ -286,6 +290,10 @@ class Integration
         // $this->debug_log("wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
         // $this->debug_log(\wp_remote_retrieve_body($response));
 
+        if (is_wp_error($response)) {
+            return new \WP_Error('bmltwf', __('check BMLT server address', 'bmlt-workflow'));
+        }
+
         $response_code = \wp_remote_retrieve_response_code($response);
 
         if ($response_code != 200) {
@@ -293,6 +301,9 @@ class Integration
         }
 
         $auth_details = json_decode(\wp_remote_retrieve_body($response), true);
+        if (!$auth_details || !isset($auth_details['access_token'])) {
+            return new \WP_Error('bmltwf', __('Invalid authentication response', 'bmlt-workflow'));
+        }
         // $this->debug_log($auth_details['access_token']);
 
         return true;
@@ -366,11 +377,19 @@ class Integration
         $this->debug_log("v3 wp_remote_request returns " . \wp_remote_retrieve_response_code($response));
         $this->debug_log(\wp_remote_retrieve_body($response));
 
+        if (is_wp_error($response)) {
+            return $response;
+        }
+
         if (\wp_remote_retrieve_response_code($response) != 200) {
             return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
         }
 
-        return json_decode(\wp_remote_retrieve_body($response),true);
+        $result = json_decode(\wp_remote_retrieve_body($response),true);
+        if ($result === null) {
+            return new \WP_Error('bmltwf', 'Invalid JSON response from BMLT server');
+        }
+        return $result;
     }
 
     public function getAllMeetings()
@@ -393,6 +412,10 @@ class Integration
         $response = \wp_remote_request($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), 'GET'));
         $this->debug_log("v3 wp_remote_request returns " . \wp_remote_retrieve_response_code($response));
         $this->debug_log(\wp_remote_retrieve_body($response));
+
+        if (is_wp_error($response)) {
+            return $response;
+        }
 
         if (\wp_remote_retrieve_response_code($response) != 200) {
             return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
@@ -424,6 +447,9 @@ class Integration
         ];
         
         $body = json_decode(\wp_remote_retrieve_body($response),true);
+        if ($body === null) {
+            return new \WP_Error('bmltwf', 'Invalid JSON response from BMLT server');
+        }
         foreach ($body as &$meeting) {
             foreach ($meeting as $field => $value) {
                 if (!in_array($field, $permitted_fields)) {
@@ -453,15 +479,24 @@ class Integration
         // $this->debug_log("v3 wp_remote_get returns " . \wp_remote_retrieve_response_code($response));
         // $this->debug_log(\wp_remote_retrieve_body($response));
 
+        if (is_wp_error($response)) {
+            return $response;
+        }
+
         if (\wp_remote_retrieve_response_code($response) != 200) {
             return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
         }
 
-        $response = json_decode(\wp_remote_retrieve_body($response), 1);
+        $response_data = json_decode(\wp_remote_retrieve_body($response), 1);
+        if ($response_data === null) {
+            return new \WP_Error('bmltwf', 'Invalid JSON response from BMLT server');
+        }
         $sblist = [];
 
-        foreach ($response as $key => $sb) {
-            $sblist[$sb['id']] = array('name' => $sb['name'], 'description' => $sb['description']);
+        foreach ($response_data as $key => $sb) {
+            if (isset($sb['id'], $sb['name'], $sb['description'])) {
+                $sblist[$sb['id']] = array('name' => $sb['name'], 'description' => $sb['description']);
+            }
         }
         if (!$sblist) {
             return new \WP_Error('bmltwf', "No service bodies available - does your workflow user have access to any service bodies within BMLT?");
@@ -646,9 +681,12 @@ class Integration
             return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
         // $this->debug_log(\wp_remote_retrieve_body($response));  
-        $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
-        if (!empty($arr['meeting_states_and_provinces'])) {
-            $states = explode(',', $arr['meeting_states_and_provinces']);
+        $arr = json_decode(\wp_remote_retrieve_body($response), true);
+        if ($arr === null || !isset($arr[0])) {
+            return new \WP_Error('bmltwf', __('Invalid server info response', 'bmlt-workflow'));
+        }
+        if (!empty($arr[0]['meeting_states_and_provinces'])) {
+            $states = explode(',', $arr[0]['meeting_states_and_provinces']);
             return $states;
         }
         return false;
@@ -672,12 +710,15 @@ class Integration
             return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
         // $this->debug_log(\wp_remote_retrieve_body($response));  
-        $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
+        $arr = json_decode(\wp_remote_retrieve_body($response), true);
+        if ($arr === null || !isset($arr[0])) {
+            return new \WP_Error('bmltwf', __('Invalid server info response', 'bmlt-workflow'));
+        }
         // 
         // $this->debug_log("***");
         // $this->debug_log(($arr));
-        if (!empty($arr['meeting_counties_and_sub_provinces'])) {
-            $counties = explode(',', $arr['meeting_counties_and_sub_provinces']);
+        if (!empty($arr[0]['meeting_counties_and_sub_provinces'])) {
+            $counties = explode(',', $arr[0]['meeting_counties_and_sub_provinces']);
             return $counties;
         }
         return false;
@@ -792,7 +833,10 @@ class Integration
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
-        $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
+        $arr = json_decode(\wp_remote_retrieve_body($response), true);
+        if ($arr === null || !isset($arr[0])) {
+            return new \WP_Error('bmltwf', __('Invalid server info response', 'bmlt-workflow'));
+        }
         $search = '';
 
         switch ($geocoding_type) {
@@ -807,8 +851,8 @@ class Integration
                 break;
         }
 
-        if (!empty($arr[$search])) {
-            return $arr[$search];
+        if (!empty($arr[0][$search])) {
+            return $arr[0][$search];
         }
         return false;
     }
@@ -821,10 +865,13 @@ class Integration
             return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
         // $this->debug_log(\wp_remote_retrieve_body($response));  
-        $arr = json_decode(\wp_remote_retrieve_body($response), true)[0];
-        if ((!empty($arr['centerLongitude'])) && (!empty($arr['centerLatitude']))) {
+        $arr = json_decode(\wp_remote_retrieve_body($response), true);
+        if ($arr === null || !isset($arr[0])) {
+            return new \WP_Error('bmltwf', __('Invalid server info response', 'bmlt-workflow'));
+        }
+        if ((!empty($arr[0]['centerLongitude'])) && (!empty($arr[0]['centerLatitude']))) {
 
-            return array('longitude' => $arr['centerLongitude'], 'latitude' => $arr['centerLatitude']);
+            return array('longitude' => $arr[0]['centerLongitude'], 'latitude' => $arr[0]['centerLatitude']);
         }
         return false;
     }
@@ -942,6 +989,10 @@ class Integration
             $url = get_option('bmltwf_bmlt_server_address') . "api/v1/auth/token";
             $response = \wp_remote_post($url, array('body' => http_build_query($postargs)));
             
+            if (is_wp_error($response)) {
+                return $response;
+            }
+
             $response_code = \wp_remote_retrieve_response_code($response);
 
             if ($response_code != 200) {
@@ -949,6 +1000,9 @@ class Integration
             }
 
             $auth_details = json_decode(\wp_remote_retrieve_body($response), true);
+            if (!$auth_details || !isset($auth_details['access_token'], $auth_details['expires_at'])) {
+                return new \WP_Error('bmltwf', 'Invalid authentication response from BMLT server');
+            }
             $this->v3_access_token = $auth_details['access_token'];
             $this->v3_access_token_expires_at = $auth_details['expires_at'];
         }
