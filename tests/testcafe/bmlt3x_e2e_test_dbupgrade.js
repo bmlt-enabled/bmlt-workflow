@@ -39,6 +39,12 @@ fixture`bmlt3x_e2e_dupgrade_test_fixture`
     await waitfor(userVariables.admin_logon_page_dbupgrade);
   });
 
+test("DbUpgrade_Bmlt3x_DBVersion", async (t) => {
+      await t.useRole(bmltwf_dbupgrade_admin)
+      .navigateTo(userVariables.admin_options_page_dbupgrade)
+      .expect(Selector("#bmltwf_db_version").value).eql("1.1.18");
+});
+
 test("DbUpgrade_Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
   var meeting = {
     location_text: "the church",

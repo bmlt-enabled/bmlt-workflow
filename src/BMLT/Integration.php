@@ -398,19 +398,35 @@ class Integration
             return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
         }
 
-        $remove_fields = [
-            'contact_phone_2',
-            'contact_email_2',
-            'contact_name_2',
-            'contact_phone_1',
-            'contact_email_1',
-            'contact_name_1',
-            'comments'
+        $permitted_fields = [
+            'id',
+            'serviceBodyId',
+            'name',
+            'day',
+            'startTime',
+            'duration',
+            'venueType',
+            'location_text',
+            'location_street',
+            'location_info',
+            'location_municipality',
+            'location_province',
+            'location_sub_province',
+            'location_nation',
+            'location_postal_code_1',
+            'formatIds',
+            'virtual_meeting_link',
+            'virtual_meeting_additional_info',
+            'phone_meeting_number',
+            'published',
+            'latitude',
+            'longitude'
         ];
+        
         $body = json_decode(\wp_remote_retrieve_body($response),true);
         foreach ($body as &$meeting) {
-            foreach ($remove_fields as $field) {
-                if (isset($meeting[$field])) {
+            foreach ($meeting as $field => $value) {
+                if (!in_array($field, $permitted_fields)) {
                     unset($meeting[$field]);
                 }
             }

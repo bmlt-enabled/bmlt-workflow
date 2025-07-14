@@ -100,6 +100,7 @@ module.exports = {
     dbupgrade_formpage: siteurl_dbupgrade + '/index.php' + formpage,
     admin_logon_page_dbupgrade: siteurl_dbupgrade + admin_logon_page,
     admin_submissions_page_dbupgrade: siteurl_dbupgrade + admin_submissions_page,
+    admin_options_page_dbupgrade: siteurl_dbupgrade + admin_options_page,
 
     waitfor: "sh docker/wait-for.sh",
     bmlt2x_login_page: "http://localhost:8000/main_server/index.php",

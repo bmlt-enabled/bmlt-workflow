@@ -142,6 +142,7 @@ Line: $errorLine
         $wpdb->prefix = "";
 
         $BMLTWF_Database = new BMLTWF_Database();
+        $wpdb->shouldReceive('get_results')->andReturn([]);
 
         Functions\expect('\delete_option')->with('bmltwf_db_version')->once()->andReturn(true);
         Functions\expect('\add_option')->with('bmltwf_db_version',$BMLTWF_Database->bmltwf_db_version)->once()->andReturn(true);

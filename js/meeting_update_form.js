@@ -524,7 +524,14 @@ jQuery(document).ready(function ($) {
       });
   }
 
-  Object.keys(bmltwf_service_bodies).forEach((item) => {
+  // Sort service bodies alphabetically by name
+  const sortedServiceBodies = Object.keys(bmltwf_service_bodies).sort((a, b) => {
+    const nameA = bmltwf_service_bodies[a].name.toLowerCase();
+    const nameB = bmltwf_service_bodies[b].name.toLowerCase();
+    return nameA.localeCompare(nameB);
+  });
+
+  sortedServiceBodies.forEach((item) => {
     const serviceBodyId = item;
     const service_body_name = bmltwf_service_bodies[item].name;
     const opt = new Option(service_body_name, serviceBodyId, false, false);

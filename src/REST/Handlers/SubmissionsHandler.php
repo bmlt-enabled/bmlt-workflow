@@ -797,7 +797,8 @@ class SubmissionsHandler
             // handle meeting formats
             $this->populate_formats();
             $venueType = $data['venueType'] ?? '0';
-            $virtual_meeting_bool = ($venueType !== '1');
+            
+            $virtual_meeting_bool = (intval($venueType) !== 1);
 
             $require_postcode = false;
             if (get_option('bmltwf_optional_postcode') === 'displayrequired') {

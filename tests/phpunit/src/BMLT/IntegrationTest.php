@@ -443,7 +443,7 @@ Line: $errorLine
         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
 
         Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
-        $change = array('id_bigint' => 1,'location_text' => 'updated');
+        $change = array('id' => 1,'location_text' => 'updated');
 
         $integration = new Integration(true, "3.0.0", "token",time()+2000);
         $this->assertTrue($integration->updateMeeting($change));
@@ -462,7 +462,7 @@ Line: $errorLine
         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
 
         Functions\when('wp_remote_retrieve_response_code')->justReturn(404);
-        $change = array('id_bigint' => 1,'location_text' => 'updated');
+        $change = array('id' => 1,'location_text' => 'updated');
 
         $integration = new Integration(true, "3.0.0", "token", time()+2000);
         $response = $integration->updateMeeting($change);
@@ -480,7 +480,7 @@ Line: $errorLine
 
         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(422);
-        $change = array('id_bigint' => 1,'location_text' => 'updated');
+        $change = array('id' => 1,'location_text' => 'updated');
 
         $integration = new Integration(true, "3.0.0", "token", time()+2000);
         $response = $integration->updateMeeting($change);
@@ -527,7 +527,7 @@ EOD;
                 "location_municipality" => "New York",
                 "day" => "1",
                 "serviceBodyId" => "1050",
-                "formatIds" => "7",
+                "formatIds" => [7],
                 "virtual_meeting_link" => "https://www.google.com",
                 "venueType" => "3",
                 "latitude" => "40.7127753",
@@ -559,7 +559,7 @@ EOD;
                 "location_municipality" => "New York",
                 "day" => "1",
                 "serviceBodyId" => "1050",
-                "formatIds" => "7",
+                "formatIds" => [7],
                 "virtual_meeting_link" => "https://www.google.com",
                 "venueType" => "10",
                 "latitude" => "40.7127753",
@@ -573,6 +573,69 @@ EOD;
         $response = $integration->createMeeting($invalid_meeting);
         $this->assertInstanceOf(WP_Error::class, $response);
 
+    }
+
+
+    /**
+     * @covers bmltwf\BMLT\Integration::getAllMeetings
+     */
+    public function test_getAllMeetings_filters_unpermitted_fields(): void
+    {
+        $mockMeetingsResponse = json_encode([
+            [
+                'id' => 1,
+                'serviceBodyId' => 10,
+                'name' => 'Test Meeting',
+                'day' => 1,
+                'startTime' => '19:00',
+                'duration' => '01:30',
+                'contact_phone_1' => '555-1234', // Should be removed
+                'contact_email_1' => 'test@example.com', // Should be removed
+                'comments' => 'Some comments', // Should be removed
+                'location_text' => 'Community Center',
+                'formatIds' => [1, 2],
+                'published' => 1,
+                'some_other_field' => 'should be removed' // Should be removed
+            ]
+        ]);
+
+        $mockServiceBodies = [
+            10 => ['name' => 'Test Service Body', 'description' => 'Test Description']
+        ];
+
+        Functions\when('\wp_remote_retrieve_body')->justReturn($mockMeetingsResponse);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+
+        $integration = new Integration(true, "3.0.0", "token", time() + 2000);
+        
+        // Mock getServiceBodies to return our test data
+        $integration = Mockery::mock(Integration::class)->makePartial();
+        $integration->shouldReceive('getServiceBodies')->andReturn($mockServiceBodies);
+        $integration->shouldReceive('is_v3_token_valid')->andReturn(true);
+
+        $result = $integration->getAllMeetings();
+        $meetings = json_decode($result, true);
+
+        // Verify the meeting data is returned
+        $this->assertCount(1, $meetings);
+        $meeting = $meetings[0];
+
+        // Verify permitted fields are present
+        $this->assertArrayHasKey('id', $meeting);
+        $this->assertArrayHasKey('serviceBodyId', $meeting);
+        $this->assertArrayHasKey('name', $meeting);
+        $this->assertArrayHasKey('day', $meeting);
+        $this->assertArrayHasKey('startTime', $meeting);
+        $this->assertArrayHasKey('duration', $meeting);
+        $this->assertArrayHasKey('location_text', $meeting);
+        $this->assertArrayHasKey('formatIds', $meeting);
+        $this->assertArrayHasKey('published', $meeting);
+
+        // Verify unpermitted fields are removed
+        $this->assertArrayNotHasKey('contact_phone_1', $meeting);
+        $this->assertArrayNotHasKey('contact_email_1', $meeting);
+        $this->assertArrayNotHasKey('comments', $meeting);
+        $this->assertArrayNotHasKey('some_other_field', $meeting);
     }
 
 }
