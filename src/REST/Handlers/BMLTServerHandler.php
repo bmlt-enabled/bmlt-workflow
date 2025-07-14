@@ -237,14 +237,12 @@ class BMLTServerHandler
             return $this->bmltwf_rest_error(__('Invalid geolocation response','bmlt-workflow'), 422);
         }
 
-        $lat = $location['results'][0]['geometry']['location']['lat'];
-        $lng = $location['results'][0]['geometry']['location']['lng'];
-        $this->debug_log("GMAPS location lookup returns = " . $lat . " " . $lng);
+        $this->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
 
-        return array(
-            'latitude' => $lat,
-            'longitude' => $lng,
-            'message' => 'Geolocation successful'
-        );
+        // $change['latitude'] = $location['latitude'];
+        // $change['longitude'] = $location['longitude'];
+        $location['message'] = 'Geolocation successful';
+        return $location;
+
     }
 }

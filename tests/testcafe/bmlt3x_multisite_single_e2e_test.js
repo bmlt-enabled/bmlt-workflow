@@ -35,8 +35,6 @@ import { userVariables } from "../../.testcaferc";
 fixture`bmlt3x_multisite_single_e2e_test_fixture`
   // .page(userVariables.admin_submissions_page_single)
   .beforeEach(async (t) => {
-    console.log(userVariables.admin_logon_page_multisingle);
-    console.log(userVariables.admin_settings_page_multisingle_plugin);
     await waitfor(userVariables.admin_logon_page_multisingle);
     await restore_from_backup(bmltwf_admin_multisingle, userVariables.admin_settings_page_multisingle_plugin, userVariables.admin_restore_json_multisingle_plugin,myip(),"3001","hidden");
   });
