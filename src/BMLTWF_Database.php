@@ -223,8 +223,7 @@ class BMLTWF_Database
         $sql = "ALTER TABLE " . $this->bmltwf_submissions_table_name . " 
                 MODIFY COLUMN submission_time datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 MODIFY COLUMN change_time datetime NULL DEFAULT NULL,
-                MODIFY COLUMN change_id bigint(20) NOT NULL AUTO_INCREMENT,
-                AUTO_INCREMENT = 1402";
+                MODIFY COLUMN change_id bigint(20) NOT NULL AUTO_INCREMENT;";
         $wpdb->query($sql);
         
         $this->debug_log("datetime columns and auto-increment fixed");
@@ -233,6 +232,9 @@ class BMLTWF_Database
     private function upgradeTableStructure()
     {
         global $wpdb;
+        
+        // Drop foreign key constraints first
+        $this->dropForeignKeys();
         
         $alterQueries = [
             "ALTER TABLE " . $this->bmltwf_service_bodies_table_name . " CHANGE COLUMN service_body_bigint serviceBodyId bigint(20) NOT NULL",
@@ -243,12 +245,70 @@ class BMLTWF_Database
         ];
         
         foreach ($alterQueries as $sql) {
-            $wpdb->query($sql);
+            $result = $wpdb->query($sql);
+            if ($result === false) {
+                throw new \Exception("Failed to execute: $sql. Error: " . $wpdb->last_error);
+            }
         }
 
         $this->fixDateTimeColumns();
+        
+        // Clean up orphaned records before creating foreign keys
+        $this->cleanupOrphanedRecords();
+        
+        // Recreate foreign key constraints with new column names
+        $this->createForeignKeys();
 
-        $this->debug_log("table structure upgraded");
+        $this->debug_log("table structure and foreign keys upgraded");
+    }
+    
+    private function dropForeignKeys()
+    {
+        global $wpdb;
+        
+        // Get foreign key names and drop them
+        $fks = $wpdb->get_results("SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $this->bmltwf_service_bodies_access_table_name . "' AND REFERENCED_TABLE_NAME IS NOT NULL");
+        foreach ($fks as $fk) {
+            if (isset($fk->CONSTRAINT_NAME)) {
+                $result = $wpdb->query("ALTER TABLE " . $this->bmltwf_service_bodies_access_table_name . " DROP FOREIGN KEY " . $fk->CONSTRAINT_NAME);
+                if ($result === false && $wpdb->last_error) {
+                    $this->debug_log("Warning: Failed to drop FK " . $fk->CONSTRAINT_NAME . ": " . $wpdb->last_error);
+                }
+            }
+        }
+        
+        $fks = $wpdb->get_results("SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $this->bmltwf_submissions_table_name . "' AND REFERENCED_TABLE_NAME IS NOT NULL");
+        foreach ($fks as $fk) {
+            if (isset($fk->CONSTRAINT_NAME)) {
+                $result = $wpdb->query("ALTER TABLE " . $this->bmltwf_submissions_table_name . " DROP FOREIGN KEY " . $fk->CONSTRAINT_NAME);
+                if ($result === false && $wpdb->last_error) {
+                    $this->debug_log("Warning: Failed to drop FK " . $fk->CONSTRAINT_NAME . ": " . $wpdb->last_error);
+                }
+            }
+        }
+    }
+    
+    private function cleanupOrphanedRecords()
+    {
+        global $wpdb;
+        
+        // Remove orphaned submissions
+        $wpdb->query("DELETE s FROM " . $this->bmltwf_submissions_table_name . " s 
+            LEFT JOIN " . $this->bmltwf_service_bodies_table_name . " sb ON s.serviceBodyId = sb.serviceBodyId 
+            WHERE sb.serviceBodyId IS NULL");
+        
+        // Remove orphaned access records
+        $wpdb->query("DELETE a FROM " . $this->bmltwf_service_bodies_access_table_name . " a 
+            LEFT JOIN " . $this->bmltwf_service_bodies_table_name . " sb ON a.serviceBodyId = sb.serviceBodyId 
+            WHERE sb.serviceBodyId IS NULL");
+    }
+    
+    private function createForeignKeys()
+    {
+        global $wpdb;
+        
+        $wpdb->query("ALTER TABLE " . $this->bmltwf_service_bodies_access_table_name . " ADD FOREIGN KEY (serviceBodyId) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(serviceBodyId)");
+        $wpdb->query("ALTER TABLE " . $this->bmltwf_submissions_table_name . " ADD FOREIGN KEY (serviceBodyId) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(serviceBodyId)");
     }
 
     private function upgradeJsonFields()
@@ -287,7 +347,13 @@ class BMLTWF_Database
         $results = $wpdb->get_results("SELECT change_id, changes_requested FROM " . $this->bmltwf_submissions_table_name);
         
         foreach ($results as $row) {
+            if (!isset($row->changes_requested) || $row->changes_requested === null) {
+                continue;
+            }
             $json_data = json_decode($row->changes_requested, true);
+            if ($json_data === null) {
+                continue;
+            }
             $updated = false;
             
             // Convert weekday fields
@@ -333,5 +399,154 @@ class BMLTWF_Database
                 );
             }
         }
+    }
+    
+    /**
+     * Validate database structure after upgrade
+     */
+    public function validateUpgrade()
+    {
+        global $wpdb;
+        $results = [];
+        
+        // Check table structure
+        $results['tables'] = $this->validateTableStructure();
+        $results['foreign_keys'] = $this->validateForeignKeys();
+        $results['data_integrity'] = $this->validateDataIntegrity();
+        $results['auto_increment'] = $this->validateAutoIncrement();
+        
+        return $results;
+    }
+    
+    private function validateTableStructure()
+    {
+        global $wpdb;
+        $errors = [];
+        
+        // Check required columns exist
+        $required_columns = [
+            $this->bmltwf_submissions_table_name => ['change_id', 'serviceBodyId', 'id'],
+            $this->bmltwf_service_bodies_table_name => ['serviceBodyId'],
+            $this->bmltwf_service_bodies_access_table_name => ['serviceBodyId']
+        ];
+        
+        foreach ($required_columns as $table => $columns) {
+            $table_columns = $wpdb->get_col("DESCRIBE $table", 0);
+            foreach ($columns as $column) {
+                if (!in_array($column, $table_columns)) {
+                    $errors[] = "Missing column $column in table $table";
+                }
+            }
+        }
+        
+        return $errors;
+    }
+    
+    private function validateForeignKeys()
+    {
+        global $wpdb;
+        $errors = [];
+        
+        $fks = $wpdb->get_results(
+            "SELECT TABLE_NAME, COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE 
+             WHERE TABLE_SCHEMA = DATABASE() AND REFERENCED_TABLE_NAME IS NOT NULL 
+             AND TABLE_NAME IN ('" . $this->bmltwf_submissions_table_name . "', '" . $this->bmltwf_service_bodies_access_table_name . "')"
+        );
+        
+        $expected_fks = [
+            $this->bmltwf_submissions_table_name => 'serviceBodyId',
+            $this->bmltwf_service_bodies_access_table_name => 'serviceBodyId'
+        ];
+        
+        foreach ($expected_fks as $table => $column) {
+            $found = false;
+            foreach ($fks as $fk) {
+                if ($fk->TABLE_NAME === $table && $fk->COLUMN_NAME === $column) {
+                    $found = true;
+                    break;
+                }
+            }
+            if (!$found) {
+                $errors[] = "Missing foreign key on $table.$column";
+            }
+        }
+        
+        return $errors;
+    }
+    
+    private function validateDataIntegrity()
+    {
+        global $wpdb;
+        $errors = [];
+        
+        // Check for orphaned records
+        $orphaned = $wpdb->get_var(
+            "SELECT COUNT(*) FROM " . $this->bmltwf_submissions_table_name . " s 
+             LEFT JOIN " . $this->bmltwf_service_bodies_table_name . " sb ON s.serviceBodyId = sb.serviceBodyId 
+             WHERE sb.serviceBodyId IS NULL"
+        );
+        
+        if ($orphaned > 0) {
+            $errors[] = "Found $orphaned orphaned submission records";
+        }
+        
+        return $errors;
+    }
+    
+    private function validateAutoIncrement()
+    {
+        global $wpdb;
+        $errors = [];
+        
+        $auto_inc = $wpdb->get_var(
+            "SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES 
+             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = '" . $this->bmltwf_submissions_table_name . "'"
+        );
+        
+        $max_id = $wpdb->get_var("SELECT MAX(change_id) FROM " . $this->bmltwf_submissions_table_name);
+        
+        if ($auto_inc <= $max_id) {
+            $errors[] = "Auto increment value ($auto_inc) not greater than max ID ($max_id)";
+        }
+        
+        return $errors;
+    }
+    
+    /**
+     * Test upgrade process with validation
+     */
+    public function testUpgrade($test_version = '1.1.17')
+    {
+        global $wpdb;
+        
+        $results = ['success' => true, 'errors' => []];
+        
+        try {
+            // Simulate old version
+            update_option('bmltwf_db_version', $test_version);
+            
+            // Run upgrade
+            $upgrade_result = $this->bmltwf_db_upgrade($this->bmltwf_db_version, false);
+            
+            if ($upgrade_result !== 2) {
+                $results['errors'][] = "Upgrade failed, returned: $upgrade_result";
+                $results['success'] = false;
+            }
+            
+            // Validate results
+            $validation = $this->validateUpgrade();
+            foreach ($validation as $category => $errors) {
+                if (!empty($errors)) {
+                    $results['errors'] = array_merge($results['errors'], $errors);
+                    $results['success'] = false;
+                }
+            }
+            
+        } catch (\Exception $e) {
+            $results['errors'][] = "Exception: " . $e->getMessage();
+            $results['success'] = false;
+        }
+        
+        return $results;
     }
 }

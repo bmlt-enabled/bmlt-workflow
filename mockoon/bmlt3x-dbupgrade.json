@@ -1637,6 +1637,94 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "a493e161-1efc-4e14-b87b-b7b7915cfab2",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "main_server/api/v1/meetings/3865",
+      "responses": [
+        {
+          "uuid": "1d515e78-8ec0-4237-8413-450d7c697bfe",
+          "body": "{\"id\":3865,\"serviceBodyId\":18,\"formatIds\":[8,32,33],\"venueType\":3,\"temporarilyVirtual\":false,\"day\":6,\"startTime\":\"15:30\",\"duration\":\"01:30\",\"timeZone\":null,\"latitude\":-37.8252586,\"longitude\":144.9982151,\"published\":true,\"email\":\"aelralekra@gmail.com\",\"worldId\":\"G00318258\",\"name\":\"Saturday 'Womens Recovery Meeting'\",\"location_text\":\"Richmond Library\",\"location_info\":\"Meeting Room Level 1. Enter via Church Street\",\"location_street\":\"415 Church Street\",\"location_city_subsection\":null,\"location_neighborhood\":null,\"location_municipality\":\"Richmond\",\"location_sub_province\":\"Yarra City\",\"location_province\":\"VIC\",\"location_postal_code_1\":\"3121\",\"location_nation\":\"AU\",\"comments\":null,\"train_lines\":null,\"bus_lines\":null,\"contact_phone_2\":null,\"contact_email_2\":null,\"contact_name_2\":null,\"contact_phone_1\":null,\"contact_email_1\":\"aeaeoriaer@gmail.com\",\"contact_name_1\":\"Hannah\",\"zone\":null,\"phone_meeting_number\":\"+123123123,,123123123#\",\"virtual_meeting_link\":\"https://us02web.zoom.us/j/123123123\",\"virtual_meeting_additional_info\":\"Zoom Meeting ID: 123123123\"}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "6551ac48-2732-41ed-8f32-182ea2f9aa16",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "main_server/api/v1/meetings/3361",
+      "responses": [
+        {
+          "uuid": "76e464a9-891e-475b-8864-1602d7e3fc92",
+          "body": "{\"id\":3361,\"serviceBodyId\":18,\"formatIds\":[8,32,33],\"venueType\":3,\"temporarilyVirtual\":false,\"day\":6,\"startTime\":\"15:30\",\"duration\":\"01:30\",\"timeZone\":null,\"latitude\":-37.8252586,\"longitude\":144.9982151,\"published\":true,\"email\":\"aelralekra@gmail.com\",\"worldId\":\"G00318258\",\"name\":\"Saturday 'Womens Recovery Meeting'\",\"location_text\":\"Richmond Library\",\"location_info\":\"Meeting Room Level 1. Enter via Church Street\",\"location_street\":\"415 Church Street\",\"location_city_subsection\":null,\"location_neighborhood\":null,\"location_municipality\":\"Richmond\",\"location_sub_province\":\"Yarra City\",\"location_province\":\"VIC\",\"location_postal_code_1\":\"3121\",\"location_nation\":\"AU\",\"comments\":null,\"train_lines\":null,\"bus_lines\":null,\"contact_phone_2\":null,\"contact_email_2\":null,\"contact_name_2\":null,\"contact_phone_1\":null,\"contact_email_1\":\"aeaeoriaer@gmail.com\",\"contact_name_1\":\"Hannah\",\"zone\":null,\"phone_meeting_number\":\"+123123123,,123123123#\",\"virtual_meeting_link\":\"https://us02web.zoom.us/j/123123123\",\"virtual_meeting_additional_info\":\"Zoom Meeting ID: 123123123\"}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -1763,6 +1851,14 @@
     {
       "type": "route",
       "uuid": "4a92660c-28a3-4728-8c37-4096d96dd2ad"
+    },
+    {
+      "type": "route",
+      "uuid": "a493e161-1efc-4e14-b87b-b7b7915cfab2"
+    },
+    {
+      "type": "route",
+      "uuid": "6551ac48-2732-41ed-8f32-182ea2f9aa16"
     }
   ],
   "proxyMode": false,

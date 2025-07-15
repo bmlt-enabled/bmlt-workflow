@@ -309,7 +309,7 @@ jQuery(document).ready(function ($) {
     // if it's a meeting change, fill from bmlt first
     if (bmltwf_changedata[change_id].submission_type === 'reason_change') {
       const item = bmltwf_changedata[change_id].bmlt_meeting_data;
-      if (!Object.keys(item).length) {
+      if (!item || !Object.keys(item).length) {
         const a = {};
         a.responseJSON = {};
         a.responseJSON.message = __('Error retrieving BMLT data - meeting possibly removed', 'bmlt-workflow');

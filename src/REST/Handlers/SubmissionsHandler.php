@@ -94,8 +94,14 @@ class SubmissionsHandler
             $this->debug_log(json_decode($result[$key]['changes_requested'], true,3));
             $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 3);
             $this->debug_log("id:");
+            $this->debug_log($result[$key]['id']);
+
             $meeting_data = $this->bmlt_integration->getMeeting($result[$key]['id']);
+            $this->debug_log("meeting data:");
+            $this->debug_log($meeting_data);
+
             if (is_wp_error($meeting_data)) {
+                $this->debug_log("wp error");
                 $result[$key]['bmlt_meeting_data'] = null;
             } else {
                 $result[$key]['bmlt_meeting_data'] = $meeting_data;

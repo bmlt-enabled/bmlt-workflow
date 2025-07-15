@@ -97,6 +97,7 @@ module.exports = {
 
     // dbupgrade
     dbupgrade_bounce_sql: siteurl_dbupgrade + '/import-sql.php',
+    dbupgrade_test_upgrade: siteurl_dbupgrade + '/test-upgrade.php',
     dbupgrade_formpage: siteurl_dbupgrade + '/index.php' + formpage,
     admin_logon_page_dbupgrade: siteurl_dbupgrade + admin_logon_page,
     admin_submissions_page_dbupgrade: siteurl_dbupgrade + admin_submissions_page,

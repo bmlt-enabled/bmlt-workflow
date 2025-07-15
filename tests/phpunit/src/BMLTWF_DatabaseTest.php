@@ -273,4 +273,106 @@ Line: $errorLine
         $this->assertTrue(true);
     }
 
+    /**
+     * @covers bmltwf\BMLTWF_Database::testUpgrade
+     */
+    public function test_database_upgrade_from_old_version(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        $wpdb->num_rows = 1; // Mock table exists check
+        $wpdb->shouldReceive('query')->andReturn(true);
+        $wpdb->shouldReceive('get_charset_collate')->andReturn('utf8mb4_unicode_ci');
+        $wpdb->shouldReceive('get_results')->andReturn([
+            (object)['TABLE_NAME' => 'bmltwf_submissions', 'COLUMN_NAME' => 'serviceBodyId'],
+            (object)['TABLE_NAME' => 'bmltwf_service_bodies_access', 'COLUMN_NAME' => 'serviceBodyId']
+        ]);
+        $wpdb->shouldReceive('get_col')->andReturn(['change_id', 'serviceBodyId', 'id']);
+        $wpdb->shouldReceive('get_var')->andReturnValues([0, 11, 10]); // orphaned, auto_inc, max_id
+        
+        Functions\when('\update_option')->justReturn(true);
+        Functions\when('\delete_option')->justReturn(true);
+        Functions\when('\add_option')->justReturn(true);
+        Functions\when('\get_option')->alias(function($option) {
+            return $option === 'bmltwf_db_version' ? '1.1.17' : false;
+        });
+        
+        $database = new BMLTWF_Database();
+        $test_results = $database->testUpgrade('1.1.17');
+        
+        $this->assertTrue($test_results['success'], 
+            'Database upgrade test failed: ' . implode(', ', $test_results['errors']));
+        
+        $this->assertEmpty($test_results['errors'], 
+            'Upgrade validation errors: ' . implode(', ', $test_results['errors']));
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::validateUpgrade
+     */
+    public function test_database_validation(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        $wpdb->shouldReceive('get_col')->andReturn(['change_id', 'serviceBodyId', 'id']);
+        $wpdb->shouldReceive('get_results')->andReturn([
+            (object)['TABLE_NAME' => 'bmltwf_submissions', 'COLUMN_NAME' => 'serviceBodyId'],
+            (object)['TABLE_NAME' => 'bmltwf_service_bodies_access', 'COLUMN_NAME' => 'serviceBodyId']
+        ]);
+        $wpdb->shouldReceive('get_var')->andReturnValues([0, 11, 10]); // orphaned, auto_inc, max_id
+        
+        $database = new BMLTWF_Database();
+        $validation = $database->validateUpgrade();
+        
+        foreach ($validation as $category => $errors) {
+            $this->assertEmpty($errors, 
+                "Validation errors in $category: " . implode(', ', $errors));
+        }
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::validateUpgrade
+     */
+    public function test_table_structure_validation(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        $wpdb->shouldReceive('get_col')->andReturn(['change_id', 'serviceBodyId', 'id']);
+        $wpdb->shouldReceive('get_results')->andReturn([]);
+        $wpdb->shouldReceive('get_var')->andReturn(0);
+        
+        $database = new BMLTWF_Database();
+        $validation = $database->validateUpgrade();
+        
+        $this->assertArrayHasKey('tables', $validation);
+        $this->assertEmpty($validation['tables'], 
+            'Table structure validation failed: ' . implode(', ', $validation['tables']));
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::validateUpgrade
+     */
+    public function test_foreign_key_validation(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        $wpdb->shouldReceive('get_col')->andReturn(['change_id', 'serviceBodyId', 'id']);
+        $wpdb->shouldReceive('get_results')->andReturn([
+            (object)['TABLE_NAME' => $wpdb->prefix . 'bmltwf_submissions', 'COLUMN_NAME' => 'serviceBodyId'],
+            (object)['TABLE_NAME' => $wpdb->prefix . 'bmltwf_service_bodies_access', 'COLUMN_NAME' => 'serviceBodyId']
+        ]);
+        $wpdb->shouldReceive('get_var')->andReturn(0);
+        
+        $database = new BMLTWF_Database();
+        $validation = $database->validateUpgrade();
+        
+        $this->assertArrayHasKey('foreign_keys', $validation);
+        $this->assertEmpty($validation['foreign_keys'], 
+            'Foreign key validation failed: ' . implode(', ', $validation['foreign_keys']));
+    }
+
 }

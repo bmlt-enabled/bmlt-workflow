@@ -91,6 +91,7 @@ sed -i "s/Listen 80/Listen $WORDPRESS_PORT/g" /etc/apache2/ports.conf
 
 echo "<?php phpinfo();" >> /var/www/html/a.php
 cp /usr/local/bin/import-sql.php /var/www/html
+cp /usr/local/bin/test-upgrade.php /var/www/html
 
 apache2-foreground
 

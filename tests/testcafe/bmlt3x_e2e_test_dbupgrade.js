@@ -31,13 +31,19 @@ import {
   
 import { userVariables } from "../../.testcaferc.js";
 
-fixture`bmlt3x_e2e_dupgrade_test_fixture`
+fixture`test`
   .before(async (t) => {
   })
   .beforeEach(async (t) => {
     await t.navigateTo(userVariables.dbupgrade_bounce_sql);
     await waitfor(userVariables.admin_logon_page_dbupgrade);
   });
+
+test("DbUpgrade_Test_Upgrade", async (t) => {
+  await t
+    .navigateTo(userVariables.dbupgrade_test_upgrade)
+    .expect(Selector('body').withText('UPGRADE_TEST_PASSED').exists).ok();
+});
 
 test("DbUpgrade_Bmlt3x_DBVersion", async (t) => {
       await t.useRole(bmltwf_dbupgrade_admin)
