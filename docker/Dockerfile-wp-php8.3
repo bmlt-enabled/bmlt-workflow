@@ -19,17 +19,22 @@ RUN pecl install xdebug && docker-php-ext-enable xdebug \
     && echo "xdebug.remote_autostart=1" >> ${PHP_INI_PATH} \
     && echo "xdebug.remote_log=/tmp/xdebug.log" >> ${PHP_INI_PATH} \
     && echo "memory_limit=-1" >> ${PHP_INI_PATH}
-
 RUN echo "Mutex posixsem" >> /etc/apache2/apache2.conf
 
 RUN curl -o /usr/local/bin/wp-cli.phar https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 COPY ./wpcli-user.sh /usr/local/bin/wp
 COPY ./wp-install.sh /usr/local/bin/wp-install.sh
+COPY ./wp-install-dbupgrade.sh /usr/local/bin/wp-install-dbupgrade.sh
 COPY ./sync-plugin.sh /usr/local/bin/sync-plugin.sh
+COPY ./import-sql.sh /usr/local/bin/import-sql.sh
+COPY ./import-sql.php /usr/local/bin/import-sql.php
+COPY ./test-upgrade.php /usr/local/bin/test-upgrade.php
 RUN chmod +x /usr/local/bin/wp
 RUN chmod +x /usr/local/bin/wp-cli.phar
 RUN chmod +x /usr/local/bin/wp-install.sh
+RUN chmod +x /usr/local/bin/wp-install-dbupgrade.sh
 RUN chmod +x /usr/local/bin/sync-plugin.sh
+RUN chmod +x /usr/local/bin/import-sql.sh
 CMD /usr/local/bin/wp-install.sh
 
 EXPOSE 80

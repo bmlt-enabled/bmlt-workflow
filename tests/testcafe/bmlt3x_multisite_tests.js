@@ -29,6 +29,7 @@ fixture`bmlt3x_multisite_tests_fixture`.beforeEach(async (t) => {
 });
 
 test("MultiSite_Single_Check_Options", async (t) => {
+
   // check that our options are installed only for sites that have the plugin enabled
   await t
     .useRole(bmltwf_admin_multisingle)

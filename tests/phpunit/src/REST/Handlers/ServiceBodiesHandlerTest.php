@@ -58,13 +58,15 @@ Line: $errorLine
         $this->setVerboseErrorHandler();
         $basedir = getcwd();
         require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-error.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-http-response.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/endpoints/class-wp-rest-controller.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-response.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-request.php');
+        require_once($basedir . '/vendor/autoload.php');
+        require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
+        require_once($basedir . '/vendor/wp/wp-includes/class-wp-error.php');
+        require_once($basedir . '/vendor/wp/wp-includes/class-wp-http-response.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/endpoints/class-wp-rest-controller.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/class-wp-rest-response.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/class-wp-rest-request.php');
         if (!class_exists('wpdb')) {
-            require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/wp-db.php');
+            require_once($basedir . '/vendor/wp/wp-includes/wp-db.php');
         }
 
         Brain\Monkey\setUp();
@@ -75,6 +77,8 @@ Line: $errorLine
         Functions\when('\absint')->returnArg();
         Functions\when('wp_remote_post')->returnArg();
         Functions\when('__')->returnArg();
+        Functions\when('wp_is_json_media_type')->justReturn(true);
+        Functions\when('\get_option')->justReturn("success");
     }
 
     protected function tearDown(): void
@@ -109,17 +113,17 @@ Line: $errorLine
 
         $dblookup = array(
             '0' => array(
-                "service_body_bigint" => "1",
+                "serviceBodyId" => "1",
                 "service_body_name" => "toplevel",
                 "show_on_form" => "1"
             ),
             '1' => array(
-                "service_body_bigint" => "2",
+                "serviceBodyId" => "2",
                 "service_body_name" => "a-level1",
                 "show_on_form" => "1"
             ),
             '2' => array(
-                "service_body_bigint" => "3",
+                "serviceBodyId" => "3",
                 "service_body_name" => "b-level1",
                 "show_on_form" => "1"
             )

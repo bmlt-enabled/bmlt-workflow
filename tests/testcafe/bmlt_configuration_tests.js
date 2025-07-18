@@ -30,7 +30,7 @@ import { userVariables } from "../../.testcaferc";
 fixture`bmlt_configuration_test_fixture`
   .beforeEach(async (t) => {
     await waitfor(userVariables.admin_logon_page_single);
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3000"),"hidden";  
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001"),"hidden";  
     await set_language_single(t, "en_EN");
   });
 
@@ -85,7 +85,7 @@ test("Change_BMLT_To_Blank_Username", async (t) => {
     .click(ao.bmltwf_bmlt_configuration_test)
     // wordpress ui bug?
     .click(ao.bmltwf_bmlt_configuration_test)
-    .expect(ao.bmltwf_error_class_options_dialog_bmltwf_error_message.innerText).match(/username parameter/)
+    await t.expect(ao.bmltwf_error_class_options_dialog_bmltwf_error_message.innerText).match(/username parameter/)
     .expect(ao.bmltwf_bmlt_configuration_save.withAttribute("disabled").exists).ok()
 
 });

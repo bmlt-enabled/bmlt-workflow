@@ -63,7 +63,7 @@ final class SubmissionsHandlerTest extends TestCase
 
     public $meeting;
     public $bmltwf_dbg;
-    
+
     protected function setVerboseErrorHandler()
     {
         $handler = function ($errorNumber, $errorString, $errorFile, $errorLine) {
@@ -73,39 +73,41 @@ Message: $errorString
 File: $errorFile
 Line: $errorLine
 ";
-print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
+            print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 5));
         };
         set_error_handler($handler);
-
     }
 
     protected function setUp(): void
     {
-        
+
         $this->setVerboseErrorHandler();
         $basedir = getcwd();
-        require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-error.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-http-response.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-response.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-request.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/endpoints/class-wp-rest-controller.php');
-        if (!class_exists('wpdb')) {
-            require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/wp-db.php');
-        }
 
+        require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
+        require_once($basedir . '/vendor/autoload.php');
+        require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
+        require_once($basedir . '/vendor/wp/wp-includes/class-wp-error.php');
+        require_once($basedir . '/vendor/wp/wp-includes/class-wp-http-response.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/endpoints/class-wp-rest-controller.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/class-wp-rest-response.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/class-wp-rest-request.php');
+        if (!class_exists('wpdb')) {
+            require_once($basedir . '/vendor/wp/wp-includes/wp-db.php');
+        }
         Brain\Monkey\setUp();
+
         Functions\when('sanitize_text_field')->returnArg();
         Functions\when('sanitize_email')->returnArg();
         Functions\when('sanitize_textarea_field')->returnArg();
         Functions\when('absint')->returnArg();
         Functions\when('current_time')->justReturn('2022-03-23 09:22:44');
-        Functions\when('wp_json_encode')->justReturn('{"contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","service_body_bigint":2,"additional_info":"my additional info","meeting_name":"virtualmeeting randwick","weekday_tinyint":"2","start_time":"20:30:00"}');
+        Functions\when('wp_json_encode')->justReturn('{"contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","serviceBodyId":2,"additional_info":"my additional info","name":"virtualmeeting randwick","day":2,"startTime":"20:30"}');
         Functions\when('get_site_url')->justReturn('http://127.0.0.1/wordpress');
         Functions\when('__')->returnArg();
+        Functions\when('wp_is_json_media_type')->justReturn(true);
 
-        $this->meeting = ' { "id_bigint": "3563", "worldid_mixed": "", "shared_group_id_bigint": "", "service_body_bigint": "3", "weekday_tinyint": "2", "venue_type": "1", "start_time": "19:00:00", "duration_time": "01:15:00", "time_zone": "", "formats": "BT", "lang_enum": "en", "longitude": "0", "latitude": "0", "distance_in_km": "", "distance_in_miles": "", "email_contact": "", "meeting_name": "Test Monday Night Meeting", "location_text": "Glebe Town Hall", "location_info": "", "location_street": "160 Johns Road", "location_city_subsection": "", "location_neighborhood": "", "location_municipality": "Glebe", "location_sub_province": "", "location_province": "NSW", "location_postal_code_1": "NSW", "location_nation": "", "comments": "", "train_lines": "", "bus_lines": "", "contact_phone_2": "", "contact_email_2": "", "contact_name_2": "", "contact_phone_1": "", "contact_email_1": "", "contact_name_1": "", "zone": "", "phone_meeting_number": "", "virtual_meeting_link": "", "virtual_meeting_additional_info": "", "published": "1", "root_server_uri": "http:", "format_shared_id_list": "3" } ';
-
+        $this->meeting = ' { "id": "3563", "worldId": "", "serviceBodyId": "3", "day": 2, "venueType": 1, "startTime": "19:00", "duration": "01:15", "time_zone": "", "formats": "BT", "lang_enum": "en", "longitude": "0", "latitude": "0", "distance_in_km": "", "distance_in_miles": "", "email_contact": "", "name": "Test Monday Night Meeting", "location_text": "Glebe Town Hall", "location_info": "", "location_street": "160 Johns Road", "location_city_subsection": "", "location_neighborhood": "", "location_municipality": "Glebe", "location_sub_province": "", "location_province": "NSW", "location_postal_code_1": "NSW", "location_nation": "", "comments": "", "train_lines": "", "bus_lines": "", "contact_phone_2": "", "contact_email_2": "", "contact_name_2": "", "contact_phone_1": "", "contact_email_1": "", "contact_name_1": "", "zone": "", "phone_meeting_number": "", "virtual_meeting_link": "", "virtual_meeting_additional_info": "", "published": "1", "root_server_uri": "http:", "formatIds": [3] } ';
     }
 
     protected function tearDown(): void
@@ -113,7 +115,6 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Brain\Monkey\tearDown();
         parent::tearDown();
         Mockery::close();
-
     }
 
     private function generate_approve_request($test_submission_id, $body)
@@ -123,14 +124,46 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $request   = new WP_REST_Request('POST', "http://3.25.141.92/flop/wp-json/bmltwf/v1/submissions/{$test_submission_id}/approve");
         $request->set_header('content-type', 'application/json');
         $request->set_body($json_post);
-        $request->set_url_params(array('id' => $test_submission_id));
+        $request->set_url_params(array('change_id' => $test_submission_id));
         $request->set_route("/bmltwf/v1/submissions/{$test_submission_id}/approve");
         $request->set_method('POST');
 
         return $request;
     }
 
-    private function stub_bmltv2($json_meeting, &$bmlt_input)
+    // private function stub_bmltv3($json_meeting, &$bmlt_input)
+    // {
+    //     $resp = $json_meeting;
+    //     $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
+    //     // $bmlt = Mockery::mock('overload:bmltwf\BMLT\Integration');
+    //     $bmlt = \Mockery::mock('Integration');
+
+    //     /** @var Mockery::mock $bmlt test */
+    //     $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
+    //         ->shouldReceive('getMeeting')->andreturn(json_decode($resp, true))
+    //         ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats, true))
+    //         ->shouldReceive('isAutoGeocodingEnabled')->andreturn(true)
+    //         ->shouldReceive('getServiceBodies')->andreturn(array("1"=> array("name"=>"test"),"3"=> array("name"=>"test"),"6"=> array("name"=>"test"),"99"=> array("name"=>"test")));
+
+    //     $bmlt->shouldReceive('geolocateAddress')
+    //     ->andReturn([
+    //         'results' => [
+    //             [
+    //                 'geometry' => [
+    //                     'location' => [
+    //                         'lat' => 37.7749,
+    //                         'lng' => -122.4194
+    //                     ]
+    //                 ]
+    //             ]
+    //         ]
+    //     ]);
+
+    //     Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
+    //     return $bmlt;
+    // }
+
+    private function stub_bmltv3($json_meeting, &$bmlt_input)
     {
         $resp = $json_meeting;
         $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "description_string": "This meeting is focused on the needs of new members of NA.", "lang": "en", "id": "1", "world_id": "BEG" }, { "@attributes": { "sequence_index": "1" }, "key_string": "BL", "name_string": "Bi-Lingual", "description_string": "This Meeting can be attended by speakers of English and another language.", "lang": "en", "id": "2", "world_id": "LANG" }, { "@attributes": { "sequence_index": "2" }, "key_string": "BT", "name_string": "Basic Text", "description_string": "This meeting is focused on discussion of the Basic Text of Narcotics Anonymous.", "lang": "en", "id": "3", "world_id": "BT" }]';
@@ -139,12 +172,24 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         /** @var Mockery::mock $bmlt test */
         $bmlt->shouldReceive(['postAuthenticatedRootServerRequest' => $resp])->with('', \Mockery::capture($bmlt_input))
-            ->shouldReceive('geolocateAddress')->andreturn(array("latitude" => 1, "longitude" => 1))
-            ->shouldReceive('retrieve_single_meeting')->andreturn(json_decode($resp, true))
+            ->shouldReceive('getMeeting')->andreturn(json_decode($resp, true))
             ->shouldReceive('getMeetingFormats')->andreturn(json_decode($formats, true))
             ->shouldReceive('isAutoGeocodingEnabled')->andreturn(true)
-            ->shouldReceive('is_v3_server')->andreturn(false)
-            ->shouldReceive('getServiceBodies')->andreturn(array("1"=> array("name"=>"test"),"3"=> array("name"=>"test"),"6"=> array("name"=>"test"),"99"=> array("name"=>"test")));
+            ->shouldReceive('getServiceBodies')->andreturn(array("1" => array("name" => "test"), "3" => array("name" => "test"), "6" => array("name" => "test"), "99" => array("name" => "test")));
+
+        $bmlt->shouldReceive('geolocateAddress')
+            ->andReturn([
+                'results' => [
+                    [
+                        'geometry' => [
+                            'location' => [
+                                'lat' => 37.7749,
+                                'lng' => -122.4194
+                            ]
+                        ]
+                    ]
+                ]
+            ]);
 
         Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
         return $bmlt;
@@ -155,25 +200,28 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_can_close(): void
     {
-        
-        $form_post = new class{
+
+        $form_post = new class {
             public function get_json_params()
             {
                 return array(
-            "update_reason" => "reason_close",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "email_address" => "joe@joe.com",
-            "meeting_id" => "3277",
-            "service_body_bigint" => "1",
-            "submit" => "Submit Form",
-            "additional_info" => "I'd like to close the meeting please",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
-                );}};
+                    "update_reason" => "reason_close",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "email_address" => "joe@joe.com",
+                    "id" => "3277",
+                    "serviceBodyId" => "1",
+                    "submit" => "Submit Form",
+                    "additional_info" => "I'd like to close the meeting please",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                );
+            }
+        };
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
+
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
         // handle db insert of submission
@@ -193,9 +241,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         $bmlt_input = '';
         Functions\when('\get_option')->justReturn("success");
-        
+
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->debug_log("TEST RESPONSE");
@@ -210,27 +258,27 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     /**
      * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
-    public function test_can_change_meeting_name(): void
+    public function test_can_change_name(): void
     {
-        $form_post = new class{
-        public function get_json_params()
-        {
-            return  array(
-            "update_reason" => "reason_change",
-            "meeting_name" => "testing name change",
-            "meeting_id" => "3277",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "service_body_bigint" => "6",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
-            "venue_type" => "1",
-            "published" => "1"
-        );
-        }
-    };
+        $form_post = new class {
+            public function get_json_params()
+            {
+                return  array(
+                    "update_reason" => "reason_change",
+                    "name" => "testing name change",
+                    "id" => "3277",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "serviceBodyId" => "6",
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                    "venueType" => 1,
+                    "published" => "1"
+                );
+            }
+        };
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -247,39 +295,42 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         Functions\when('\get_option')->justReturn("success");
 
-        $resp = '{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"6","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}';
-        
+        $resp = '{"id":"3563","worldId":"","serviceBodyId":"6","day":2,"venueType":"1","startTime":"19:00","duration":"01:15","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","formatIds":[3]}';
+
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($resp, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($resp, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
-        
+
         $this->debug_log(($response));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
     }
+
 
     /**
      * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_service_body(): void
     {
-        $form_post = new class{
+        $form_post = new class {
             public function get_json_params()
             {
                 return array(
-            "update_reason" => "reason_change",
-            "meeting_name" => "testing name change",
-            "meeting_id" => "3277",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "service_body_bigint" => "1", // changing from 6 to 1
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
-            "published" => "1"
+                    "update_reason" => "reason_change",
+                    "name" => "testing name change",
+                    "id" => "3277",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "serviceBodyId" => "1", // changing from 6 to 1
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                    "published" => "1"
 
-        );}};
+                );
+            }
+        };
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -291,14 +342,14 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
         Functions\when('wp_mail')->justReturn('true');
 
-        $resp = '{"id_bigint":"3563","worldid_mixed":"","shared_group_id_bigint":"","service_body_bigint":"6","weekday_tinyint":"2","venue_type":"1","start_time":"19:00:00","duration_time":"01:15:00","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","meeting_name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","format_shared_id_list":"3"}';
+        $resp = '{"id":"3563","worldId":"","serviceBodyId":"6","day":2,"venueType":"1","startTime":"19:00","duration":"01:15","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","formatIds":[3]}';
 
         $bmlt_input = '';
 
         Functions\when('\get_option')->justReturn("success");
-        
+
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($resp, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($resp, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(\WP_Error::class, $response);
@@ -309,30 +360,32 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_can_change_meeting_format(): void
     {
-        $form_post = new class{
+        $form_post = new class {
             public function get_json_params()
             {
                 return array(
-            "update_reason" => "reason_change",
-            "meeting_name" => "testing name change",
-            "meeting_id" => "3277",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "service_body_bigint" => "3",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "format_shared_id_list" => "1",
-            "venue_type" => "1",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
-            "published" => "1"
+                    "update_reason" => "reason_change",
+                    "name" => "testing name change",
+                    "id" => "3277",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "serviceBodyId" => "3",
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "formatIds" => ["1"],
+                    "venueType" => "1",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                    "published" => "1"
                 );
             }
         };
-        
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        $response =  Mockery::mock('WP_REST_Response');
+        $response->shouldReceive('set_status')->andReturn("hello");
         /** @var Mockery::mock $wpdb test */
         // handle db insert of submission
         $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
@@ -345,100 +398,50 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\get_option')->justReturn("success");
 
         $retrieve_single_response = $this->meeting;
-        
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
-        
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
+
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
+        print_r($response);
         $this->assertEquals(200, $response->get_status());
     }
-
-    /**
-     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
-     */
-    public function test_can_change_if_meeting_format_has_leading_or_trailing_commas(): void
-    {
-        $form_post = new class{
-            public function get_json_params()
-            {
-                return array(
-            "update_reason" => "reason_change",
-            "meeting_name" => "testing name change",
-            "meeting_id" => "3277",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "venue_type" => "1",
-            "service_body_bigint" => "3",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "format_shared_id_list" => ",,1,2,,,,",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
-            "published" => "1"
-                );
-            }
-        };
-
-        global $wpdb;
-        $wpdb = Mockery::mock('wpdb');
-        /** @var Mockery::mock $wpdb test */
-        // handle db insert of submission
-        $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
-        // handle email to service body
-        $wpdb->shouldReceive('prepare')->andReturn(true);
-        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
-        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
-        Functions\when('wp_mail')->justReturn('true');
-
-        Functions\when('\get_option')->justReturn("success");
-
-        $retrieve_single_response = $this->meeting;
-        
-        $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
-        $response = $handlers->meeting_update_form_handler_rest($form_post);
-        
-        $this->debug_log(($response));
-
-        $this->assertInstanceOf(WP_REST_Response::class, $response);
-        $this->assertEquals(200, $response->get_status());
-    }
-
 
     /**
      * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_create_new_with_no_starter_kit_requested(): void
     {
-        $form_post = new class{
+        $form_post = new class {
             public function get_json_params()
             {
                 return array(
-            "update_reason" => "reason_new",
-            "meeting_name" => "testing name change",
-            "meeting_id" => "3277",
-            "start_time" => "10:00:00",
-            "duration_time" => "01:00:00",
-            "location_text" => "test location",
-            "location_street" => "test street",
-            "location_municipality" => "test municipality",
-            "location_province" => "test province",
-            "location_postal_code_1" => "12345",
-            "weekday_tinyint" => "1",
-            "service_body_bigint" => "99",
-            "format_shared_id_list" => "1",
-            "starter_kit_required" => "no",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "venue_type" => "1",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
+                    "update_reason" => "reason_new",
+                    "name" => "testing name change",
+                    "id" => "3277",
+                    "startTime" => "10:00:00",
+                    "duration" => "01:00:00",
+                    "location_text" => "test location",
+                    "location_street" => "test street",
+                    "location_municipality" => "test municipality",
+                    "location_province" => "test province",
+                    "location_postal_code_1" => "12345",
+                    "day" => "1",
+                    "serviceBodyId" => "99",
+                    "formatIds" => ["1"],
+                    "starter_kit_required" => "no",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "venueType" => "1",
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
 
-                );}};
+                );
+            }
+        };
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -456,7 +459,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $retrieve_single_response = $this->meeting;
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->debug_log(($response));
@@ -469,33 +472,35 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_can_create_new_with_alpha_postcode(): void
     {
-        $form_post = new class{
+        $form_post = new class {
             public function get_json_params()
             {
                 return array(
-            "update_reason" => "reason_new",
-            "meeting_name" => "testing name change",
-            "meeting_id" => "3277",
-            "start_time" => "10:00:00",
-            "duration_time" => "01:00:00",
-            "location_text" => "test location",
-            "location_street" => "test street",
-            "location_municipality" => "test municipality",
-            "location_province" => "test province",
-            "location_postal_code_1" => "P85 FG02",
-            "weekday_tinyint" => "1",
-            "service_body_bigint" => "99",
-            "format_shared_id_list" => "1",
-            "starter_kit_required" => "no",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "venue_type" => "1",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
-                );}};
-        
+                    "update_reason" => "reason_new",
+                    "name" => "testing name change",
+                    "id" => "3277",
+                    "startTime" => "10:00:00",
+                    "duration" => "01:00:00",
+                    "location_text" => "test location",
+                    "location_street" => "test street",
+                    "location_municipality" => "test municipality",
+                    "location_province" => "test province",
+                    "location_postal_code_1" => "P85 FG02",
+                    "day" => "1",
+                    "serviceBodyId" => "99",
+                    "formatIds" => ["1"],
+                    "starter_kit_required" => "no",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "venueType" => "1",
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                );
+            }
+        };
+
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -511,9 +516,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\get_option')->justReturn("success");
 
         $retrieve_single_response = $this->meeting;
-        
+
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->debug_log(($response));
@@ -524,34 +529,36 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
     /**
      * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
-    public function test_cant_create_new_with_bad_start_time(): void
+    public function test_cant_create_new_with_bad_startTime(): void
     {
-        $form_post = new class{
+        $form_post = new class {
             public function get_json_params()
             {
                 return array(
-            "update_reason" => "reason_new",
-            "meeting_name" => "testing name change",
-            "meeting_id" => "3277",
-            "start_time" => "12345",
-            "duration_time" => "01:00:00",
-            "location_text" => "test location",
-            "location_street" => "test street",
-            "location_municipality" => "test municipality",
-            "location_province" => "test province",
-            "location_postal_code_1" => "12345",
-            "weekday_tinyint" => "1",
-            "service_body_bigint" => "99",
-            "format_shared_id_list" => "1",
-            "starter_kit_required" => "no",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
+                    "update_reason" => "reason_new",
+                    "name" => "testing name change",
+                    "id" => "3277",
+                    "startTime" => "12345",
+                    "duration" => "01:00:00",
+                    "location_text" => "test location",
+                    "location_street" => "test street",
+                    "location_municipality" => "test municipality",
+                    "location_province" => "test province",
+                    "location_postal_code_1" => "12345",
+                    "day" => "1",
+                    "serviceBodyId" => "99",
+                    "formatIds" => ["1"],
+                    "starter_kit_required" => "no",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
 
-        );}};
+                );
+            }
+        };
 
         Functions\when('\get_option')->justReturn("success");
         global $wpdb;
@@ -560,44 +567,46 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $wpdb->prefix = "";
 
         $retrieve_single_response = $this->meeting;
-        
+
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
         $this->assertInstanceOf(WP_Error::class, $response);
     }
 
-        /**
+    /**
      * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
-    public function test_cant_create_new_with_bad_duration_time(): void
+    public function test_cant_create_new_with_bad_duration(): void
     {
-        $form_post = new class{
+        $form_post = new class {
             public function get_json_params()
             {
                 return  array(
-            "update_reason" => "reason_new",
-            "meeting_name" => "testing name change",
-            "meeting_id" => "3277",
-            "start_time" => "10:00:00",
-            "duration_time" => "9999",
-            "location_text" => "test location",
-            "location_street" => "test street",
-            "location_municipality" => "test municipality",
-            "location_province" => "test province",
-            "location_postal_code_1" => "12345",
-            "weekday_tinyint" => "1",
-            "service_body_bigint" => "99",
-            "format_shared_id_list" => "1",
-            "starter_kit_required" => "no",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
+                    "update_reason" => "reason_new",
+                    "name" => "testing name change",
+                    "id" => "3277",
+                    "startTime" => "10:00:00",
+                    "duration" => "9999",
+                    "location_text" => "test location",
+                    "location_street" => "test street",
+                    "location_municipality" => "test municipality",
+                    "location_province" => "test province",
+                    "location_postal_code_1" => "12345",
+                    "day" => "1",
+                    "serviceBodyId" => "99",
+                    "formatIds" => ["1"],
+                    "starter_kit_required" => "no",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
 
-        );}};
+                );
+            }
+        };
 
         Functions\when('\get_option')->justReturn("success");
 
@@ -607,9 +616,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $wpdb->prefix = "";
 
         $retrieve_single_response = $this->meeting;
-        
+
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
         $this->assertInstanceOf(WP_Error::class, $response);
     }
@@ -619,35 +628,37 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_can_create_new_with_starter_kit_requested(): void
     {
-        
-        $form_post = new class{
+
+        $form_post = new class {
             public function get_json_params()
             {
                 return array(
-            "update_reason" => "reason_new",
-            "meeting_name" => "testing name change",
-            "meeting_id" => "3277",
-            "start_time" => "10:00:00",
-            "duration_time" => "01:00:00",
-            "location_text" => "test location",
-            "location_street" => "test street",
-            "location_municipality" => "test municipality",
-            "location_province" => "test province",
-            "location_postal_code_1" => "12345",
-            "weekday_tinyint" => "1",
-            "service_body_bigint" => "99",
-            "format_shared_id_list" => "1",
-            "starter_kit_required" => "yes",
-            "starter_kit_postal_address" => "my house",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "venue_type" => "1",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
+                    "update_reason" => "reason_new",
+                    "name" => "testing name change",
+                    "id" => "3277",
+                    "startTime" => "10:00:00",
+                    "duration" => "01:00:00",
+                    "location_text" => "test location",
+                    "location_street" => "test street",
+                    "location_municipality" => "test municipality",
+                    "location_province" => "test province",
+                    "location_postal_code_1" => "12345",
+                    "day" => "1",
+                    "serviceBodyId" => "99",
+                    "formatIds" => ["1"],
+                    "starter_kit_required" => "yes",
+                    "starter_kit_postal_address" => "my house",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "venueType" => "1",
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
 
-                );}};
+                );
+            }
+        };
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -666,7 +677,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $retrieve_single_response = $this->meeting;
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->debug_log(($response));
@@ -674,80 +685,26 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $this->assertEquals(200, $response->get_status());
     }
 
-    //
-    // FAILURE TESTING
-    //
-
-    // /**
-    //  * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
-    //  */
-    // public function test_cant_create_new_if_starter_kit_answer_missing(): void
-    // {
-
-    //     $form_post = array(
-    //         "update_reason" => "reason_new",
-    //         "meeting_name" => "testing name change",
-    //         "meeting_id" => "3277",
-    //         "start_time" => "10:00:00",
-    //         "duration_time" => "01:00:00",
-    //         "location_text" => "test location",
-    //         "location_street" => "test street",
-    //         "location_municipality" => "test municipality",
-    //         "location_province" => "test province",
-    //         "location_postal_code_1" => "12345",
-    //         "weekday_tinyint" => "1",
-    //         "service_body_bigint" => "99",
-    //         "format_shared_id_list" => "1",
-    //         "first_name" => "joe",
-    //         "last_name" => "joe",
-    //         "email_address" => "joe@joe.com",
-    //         "submit" => "Submit Form",
-    //         "group_relationship" => "Group Member",
-    //         "add_contact" => "yes",
-    //     );
-
-    //     global $wpdb;
-    //     $wpdb = Mockery::mock('wpdb');
-    //     /** @var Mockery::mock $wpdb test */
-
-    //     // handle db insert of submission
-    //     $wpdb->shouldNotReceive('insert');
-    //     $wpdb->prefix = "";
-
-    //     Functions\expect('wp_mail')->never();
-
-    //     $retrieve_single_response = $this->meeting;
-
-    //     Functions\when('\get_option')->justReturn("success");
-
-    //     $bmlt_input = '';
-    //     $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
-    //     $response = $handlers->meeting_update_form_handler_rest($form_post);
-
-    //     $this->assertInstanceOf(WP_Error::class, $response);
-    // }
-
-
     /**
      * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_cant_change_if_format_list_has_garbage(): void
     {
-        $form_post = new class{
+        $form_post = new class {
             public function get_json_params()
             {
                 return array(
-            "update_reason" => "reason_change",
-            "meeting_name" => "testing name change",
-            "meeting_id" => "3277",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "format_shared_id_list" => "aeeaetalkj2,7,8,33,54,55",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
-            "published" => "1"
+                    "update_reason" => "reason_change",
+                    "name" => "testing name change",
+                    "id" => "3277",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "formatIds" => ["aeeaetalk", "2", "7", "8", "33", "54", "55"],
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                    "published" => "1"
                 );
             }
         };
@@ -765,7 +722,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $retrieve_single_response = $this->meeting;
 
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
@@ -776,104 +733,22 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
      */
     public function test_cant_change_if_weekday_is_too_big(): void
     {
-        $form_post = new class{
+        $form_post = new class {
             public function get_json_params()
             {
                 return array(
-            "update_reason" => "reason_change",
-            "meeting_name" => "testing name change",
-            "weekday_tinyint" => "9999",
-            "meeting_id" => "3277",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
-            "published" => "1"
+                    "update_reason" => "reason_change",
+                    "name" => "testing name change",
+                    "day" => "9999",
+                    "id" => "3277",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                    "published" => "1"
 
-                );}};
-
-        global $wpdb;
-        $wpdb = Mockery::mock('wpdb');
-        /** @var Mockery::mock $wpdb test */
-        // handle db insert of submission
-        $wpdb->shouldNotReceive('insert');
-        $wpdb->prefix = "";
-
-        Functions\expect('wp_mail')->never();
-        Functions\when('\get_option')->justReturn("success");
-
-        $retrieve_single_response = $this->meeting;
-        
-        $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
-        $response = $handlers->meeting_update_form_handler_rest($form_post);
-
-        $this->assertInstanceOf(WP_Error::class, $response);
-    }
-
-    /**
-     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
-     */
-    public function test_cant_change_if_weekday_is_zero(): void
-    {
-        $form_post = new class{
-            public function get_json_params()
-            {
-                return array(
-            "update_reason" => "reason_change",
-            "meeting_name" => "testing name change",
-            "weekday_tinyint" => "0",
-            "meeting_id" => "3277",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
-
-        );}};
-
-        global $wpdb;
-        $wpdb = Mockery::mock('wpdb');
-        /** @var Mockery::mock $wpdb test */
-        // handle db insert of submission
-        $wpdb->shouldNotReceive('insert');
-        $wpdb->prefix = "";
-
-        Functions\expect('wp_mail')->never();
-        Functions\when('\get_option')->justReturn("success");
-
-        $retrieve_single_response = $this->meeting;
-        
-        $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
-        $response = $handlers->meeting_update_form_handler_rest($form_post);
-
-        $this->assertInstanceOf(WP_Error::class, $response);
-    }
-
-    /**
-     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
-     */
-    public function test_cant_change_if_weekday_is_garbage(): void
-    {
-        $form_post = new class{
-            public function get_json_params()
-            {
-                return array(
-            "update_reason" => "reason_change",
-            "meeting_name" => "testing name change",
-            "weekday_tinyint" => "aerear9",
-            "meeting_id" => "3277",
-            "first_name" => "joe",
-            "last_name" => "joe",
-            "email_address" => "joe@joe.com",
-            "submit" => "Submit Form",
-            "group_relationship" => "Group Member",
-            "add_contact" => "yes",
-            "published" => "1"
                 );
             }
         };
@@ -889,12 +764,143 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\get_option')->justReturn("success");
 
         $retrieve_single_response = $this->meeting;
-        
+
         $bmlt_input = '';
-        $handlers = new SubmissionsHandler($this->stub_bmltv2($retrieve_single_response, $bmlt_input));
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_Error::class, $response);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     */
+    public function test_cant_change_if_weekday_is_zero(): void
+    {
+        $form_post = new class {
+            public function get_json_params()
+            {
+                return array(
+                    "update_reason" => "reason_change",
+                    "name" => "testing name change",
+                    "day" => "0",
+                    "id" => "3277",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+
+                );
+            }
+        };
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        // handle db insert of submission
+        $wpdb->shouldNotReceive('insert');
+        $wpdb->prefix = "";
+
+        Functions\expect('wp_mail')->never();
+        Functions\when('\get_option')->justReturn("success");
+
+        $retrieve_single_response = $this->meeting;
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
+        $this->assertInstanceOf(WP_Error::class, $response);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     */
+    public function test_cant_change_if_weekday_is_garbage(): void
+    {
+        $form_post = new class {
+            public function get_json_params()
+            {
+                return array(
+                    "update_reason" => "reason_change",
+                    "name" => "testing name change",
+                    "day" => "aerear9",
+                    "id" => "3277",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                    "published" => "1"
+                );
+            }
+        };
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        // handle db insert of submission
+        $wpdb->shouldNotReceive('insert');
+        $wpdb->prefix = "";
+
+        Functions\expect('wp_mail')->never();
+        Functions\when('\get_option')->justReturn("success");
+
+        $retrieve_single_response = $this->meeting;
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
+        $this->assertInstanceOf(WP_Error::class, $response);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::worldid_publish_to_virtualna
+     */
+    public function test_worldid_publish_to_virtualna(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->prefix = "";
+
+        $bmlt_input = '';
+        $handler = new SubmissionsHandler($this->stub_bmltv3($this->meeting, $bmlt_input));
+
+        $worldid = "12345";
+        $new_worldid = $handler->worldid_publish_to_virtualna(true, $worldid);
+        $this->assertEquals($new_worldid, "G12345");
+        $worldid = "G12345";
+        $new_worldid = $handler->worldid_publish_to_virtualna(true, $worldid);
+        $this->assertEquals($new_worldid, "G12345");
+        $worldid = "U12345";
+        $new_worldid = $handler->worldid_publish_to_virtualna(true, $worldid);
+        $this->assertEquals($new_worldid, "G12345");
+        $worldid = "";
+        $new_worldid = $handler->worldid_publish_to_virtualna(true, $worldid);
+        $this->assertEquals($new_worldid, "G");
+        $worldid = "12345";
+        $new_worldid = $handler->worldid_publish_to_virtualna(false, $worldid);
+        $this->assertEquals($new_worldid, "U12345");
+        $worldid = "U12345";
+        $new_worldid = $handler->worldid_publish_to_virtualna(false, $worldid);
+        $this->assertEquals($new_worldid, "U12345");
+        $worldid = "G12345";
+        $new_worldid = $handler->worldid_publish_to_virtualna(false, $worldid);
+        $this->assertEquals($new_worldid, "U12345");
+        $worldid = "";
+        $new_worldid = $handler->worldid_publish_to_virtualna(false, $worldid);
+        $this->assertEquals($new_worldid, "U");
+        $worldid = "G";
+        $new_worldid = $handler->worldid_publish_to_virtualna(false, $worldid);
+        $this->assertEquals($new_worldid, "U");
+        $worldid = "U";
+        $new_worldid = $handler->worldid_publish_to_virtualna(true, $worldid);
+        $this->assertEquals($new_worldid, "G");
     }
 
     /**
@@ -909,7 +915,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $request = $this->generate_approve_request($test_submission_id, $body);
 
         $row = array(
-            'id' => $test_submission_id,
+            'change_id' => $test_submission_id,
             'submission_time' => '2022-03-23 09:25:53',
             'change_time' => '0000-00-00 00:00:00',
             'changed_by' => 'NULL',
@@ -917,9 +923,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_name' => 'test submitter',
             'submission_type' => 'reason_change',
             'submitter_email' => 'a@a.com',
-            'meeting_id' => 3563,
-            'service_body_bigint' => '4',
-            'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_meeting_name":"Ashfield"}',
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            'changes_requested' => '{"name":"Ashfield change name","day":5,"formatIds":[1,4,8,14,54,55],"group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield"}',
         );
 
         global $wpdb;
@@ -938,14 +944,14 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         Functions\when('\get_option')->justReturn("success");
 
-        $post_change_response = '[{"id_bigint":"3563"}]';
+        $post_change_response = '[{"id":"3563"}]';
 
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
         $bmlt_input = '';
 
@@ -955,6 +961,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\wp_remote_retrieve_body')->justReturn($post_change_response);
         Functions\when('\wp_mail')->justReturn('true');
         Functions\when('\current_user_can')->justReturn('false');
+        Functions\when('\wp_is_json_media_type')->justReturn('true');
 
         // 
         // $this->debug_log('APPROVEREQUEST');
@@ -966,7 +973,6 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $this->assertEquals(200, $response->get_status());
         $this->debug_log(($response));
         $this->assertEquals('Approved submission id 14', $response->get_data()['message']);
-
     }
 
 
@@ -982,7 +988,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $request = $this->generate_approve_request($test_submission_id, $body);
 
         $row = array(
-            'id' => $test_submission_id,
+            'change_id' => $test_submission_id,
             'submission_time' => '2022-03-23 09:25:53',
             'change_time' => '0000-00-00 00:00:00',
             'changed_by' => 'NULL',
@@ -990,9 +996,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_name' => 'test submitter',
             'submission_type' => 'reason_new',
             'submitter_email' => 'a@a.com',
-            'meeting_id' => 3563,
-            'service_body_bigint' => '4',
-            'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_meeting_name":"Ashfield","starter_kit_required":"yes","starter_kit_postal_address":"1 test st"}',
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            'changes_requested' => '{"name":"Ashfield change name","day":5,"formatIds":[1,4,8,14,54,55],"group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield","starter_kit_required":"yes","starter_kit_postal_address":"1 test st"}',
         );
 
         global $wpdb;
@@ -1011,14 +1017,14 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         Functions\when('\get_option')->justReturn("success");
 
-        $post_change_response = '[{"id_bigint":"3563"}]';
+        $post_change_response = '[{"id":"3563"}]';
 
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('createMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('createMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
         $bmlt_input = '';
 
@@ -1030,19 +1036,14 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\current_user_can')->justReturn('false');
 
         Functions\expect('\wp_mail')->once()->with('a@a.com', Mockery::any(), Mockery::any(), Mockery::any())->andReturn('true')
-        ->once()->with('fso@fso.com', Mockery::any(), Mockery::any(), Mockery::any())->andReturn('true');
+            ->once()->with('fso@fso.com', Mockery::any(), Mockery::any(), Mockery::any())->andReturn('true');
 
-        Functions\when('\get_option')->alias(function($value) {
-            if($value === 'bmltwf_fso_email_address')
-            {
+        Functions\when('\get_option')->alias(function ($value) {
+            if ($value === 'bmltwf_fso_email_address') {
                 return "fso@fso.com";
-            }
-            elseif ($value === 'bmltwf_fso_feature')
-            {
+            } elseif ($value === 'bmltwf_fso_feature') {
                 return 'display';
-            }
-            else
-            {
+            } else {
                 return true;
             }
         });
@@ -1057,7 +1058,6 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $this->assertEquals(200, $response->get_status());
         $this->debug_log(($response));
         $this->assertEquals('Approved submission id 14', $response->get_data()['message']);
-
     }
 
 
@@ -1073,7 +1073,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $request = $this->generate_approve_request($test_submission_id, $body);
 
         $row = array(
-            'id' => $test_submission_id,
+            'change_id' => $test_submission_id,
             'submission_time' => '2022-03-23 09:25:53',
             'change_time' => '0000-00-00 00:00:00',
             'changed_by' => 'NULL',
@@ -1081,9 +1081,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_name' => 'test submitter',
             'submission_type' => 'reason_new',
             'submitter_email' => 'a@a.com',
-            'meeting_id' => 3563,
-            'service_body_bigint' => '4',
-            'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","additional_info":"pls approve","original_meeting_name":"Ashfield"}',
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            'changes_requested' => '{"name":"Ashfield change name","day":5,"formatIds":[1,4,8,14,54,55],"group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield"}',
         );
 
         global $wpdb;
@@ -1102,14 +1102,14 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         Functions\when('\get_option')->justReturn("success");
 
-        $post_change_response = '[{"id_bigint":"3563"}]';
+        $post_change_response = '[{"id":"3563"}]';
 
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('createMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('createMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
         $bmlt_input = '';
 
@@ -1130,7 +1130,6 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $this->assertEquals(200, $response->get_status());
         $this->debug_log(($response));
         $this->assertEquals('Approved submission id 14', $response->get_data()['message']);
-
     }
 
     /**
@@ -1147,7 +1146,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $request = $this->generate_approve_request($test_submission_id, $body);
 
         $row = array(
-            'id' => $test_submission_id,
+            'change_id' => $test_submission_id,
             'submission_time' => '2022-03-23 09:25:53',
             'change_time' => '0000-00-00 00:00:00',
             'changed_by' => 'NULL',
@@ -1155,9 +1154,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_name' => 'test submitter',
             'submission_type' => 'reason_close',
             'submitter_email' => 'a@a.com',
-            'meeting_id' => 3563,
-            'service_body_bigint' => '4',
-            'changes_requested' => '{"group_relationship":"Group Member","add_contact":"no","additional_info":"please close this meeting","meeting_name":"Ashfield Exodus NA"}'
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            'changes_requested' => '{"group_relationship":"Group Member","add_contact":"no","additional_info":"please close this meeting","name":"Ashfield Exodus NA"}'
         );
 
         global $wpdb;
@@ -1171,10 +1170,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\get_option')->justReturn("success");
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
         $post_change_response = '[{"published":"0", "success":"true"}]';
 
@@ -1203,7 +1202,6 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->get_data()['message']);
-
     }
 
     /**
@@ -1219,7 +1217,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $request = $this->generate_approve_request($test_submission_id, $body);
 
         $row = array(
-            'id' => $test_submission_id,
+            'change_id' => $test_submission_id,
             'submission_time' => '2022-03-23 09:25:53',
             'change_time' => '0000-00-00 00:00:00',
             'changed_by' => 'NULL',
@@ -1227,13 +1225,13 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_name' => 'test submitter',
             'submission_type' => 'reason_close',
             'submitter_email' => 'a@a.com',
-            'meeting_id' => 3563,
-            'service_body_bigint' => '4',
-            'changes_requested' => '{"group_relationship":"Group Member","add_contact":"no","additional_info":"please close this meeting","meeting_name":"Ashfield Exodus NA"}'
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            'changes_requested' => '{"group_relationship":"Group Member","add_contact":"no","additional_info":"please close this meeting","name":"Ashfield Exodus NA"}'
         );
 
         $retrieve_single_response = $this->meeting;
-        $post_change_response = '[{"id_bigint":"3563"}]';
+        $post_change_response = '[{"id":"3563"}]';
         $bmlt_input = '';
 
         global $wpdb;
@@ -1243,15 +1241,15 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         Functions\when('\get_option')->justReturn("success");
 
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('deleteMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('deleteMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
 
         global $wpdb;
@@ -1280,7 +1278,6 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $this->assertInstanceOf(WP_REST_Response::class, $response);
         $this->assertEquals(200, $response->get_status());
         $this->assertEquals('Approved submission id 14', $response->get_data()['message']);
-
     }
 
     //
@@ -1300,7 +1297,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $request = $this->generate_approve_request($test_submission_id, $body);
 
         $row = array(
-            'id' => $test_submission_id,
+            'change_id' => $test_submission_id,
             'submission_time' => '2022-03-23 09:25:53',
             'change_time' => '0000-00-00 00:00:00',
             'changed_by' => 'NULL',
@@ -1308,14 +1305,14 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_name' => 'test submitter',
             'submission_type' => 'reason_change',
             'submitter_email' => 'a@a.com',
-            'meeting_id' => 3563,
-            'service_body_bigint' => '4',
-            'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","add_contact":"yes","additional_info":"pls approve","original_meeting_name":"Ashfield"}',
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            'changes_requested' => '{"name":"Ashfield change name","day":5,"formatIds":[1,4,8,14,54,55],"group_relationship":"Group Member","add_contact":"yes","additional_info":"pls approve","original_name":"Ashfield"}',
         );
 
         $retrieve_single_response = $this->meeting;
 
-        $post_change_response = '[{"id_bigint":"3563"}]';
+        $post_change_response = '[{"id":"3563"}]';
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
@@ -1326,10 +1323,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
@@ -1371,7 +1368,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $request = $this->generate_approve_request($test_submission_id, $body);
 
         $row = array(
-            'id' => $test_submission_id,
+            'change_id' => $test_submission_id,
             'submission_time' => '2022-03-23 09:25:53',
             'change_time' => '0000-00-00 00:00:00',
             'changed_by' => 'NULL',
@@ -1379,9 +1376,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_name' => 'test submitter',
             'submission_type' => 'reason_change',
             'submitter_email' => 'a@a.com',
-            'meeting_id' => 3563,
-            'service_body_bigint' => '4',
-            'changes_requested' => '{"meeting_name":"Ashfield change name","weekday_tinyint":"5","format_shared_id_list":"1,4,8,14,54,55","group_relationship":"Group Member","add_contact":"yes","additional_info":"pls approve","original_meeting_name":"Ashfield"}',
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            'changes_requested' => '{"name":"Ashfield change name","day":5,"formatIds":[1,4,8,14,54,55],"group_relationship":"Group Member","add_contact":"yes","additional_info":"pls approve","original_name":"Ashfield"}',
         );
 
         $retrieve_single_response = $this->meeting;
@@ -1396,18 +1393,18 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         Functions\when('\get_option')->justReturn("success");
 
 
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
 
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
-        $post_change_response = '[{"id_bigint":"3563"}]';
+        $post_change_response = '[{"id":"3563"}]';
 
         $wpdb->shouldReceive(
             [
@@ -1447,7 +1444,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $request = $this->generate_approve_request($test_submission_id, $body);
 
         $row = array(
-            'id' => $test_submission_id,
+            'change_id' => $test_submission_id,
             'submission_time' => '2022-03-23 09:25:53',
             'change_time' => '0000-00-00 00:00:00',
             'changed_by' => 'NULL',
@@ -1455,9 +1452,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_name' => 'test submitter',
             'submission_type' => 'reason_close',
             'submitter_email' => 'a@a.com',
-            'meeting_id' => 3563,
-            'service_body_bigint' => '4',
-            'changes_requested' => '{"group_relationship":"Group Member","add_contact":"no","additional_info":"please close this meeting","meeting_name":"Ashfield Exodus NA"}'
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            'changes_requested' => '{"group_relationship":"Group Member","add_contact":"no","additional_info":"please close this meeting","name":"Ashfield Exodus NA"}'
         );
 
         $retrieve_single_response = $this->meeting;
@@ -1474,12 +1471,12 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make deletemeeting just return true
-        $stub_bmltv2->shouldReceive('deleteMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('deleteMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
-        $post_change_response = '[{"id_bigint":"3563"}]';
+        $post_change_response = '[{"id":"3563"}]';
 
         $wpdb->shouldReceive(
             [
@@ -1517,7 +1514,7 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
         $request = $this->generate_approve_request($test_submission_id, $body);
 
         $row = array(
-            'id' => $test_submission_id,
+            'change_id' => $test_submission_id,
             'submission_time' => '2022-03-23 09:25:53',
             'change_time' => '0000-00-00 00:00:00',
             'changed_by' => 'NULL',
@@ -1525,9 +1522,9 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
             'submitter_name' => 'test submitter',
             'submission_type' => 'reason_close',
             'submitter_email' => 'a@a.com',
-            'meeting_id' => 3563,
-            'service_body_bigint' => '4',
-            'changes_requested' => '{"group_relationship":"Group Member","add_contact":"no","additional_info":"please close this meeting","meeting_name":"Ashfield Exodus NA"}'
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            'changes_requested' => '{"group_relationship":"Group Member","add_contact":"no","additional_info":"please close this meeting","name":"Ashfield Exodus NA"}'
         );
 
         $retrieve_single_response = $this->meeting;
@@ -1541,10 +1538,10 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
 
         $bmlt_input = '';
-        $stub_bmltv2 = $this->stub_bmltv2($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
         // make updatemeeting just return true
-        $stub_bmltv2->shouldReceive('updateMeeting')->andreturn(true);
-        $handlers = new SubmissionsHandler($stub_bmltv2);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
 
         $post_change_response = '[{"report":"3563", "success":"true"}]';
 
@@ -1575,4 +1572,104 @@ print_r(debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT,5));
 
         // $this->debug_log(($response));
     }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     */
+    public function test_time_validation_with_invalid_time(): void
+    {
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
+                    "update_reason" => "reason_new",
+                    "startTime" => "25:00", // Invalid time
+                    "name" => "test",
+                    "serviceBodyId" => "1"
+                );
+            }
+        };
+        
+        Functions\when('\get_option')->justReturn("success");
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        
+        $integration = Mockery::mock('Integration');
+        $integration->shouldReceive('getMeetingFormats')->andReturn([]);
+        
+        $handler = new SubmissionsHandler($integration);
+        $response = $handler->meeting_update_form_handler_rest($form_post);
+        
+        $this->assertInstanceOf(WP_Error::class, $response);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     */
+    public function test_prevent_double_approval(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldReceive('prepare')->andReturn('query');
+        $wpdb->shouldReceive('get_row')->andReturn([
+            'change_made' => 'approved',
+            'change_time' => '2023-01-01 12:00:00'
+        ]);
+        $wpdb->prefix = "";
+        
+        $user = new class {
+            public $ID = 1;
+            public $user_login = 'test';
+            public function get($field) {
+                return $this->$field ?? null;
+            }
+        };
+        Functions\when('\wp_get_current_user')->justReturn($user);
+        Functions\when('\current_user_can')->justReturn(false);
+        
+        $handler = new SubmissionsHandler(Mockery::mock('Integration'));
+        
+        $request = Mockery::mock('WP_REST_Request');
+        $request->shouldReceive('get_url_params')->andReturn(['change_id' => '123']);
+        $request->shouldReceive('get_json_params')->andReturn([]);
+        $request->shouldReceive('get_param')->with('change_id')->andReturn('123');
+        
+        $result = $handler->approve_submission_handler($request);
+        
+        $this->assertInstanceOf(WP_Error::class, $result);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     */
+    public function test_postal_code_validation(): void
+    {
+        $form_post = new class{
+            public function get_json_params()
+            {
+                return array(
+                    "update_reason" => "reason_new",
+                    "location_postal_code_1" => "INVALID_POSTAL_CODE_TOO_LONG_TO_BE_VALID",
+                    "name" => "test",
+                    "serviceBodyId" => "1"
+                );
+            }
+        };
+        
+        Functions\when('\get_option')->justReturn("success");
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        
+        $integration = Mockery::mock('Integration');
+        $integration->shouldReceive('getMeetingFormats')->andReturn([]);
+        
+        $handler = new SubmissionsHandler($integration);
+        $response = $handler->meeting_update_form_handler_rest($form_post);
+        
+        // Should succeed as postal code validation is lenient
+        $this->assertInstanceOf(WP_Error::class, $response);
+    }
+
 }

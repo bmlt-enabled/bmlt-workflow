@@ -72,7 +72,7 @@ class Controller extends \WP_REST_Controller
 		// GET submissions/<id>
 		register_rest_route(
 			$this->bmltwf_rest_namespace,
-			'/' . $this->bmltwf_submissions_rest_base . '/(?P<id>[\d]+)',
+			'/' . $this->bmltwf_submissions_rest_base . '/(?P<change_id>[\d]+)',
 			array(
 				array(
 					'methods'             => \WP_REST_Server::READABLE,
@@ -97,7 +97,7 @@ class Controller extends \WP_REST_Controller
 		);
 
 		// POST submissions/<id>/approve
-		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_submissions_rest_base . '/(?P<id>[\d]+)/approve', array(
+		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_submissions_rest_base . '/(?P<change_id>[\d]+)/approve', array(
 			'methods'             => \WP_REST_Server::CREATABLE,
 			'callback'            => array($this, 'approve_submission'),
 			'permission_callback' => array($this, 'approve_submission_action_permissions_check'),
@@ -112,7 +112,7 @@ class Controller extends \WP_REST_Controller
 			],
 		));
 		// POST submissions/<id>/reject
-		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_submissions_rest_base . '/(?P<id>[\d]+)/reject', array(
+		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_submissions_rest_base . '/(?P<change_id>[\d]+)/reject', array(
 			'methods'             => \WP_REST_Server::CREATABLE,
 			'callback'            => array($this, 'reject_submission'),
 			'permission_callback' => array($this, 'reject_submission_action_permissions_check'),
@@ -227,6 +227,17 @@ class Controller extends \WP_REST_Controller
 			),
 		);
 
+		// GET bmltserver/meetings
+		register_rest_route(
+			$this->bmltwf_rest_namespace,
+			'/' . $this->bmltwf_bmltserver_rest_base . '/meetings',
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_bmltserver_meetings'),
+				'permission_callback' => array($this, 'get_bmltserver_meetings_permissions_check'),
+			),
+		);
+		
 		// POST options/backup
 		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_options_rest_base . '/backup', array(
 			'methods'             => \WP_REST_Server::CREATABLE,
@@ -391,12 +402,16 @@ class Controller extends \WP_REST_Controller
 
 	public function get_bmltserver_geolocate_permissions_check($request)
 	{
-
-
 		$this->debug_log("patch_bmltserver " . get_current_user_id());
 		if ((!current_user_can($this->bmltwf_capability_manage_submissions))&&(!current_user_can('manage_options'))) {
 			return new \WP_Error('rest_forbidden', __('Access denied: You cannot geolocate an address.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
+		return true;
+	}
+
+	public function get_bmltserver_meetings_permissions_check($request)
+	{
+		// Anyone can list all the meetings
 		return true;
 	}
 
@@ -512,6 +527,12 @@ class Controller extends \WP_REST_Controller
 	public function get_bmltserver_geolocate($request)
 	{
 		$result = $this->BMLTServerHandler->get_bmltserver_geolocate_handler($request);
+		return rest_ensure_response($result);
+	}
+
+	public function get_bmltserver_meetings($request)
+	{
+		$result = $this->BMLTServerHandler->get_bmltserver_meetings_handler($request);
 		return rest_ensure_response($result);
 	}
 

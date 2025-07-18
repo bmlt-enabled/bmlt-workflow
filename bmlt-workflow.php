@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.19
+ * Version: 1.1.20
  * Requires at least: 5.2
  * Tested up to: 6.6.1
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.19');
+define('BMLTWF_PLUGIN_VERSION', '1.1.20');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -86,13 +86,27 @@ if (!class_exists('bmltwf_plugin')) {
             add_shortcode('bmltwf-meeting-update-form', array(&$this, 'bmltwf_meeting_update_form'));
             add_filter('plugin_action_links', array(&$this, 'bmltwf_add_plugin_link'), 10, 2);
             add_action('user_register', array(&$this, 'bmltwf_add_capability'), 10, 1);
-            add_action('plugins_loaded', array(&$this, 'bmltwf_load_textdomain'));
             register_activation_hook(__FILE__, array(&$this, 'bmltwf_install'));
         }
 
         public function bmltwf_load_textdomain()
         {
-            load_plugin_textdomain('bmlt-workflow', false, dirname(plugin_basename(__FILE__)) . '/lang');
+            $domain = 'bmlt-workflow';
+            $locale = get_locale();
+            $mofile = dirname(plugin_basename(__FILE__)) . '/lang/' . $domain . '-' . $locale . '.mo';
+            $path = plugin_dir_path(__FILE__) . 'lang/' . $domain . '-' . $locale . '.mo';
+            
+            // Debug output
+            error_log("BMLTWF Debug - Locale: " . $locale);
+            error_log("BMLTWF Debug - MO file path: " . $path);
+            error_log("BMLTWF Debug - MO file exists: " . (file_exists($path) ? 'YES' : 'NO'));
+            
+            $result = load_plugin_textdomain($domain, false, dirname(plugin_basename(__FILE__)) . '/lang');
+            error_log("BMLTWF Debug - load_plugin_textdomain result: " . ($result ? 'SUCCESS' : 'FAILED'));
+            
+            // Test translation
+            $test = __('New Meeting', $domain);
+            error_log("BMLTWF Debug - Translation test: " . $test);
         }
 
         public function bmltwf_meeting_update_form($atts = [], $content = null, $tag = '')
@@ -119,7 +133,8 @@ if (!class_exists('bmltwf_plugin')) {
 
             // inline scripts
             $script  = 'var bmltwf_form_submit_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/submissions') . '; ';
-            $script .= 'var bmltwf_bmlt_server_address = "' . get_option('bmltwf_bmlt_server_address') . '";';
+            $script .= 'var bmltwf_bmltserver_meetings_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/bmltserver/meetings') . '; ';
+
             // optional fields
             $script .= 'var bmltwf_optional_location_nation = "' . get_option('bmltwf_optional_location_nation') . '";';
             $script .= 'var bmltwf_optional_location_sub_province = "' . get_option('bmltwf_optional_location_sub_province') . '";';
@@ -314,7 +329,6 @@ if (!class_exists('bmltwf_plugin')) {
 
                     $meeting_states_and_provinces = $this->bmlt_integration->getMeetingStates();
                     $script .= "var bmltwf_do_states_and_provinces = " . json_encode($meeting_states_and_provinces) . ";";
-                    $script .= "var bmltwf_is_v3_server = " . json_encode($this->bmlt_integration->is_v3_server()) . ";";
 
                     // handling for zip and county auto geocoding
                     $script .= "var bmltwf_zip_auto_geocoding = " . json_encode($this->bmlt_integration->isAutoGeocodingEnabled('zip')) . ";";
@@ -1415,6 +1429,6 @@ if (!class_exists('bmltwf_plugin')) {
             }
         }
     }
-
+    load_plugin_textdomain('bmlt-workflow', false, dirname(plugin_basename(__FILE__)) . '/lang');
     $start_plugin = new bmltwf_plugin();
 }

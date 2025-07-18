@@ -49,6 +49,7 @@ test("Change_Wordpress_To_French_Check_User_Translations", async (t) => {
     const select = selector();
     return select.options[index].text;
     }, { dependencies: { selector } });
+    // await t.debug();
 
     // check we've translated the php file
     await t.expect(getText(1)).eql('Nouvelle réunion')
@@ -62,7 +63,7 @@ test("Change_Wordpress_To_French_Check_User_Translations", async (t) => {
     await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
     await t.pressKey("enter");
 
-    selector = uf.display_format_shared_id_list;
+    selector = uf.display_formatIds;
 
     // check we've translated a getformat call correctly
     getText = ClientFunction((index) => {
@@ -98,7 +99,7 @@ test("Change_Wordpress_To_English_Check_User_Translations", async (t) => {
     await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
     await t.pressKey("enter");
 
-    selector = uf.display_format_shared_id_list;
+    selector = uf.display_formatIds;
 
     // check we've translated a getformat call correctly
     getText = ClientFunction((index) => {

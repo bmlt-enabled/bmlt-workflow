@@ -17,9 +17,9 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 /* global wp, jQuery, google */
-/* global bmltwf_clear_notices, bmltwf_notice_success, bmltwf_notice_error, bmltwf_fetchJsonp, bmltwf_is_v3_server */
+/* global bmltwf_clear_notices, bmltwf_notice_success, bmltwf_notice_error */
 /* global bmltwf_gmaps_key, bmltwf_auto_geocoding_enabled, bmltwf_optional_location_nation, bmltwf_optional_location_sub_province, bmltwf_optional_location_province */
-/* global bmltwf_do_states_and_provinces, bmltwf_counties_and_sub_provinces, bmltwf_remove_virtual_meeting_details_on_venue_change, bmltwf_bmlt_server_address */
+/* global bmltwf_do_states_and_provinces, bmltwf_counties_and_sub_provinces, bmltwf_remove_virtual_meeting_details_on_venue_change */
 /* global bmltwf_default_closed_meetings, bmltwf_bmlt_formats, bmltwf_datatables_delete_enabled, bmltwf_admin_submissions_rest_url, bmltwf_admin_bmltwf_service_bodies */
 /* global bmltwf_optional_location_province_displayname, bmltwf_optional_location_sub_province_displayname, bmltwf_optional_location_nation_displayname */
 /* global bmltwf_bmltserver_geolocate_rest_url, bmltwf_optional_postcode, bmltwf_zip_auto_geocoding, bmltwf_county_auto_geocoding */
@@ -97,7 +97,6 @@ jQuery(document).ready(function ($) {
   let bmltwf_changedata = {};
 
   const weekdays = [
-    __('Error', 'bmlt-workflow'),
     __('Sunday', 'bmlt-workflow'),
     __('Monday', 'bmlt-workflow'),
     __('Tuesday', 'bmlt-workflow'),
@@ -108,10 +107,6 @@ jQuery(document).ready(function ($) {
   ];
 
   $.getScript(`https://maps.googleapis.com/maps/api/js?key=${bmltwf_gmaps_key}&loading=async&libraries=marker&callback=initMap&v=weekly&async=2`);
-
-  if (!bmltwf_is_v3_server) {
-    bmltwf_notice_error(__('Support for BMLT Server version 2.x will end soon. Please upgrade your BMLT Server version to 3.x or above.'), 'bmltwf-error-message');
-  }
 
   if (!bmltwf_auto_geocoding_enabled) {
     $('#optional_auto_geocode_enabled').hide();
@@ -211,22 +206,17 @@ jQuery(document).ready(function ($) {
     // fill in and highlight the changes - use extend to clone
     const changes_requested = $.extend(true, {}, bmltwf_requested);
 
-    if ('format_shared_id_list' in changes_requested) {
-      changes_requested.format_shared_id_list = changes_requested.format_shared_id_list.split(',');
-    }
-
-    if ('duration_time' in changes_requested) {
-      const durationarr = changes_requested.duration_time.split(':');
-      // hoping we got hours, minutes and seconds here
-      if (durationarr.length === 3) {
+    if ('duration' in changes_requested) {
+      const durationarr = changes_requested.duration.split(':');
+      // hoping we got hours, minutes here
+      if (durationarr.length === 2) {
         changes_requested.duration_hours = durationarr[0];
         changes_requested.duration_minutes = durationarr[1];
-        delete changes_requested.duration_time;
+        delete changes_requested.duration;
       }
     }
 
     // some special handling for deletion of fields
-    // for (const key in changes_requested)
     Object.keys(changes_requested).forEach((key) => {
       switch (key) {
         case 'original_virtual_meeting_additional_info':
@@ -254,8 +244,8 @@ jQuery(document).ready(function ($) {
 
     Object.keys(changes_requested).forEach((element) => {
       if ($(`#quickedit_${element}`).length) {
-        if (element === 'format_shared_id_list') {
-          $('.quickedit_format_shared_id_list-select2').addClass('bmltwf-changed');
+        if (element === 'formatIds') {
+          $('.quickedit_formatIds-select2').addClass('bmltwf-changed');
         } else {
           $(`#quickedit_${element}`).addClass('bmltwf-changed');
         }
@@ -269,8 +259,8 @@ jQuery(document).ready(function ($) {
         $(this).addClass('bmltwf-changed');
       }
     });
-    $('#quickedit_format_shared_id_list').on('change.bmltwf-highlight', function () {
-      $('.quickedit_format_shared_id_list-select2').addClass('bmltwf-changed');
+    $('#quickedit_formatIds').on('change.bmltwf-highlight', function () {
+      $('.quickedit_formatIds-select2').addClass('bmltwf-changed');
     });
     // stretch our grow wrap boxes
     $('.grow-wrap textarea').trigger('input', 'growwrap');
@@ -281,22 +271,22 @@ jQuery(document).ready(function ($) {
     $('#bmltwf_quickedit_map').show();
   }
 
-  function populate_and_open_quickedit(id) {
+  function populate_and_open_quickedit(change_id) {
     // clear quickedit
 
     // remove our change handler
     $('.quickedit-input').off('input.bmltwf-highlight');
-    $('#quickedit_format_shared_id_list').off('change.bmltwf-highlight');
+    $('#quickedit_formatIds').off('change.bmltwf-highlight');
     // remove the highlighting
     $('.quickedit-input').removeClass('bmltwf-changed');
-    $('.quickedit_format_shared_id_list-select2').removeClass('bmltwf-changed');
+    $('.quickedit_formatIds-select2').removeClass('bmltwf-changed');
 
     // remove any content from the input fields
     $('.quickedit-input').val('');
 
     // zip and county are disabled if the option is set
 
-    const autocompleted = ` (${__('autocompleted')})`;
+    const autocompleted = ` (${__('autocompleted', 'bmlt-workflow')})`;
     if (bmltwf_zip_auto_geocoding) {
       $('#quickedit_location_postal_code_1').prop('disabled', true);
       $('#quickedit_location_postal_code_1_label').append(autocompleted);
@@ -311,70 +301,67 @@ jQuery(document).ready(function ($) {
     // hide map and let it be shown later if required
     $('#bmltwf_quickedit_map').hide();
 
+    // hide comments and let it be shown later if required
+    $('#quickedit_comments').hide();
     bmltwf_clear_notices();
     // fill quickedit
 
     // if it's a meeting change, fill from bmlt first
-    if (bmltwf_changedata[id].submission_type === 'reason_change') {
-      const { meeting_id } = bmltwf_changedata[id];
-      const search_results_address = `${bmltwf_bmlt_server_address}client_interface/jsonp/?switcher=GetSearchResults&advanced_published=0&meeting_key=id_bigint&meeting_key_value=${meeting_id}&lang_enum=en&&recursive=1&sort_keys=start_time`;
+    if (bmltwf_changedata[change_id].submission_type === 'reason_change') {
+      const item = bmltwf_changedata[change_id].bmlt_meeting_data;
+      if (!item || !Object.keys(item).length) {
+        const a = {};
+        a.responseJSON = {};
+        a.responseJSON.message = __('Error retrieving BMLT data - meeting possibly removed', 'bmlt-workflow');
+        bmltwf_notice_error(a, 'bmltwf-error-message');
+      } else {
+        // split up the duration so we can use it in the select
+        if ('duration' in item) {
+          const durationarr = item.duration.split(':');
+          // hoping we got hours and minutes here
+          if (durationarr.length === 2) {
+            $('#quickedit_duration_hours').val(durationarr[0]);
+            $('#quickedit_duration_minutes').val(durationarr[1]);
+          }
+        }
 
-      bmltwf_fetchJsonp(search_results_address)
-        .then((response) => response.json())
-        .then((data) => {
-          // fill in all the bmlt stuff
-          const item = data[0];
-          if (!Object.keys(data).length) {
-            const a = {};
-            a.responseJSON = {};
-            a.responseJSON.message = __('Error retrieving BMLT data - meeting possibly removed', 'bmlt-workflow');
-            bmltwf_notice_error(a, 'bmltwf-error-message');
-          } else {
-            // split up the duration so we can use it in the select
-            if ('duration_time' in item) {
-              const durationarr = item.duration_time.split(':');
-              // hoping we got hours, minutes and seconds here
-              if (durationarr.length === 3) {
-                $('#quickedit_duration_hours').val(durationarr[0]);
-                $('#quickedit_duration_minutes').val(durationarr[1]);
-              }
-            }
-
-            // split up the format list so we can use it in the select
-            if ('format_shared_id_list' in item) {
-              item.format_shared_id_list = item.format_shared_id_list.split(',');
-            }
-
-            Object.keys(item).forEach((element) => {
-              if ($(`#quickedit_${element}`).length) {
-                $(`#quickedit_${element}`).val(item[element]);
-                $(`#quickedit_${element}`).trigger('change');
-              }
-            });
-            add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
-
-            if (item.longitude && item.latitude) {
-              const lat = item.latitude;
-              const long = item.longitude;
-              update_gmaps(lat, long);
-            } else {
-              $('#quickedit_gmaps').hide();
-            }
+        Object.keys(item).forEach((element) => {
+          if ($(`#quickedit_${element}`).length) {
+            $(`#quickedit_${element}`).val(item[element]);
+            $(`#quickedit_${element}`).trigger('change');
           }
         });
-    } else if (bmltwf_changedata[id].submission_type === 'reason_new') {
+        if (item.published === true) {
+          $('#quickedit_published').val('1');
+        } else {
+          $('#quickedit_published').val('0');
+        }
+        add_highlighted_changes_to_quickedit(bmltwf_changedata[change_id].changes_requested);
+
+        if (item.longitude && item.latitude) {
+          const lat = item.latitude;
+          const long = item.longitude;
+          update_gmaps(lat, long);
+        } else {
+          $('#quickedit_gmaps').hide();
+        }
+      }
+
+      $('#quickedit_comments').show();
+    } else if (bmltwf_changedata[change_id].submission_type === 'reason_new') {
       // won't have a geolocation for a new meeting
       $('#quickedit_gmaps').hide();
-      add_highlighted_changes_to_quickedit(bmltwf_changedata[id].changes_requested);
+      add_highlighted_changes_to_quickedit(bmltwf_changedata[change_id].changes_requested);
     }
+
     // Hide the publish to virtual na option if this isn't a virtual meeting
-    if ($('#quickedit_venue_type').val() !== '2') {
+    if ($('#quickedit_venueType').val() === '1') {
       $('#optional_virtualna_published').hide();
     } else {
       $('#optional_virtualna_published').show();
     }
 
-    $('#bmltwf_submission_quickedit_dialog').data('id', id).dialog('open');
+    $('#bmltwf_submission_quickedit_dialog').data('change_id', change_id).dialog('open');
   }
 
   // default close meeting radio button
@@ -394,7 +381,7 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  $('#quickedit_format_shared_id_list').select2({
+  $('#quickedit_formatIds').select2({
     placeholder: 'Select from available formats',
     multiple: true,
     width: '100%',
@@ -402,29 +389,32 @@ jQuery(document).ready(function ($) {
     selectionCssClass: ':all:',
     dropdownParent: $('#bmltwf_submission_quickedit_dialog'),
   });
-  $('#quickedit_format_shared_id_list').trigger('change');
+  $('#quickedit_formatIds').trigger('change');
 
   const datatable = $('#dt-submission').DataTable({
     dom: 'Bfrtip',
     select: true,
     searching: true,
     order: [[5, 'desc']],
+    processing: true,
+    serverSide: true,
+    pageLength: 10,
     buttons: [
       {
         name: 'approve',
         text: __('Approve', 'bmlt-workflow'),
         enabled: false,
         action(e, dt) {
-          const { id } = dt.row('.selected').data();
+          const { change_id } = dt.row('.selected').data();
           const reason = dt.row('.selected').data().submission_type;
           if (reason === 'reason_close') {
             // clear text area from before
             $('#bmltwf_submission_approve_close_dialog_textarea').val('');
-            $('#bmltwf_submission_approve_close_dialog').data('id', id).dialog('open');
+            $('#bmltwf_submission_approve_close_dialog').data('change_id', change_id).dialog('open');
           } else {
             // clear text area from before
             $('#bmltwf_submission_approve_dialog_textarea').val('');
-            $('#bmltwf_submission_approve_dialog').data('id', id).dialog('open');
+            $('#bmltwf_submission_approve_dialog').data('change_id', change_id).dialog('open');
           }
         },
       },
@@ -433,10 +423,10 @@ jQuery(document).ready(function ($) {
         text: __('Reject', 'bmlt-workflow'),
         enabled: false,
         action(e, dt) {
-          const { id } = dt.row('.selected').data();
+          const { change_id } = dt.row('.selected').data();
           // clear text area from before
           $('#bmltwf_submission_reject_dialog_textarea').val('');
-          $('#bmltwf_submission_reject_dialog').data('id', id).dialog('open');
+          $('#bmltwf_submission_reject_dialog').data('change_id', change_id).dialog('open');
         },
       },
       {
@@ -444,8 +434,8 @@ jQuery(document).ready(function ($) {
         text: __('QuickEdit', 'bmlt-workflow'),
         extend: 'selected',
         action(e, dt) {
-          const { id } = dt.row('.selected').data();
-          populate_and_open_quickedit(id);
+          const { change_id } = dt.row('.selected').data();
+          populate_and_open_quickedit(change_id);
         },
       },
       {
@@ -454,8 +444,8 @@ jQuery(document).ready(function ($) {
         enabled: bmltwf_datatables_delete_enabled,
         extend: 'selected',
         action(e, dt) {
-          const { id } = dt.row('.selected').data();
-          $('#bmltwf_submission_delete_dialog').data('id', id).dialog('open');
+          const { change_id } = dt.row('.selected').data();
+          $('#bmltwf_submission_delete_dialog').data('change_id', change_id).dialog('open');
         },
       },
     ],
@@ -464,14 +454,19 @@ jQuery(document).ready(function ($) {
       beforeSend(xhr) {
         xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
       },
+      data(d) {
+        return {
+          first: d.start,
+          last: d.start + d.length - 1,
+          total: d.recordsTotal || 0,
+        };
+      },
       dataSrc(json) {
         bmltwf_changedata = {};
-        // eslint-disable-next-line prefer-const
-        let newjson = JSON.parse(JSON.stringify(json));
+        const newjson = JSON.parse(JSON.stringify(json.data || json));
         for (let i = 0, ien = newjson.length; i < ien; i += 1) {
           newjson[i].changes_requested.submission_type = newjson[i].submission_type;
-          // store the json for us to use in quick editor
-          bmltwf_changedata[newjson[i].id] = newjson[i];
+          bmltwf_changedata[newjson[i].change_id] = newjson[i];
         }
         return newjson;
       },
@@ -479,7 +474,7 @@ jQuery(document).ready(function ($) {
     columns: [
       {
         name: 'id',
-        data: 'id',
+        data: 'change_id',
       },
       {
         name: 'submitter_name',
@@ -490,8 +485,8 @@ jQuery(document).ready(function ($) {
         data: 'submitter_email',
       },
       {
-        name: 'service_body_bigint',
-        data: 'service_body_bigint',
+        name: 'serviceBodyId',
+        data: 'serviceBodyId',
         render(data) {
           if (data in bmltwf_admin_bmltwf_service_bodies) {
             return bmltwf_admin_bmltwf_service_bodies[data].name;
@@ -512,22 +507,22 @@ jQuery(document).ready(function ($) {
           switch (data.submission_type) {
             case 'reason_new':
               submission_type = __('New Meeting', 'bmlt-workflow');
-              namestr = data.meeting_name;
-              meeting_day = weekdays[data.weekday_tinyint];
-              meeting_time = data.start_time;
+              namestr = data.name;
+              meeting_day = weekdays[data.day];
+              meeting_time = data.startTime;
               break;
             case 'reason_close':
               submission_type = __('Close Meeting', 'bmlt-workflow');
               // console.log(data);
-              namestr = data.meeting_name;
-              meeting_day = weekdays[data.weekday_tinyint];
-              meeting_time = data.start_time;
+              namestr = data.name;
+              meeting_day = weekdays[data.day];
+              meeting_time = data.startTime;
               break;
             case 'reason_change':
               submission_type = __('Modify Meeting', 'bmlt-workflow');
-              namestr = data.original_meeting_name;
-              meeting_day = weekdays[data.original_weekday_tinyint];
-              meeting_time = data.original_start_time;
+              namestr = data.original_name;
+              meeting_day = weekdays[data.original_day];
+              meeting_time = data.original_startTime;
               original = `${__('Original', 'bmlt-workflow')} `;
               break;
             default:
@@ -554,7 +549,7 @@ jQuery(document).ready(function ($) {
         name: 'change_time',
         data: 'change_time',
         render(data) {
-          if (data === '0000-00-00 00:00:00') {
+          if ((data === '0000-00-00 00:00:00') || (data === null)) {
             return '(no change made)';
           }
           return mysql2localdate(data);
@@ -718,7 +713,7 @@ jQuery(document).ready(function ($) {
 
     Object.keys(c).forEach((key) => {
       switch (key) {
-        case 'meeting_name': {
+        case 'name': {
           let mname = __('Meeting Name (new)', 'bmlt-workflow');
           if (d.submission_type === 'reason_close') {
             mname = __('Meeting Name', 'bmlt-workflow');
@@ -726,9 +721,9 @@ jQuery(document).ready(function ($) {
           table += column(col_meeting_details, mname, c[key]);
           break;
         }
-        case 'venue_type': {
+        case 'venueType': {
           const vtype = venue_types[c[key]];
-          if ('original_venue_type' in c) {
+          if ('original_venueType' in c) {
             const ovtype = venue_types[c.original_venue_type];
             table += column(col_meeting_details, __('Venue Type', 'bmlt-workflow'), `${ovtype} → ${vtype}`);
           } else {
@@ -747,7 +742,7 @@ jQuery(document).ready(function ($) {
           break;
         }
         case 'virtualna_published': {
-          const published = c[key] === '1' ? 'Yes' : 'No';
+          const published = c[key] === 1 ? 'Yes' : 'No';
           if ('original_virtualna_published' in c) {
             const opublished = c.original_published === 1 || c.original_published === true ? 'Yes' : 'No';
             table += column(col_meeting_details, __('Virtual.na.org Published', 'bmlt-workflow'), `${opublished} → ${published}`);
@@ -756,11 +751,11 @@ jQuery(document).ready(function ($) {
           }
           break;
         }
-        case 'start_time':
+        case 'startTime':
           table += column(col_meeting_details, __('Start Time', 'bmlt-workflow'), c[key]);
           break;
-        case 'duration_time': {
-          const durationarr = d.changes_requested.duration_time.split(':');
+        case 'duration': {
+          const durationarr = d.changes_requested.duration.split(':');
           table += column(col_meeting_details, __('Duration', 'bmlt-workflow'), `${durationarr[0]}h${durationarr[1]}m`);
           break;
         }
@@ -791,7 +786,7 @@ jQuery(document).ready(function ($) {
         case 'group_relationship':
           table += column(col_personal_details, __('Relationship to Group', 'bmlt-workflow'), c[key]);
           break;
-        case 'weekday_tinyint':
+        case 'day':
           table += column(col_meeting_details, __('Meeting Day', 'bmlt-workflow'), weekdays[c[key]]);
           break;
         case 'starter_kit_postal_address':
@@ -827,12 +822,12 @@ jQuery(document).ready(function ($) {
           table += column(col_virtual_meeting_details, __('Virtual Meeting Link', 'bmlt-workflow'), c[key]);
           break;
 
-        case 'format_shared_id_list': {
+        case 'formatIds': {
           const friendlyname = __('Meeting Formats', 'bmlt-workflow');
           // convert the meeting formats to human readable
           let friendlydata = '';
-          const strarr = d.changes_requested.format_shared_id_list.split(',');
-          strarr.forEach((element) => {
+          // const strarr = d.changes_requested.formatIds.split(',');
+          d.changes_requested.formatIds.forEach((element) => {
             friendlydata += `(${bmltwf_bmlt_formats[element].key_string})-${bmltwf_bmlt_formats[element].name_string} `;
           });
           table += column(col_meeting_details, friendlyname, friendlydata);
@@ -883,7 +878,7 @@ jQuery(document).ready(function ($) {
       buttons: {
         Ok() {
           const fn = window[`${this.id}_ok`];
-          if (typeof fn === 'function') fn($(this).data('id'));
+          if (typeof fn === 'function') fn($(this).data('change_id'));
         },
         Cancel() {
           $(this).dialog('close');
@@ -982,12 +977,12 @@ jQuery(document).ready(function ($) {
       if ($(this).is('textarea,select,input')) {
         const short_id = $(this).attr('id').replace('quickedit_', '');
         // turn the format list into a comma seperated array
-        if (short_id === 'format_shared_id_list') {
+        if (short_id === 'formatIds') {
           quickedit_changes_requested[short_id] = $(this).val().join(',');
         } else if (short_id === 'duration_hours' || short_id === 'duration_minutes') {
           // reconstruct our duration from the select list
           // add duration entirely if either minutes or hours have changed
-          quickedit_changes_requested.duration_time = `${$('#quickedit_duration_hours').val()}:${$('#quickedit_duration_minutes').val()}:00`;
+          quickedit_changes_requested.duration = `${$('#quickedit_duration_hours').val()}:${$('#quickedit_duration_minutes').val()}:00`;
         } else if ((short_id === 'virtual_meeting_additional_info' || short_id === 'phone_meeting_number' || short_id === 'virtual_meeting_link') && $(this).val() === '(deleted)') {
           delete quickedit_changes_requested[short_id];
         } else {
@@ -1048,14 +1043,14 @@ jQuery(document).ready(function ($) {
         {
           text: __('Check Geolocate', 'bmlt-workflow'),
           click() {
-            geolocate_handler($(this).data('id'));
+            geolocate_handler($(this).data('change_id'));
           },
           disabled: !bmltwf_auto_geocoding_enabled,
         },
         {
           text: __('Save', 'bmlt-workflow'),
           click() {
-            save_handler($(this).data('id'));
+            save_handler($(this).data('change_id'));
           },
         },
         {

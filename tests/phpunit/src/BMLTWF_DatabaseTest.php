@@ -54,13 +54,15 @@ Line: $errorLine
         $this->setVerboseErrorHandler();
         $basedir = getcwd();
         require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-error.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-http-response.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/endpoints/class-wp-rest-controller.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-response.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-request.php');
+        require_once($basedir . '/vendor/autoload.php');
+        require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
+        require_once($basedir . '/vendor/wp/wp-includes/class-wp-error.php');
+        require_once($basedir . '/vendor/wp/wp-includes/class-wp-http-response.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/endpoints/class-wp-rest-controller.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/class-wp-rest-response.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/class-wp-rest-request.php');
         if (!class_exists('wpdb')) {
-            require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/wp-db.php');
+            require_once($basedir . '/vendor/wp/wp-includes/wp-db.php');
         }
 
         Brain\Monkey\setUp();
@@ -140,6 +142,7 @@ Line: $errorLine
         $wpdb->prefix = "";
 
         $BMLTWF_Database = new BMLTWF_Database();
+        $wpdb->shouldReceive('get_results')->andReturn([]);
 
         Functions\expect('\delete_option')->with('bmltwf_db_version')->once()->andReturn(true);
         Functions\expect('\add_option')->with('bmltwf_db_version',$BMLTWF_Database->bmltwf_db_version)->once()->andReturn(true);
@@ -200,6 +203,176 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn(false);
         // fresh install should be performed
         $this->assertEquals($BMLTWF_Database->bmltwf_db_upgrade($BMLTWF_Database->bmltwf_db_version, true), 1);
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::createTables
+     */
+    public function test_createTables_with_old_version(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldReceive('query')->atLeast()->once();
+        $wpdb->prefix = "";
+
+        $database = new BMLTWF_Database();
+        $database->createTables('utf8mb4_unicode_ci', '0.4.0');
+        
+        $this->assertTrue(true); // Test passes if no exceptions thrown
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::createTables
+     */
+    public function test_createTables_with_current_version(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldReceive('query')->atLeast()->once();
+        $wpdb->prefix = "";
+
+        $database = new BMLTWF_Database();
+        $database->createTables('utf8mb4_unicode_ci', '1.1.18');
+        
+        $this->assertTrue(true); // Test passes if no exceptions thrown
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::upgradeComplexJsonFields
+     */
+    public function test_upgradeComplexJsonFields_transforms_data(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        
+        $testData = [
+            (object)[
+                'change_id' => 1,
+                'changes_requested' => '{"weekday_tinyint":"2","format_shared_id_list":"1,2,3","original_weekday_tinyint":"3","original_format_shared_id_list":"4,5"}'
+            ]
+        ];
+        
+        $wpdb->shouldReceive('get_results')->andReturn($testData);
+        $wpdb->shouldReceive('update')->once()->with(
+            Mockery::any(),
+            Mockery::on(function($data) {
+                $json = json_decode($data['changes_requested'], true);
+                return isset($json['day']) && $json['day'] === 1 && 
+                       isset($json['formatIds']) && $json['formatIds'] === [1,2,3];
+            }),
+            ['change_id' => 1]
+        );
+
+        $database = new BMLTWF_Database();
+        $reflection = new ReflectionClass($database);
+        $method = $reflection->getMethod('upgradeComplexJsonFields');
+        $method->setAccessible(true);
+        $method->invoke($database);
+        
+        $this->assertTrue(true);
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::testUpgrade
+     */
+    public function test_database_upgrade_from_old_version(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        $wpdb->num_rows = 1; // Mock table exists check
+        $wpdb->shouldReceive('query')->andReturn(true);
+        $wpdb->shouldReceive('get_charset_collate')->andReturn('utf8mb4_unicode_ci');
+        $wpdb->shouldReceive('get_results')->andReturn([
+            (object)['TABLE_NAME' => 'bmltwf_submissions', 'COLUMN_NAME' => 'serviceBodyId'],
+            (object)['TABLE_NAME' => 'bmltwf_service_bodies_access', 'COLUMN_NAME' => 'serviceBodyId']
+        ]);
+        $wpdb->shouldReceive('get_col')->andReturn(['change_id', 'serviceBodyId', 'id']);
+        $wpdb->shouldReceive('get_var')->andReturnValues([0, 11, 10]); // orphaned, auto_inc, max_id
+        
+        Functions\when('\update_option')->justReturn(true);
+        Functions\when('\delete_option')->justReturn(true);
+        Functions\when('\add_option')->justReturn(true);
+        Functions\when('\get_option')->alias(function($option) {
+            return $option === 'bmltwf_db_version' ? '1.1.17' : false;
+        });
+        
+        $database = new BMLTWF_Database();
+        $test_results = $database->testUpgrade('1.1.17');
+        
+        $this->assertTrue($test_results['success'], 
+            'Database upgrade test failed: ' . implode(', ', $test_results['errors']));
+        
+        $this->assertEmpty($test_results['errors'], 
+            'Upgrade validation errors: ' . implode(', ', $test_results['errors']));
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::validateUpgrade
+     */
+    public function test_database_validation(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        $wpdb->shouldReceive('get_col')->andReturn(['change_id', 'serviceBodyId', 'id']);
+        $wpdb->shouldReceive('get_results')->andReturn([
+            (object)['TABLE_NAME' => 'bmltwf_submissions', 'COLUMN_NAME' => 'serviceBodyId'],
+            (object)['TABLE_NAME' => 'bmltwf_service_bodies_access', 'COLUMN_NAME' => 'serviceBodyId']
+        ]);
+        $wpdb->shouldReceive('get_var')->andReturnValues([0, 11, 10]); // orphaned, auto_inc, max_id
+        
+        $database = new BMLTWF_Database();
+        $validation = $database->validateUpgrade();
+        
+        foreach ($validation as $category => $errors) {
+            $this->assertEmpty($errors, 
+                "Validation errors in $category: " . implode(', ', $errors));
+        }
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::validateUpgrade
+     */
+    public function test_table_structure_validation(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        $wpdb->shouldReceive('get_col')->andReturn(['change_id', 'serviceBodyId', 'id']);
+        $wpdb->shouldReceive('get_results')->andReturn([]);
+        $wpdb->shouldReceive('get_var')->andReturn(0);
+        
+        $database = new BMLTWF_Database();
+        $validation = $database->validateUpgrade();
+        
+        $this->assertArrayHasKey('tables', $validation);
+        $this->assertEmpty($validation['tables'], 
+            'Table structure validation failed: ' . implode(', ', $validation['tables']));
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::validateUpgrade
+     */
+    public function test_foreign_key_validation(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        $wpdb->shouldReceive('get_col')->andReturn(['change_id', 'serviceBodyId', 'id']);
+        $wpdb->shouldReceive('get_results')->andReturn([
+            (object)['TABLE_NAME' => $wpdb->prefix . 'bmltwf_submissions', 'COLUMN_NAME' => 'serviceBodyId'],
+            (object)['TABLE_NAME' => $wpdb->prefix . 'bmltwf_service_bodies_access', 'COLUMN_NAME' => 'serviceBodyId']
+        ]);
+        $wpdb->shouldReceive('get_var')->andReturn(0);
+        
+        $database = new BMLTWF_Database();
+        $validation = $database->validateUpgrade();
+        
+        $this->assertArrayHasKey('foreign_keys', $validation);
+        $this->assertEmpty($validation['foreign_keys'], 
+            'Foreign key validation failed: ' . implode(', ', $validation['foreign_keys']));
     }
 
 }

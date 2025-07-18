@@ -1,16 +1,34 @@
 {
-    "autoload": {
-        "psr-4": {
-            "bmltwf\\": "src/"
-        }
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^9",
-        "brain/monkey": "2.*",
-        "mockery/mockery": "1.7.x-dev",
-        "cyruscollier/wordpress-develop": "dev-master"
-    },
-    "name": "bmlt-enabled/bmlt-workflow",
-    "description": "dev dependencies for bmlt-workflow",
-    "license": "MIT"
+  "autoload": {
+    "psr-4": {
+      "bmltwf\\": "src/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10",
+    "brain/monkey": "2.*",
+    "mockery/mockery": "1.7.x-dev"
+  },
+  "name": "bmlt-enabled/bmlt-workflow",
+  "type": "project",
+  "repositories": [
+    {
+      "type": "composer",
+      "url": "https://wpackagist.org"
+    }
+  ],
+  "description": "dev dependencies for bmlt-workflow",
+  "license": "MIT",
+  "extra": {
+    "wordpress-install-dir": "vendor/wp"
+  },
+  "config": {
+    "vendor-dir": "vendor",
+    "allow-plugins": {
+      "johnpbloch/wordpress-core-installer": true
+    }
+  },
+  "require": {
+    "johnpbloch/wordpress": "^6.8"
+  }
 }

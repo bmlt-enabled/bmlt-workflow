@@ -47,28 +47,71 @@ class SubmissionsHandler
     
     }
 
-    public function get_submissions_handler()
+    public function get_submissions_handler($request)
     {
         global $wpdb;
+
+          // Get pagination parameters
+        $first = intval($request->get_param('first') ?? 0);
+        $last = intval($request->get_param('last') ?? 20);
+        $total = intval($request->get_param('total') ?? 0);
+        
+        // Calculate LIMIT and OFFSET
+        $limit = $last - $first + 1;
+        $offset = $first;
 
         // only show submissions we have access to
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
         if(current_user_can('manage_options'))
         {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name);
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' ORDER BY change_id DESC LIMIT %d OFFSET %d', $limit, $offset);
         }
         else
         {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d', $current_uid);
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId where a.wp_uid =%d ORDER BY s.change_id DESC LIMIT %d OFFSET %d', $current_uid, $limit, $offset);
         }
+        
+        if(current_user_can('manage_options'))
+        {
+            $total_sql = $wpdb->prepare('SELECT COUNT(*) FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name);
+        }
+        else
+        {
+            $total_sql = $wpdb->prepare('SELECT COUNT(*) FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId where a.wp_uid =%d', $current_uid);
+        }
+        $total_count = $wpdb->get_var($total_sql);
+
         // $this->debug_log($sql);
         $result = $wpdb->get_results($sql, ARRAY_A);
-        // $this->debug_log(($result));
-        foreach ($result as $key => $value) {
-            $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 2);
+        if ($wpdb->last_error) {
+            return new \WP_Error('bmltwf', 'Database error: ' . $wpdb->last_error);
         }
-        return $result;
+        $this->debug_log("result:");
+        $this->debug_log(($result));
+        foreach ($result as $key => $value) {
+            $this->debug_log("changes requested:");
+            $this->debug_log(json_decode($result[$key]['changes_requested'], true,3));
+            $result[$key]['changes_requested'] = json_decode($result[$key]['changes_requested'], true, 3);
+            $this->debug_log("id:");
+            $this->debug_log($result[$key]['id']);
+
+            $meeting_data = $this->bmlt_integration->getMeeting($result[$key]['id']);
+            $this->debug_log("meeting data:");
+            $this->debug_log($meeting_data);
+
+            if (is_wp_error($meeting_data)) {
+                $this->debug_log("wp error");
+                $result[$key]['bmlt_meeting_data'] = null;
+            } else {
+                $result[$key]['bmlt_meeting_data'] = $meeting_data;
+            }
+        }
+        return array(
+            'data' => $result,
+            'recordsTotal' => intval($total_count),
+            'recordsFiltered' => intval($total_count)
+        );
     }
 
     public function delete_submission_handler($request)
@@ -76,17 +119,25 @@ class SubmissionsHandler
 
         global $wpdb;
 
-        $sql = $wpdb->prepare('DELETE FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where id="%d" limit 1', $request['id']);
-        $wpdb->query($sql, ARRAY_A);
+        $sql = $wpdb->prepare('DELETE FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where change_id="%d" limit 1', $request['change_id']);
+        $result = $wpdb->query($sql);
+        
+        if ($wpdb->last_error) {
+            return $this->bmltwf_rest_error('Database error: ' . $wpdb->last_error, 500);
+        }
+        
+        if ($result === 0) {
+            return $this->bmltwf_rest_error(__('Submission not found','bmlt-workflow'), 404);
+        }
 
-        return $this->bmltwf_rest_success(__('Deleted submission id ','bmlt-workflow') . $request['id']);
+        return $this->bmltwf_rest_success(__('Deleted submission id ','bmlt-workflow') . $request['change_id']);
     }
 
     public function get_submission_handler($request)
     {
         global $wpdb;
 
-        $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where id="%d" limit 1', $request['id']);
+        $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where change_id="%d" limit 1', $request['change_id']);
         $result = $wpdb->get_results($sql, ARRAY_A);
 
         return $result;
@@ -100,16 +151,16 @@ class SubmissionsHandler
         $current_uid = $this_user->get('ID');
         if(current_user_can('manage_options'))
         {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where id=%d', $change_id);
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where change_id=%d', $change_id);
         }
         else
         {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.service_body_bigint = a.service_body_bigint where a.wp_uid =%d and s.id="%d" limit 1', $current_uid, $change_id);
+            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId where a.wp_uid =%d and s.change_id="%d" limit 1', $current_uid, $change_id);
         }
-        // $this->debug_log($sql);
+        $this->debug_log($sql);
         $result = $wpdb->get_row($sql, ARRAY_A);
-        // $this->debug_log("RESULT");
-        // $this->debug_log(($result));
+        $this->debug_log("RESULT");
+        $this->debug_log(($result));
         if (empty($result)) {
             return $this->bmltwf_rest_error(__('Permission denied viewing submission id','bmlt-workflow')." {$change_id}", 403);
         }
@@ -121,7 +172,7 @@ class SubmissionsHandler
         global $wpdb;
 
 
-        $change_id = $request->get_param('id');
+        $change_id = $request->get_param('change_id');
 
         $this->debug_log("rejection request for id " . $change_id);
 
@@ -152,12 +203,12 @@ class SubmissionsHandler
         $username = $current_user->user_login;
 
         $sql = $wpdb->prepare(
-            'UPDATE ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'UPDATE ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where change_id="%d" limit 1',
             'rejected',
             $username,
             current_time('mysql', true),
             $message,
-            $request['id']
+            $request['change_id']
         );
 
         $result = $wpdb->get_results($sql, ARRAY_A);
@@ -188,7 +239,7 @@ class SubmissionsHandler
         global $wpdb;
 
 
-        $change_id = $request->get_param('id');
+        $change_id = $request->get_param('change_id');
 
         $this->debug_log("patch request for id " . $change_id);
 
@@ -196,23 +247,23 @@ class SubmissionsHandler
         $quickedit_change = $request->get_param('changes_requested');
 
         $change_subfields = array(
-            "meeting_name",
-            "start_time",
-            "duration_time",
+            "name",
+            "startTime",
+            "duration",
             "location_text",
             "location_street",
             "location_info",
             "location_municipality",
             "location_province",
             "location_postal_code_1",
-            "weekday_tinyint",
-            "format_shared_id_list",
+            "day",
+            "formatIds",
             "location_sub_province",
             "location_nation",
             "virtual_meeting_additional_info",
             "phone_meeting_number",
             "virtual_meeting_link",
-            "venue_type",
+            "venueType",
             "published",
             "virtualna_published",
             "latitude",
@@ -259,13 +310,13 @@ class SubmissionsHandler
         $username = $current_user->user_login;
 
         $sql = $wpdb->prepare(
-            'UPDATE ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' set changes_requested = "%s",change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'UPDATE ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' set changes_requested = "%s",change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where change_id="%d" limit 1',
             json_encode($merged_change),
             'updated',
             $username,
             current_time('mysql', true),
             NULL,
-            $request['id']
+            $request['change_id']
         );
         // $this->debug_log(($sql));
 
@@ -293,11 +344,11 @@ class SubmissionsHandler
             return $location;
         }
 
-        $this->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
-
         $latlng = array();
         $latlng['latitude'] = $location['results'][0]['geometry']['location']['lat'];
         $latlng['longitude'] = $location['results'][0]['geometry']['location']['lng'];
+        $this->debug_log("GMAPS location lookup returns = " .  $latlng['latitude']  . " " . $latlng['longitude']);
+
         return $latlng;
     }
 
@@ -308,7 +359,7 @@ class SubmissionsHandler
         // body parameters
         $params = $request->get_json_params();
         // url parameters from parsed route
-        $change_id = $request->get_param('id');
+        $change_id = $request->get_param('change_id');
 
         // clean/validate supplied approval message
         $message = '';
@@ -325,6 +376,8 @@ class SubmissionsHandler
         if (is_wp_error($result)) {
             return $result;
         }
+        $this->debug_log("submission");
+        $this->debug_log($result);
 
         // can't approve an already actioned submission
         $change_made = $result['change_made'];
@@ -363,25 +416,25 @@ class SubmissionsHandler
 
         // strip out anything that somehow made it this far, before we send it to bmlt
         $change_subfields = array(
-            "meeting_name",
-            "meeting_id",
-            "start_time",
-            "duration_time",
+            "name",
+            "id",
+            "startTime",
+            "duration",
             "location_text",
             "location_street",
             "location_info",
             "location_municipality",
             "location_province",
             "location_postal_code_1",
-            "weekday_tinyint",
-            "service_body_bigint",
-            "format_shared_id_list",
+            "day",
+            "serviceBodyId",
+            "formatIds",
             "location_sub_province",
             "location_nation",
             "virtual_meeting_additional_info",
             "phone_meeting_number",
             "virtual_meeting_link",
-            "venue_type",
+            "venueType",
             "published",
             "virtualna_published",
             "latitude",
@@ -421,9 +474,13 @@ class SubmissionsHandler
                         $change['longitude'] = $latlng['longitude'];
                     }
                 }
-                $change['published'] = 1;
+                $change['published'] = true;
 
                 $response = $this->bmlt_integration->createMeeting($change);
+                if (is_wp_error($response)) {
+                    $error_message = $response->get_error_message();
+                    return $this->bmltwf_rest_error(__('Error creating meeting','bmlt-workflow') . ': ' . $error_message, 422);
+                }
 
                 if (is_wp_error($response)) {
                     $error_message = $response->get_error_message();
@@ -432,14 +489,13 @@ class SubmissionsHandler
 
                 break;
             case 'reason_change':
-                // needs an id_bigint not a meeting_id
-                $change['id_bigint'] = $result['meeting_id'];
+                $change['id'] = $result['id'];
 
                 $this->debug_log("CHANGE");
                 $this->debug_log(($change));
 
                 // geolocate based on changes - apply the changes to the BMLT version, then geolocate
-                $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($result['meeting_id']);
+                $bmlt_meeting = $this->bmlt_integration->getMeeting($result['id']);
                 if (is_wp_error($bmlt_meeting)) {
                     return $this->bmltwf_rest_error(__('Error retrieving meeting details','bmlt-workflow'), 422);
                 }
@@ -498,15 +554,15 @@ class SubmissionsHandler
                         }
                     }
                 }
-                $bmlt_venue_type = $bmlt_meeting['venue_type'];
-                // $this->debug_log("bmlt_meeting[venue_type]=");
-                // $this->debug_log($bmlt_venue_type);
+                $bmlt_venueType = $bmlt_meeting['venueType'];
+                // $this->debug_log("bmlt_meeting[venueType]=");
+                // $this->debug_log($bmlt_venueType);
 
-                $change_venue_type = $change['venue_type'] ?? '0';
-                // $this->debug_log("change[venue_type]=");
-                // $this->debug_log($change_venue_type);
+                $change_venueType = $change['venueType'] ?? '0';
+                // $this->debug_log("change[venueType]=");
+                // $this->debug_log($change_venueType);
 
-                $is_change_to_f2f = (($change_venue_type == 1)&&($bmlt_venue_type != $change_venue_type));
+                $is_change_to_f2f = (($change_venueType == 1)&&($bmlt_venueType != $change_venueType));
                 // $this->debug_log("is_change_to_f2f=");
                 // $this->debug_log($is_change_to_f2f);
 
@@ -520,28 +576,16 @@ class SubmissionsHandler
                     $change["virtual_meeting_link"]="";
                 }
 
-                // if(array_key_exists('worldid_mixed',$bmlt_meeting) && array_key_exists('virtualna_published', $change))
-                // {
-                //     $this->debug_log("virtualna_published = ".$change['virtualna_published']);
-
-                //     $orig_worldid = $bmlt_meeting['worldid_mixed'];
-                //     $this->debug_log("original worldid = ".$orig_worldid);
-
-                //     if($change["virtualna_published"] === 1)
-                //     {
-                //         $change["worldid_mixed"] = substr_replace($orig_worldid, 'G', 0, 1);
-                //         unset($change["virtualna_published"]);
-                //     }
-                //     else
-                //     {
-                //         $change["worldid_mixed"] = substr_replace($orig_worldid, 'U', 0, 1);
-                //         unset($change["virtualna_published"]);
-                //     }
-                //     $this->debug_log("new worldid = ".$change["worldid_mixed"]);
-
-                // }
+                // If we have a virtualna_published setting, modify worldid appropriately
+                if(array_key_exists('virtualna_published', $change) && array_key_exists('worldid_mixed',$bmlt_meeting))
+                {
+                    $this->debug_log("virtualna_published = ".$change['virtualna_published']);
+                    $change["worldid_mixed"] = $this->worldid_publish_to_virtualna(($change["virtualna_published"]=== 1)?true:false, $bmlt_meeting['worldid_mixed']);
+                    $this->debug_log("new worldid = ".$change["worldid_mixed"]);
+                }
 
                 $response = $this->bmlt_integration->updateMeeting($change);
+
                 if (is_wp_error($response)) {
                     $error_message = $response->get_error_message();
                     return $this->bmltwf_rest_error(__('Error updating meeting','bmlt-workflow') . ': ' . $error_message, 422);
@@ -555,16 +599,18 @@ class SubmissionsHandler
                 // are we doing a delete or an unpublish on close?
                 if ((!empty($params['delete'])) && ($params['delete'] == "true")) {
 
-                    $resp = $this->bmlt_integration->deleteMeeting($result['meeting_id']);
+                    $response = $this->bmlt_integration->deleteMeeting($result['id']);
 
-                    if (\is_wp_error(($resp))) {
-                        return $resp;
+                    if (is_wp_error($response)) {
+                        $error_message = $response->get_error_message();
+                        return $this->bmltwf_rest_error(__('Error deleting meeting','bmlt-workflow') . ': ' . $error_message, 422);
                     }
                 } else {
                     // unpublish by default
-                    $change['published'] = 0;
-                    $change['id_bigint'] = $result['meeting_id'];
+                    $change['published'] = false;
+                    $change['id'] = $result['id'];
                     $response = $this->bmlt_integration->updateMeeting($change);
+
                     if (is_wp_error($response)) {
                         $error_message = $response->get_error_message();
                         return $this->bmltwf_rest_error(__('Error updating meeting','bmlt-workflow') . ': ' . $error_message, 422);
@@ -582,15 +628,18 @@ class SubmissionsHandler
         $username = $current_user->user_login;
 
         $sql = $wpdb->prepare(
-            'UPDATE ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where id="%d" limit 1',
+            'UPDATE ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' set change_made = "%s", changed_by = "%s", change_time = "%s", action_message="%s" where change_id="%d" limit 1',
             'approved',
             $username,
             current_time('mysql', true),
             $message,
-            $request['id']
+            $request['change_id']
         );
-
+        $this->debug_log("SQL");
+        $this->debug_log($sql);
         $result = $wpdb->get_results($sql, ARRAY_A);
+        $this->debug_log("RESULT");
+        $this->debug_log($result);
 
         $from_address = get_option('bmltwf_email_from_address');
 
@@ -599,12 +648,11 @@ class SubmissionsHandler
         //
 
         $to_address = $submitter_email;
-        $subject = __('NA Meeting Change Request Approval - Submission ID','bmlt-workflow')." " . $request['id'];
-        $body = __('Your meeting change has been approved - change ID','bmlt-workflow')." (" . $request['id'] . ")";
+        $subject = __('NA Meeting Change Request Approval - Submission ID','bmlt-workflow')." " . $request['change_id'];
+        $body = __('Your meeting change has been approved - change ID','bmlt-workflow')." (" . $request['change_id'] . ")";
         if (!empty($message)) {
             $body .= '<br><br>'.__('Message from trusted servant','bmlt-workflow').':<br><br>' . $message;
         }
-
 
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         $this->debug_log("Approval email");
@@ -622,7 +670,7 @@ class SubmissionsHandler
                 if ($starter_kit_required) {
                     $template_fields=array('starter_kit_postal_address'=>$starter_kit_postal_address,
                     'submitter_name' => $submitter_name,
-                    'meeting_name' => $change['meeting_name'],
+                    'name' => $change['name'],
                     'contact_number' => $starter_kit_contact_number);
 
                     $this->debug_log("We're sending a starter kit");
@@ -630,7 +678,7 @@ class SubmissionsHandler
                     if (!empty($template)) {
                         $subject = __('Starter Kit Request','bmlt-workflow');
                         $to_address = get_option('bmltwf_fso_email_address');
-                        $fso_subfields = array('contact_number','submitter_name', 'meeting_name', 'starter_kit_postal_address');
+                        $fso_subfields = array('contact_number','submitter_name', 'name', 'starter_kit_postal_address');
 
                         foreach ($fso_subfields as $field) {
                             $subfield = '{field:' . $field . '}';
@@ -684,6 +732,27 @@ class SubmissionsHandler
     }
 
 
+    function worldid_publish_to_virtualna(bool $publish, string $worldid): string
+    {
+
+        $new_char = 'U';
+        if($publish)
+        {
+            $new_char = 'G';
+        }
+        $new_worldid = "";
+        if(is_numeric(substr($worldid, 0, 1)))
+        {
+            $new_worldid = $new_char . $worldid;
+        }
+        else
+        {
+            $new_worldid = $worldid;
+            $new_worldid[0] = $new_char;
+        }
+        return $new_worldid;
+    }
+
     private function submission_type_to_friendlyname($reason)
     {
         switch ($reason) {
@@ -705,7 +774,7 @@ class SubmissionsHandler
         global $wpdb;
 
         $emails = array();
-        $sql = $wpdb->prepare('SELECT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' where service_body_bigint="%d"', $id);
+        $sql = $wpdb->prepare('SELECT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' where serviceBodyId="%d"', $id);
         $result = $wpdb->get_col($sql);
         foreach ($result as $key => $value) {
             $user = get_user_by('ID', $value);
@@ -754,8 +823,9 @@ class SubmissionsHandler
             $reason_close_bool = ($data['update_reason'] === 'reason_close');
             // handle meeting formats
             $this->populate_formats();
-            $venue_type = $data['venue_type'] ?? '0';
-            $virtual_meeting_bool = ($venue_type !== '1');
+            $venueType = $data['venueType'] ?? '0';
+            
+            $virtual_meeting_bool = (intval($venueType) !== 1);
 
             $require_postcode = false;
             if (get_option('bmltwf_optional_postcode') === 'displayrequired') {
@@ -797,24 +867,24 @@ class SubmissionsHandler
 
         $subfields = array(
             "update_reason" => array("text", true),
-            "meeting_id" => array("number", $reason_change_bool | $reason_close_bool),
+            "id" => array("number", $reason_change_bool | $reason_close_bool),
             "first_name" => array("text", true),
             "last_name" => array("text", true),
-            "meeting_name" => array("text", $reason_new_bool),
-            "start_time" => array("time", $reason_new_bool),
-            "duration_time" => array("time", $reason_new_bool),
-            "venue_type" => array("venue", $reason_new_bool | $reason_change_bool),
+            "name" => array("text", $reason_new_bool),
+            "startTime" => array("time", $reason_new_bool),
+            "duration" => array("time", $reason_new_bool),
+            "venueType" => array("venue", $reason_new_bool | $reason_change_bool),
             // location text and street only required if its not a virtual meeting #75
             "location_text" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_street" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_info" => array("text", false),
             "location_municipality" => array("text", $reason_new_bool),
-            "weekday_tinyint" => array("weekday", $reason_new_bool),
-            "service_body_bigint" => array("bigint", $reason_new_bool),
+            "day" => array("number", $reason_new_bool),
+            "serviceBodyId" => array("number", $reason_new_bool),
             "email_address" => array("email", true),
             "contact_number" => array("text", false),
             // optional #93
-            "format_shared_id_list" => array("commaseperatednumbers",  $reason_new_bool && $require_meeting_formats),
+            "formatIds" => array("intarray", $reason_new_bool && $require_meeting_formats),
             "additional_info" => array("textarea", $reason_close_bool),
             "starter_kit_postal_address" => array("textarea", false),
             "starter_kit_required" => array("text", $reason_new_bool && $fso_feature),
@@ -829,13 +899,13 @@ class SubmissionsHandler
             "phone_meeting_number" => array("text", false),
             "virtual_meeting_link" => array("url", false),
             "published" => array("boolnum", $reason_change_bool),
-            "virtualna_published" => array("boolnum", $reason_change_bool && $virtual_meeting_bool)
+            "virtualna_published" => array("boolnum", ($reason_change_bool||$reason_new_bool) && $virtual_meeting_bool)
         );
 
         $sanitised_fields = array();
 
         // blank meeting id if not provided
-        $sanitised_fields['meeting_id'] = 0;
+        $sanitised_fields['id'] = 0;
         
         // sanitise all provided fields and drop all others
         foreach ($subfields as $field => $validation) {
@@ -847,7 +917,7 @@ class SubmissionsHandler
             }
 
             // special handling for temporary virtual
-            if ($field === "venue_type" && $virtual_meeting_bool && ($data["update_reason"] !== 'reason_close'))
+            if ($field === "venueType" && $virtual_meeting_bool && ($data["update_reason"] !== 'reason_close'))
             {
                 $phone_meeting_number_provided = $data["phone_meeting_number"]??false;
                 // $this->debug_log("phone meeting number");
@@ -887,16 +957,23 @@ class SubmissionsHandler
                     case ('text'):
                         $data[$field] = sanitize_text_field($data[$field]);
                         break;
+                    case ('intarray'):
+                        if (!is_array($data[$field])) {
+                                return $this->invalid_form_field($field);
+                            }
+                            $clean_array = array();
+                            foreach ($data[$field] as $item) {
+                                if (!is_numeric($item)) {
+                                    return $this->invalid_form_field($field);
+                                }
+                                $clean_array[] = intval($item);
+                            }
+                            $data[$field] = $clean_array;
+                        break;
                     case ('yesno'):
                         if (($data[$field] !== 'yes') && ($data[$field] !== 'no')) {
                             return $this->invalid_form_field($field);
                         }
-                        break;
-                    case ('commaseperatednumbers'):
-                        if (preg_match("/[^0-9,]/", $data[$field])) {
-                            return $this->invalid_form_field($field);
-                        }
-                        $data[$field] = trim($data[$field], ',');
                         break;
                     case ('boolnum'):
                         if(($data[$field]!= '0') && ($data[$field] != '1'))
@@ -919,8 +996,8 @@ class SubmissionsHandler
                             return $this->invalid_form_field($field);
                         }
                         break;
-                    case ('weekday'):
-                        if (!(($data[$field] >= 1) && ($data[$field] <= 7))) {
+                    case ('day'):
+                        if (!(($data[$field] >= 0) && ($data[$field] <= 6))) {
                             return $this->invalid_form_field($field);
                         }
                         break;
@@ -943,6 +1020,7 @@ class SubmissionsHandler
                         if (!preg_match('/^([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]:00$/', $data[$field])) {
                             return $this->invalid_form_field($field);
                         }
+                        $data[$field] = substr($data[$field], 0, 5);
                         break;
                     default:
                         return $this->bmltwf_rest_error(__('Form processing error','bmlt-workflow'), 500);
@@ -960,9 +1038,9 @@ class SubmissionsHandler
 
         // ensure service body is correctly set
 
-        if (empty($sanitised_fields['service_body_bigint'])) {
+        if (empty($sanitised_fields['serviceBodyId'])) {
             // we should never have a blank service body unless it is 'other' request
-            return $this->bmltwf_rest_error('Form field "service_body_bigint" is required.', 422);
+            return $this->bmltwf_rest_error('Form field "serviceBodyId" is required.', 422);
         }
 
         // main switch for meeting change type
@@ -977,9 +1055,9 @@ class SubmissionsHandler
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
-                    "meeting_name",
-                    "start_time",
-                    "duration_time",
+                    "name",
+                    "startTime",
+                    "duration",
                     "location_text",
                     "location_street",
                     "location_info",
@@ -988,9 +1066,9 @@ class SubmissionsHandler
                     "location_postal_code_1",
                     "location_nation",
                     "location_sub_province",
-                    "weekday_tinyint",
-                    "service_body_bigint",
-                    "format_shared_id_list",
+                    "day",
+                    "serviceBodyId",
+                    "formatIds",
                     "contact_number",
                     "group_relationship",
                     "add_contact",
@@ -1000,7 +1078,8 @@ class SubmissionsHandler
                     "virtual_meeting_link",
                     "starter_kit_required",
                     "starter_kit_postal_address",
-                    "venue_type"
+                    "virtualna_published",
+                    "venueType"
                 );
 
                 // new meeting - add all fields to the changes requested
@@ -1011,7 +1090,7 @@ class SubmissionsHandler
                     }
                 }
                 // always mark our submission as published for a new meeting
-                $submission['published'] = 1;
+                $submission['published'] = true;
 
                 break;
             case ('reason_change'):
@@ -1020,9 +1099,9 @@ class SubmissionsHandler
 
                 // form fields allowed in changes_requested for this change type
                 $allowed_fields = array(
-                    "meeting_name",
-                    "start_time",
-                    "duration_time",
+                    "name",
+                    "startTime",
+                    "duration",
                     "location_text",
                     "location_street",
                     "location_info",
@@ -1031,13 +1110,13 @@ class SubmissionsHandler
                     "location_postal_code_1",
                     "location_nation",
                     "location_sub_province",
-                    "weekday_tinyint",
-                    "service_body_bigint",
-                    "format_shared_id_list",
+                    "day",
+                    "serviceBodyId",
+                    "formatIds",
                     "virtual_meeting_additional_info",
                     "phone_meeting_number",
                     "virtual_meeting_link",
-                    "venue_type",
+                    "venueType",
                     "published",
                 );
 
@@ -1049,13 +1128,9 @@ class SubmissionsHandler
                     "virtualna_published",
                 );
 
-                $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
-                if($this->bmlt_integration->is_v3_server())
-                {
-                    // change our meeting return to v2 format so we can handle original components
-                    $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
-                }
-                // $this->debug_log(($bmlt_meeting));
+                $bmlt_meeting = $this->bmlt_integration->getMeeting($sanitised_fields['id']);
+                $this->debug_log("Getting info for meeting ". $sanitised_fields['id']);
+                $this->debug_log(($bmlt_meeting));
                 if (\is_wp_error($bmlt_meeting)) {
                     return $this->bmltwf_rest_error(__('Error retrieving meeting details','bmlt-workflow'), 422);
                 }
@@ -1067,55 +1142,58 @@ class SubmissionsHandler
                 }
 
                 $submission_count = 0;
-                // if the user submitted something different to what is in bmlt, save it in changes
+
+                $this->debug_log("Sanitised fields");
+                $this->debug_log($sanitised_fields);
+
+                // Compare submitted fields with BMLT data and track changes
                 foreach ($allowed_fields as $field) {
-
                     $bmlt_field = $bmlt_meeting[$field] ?? false;
+                    $this->debug_log("Checking " . $field);
+                    
+                    // Check if field exists in submitted data
+                    $field_submitted = array_key_exists($field, $sanitised_fields);
+                    $submitted_value = $field_submitted ? $sanitised_fields[$field] : null;
+                    
+                    // Case 1: Field doesn't exist in BMLT but was submitted with a value
+                    if (($bmlt_field === false || $bmlt_field === null || $bmlt_field === '') && 
+                        $field_submitted && !empty($submitted_value)) {
+                        // $this->debug_log("Case 1 adding " . $field);
 
-                    // if the field is blank in bmlt, but they submitted a change, add it to the list
-                    if (!$bmlt_field && array_key_exists($field, $sanitised_fields) && !empty($sanitised_fields[$field])) {
-                        $submission[$field] = $sanitised_fields[$field];
+                        $submission[$field] = $submitted_value;
                         $submission_count++;
-
                     }
-                    // if the field is in bmlt and its different to the submitted item, add it to the list
-                    else {
-                        if ($bmlt_field) {
-                            // if the field they submitted is not blank, check whats submitted is different to the bmlt field
-                            if (array_key_exists($field, $sanitised_fields)) {
-                                if ($bmlt_meeting[$field] != $sanitised_fields[$field]) {
-                                    // don't allow someone to modify a meeting service body
-                                    if ($field === 'service_body_bigint') {
-                                        return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
-                                    }
-                                    $submission[$field] = $sanitised_fields[$field];
-                                    $submission_count++;
-                                }
-                            }
-                            else
-                            // if they made the field entirely blank then it implies its different from the bmlt field
-                            {
-                                // don't allow someone to modify a meeting service body
-                                if ($field === 'service_body_bigint') {
-                                    return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
-                                }
-                                $submission[$field] = "";
-                                $submission_count++;
-                            }
+                    // Case 2: Field exists in BMLT and was submitted with a different value
+                    elseif ($bmlt_field !== false && $field_submitted && $bmlt_field != $submitted_value) {
+                        // Don't allow service body changes
+                        if ($field === 'serviceBodyId') {
+                            return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
                         }
+                        $submission[$field] = $submitted_value;
+                        $submission_count++;
                     }
-
-                    // store away the original meeting details so we know what changed
-                    if ($bmlt_field)
-                    {
-                        $original_name = "original_".$field;
-                        $submission[$original_name] = $bmlt_field;    
+                    // Case 3: Field exists in BMLT but was not submitted (implying deletion)
+                    elseif ($bmlt_field !== false && !$field_submitted) {
+                        // Don't allow service body changes
+                        if ($field === 'serviceBodyId') {
+                            return $this->bmltwf_rest_error(__('Service body cannot be changed.','bmlt-workflow'), 403);
+                        }
+                        // $this->debug_log("Case 3 adding " . $field);
+                        $submission[$field] = "";
+                        $submission_count++;
+                    }
+                    
+                    // Store original value for reference
+                    if ($bmlt_field !== false && $bmlt_field !== null && ($bmlt_field !== '' || is_numeric($bmlt_field))) {
+                        $submission["original_" . $field] = $bmlt_field;
                     }
                 }
 
                 if (!$submission_count) {
                     return $this->bmltwf_rest_error(__('Nothing was changed.','bmlt-workflow'), 422);
                 }
+                $this->debug_log("submission");
+                $this->debug_log($submission);
 
                 // add in extra form fields (non BMLT fields) to the submission
                 foreach ($allowed_fields_extra as $field) {
@@ -1138,7 +1216,7 @@ class SubmissionsHandler
                     "contact_number",
                     "group_relationship",
                     "add_contact",
-                    "service_body_bigint",
+                    "serviceBodyId",
                     "additional_info",
                 );
 
@@ -1149,12 +1227,9 @@ class SubmissionsHandler
                 }
 
                 // populate the meeting name/time/day so we dont need to do it again on the submission page
-                $bmlt_meeting = $this->bmlt_integration->retrieve_single_meeting($sanitised_fields['meeting_id']);
-                if($this->bmlt_integration->is_v3_server())
-                {
-                    // change our meeting return to v2 format so we can handle original components
-                    $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
-                }
+                $bmlt_meeting = $this->bmlt_integration->getMeeting($sanitised_fields['id']);
+                // change our meeting return to v2 format so we can handle original components
+                // $bmlt_meeting = $this->bmlt_integration->convertv3meetingtov2($bmlt_meeting);
 
                 if(\is_wp_error($bmlt_meeting))
                 {
@@ -1163,9 +1238,9 @@ class SubmissionsHandler
                 $this->debug_log("BMLT MEETING");
                 $this->debug_log(($bmlt_meeting));
 
-                $submission['meeting_name'] = $bmlt_meeting['meeting_name'];
-                $submission['weekday_tinyint'] = $bmlt_meeting['weekday_tinyint'];
-                $submission['start_time'] = $bmlt_meeting['start_time'];
+                $submission['name'] = $bmlt_meeting['name'];
+                $submission['day'] = $bmlt_meeting['day'];
+                $submission['startTime'] = $bmlt_meeting['startTime'];
 
                 break;
 
@@ -1177,12 +1252,11 @@ class SubmissionsHandler
         $submitter_email = $sanitised_fields['email_address'];
 
         // max size check for #7
-        $chg = wp_json_encode($submission, 0, 1);
+        $chg = wp_json_encode($submission, 0, 2);
 
         if (strlen($chg) >= 2048) {
             return $this->bmltwf_rest_error(__('Meeting change request exceeds maximum size','bmlt-workflow'), 422);
         }
-
         // insert into submissions db
         global $wpdb;
 
@@ -1190,12 +1264,12 @@ class SubmissionsHandler
             $this->BMLTWF_Database->bmltwf_submissions_table_name,
             array(
                 'submission_time'   => current_time('mysql', true),
-                'meeting_id' => $sanitised_fields['meeting_id'],
+                'id' => $sanitised_fields['id'],
                 'submitter_name' => $submitter_name,
                 'submission_type'  => $reason,
                 'submitter_email' => $submitter_email,
-                'changes_requested' => wp_json_encode($submission, 0, 1),
-                'service_body_bigint' => $sanitised_fields['service_body_bigint']
+                'changes_requested' => $chg,
+                'serviceBodyId' => $sanitised_fields['serviceBodyId']
             ),
             array(
                 '%s',
@@ -1207,12 +1281,12 @@ class SubmissionsHandler
         );
         $log_submission = json_encode(array(
             'submission_time'   => current_time('mysql', true),
-            'meeting_id' => $sanitised_fields['meeting_id'],
+            'id' => $sanitised_fields['id'],
             'submitter_name' => $submitter_name,
             'submission_type'  => $reason,
             'submitter_email' => $submitter_email,
-            'changes_requested' => wp_json_encode($submission, 0, 1),
-            'service_body_bigint' => $sanitised_fields['service_body_bigint']
+            'changes_requested' => $chg,
+            'serviceBodyId' => $sanitised_fields['serviceBodyId']
         ));
 
 
@@ -1245,8 +1319,8 @@ class SubmissionsHandler
         $this->debug_log("retrieved sblist ");
         $this->debug_log($sblist);
 
-        $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['service_body_bigint']);
-        $subject = '[bmlt-workflow] ' . $submission_type . ' '.__('request received','bmlt-workflow').' - ' . $sblist[$sanitised_fields['service_body_bigint']]['name'] . ' - '.__('Change ID','bmlt_workflow').' #' . $insert_id;
+        $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['serviceBodyId']);
+        $subject = '[bmlt-workflow] ' . $submission_type . ' '.__('request received','bmlt-workflow').' - ' . $sblist[$sanitised_fields['serviceBodyId']]['name'] . ' - '.__('Change ID','bmlt_workflow').' #' . $insert_id;
         $body = __('Log in to','bmlt-workflow').' <a href="' . get_site_url() . '/wp-admin/admin.php?page=bmltwf-submissions">'.__('BMLTWF Submissions Page','bmlt-workflow').'</a> to review.';
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));
@@ -1281,14 +1355,15 @@ class SubmissionsHandler
         $table = '';
         $this->populate_formats();
         foreach ($submission as $key => $value) {
+            if (!is_string($value) || (is_string($value) && !empty($value))) {
             switch ($key) {
-                case "meeting_name":
+                case "name":
                     $table .= '<tr><td>'.__('Meeting Name','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
                     break;
-                case "start_time":
+                case "startTime":
                     $table .= '<tr><td>'.__('Start Time','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
                     break;
-                case "duration_time":
+                case "duration":
                     $table .= '<tr><td>'.__('Duration','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
                     break;
                 case "location_text":
@@ -1318,7 +1393,7 @@ class SubmissionsHandler
                 case "group_relationship":
                     $table .= '<tr><td>'.__('Relationship to Group','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
                     break;
-                case "weekday_tinyint":
+                case "day":
                     $weekdays = [__('Error'), __('Sunday','bmlt-workflow'), __('Monday','bmlt-workflow'), __('Tuesday','bmlt-workflow'), __('Wednesday','bmlt-workflow'), __('Thursday','bmlt-workflow'), __('Friday','bmlt-workflow'), __('Saturday','bmlt-workflow')];
                     $table .= '<tr><td>'.__('Meeting Day','bmlt-workflow').':</td><td>' . $weekdays[$value] . '</td></tr>';
                     break;
@@ -1345,17 +1420,18 @@ class SubmissionsHandler
                     $table .= '<tr><td>'.__('Virtual Meeting Link','bmlt-workflow').'</td><td>' . $value . '</td></tr>';
                     break;
 
-                case "format_shared_id_list":
+                case "formatIds":
                     $friendlyname = __('Meeting Formats','bmlt-workflow');
                     // convert the meeting formats to human readable
                     $friendlydata = "";
-                    $strarr = explode(',', $value);
-                    foreach ($strarr as $key) {
+                    // $strarr = explode(',', $value);
+                    foreach ($value as $key) {
                         $friendlydata .= "(" . $this->formats[$key]["key_string"] . ")-" . $this->formats[$key]["name_string"] . " ";
                     }
                     $table .= '<tr><td>'.__('Meeting Formats','bmlt-workflow').':</td><td>' . $friendlydata . '</td></tr>';
                     break;
             }
+        }
         }
 
         return $table;

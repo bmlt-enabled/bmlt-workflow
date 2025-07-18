@@ -55,14 +55,17 @@ Line: $errorLine
 
         $this->setVerboseErrorHandler();
         $basedir = getcwd();
+
         require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-error.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/class-wp-http-response.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/endpoints/class-wp-rest-controller.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-response.php');
-        require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/rest-api/class-wp-rest-request.php');
-        if (!class_exists('wpdb')){
-            require_once($basedir . '/vendor/cyruscollier/wordpress-develop/src/wp-includes/wp-db.php');
+        require_once($basedir . '/vendor/autoload.php');
+        require_once($basedir . '/vendor/antecedent/patchwork/Patchwork.php');
+        require_once($basedir . '/vendor/wp/wp-includes/class-wp-error.php');
+        require_once($basedir . '/vendor/wp/wp-includes/class-wp-http-response.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/endpoints/class-wp-rest-controller.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/class-wp-rest-response.php');
+        require_once($basedir . '/vendor/wp/wp-includes/rest-api/class-wp-rest-request.php');
+        if (!class_exists('wpdb')) {
+            require_once($basedir . '/vendor/wp/wp-includes/wp-db.php');
         }
 
         Brain\Monkey\setUp();
@@ -74,6 +77,7 @@ Line: $errorLine
         Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\get_option')->justReturn("failure");
         Functions\when('__')->returnArg();
+        Functions\when('wp_is_json_media_type')->justReturn(true);
 
     }
 

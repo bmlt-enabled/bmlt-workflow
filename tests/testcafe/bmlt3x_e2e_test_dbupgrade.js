@@ -15,36 +15,43 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { as } from "./models/admin_submissions";
-import { uf } from "./models/meeting_update_form";
+import { as } from "./models/admin_submissions.js";
+import { uf } from "./models/meeting_update_form.js";
 import { Selector, Role } from "testcafe";
 
 import {  
-  restore_from_backup,
   click_table_row_column, 
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
   select_dropdown_by_text, 
   select_dropdown_by_value, 
   waitfor,
-  bmltwf_admin,
-  set_language_single,
-  myip
+  bmltwf_dbupgrade_admin,
    } from "./helpers/helper.js";
   
-import { userVariables } from "../../.testcaferc";
+import { userVariables } from "../../.testcaferc.js";
 
-fixture`bmlt3x_e2e_test_fixture`
+fixture`test`
   .before(async (t) => {
   })
   .beforeEach(async (t) => {
-
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001"),"hidden";
-    await set_language_single(t, "en_EN");
-    await waitfor(userVariables.admin_logon_page_single);
+    await t.navigateTo(userVariables.dbupgrade_bounce_sql);
+    await waitfor(userVariables.admin_logon_page_dbupgrade);
   });
 
-test("Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
+test("DbUpgrade_Test_Upgrade", async (t) => {
+  await t
+    .navigateTo(userVariables.dbupgrade_test_upgrade)
+    .expect(Selector('body').withText('UPGRADE_TEST_PASSED').exists).ok();
+});
+
+test("DbUpgrade_Bmlt3x_DBVersion", async (t) => {
+      await t.useRole(bmltwf_dbupgrade_admin)
+      .navigateTo(userVariables.admin_options_page_dbupgrade)
+      .expect(Selector("#bmltwf_db_version").value).eql("1.1.18");
+});
+
+test("DbUpgrade_Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
   var meeting = {
     location_text: "the church",
     location_street: "105 avoca street",
@@ -54,8 +61,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
     location_postal_code_1: "2032",
   };
 
-  await t.navigateTo(userVariables.formpage);
-
+  await t.navigateTo(userVariables.dbupgrade_formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 // await t.debug();
   // check our divs are visible
@@ -137,7 +143,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
     .typeText(uf.location_province, meeting.location_province)
     .typeText(uf.location_postal_code_1, meeting.location_postal_code_1);
 
-  await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
+  await select_dropdown_by_text(uf.serviceBodyId, "NSW South Coast Area");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -153,8 +159,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
-  // await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
+  await t.useRole(bmltwf_dbupgrade_admin).navigateTo(userVariables.admin_submissions_page_dbupgrade);
 
   // new meeting = row 0
   var row = 0;
@@ -175,9 +180,8 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
 
 });
 
-test("Bmlt3x_Submit_Change_Meeting_And_Approve", async (t) => {
-  await t.navigateTo(userVariables.formpage);
-
+test("DbUpgrade_Bmlt3x_Submit_Change_Meeting_And_Approve", async (t) => {
+  await t.navigateTo(userVariables.dbupgrade_formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
   // check our divs are visible
@@ -185,7 +189,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve", async (t) => {
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "matter");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "farm");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
@@ -219,8 +223,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve", async (t) => {
     .match(/submission\ successful/);
 
   // switch to admin page
-  // await t.useRole(bmltwf_admin_wpsinglebmlt3x).navigateTo(userVariables.admin_submissions_page_wpsinglebmlt3x);
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+  await t.useRole(bmltwf_dbupgrade_admin).navigateTo(userVariables.admin_submissions_page_dbupgrade);
 
   // new meeting = row 0
   var row = 0;
@@ -242,8 +245,8 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve", async (t) => {
 
 });
 
-test("Bmlt3x_Submit_Change_Meeting_With_Unpublish_And_Approve", async (t) => {
-  await t.navigateTo(userVariables.formpage);
+test("", async (t) => {
+  await t.navigateTo(userVariables.dbupgrade_formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
@@ -252,7 +255,7 @@ test("Bmlt3x_Submit_Change_Meeting_With_Unpublish_And_Approve", async (t) => {
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "insanity");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "beenleigh");
   await t.pressKey("enter");
 
   // validate form is laid out correctly
@@ -278,7 +281,7 @@ test("Bmlt3x_Submit_Change_Meeting_With_Unpublish_And_Approve", async (t) => {
   await select_dropdown_by_text(uf.add_contact, "Yes");
   await t.expect(uf.add_contact.value).eql("yes");
 
-  // group member dropdown
+  // group member dropdownDbUpgrade_Bmlt3x_Submit_Change_Meeting_With_Unpublish_And_Approve
   await select_dropdown_by_value(uf.group_relationship, "Group Member");
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
@@ -289,7 +292,7 @@ test("Bmlt3x_Submit_Change_Meeting_With_Unpublish_And_Approve", async (t) => {
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+  await t.useRole(bmltwf_dbupgrade_admin).navigateTo(userVariables.admin_submissions_page_dbupgrade);
 
   // new meeting = row 0
   var row = 0;
@@ -311,112 +314,112 @@ test("Bmlt3x_Submit_Change_Meeting_With_Unpublish_And_Approve", async (t) => {
 
 });
 
-// test("Change_Meeting_Details_Check_Highlighting_And_Check_Submission_Dropdown", async (t) => {
+test("DbUpgrade_Change_Meeting_Details_Check_Highlighting_And_Check_Submission_Dropdown", async (t) => {
 
-//   await t.navigateTo(userVariables.formpage);
+  await t.navigateTo(userVariables.dbupgrade_formpage);
 
-//   await select_dropdown_by_value(uf.update_reason, "reason_change");
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
 
-//   // check our divs are visible
-//   await t.expect(uf.update_reason.value).eql("reason_change");
+  // check our divs are visible
+  await t.expect(uf.update_reason.value).eql("reason_change");
 
-//   // meeting selector
-//   await t.click("#select2-meeting-searcher-container");
-//   await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
-//   await t.pressKey("enter");
+  // meeting selector
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "farm");
+  await t.pressKey("enter");
 
-//   // validate form is laid out correctly
-//   await t.expect(uf.personal_details.visible).eql(true)
-//   .expect(uf.meeting_details.visible).eql(true)
-//   .expect(uf.additional_info_div.visible).eql(true);
+  // validate form is laid out correctly
+  await t.expect(uf.personal_details.visible).eql(true)
+  .expect(uf.meeting_details.visible).eql(true)
+  .expect(uf.additional_info_div.visible).eql(true);
 
-//   // personal details
-//   await t
-//     .typeText(uf.first_name, "first")
-//     .typeText(uf.last_name, "last")
-//     .typeText(uf.email_address, "test@test.com.zz")
-//     .typeText(uf.contact_number, "123-456-7890")
+  // personal details
+  await t
+    .typeText(uf.first_name, "first")
+    .typeText(uf.last_name, "last")
+    .typeText(uf.email_address, "test@test.com.zz")
+    .typeText(uf.contact_number, "123-456-7890")
 
-//     .typeText(uf.name, "update")
-//     // make sure highlighting is present
-//     .expect(uf.name.hasClass("bmltwf-changed"))
-//     .ok();
+    .typeText(uf.name, "update")
+    // make sure highlighting is present
+    .expect(uf.name.hasClass("bmltwf-changed"))
+    .ok();
 
-//   // virtual meeting settings
-//   await select_dropdown_by_value(uf.venueType, "3");
-//   await t
-//     .expect(uf.venueType.value)
-//     .eql("3")
-//     .expect(uf.virtual_meeting_link.visible)
-//     .eql(true)
-//     .expect(uf.phone_meeting_number.visible)
-//     .eql(true)
-//     .expect(uf.virtual_meeting_additional_info.visible)
-//     .eql(true);
-//   await t
-//     .typeText(uf.phone_meeting_number, "+61 1800 253430 code #8303782669")
-//     .expect(uf.phone_meeting_number.hasClass("bmltwf-changed"))
-//     .ok()
-//     .typeText(uf.virtual_meeting_link, "https://us02web.zoom.us/j/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09")
-//     .expect(uf.virtual_meeting_link.hasClass("bmltwf-changed"))
-//     .ok()
-//     .typeText(uf.virtual_meeting_additional_info, "Zoom ID 83037287669 Passcode: testing")
-//     .expect(uf.virtual_meeting_additional_info.hasClass("bmltwf-changed"))
-//     .ok();
+  // virtual meeting settings
+  await select_dropdown_by_value(uf.venueType, "3");
+  await t
+    .expect(uf.venueType.value)
+    .eql("3")
+    .expect(uf.virtual_meeting_link.visible)
+    .eql(true)
+    .expect(uf.phone_meeting_number.visible)
+    .eql(true)
+    .expect(uf.virtual_meeting_additional_info.visible)
+    .eql(true);
+  await t
+    .typeText(uf.phone_meeting_number, "+61 1800 253430 code #8303782669")
+    .expect(uf.phone_meeting_number.hasClass("bmltwf-changed"))
+    .ok()
+    .typeText(uf.virtual_meeting_link, "https://us02web.zoom.us/j/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09")
+    .expect(uf.virtual_meeting_link.hasClass("bmltwf-changed"))
+    .ok()
+    .typeText(uf.virtual_meeting_additional_info, "Zoom ID 83037287669 Passcode: testing")
+    .expect(uf.virtual_meeting_additional_info.hasClass("bmltwf-changed"))
+    .ok();
 
-//   // meeting settings
+  // meeting settings
 
-//   // weekday
-//   await select_dropdown_by_text(uf.day, "Monday");
-//   // await t.debug();
-//   await t
-//     .expect(uf.day.hasClass("bmltwf-changed"))
-//     .ok()
-//     // start time
-//     .typeText(uf.startTime, "10:40")
-//     .expect(uf.startTime.hasClass("bmltwf-changed"))
-//     .ok();
+  // weekday
+  await select_dropdown_by_text(uf.day, "Monday");
+  // await t.debug();
+  await t
+    .expect(uf.day.hasClass("bmltwf-changed"))
+    .ok()
+    // start time
+    .typeText(uf.startTime, "10:40")
+    .expect(uf.startTime.hasClass("bmltwf-changed"))
+    .ok();
 
-//   // duration
-//   await select_dropdown_by_value(uf.duration_hours, "09");
-//   await t.expect(uf.duration_hours.hasClass("bmltwf-changed")).ok();
-//   await select_dropdown_by_value(uf.duration_minutes, "35");
-//   await t.expect(uf.duration_minutes.hasClass("bmltwf-changed")).ok();
+  // duration
+  await select_dropdown_by_value(uf.duration_hours, "09");
+  await t.expect(uf.duration_hours.hasClass("bmltwf-changed")).ok();
+  await select_dropdown_by_value(uf.duration_minutes, "35");
+  await t.expect(uf.duration_minutes.hasClass("bmltwf-changed")).ok();
 
-//   // format list
-//   await t.click(uf.format_list_clickable).pressKey("g u i d enter").expect(uf.format_list_clickable.hasClass("bmltwf-changed")).ok();
+  // format list
+  await t.click(uf.format_list_clickable).pressKey("g u i d enter").expect(uf.format_list_clickable.hasClass("bmltwf-changed")).ok();
 
-//   await t
-//     .typeText(uf.location_text, "my location")
-//     .expect(uf.format_list_clickable.hasClass("bmltwf-changed"))
-//     .ok()
-//     .typeText(uf.location_street, "110 Avoca Street")
-//     .expect(uf.location_street.hasClass("bmltwf-changed"))
-//     .ok()
-//     .typeText(uf.location_info, "info")
-//     .expect(uf.location_info.hasClass("bmltwf-changed"))
-//     .ok()
-//     .typeText(uf.location_municipality, "Randwick")
-//     .expect(uf.location_municipality.hasClass("bmltwf-changed"))
-//     .ok()
-//     .typeText(uf.location_province, "VIC")
-//     .expect(uf.location_province.hasClass("bmltwf-changed"))
-//     .ok()
-//     .typeText(uf.location_postal_code_1, "2031")
-//     .expect(uf.location_postal_code_1.hasClass("bmltwf-changed"))
-//     .ok();
+  await t
+    .typeText(uf.location_text, "my location")
+    .expect(uf.format_list_clickable.hasClass("bmltwf-changed"))
+    .ok()
+    .typeText(uf.location_street, "110 Avoca Street")
+    .expect(uf.location_street.hasClass("bmltwf-changed"))
+    .ok()
+    .typeText(uf.location_info, "info")
+    .expect(uf.location_info.hasClass("bmltwf-changed"))
+    .ok()
+    .typeText(uf.location_municipality, "Randwick")
+    .expect(uf.location_municipality.hasClass("bmltwf-changed"))
+    .ok()
+    .typeText(uf.location_province, "VIC")
+    .expect(uf.location_province.hasClass("bmltwf-changed"))
+    .ok()
+    .typeText(uf.location_postal_code_1, "2031")
+    .expect(uf.location_postal_code_1.hasClass("bmltwf-changed"))
+    .ok();
 
-//     await select_dropdown_by_value(uf.group_relationship, "Group Member");
+    await select_dropdown_by_value(uf.group_relationship, "Group Member");
 
-//     await t
-//     .click(uf.submit)
-//     .expect(Selector("#bmltwf_response_message").innerText)
-//     .match(/submission\ successful/);
+    await t
+    .click(uf.submit)
+    .expect(Selector("#bmltwf_response_message").innerText)
+    .match(/submission\ successful/);
 
-//   // switch to admin page
-//   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+  // switch to admin page
+  await t.useRole(bmltwf_dbupgrade_admin).navigateTo(userVariables.admin_submissions_page_dbupgrade);
 
-//     // first row open the dropdown
-//     await click_table_row_column(as.dt_submission, 0, 9);
+    // first row open the dropdown
+    await click_table_row_column(as.dt_submission, 0, 9);
   
-// });
+});

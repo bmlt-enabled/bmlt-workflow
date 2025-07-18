@@ -49,7 +49,6 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve", async (t) => {
     location_postal_code_1: "2032",
   };
   // console.log(userVariables.formpage_multisingle);
-
   await t.navigateTo(userVariables.formpage_multisingle);
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 
@@ -78,7 +77,7 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   var meeting = {
-    meeting_name: "my test meeting 99999",
+    name: "my test meeting 99999",
     location_text: "the church",
     location_street: "105 avoca street",
     location_info: "info",
@@ -91,9 +90,9 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve", async (t) => {
   };
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.venue_type, "3");
+  await select_dropdown_by_value(uf.venueType, "3");
   await t
-    .expect(uf.venue_type.value)
+    .expect(uf.venueType.value)
     .eql("3")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)
@@ -108,11 +107,11 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve", async (t) => {
     .typeText(uf.virtual_meeting_additional_info, meeting.virtual_meeting_additional_info);
 
   // meeting settings
-  await t.typeText(uf.meeting_name, meeting.meeting_name);
+  await t.typeText(uf.name, meeting.name);
 
-  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+  await select_dropdown_by_text(uf.day, "Monday");
 
-  await t.typeText(uf.start_time, "10:40");
+  await t.typeText(uf.startTime, "10:40");
 
   await select_dropdown_by_value(uf.duration_hours, "04");
   await select_dropdown_by_value(uf.duration_minutes, "30");
@@ -129,7 +128,7 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve", async (t) => {
     .typeText(uf.location_province, meeting.location_province)
     .typeText(uf.location_postal_code_1, meeting.location_postal_code_1);
 
-  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
+  await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -165,12 +164,11 @@ test("MultiSite_Single_Submit_New_Meeting_And_Approve", async (t) => {
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
-});
+})
 
 test("Multisite_Single_Submit_Change_Meeting_And_Approve", async (t) => {
-  // await t.debug();
   await t.navigateTo(userVariables.formpage_multisingle);
-
+  
   // console.log(userVariables.formpage_multisingle);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
@@ -193,9 +191,9 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve", async (t) => {
     .typeText(uf.contact_number, "123-456-7890")
     .typeText(uf.location_text, "location")
 
-    .typeText(uf.meeting_name, "update", { replace: true })
+    .typeText(uf.name, "update", { replace: true })
     // make sure highlighting is present
-    .expect(uf.meeting_name.hasClass("bmltwf-changed"))
+    .expect(uf.name.hasClass("bmltwf-changed"))
     .ok();
 
   // email dropdown
@@ -235,4 +233,4 @@ test("Multisite_Single_Submit_Change_Meeting_And_Approve", async (t) => {
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
-});
+})

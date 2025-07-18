@@ -131,30 +131,32 @@ services:
       - ./logs/:/var/log/apache2
       - ../../wpcache:/root/.wp-cli/cache/core/
 
-  # wordpress-php8-singlesite-bmlt3x:
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile-wp-php8.3
-  #   depends_on:
-  #     - wordpress-db
-  #   tmpfs: 
-  #     - /var/www/html
-  #     - /var/log
-  #   restart: always
-  #   command: /usr/local/bin/wp-install.sh
-  #   ports:
-  #     - 83:83
-  #   environment:
-  #     WORDPRESS_DB_HOST: wordpress-db
-  #     WORDPRESS_DB_USER: wordpress
-  #     WORDPRESS_DB_PASSWORD: wordpress
-  #     WORDPRESS_DB_NAME: wordpress-php8-singlesite-bmlt3x
-  #     WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
-  #     WORDPRESS_HOST: wordpress-php8-singlesite-bmlt3x
-  #     WORDPRESS_PORT: 83
-  #     BMLT: ${BMLT}
-  #     BMLT_PORT: ${BMLT_PORT}
-  #   volumes:
-  #     - ../:/var/www/html/wp-content/plugins/bmlt-workflow
-  #     - ./logs/:/var/log/apache2
-  #     - ../../wpcache:/root/.wp-cli/cache/core/
+  wordpress-php8-dbupgrade:
+    build:
+      context: .
+      dockerfile: Dockerfile-wp-php8.3
+    depends_on:
+      - wordpress-db
+    ports:
+      - 83:83
+    restart: always
+    command: bash -c "/usr/local/bin/wp-install-dbupgrade.sh"
+    tmpfs: 
+      - /var/www/html
+      - /var/log
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress-php8-dbupgrade
+      WORDPRESS_HOST: wordpress-php8-dbupgrade
+      WORDPRESS_NONCE_SALT: '4hJ:ZRFUAdfFEBq=z$$9+]Bk|\!1y8V,h#w4aNGy~o7u|BBR;u(ASi],u[Cp46qRQa'
+      WORDPRESS_PORT: 83
+      BMLT: ${BMLT}
+      BMLT_PORT: ${BMLT_PORT}
+    volumes:
+      - ../:/plugin
+      - ../tests/dbupgrade:/sql-import
+      - ./logs/:/var/log/apache2
+      - ../../wpcache:/root/.wp-cli/cache/core/
+      - /var/run/docker.sock.raw:/var/run/docker.sock

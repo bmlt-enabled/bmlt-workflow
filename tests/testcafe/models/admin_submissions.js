@@ -33,17 +33,17 @@ class Admin_Submissions {
         this.reject_dialog_textarea = Selector("#bmltwf_submission_reject_dialog_textarea");
         this.quickedit_dialog = Selector("#bmltwf_submission_quickedit_dialog");
         // quickedit fields
-        this.quickedit_meeting_name = Selector("#quickedit_meeting_name");
-        this.quickedit_format_shared_id_list = Selector("#quickedit_format_shared_id_list");
-        this.quickedit_start_time = Selector("#quickedit_start_time");
+        this.quickedit_name = Selector("#quickedit_name");
+        this.quickedit_formatIds = Selector("#quickedit_formatIds");
+        this.quickedit_startTime = Selector("#quickedit_startTime");
         this.quickedit_duration_hours = Selector("#quickedit_duration_hours");
         this.quickedit_duration_minutes = Selector("#quickedit_duration_minutes");
         this.quickedit_virtual_meeting_additional_info = Selector("#quickedit_virtual_meeting_additional_info");
         this.quickedit_phone_meeting_number = Selector("#quickedit_phone_meeting_number");
         this.quickedit_virtual_meeting_link = Selector("#quickedit_virtual_meeting_link");
         this.quickedit_additional_info = Selector("#quickedit_additional_info");
-        this.quickedit_venue_type = Selector("#quickedit_venue_type");
-        this.quickedit_weekday_tinyint = Selector("#quickedit_weekday_tinyint");
+        this.quickedit_venueType = Selector("#quickedit_venueType");
+        this.quickedit_day = Selector("#quickedit_day");
         this.quickedit_location_text = Selector("#quickedit_location_text");
         this.quickedit_location_street = Selector("#quickedit_location_street");
         this.quickedit_location_info = Selector("#quickedit_location_info");

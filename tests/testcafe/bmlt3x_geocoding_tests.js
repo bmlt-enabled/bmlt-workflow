@@ -72,7 +72,6 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) 
     .eql(true)
     .expect(uf.additional_info_div.visible)
     .eql(true);
-
   // personal details
   await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "123-456-7890");
 
@@ -85,7 +84,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) 
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   var meeting = {
-    meeting_name: "my test meeting 99999",
+    name: "my test meeting 99999",
     location_text: "the church",
     location_street: "105 avoca street",
     location_info: "info",
@@ -98,9 +97,9 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) 
   };
 
   // virtual meeting settings
-  await select_dropdown_by_value(uf.venue_type, "3");
+  await select_dropdown_by_value(uf.venueType, "3");
   await t
-    .expect(uf.venue_type.value)
+    .expect(uf.venueType.value)
     .eql("3")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)
@@ -115,11 +114,11 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) 
     .typeText(uf.virtual_meeting_additional_info, meeting.virtual_meeting_additional_info);
 
   // meeting settings
-  await t.typeText(uf.meeting_name, meeting.meeting_name);
+  await t.typeText(uf.name, meeting.name);
 
-  await select_dropdown_by_text(uf.weekday_tinyint, "Monday");
+  await select_dropdown_by_text(uf.day, "Monday");
 
-  await t.typeText(uf.start_time, "10:40");
+  await t.typeText(uf.startTime, "10:40");
 
   await select_dropdown_by_value(uf.duration_hours, "04");
   await select_dropdown_by_value(uf.duration_minutes, "30");
@@ -136,7 +135,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) 
     .typeText(uf.location_province, meeting.location_province)
     .typeText(uf.location_postal_code_1, meeting.location_postal_code_1);
 
-  await select_dropdown_by_text(uf.service_body_bigint, "Mid-Hudson Area Service");
+  await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
@@ -199,9 +198,9 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_With_Geocoding_Disabled", async (
     .typeText(uf.contact_number, "12345")
     .typeText(uf.location_text, "location")
 
-    .typeText(uf.meeting_name, "update", { replace: true })
+    .typeText(uf.name, "update", { replace: true })
     // make sure highlighting is present
-    .expect(uf.meeting_name.hasClass("bmltwf-changed"))
+    .expect(uf.name.hasClass("bmltwf-changed"))
     .ok();
 
   // email dropdown
