@@ -1,4 +1,4 @@
-## 1.1.19 (Jun 14, 2025)
+## 1.1.20 (Jun 14, 2025)
 - Fixes incorrect generation of world ID codes when meetings were selected for unpublish on virtual-na.org (thanks @anitak!)
 - Publish on virtualna.org selector wasn't appearing on quickedit. It is now :)
 - Deprecated support for BMLT 2.x
