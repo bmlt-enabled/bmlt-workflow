@@ -724,7 +724,7 @@ jQuery(document).ready(function ($) {
         case 'venueType': {
           const vtype = venue_types[c[key]];
           if ('original_venueType' in c) {
-            const ovtype = venue_types[c.original_venue_type];
+            const ovtype = venue_types[c.original_venueType];
             table += column(col_meeting_details, __('Venue Type', 'bmlt-workflow'), `${ovtype} → ${vtype}`);
           } else {
             table += column(col_meeting_details, __('Venue Type', 'bmlt-workflow'), vtype);
