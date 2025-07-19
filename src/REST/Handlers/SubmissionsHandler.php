@@ -1025,6 +1025,7 @@ class SubmissionsHandler
                         if (!(($data[$field] >= 0) && ($data[$field] <= 6))) {
                             return $this->invalid_form_field($field);
                         }
+                        $data[$field] = intval($data[$field]);
                         break;
                     case ('url'):
                         $data[$field] = esc_url_raw($data[$field], array('http', 'https'));
@@ -1110,7 +1111,8 @@ class SubmissionsHandler
                 // new meeting - add all fields to the changes requested
                 foreach ($allowed_fields as $field) {
                     // make sure its not a null entry, ie not entered on the frontend form
-                    if (!empty($sanitised_fields[$field])) {
+                    // Special handling for day field which can be 0
+                    if (!empty($sanitised_fields[$field]) || (isset($sanitised_fields[$field]) && ($sanitised_fields[$field] === 0 || $sanitised_fields[$field] === '0'))) {
                         $submission[$field] = $sanitised_fields[$field];
                     }
                 }
