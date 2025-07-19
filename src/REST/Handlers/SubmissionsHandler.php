@@ -272,9 +272,34 @@ class SubmissionsHandler
 
         foreach ($quickedit_change as $key => $value) {
             // $this->debug_log("checking " . $key);
-            if ((!in_array($key, $change_subfields)) || (is_array($value))) {
+            if (!in_array($key, $change_subfields)) {
                 // $this->debug_log("removing " . $key);
                 unset($quickedit_change[$key]);
+            } elseif (is_array($value) && $key !== 'formatIds') {
+                // Keep formatIds as array, remove other arrays
+                unset($quickedit_change[$key]);
+            }
+            
+            // Special handling for formatIds - ensure it's always an array of integers
+            if ($key === 'formatIds') {
+                if (is_string($value)) {
+                    // Convert comma-separated string to array of integers
+                    $quickedit_change[$key] = array_map('intval', explode(',', $value));
+                } elseif (is_array($value)) {
+                    // Ensure all values are integers
+                    $quickedit_change[$key] = array_map('intval', $value);
+                }
+            }
+            
+            // Ensure time fields are in HH:MM format (not HH:MM:SS)
+            if ($key === 'startTime' || $key === 'duration') {
+                if (is_string($value) && preg_match('/^(\d{1,2}):(\d{2}):(\d{2})$/', $value, $matches)) {
+                    // Convert HH:MM:SS to HH:MM
+                    $quickedit_change[$key] = $matches[1] . ':' . $matches[2];
+                } elseif (is_string($value) && strlen($value) > 5) {
+                    // Truncate to first 5 characters (HH:MM)
+                    $quickedit_change[$key] = substr($value, 0, 5);
+                }
             }
         }
 

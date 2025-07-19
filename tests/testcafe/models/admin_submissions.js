@@ -34,7 +34,7 @@ class Admin_Submissions {
         this.quickedit_dialog = Selector("#bmltwf_submission_quickedit_dialog");
         // quickedit fields
         this.quickedit_name = Selector("#quickedit_name");
-        this.quickedit_formatIds = Selector("#quickedit_formatIds");
+        this.quickedit_formatIds = Selector("#select2-quickedit_formatIds-container");
         this.quickedit_startTime = Selector("#quickedit_startTime");
         this.quickedit_duration_hours = Selector("#quickedit_duration_hours");
         this.quickedit_duration_minutes = Selector("#quickedit_duration_minutes");

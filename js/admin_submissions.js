@@ -976,15 +976,25 @@ jQuery(document).ready(function ($) {
     $('.bmltwf-changed').each(function () {
       if ($(this).is('textarea,select,input')) {
         const short_id = $(this).attr('id').replace('quickedit_', '');
-        // turn the format list into a comma seperated array
+        // keep formatIds as an array of integers
         if (short_id === 'formatIds') {
-          quickedit_changes_requested[short_id] = $(this).val().join(',');
+          quickedit_changes_requested[short_id] = $(this).val().map(Number);
         } else if (short_id === 'duration_hours' || short_id === 'duration_minutes') {
-          // reconstruct our duration from the select list
+          // reconstruct our duration from the select list in HH:MM format
           // add duration entirely if either minutes or hours have changed
-          quickedit_changes_requested.duration = `${$('#quickedit_duration_hours').val()}:${$('#quickedit_duration_minutes').val()}:00`;
+          quickedit_changes_requested.duration = `${$('#quickedit_duration_hours').val()}:${$('#quickedit_duration_minutes').val()}`;
         } else if ((short_id === 'virtual_meeting_additional_info' || short_id === 'phone_meeting_number' || short_id === 'virtual_meeting_link') && $(this).val() === '(deleted)') {
           delete quickedit_changes_requested[short_id];
+        } else if (short_id === 'startTime') {
+          // Ensure startTime is in HH:MM format
+          const timeValue = $(this).val();
+          if (timeValue.includes(':')) {
+            // Extract just HH:MM part
+            const timeParts = timeValue.split(':');
+            quickedit_changes_requested[short_id] = `${timeParts[0]}:${timeParts[1]}`;
+          } else {
+            quickedit_changes_requested[short_id] = timeValue;
+          }
         } else {
           quickedit_changes_requested[short_id] = $(this).val();
         }

@@ -29,7 +29,7 @@ import {
   myip
    } from "./helpers/helper.js";
 
-import { RequestLogger } from "testcafe";
+import { RequestLogger, Selector } from "testcafe";
 
 import { userVariables } from "../../.testcaferc";
 
@@ -518,3 +518,51 @@ test("Approve_New_Meeting_Geocoding", async (t) => {
   // check the geocode button is enabled
   await t.expect((as.quickedit_dialog_parent).find("button.ui-corner-all").nth(1).hasAttribute("disabled")).notOk();
 });
+
+const formatIdsLogger = RequestLogger(/bmltwf\/v1\/submissions\/93/,
+{
+  logRequestBody: true,
+}
+);
+
+test('Quickedit_JSON_Format_Validation', async t => {
+  // Select a meeting and open quickedit
+  const row = 2; // new meeting
+  await click_table_row_column(as.dt_submission, row, 0);
+  await click_dt_button_by_index(as.dt_submission_wrapper, 2);
+  
+  // Make some changes to ensure fields are marked as changed
+  await t
+    .expect(as.quickedit_dialog_parent.visible).eql(true)
+    // Change format IDs to test array handling
+    .click(as.quickedit_formatIds)
+    .click(Selector('li[id^="select2-quickedit_formatIds-result"]').withText('(B)-Beginners'))
+    .click(as.quickedit_formatIds)
+    .click(Selector('li[id^="select2-quickedit_formatIds-result"]').withText('(C)-Closed'))
+    .click(as.quickedit_formatIds)
+    .click(Selector('li[id^="select2-quickedit_formatIds-result"]').withText('(D)-Discussion'))
+       // Change time fields to test HH:MM format
+    .click(as.quickedit_startTime)
+    .pressKey('ctrl+a delete')
+    .typeText(as.quickedit_startTime, '14:30:00')
+    .click(as.quickedit_duration_hours)
+    .click(Selector('option').withText('2'))
+    .click(as.quickedit_duration_minutes)
+    .click(Selector('option').withText('45'))
+    // Save the changes
+    .click(as.quickedit_dialog_parent.find("button.ui-corner-all").nth(2))
+    .wait(1000);
+  
+  // Get the request that was sent
+  const requestBody = JSON.parse(formatIdsLogger.requests[0].request.body.toString());
+  
+  // Validate the JSON format
+  await t
+    // Check that formatIds is an array of integers
+    .expect(Array.isArray(requestBody.changes_requested.formatIds)).ok('formatIds should be an array')
+    .expect(requestBody.changes_requested.formatIds.every(id => Number.isInteger(id))).ok('formatIds should contain only integers')
+    // Check that duration is in HH:MM format (no seconds)
+    .expect(requestBody.changes_requested.duration).match(/^\d{2}:\d{2}$/, 'duration should be in HH:MM format')
+    // Check that startTime is in HH:MM format (no seconds)
+    .expect(requestBody.changes_requested.startTime).match(/^\d{2}:\d{2}$/, 'startTime should be in HH:MM format');
+}).requestHooks(formatIdsLogger);

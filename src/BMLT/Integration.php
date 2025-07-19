@@ -408,7 +408,6 @@ class Integration
         }
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings';
         $url = add_query_arg(array('serviceBodyIds' => $service_bodies), $url);
-        $this->debug_log($this->v3_access_token);
         $response = \wp_remote_request($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token), 'GET'));
         $this->debug_log("v3 wp_remote_request returns " . \wp_remote_retrieve_response_code($response));
         $this->debug_log(\wp_remote_retrieve_body($response));
@@ -813,11 +812,10 @@ class Integration
         $this->debug_log(\wp_remote_retrieve_body($response));
 
         if (\wp_remote_retrieve_response_code($response) != 201) {
-            return new \WP_Error('bmltwf', $error_message);
+            return new \WP_Error('bmltwf', \wp_remote_retrieve_response_message($response));
         }
         return true;
     }
-
     function isAutoGeocodingEnabled($geocoding_type)
     {
 
