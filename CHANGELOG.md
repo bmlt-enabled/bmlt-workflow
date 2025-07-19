@@ -1,3 +1,6 @@
+## 1.1.23 (Jul 19, 2025)
+- Fixes invalid display of original venue type on the admin page in a change meeting submission
+
 ## 1.1.22 (Jul 19, 2025)
 - Fixes day handling where php treats 0 in a rather annoying way.
 
