@@ -1,3 +1,6 @@
+## 1.1.22 (Jul 19, 2025)
+- Fixes day handling where php treats 0 in a rather annoying way.
+
 ## 1.1.21 (Jul 19, 2025)
 - Fixes admin submission bug creating invalid changes via quickedit
 - Triggers database upgrade correctly on plugin update

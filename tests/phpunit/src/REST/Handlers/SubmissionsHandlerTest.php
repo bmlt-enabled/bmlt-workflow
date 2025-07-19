@@ -1671,5 +1671,71 @@ Line: $errorLine
         // Should succeed as postal code validation is lenient
         $this->assertInstanceOf(WP_Error::class, $response);
     }
+    
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     */
+    public function test_day_field_correctly_inserted_in_changes_requested(): void
+    {
+        $form_post = new class {
+            public function get_json_params()
+            {
+                return array(
+                    "update_reason" => "reason_new",
+                    "name" => "Test Day Field Meeting",
+                    "startTime" => "10:00:00",
+                    "duration" => "01:00:00",
+                    "location_text" => "test location",
+                    "location_street" => "test street",
+                    "location_municipality" => "test municipality",
+                    "location_province" => "test province",
+                    "location_postal_code_1" => "12345",
+                    "day" => "3", // Wednesday (0-based, so 3 = Thursday)
+                    "serviceBodyId" => "99",
+                    "formatIds" => ["1"],
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "venueType" => "1",
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                );
+            }
+        };
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        
+        // Capture the inserted data
+        $inserted_data = null;
+        $wpdb->shouldReceive('insert')->withArgs(function ($table, $data, $format = null) use (&$inserted_data) {
+            $inserted_data = $data;
+            return true; // Accept any arguments
+        })->andReturn(array('0' => '1'))->set('insert_id', 10);
+        
+        $wpdb->shouldReceive('prepare')->andReturn(true);
+        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
+        Functions\when('wp_mail')->justReturn('true');
+
+        Functions\when('\get_option')->justReturn("success");
+
+        $retrieve_single_response = $this->meeting;
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+        
+        // Verify day field is correctly inserted in changes_requested
+        $changes_requested = json_decode($inserted_data['changes_requested'], true);
+        $this->assertArrayHasKey('day', $changes_requested);
+        $this->debug_log($changes_requested);
+        $this->assertEquals(2, $changes_requested['day']);
+    }
 
 }
