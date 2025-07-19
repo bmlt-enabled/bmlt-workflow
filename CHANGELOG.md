@@ -1,3 +1,7 @@
+## 1.1.24 (Jul 19, 2025)
+- Fixes repeated appending of 'autocompleted' to some fields in quickedit
+- Fixes incorrect display of zip/county/province fields when geocoding is enabled but display of this field is hidden
+
 ## 1.1.23 (Jul 19, 2025)
 - Fixes invalid display of original venue type on the admin page in a change meeting submission
 

@@ -25,6 +25,7 @@ import {
   select_dropdown_by_text,
   select_dropdown_by_value,
   check_checkbox,
+  uncheck_checkbox,
   click_table_row_column,
   click_dt_button_by_index,
   click_dialog_button_by_index,
@@ -80,4 +81,21 @@ test("Bmlt3x_Submit_New_Meeting_And_Check_Zip_And_County_Geolocation", async (t)
     .click(as.quickedit_dialog_parent.find("button.ui-corner-all").nth(1))
     .expect(as.quickedit_location_sub_province.value).eql("Kings County")
     .expect(as.quickedit_location_postal_code_1.value).eql('11201')
+});
+
+test("Bmlt3x_Check_Optional_County_Hidden_Even_When_Geolocation_On", async (t) => {
+  // switch to admin page
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
+  await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_required_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
+  await check_checkbox(t,ao.bmltwf_optional_postcode_required_checkbox);
+  await t.navigateTo(userVariables.admin_submissions_page_single);
+  // new meeting = row 1
+  var row = 1;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // quickedit
+
+  await click_dt_button_by_index(as.dt_submission_wrapper, 2);
+  await t.expect(as.optional_location_sub_province.visible).eql(false);
 });
