@@ -31,7 +31,7 @@ import {
   
 import { userVariables } from "../../.testcaferc.js";
 
-fixture`test`
+fixture`DbUpgrade`
   .before(async (t) => {
   })
   .beforeEach(async (t) => {

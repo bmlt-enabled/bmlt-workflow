@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.20
+ * Version: 1.1.21
  * Requires at least: 5.2
  * Tested up to: 6.6.1
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.20');
+define('BMLTWF_PLUGIN_VERSION', '1.1.21');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -73,6 +73,9 @@ if (!class_exists('bmltwf_plugin')) {
             $this->BMLTWF_Rest_Controller = new Controller();
             // $this->debug_log("bmlt-workflow: Creating new BMLTWF_Database");
             $this->BMLTWF_Database = new BMLTWF_Database();
+            
+            // Check database version and upgrade if needed
+            $this->check_database_version();
 
             // ensure our default options are always available
             $this->bmltwf_add_default_options();
@@ -89,6 +92,27 @@ if (!class_exists('bmltwf_plugin')) {
             register_activation_hook(__FILE__, array(&$this, 'bmltwf_install'));
         }
 
+        /**
+         * Check database version and upgrade if needed
+         */
+        private function check_database_version()
+        {
+            $installed_version = get_option('bmltwf_db_version');
+            $current_version = $this->BMLTWF_Database->bmltwf_db_version;
+            
+            if ($installed_version === false || version_compare($installed_version, $current_version, '<')) {
+                $this->debug_log("Database upgrade needed from {$installed_version} to {$current_version}");
+                $result = $this->BMLTWF_Database->bmltwf_db_upgrade($current_version, false);
+                if ($result === 2) {
+                    $this->debug_log("Database upgraded successfully");
+                } elseif ($result === 1) {
+                    $this->debug_log("Database fresh install completed");
+                } else {
+                    $this->debug_log("No database changes needed");
+                }
+            }
+        }
+        
         public function bmltwf_load_textdomain()
         {
             $domain = 'bmlt-workflow';
