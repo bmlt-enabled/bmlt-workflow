@@ -529,36 +529,6 @@ class Integration
         return true;
     }
 
-    public function getServiceBodiesPermissionv2()
-    {
-        $req = array();
-        $req['admin_action'] = 'get_permissions';
-
-        $response = $this->postAuthenticatedRootServerRequest('local_server/server_admin/json.php', $req);
-        // $this->debug_log("get permissions response returns " . \wp_remote_retrieve_response_code($response));
-        // $this->debug_log(\wp_remote_retrieve_body($response));
-        if (is_wp_error($response)) {
-
-            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Check the BMLT Root Server configuration settings', 'bmlt-workflow'), 500);
-        }
-
-        $arr = json_decode(\wp_remote_retrieve_body($response), 1);
-
-        if ((!is_array($arr)) || (!array_key_exists('service_body', $arr))) {
-            return $this->bmltwf_integration_error(__('BMLT Root Server Communication Error - Cannot retrieve service bodies', 'bmlt-workflow'), 500);
-        }
-
-        // if this is just a single service body, then fix the array up
-        if (!array_key_exists('0', $arr['service_body'])) {
-            $newarr = array();
-            $newarr['service_body'] = array();
-            $newarr['service_body'][0] = $arr['service_body'];
-            $arr = $newarr;
-        }
-
-        return $arr;
-    }
-
     private function removeLocations(array $format): array
     {
         // Remove virtual  meeting, temporarily closed, hybrid formats as these are handled seperately

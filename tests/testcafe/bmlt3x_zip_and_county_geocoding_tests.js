@@ -22,14 +22,10 @@ import { Selector } from "testcafe";
 
 import {
   restore_from_backup,
-  select_dropdown_by_text,
-  select_dropdown_by_value,
   check_checkbox,
   uncheck_checkbox,
   click_table_row_column,
   click_dt_button_by_index,
-  click_dialog_button_by_index,
-  waitfor,
   myip,
   bmltwf_admin,
   set_language_single

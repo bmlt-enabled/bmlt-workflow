@@ -415,6 +415,10 @@ jQuery(document).ready(function ($) {
 
       // populate form fields from bmlt if they exist
       fields.forEach(function (item) {
+        // Skip virtualna_published for non-virtual meetings
+        if (item === 'virtualna_published' && mdata[id].venueType === 1) {
+          return;
+        }
         if (item in mdata[id]) {
           if (mdata[id][item] === true) {
             put_field(item, '1');
@@ -610,8 +614,12 @@ jQuery(document).ready(function ($) {
     if (this.value === '1') {
       $('#virtual_meeting_options').hide();
       $('#location_fields').show();
+      // Disable virtualna_published field for in-person meetings
+      $('#virtualna_published').hide();
     } else {
       $('#virtual_meeting_options').show();
+      // Enable virtualna_published field for virtual meetings
+      $('#virtualna_published').show();
       switch (this.value) {
         case '2':
           $('#location_fields').hide();

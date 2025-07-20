@@ -404,7 +404,6 @@ Line: $errorLine
         $response = $handlers->meeting_update_form_handler_rest($form_post);
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
-        print_r($response);
         $this->assertEquals(200, $response->get_status());
     }
 
@@ -1734,8 +1733,71 @@ Line: $errorLine
         // Verify day field is correctly inserted in changes_requested
         $changes_requested = json_decode($inserted_data['changes_requested'], true);
         $this->assertArrayHasKey('day', $changes_requested);
-        $this->debug_log($changes_requested);
         $this->assertEquals(2, $changes_requested['day']);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     */
+    public function test_virtualna_published_not_in_f2f(): void
+    {
+        $form_post = new class {
+            public function get_json_params()
+            {
+                return  array(
+                    "update_reason" => "reason_change",
+                    "name" => "testing name change",
+                    "id" => "3277",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "serviceBodyId" => "6",
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                    "venueType" => 1,
+                    "published" => "1",
+                    "virtualna_published" => 1
+                );
+            }
+        };
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        /** @var Mockery::mock $wpdb test */
+        // handle db insert of submission
+        // Capture the inserted data
+        $inserted_data = null;
+        $wpdb->shouldReceive('insert')->withArgs(function ($table, $data, $format = null) use (&$inserted_data) {
+            $inserted_data = $data;
+            return true; // Accept any arguments
+        })->andReturn(array('0' => '1'))->set('insert_id', 10);
+        
+        // handle email to service body
+        $wpdb->shouldReceive('prepare')->andReturn(true);
+        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+        $wpdb->prefix = "";
+
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
+        Functions\when('wp_mail')->justReturn('true');
+
+        Functions\when('\get_option')->justReturn("success");
+
+        $resp = '{"id":"3563","worldId":"","serviceBodyId":"6","day":2,"venueType":"1","startTime":"19:00","duration":"01:15","time_zone":"","formats":"BT","lang_enum":"en","longitude":"0","latitude":"0","distance_in_km":"","distance_in_miles":"","email_contact":"","name":"Test Monday Night Meeting","location_text":"Glebe Town Hall","location_info":"","location_street":"160 Johns Road","location_city_subsection":"","location_neighborhood":"","location_municipality":"Glebe","location_sub_province":"","location_province":"NSW","location_postal_code_1":"NSW","location_nation":"","comments":"","train_lines":"","bus_lines":"","contact_phone_2":"","contact_email_2":"","contact_name_2":"","contact_phone_1":"","contact_email_1":"","contact_name_1":"","zone":"","phone_meeting_number":"","virtual_meeting_link":"","virtual_meeting_additional_info":"","published":"1","root_server_uri":"http:","formatIds":[3]}';
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($resp, $bmlt_input));
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
+        $this->debug_log(($response));
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+        $changes_requested = json_decode($inserted_data['changes_requested'], true);
+
+        // print_r($changes_requested);
+
+        $this->assertArrayNotHasKey('virtualna_published', $changes_requested);
+
     }
 
 }
