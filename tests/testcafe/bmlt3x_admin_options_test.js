@@ -415,7 +415,6 @@ test("Debug_Logging_And_Download", async (t) => {
   // Wait for the download to complete
   await t.wait(2000); // Give time for the download to start
   const fileExists = await waitForFileDownload(downloadPath);
-  console.log(downloadPath);
   // Verify the file was downloaded
   await t.expect(fileExists).ok(`Debug log file ${expectedFilename} should be downloaded`);
   

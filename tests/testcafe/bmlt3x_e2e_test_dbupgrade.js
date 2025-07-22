@@ -48,7 +48,7 @@ test("DbUpgrade_Test_Upgrade", async (t) => {
 test("DbUpgrade_Bmlt3x_DBVersion", async (t) => {
       await t.useRole(bmltwf_dbupgrade_admin)
       .navigateTo(userVariables.admin_options_page_dbupgrade)
-      .expect(Selector("#bmltwf_db_version").value).eql("1.1.18");
+      .expect(Selector("#bmltwf_db_version").value).eql("1.1.24");
 });
 
 test("DbUpgrade_Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {

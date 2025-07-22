@@ -186,7 +186,7 @@ class OptionsHandler
         return $this->bmltwf_rest_success(array('message' => __('Backup Successful','bmlt-workflow'), 'backup' => $contents));
     }
     
-    public function post_bmltwf_debuglog_handler($request)
+    public function post_bmltwf_debug_handler($request)
     {
         $this->debug_log("debug log handler called");
         

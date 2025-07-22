@@ -255,8 +255,8 @@ class Controller extends \WP_REST_Controller
 		// POST options/debug
 		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_options_rest_base . '/debug', array(
 			'methods'             => \WP_REST_Server::CREATABLE,
-			'callback'            => array($this, 'post_bmltwf_debuglog'),
-			'permission_callback' => array($this, 'post_bmltwf_debuglog_permissions_check'),
+			'callback'            => array($this, 'post_bmltwf_debug'),
+			'permission_callback' => array($this, 'post_bmltwf_debug_permissions_check'),
 		));
 	}
 
@@ -444,9 +444,9 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 	
-	public function post_bmltwf_debuglog_permissions_check($request)
+	public function post_bmltwf_debug_permissions_check($request)
 	{
-		$this->debug_log("post_bmltwf_debuglog_permissions_check " . get_current_user_id());
+		$this->debug_log("post_bmltwf_debug_permissions_check " . get_current_user_id());
 		if (!current_user_can('manage_options')) {
 			return new \WP_Error('rest_forbidden', __('Access denied: You cannot download debug logs.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 		}
@@ -564,9 +564,9 @@ class Controller extends \WP_REST_Controller
 		return rest_ensure_response($result);
 	}
 	
-	public function post_bmltwf_debuglog($request)
+	public function post_bmltwf_debug($request)
 	{
-		$result = $this->OptionsHandler->post_bmltwf_debuglog_handler($request);
+		$result = $this->OptionsHandler->post_bmltwf_debug_handler($request);
 		return rest_ensure_response($result);
 	}
 }
