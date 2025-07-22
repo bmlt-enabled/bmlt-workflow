@@ -1631,7 +1631,8 @@
           "fallbackTo404": false,
           "default": false,
           "crudKey": "id",
-          "callbacks": []
+          "callbacks": [],
+          "body": "{}"
         }
       ],
       "responseMode": null,

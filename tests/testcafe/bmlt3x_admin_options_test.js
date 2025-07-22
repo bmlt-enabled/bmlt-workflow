@@ -86,7 +86,7 @@ test("Backup", async (t) => {
   // console.log(backup);
   await t.expect(f.message).eql("Backup Successful");
 
-  await t.expect(backup.options.bmltwf_db_version).eql("1.1.18");
+  await t.expect(backup.options.bmltwf_db_version).eql("1.1.24");
   // find a specific meeting
   let obj = backup.submissions.find((o) => o.change_id === "94");
   // console.log(obj);
@@ -382,4 +382,52 @@ test("Check_BMLT_Google_Maps_Key", async (t) => {
 }).requestHooks(gmapslogger);
 
 test('Quickedit_Input_Labels', async t => {
+});
+
+test("Debug_Logging_And_Download", async (t) => {
+  // Test enabling debug logging and downloading the log file
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  
+  // Enable debug logging
+  await select_dropdown_by_text(ao.bmltwf_enable_debug, "True");
+  await t.click(ao.submit);
+  await ao.settings_updated();
+  
+  // Verify debug is enabled and download button appears
+  await t
+    .expect(ao.bmltwf_enable_debug.value)
+    .eql("true")
+    .expect(ao.download_debug_log_button.exists)
+    .ok("Download button should appear when debug is enabled");
+  
+  // Generate some debug logs by performing an action
+  await t.navigateTo(userVariables.admin_submissions_page_single);
+  await t.navigateTo(userVariables.admin_settings_page_single);
+  
+  // Try to download the debug log
+  const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
+  const expectedFilename = `bmlt-workflow-debug-${today}.txt`;
+  const downloadPath = getFileDownloadPath(expectedFilename);
+  
+  // Click the download button
+  await t.click(ao.download_debug_log_button);
+  
+  // Wait for the download to complete
+  await t.wait(2000); // Give time for the download to start
+  const fileExists = await waitForFileDownload(downloadPath);
+  console.log(downloadPath);
+  // Verify the file was downloaded
+  await t.expect(fileExists).ok(`Debug log file ${expectedFilename} should be downloaded`);
+  
+  // Disable debug logging
+  await select_dropdown_by_text(ao.bmltwf_enable_debug, "False");
+  await t.click(ao.submit);
+  await ao.settings_updated();
+  
+  // Verify debug is disabled and download button disappears
+  await t
+    .expect(ao.bmltwf_enable_debug.value)
+    .eql("false")
+    .expect(ao.download_debug_log_button.exists)
+    .notOk("Download button should not appear when debug is disabled");
 });

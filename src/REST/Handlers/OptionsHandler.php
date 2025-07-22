@@ -185,4 +185,31 @@ class OptionsHandler
         $save['backupdetails'] = $fname;
         return $this->bmltwf_rest_success(array('message' => __('Backup Successful','bmlt-workflow'), 'backup' => $contents));
     }
+    
+    public function post_bmltwf_debuglog_handler($request)
+    {
+        $this->debug_log("debug log handler called");
+        
+        // Log the download action
+        $this->debug_log("Debug log file downloaded by user ID: " . get_current_user_id());
+        
+        // Get logs from database
+        $logs = $this->get_debug_logs(5000, 0); // Get all logs up to 5000
+        
+        if (empty($logs)) {
+            return $this->bmltwf_rest_error(__('No debug logs found in database', 'bmlt-workflow'), 404);
+        }
+        
+        // Build log content
+        $log_content = '';
+        foreach (array_reverse($logs) as $log) {
+            $log_content .= "[{$log->log_time}] {$log->log_caller}: {$log->log_message}\n";
+        }
+        
+        // Return the log content
+        return $this->bmltwf_rest_success(array(
+            'message' => __('Debug log download successful', 'bmlt-workflow'),
+            'log_content' => base64_encode($log_content)
+        ));
+    }
 }
