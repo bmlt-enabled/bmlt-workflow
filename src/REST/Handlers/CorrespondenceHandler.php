@@ -18,14 +18,19 @@
 
 namespace bmltwf\REST\Handlers;
 
+use bmltwf\BMLT\Integration;
+
 class CorrespondenceHandler
 {
     use \bmltwf\BMLTWF_Debug;
     use \bmltwf\REST\HandlerCore;
+    
+    protected $bmlt_integration;
 
     public function __construct($stub = null)
     {
         $this->initTableNames();
+        $this->bmlt_integration = new Integration();
     }
 
     /**
@@ -84,7 +89,7 @@ class CorrespondenceHandler
 
         // Get correspondence for this thread
         $correspondence = $wpdb->get_results($wpdb->prepare(
-            "SELECT c.*, s.submitter_email, s.submitter_name 
+            "SELECT c.*, s.submitter_name, s.change_made 
              FROM {$this->bmltwf_correspondence_table_name} c
              JOIN {$this->bmltwf_submissions_table_name} s ON c.change_id = s.change_id
              WHERE c.thread_id = %s 
@@ -95,14 +100,39 @@ class CorrespondenceHandler
         if (empty($correspondence)) {
             return new \WP_Error('rest_not_found', __('Correspondence thread not found', 'bmlt-workflow'), array('status' => 404));
         }
+        
+        // Check if submission has been approved/rejected/deleted
+        $status = $correspondence[0]->change_made;
+        if (in_array($status, ['approved', 'rejected', 'deleted'])) {
+            return new \WP_Error('rest_forbidden', __('This correspondence thread is no longer available', 'bmlt-workflow'), array('status' => 403));
+        }
+        
+        // Check if it's been 3 months since the last message
+        $last_message = end($correspondence);
+        $last_message_time = strtotime($last_message->created_at);
+        $three_months_ago = strtotime('-3 months');
+        
+        if ($last_message_time < $three_months_ago) {
+            return new \WP_Error('rest_forbidden', __('This correspondence thread has expired', 'bmlt-workflow'), array('status' => 403));
+        }
 
         // Get the submission details
         $submission = $wpdb->get_row($wpdb->prepare(
-            "SELECT change_id, submission_type, submitter_name, submitter_email, submission_time 
+            "SELECT change_id, submission_type, submitter_name, submission_time, id 
              FROM {$this->bmltwf_submissions_table_name} 
              WHERE change_id = %d",
             $correspondence[0]->change_id
         ));
+        
+        // Get meeting name from BMLT if we have a meeting ID
+        if (!empty($submission->id)) {
+            $meeting = $this->bmlt_integration->getMeeting($submission->id);
+            if (!is_wp_error($meeting) && isset($meeting['name'])) {
+                $submission->meeting_name = $meeting['name'];
+            } else {
+                $submission->meeting_name = "(Unknown Meeting)";
+            }
+        }
 
         return array(
             'submission' => $submission,

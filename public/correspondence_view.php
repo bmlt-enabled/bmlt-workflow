@@ -25,34 +25,12 @@ use bmltwf\BMLTWF_Debug;
  */
 function bmltwf_correspondence_view_shortcode($atts)
 {
-    // Enqueue styles and scripts
-    wp_enqueue_style('bmltwf-correspondence-view', plugin_dir_url(__FILE__) . '../css/correspondence_view.css', array(), BMLTWF_PLUGIN_VERSION);
-    wp_enqueue_script('bmltwf-correspondence-view', plugin_dir_url(__FILE__) . '../js/correspondence_view.js', array('jquery'), BMLTWF_PLUGIN_VERSION, true);
-    
     // Get thread ID from URL parameter
     $thread_id = isset($_GET['thread']) ? sanitize_text_field($_GET['thread']) : '';
     
     if (empty($thread_id)) {
         return '<div class="bmltwf-error">' . __('No correspondence thread specified.', 'bmlt-workflow') . '</div>';
     }
-    
-    // Localize script with REST API URL and thread ID
-    wp_localize_script('bmltwf-correspondence-view', 'bmltwf_correspondence_data', array(
-        'rest_url' => esc_url_raw(rest_url('bmltwf/v1/correspondence/thread/' . $thread_id)),
-        'thread_id' => $thread_id,
-        'nonce' => wp_create_nonce('wp_rest'),
-        'submission_rest_url' => esc_url_raw(rest_url('bmltwf/v1/submissions/')),
-        'i18n' => array(
-            'loading' => __('Loading correspondence...', 'bmlt-workflow'),
-            'error' => __('Error loading correspondence. Please check the URL and try again.', 'bmlt-workflow'),
-            'reply' => __('Reply', 'bmlt-workflow'),
-            'send' => __('Send', 'bmlt-workflow'),
-            'cancel' => __('Cancel', 'bmlt-workflow'),
-            'your_reply' => __('Your reply...', 'bmlt-workflow'),
-            'reply_sent' => __('Your reply has been sent.', 'bmlt-workflow'),
-            'reply_error' => __('Error sending reply. Please try again.', 'bmlt-workflow'),
-        )
-    ));
     
     // Output container for correspondence
     $output = '<div id="bmltwf-correspondence-container">';
