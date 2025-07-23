@@ -49,8 +49,15 @@ class Integration
         if (is_wp_error($response)) {
             $this->debug_log("RESPONSE ERROR: " . $response->get_error_message());
         } else {
-            $this->debug_log("RESPONSE CODE: " . \wp_remote_retrieve_response_code($response));
-            $this->debug_log("RESPONSE BODY: " . \wp_remote_retrieve_body($response));
+            $response_code = \wp_remote_retrieve_response_code($response);
+            $response_body = \wp_remote_retrieve_body($response);
+            $this->debug_log("RESPONSE CODE: " . $response_code);
+            $this->debug_log("RESPONSE BODY: " . $response_body);
+            
+            // Log error responses with their body
+            if ($response_code >= 400) {
+                $this->debug_log("ERROR RESPONSE ($response_code): " . $response_body);
+            }
         }
         
         return $response;

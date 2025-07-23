@@ -59,6 +59,9 @@ test("Bmlt3x_Submit_New_Meeting_And_Check_Zip_And_County_Geolocation", async (t)
   await check_checkbox(t,ao.bmltwf_optional_location_sub_province_required_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_postcode_required_checkbox);
+  await t.click(ao.submit);
+  await ao.settings_updated();
+
   await t.navigateTo(userVariables.admin_submissions_page_single);
   // new meeting = row 1
   var row = 1;
@@ -86,6 +89,9 @@ test("Bmlt3x_Check_Optional_County_Hidden_Even_When_Geolocation_On", async (t) =
   await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_required_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_postcode_required_checkbox);
+  await t.click(ao.submit);
+  await ao.settings_updated();
+
   await t.navigateTo(userVariables.admin_submissions_page_single);
   // new meeting = row 1
   var row = 1;

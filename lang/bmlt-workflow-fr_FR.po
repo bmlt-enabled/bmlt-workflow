@@ -12,6 +12,7 @@ msgstr ""
 "Language: fr\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: Poedit 3.2.2\n"
+"X-Domain: bmlt-workflow\n"
 
 #: admin/admin_options.php:35
 msgid "Plugin Version "

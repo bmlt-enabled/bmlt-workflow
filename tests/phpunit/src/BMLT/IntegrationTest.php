@@ -78,6 +78,8 @@ Line: $errorLine
         Functions\when('\wp_remote_request')->returnArg();
         Functions\when('\wp_remote_retrieve_response_message')->returnArg();
         Functions\when('\wp_remote_retrieve_cookie')->justReturn("");
+        // Default mock for wp_remote_retrieve_body to prevent test failures
+        Functions\when('\wp_remote_retrieve_body')->justReturn("");
         Functions\when('__')->returnArg();
         Functions\when('\get_locale')->justReturn('en_EN');
         Functions\when('\unserialize')->returnArg();
@@ -330,6 +332,7 @@ Line: $errorLine
      public function test_is_valid_bmlt_server_returns_false_if_not_valid(): void
      {
         Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+        Functions\when('wp_remote_retrieve_body')->justReturn('<html></html>');
 
          $integration = new Integration(true, "2.0.0");
          $response = $integration->is_valid_bmlt_server("");
@@ -343,6 +346,7 @@ Line: $errorLine
      public function test_is_valid_bmlt_server_returns_true_if_valid(): void
      {
         Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+        Functions\when('wp_remote_retrieve_body')->justReturn('<html></html>');
 
          $integration = new Integration(true, "3.0.0");
          $response = $integration->is_valid_bmlt_server("");
@@ -408,12 +412,11 @@ Line: $errorLine
     
     public function test_deleteMeeting_against_v3_with_valid_meeting(): void
     {
-
         Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+        Functions\when('wp_remote_retrieve_body')->justReturn('');
 
         $integration = new Integration(true, "3.0.0", "token",time()+2000);
         $this->assertTrue($integration->deleteMeeting(1));
-
     }
 
     /**
@@ -423,13 +426,12 @@ Line: $errorLine
     
     public function test_deleteMeeting_against_v3_with_invalid_meeting(): void
     {
-
         Functions\when('wp_remote_retrieve_response_code')->justReturn(404);
+        Functions\when('wp_remote_retrieve_body')->justReturn('Not found');
 
         $integration = new Integration(true, "3.0.0", "token", time()+2000);
         $response = $integration->deleteMeeting(1);
         $this->assertInstanceOf(WP_Error::class, $response);
-
     }
 
     /**
