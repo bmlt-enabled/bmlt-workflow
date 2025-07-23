@@ -56,5 +56,6 @@ trait BMLTWF_Constants
     public $bmltwf_service_bodies_rest_base = 'servicebodies';
     public $bmltwf_bmltserver_rest_base = 'bmltserver';
     public $bmltwf_options_rest_base = 'options';
+    public $bmltwf_correspondence_rest_base = 'correspondence';
 
 }

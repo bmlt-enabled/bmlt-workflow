@@ -21,6 +21,25 @@ namespace bmltwf\REST;
 
 trait HandlerCore
 {
+    use \bmltwf\BMLTWF_Constants;
+    
+    public $bmltwf_submissions_table_name;
+    public $bmltwf_service_bodies_table_name;
+    public $bmltwf_service_bodies_access_table_name;
+    public $bmltwf_debug_log_table_name;
+    public $bmltwf_correspondence_table_name;
+    
+    // Initialize table names
+    public function initTableNames()
+    {
+        global $wpdb;
+        // database tables
+        $this->bmltwf_submissions_table_name = $wpdb->prefix . 'bmltwf_submissions';
+        $this->bmltwf_service_bodies_table_name = $wpdb->prefix . 'bmltwf_service_bodies';
+        $this->bmltwf_service_bodies_access_table_name = $wpdb->prefix . 'bmltwf_service_bodies_access';
+        $this->bmltwf_debug_log_table_name = $wpdb->prefix . 'bmltwf_debug_log';
+        $this->bmltwf_correspondence_table_name = $wpdb->prefix . 'bmltwf_correspondence';
+    }
 
     // accepts raw string or array
     public function bmltwf_rest_success($message)

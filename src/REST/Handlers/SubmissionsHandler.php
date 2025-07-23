@@ -35,6 +35,8 @@ class SubmissionsHandler
 
     public function __construct($intstub = null)
     {
+        $this->initTableNames();
+        
         if (empty($intstub)) {
             // $this->debug_log("SubmissionsHandler: Creating new Integration");
             $this->bmlt_integration = new Integration();
