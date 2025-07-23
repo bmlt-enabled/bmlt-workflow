@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.25
+ * Version: 1.1.26
  * Requires at least: 5.2
  * Tested up to: 6.6.1
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.25');
+define('BMLTWF_PLUGIN_VERSION', '1.1.26');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -1533,52 +1533,8 @@ if (!class_exists('bmltwf_plugin')) {
                 echo '<a id="bmltwf_debug_filename" style="display:none;" download="' . $filename . '"></a>';
             }
         }
-
-
-        
-        /**
-         * Handle AJAX request to download debug log
-         */
-        public function ajax_download_debug_log()
-        {
-            // Check if debug is enabled
-            global $bmltwf_debug_enabled;
-            if (!BMLTWF_DEBUG && !$bmltwf_debug_enabled) {
-                wp_send_json_error(array('message' => __('Debug logging is not enabled', 'bmlt-workflow')));
-                return;
-            }
-            
-            // Check user permissions
-            if (!current_user_can('manage_options')) {
-                wp_send_json_error(array('message' => __('You do not have permission to download debug logs', 'bmlt-workflow')));
-                return;
-            }
-            
-            // Log the download action
-            $this->debug_log("Debug log file downloaded by user ID: " . get_current_user_id());
-            
-            // Get logs from database
-            $logs = $this->get_debug_logs(5000, 0); // Get all logs up to 5000
-            
-            if (empty($logs)) {
-                wp_send_json_error(array('message' => __('No debug logs found in database', 'bmlt-workflow')));
-                return;
-            }
-            
-            // Build log content
-            $log_content = '';
-            foreach (array_reverse($logs) as $log) {
-                $log_content .= "[{$log->log_time}] {$log->log_caller}: {$log->log_message}\n";
-            }
-            
-            // Send the log content as JSON response
-            wp_send_json_success(array(
-                'log_content' => base64_encode($log_content),
-                'message' => 'Debug log download successful'
-            ));
-        }
-        
     }
+    
     load_plugin_textdomain('bmlt-workflow', false, dirname(plugin_basename(__FILE__)) . '/lang');
     $start_plugin = new bmltwf_plugin();
 }

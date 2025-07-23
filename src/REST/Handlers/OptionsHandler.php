@@ -188,16 +188,56 @@ class OptionsHandler
     
     public function post_bmltwf_debug_handler($request)
     {
+        global $bmltwf_debug_enabled, $wpdb;
+        
         $this->debug_log("debug log handler called");
         
         // Log the download action
         $this->debug_log("Debug log file downloaded by user ID: " . get_current_user_id());
         
+        // Check if debug mode is enabled
+        if (!defined('BMLTWF_DEBUG') || !BMLTWF_DEBUG) {
+            if (!$bmltwf_debug_enabled) {
+                // Debug mode is not enabled, add a log entry to explain this
+                $this->log_to_database('post_bmltwf_debug_handler', 'Debug mode is not enabled. Enable it in settings to capture logs.');
+            }
+        }
+        
+        // Check if debug log table exists
+        $debug_log_table = $wpdb->prefix . 'bmltwf_debug_log';
+        if ($wpdb->get_var("SHOW TABLES LIKE '$debug_log_table'") != $debug_log_table) {
+            // Create the debug log table if it doesn't exist
+            $charset_collate = $wpdb->get_charset_collate();
+            $sql = "CREATE TABLE IF NOT EXISTS $debug_log_table (
+                log_id bigint(20) NOT NULL AUTO_INCREMENT,
+                log_time datetime(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL,
+                log_caller varchar(255) NOT NULL,
+                log_message text NOT NULL,
+                PRIMARY KEY (log_id)
+            ) $charset_collate;";
+            
+            $wpdb->query($sql);
+            
+            // Create index on log_time for faster cleanup
+            $wpdb->query("CREATE INDEX idx_log_time ON $debug_log_table(log_time);");
+            
+            // Add an initial log entry
+            $this->log_to_database('post_bmltwf_debug_handler', 'Debug log table created');
+        }
+        
         // Get logs from database
         $logs = $this->get_debug_logs(5000, 0); // Get all logs up to 5000
         
         if (empty($logs)) {
-            return $this->bmltwf_rest_error(__('No debug logs found in database', 'bmlt-workflow'), 404);
+            // Add a test log entry if no logs found
+            $this->log_to_database('post_bmltwf_debug_handler', 'No logs found. This is a test log entry.');
+            
+            // Try to get logs again
+            $logs = $this->get_debug_logs(5000, 0);
+            
+            if (empty($logs)) {
+                return $this->bmltwf_rest_error(__('No debug logs found in database. Make sure debug mode is enabled in settings.', 'bmlt-workflow'), 404);
+            }
         }
         
         // Build log content

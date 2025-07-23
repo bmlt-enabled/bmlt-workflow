@@ -1,3 +1,6 @@
+## 1.1.26 (Jul 24, 2025)
+- Fixed query for debug log timestamps
+
 ## 1.1.25 (Jul 24, 2025)
 - Debug logs are now ordered correctly
 - Fixes issue where timeZone was not being sent in create/update meeting requests
