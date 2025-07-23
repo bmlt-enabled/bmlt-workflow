@@ -21,6 +21,7 @@
 /* global bmltwf_clear_notices, bmltwf_turn_on_spinner, bmltwf_turn_off_spinner, bmltwf_notice_success, bmltwf_notice_error */
 /* global bmltwf_admin_restore_rest_url, bmltwf_admin_backup_rest_url, bmltwf_admin_bmltserver_rest_url, bmltwf_fso_feature */
 /* global bmltwf_bmlt_server_address, bmltwf_google_maps_key_select, bmltwf_admin_bmltwf_service_bodies_rest_url */
+/* global bmltwf_admin_debuglog_rest_url */
 
 const { __ } = wp.i18n;
 
@@ -223,6 +224,34 @@ jQuery(document).ready(function ($) {
   // update the test status
   get_test_status().then((data) => {
     update_from_test_result(data);
+  });
+
+  // click handler for debug log download
+  $('#download_debug_log_button').on('click', function () {
+    $.ajax({
+      url: bmltwf_admin_debuglog_rest_url,
+      method: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      processData: false,
+      beforeSend(xhr) {
+        bmltwf_turn_on_spinner('#bmltwf-backup-spinner');
+        bmltwf_clear_notices();
+        xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
+      },
+    })
+      .done(function (response) {
+        bmltwf_turn_off_spinner('#bmltwf-backup-spinner');
+        bmltwf_notice_success(response, 'bmltwf-error-message');
+        const blob = new Blob([atob(response.log_content)], { type: 'text/plain' });
+        const link = document.getElementById('bmltwf_debug_filename');
+        link.href = window.URL.createObjectURL(blob);
+        link.click();
+      })
+      .fail(function (xhr) {
+        bmltwf_notice_error(xhr, 'bmltwf-error-message');
+        bmltwf_turn_off_spinner('#bmltwf-backup-spinner');
+      });
   });
 
   // click handler for backup

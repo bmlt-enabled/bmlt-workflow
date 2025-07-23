@@ -54,6 +54,8 @@ class Admin_Options {
         this.bmltwf_google_maps_key_select = Selector("#bmltwf_google_maps_key_select");
         this.bmltwf_google_maps_key = Selector("#bmltwf_google_maps_key");
         this.bmltwf_auto_geocoding_settings_text = Selector("#bmltwf_auto_geocoding_settings_text");
+        this.bmltwf_enable_debug = Selector("#bmltwf_enable_debug");
+        this.download_debug_log_button = Selector("#download_debug_log_button");
         this.submit = Selector('#submit');
         this.settings_updated = Selector("#setting-error-settings_updated");
     }

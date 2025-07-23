@@ -30,7 +30,7 @@ sync-plugin.sh
 sed -i -e "s/.*NONCE_SALT.*/define('NONCE_SALT',       '$WORDPRESS_NONCE_SALT');/" /var/www/html/wp-config.php
 
 /usr/local/bin/import-sql.sh
-wp option --path=$sitelocalpath update "bmltwf_bmlt_server_address" "http://192.168.86.237:3006/main_server/"
+wp option --path=$sitelocalpath update 'bmltwf_bmlt_server_address' 'http://'${BMLT}':3006/main_server/'
 wp option --path=$sitelocalpath update "bmltwf_bmlt_username" "bmlt-workflow-bot"
 wp option --path=$sitelocalpath update 'bmltwf_bmlt_password' '{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}' --format=json
 wp option --path=$sitelocalpath update "bmltwf_bmlt_test_status" "success"

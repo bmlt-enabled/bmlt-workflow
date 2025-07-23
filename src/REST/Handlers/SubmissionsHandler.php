@@ -1225,6 +1225,10 @@ class SubmissionsHandler
                 // add in extra form fields (non BMLT fields) to the submission
                 foreach ($allowed_fields_extra as $field) {
                     if (array_key_exists($field, $sanitised_fields)) {
+                        // Only include virtualna_published if the meeting is virtual
+                        if ($field === 'virtualna_published' && !$virtual_meeting_bool) {
+                            continue;
+                        }
                         $submission[$field] = $sanitised_fields[$field];
                     }
                 }

@@ -375,4 +375,40 @@ Line: $errorLine
             'Foreign key validation failed: ' . implode(', ', $validation['foreign_keys']));
     }
 
+    /**
+     * @covers bmltwf\BMLTWF_Database::createTables
+     */
+    public function test_debug_table_creation(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "test_";
+        
+        // Capture the SQL query for creating the debug table
+        $capturedQueries = [];
+        $wpdb->shouldReceive('query')->andReturnUsing(function($query) use (&$capturedQueries) {
+            $capturedQueries[] = $query;
+            return true;
+        });
+        
+        $database = new BMLTWF_Database();
+        $database->createTables('utf8mb4_unicode_ci', '1.1.18');
+        
+        // Check if any query contains the debug table creation
+        $debugTableCreated = false;
+        foreach ($capturedQueries as $query) {
+            if (strpos($query, 'CREATE TABLE IF NOT EXISTS test_bmltwf_debug_log') !== false) {
+                $debugTableCreated = true;
+                
+                // Verify the table has the expected columns
+                $this->assertStringContainsString('log_id', $query);
+                $this->assertStringContainsString('log_time', $query);
+                $this->assertStringContainsString('log_caller', $query);
+                $this->assertStringContainsString('log_message', $query);
+                break;
+            }
+        }
+        
+        $this->assertTrue($debugTableCreated, 'Debug table creation query not found');
+    }
 }

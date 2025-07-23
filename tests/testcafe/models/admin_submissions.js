@@ -57,7 +57,7 @@ class Admin_Submissions {
         this.quickedit_latitude = Selector("#quickedit_latitude");
         this.quickedit_longitude = Selector("#quickedit_longitude");
         this.quickedit_virtualna_published = Selector("#quickedit_virtualna_published");
-        
+        this.optional_location_sub_province = Selector("#optional_location_sub_province");
         this.quickedit_dialog_parent = this.quickedit_dialog.parent();
         this.optional_auto_geocode_enabled = Selector("#optional_auto_geocode_enabled");
     }

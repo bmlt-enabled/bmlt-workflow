@@ -287,15 +287,21 @@ jQuery(document).ready(function ($) {
     // zip and county are disabled if the option is set
 
     const autocompleted = ` (${__('autocompleted', 'bmlt-workflow')})`;
-    if (bmltwf_zip_auto_geocoding) {
+    if (bmltwf_zip_auto_geocoding && (bmltwf_optional_postcode !== 'hidden')) {
       $('#quickedit_location_postal_code_1').prop('disabled', true);
-      $('#quickedit_location_postal_code_1_label').append(autocompleted);
+      const zipLabel = $('#quickedit_location_postal_code_1_label');
+      if (!zipLabel.text().includes(__('autocompleted', 'bmlt-workflow'))) {
+        zipLabel.append(autocompleted);
+      }
     }
 
-    if (bmltwf_county_auto_geocoding) {
+    if (bmltwf_county_auto_geocoding && (bmltwf_optional_location_sub_province !== 'hidden')) {
       $('#optional_location_sub_province').show();
       $('#quickedit_location_sub_province').prop('disabled', true);
-      $('#quickedit_location_sub_province_label').append(autocompleted);
+      const countyLabel = $('#quickedit_location_sub_province_label');
+      if (!countyLabel.text().includes(__('autocompleted', 'bmlt-workflow'))) {
+        countyLabel.append(autocompleted);
+      }
     }
 
     // hide map and let it be shown later if required

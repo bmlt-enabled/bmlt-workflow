@@ -157,7 +157,12 @@ jQuery(document).ready(function ($) {
   }
 
   $('#meeting-searcher').on('select2:open', function () {
-    $('input.select2-search__field').prop('placeholder', __('Begin typing your meeting name', 'bmlt-workflow'));
+    // Use bmltwf_translations object if available, otherwise fallback to hardcoded string
+    const placeholderText = (typeof bmltwf_translations !== 'undefined' && 
+                           bmltwf_translations.begin_typing_meeting_name) ? 
+                           bmltwf_translations.begin_typing_meeting_name : 
+                           'Begin typing your meeting name';
+    $('input.select2-search__field').prop('placeholder', placeholderText);
   });
 
   function real_submit_handler() {
@@ -253,7 +258,10 @@ jQuery(document).ready(function ($) {
   });
 
   $('#display_formatIds').select2({
-    placeholder: __('Select from available formats', 'bmlt-workflow'),
+    placeholder: (typeof bmltwf_translations !== 'undefined' && 
+                bmltwf_translations.select_from_available_formats) ? 
+                bmltwf_translations.select_from_available_formats : 
+                'Select from available formats',
     multiple: true,
     data: formatdata,
     width: '100%',
@@ -415,6 +423,10 @@ jQuery(document).ready(function ($) {
 
       // populate form fields from bmlt if they exist
       fields.forEach(function (item) {
+        // Skip virtualna_published for non-virtual meetings
+        if (item === 'virtualna_published' && mdata[id].venueType === 1) {
+          return;
+        }
         if (item in mdata[id]) {
           if (mdata[id][item] === true) {
             put_field(item, '1');
@@ -610,8 +622,12 @@ jQuery(document).ready(function ($) {
     if (this.value === '1') {
       $('#virtual_meeting_options').hide();
       $('#location_fields').show();
+      // Disable virtualna_published field for in-person meetings
+      $('#virtualna_published').hide();
     } else {
       $('#virtual_meeting_options').show();
+      // Enable virtualna_published field for virtual meetings
+      $('#virtualna_published').show();
       switch (this.value) {
         case '2':
           $('#location_fields').hide();

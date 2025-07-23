@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.23
+ * Version: 1.1.24
  * Requires at least: 5.2
  * Tested up to: 6.6.1
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.23');
+define('BMLTWF_PLUGIN_VERSION', '1.1.24');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -67,6 +67,15 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function __construct()
         {
+            // Set global debug flag to avoid repeated database calls
+            global $bmltwf_debug_enabled;
+            $bmltwf_debug_enabled = (get_option('bmltwf_enable_debug', 'false') === 'true');
+            
+            // Initialize debug file if debug is enabled
+            if ($bmltwf_debug_enabled) {
+                $this->debug_log("BMLT Workflow plugin initialized");
+            }
+            
             // $this->debug_log("bmlt-workflow: Creating new Integration");
             $this->bmlt_integration = new Integration();
             // $this->debug_log("bmlt-workflow: Creating new Controller");
@@ -300,6 +309,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $script  = 'var bmltwf_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/bmltserver') . '; ';
                     $script .= 'var bmltwf_admin_backup_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/backup') . '; ';
                     $script .= 'var bmltwf_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/restore') . '; ';
+                    $script .= 'var bmltwf_admin_debuglog_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/debug') . '; ';
                     $script .= 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/servicebodies') . '; ';
                     $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
 
@@ -566,6 +576,18 @@ if (!class_exists('bmltwf_plugin')) {
                     'default' => 'false'
                 )
             );
+            
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_enable_debug',
+                array(
+                    'type' => 'string',
+                    'description' => __('Enable debug logging', 'bmlt-workflow'),
+                    'sanitize_callback' => array(&$this, 'bmltwf_enable_debug_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'false'
+                )
+            );
 
             register_setting(
                 'bmltwf-settings-group',
@@ -822,6 +844,15 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_submitter_email_template',
                 __('Email template used when sending a form submission notification', 'bmlt-workflow'),
                 array(&$this, 'bmltwf_submitter_email_template_html'),
+                'bmltwf-settings',
+                'bmltwf-settings-section-id'
+            );
+            
+            // Debug option at the very bottom
+            add_settings_field(
+                'bmltwf_enable_debug',
+                __('Enable Debug Logging', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_enable_debug_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
             );
@@ -1452,6 +1483,101 @@ if (!class_exists('bmltwf_plugin')) {
                 $this->debug_log("adding capabilities to user " . $user->get('ID'));
             }
         }
+
+        public function bmltwf_enable_debug_sanitize_callback($input)
+        {
+            $output = get_option('bmltwf_enable_debug');
+
+            switch ($input) {
+                case 'true':
+                case 'false':
+                    return $input;
+            }
+            add_settings_error('bmltwf_enable_debug', 'err', __('Invalid "enable debug" setting.', 'bmlt-workflow'));
+            return $output;
+        }
+
+        public function bmltwf_enable_debug_html()
+        {
+            $selection = get_option('bmltwf_enable_debug');
+            $debug_enabled = '';
+            $debug_disabled = '';
+            if ($selection === 'true') {
+                $debug_enabled = 'selected';
+            } else {
+                $debug_disabled = 'selected';
+            }
+
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>';
+            echo __('This option enables or disables debug logging for the plugin.');
+            echo '<br><br>';
+            echo __('If this is set to true, debug information will be written to the database.');
+            echo '<br><br>';
+            echo '</div>';
+
+            echo '<br><label for="bmltwf_enable_debug"><b>';
+            echo __('Enable debug logging', 'bmlt-workflow');
+            echo ':</b></label><select id="bmltwf_enable_debug" name="bmltwf_enable_debug"><option name="';
+            echo __('True', 'bmlt-workflow');
+            echo '" value="true" ' . $debug_enabled . '>' . __('True', 'bmlt-workflow') . '</option><option name="';
+            echo __('False', 'bmlt-workflow');
+            echo '" value="false" ' . $debug_disabled . '>' . __('False', 'bmlt-workflow') . '</option></select>';
+            echo '<br><br>';
+            
+            // Add download button if debug is enabled
+            if ($selection === 'true') {
+                $today = date('Y-m-d');
+                $filename = "bmlt-workflow-debug-{$today}.txt";
+                echo '<br><button type="button" id="download_debug_log_button" class="button">' . __('Download Debug Log', 'bmlt-workflow') . '</button>';
+                echo '<a id="bmltwf_debug_filename" style="display:none;" download="' . $filename . '"></a>';
+            }
+        }
+
+
+        
+        /**
+         * Handle AJAX request to download debug log
+         */
+        public function ajax_download_debug_log()
+        {
+            // Check if debug is enabled
+            global $bmltwf_debug_enabled;
+            if (!BMLTWF_DEBUG && !$bmltwf_debug_enabled) {
+                wp_send_json_error(array('message' => __('Debug logging is not enabled', 'bmlt-workflow')));
+                return;
+            }
+            
+            // Check user permissions
+            if (!current_user_can('manage_options')) {
+                wp_send_json_error(array('message' => __('You do not have permission to download debug logs', 'bmlt-workflow')));
+                return;
+            }
+            
+            // Log the download action
+            $this->debug_log("Debug log file downloaded by user ID: " . get_current_user_id());
+            
+            // Get logs from database
+            $logs = $this->get_debug_logs(5000, 0); // Get all logs up to 5000
+            
+            if (empty($logs)) {
+                wp_send_json_error(array('message' => __('No debug logs found in database', 'bmlt-workflow')));
+                return;
+            }
+            
+            // Build log content
+            $log_content = '';
+            foreach (array_reverse($logs) as $log) {
+                $log_content .= "[{$log->log_time}] {$log->log_caller}: {$log->log_message}\n";
+            }
+            
+            // Send the log content as JSON response
+            wp_send_json_success(array(
+                'log_content' => base64_encode($log_content),
+                'message' => 'Debug log download successful'
+            ));
+        }
+        
     }
     load_plugin_textdomain('bmlt-workflow', false, dirname(plugin_basename(__FILE__)) . '/lang');
     $start_plugin = new bmltwf_plugin();

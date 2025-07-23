@@ -21,10 +21,11 @@ namespace bmltwf;
 class BMLTWF_Database
 {
     use \bmltwf\BMLTWF_Debug;
-    public $bmltwf_db_version = '1.1.18';
+    public $bmltwf_db_version = '1.1.24';
     public $bmltwf_submissions_table_name;
     public $bmltwf_service_bodies_table_name;
     public $bmltwf_service_bodies_access_table_name;
+    public $bmltwf_debug_log_table_name;
 
     public function __construct($stub = null)
     {
@@ -33,6 +34,7 @@ class BMLTWF_Database
         $this->bmltwf_submissions_table_name = $wpdb->prefix . 'bmltwf_submissions';
         $this->bmltwf_service_bodies_table_name = $wpdb->prefix . 'bmltwf_service_bodies';
         $this->bmltwf_service_bodies_access_table_name = $wpdb->prefix . 'bmltwf_service_bodies_access';
+        $this->bmltwf_debug_log_table_name = $wpdb->prefix . 'bmltwf_debug_log';
     }
 
     public function bmltwf_drop_tables()
@@ -45,8 +47,9 @@ class BMLTWF_Database
         $wpdb->query($sql);
         $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_service_bodies_table_name . ";";
         $wpdb->query($sql);
+        $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_debug_log_table_name . ";";
+        $wpdb->query($sql);
         $this->debug_log("tables dropped");
-
     }
     
     /**
@@ -105,6 +108,31 @@ class BMLTWF_Database
         return 1;
     }
 
+    /**
+     * Create the debug log table
+     * 
+     * @param string $charset_collate The charset collate string
+     */
+    public function createDebugLogTable($charset_collate)
+    {
+        global $wpdb;
+        
+        $sql = "CREATE TABLE IF NOT EXISTS " . $this->bmltwf_debug_log_table_name . " (
+            log_id bigint(20) NOT NULL AUTO_INCREMENT,
+            log_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            log_caller varchar(255) NOT NULL,
+            log_message text NOT NULL,
+            PRIMARY KEY (log_id)
+        ) $charset_collate;";
+        
+        $wpdb->query($sql);
+        
+        // Create index on log_time for faster cleanup
+        $wpdb->query("CREATE INDEX idx_log_time ON " . $this->bmltwf_debug_log_table_name . "(log_time);");
+        
+        $this->debug_log("Debug log table created");
+    }
+    
     public function createTables($charset_collate, $version = null)
     {
         global $wpdb;
@@ -114,6 +142,9 @@ class BMLTWF_Database
         }
         
         $this->bmltwf_drop_tables();
+        
+        // Always create the debug log table
+        $this->createDebugLogTable($charset_collate);
         
         if (version_compare($version, '1.1.18', '<')) {
             // Create tables for version 0.4.0 format
@@ -201,7 +232,10 @@ class BMLTWF_Database
             $this->upgradeTableStructure();
             $this->upgradeJsonFields();
         }
-
+        
+        if (version_compare($installed_version, '1.1.24', '<')) {
+            $this->createDebugLogTable($wpdb->get_charset_collate());
+        }
         
         return 2;
     }
