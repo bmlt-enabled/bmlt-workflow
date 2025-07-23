@@ -21,7 +21,7 @@ namespace bmltwf;
 class BMLTWF_Database
 {
     use \bmltwf\BMLTWF_Debug;
-    public $bmltwf_db_version = '1.1.24';
+    public $bmltwf_db_version = '1.1.25';
     public $bmltwf_submissions_table_name;
     public $bmltwf_service_bodies_table_name;
     public $bmltwf_service_bodies_access_table_name;
@@ -119,7 +119,7 @@ class BMLTWF_Database
         
         $sql = "CREATE TABLE IF NOT EXISTS " . $this->bmltwf_debug_log_table_name . " (
             log_id bigint(20) NOT NULL AUTO_INCREMENT,
-            log_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            log_time datetime(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL,
             log_caller varchar(255) NOT NULL,
             log_message text NOT NULL,
             PRIMARY KEY (log_id)
@@ -237,6 +237,11 @@ class BMLTWF_Database
             $this->createDebugLogTable($wpdb->get_charset_collate());
         }
         
+        // Upgrade debug log table to use microsecond precision if needed
+        if (version_compare($installed_version, '1.1.25', '<')) {
+            $this->upgradeDebugLogTableToMicroseconds();
+        }
+        
         return 2;
     }
     private function fixDateTimeColumns()
@@ -343,6 +348,31 @@ class BMLTWF_Database
         
         $wpdb->query("ALTER TABLE " . $this->bmltwf_service_bodies_access_table_name . " ADD FOREIGN KEY (serviceBodyId) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(serviceBodyId)");
         $wpdb->query("ALTER TABLE " . $this->bmltwf_submissions_table_name . " ADD FOREIGN KEY (serviceBodyId) REFERENCES " . $this->bmltwf_service_bodies_table_name . "(serviceBodyId)");
+    }
+    
+    /**
+     * Upgrade debug log table to use microsecond precision
+     */
+    private function upgradeDebugLogTableToMicroseconds()
+    {
+        global $wpdb;
+        
+        // Check if the debug log table exists
+        if ($wpdb->get_var("SHOW TABLES LIKE '" . $this->bmltwf_debug_log_table_name . "'") != $this->bmltwf_debug_log_table_name) {
+            // Table doesn't exist, create it with microsecond precision
+            $this->createDebugLogTable($wpdb->get_charset_collate());
+            return;
+        }
+        
+        // Check if the log_time column already has microsecond precision
+        $column_info = $wpdb->get_row("SHOW COLUMNS FROM " . $this->bmltwf_debug_log_table_name . " LIKE 'log_time'");
+        if ($column_info && strpos($column_info->Type, 'datetime(6)') === false) {
+            // Alter the table to use microsecond precision
+            $wpdb->query("ALTER TABLE " . $this->bmltwf_debug_log_table_name . " 
+                MODIFY COLUMN log_time datetime(6) DEFAULT CURRENT_TIMESTAMP(6) NOT NULL");
+            
+            $this->debug_log("Debug log table upgraded to use microsecond precision");
+        }
     }
 
     private function upgradeJsonFields()

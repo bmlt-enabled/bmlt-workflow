@@ -540,7 +540,46 @@ EOD;
         $integration = new Integration(true, "3.0.0", "token", time()+2000);
         $response = $integration->createMeeting($meeting);
         $this->assertNotInstanceOf(WP_Error::class, $response);
-
+    }
+    
+    /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     */
+    public function test_createMeeting_adds_timezone_null(): void
+    {
+        // Capture the request body
+        $capturedBody = null;
+        
+        Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody) {
+            if (isset($args['body'])) {
+                $capturedBody = $args['body'];
+            }
+            return ['response' => ['code' => 201]]; // Mock successful response
+        });
+        
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
+        
+        $meeting = array(
+            "name" => "Test Meeting",
+            "startTime" => "11:01:00",
+            "duration" => "01:00:00",
+            "day" => "1",
+            "serviceBodyId" => "1050",
+            "formatIds" => [7],
+            "venueType" => "3",
+            "published" => "1"
+        );
+        
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $integration->createMeeting($meeting);
+        
+        // Verify timeZone is null in the request body
+        $this->assertNotNull($capturedBody, "Request body was not captured");
+        $decodedBody = json_decode($capturedBody, true);
+        $this->assertIsArray($decodedBody, "Request body is not valid JSON");
+        $this->assertArrayHasKey('timeZone', $decodedBody, "timeZone field is missing");
+        $this->assertNull($decodedBody['timeZone'], "timeZone should be null");
     }
 
     /**
@@ -575,7 +614,55 @@ EOD;
         $integration = new Integration(true, "3.0.0", "token", time()+2000);
         $response = $integration->createMeeting($invalid_meeting);
         $this->assertInstanceOf(WP_Error::class, $response);
-
+    }
+    
+    /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::validateMeetingData
+     */
+    public function test_createMeeting_filters_invalid_data(): void
+    {
+        // Capture the request body
+        $capturedBody = null;
+        
+        Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody) {
+            if (isset($args['body'])) {
+                $capturedBody = $args['body'];
+            }
+            return ['response' => ['code' => 201]]; // Mock successful response
+        });
+        
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
+        
+        // Meeting data with valid fields and invalid fields
+        $meeting = array(
+            "name" => "Test Meeting",
+            "startTime" => "11:01:00",
+            "duration" => "01:00:00",
+            "day" => "1",
+            "serviceBodyId" => "1050",
+            "formatIds" => [7],
+            "venueType" => "3",
+            "published" => "1",
+            "invalid_field" => "This should be filtered out", // Invalid field
+            "another_invalid" => ["this", "should", "be", "removed"] // Invalid field
+        );
+        
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $integration->createMeeting($meeting);
+        
+        // Verify invalid fields are filtered out
+        $this->assertNotNull($capturedBody, "Request body was not captured");
+        $decodedBody = json_decode($capturedBody, true);
+        $this->assertIsArray($decodedBody, "Request body is not valid JSON");
+        $this->assertArrayNotHasKey('invalid_field', $decodedBody, "Invalid field was not filtered out");
+        $this->assertArrayNotHasKey('another_invalid', $decodedBody, "Invalid field was not filtered out");
+        
+        // Verify valid fields are present
+        $this->assertArrayHasKey('name', $decodedBody);
+        $this->assertArrayHasKey('startTime', $decodedBody);
+        $this->assertArrayHasKey('serviceBodyId', $decodedBody);
     }
 
 
@@ -656,30 +743,154 @@ EOD;
     }
 
     /**
-     * @covers bmltwf\BMLT\Integration::removeLocations
+     * @covers bmltwf\BMLT\Integration::updateMeeting
      */
-    public function test_removeLocations_filters_virtual_formats(): void
+    public function test_updateMeeting_removes_virtual_formats(): void
     {
-        $formats = [
-            54 => ['key_string' => 'VM'], // Should be removed
-            55 => ['key_string' => 'TC'], // Should be removed  
-            56 => ['key_string' => 'HY'], // Should be removed
-            1 => ['key_string' => 'B'],   // Should be kept
-            2 => ['key_string' => 'O']    // Should be kept
+        // Capture the request body
+        $capturedBody = null;
+        
+        Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody) {
+            if (isset($args['body'])) {
+                $capturedBody = $args['body'];
+            }
+            return ['response' => ['code' => 204]]; // Mock successful response
+        });
+        
+        // Mock format data that would be returned by getMeetingFormats
+        $mockFormats = [
+            54 => ['key_string' => 'VM', 'name_string' => 'Virtual Meeting'],
+            55 => ['key_string' => 'TC', 'name_string' => 'Temporarily Closed'],
+            56 => ['key_string' => 'HY', 'name_string' => 'Hybrid'],
+            1 => ['key_string' => 'B', 'name_string' => 'Beginners'],
+            2 => ['key_string' => 'O', 'name_string' => 'Open']
         ];
         
-        $integration = new Integration(true, "3.0.0", "token", time() + 2000);
+        Functions\when('\wp_remote_retrieve_body')->justReturn(json_encode($mockFormats));
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
         
-        $reflection = new ReflectionClass($integration);
-        $method = $reflection->getMethod('removeLocations');
-        $method->setAccessible(true);
+        // Meeting data with formats that should be filtered
+        $meeting = array(
+            "id" => 123,
+            "name" => "Test Meeting Update",
+            "formatIds" => [54, 55, 56, 1, 2], // VM, TC, HY, B, O
+            "venueType" => "1",
+            "published" => "1"
+        );
         
-        // Mock getMeetingFormats method
-        $formatMethod = $reflection->getMethod('getMeetingFormats');
-        $formatMethod->setAccessible(true);
+        $integration = Mockery::mock(Integration::class)->makePartial();
+        $integration->shouldReceive('getMeetingFormats')->andReturn($mockFormats);
+        $integration->shouldReceive('is_v3_token_valid')->andReturn(true);
         
-        // Use a simple test - just verify method exists and can be called
-        $this->assertTrue(method_exists($integration, 'removeLocations'));
+        $integration->updateMeeting($meeting);
+        
+        // Verify the request body
+        $this->assertNotNull($capturedBody, "Request body was not captured");
+        $decodedBody = json_decode($capturedBody, true);
+        $this->assertIsArray($decodedBody, "Request body is not valid JSON");
+        
+        // Verify that formatIds were filtered correctly
+        $this->assertArrayHasKey('formatIds', $decodedBody, "formatIds field is missing");
+        $this->assertCount(2, $decodedBody['formatIds'], "Should only have 2 formats after filtering");
+        $this->assertContains(1, $decodedBody['formatIds'], "Format 1 (B) should be kept");
+        $this->assertContains(2, $decodedBody['formatIds'], "Format 2 (O) should be kept");
+        $this->assertNotContains(54, $decodedBody['formatIds'], "Format 54 (VM) should be removed");
+        $this->assertNotContains(55, $decodedBody['formatIds'], "Format 55 (TC) should be removed");
+        $this->assertNotContains(56, $decodedBody['formatIds'], "Format 56 (HY) should be removed");
+    }
+    
+    /**
+     * @covers bmltwf\BMLT\Integration::updateMeeting
+     */
+    public function test_updateMeeting_adds_timezone_null(): void
+    {
+        // Capture the request body
+        $capturedBody = null;
+        
+        Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody) {
+            if (isset($args['body'])) {
+                $capturedBody = $args['body'];
+            }
+            return ['response' => ['code' => 204]]; // Mock successful response
+        });
+        
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+        
+        $meeting = array(
+            "id" => 123,
+            "name" => "Test Meeting Update",
+            "startTime" => "14:00:00",
+            "duration" => "01:30:00",
+            "day" => "2",
+            "serviceBodyId" => "1050",
+            "formatIds" => [7, 8],
+            "venueType" => "1",
+            "published" => "1"
+        );
+        
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $integration->updateMeeting($meeting);
+        
+        // Verify timeZone is null in the request body
+        $this->assertNotNull($capturedBody, "Request body was not captured");
+        $decodedBody = json_decode($capturedBody, true);
+        $this->assertIsArray($decodedBody, "Request body is not valid JSON");
+        $this->assertArrayHasKey('timeZone', $decodedBody, "timeZone field is missing");
+        $this->assertNull($decodedBody['timeZone'], "timeZone should be null");
+    }
+    
+    /**
+     * @covers bmltwf\BMLT\Integration::updateMeeting
+     * @covers bmltwf\BMLT\Integration::validateMeetingData
+     */
+    public function test_updateMeeting_filters_invalid_data(): void
+    {
+        // Capture the request body
+        $capturedBody = null;
+        
+        Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody) {
+            if (isset($args['body'])) {
+                $capturedBody = $args['body'];
+            }
+            return ['response' => ['code' => 204]]; // Mock successful response
+        });
+        
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+        
+        // Meeting data with valid fields and invalid fields
+        $meeting = array(
+            "id" => 123, // Required for update
+            "name" => "Test Meeting Update",
+            "startTime" => "14:00:00",
+            "duration" => "01:30:00",
+            "day" => "2",
+            "serviceBodyId" => "1050",
+            "formatIds" => [7, 8],
+            "venueType" => "1",
+            "published" => "1",
+            "invalid_field" => "This should be filtered out", // Invalid field
+            "random_data" => array("foo" => "bar"), // Invalid field
+            "non_schema_field" => true // Invalid field
+        );
+        
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $integration->updateMeeting($meeting);
+        
+        // Verify invalid fields are filtered out
+        $this->assertNotNull($capturedBody, "Request body was not captured");
+        $decodedBody = json_decode($capturedBody, true);
+        $this->assertIsArray($decodedBody, "Request body is not valid JSON");
+        $this->assertArrayNotHasKey('invalid_field', $decodedBody, "Invalid field was not filtered out");
+        $this->assertArrayNotHasKey('random_data', $decodedBody, "Invalid field was not filtered out");
+        $this->assertArrayNotHasKey('non_schema_field', $decodedBody, "Invalid field was not filtered out");
+        
+        // Verify valid fields are present
+        $this->assertArrayHasKey('id', $decodedBody);
+        $this->assertArrayHasKey('name', $decodedBody);
+        $this->assertArrayHasKey('startTime', $decodedBody);
+        $this->assertArrayHasKey('serviceBodyId', $decodedBody);
     }
 
     /**

@@ -48,7 +48,7 @@ test("DbUpgrade_Test_Upgrade", async (t) => {
 test("DbUpgrade_Bmlt3x_DBVersion", async (t) => {
       await t.useRole(bmltwf_dbupgrade_admin)
       .navigateTo(userVariables.admin_options_page_dbupgrade)
-      .expect(Selector("#bmltwf_db_version").value).eql("1.1.24");
+      .expect(Selector("#bmltwf_db_version").value).eql("1.1.25");
 });
 
 test("DbUpgrade_Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {
@@ -245,7 +245,7 @@ test("DbUpgrade_Bmlt3x_Submit_Change_Meeting_And_Approve", async (t) => {
 
 });
 
-test("", async (t) => {
+test("DbUpgrade_Bmlt3x_Submit_Change_Meeting_With_Unpublish_And_Approve", async (t) => {
   await t.navigateTo(userVariables.dbupgrade_formpage);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
@@ -281,7 +281,7 @@ test("", async (t) => {
   await select_dropdown_by_text(uf.add_contact, "Yes");
   await t.expect(uf.add_contact.value).eql("yes");
 
-  // group member dropdownDbUpgrade_Bmlt3x_Submit_Change_Meeting_With_Unpublish_And_Approve
+  // group member dropdown
   await select_dropdown_by_value(uf.group_relationship, "Group Member");
   await t.expect(uf.group_relationship.value).eql("Group Member");
 

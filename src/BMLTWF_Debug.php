@@ -40,6 +40,40 @@ trait BMLTWF_Debug
             $this->log_to_database($caller, $out);
         }
     }
+    
+    /**
+     * Log HTTP error response details
+     * 
+     * @param array|\WP_Error $response The WordPress HTTP response or error
+     */
+    public function debug_http_error($response)
+    {
+        global $bmltwf_debug_enabled;
+        
+        if (BMLTWF_DEBUG || $bmltwf_debug_enabled) {
+            $caller = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'];
+            
+            if (is_wp_error($response)) {
+                $error_message = "WP_Error: " . $response->get_error_message();
+                $this->debug_log($error_message);
+                return;
+            }
+            
+            $response_code = \wp_remote_retrieve_response_code($response);
+            
+            // Only log details for 5xx server errors
+            if ($response_code >= 500) {
+                $body = \wp_remote_retrieve_body($response);
+                $headers = \wp_remote_retrieve_headers($response);
+                
+                $error_details = "HTTP $response_code Error:\n";
+                $error_details .= "Response Body: $body\n";
+                $error_details .= "Response Headers: " . print_r($headers, true);
+                
+                $this->debug_log($error_details);
+            }
+        }
+    }
 
     /**
      * Log BMLT payload information for debugging
@@ -101,15 +135,17 @@ trait BMLTWF_Debug
             return;
         }
         
-        // Insert the log entry
-        $wpdb->insert(
-            $debug_log_table,
-            array(
-                'log_caller' => $caller,
-                'log_message' => $message
-            ),
-            array('%s', '%s')
-        );
+        // Get current time with microseconds for higher precision
+        $microtime = microtime(true);
+        $timestamp = date('Y-m-d H:i:s', (int)$microtime) . '.' . sprintf('%06d', ($microtime - floor($microtime)) * 1000000);
+        
+        // Insert the log entry with microsecond precision timestamp
+        $wpdb->query($wpdb->prepare(
+            "INSERT INTO $debug_log_table (log_time, log_caller, log_message) VALUES (%s, %s, %s)",
+            $timestamp,
+            $caller,
+            $message
+        ));
         
         // Limit to 5000 entries by removing oldest entries
         $count = $wpdb->get_var("SELECT COUNT(*) FROM $debug_log_table");
@@ -137,10 +173,10 @@ trait BMLTWF_Debug
             return array();
         }
         
-        // Get logs ordered by newest first
+        // Get logs ordered by newest first with microsecond precision
         $logs = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM $debug_log_table ORDER BY log_time DESC LIMIT %d OFFSET %d",
+                "SELECT log_id, DATE_FORMAT(log_time, '%Y-%m-%d %H:%i:%s.%f') as log_time, log_caller, log_message FROM $debug_log_table ORDER BY log_time DESC LIMIT %d OFFSET %d",
                 $limit,
                 $offset
             )

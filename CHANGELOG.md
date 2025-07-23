@@ -1,3 +1,8 @@
+## 1.1.25 (Jul 24, 2025)
+- Debug logs are now ordered correctly
+- Fixes issue where timeZone was not being sent in create/update meeting requests
+- Fixes issue where virtualna_published flag was being sent incorrectly to BMLT
+
 ## 1.1.24 (Jul 22, 2025)
 - Fixes repeated appending of 'autocompleted' to some fields in quickedit
 - Fixes incorrect display of zip/county/province fields when geocoding is enabled but display of this field is hidden
