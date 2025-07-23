@@ -120,7 +120,7 @@ trait BMLTWF_Debug
      * @param string $caller The function that called the log method
      * @param string $message The log message
      */
-    private function log_to_database($caller, $message)
+    public function log_to_database($caller, $message)
     {
         global $wpdb;
         
@@ -174,9 +174,10 @@ trait BMLTWF_Debug
         }
         
         // Get logs ordered by newest first with microsecond precision
+        // Note: MySQL's DATE_FORMAT doesn't handle microseconds properly with %f, so we need to use a different approach
         $logs = $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT log_id, DATE_FORMAT(log_time, '%Y-%m-%d %H:%i:%s.%f') as log_time, log_caller, log_message FROM $debug_log_table ORDER BY log_time DESC LIMIT %d OFFSET %d",
+                "SELECT log_id, log_time, log_caller, log_message FROM $debug_log_table ORDER BY log_time DESC LIMIT %d OFFSET %d",
                 $limit,
                 $offset
             )
