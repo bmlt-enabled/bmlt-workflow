@@ -57,6 +57,11 @@ class Integration
             // Log error responses with their body
             if ($response_code >= 400) {
                 $this->debug_log("ERROR RESPONSE ($response_code): " . $response_body);
+                
+                // Use the new debug_http_error function for 500 errors
+                if ($response_code >= 500) {
+                    $this->debug_http_error($response);
+                }
             }
         }
         
@@ -227,15 +232,27 @@ class Integration
 
     function updateMeeting($change)
     {
+        // Validate meeting data
+        $filtered_change = $this->validateMeetingData($change);
+        
+        // Workaround for timeZone required
+        $filtered_change["timeZone"] = null;
+
+        // If validation returned an error, return it
+        if (is_wp_error($filtered_change)) {
+            return $filtered_change;
+        }
+        
         $this->debug_log("updateMeeting change");
-        $this->debug_log($change);
-        if (array_key_exists('formatIds', $change)) {
-            $change['formatIds'] = $this->removeLocations($change['formatIds']);
+        $this->debug_log($filtered_change);
+        
+        if (array_key_exists('formatIds', $filtered_change)) {
+            $filtered_change['formatIds'] = $this->removeLocations($filtered_change['formatIds']);
         }
 
         $this->debug_log("inside updateMeetingv3 auth");
 
-        if (!array_key_exists('id', $change)) {
+        if (!array_key_exists('id', $filtered_change)) {
             return new \WP_Error('bmltwf', 'updateMeetingv3: No meeting ID present');
         }
 
@@ -247,9 +264,9 @@ class Integration
             }
         }
 
-        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $change['id'];
+        $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $filtered_change['id'];
 
-        $this->debug_bmlt_payload($url, 'PATCH', $change);
+        $this->debug_bmlt_payload($url, 'PATCH', $filtered_change);
         
         $response = $this->bmltwf_wp_remote_request($url, array(
             'method' => 'PATCH',
@@ -257,7 +274,7 @@ class Integration
                 'Authorization' => 'Bearer ' . $this->v3_access_token,
                 'Content-Type' => 'application/json'
             ),
-            'body' => json_encode($change),
+            'body' => json_encode($filtered_change),
             'timeout' => 60
         ));
 
@@ -649,21 +666,152 @@ class Integration
     }
 
 
+    /**
+     * Get the schema for meeting data validation
+     * 
+     * @return array Schema with field names and their expected types
+     */
+    private function getMeetingSchema()
+    {
+        return [
+            'serviceBodyId' => 'integer',
+            'formatIds' => 'array',
+            'venueType' => 'integer',
+            'temporarilyVirtual' => 'boolean',
+            'day' => 'integer',
+            'startTime' => 'string',
+            'duration' => 'string',
+            'timeZone' => 'string',
+            'latitude' => 'float',
+            'longitude' => 'float',
+            'published' => 'boolean',
+            'email' => 'string',
+            'worldId' => 'string',
+            'name' => 'string',
+            'location_text' => 'string',
+            'location_info' => 'string',
+            'location_street' => 'string',
+            'location_neighborhood' => 'string',
+            'location_city_subsection' => 'string',
+            'location_municipality' => 'string',
+            'location_sub_province' => 'string',
+            'location_province' => 'string',
+            'location_postal_code_1' => 'string',
+            'location_nation' => 'string',
+            'phone_meeting_number' => 'string',
+            'virtual_meeting_link' => 'string',
+            'virtual_meeting_additional_info' => 'string',
+            'contact_name_1' => 'string',
+            'contact_name_2' => 'string',
+            'contact_phone_1' => 'string',
+            'contact_phone_2' => 'string',
+            'contact_email_1' => 'string',
+            'contact_email_2' => 'string',
+            'bus_lines' => 'string',
+            'train_lines' => 'string',
+            'comments' => 'string',
+            'customFields' => 'array',
+            'id' => 'integer'
+        ];
+    }
+    
+    /**
+     * Validate meeting data against schema
+     * 
+     * @param array $meeting Meeting data to validate
+     * @return array|\WP_Error Filtered meeting data or error
+     */
+    private function validateMeetingData($meeting)
+    {
+        $allowed_keys = $this->getMeetingSchema();
+        $filtered_meeting = [];
+        $errors = [];
+        
+        foreach ($meeting as $key => $value) {
+            if (array_key_exists($key, $allowed_keys)) {
+                $expected_type = $allowed_keys[$key];
+                $valid = false;
+                
+                switch ($expected_type) {
+                    case 'integer':
+                        $valid = is_int($value) || (is_string($value) && ctype_digit($value));
+                        if (is_string($value) && ctype_digit($value)) {
+                            $value = (int)$value; // Convert to integer
+                        }
+                        break;
+                    case 'float':
+                        $valid = is_float($value) || is_int($value) || (is_string($value) && is_numeric($value));
+                        if (is_string($value) && is_numeric($value)) {
+                            $value = (float)$value; // Convert to float
+                        }
+                        break;
+                    case 'string':
+                        $valid = is_string($value) || is_numeric($value);
+                        if (!is_string($value)) {
+                            $value = (string)$value; // Convert to string
+                        }
+                        break;
+                    case 'boolean':
+                        $valid = is_bool($value) || $value === 'true' || $value === 'false' || $value === '1' || $value === '0' || $value === 1 || $value === 0;
+                        if (!is_bool($value)) {
+                            $value = ($value === 'true' || $value === '1' || $value === 1) ? true : false;
+                        }
+                        break;
+                    case 'array':
+                        $valid = is_array($value);
+                        break;
+                    default:
+                        $valid = true; // Unknown type, accept as is
+                }
+                
+                if ($valid) {
+                    $filtered_meeting[$key] = $value;
+                } else {
+                    $errors[] = "Invalid type for '$key'. Expected $expected_type.";
+                }
+            }
+        }
+        
+        if (!empty($errors)) {
+            $this->debug_log("Type validation errors:");
+            $this->debug_log($errors);
+            return new \WP_Error('bmltwf', __('Invalid meeting data format', 'bmlt-workflow'), $errors);
+        }
+        
+        return $filtered_meeting;
+    }
+    
     function createMeeting($meeting)
     {
+        // Validate meeting data
+        $filtered_meeting = $this->validateMeetingData($meeting);
+        
+        // If validation returned an error, return it
+        if (is_wp_error($filtered_meeting)) {
+            return $filtered_meeting;
+        }
+        
         $this->debug_log("createMeeting change");
-        $this->debug_log($meeting);
+        $this->debug_log($filtered_meeting);
 
         $this->debug_log("json");
-        $this->debug_log(json_encode($meeting));
+        $this->debug_log(json_encode($filtered_meeting));
+
+        if (!isset($filtered_meeting['formatIds']) || !is_array($filtered_meeting['formatIds'])) {
+            $this->debug_log("formatIds missing or not an array");
+            return new \WP_Error('bmltwf', __('formatIds is required and must be an array', 'bmlt-workflow'));
+        }
+        
+        // Workaround for timeZone required
+        $filtered_meeting["timeZone"] = null;
 
         $this->debug_log("formatsIds before");
-        $this->debug_log($meeting['formatIds']);
+        $this->debug_log($filtered_meeting['formatIds']);
 
-        $meeting['formatIds'] = $this->removeLocations($meeting['formatIds']);
+        $filtered_meeting['formatIds'] = $this->removeLocations($filtered_meeting['formatIds']);
 
         $this->debug_log("formatsIds after");
-        $this->debug_log($meeting['formatIds']);
+        $this->debug_log($filtered_meeting['formatIds']);
 
         $this->debug_log("inside createMeetingv3 auth");
 
@@ -676,14 +824,14 @@ class Integration
         }
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings';
 
-        $this->debug_bmlt_payload($url, 'POST', $meeting);
+        $this->debug_bmlt_payload($url, 'POST', $filtered_meeting);
 
         $response = $this->bmltwf_wp_remote_post($url, array(
             'headers' => array(
                 'Authorization' => 'Bearer ' . $this->v3_access_token,
                 'Content-Type' => 'application/json'
             ),
-            'body' => json_encode($meeting),
+            'body' => json_encode($filtered_meeting),
             'timeout' => 60
         ));
 

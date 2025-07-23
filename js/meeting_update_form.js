@@ -157,12 +157,7 @@ jQuery(document).ready(function ($) {
   }
 
   $('#meeting-searcher').on('select2:open', function () {
-    // Use bmltwf_translations object if available, otherwise fallback to hardcoded string
-    const placeholderText = (typeof bmltwf_translations !== 'undefined' && 
-                           bmltwf_translations.begin_typing_meeting_name) ? 
-                           bmltwf_translations.begin_typing_meeting_name : 
-                           'Begin typing your meeting name';
-    $('input.select2-search__field').prop('placeholder', placeholderText);
+    $('input.select2-search__field').prop('placeholder', __('Begin typing your meeting name', 'bmlt-workflow'));
   });
 
   function real_submit_handler() {
@@ -258,10 +253,7 @@ jQuery(document).ready(function ($) {
   });
 
   $('#display_formatIds').select2({
-    placeholder: (typeof bmltwf_translations !== 'undefined' && 
-                bmltwf_translations.select_from_available_formats) ? 
-                bmltwf_translations.select_from_available_formats : 
-                'Select from available formats',
+    placeholder: __('Select from available formats', 'bmlt-workflow'),
     multiple: true,
     data: formatdata,
     width: '100%',

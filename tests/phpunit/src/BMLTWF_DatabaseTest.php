@@ -132,17 +132,32 @@ Line: $errorLine
     {
         // @return int 0 if nothing was performed, 1 if fresh install was performed, 2 if upgrade was performed
 
-
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('query');
         $wpdb->shouldReceive('get_charset_collate');
+        
+        // More specific mocking for get_var calls
+        $wpdb->shouldReceive('get_var')
+            ->with(Mockery::on(function($query) {
+                return strpos($query, 'SHOW TABLES LIKE') !== false;
+            }))
+            ->andReturn(1); // Tables exist
+            
+        $wpdb->shouldReceive('get_var')
+            ->with("SHOW TABLES LIKE 'bmltwf_debug_log'")
+            ->andReturn('bmltwf_debug_log'); // Debug log table exists
+            
+        $wpdb->shouldReceive('get_row')
+            ->with("SHOW COLUMNS FROM bmltwf_debug_log LIKE 'log_time'")
+            ->andReturn((object)['Type' => 'datetime']); // Without microsecond precision
+            
+        $wpdb->shouldReceive('get_results')->andReturn([]);
         $wpdb->num_rows = 1;
         $wpdb->prefix = "";
 
         $BMLTWF_Database = new BMLTWF_Database();
-        $wpdb->shouldReceive('get_results')->andReturn([]);
 
         Functions\expect('\delete_option')->with('bmltwf_db_version')->once()->andReturn(true);
         Functions\expect('\add_option')->with('bmltwf_db_version',$BMLTWF_Database->bmltwf_db_version)->once()->andReturn(true);
@@ -150,7 +165,6 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn("0.0.1");
         // upgrade should be performed
         $this->assertEquals($BMLTWF_Database->bmltwf_db_upgrade($BMLTWF_Database->bmltwf_db_version, false), 2);
-        
     }
 
     /**
@@ -289,7 +303,29 @@ Line: $errorLine
             (object)['TABLE_NAME' => 'bmltwf_service_bodies_access', 'COLUMN_NAME' => 'serviceBodyId']
         ]);
         $wpdb->shouldReceive('get_col')->andReturn(['change_id', 'serviceBodyId', 'id']);
-        $wpdb->shouldReceive('get_var')->andReturnValues([0, 11, 10]); // orphaned, auto_inc, max_id
+        
+        // Mock each specific get_var call separately
+        $wpdb->shouldReceive('get_var')
+            ->with("SELECT COUNT(*) FROM bmltwf_submissions s \n             LEFT JOIN bmltwf_service_bodies sb ON s.serviceBodyId = sb.serviceBodyId \n             WHERE sb.serviceBodyId IS NULL")
+            ->andReturn(0); // No orphaned records
+            
+        $wpdb->shouldReceive('get_var')
+            ->with("SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES \n             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bmltwf_submissions'")
+            ->andReturn(20); // Auto increment value
+            
+        $wpdb->shouldReceive('get_var')
+            ->with("SELECT MAX(change_id) FROM bmltwf_submissions")
+            ->andReturn(10); // Max ID
+            
+        // Mock debug log table check
+        $wpdb->shouldReceive('get_var')
+            ->with("SHOW TABLES LIKE 'bmltwf_debug_log'")
+            ->andReturn('bmltwf_debug_log'); // Table exists
+            
+        // Mock column check for debug log table
+        $wpdb->shouldReceive('get_row')
+            ->with("SHOW COLUMNS FROM bmltwf_debug_log LIKE 'log_time'")
+            ->andReturn((object)['Type' => 'datetime']); // Without microsecond precision
         
         Functions\when('\update_option')->justReturn(true);
         Functions\when('\delete_option')->justReturn(true);
@@ -321,7 +357,29 @@ Line: $errorLine
             (object)['TABLE_NAME' => 'bmltwf_submissions', 'COLUMN_NAME' => 'serviceBodyId'],
             (object)['TABLE_NAME' => 'bmltwf_service_bodies_access', 'COLUMN_NAME' => 'serviceBodyId']
         ]);
-        $wpdb->shouldReceive('get_var')->andReturnValues([0, 11, 10]); // orphaned, auto_inc, max_id
+        
+        // Mock each specific get_var call separately
+        $wpdb->shouldReceive('get_var')
+            ->with("SELECT COUNT(*) FROM bmltwf_submissions s \n             LEFT JOIN bmltwf_service_bodies sb ON s.serviceBodyId = sb.serviceBodyId \n             WHERE sb.serviceBodyId IS NULL")
+            ->andReturn(0); // No orphaned records
+            
+        $wpdb->shouldReceive('get_var')
+            ->with("SELECT AUTO_INCREMENT FROM INFORMATION_SCHEMA.TABLES \n             WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'bmltwf_submissions'")
+            ->andReturn(20); // Auto increment value
+            
+        $wpdb->shouldReceive('get_var')
+            ->with("SELECT MAX(change_id) FROM bmltwf_submissions")
+            ->andReturn(10); // Max ID
+            
+        // Mock debug log table check
+        $wpdb->shouldReceive('get_var')
+            ->with("SHOW TABLES LIKE 'bmltwf_debug_log'")
+            ->andReturn('bmltwf_debug_log'); // Table exists
+            
+        // Mock column check for debug log table
+        $wpdb->shouldReceive('get_row')
+            ->with("SHOW COLUMNS FROM bmltwf_debug_log LIKE 'log_time'")
+            ->andReturn((object)['Type' => 'datetime']); // Without microsecond precision
         
         $database = new BMLTWF_Database();
         $validation = $database->validateUpgrade();
@@ -390,6 +448,11 @@ Line: $errorLine
             $capturedQueries[] = $query;
             return true;
         });
+        
+        // Mock the debug log table check
+        $wpdb->shouldReceive('get_var')
+            ->with("SHOW TABLES LIKE 'test_bmltwf_debug_log'")
+            ->andReturn(null); // Table doesn't exist yet
         
         $database = new BMLTWF_Database();
         $database->createTables('utf8mb4_unicode_ci', '1.1.18');

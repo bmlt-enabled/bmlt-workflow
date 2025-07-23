@@ -501,6 +501,16 @@ class SubmissionsHandler
                 }
                 $change['published'] = true;
 
+                // If we have a virtualna_published setting, modify worldid appropriately
+                if(array_key_exists('virtualna_published', $change))
+                {
+                    $this->debug_log("virtualna_published = ".$change['virtualna_published']);
+                    $change["worldid_mixed"] = $this->worldid_publish_to_virtualna(($change["virtualna_published"]=== 1)?true:false, "");
+                    $this->debug_log("new worldid = ".$change["worldid_mixed"]);
+                    unset($change["virtualna_published"]);
+                }
+
+
                 $response = $this->bmlt_integration->createMeeting($change);
                 if (is_wp_error($response)) {
                     $error_message = $response->get_error_message();
@@ -607,6 +617,7 @@ class SubmissionsHandler
                     $this->debug_log("virtualna_published = ".$change['virtualna_published']);
                     $change["worldid_mixed"] = $this->worldid_publish_to_virtualna(($change["virtualna_published"]=== 1)?true:false, $bmlt_meeting['worldid_mixed']);
                     $this->debug_log("new worldid = ".$change["worldid_mixed"]);
+                    unset($change["virtualna_published"]);
                 }
 
                 $response = $this->bmlt_integration->updateMeeting($change);
