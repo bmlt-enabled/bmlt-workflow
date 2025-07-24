@@ -176,8 +176,6 @@ class Integration
         );
 
         $resp = $this->bmltwf_wp_remote_get($url, array('headers' => $headers));
-        // $this->debug_log("wp_remote_get returns " . \wp_remote_retrieve_response_code($resp));
-        // $this->debug_log(\wp_remote_retrieve_body($resp));
 
         if (is_wp_error($resp) || wp_remote_retrieve_response_code($resp) != 200) {
             return false;
@@ -208,8 +206,6 @@ class Integration
         $url = $server . "api/v1/auth/token";
         $this->debug_log($url);
         $response = $this->bmltwf_wp_remote_post($url, array('body' => http_build_query($postargs)));
-        // $this->debug_log("wp_remote_post returns " . \wp_remote_retrieve_response_code($response));
-        // $this->debug_log(\wp_remote_retrieve_body($response));
 
         if (is_wp_error($response)) {
             return new \WP_Error('bmltwf', __('check BMLT server address', 'bmlt-workflow'));
@@ -401,8 +397,6 @@ class Integration
         $this->debug_bmlt_payload($url);
 
         $response = $this->bmltwf_wp_remote_get($url, $this->set_args(null, null, array("Authorization" => "Bearer " . $this->v3_access_token)));
-        // $this->debug_log("v3 wp_remote_get returns " . \wp_remote_retrieve_response_code($response));
-        // $this->debug_log(\wp_remote_retrieve_body($response));
 
         if (is_wp_error($response)) {
             return $response;
@@ -595,23 +589,14 @@ class Integration
     public function getMeetingCounties()
     {
         $response = $this->bmltwf_wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
-        // $formatarr = json_decode(\wp_remote_retrieve_body($ret), 1);
-
-        // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        // $this->debug_log("getMeetingCounties returns " . \wp_remote_retrieve_response_code($response));
-        // $this->debug_log(\wp_remote_retrieve_body($response));
 
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
-        // $this->debug_log(\wp_remote_retrieve_body($response));  
         $arr = json_decode(\wp_remote_retrieve_body($response), true);
         if ($arr === null || !isset($arr[0])) {
             return new \WP_Error('bmltwf', __('Invalid server info response', 'bmlt-workflow'));
         }
-        // 
-        // $this->debug_log("***");
-        // $this->debug_log(($arr));
         if (!empty($arr[0]['meeting_counties_and_sub_provinces'])) {
             $counties = explode(',', $arr[0]['meeting_counties_and_sub_provinces']);
             return $counties;
@@ -939,9 +924,6 @@ class Integration
         if (($geo['status'] === "ZERO_RESULTS") || empty($geo['results'][0]['geometry']['location']['lat']) || empty($geo['results'][0]['geometry']['location']['lng'])) {
             return new \WP_Error('bmltwf', __('Could not geolocate meeting address. Please try amending the address with additional/correct details.', 'bmlt-workflow'));
         } else {
-            // $location = array();
-            // $location['latitude'] = $geo['results'][0]['geometry']['location']['lat'];
-            // $location['longitude'] = $geo['results'][0]['geometry']['location']['lng'];
             return $geo;
         }
     }
@@ -1049,24 +1031,17 @@ class Integration
         $this->debug_bmlt_payload($url, $method = 'POST', $body = '(login payload)');
 
         $ret = $this->bmltwf_wp_remote_post($url, $this->set_args(null, http_build_query($postargs)));
-        // $this->debug_log("returns");
-        // $this->debug_log($ret);
 
         if ((is_wp_error($ret)) || (\wp_remote_retrieve_response_code($ret) != 200)) {
             return new \WP_Error('bmltwf', __('authenticateRootServer: Server Failure', 'bmlt-workflow'));
         }
         $body = wp_remote_retrieve_body($ret);
-        // $this->debug_log("BODY");
-        // $this->debug_log($body);
         if (preg_match('/.*\"c_comdef_not_auth_[1-3]\".*/', $body)) // best way I could find to check for invalid login
         {
             $this->cookies = null;
             return new \WP_Error('bmltwf', __('authenticateRootServer: Authentication Failure', 'bmlt-workflow'));
         }
         $a = \wp_remote_retrieve_cookie($ret, 'PHPSESSID');
-        $this->debug_log("setting cookies");
-        $this->debug_log($a);
-        // $this->cookies = \wp_remote_retrieve_cookie($ret,'PHPSESSID');
         $this->cookies = \wp_remote_retrieve_cookies($ret);
         return true;
     }
