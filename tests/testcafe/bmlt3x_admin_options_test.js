@@ -34,6 +34,9 @@ import {
   check_checkbox,
   uncheck_checkbox, 
   waitfor} from "./helpers/helper";
+  
+// Import the current database version
+import { CURRENT_DB_VERSION } from "./helpers/db_version.js";
 
 import fs from "fs";
 import { join as joinPath } from "path";
@@ -86,7 +89,7 @@ test("Backup", async (t) => {
   // console.log(backup);
   await t.expect(f.message).eql("Backup Successful");
 
-  await t.expect(backup.options.bmltwf_db_version).eql("1.1.25");
+  await t.expect(backup.options.bmltwf_db_version).eql(CURRENT_DB_VERSION);
   // find a specific meeting
   let obj = backup.submissions.find((o) => o.change_id === "94");
   // console.log(obj);
@@ -380,9 +383,6 @@ test("Check_BMLT_Google_Maps_Key", async (t) => {
   await t.expect(f).contains('=AIzaSy');
 
 }).requestHooks(gmapslogger);
-
-test('Quickedit_Input_Labels', async t => {
-});
 
 test("Debug_Logging_And_Download", async (t) => {
   // Test enabling debug logging and downloading the log file
