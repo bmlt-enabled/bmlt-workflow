@@ -1,9 +1,12 @@
+## 1.1.27 (Jul 25, 2025)
+- Fixed database upgrade missing venue type field (thanks @California Steve !)
+
 ## 1.1.26 (Jul 24, 2025)
 - Fixed query for debug log timestamps
 
 ## 1.1.25 (Jul 24, 2025)
 - Debug logs are now ordered correctly
-- Fixes issue where timeZone was not being sent in create/update meeting requests
+- Fixes issue where timeZone was not being sent in create/update meeting requests (thanks @California Steve !)
 - Fixes issue where virtualna_published flag was being sent incorrectly to BMLT
 
 ## 1.1.24 (Jul 22, 2025)
