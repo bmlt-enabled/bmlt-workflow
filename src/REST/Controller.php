@@ -24,6 +24,7 @@ use bmltwf\REST\Handlers\BMLTServerHandler;
 use bmltwf\REST\Handlers\ServiceBodiesHandler;
 use bmltwf\REST\Handlers\SubmissionsHandler;
 use bmltwf\REST\Handlers\OptionsHandler;
+use bmltwf\REST\Handlers\CorrespondenceHandler;
 
 class Controller extends \WP_REST_Controller
 {
@@ -34,7 +35,8 @@ class Controller extends \WP_REST_Controller
 	protected $BMLTServerHandler;
 	protected $ServiceBodiesHandler;
 	protected $SubmissionsHandler;
-	protected $OptionsHandler; 
+	protected $OptionsHandler;
+	protected $CorrespondenceHandler; 
 
 	public function __construct($stub = null)
 	{
@@ -48,6 +50,8 @@ class Controller extends \WP_REST_Controller
 			$this->SubmissionsHandler = new SubmissionsHandler();
 			// $this->debug_log("Controller: Creating new OptionsHandler");
 			$this->OptionsHandler = new OptionsHandler();
+			// $this->debug_log("Controller: Creating new CorrespondenceHandler");
+			$this->CorrespondenceHandler = new CorrespondenceHandler();
 		}
 	}
 
@@ -258,6 +262,63 @@ class Controller extends \WP_REST_Controller
 			'callback'            => array($this, 'post_bmltwf_debug'),
 			'permission_callback' => array($this, 'post_bmltwf_debug_permissions_check'),
 		));
+		
+		// GET submissions/<id>/correspondence
+		register_rest_route(
+			$this->bmltwf_rest_namespace,
+			'/' . $this->bmltwf_submissions_rest_base . '/(?P<change_id>[\d]+)/correspondence',
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_correspondence'),
+				'permission_callback' => array($this, 'get_correspondence_permissions_check'),
+			)
+		);
+		
+		// POST submissions/<id>/correspondence
+		register_rest_route(
+			$this->bmltwf_rest_namespace,
+			'/' . $this->bmltwf_submissions_rest_base . '/(?P<change_id>[\d]+)/correspondence',
+			array(
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => array($this, 'post_correspondence'),
+				'permission_callback' => array($this, 'post_correspondence_permissions_check'),
+				'args'     => [
+					'message' => [
+						'required' => true,
+						'type'     => 'string',
+						'sanitize_callback' => function ($param, $request, $key) {
+							return sanitize_textarea_field($param);
+						}
+					],
+					'thread_id' => [
+						'required' => false,
+						'type'     => 'string',
+						'sanitize_callback' => function ($param, $request, $key) {
+							return sanitize_text_field($param);
+						}
+					],
+					'from_submitter' => [
+						'required' => false,
+						'type'     => 'string',
+						'default'  => 'false',
+						'sanitize_callback' => function ($param, $request, $key) {
+							return sanitize_text_field($param);
+						}
+					],
+				],
+			)
+		);
+		
+		// GET correspondence/thread/<thread_id>
+		register_rest_route(
+			$this->bmltwf_rest_namespace,
+			'/correspondence/thread/(?P<thread_id>[\w\-]+)',
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array($this, 'get_correspondence_by_thread'),
+				'permission_callback' => '__return_true', // Public access with thread ID
+			)
+		);
 	}
 
 	private function authorization_status_code()
@@ -452,6 +513,24 @@ class Controller extends \WP_REST_Controller
 		}
 		return true;
 	}
+	
+	public function get_correspondence_permissions_check($request)
+	{
+		$this->debug_log("get_correspondence_permissions_check " . get_current_user_id());
+		if ((!current_user_can($this->bmltwf_capability_manage_submissions))&&(!current_user_can('manage_options'))) {
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot view correspondence.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+	
+	public function post_correspondence_permissions_check($request)
+	{
+		$this->debug_log("post_correspondence_permissions_check " . get_current_user_id());
+		if ((!current_user_can($this->bmltwf_capability_manage_submissions))&&(!current_user_can('manage_options'))) {
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot add correspondence.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
 
 	public function post_submissions_permissions_check($request)
 	{
@@ -567,6 +646,24 @@ class Controller extends \WP_REST_Controller
 	public function post_bmltwf_debug($request)
 	{
 		$result = $this->OptionsHandler->post_bmltwf_debug_handler($request);
+		return rest_ensure_response($result);
+	}
+	
+	public function get_correspondence($request)
+	{
+		$result = $this->CorrespondenceHandler->get_correspondence_handler($request);
+		return rest_ensure_response($result);
+	}
+	
+	public function post_correspondence($request)
+	{
+		$result = $this->CorrespondenceHandler->post_correspondence_handler($request);
+		return rest_ensure_response($result);
+	}
+	
+	public function get_correspondence_by_thread($request)
+	{
+		$result = $this->CorrespondenceHandler->get_correspondence_by_thread_handler($request);
 		return rest_ensure_response($result);
 	}
 }

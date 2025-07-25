@@ -1,0 +1,105 @@
+#bmltwf-correspondence-container {
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+}
+
+#bmltwf-correspondence-header {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+}
+
+#bmltwf-correspondence-header h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+#bmltwf-correspondence-header p {
+    margin-bottom: 5px;
+    color: #555;
+}
+
+.bmltwf-correspondence-message {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 5px;
+    position: relative;
+}
+
+.bmltwf-admin-message {
+    background-color: #e9f7fe;
+    border-left: 4px solid #2271b1;
+}
+
+.bmltwf-submitter-message {
+    background-color: #f0f0f0;
+    border-left: 4px solid #646970;
+}
+
+.bmltwf-message-header {
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.bmltwf-message-time {
+    font-size: 0.8em;
+    color: #666;
+    margin-left: 10px;
+    font-weight: normal;
+}
+
+.bmltwf-message-content {
+    white-space: pre-wrap;
+}
+
+#bmltwf-correspondence-reply {
+    margin-top: 30px;
+}
+
+#bmltwf-reply-form {
+    margin-top: 15px;
+}
+
+#bmltwf-reply-text {
+    width: 100%;
+    min-height: 100px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.bmltwf-reply-buttons {
+    text-align: right;
+}
+
+.bmltwf-reply-buttons button {
+    margin-left: 10px;
+}
+
+#bmltwf-correspondence-loading {
+    text-align: center;
+    padding: 20px;
+    color: #666;
+}
+
+#bmltwf-correspondence-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.bmltwf-success-message {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    display: none;
+}

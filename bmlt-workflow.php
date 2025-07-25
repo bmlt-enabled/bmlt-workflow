@@ -96,6 +96,7 @@ if (!class_exists('bmltwf_plugin')) {
             add_action('admin_init',  array(&$this, 'bmltwf_register_setting'));
             add_action('rest_api_init', array(&$this, 'bmltwf_rest_controller'));
             add_shortcode('bmltwf-meeting-update-form', array(&$this, 'bmltwf_meeting_update_form'));
+            add_shortcode('bmltwf-correspondence-view', array(&$this, 'bmltwf_correspondence_view'));
             add_filter('plugin_action_links', array(&$this, 'bmltwf_add_plugin_link'), 10, 2);
             add_action('user_register', array(&$this, 'bmltwf_add_capability'), 10, 1);
             register_activation_hook(__FILE__, array(&$this, 'bmltwf_install'));
@@ -140,6 +141,41 @@ if (!class_exists('bmltwf_plugin')) {
             // Test translation
             $test = __('New Meeting', $domain);
             error_log("BMLTWF Debug - Translation test: " . $test);
+        }
+
+        public function bmltwf_correspondence_view($atts = [], $content = null, $tag = '')
+        {
+            // Enqueue required scripts
+            wp_enqueue_script('wp-i18n');
+            $this->prevent_cache_enqueue_script('bmltwf-correspondence-view-js', array('jquery', 'wp-i18n'), 'js/correspondence_view.js');
+            $this->prevent_cache_enqueue_style('bmltwf-correspondence-view-css', false, 'css/correspondence_view.css');
+            
+            // Set up translations
+            wp_set_script_translations('bmltwf-correspondence-view-js', 'bmlt-workflow', plugin_dir_path(__FILE__) . 'lang/');
+            
+            // Get thread ID from URL parameter
+            $thread_id = isset($_GET['thread']) ? sanitize_text_field($_GET['thread']) : '';
+            
+            // Localize script with REST API URL and thread ID
+            wp_localize_script('bmltwf-correspondence-view-js', 'bmltwf_correspondence_data', array(
+                'rest_url' => esc_url_raw(rest_url($this->bmltwf_rest_namespace . '/correspondence/thread/' . $thread_id)),
+                'thread_id' => $thread_id,
+                'nonce' => wp_create_nonce('wp_rest'),
+                'submission_rest_url' => esc_url_raw(rest_url($this->bmltwf_rest_namespace . '/submissions/')),
+                'i18n' => array(
+                    'loading' => __('Loading correspondence...', 'bmlt-workflow'),
+                    'error' => __('Error loading correspondence. Please check the URL and try again.', 'bmlt-workflow'),
+                    'reply' => __('Reply', 'bmlt-workflow'),
+                    'send' => __('Send', 'bmlt-workflow'),
+                    'cancel' => __('Cancel', 'bmlt-workflow'),
+                    'your_reply' => __('Your reply...', 'bmlt-workflow'),
+                    'reply_sent' => __('Your reply has been sent.', 'bmlt-workflow'),
+                    'reply_error' => __('Error sending reply. Please try again.', 'bmlt-workflow'),
+                )
+            ));
+            
+            include_once('public/correspondence_view.php');
+            return bmltwf_correspondence_view_shortcode($atts);
         }
 
         public function bmltwf_meeting_update_form($atts = [], $content = null, $tag = '')

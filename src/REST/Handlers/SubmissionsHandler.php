@@ -35,6 +35,8 @@ class SubmissionsHandler
 
     public function __construct($intstub = null)
     {
+        $this->initTableNames();
+        
         if (empty($intstub)) {
             // $this->debug_log("SubmissionsHandler: Creating new Integration");
             $this->bmlt_integration = new Integration();
@@ -51,34 +53,78 @@ class SubmissionsHandler
     {
         global $wpdb;
 
-          // Get pagination parameters
+        // Get pagination parameters
         $first = intval($request->get_param('first') ?? 0);
         $last = intval($request->get_param('last') ?? 20);
         $total = intval($request->get_param('total') ?? 0);
+        $filter = $request->get_param('filter') ?? 'all';
         
         // Calculate LIMIT and OFFSET
         $limit = $last - $first + 1;
         $offset = $first;
 
+        // Build WHERE clause based on filter
+        $where_clause = '';
+        $where_params = [];
+        
+        switch ($filter) {
+            case 'pending':
+                $where_clause = ' WHERE change_made IS NULL ';
+                break;
+            case 'approved':
+                $where_clause = ' WHERE change_made = "approved" ';
+                break;
+            case 'rejected':
+                $where_clause = ' WHERE change_made = "rejected" ';
+                break;
+            case 'correspondence':
+                $where_clause = ' WHERE (change_made = "correspondence_sent" OR change_made = "correspondence_received") ';
+                break;
+            default: // 'all'
+                $where_clause = '';
+                break;
+        }
+        
         // only show submissions we have access to
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
         if(current_user_can('manage_options'))
         {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' ORDER BY change_id DESC LIMIT %d OFFSET %d', $limit, $offset);
+            $sql = 'SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . $where_clause . ' ORDER BY change_id DESC LIMIT %d OFFSET %d';
+            $sql = $wpdb->prepare($sql, $limit, $offset);
         }
         else
         {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId where a.wp_uid =%d ORDER BY s.change_id DESC LIMIT %d OFFSET %d', $current_uid, $limit, $offset);
+            $access_where = ' WHERE a.wp_uid = %d ';
+            $where_params[] = $current_uid;
+            
+            if (!empty($where_clause)) {
+                $access_where = str_replace('WHERE', 'AND', $where_clause);
+            }
+            
+            $sql = 'SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . 
+                  $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId' . 
+                  $access_where . ' ORDER BY s.change_id DESC LIMIT %d OFFSET %d';
+            $sql = $wpdb->prepare($sql, $current_uid, $limit, $offset);
         }
         
+        // Count total records with the same filter
         if(current_user_can('manage_options'))
         {
-            $total_sql = $wpdb->prepare('SELECT COUNT(*) FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name);
+            $total_sql = 'SELECT COUNT(*) FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . $where_clause;
+            $total_sql = $wpdb->prepare($total_sql);
         }
         else
         {
-            $total_sql = $wpdb->prepare('SELECT COUNT(*) FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId where a.wp_uid =%d', $current_uid);
+            $access_where = ' WHERE a.wp_uid = %d ';
+            if (!empty($where_clause)) {
+                $access_where = str_replace('WHERE', 'AND', $where_clause);
+            }
+            
+            $total_sql = 'SELECT COUNT(*) FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . 
+                        $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId' . 
+                        $access_where;
+            $total_sql = $wpdb->prepare($total_sql, $current_uid);
         }
         $total_count = $wpdb->get_var($total_sql);
 
