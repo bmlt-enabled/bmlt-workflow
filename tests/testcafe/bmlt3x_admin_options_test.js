@@ -430,3 +430,57 @@ test("Debug_Logging_And_Download", async (t) => {
     .expect(ao.download_debug_log_button.exists)
     .notOk("Download button should not appear when debug is disabled");
 });
+
+test("Debug_Logging_Multiple_Enable_Disable_Cycles", async (t) => {
+  // Test enabling and disabling debug logging multiple times to ensure consistency
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  
+  // Test 3 cycles of enable/disable
+  for (let cycle = 1; cycle <= 3; cycle++) {
+    // Enable debug logging
+    await select_dropdown_by_text(ao.bmltwf_enable_debug, "True");
+    await t.click(ao.submit);
+    await ao.settings_updated();
+    
+    // Verify debug is enabled
+    await t
+      .expect(ao.bmltwf_enable_debug.value)
+      .eql("true", `Cycle ${cycle}: Debug should be enabled`)
+      .expect(ao.download_debug_log_button.exists)
+      .ok(`Cycle ${cycle}: Download button should appear when debug is enabled`);
+    
+    // Generate debug logs by navigating between pages
+    await t.navigateTo(userVariables.admin_submissions_page_single);
+    await t.wait(500); // Allow time for debug logs to be generated
+    await t.navigateTo(userVariables.admin_settings_page_single);
+    await t.wait(500);
+    
+    // Try to download the debug log
+    const today = new Date().toISOString().split('T')[0];
+    const expectedFilename = `bmlt-workflow-debug-${today}.txt`;
+    const downloadPath = getFileDownloadPath(expectedFilename);
+    
+    // Click the download button
+    await t.click(ao.download_debug_log_button);
+    
+    // Wait for download and verify
+    await t.wait(2000);
+    const fileExists = await waitForFileDownload(downloadPath);
+    await t.expect(fileExists).ok(`Cycle ${cycle}: Debug log file should be downloaded`);
+    
+    // Disable debug logging
+    await select_dropdown_by_text(ao.bmltwf_enable_debug, "False");
+    await t.click(ao.submit);
+    await ao.settings_updated();
+    
+    // Verify debug is disabled
+    await t
+      .expect(ao.bmltwf_enable_debug.value)
+      .eql("false", `Cycle ${cycle}: Debug should be disabled`)
+      .expect(ao.download_debug_log_button.exists)
+      .notOk(`Cycle ${cycle}: Download button should not appear when debug is disabled`);
+    
+    // Wait between cycles
+    await t.wait(1000);
+  }
+});
