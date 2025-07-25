@@ -23,7 +23,7 @@ use bmltwf\BMLTWF_Debug;
 /**
  * Shortcode handler for correspondence view
  */
-function bmltwf_correspondence_view_shortcode($atts)
+function bmltwf_correspondence_form_shortcode($atts)
 {
     // Get thread ID from URL parameter
     $thread_id = isset($_GET['thread']) ? sanitize_text_field($_GET['thread']) : '';
@@ -52,4 +52,4 @@ function bmltwf_correspondence_view_shortcode($atts)
     
     return $output;
 }
-add_shortcode('bmltwf-correspondence-view', 'bmltwf_correspondence_view_shortcode');
+add_shortcode('bmltwf-correspondence-form', 'bmltwf_correspondence_form_shortcode');

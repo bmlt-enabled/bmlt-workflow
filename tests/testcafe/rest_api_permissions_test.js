@@ -20,7 +20,7 @@ import { bmltwf_admin } from './helpers/helper';
 import { Selector } from 'testcafe';
 
 // Define the base URL and REST paths
-const siteurl_single = userVariables.siteurl_single || 'http://wordpress-php8-singlesite';
+const siteurl_single = userVariables.siteurl_single;
 const restBasePath = '/index.php?rest_route=/bmltwf/v1';
 
 // Define the REST API endpoints to test
@@ -44,6 +44,9 @@ const restoreEndpoint = `${restBasePath}/options/restore`;
 const geolocateEndpoint = `${restBasePath}/bmltserver/geolocate`;
 const approveEndpoint = `${restBasePath}/submissions/1/approve`;
 const rejectEndpoint = `${restBasePath}/submissions/1/reject`;
+const correspondenceEndpoint = `${restBasePath}/submissions/1/correspondence`;
+const correspondencePageEndpoint = `${restBasePath}/options/correspondence-page`;
+const correspondenceThreadEndpoint = `${restBasePath}/correspondence/thread/test-thread-id`;
 
 
 
@@ -63,8 +66,6 @@ publicEndpoints.forEach(endpoint => {
         await t.expect(response.status).notEql(403);
     });
 });
-
-// This test is now handled in the protectedEndpoints loop
 
 // Test that protected endpoints are not accessible without authentication
 fixture`Protected_REST_API_Endpoints_Unauthenticated`
@@ -225,6 +226,84 @@ test(`${approveEndpoint} should require authentication for POST but returns 404 
     
     // Check that the POST response is a 401 or 403 error
     await t.expect(postResponse.status === 401 || postResponse.status === 403).ok(`Expected 401 or 403 for POST, got ${postResponse.status}`);
+});
+
+// Special test for reject endpoint - POST should require auth, GET returns 404
+test(`${rejectEndpoint} should require authentication for POST but returns 404 for GET`, async t => {
+    // Test GET access (should return 404)
+    const getResponse = await t.request({
+        url: siteurl_single + rejectEndpoint,
+        method: 'GET'
+    });
+    
+    // Check that the GET response is a 404
+    await t.expect(getResponse.status).eql(404);
+    
+    // Test POST access (should be denied with 401 or 403)
+    const postResponse = await t.request({
+        url: siteurl_single + rejectEndpoint,
+        method: 'POST',
+        body: {}
+    });
+    
+    // Check that the POST response is a 401 or 403 error
+    await t.expect(postResponse.status === 401 || postResponse.status === 403).ok(`Expected 401 or 403 for POST, got ${postResponse.status}`);
+});
+
+// Test correspondence endpoints
+test(`${correspondenceEndpoint} should require authentication for GET and POST`, async t => {
+    // Test GET access (should be denied with 401 or 403)
+    const getResponse = await t.request({
+        url: siteurl_single + correspondenceEndpoint,
+        method: 'GET'
+    });
+    
+    // Check that the GET response is a 401 or 403 error
+    await t.expect(getResponse.status === 401 || getResponse.status === 403).ok(`Expected 401 or 403 for GET, got ${getResponse.status}`);
+    
+    // Test POST access (should be denied with 401 or 403)
+    const postResponse = await t.request({
+        url: siteurl_single + correspondenceEndpoint,
+        method: 'POST',
+        body: { message: 'test message' }
+    });
+    
+    // Check that the POST response is a 401 or 403 error
+    await t.expect(postResponse.status === 401 || postResponse.status === 403).ok(`Expected 401 or 403 for POST, got ${postResponse.status}`);
+});
+
+// Test correspondence page endpoint
+test(`${correspondencePageEndpoint} should require authentication for POST but returns 404 for GET`, async t => {
+    // Test GET access (should return 404)
+    const getResponse = await t.request({
+        url: siteurl_single + correspondencePageEndpoint,
+        method: 'GET'
+    });
+    
+    // Check that the GET response is a 404
+    await t.expect(getResponse.status).eql(404);
+    
+    // Test POST access (should be denied with 401 or 403)
+    const postResponse = await t.request({
+        url: siteurl_single + correspondencePageEndpoint,
+        method: 'POST',
+        body: { page_id: '1' }
+    });
+    
+    // Check that the POST response is a 401 or 403 error
+    await t.expect(postResponse.status === 401 || postResponse.status === 403).ok(`Expected 401 or 403 for POST, got ${postResponse.status}`);
+});
+
+// Test correspondence thread endpoint (public access)
+test(`${correspondenceThreadEndpoint} should be publicly accessible`, async t => {
+    const response = await t.request({
+        url: siteurl_single + correspondenceThreadEndpoint,
+        method: 'GET'
+    });
+    
+    // Should not return 401 or 403 (might return 404 if thread doesn't exist, which is fine)
+    await t.expect(response.status).notEql(401);
+    await t.expect(response.status).notEql(403);
 });
 
 // Special test for reject endpoint - POST should require auth, GET returns 404

@@ -33,7 +33,7 @@ import { RequestLogger, Selector } from "testcafe";
 
 import { userVariables } from "../../.testcaferc";
 
-fixture`bmlt3x_admin_submissions_fixture`
+fixture`admin_submissions_fixture`
 .beforeEach(async (t) => {
 
   await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001","hidden");

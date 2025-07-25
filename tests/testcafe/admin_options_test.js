@@ -60,7 +60,7 @@ function getFileDownloadPath(download) {
 
 let downloadedFilePath = null;
 
-fixture`bmlt3x_admin_options_fixture`
+fixture`admin_options_fixture`
   .beforeEach(async (t) => {
     await waitfor(userVariables.admin_logon_page_single);
     await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001","hidden");

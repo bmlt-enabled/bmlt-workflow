@@ -80,5 +80,43 @@ trait HandlerCore
         return new \WP_Error('bmltwf_error', $message, $data);
     }
 
-  
+    /**
+     * Check if user has permission to access a submission
+     *
+     * @param int $change_id
+     * @return object|\WP_Error
+     */
+    public function get_submission_with_permission_check($change_id)
+    {
+        global $wpdb;
+
+        $this_user = wp_get_current_user();
+        $current_uid = $this_user->get('ID');
+        
+        if (current_user_can('manage_options')) {
+            // Admin can access all submissions
+            $sql = $wpdb->prepare(
+                "SELECT * FROM {$this->bmltwf_submissions_table_name} WHERE change_id = %d",
+                $change_id
+            );
+        } else {
+            // Non-admin users can only access submissions for service bodies they manage
+            $sql = $wpdb->prepare(
+                "SELECT s.* FROM {$this->bmltwf_submissions_table_name} s 
+                 INNER JOIN {$this->bmltwf_service_bodies_access_table_name} a 
+                 ON s.serviceBodyId = a.serviceBodyId 
+                 WHERE a.wp_uid = %d AND s.change_id = %d",
+                $current_uid,
+                $change_id
+            );
+        }
+        
+        $result = $wpdb->get_row($sql);
+        
+        if (!$result) {
+            return $this->bmltwf_rest_error(__('Permission denied: You cannot access this submission', 'bmlt-workflow'), 403);
+        }
+        
+        return $result;
+    }
 }

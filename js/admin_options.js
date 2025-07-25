@@ -21,7 +21,7 @@
 /* global bmltwf_clear_notices, bmltwf_turn_on_spinner, bmltwf_turn_off_spinner, bmltwf_notice_success, bmltwf_notice_error */
 /* global bmltwf_admin_restore_rest_url, bmltwf_admin_backup_rest_url, bmltwf_admin_bmltserver_rest_url, bmltwf_fso_feature */
 /* global bmltwf_bmlt_server_address, bmltwf_google_maps_key_select, bmltwf_admin_bmltwf_service_bodies_rest_url */
-/* global bmltwf_admin_debuglog_rest_url */
+/* global bmltwf_admin_debuglog_rest_url, bmltwf_admin_correspondence_page_rest_url */
 
 const { __ } = wp.i18n;
 
@@ -545,5 +545,29 @@ jQuery(document).ready(function ($) {
   $('#bmltwf_bmlt_password').on('change', function () {
     enable_save_button(false);
     hide_bmlt_validation();
+  });
+
+  // Handle correspondence page selection
+  $('#bmltwf_correspondence_page').on('change', function () {
+    const pageId = $(this).val();
+    
+    $.ajax({
+      url: bmltwf_admin_correspondence_page_rest_url,
+      method: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      data: JSON.stringify({ page_id: pageId }),
+      processData: false,
+      beforeSend(xhr) {
+        bmltwf_clear_notices();
+        xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
+      },
+    })
+      .done(function (response) {
+        bmltwf_notice_success(response, 'bmltwf-error-message');
+      })
+      .fail(function (xhr) {
+        bmltwf_notice_error(xhr, 'bmltwf-error-message');
+      });
   });
 });

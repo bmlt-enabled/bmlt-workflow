@@ -254,4 +254,31 @@ class OptionsHandler
             'log_content' => base64_encode($log_content)
         ));
     }
+    
+    public function post_bmltwf_correspondence_page_handler($request)
+    {
+        $this->debug_log("correspondence page handler called");
+        
+        $params = $request->get_json_params();
+        $page_id = $params['page_id'] ?? '';
+        
+        if (empty($page_id)) {
+            update_option('bmltwf_correspondence_page', '');
+            return $this->bmltwf_rest_success(__('Correspondence page cleared successfully', 'bmlt-workflow'));
+        }
+        
+        $page_id = intval($page_id);
+        if ($page_id <= 0) {
+            return $this->bmltwf_rest_error(__('Invalid page ID', 'bmlt-workflow'), 400);
+        }
+        
+        $page = get_post($page_id);
+        if (!$page || $page->post_type !== 'page' || $page->post_status !== 'publish') {
+            return $this->bmltwf_rest_error(__('Selected page does not exist or is not published', 'bmlt-workflow'), 400);
+        }
+        
+        update_option('bmltwf_correspondence_page', $page_id);
+        
+        return $this->bmltwf_rest_success(__('Correspondence page updated successfully', 'bmlt-workflow'));
+    }
 }

@@ -34,7 +34,7 @@ import {
   
 import { userVariables } from "../../.testcaferc";
 
-fixture`bmlt3x_e2e_test_fixture`
+fixture`e2e_test_fixture`
   .before(async (t) => {
   })
   .beforeEach(async (t) => {

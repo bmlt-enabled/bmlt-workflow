@@ -263,6 +263,22 @@ class Controller extends \WP_REST_Controller
 			'permission_callback' => array($this, 'post_bmltwf_debug_permissions_check'),
 		));
 		
+		// POST options/correspondence-page
+		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_options_rest_base . '/correspondence-page', array(
+			'methods'             => \WP_REST_Server::CREATABLE,
+			'callback'            => array($this, 'post_bmltwf_correspondence_page'),
+			'permission_callback' => array($this, 'post_bmltwf_correspondence_page_permissions_check'),
+			'args'     => [
+				'page_id' => [
+					'required' => false,
+					'type'     => 'string',
+					'sanitize_callback' => function ($param, $request, $key) {
+						return sanitize_text_field($param);
+					}
+				],
+			],
+		));
+		
 		// GET submissions/<id>/correspondence
 		register_rest_route(
 			$this->bmltwf_rest_namespace,
@@ -514,6 +530,15 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 	
+	public function post_bmltwf_correspondence_page_permissions_check($request)
+	{
+		$this->debug_log("post_bmltwf_correspondence_page_permissions_check " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot update correspondence page settings.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+	
 	public function get_correspondence_permissions_check($request)
 	{
 		$this->debug_log("get_correspondence_permissions_check " . get_current_user_id());
@@ -646,6 +671,12 @@ class Controller extends \WP_REST_Controller
 	public function post_bmltwf_debug($request)
 	{
 		$result = $this->OptionsHandler->post_bmltwf_debug_handler($request);
+		return rest_ensure_response($result);
+	}
+	
+	public function post_bmltwf_correspondence_page($request)
+	{
+		$result = $this->OptionsHandler->post_bmltwf_correspondence_page_handler($request);
 		return rest_ensure_response($result);
 	}
 	

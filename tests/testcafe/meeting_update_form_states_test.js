@@ -31,7 +31,7 @@ import {
 
 import { userVariables } from "../../.testcaferc";
 
-fixture`bmlt3x_meeting_update_form_states_test_fixture`
+fixture`meeting_update_form_states_test_fixture`
 .beforeEach(async (t) => {
 
   await waitfor(userVariables.admin_logon_page_single);

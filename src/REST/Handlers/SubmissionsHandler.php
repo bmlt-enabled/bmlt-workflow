@@ -191,26 +191,12 @@ class SubmissionsHandler
 
     private function get_submission_id_with_permission_check($change_id)
     {
-        global $wpdb;
-
-        $this_user = wp_get_current_user();
-        $current_uid = $this_user->get('ID');
-        if(current_user_can('manage_options'))
-        {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where change_id=%d', $change_id);
+        $result = $this->get_submission_with_permission_check($change_id);
+        if (is_wp_error($result)) {
+            return $result;
         }
-        else
-        {
-            $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId where a.wp_uid =%d and s.change_id="%d" limit 1', $current_uid, $change_id);
-        }
-        $this->debug_log($sql);
-        $result = $wpdb->get_row($sql, ARRAY_A);
-        $this->debug_log("RESULT");
-        $this->debug_log(($result));
-        if (empty($result)) {
-            return $this->bmltwf_rest_error(__('Permission denied viewing submission id','bmlt-workflow')." {$change_id}", 403);
-        }
-        return $result;
+        // Convert to array format for backward compatibility
+        return (array) $result;
     }
 
     public function reject_submission_handler($request)

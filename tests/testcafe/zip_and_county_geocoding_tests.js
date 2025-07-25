@@ -33,7 +33,7 @@ import {
 
 import { userVariables } from "../../.testcaferc.js";
 
-fixture`bmlt3x_zip_and_county_geocoding_tests_fixture`
+fixture`zip_and_county_geocoding_tests_fixture`
   .before(async (t) => {})
   .beforeEach(async (t) => {
 

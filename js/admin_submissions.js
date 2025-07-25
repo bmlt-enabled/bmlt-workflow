@@ -21,6 +21,7 @@
 /* global bmltwf_gmaps_key, bmltwf_auto_geocoding_enabled, bmltwf_optional_location_nation, bmltwf_optional_location_sub_province, bmltwf_optional_location_province */
 /* global bmltwf_do_states_and_provinces, bmltwf_counties_and_sub_provinces, bmltwf_remove_virtual_meeting_details_on_venue_change */
 /* global bmltwf_default_closed_meetings, bmltwf_bmlt_formats, bmltwf_datatables_delete_enabled, bmltwf_admin_submissions_rest_url, bmltwf_admin_bmltwf_service_bodies */
+/* global bmltwf_correspondence_enabled */
 /* global bmltwf_optional_location_province_displayname, bmltwf_optional_location_sub_province_displayname, bmltwf_optional_location_nation_displayname */
 /* global bmltwf_bmltserver_geolocate_rest_url, bmltwf_optional_postcode, bmltwf_zip_auto_geocoding, bmltwf_county_auto_geocoding */
 
@@ -154,6 +155,11 @@ jQuery(document).ready(function ($) {
   }
 
   function checkForCorrespondence(changeId) {
+    // Only check if correspondence is enabled
+    if (bmltwf_correspondence_enabled !== true && bmltwf_correspondence_enabled !== 'true') {
+      return;
+    }
+    
     jQuery.ajax({
       url: `${bmltwf_admin_submissions_rest_url + changeId}/correspondence`,
       type: 'GET',
@@ -475,6 +481,75 @@ jQuery(document).ready(function ($) {
   });
   $('#quickedit_formatIds').trigger('change');
 
+  // Build buttons array conditionally
+  const buttons = [
+    {
+      name: 'approve',
+      text: __('Approve', 'bmlt-workflow'),
+      enabled: false,
+      action(e, dt) {
+        const { change_id } = dt.row('.selected').data();
+        const reason = dt.row('.selected').data().submission_type;
+        if (reason === 'reason_close') {
+          // clear text area from before
+          $('#bmltwf_submission_approve_close_dialog_textarea').val('');
+          $('#bmltwf_submission_approve_close_dialog').data('change_id', change_id).dialog('open');
+        } else {
+          // clear text area from before
+          $('#bmltwf_submission_approve_dialog_textarea').val('');
+          $('#bmltwf_submission_approve_dialog').data('change_id', change_id).dialog('open');
+        }
+      },
+    },
+    {
+      name: 'reject',
+      text: __('Reject', 'bmlt-workflow'),
+      enabled: false,
+      action(e, dt) {
+        const { change_id } = dt.row('.selected').data();
+        // clear text area from before
+        $('#bmltwf_submission_reject_dialog_textarea').val('');
+        $('#bmltwf_submission_reject_dialog').data('change_id', change_id).dialog('open');
+      },
+    },
+  ];
+
+  // Only add correspondence button if enabled
+  if (bmltwf_correspondence_enabled === true || bmltwf_correspondence_enabled === 'true') {
+    buttons.push({
+      name: 'correspondence',
+      text: __('Correspondence', 'bmlt-workflow'),
+      enabled: false,
+      action(e, dt) {
+        const { change_id } = dt.row('.selected').data();
+        // Load correspondence data and open dialog
+        loadCorrespondence(change_id);
+      },
+    });
+  }
+
+  buttons.push(
+    {
+      name: 'quickedit',
+      text: __('QuickEdit', 'bmlt-workflow'),
+      extend: 'selected',
+      action(e, dt) {
+        const { change_id } = dt.row('.selected').data();
+        populate_and_open_quickedit(change_id);
+      },
+    },
+    {
+      name: 'delete',
+      text: __('Delete', 'bmlt-workflow'),
+      enabled: bmltwf_datatables_delete_enabled,
+      extend: 'selected',
+      action(e, dt) {
+        const { change_id } = dt.row('.selected').data();
+        $('#bmltwf_submission_delete_dialog').data('change_id', change_id).dialog('open');
+      },
+    },
+  );
+
   const datatable = $('#dt-submission').DataTable({
     dom: 'Bfrtip',
     select: true,
@@ -483,66 +558,7 @@ jQuery(document).ready(function ($) {
     processing: true,
     serverSide: true,
     pageLength: 10,
-    buttons: [
-      {
-        name: 'approve',
-        text: __('Approve', 'bmlt-workflow'),
-        enabled: false,
-        action(e, dt) {
-          const { change_id } = dt.row('.selected').data();
-          const reason = dt.row('.selected').data().submission_type;
-          if (reason === 'reason_close') {
-            // clear text area from before
-            $('#bmltwf_submission_approve_close_dialog_textarea').val('');
-            $('#bmltwf_submission_approve_close_dialog').data('change_id', change_id).dialog('open');
-          } else {
-            // clear text area from before
-            $('#bmltwf_submission_approve_dialog_textarea').val('');
-            $('#bmltwf_submission_approve_dialog').data('change_id', change_id).dialog('open');
-          }
-        },
-      },
-      {
-        name: 'reject',
-        text: __('Reject', 'bmlt-workflow'),
-        enabled: false,
-        action(e, dt) {
-          const { change_id } = dt.row('.selected').data();
-          // clear text area from before
-          $('#bmltwf_submission_reject_dialog_textarea').val('');
-          $('#bmltwf_submission_reject_dialog').data('change_id', change_id).dialog('open');
-        },
-      },
-      {
-        name: 'correspondence',
-        text: __('Correspondence', 'bmlt-workflow'),
-        enabled: false,
-        action(e, dt) {
-          const { change_id } = dt.row('.selected').data();
-          // Load correspondence data and open dialog
-          loadCorrespondence(change_id);
-        },
-      },
-      {
-        name: 'quickedit',
-        text: __('QuickEdit', 'bmlt-workflow'),
-        extend: 'selected',
-        action(e, dt) {
-          const { change_id } = dt.row('.selected').data();
-          populate_and_open_quickedit(change_id);
-        },
-      },
-      {
-        name: 'delete',
-        text: __('Delete', 'bmlt-workflow'),
-        enabled: bmltwf_datatables_delete_enabled,
-        extend: 'selected',
-        action(e, dt) {
-          const { change_id } = dt.row('.selected').data();
-          $('#bmltwf_submission_delete_dialog').data('change_id', change_id).dialog('open');
-        },
-      },
-    ],
+    buttons,
     ajax: {
       url: bmltwf_admin_submissions_rest_url,
       beforeSend(xhr) {
@@ -726,15 +742,21 @@ jQuery(document).ready(function ($) {
         $('#dt-submission').DataTable().button('approve:name').enable(!actioned);
         $('#dt-submission').DataTable().button('reject:name').enable(!actioned);
         $('#dt-submission').DataTable().button('quickedit:name').enable(!cantquickedit);
-        $('#dt-submission').DataTable().button('correspondence:name').enable(true);
-
-        // Check if this submission has correspondence and highlight the button if it does
-        checkForCorrespondence(change_id);
+        
+        // Only handle correspondence button if it exists
+        if (bmltwf_correspondence_enabled === true || bmltwf_correspondence_enabled === 'true') {
+          $('#dt-submission').DataTable().button('correspondence:name').enable(true);
+          // Check if this submission has correspondence and highlight the button if it does
+          checkForCorrespondence(change_id);
+        }
       } else {
         $('#dt-submission').DataTable().button('approve:name').enable(false);
         $('#dt-submission').DataTable().button('reject:name').enable(false);
         $('#dt-submission').DataTable().button('quickedit:name').enable(false);
-        $('#dt-submission').DataTable().button('correspondence:name').enable(false);
+        // Only handle correspondence button if it exists
+        if (bmltwf_correspondence_enabled === true || bmltwf_correspondence_enabled === 'true') {
+          $('#dt-submission').DataTable().button('correspondence:name').enable(false);
+        }
       }
     });
 
@@ -1340,7 +1362,11 @@ jQuery(document).ready(function ($) {
   bmltwf_create_generic_modal('bmltwf_submission_approve_close_dialog', __('Approve Submission', 'bmlt-workflow'), 'auto', 'auto');
   bmltwf_create_generic_modal('bmltwf_submission_reject_dialog', __('Reject Submission', 'bmlt-workflow'), 'auto', 'auto');
   bmltwf_create_quickedit_modal('bmltwf_submission_quickedit_dialog', __('Submission QuickEdit', 'bmlt-workflow'), 'auto', 'auto');
-  bmltwf_create_correspondence_modal('bmltwf_submission_correspondence_dialog', __('Submission Correspondence', 'bmlt-workflow'), '600px', '800px');
+  
+  // Only create correspondence modal if correspondence is enabled
+  if (bmltwf_correspondence_enabled === true || bmltwf_correspondence_enabled === 'true') {
+    bmltwf_create_correspondence_modal('bmltwf_submission_correspondence_dialog', __('Submission Correspondence', 'bmlt-workflow'), '600px', '800px');
+  }
 
   // eslint-disable-next-line no-undef
   bmltwf_submission_approve_dialog_ok = function (id) {

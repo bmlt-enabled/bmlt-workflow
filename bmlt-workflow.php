@@ -96,7 +96,7 @@ if (!class_exists('bmltwf_plugin')) {
             add_action('admin_init',  array(&$this, 'bmltwf_register_setting'));
             add_action('rest_api_init', array(&$this, 'bmltwf_rest_controller'));
             add_shortcode('bmltwf-meeting-update-form', array(&$this, 'bmltwf_meeting_update_form'));
-            add_shortcode('bmltwf-correspondence-view', array(&$this, 'bmltwf_correspondence_view'));
+            add_shortcode('bmltwf-correspondence-form', array(&$this, 'bmltwf_correspondence_form'));
             add_filter('plugin_action_links', array(&$this, 'bmltwf_add_plugin_link'), 10, 2);
             add_action('user_register', array(&$this, 'bmltwf_add_capability'), 10, 1);
             register_activation_hook(__FILE__, array(&$this, 'bmltwf_install'));
@@ -143,21 +143,21 @@ if (!class_exists('bmltwf_plugin')) {
             error_log("BMLTWF Debug - Translation test: " . $test);
         }
 
-        public function bmltwf_correspondence_view($atts = [], $content = null, $tag = '')
+        public function bmltwf_correspondence_form($atts = [], $content = null, $tag = '')
         {
             // Enqueue required scripts
             wp_enqueue_script('wp-i18n');
-            $this->prevent_cache_enqueue_script('bmltwf-correspondence-view-js', array('jquery', 'wp-i18n'), 'js/correspondence_view.js');
-            $this->prevent_cache_enqueue_style('bmltwf-correspondence-view-css', false, 'css/correspondence_view.css');
+            $this->prevent_cache_enqueue_script('bmltwf-correspondence-form-js', array('jquery', 'wp-i18n'), 'js/correspondence_form.js');
+            $this->prevent_cache_enqueue_style('bmltwf-correspondence-form-css', false, 'css/correspondence_form.css');
             
             // Set up translations
-            wp_set_script_translations('bmltwf-correspondence-view-js', 'bmlt-workflow', plugin_dir_path(__FILE__) . 'lang/');
+            wp_set_script_translations('bmltwf-correspondence-form-js', 'bmlt-workflow', plugin_dir_path(__FILE__) . 'lang/');
             
             // Get thread ID from URL parameter
             $thread_id = isset($_GET['thread']) ? sanitize_text_field($_GET['thread']) : '';
             
             // Localize script with REST API URL and thread ID
-            wp_localize_script('bmltwf-correspondence-view-js', 'bmltwf_correspondence_data', array(
+            wp_localize_script('bmltwf-correspondence-form-js', 'bmltwf_correspondence_data', array(
                 'rest_url' => esc_url_raw(rest_url($this->bmltwf_rest_namespace . '/correspondence/thread/' . $thread_id)),
                 'thread_id' => $thread_id,
                 'nonce' => wp_create_nonce('wp_rest'),
@@ -174,8 +174,8 @@ if (!class_exists('bmltwf_plugin')) {
                 )
             ));
             
-            include_once('public/correspondence_view.php');
-            return bmltwf_correspondence_view_shortcode($atts);
+            include_once('public/correspondence_form.php');
+            return bmltwf_correspondence_form_shortcode($atts);
         }
 
         public function bmltwf_meeting_update_form($atts = [], $content = null, $tag = '')
@@ -346,6 +346,7 @@ if (!class_exists('bmltwf_plugin')) {
                     $script .= 'var bmltwf_admin_backup_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/backup') . '; ';
                     $script .= 'var bmltwf_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/restore') . '; ';
                     $script .= 'var bmltwf_admin_debuglog_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/debug') . '; ';
+                    $script .= 'var bmltwf_admin_correspondence_page_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/correspondence-page') . '; ';
                     $script .= 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/servicebodies') . '; ';
                     $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
 
@@ -443,6 +444,17 @@ if (!class_exists('bmltwf_plugin')) {
                         $show_delete = "true";
                     }
                     $script .= 'var bmltwf_datatables_delete_enabled = ' . $show_delete . ';';
+                    
+                    // correspondence page configuration
+                    $correspondence_page_id = get_option('bmltwf_correspondence_page');
+                    $correspondence_enabled = 'false';
+                    if (!empty($correspondence_page_id)) {
+                        $page = get_post($correspondence_page_id);
+                        if ($page && $page->post_status === 'publish' && has_shortcode($page->post_content, 'bmltwf-correspondence-form')) {
+                            $correspondence_enabled = 'true';
+                        }
+                    }
+                    $script .= 'var bmltwf_correspondence_enabled = ' . $correspondence_enabled . ';';
 
                     wp_add_inline_script('bmltwf-admin-submissions-js', $script, 'before');
                     wp_set_script_translations('bmltwf-admin-submissions', 'bmlt-workflow', plugin_dir_path(__FILE__) . 'lang/');
@@ -622,6 +634,18 @@ if (!class_exists('bmltwf_plugin')) {
                     'sanitize_callback' => array(&$this, 'bmltwf_enable_debug_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => 'false'
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_correspondence_page',
+                array(
+                    'type' => 'string',
+                    'description' => __('Correspondence page for email links', 'bmlt-workflow'),
+                    'sanitize_callback' => array(&$this, 'bmltwf_correspondence_page_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => ''
                 )
             );
 
@@ -889,6 +913,14 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_enable_debug',
                 __('Enable Debug Logging', 'bmlt-workflow'),
                 array(&$this, 'bmltwf_enable_debug_html'),
+                'bmltwf-settings',
+                'bmltwf-settings-section-id'
+            );
+            
+            add_settings_field(
+                'bmltwf_correspondence_page',
+                __('Correspondence Page', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_correspondence_page_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
             );
@@ -1504,6 +1536,7 @@ if (!class_exists('bmltwf_plugin')) {
             add_option('bmltwf_fso_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
             add_option('bmltwf_fso_email_address', 'example@example.com');
             add_option('bmltwf_fso_feature', 'display');
+            add_option('bmltwf_correspondence_page', '');
         }
 
         public function bmltwf_add_capability($user_id)
@@ -1531,6 +1564,29 @@ if (!class_exists('bmltwf_plugin')) {
             }
             add_settings_error('bmltwf_enable_debug', 'err', __('Invalid "enable debug" setting.', 'bmlt-workflow'));
             return $output;
+        }
+
+        public function bmltwf_correspondence_page_sanitize_callback($input)
+        {
+            $output = get_option('bmltwf_correspondence_page');
+            
+            if (empty($input)) {
+                return '';
+            }
+            
+            $page_id = intval($input);
+            if ($page_id <= 0) {
+                add_settings_error('bmltwf_correspondence_page', 'err', __('Invalid correspondence page selection.', 'bmlt-workflow'));
+                return $output;
+            }
+            
+            $page = get_post($page_id);
+            if (!$page || $page->post_type !== 'page' || $page->post_status !== 'publish') {
+                add_settings_error('bmltwf_correspondence_page', 'err', __('Selected page does not exist or is not published.', 'bmlt-workflow'));
+                return $output;
+            }
+            
+            return $page_id;
         }
 
         public function bmltwf_enable_debug_html()
@@ -1568,6 +1624,48 @@ if (!class_exists('bmltwf_plugin')) {
                 echo '<br><button type="button" id="download_debug_log_button" class="button">' . __('Download Debug Log', 'bmlt-workflow') . '</button>';
                 echo '<a id="bmltwf_debug_filename" style="display:none;" download="' . $filename . '"></a>';
             }
+        }
+
+        public function bmltwf_correspondence_page_html()
+        {
+            $selected_page = get_option('bmltwf_correspondence_page');
+            
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>';
+            echo __('Select the WordPress page that contains the correspondence form shortcode [bmltwf-correspondence-form]. This page URL will be used in email notifications to submitters when new correspondence is available.', 'bmlt-workflow');
+            echo '<br><br>';
+            echo '</div>';
+
+            echo '<br><label for="bmltwf_correspondence_page"><b>';
+            echo __('Correspondence Page', 'bmlt-workflow');
+            echo ':</b></label><select id="bmltwf_correspondence_page" name="bmltwf_correspondence_page">';
+            echo '<option value="">' . __('Select a page...', 'bmlt-workflow') . '</option>';
+            
+            $pages = get_pages(array(
+                'post_status' => 'publish',
+                'sort_column' => 'post_title'
+            ));
+            
+            $shortcode_pages = array();
+            foreach ($pages as $page) {
+                if (has_shortcode($page->post_content, 'bmltwf-correspondence-form')) {
+                    $shortcode_pages[] = $page;
+                }
+            }
+            
+            if (empty($shortcode_pages)) {
+                echo '<option value="" disabled>' . __('No pages found with [bmltwf-correspondence-form] shortcode', 'bmlt-workflow') . '</option>';
+            } else {
+                foreach ($shortcode_pages as $page) {
+                    $selected = ($selected_page == $page->ID) ? 'selected' : '';
+                    echo '<option value="' . esc_attr($page->ID) . '" ' . $selected . '>';
+                    echo esc_html($page->post_title);
+                    echo '</option>';
+                }
+            }
+            
+            echo '</select>';
+            echo '<br><br>';
         }
     }
     

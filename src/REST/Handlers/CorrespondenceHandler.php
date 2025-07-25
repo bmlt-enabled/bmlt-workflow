@@ -48,14 +48,10 @@ class CorrespondenceHandler
             return new \WP_Error('rest_invalid_param', __('Invalid change_id parameter', 'bmlt-workflow'), array('status' => 400));
         }
 
-        // Check if the submission exists
-        $submission = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$this->bmltwf_submissions_table_name} WHERE change_id = %d",
-            $change_id
-        ));
-
-        if (!$submission) {
-            return new \WP_Error('rest_not_found', __('Submission not found', 'bmlt-workflow'), array('status' => 404));
+        // Check if the submission exists and user has permission to access it
+        $submission = $this->get_submission_with_permission_check($change_id);
+        if (is_wp_error($submission)) {
+            return $submission;
         }
 
         // Get correspondence for this submission
@@ -163,14 +159,10 @@ class CorrespondenceHandler
             return new \WP_Error('rest_invalid_param', __('Message cannot be empty', 'bmlt-workflow'), array('status' => 400));
         }
 
-        // Check if the submission exists
-        $submission = $wpdb->get_row($wpdb->prepare(
-            "SELECT * FROM {$this->bmltwf_submissions_table_name} WHERE change_id = %d",
-            $change_id
-        ));
-
-        if (!$submission) {
-            return new \WP_Error('rest_not_found', __('Submission not found', 'bmlt-workflow'), array('status' => 404));
+        // Check if the submission exists and user has permission to access it
+        $submission = $this->get_submission_with_permission_check($change_id);
+        if (is_wp_error($submission)) {
+            return $submission;
         }
 
         // If no thread_id provided, create a new one
@@ -270,8 +262,18 @@ class CorrespondenceHandler
             return;
         }
 
-        $site_url = get_site_url();
-        $correspondence_url = $site_url . '/bmlt-workflow-correspondence/?thread=' . $thread_id;
+        // Get the configured correspondence page URL
+        $correspondence_page_id = get_option('bmltwf_correspondence_page');
+        if (!$correspondence_page_id) {
+            return; // No correspondence page configured
+        }
+        
+        $correspondence_page_url = get_permalink($correspondence_page_id);
+        if (!$correspondence_page_url) {
+            return; // Invalid page ID
+        }
+        
+        $correspondence_url = add_query_arg('thread', $thread_id, $correspondence_page_url);
         
         $subject = __('New correspondence about your meeting submission', 'bmlt-workflow');
         
@@ -299,5 +301,8 @@ Thank you,
         );
         
         wp_mail($submitter_email, $subject, $message, $headers);
+        
+        $this->debug_log("Correspondence notification email sent - to: {$submitter_email}, subject: {$subject}, url: {$correspondence_url}");
     }
+
 }
