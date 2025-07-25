@@ -21,7 +21,7 @@ namespace bmltwf;
 class BMLTWF_Database
 {
     use \bmltwf\BMLTWF_Debug;
-    public $bmltwf_db_version = '1.1.25';
+    public $bmltwf_db_version = '1.1.27';
     public $bmltwf_submissions_table_name;
     public $bmltwf_service_bodies_table_name;
     public $bmltwf_service_bodies_access_table_name;
@@ -242,6 +242,11 @@ class BMLTWF_Database
             $this->upgradeDebugLogTableToMicroseconds();
         }
         
+        // Upgrade venue_type to venueType in JSON fields
+        if (version_compare($installed_version, '1.1.27', '<')) {
+            $this->upgradeVenueTypeFields();
+        }
+        
         return 2;
     }
     private function fixDateTimeColumns()
@@ -445,6 +450,19 @@ class BMLTWF_Database
                 unset($json_data['original_format_shared_id_list']);
                 $updated = true;
             }
+            
+            // Convert venue_type to venueType
+            if (isset($json_data['venue_type'])) {
+                $json_data['venueType'] = $json_data['venue_type'];
+                unset($json_data['venue_type']);
+                $updated = true;
+            }
+            
+            if (isset($json_data['original_venue_type'])) {
+                $json_data['original_venueType'] = $json_data['original_venue_type'];
+                unset($json_data['original_venue_type']);
+                $updated = true;
+            }
 
             // Convert time fields to HH:MM
             $time_fields = ['original_startTime', 'original_duration', 'duration', 'startTime'];
@@ -463,6 +481,26 @@ class BMLTWF_Database
                 );
             }
         }
+    }
+    
+    /**
+     * Upgrade venue_type fields to venueType in JSON data
+     */
+    private function upgradeVenueTypeFields()
+    {
+        global $wpdb;
+        
+        // Simple string replacement for venue_type -> venueType
+        $wpdb->query("UPDATE " . $this->bmltwf_submissions_table_name . " 
+                      SET changes_requested = REPLACE(changes_requested, '\"venue_type\":', '\"venueType\":')
+                      WHERE changes_requested LIKE '%venue_type%'");
+        
+        // Simple string replacement for original_venue_type -> original_venueType
+        $wpdb->query("UPDATE " . $this->bmltwf_submissions_table_name . " 
+                      SET changes_requested = REPLACE(changes_requested, '\"original_venue_type\":', '\"original_venueType\":')
+                      WHERE changes_requested LIKE '%original_venue_type%'");
+        
+        $this->debug_log("Venue type fields upgraded from venue_type to venueType");
     }
     
     /**
@@ -586,6 +624,23 @@ class BMLTWF_Database
         $results = ['success' => true, 'errors' => []];
         
         try {
+            // Insert test data with old venue_type field if testing venue type upgrade
+            if (version_compare($test_version, '1.1.27', '<')) {
+                $test_data = json_encode(['venue_type' => 2, 'original_venue_type' => 1, 'name' => 'Test Meeting']);
+                $wpdb->insert(
+                    $this->bmltwf_submissions_table_name,
+                    [
+                        'submission_time' => current_time('mysql', true),
+                        'submitter_name' => 'Test User',
+                        'submission_type' => 'reason_new',
+                        'submitter_email' => 'test@example.com',
+                        'changes_requested' => $test_data,
+                        'serviceBodyId' => 1
+                    ]
+                );
+                $test_change_id = $wpdb->insert_id;
+            }
+            
             // Simulate old version
             update_option('bmltwf_db_version', $test_version);
             
@@ -595,6 +650,42 @@ class BMLTWF_Database
             if ($upgrade_result !== 2) {
                 $results['errors'][] = "Upgrade failed, returned: $upgrade_result";
                 $results['success'] = false;
+            }
+            
+            // Validate venue_type upgrade if applicable
+            if (version_compare($test_version, '1.1.27', '<') && isset($test_change_id)) {
+                $updated_record = $wpdb->get_row(
+                    $wpdb->prepare("SELECT changes_requested FROM " . $this->bmltwf_submissions_table_name . " WHERE change_id = %d", $test_change_id)
+                );
+                
+                if ($updated_record) {
+                    $json_data = json_decode($updated_record->changes_requested, true);
+                    
+                    // Check that venue_type was converted to venueType
+                    if (isset($json_data['venue_type'])) {
+                        $results['errors'][] = "venue_type field was not upgraded to venueType";
+                        $results['success'] = false;
+                    }
+                    
+                    if (!isset($json_data['venueType'])) {
+                        $results['errors'][] = "venueType field is missing after upgrade";
+                        $results['success'] = false;
+                    }
+                    
+                    // Check that original_venue_type was converted to original_venueType
+                    if (isset($json_data['original_venue_type'])) {
+                        $results['errors'][] = "original_venue_type field was not upgraded to original_venueType";
+                        $results['success'] = false;
+                    }
+                    
+                    if (!isset($json_data['original_venueType'])) {
+                        $results['errors'][] = "original_venueType field is missing after upgrade";
+                        $results['success'] = false;
+                    }
+                }
+                
+                // Clean up test data
+                $wpdb->delete($this->bmltwf_submissions_table_name, ['change_id' => $test_change_id]);
             }
             
             // Validate results
