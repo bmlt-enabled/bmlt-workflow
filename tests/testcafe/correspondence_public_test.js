@@ -16,7 +16,7 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 import { userVariables } from "../../.testcaferc";
-import { cs } from './models/correspondence_selectors';
+import { cs } from './models/correspondence';
 import { Selector } from 'testcafe';
 
 fixture`Correspondence_Public_Access`

@@ -17,7 +17,7 @@
 
 import { userVariables } from "../../.testcaferc";
 import { bmltwf_admin } from './helpers/helper';
-import { cs } from './models/correspondence_selectors';
+import { cs } from './models/correspondence';
 
 fixture`Correspondence_Feature`
     .page`${userVariables.admin_submissions_page_single}`

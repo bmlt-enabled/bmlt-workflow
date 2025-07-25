@@ -17,7 +17,7 @@
 
 import { userVariables } from "../../.testcaferc";
 import { bmltwf_admin, restore_from_backup, myip, set_language_single } from './helpers/helper';
-import { cs } from './models/correspondence_selectors';
+import { cs } from './models/correspondence';
 import { Selector } from 'testcafe';
 
 fixture`Correspondence_E2E_Workflow`
