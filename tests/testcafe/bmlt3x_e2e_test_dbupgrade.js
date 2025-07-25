@@ -28,6 +28,9 @@ import {
   waitfor,
   bmltwf_dbupgrade_admin,
    } from "./helpers/helper.js";
+   
+// Import the current database version
+import { CURRENT_DB_VERSION } from "./helpers/db_version.js";
   
 import { userVariables } from "../../.testcaferc.js";
 
@@ -48,7 +51,7 @@ test("DbUpgrade_Test_Upgrade", async (t) => {
 test("DbUpgrade_Bmlt3x_DBVersion", async (t) => {
       await t.useRole(bmltwf_dbupgrade_admin)
       .navigateTo(userVariables.admin_options_page_dbupgrade)
-      .expect(Selector("#bmltwf_db_version").value).eql("1.1.25");
+      .expect(Selector("#bmltwf_db_version").value).eql(CURRENT_DB_VERSION);
 });
 
 test("DbUpgrade_Bmlt3x_Submit_New_Meeting_And_Approve", async (t) => {

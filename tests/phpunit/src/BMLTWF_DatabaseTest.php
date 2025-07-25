@@ -330,9 +330,19 @@ Line: $errorLine
         Functions\when('\update_option')->justReturn(true);
         Functions\when('\delete_option')->justReturn(true);
         Functions\when('\add_option')->justReturn(true);
+        Functions\when('\current_time')->justReturn('2023-01-01 12:00:00');
         Functions\when('\get_option')->alias(function($option) {
             return $option === 'bmltwf_db_version' ? '1.1.17' : false;
         });
+        
+        // Mock wpdb insert and related methods for testUpgrade
+        $wpdb->shouldReceive('insert')->andReturn(true);
+        $wpdb->insert_id = 123;
+        $wpdb->shouldReceive('prepare')->andReturnUsing(function($query, ...$args) {
+            return vsprintf(str_replace('%d', '%s', $query), $args);
+        });
+        $wpdb->shouldReceive('get_row')->andReturn((object)['changes_requested' => '{"venueType":2,"original_venueType":1,"name":"Test Meeting"}']);
+        $wpdb->shouldReceive('delete')->andReturn(true);
         
         $database = new BMLTWF_Database();
         $test_results = $database->testUpgrade('1.1.17');

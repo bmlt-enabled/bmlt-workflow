@@ -1407,3 +1407,7 @@ msgstr "Code postal"
 #: src/REST/Handlers/SubmissionsHandler.php:1198
 msgid "Add email to meeting"
 msgstr "Ajouter un courriel à la réunion"
+
+#: js/meeting_update_form.js:160
+msgid "Begin typing your meeting name"
+msgstr "Commencez à entrer le nom de votre réunion"
