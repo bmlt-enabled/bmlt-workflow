@@ -141,7 +141,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         '<p>Attn: FSO.<br>\nPlease send a starter kit to the following meeting:\n</p>\n<hr><br>\n<table class="blueTable" style="border: 1px solid #1C6EA4;background-color: #EEEEEE;text-align: left;border-collapse: collapse;">\n    <thead style="background: #1C6EA4;border-bottom: 2px solid #444444;">\n        <tr>\n            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: none;">\n                <br>Field Name\n            </th>\n            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: 2px solid #D0E4F5;">\n                <br>Value\n            </th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Group Name</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:name}</td>\n        </tr>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Requester First Name</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:first_name}</td>\n        </tr>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Requester Last Name</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:last_name}</td>\n        </tr>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Starter Kit Postal Address</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:starter_kit_postal_address}\n            </td>\n        </tr>\n    </tbody>\n</table>\n',
       bmltwf_fso_email_address: "example@example.com",
       bmltwf_fso_feature: "display",
-      bmltwf_db_version: CURRENT_DB_VERSION,
+      bmltwf_db_version: "1.1.27",
       bmltwf_bmlt_server_address: "http://" + host + ":" + port + "/main_server/",
       bmltwf_bmlt_username: "bmlt-workflow-bot",
       bmltwf_bmlt_test_status: "success",
@@ -311,4 +311,76 @@ export async function set_language_single(t, lang)
     await select_dropdown_by_value(Selector("#WPLANG"),lang);
   }
   await t.click(Selector("#submit"));
+}
+
+export async function setupCorrespondenceFeature(t) {
+  await t.useRole(bmltwf_admin);
+  
+  const cookies = await t.getCookies();
+  const cookieHeader = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
+  
+  let pageId, pageSlug;
+  try {
+    const existingPages = await t.request({
+      url: `${userVariables.wp_pages_single}?search=Correspondence&status=publish`,
+      method: 'GET',
+      headers: {
+        'Cookie': cookieHeader
+      }
+    });
+    if (existingPages.body && existingPages.body.length > 0) {
+      pageId = existingPages.body[0].id;
+      pageSlug = existingPages.body[0].slug;
+    }
+  } catch (error) {
+    console.log('Error searching for existing pages:', error);
+  }
+  
+  await t.navigateTo(userVariables.admin_settings_page_single);
+  const nonce = await Selector('#_wprestnonce').value;
+
+  if (!pageId) {
+    try {
+      const pageData = {
+        title: 'Correspondence',
+        content: '[bmltwf-correspondence-form]',
+        status: 'publish'
+      };
+      
+      const pageResponse = await t.request({
+        url: userVariables.wp_pages_single,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': cookieHeader,
+          'X-WP-Nonce': nonce,
+        },
+        body: pageData
+      });
+
+      pageId = pageResponse.body?.id;
+      pageSlug = pageResponse.body?.slug || 'correspondence';
+      
+      if (!pageId) {
+        throw new Error(`Page creation failed. Status: ${pageResponse.status}`);
+      }
+    } catch (error) {
+      throw new Error(`Failed to create correspondence page: ${error.message}`);
+    }
+  }
+  
+  await t.request({
+    url: userVariables.admin_correspondence_json_single,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-WP-Nonce': nonce,
+      'Cookie': cookieHeader
+    },
+    body: {
+      page_id: pageId.toString()
+    }
+  });
+  
+  return `${userVariables.siteurl_single}/${pageSlug}`;
 }

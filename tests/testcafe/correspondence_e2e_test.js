@@ -16,7 +16,7 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 import { userVariables } from "../../.testcaferc";
-import { bmltwf_admin, restore_from_backup, myip, set_language_single } from './helpers/helper';
+import { bmltwf_admin, restore_from_backup, myip, set_language_single, setupCorrespondenceFeature } from './helpers/helper';
 import { cs } from './models/correspondence';
 import { Selector } from 'testcafe';
 
@@ -25,52 +25,45 @@ fixture`Correspondence_E2E_Workflow`
         await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001","hidden");
         await set_language_single(t, "en_EN");
 
-        await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+        // Create correspondence page and configure correspondence feature
+        t.ctx.correspondencePageUrl = await setupCorrespondenceFeature(t);
 
+        await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
     });
 
-test('E2E_User_Submits_Correspondence_Admin_Sees_Status_Change', async t => {
-    const testMessage = 'User correspondence message for E2E test';
-    let threadId;
+test('E2E_Admin_Initiates_Then_User_Responds', async t => {
+    const adminMessage = 'Admin initial message';
+    const userResponse = 'User response to admin message';
     
-    // Get thread ID from first submission
+    // Get change ID from first submission and generate thread ID
     await t.click(cs.firstRow);
-    threadId = await cs.correspondenceModal.getAttribute('data-thread-id');
+    const changeId = await Selector('table#dt-submission tbody tr').nth(0).find('td').nth(0).textContent;
+    const threadId = `submission-${changeId}`;
     
-    // Navigate to public correspondence page and submit message
-    await t.navigateTo(`${userVariables.siteurl_single}/correspondence/?thread=${threadId}`);
+    // Step 1: Admin initiates correspondence
     await t
-        .typeText(cs.correspondenceTextarea, testMessage)
-        .click(cs.submitButton)
-        .wait(2000);
-    
-    // Return to admin page and verify status shows correspondence_received
-    await t.navigateTo(userVariables.admin_submissions_page_single);
-    await t.expect(Selector('td').withText('correspondence_received').exists).ok('Status should show correspondence_received after user submission');
-});
-
-test('E2E_Admin_Sends_Correspondence_Public_Page_Shows_Message', async t => {
-    const adminMessage = 'Admin response for E2E test';
-    let threadId;
-    
-    // Admin sends correspondence
-    await t
-        .click(cs.firstRow)
         .click(cs.correspondenceButton)
         .typeText(cs.correspondenceTextarea, adminMessage)
         .click(cs.sendButton)
         .wait(2000);
     
-    // Get thread ID
-    threadId = await cs.correspondenceModal.getAttribute('data-thread-id');
-    
     // Verify status changed to correspondence_sent
     await t.expect(Selector('td').withText('correspondence_sent').exists).ok('Status should show correspondence_sent after admin sends message');
     
-    // Navigate to public page and verify message appears
-    await t.navigateTo(`${userVariables.siteurl_single}/correspondence/?thread=${threadId}`);
-    await t.expect(Selector('.correspondence-message').withText(adminMessage).exists).ok('Admin message should appear on public correspondence page');
+    // Step 2: User responds to correspondence
+    await t.navigateTo(`${t.ctx.correspondencePageUrl}?thread=${threadId}`);
+    await t
+        .click(cs.replyButton)
+        .typeText(cs.replyTextarea, userResponse)
+        .click(cs.submitButton)
+        .wait(2000);
+    
+    // Step 3: Return to admin page and verify status shows correspondence_received
+    await t.navigateTo(userVariables.admin_submissions_page_single);
+    await t.expect(Selector('td').withText('correspondence_received').exists).ok('Status should show correspondence_received after user responds');
 });
+
+
 
 test('E2E_Full_Correspondence_Cycle', async t => {
     const userMessage = 'Initial user inquiry';
@@ -78,14 +71,16 @@ test('E2E_Full_Correspondence_Cycle', async t => {
     const userFollowup = 'User follow-up message';
     let threadId;
     
-    // Get thread ID from first submission
+    // Get change ID from first submission and generate thread ID
     await t.click(cs.firstRow);
-    threadId = await cs.correspondenceModal.getAttribute('data-thread-id');
+    const changeId = await Selector('table#dt-submission tbody tr').nth(0).find('td').nth(0).textContent;
+    threadId = `submission-${changeId}`;
     
     // Step 1: User submits initial correspondence
-    await t.navigateTo(`${userVariables.siteurl_single}/correspondence/?thread=${threadId}`);
+    await t.navigateTo(`${t.ctx.correspondencePageUrl}?thread=${threadId}`);
     await t
-        .typeText(cs.correspondenceTextarea, userMessage)
+        .click(cs.replyButton)
+        .typeText(cs.replyTextarea, userMessage)
         .click(cs.submitButton)
         .wait(2000);
     
@@ -105,14 +100,15 @@ test('E2E_Full_Correspondence_Cycle', async t => {
     await t.expect(Selector('td').withText('correspondence_sent').exists).ok('Status should show correspondence_sent');
     
     // Step 5: Verify both messages appear on public page
-    await t.navigateTo(`${userVariables.siteurl_single}/correspondence/?thread=${threadId}`);
+    await t.navigateTo(`${t.ctx.correspondencePageUrl}?thread=${threadId}`);
     await t
-        .expect(Selector('.correspondence-message').withText(userMessage).exists).ok('User message should appear on public page')
-        .expect(Selector('.correspondence-message').withText(adminResponse).exists).ok('Admin response should appear on public page');
+        .expect(Selector('.bmltwf-correspondence-message').withText(userMessage).exists).ok('User message should appear on public page')
+        .expect(Selector('.bmltwf-correspondence-message').withText(adminResponse).exists).ok('Admin response should appear on public page');
     
     // Step 6: User sends follow-up
     await t
-        .typeText(cs.correspondenceTextarea, userFollowup)
+        .click(cs.replyButton)
+        .typeText(cs.replyTextarea, userFollowup)
         .click(cs.submitButton)
         .wait(2000);
     
@@ -134,37 +130,39 @@ test('E2E_Multiple_Submissions_Independent_Correspondence', async t => {
     const message2 = 'Message for second submission';
     let threadId1, threadId2;
     
-    // Get thread IDs from first two submissions
+    // Get change IDs from first two submissions and generate thread IDs
     await t.click(Selector('table#dt-submission tbody tr').nth(0));
-    threadId1 = await cs.correspondenceModal.getAttribute('data-thread-id');
-    await t.pressKey('esc');
+    const changeId1 = await Selector('table#dt-submission tbody tr').nth(0).find('td').nth(0).textContent;
+    threadId1 = `submission-${changeId1}`;
     
     await t.click(Selector('table#dt-submission tbody tr').nth(1));
-    threadId2 = await cs.correspondenceModal.getAttribute('data-thread-id');
-    await t.pressKey('esc');
+    const changeId2 = await Selector('table#dt-submission tbody tr').nth(1).find('td').nth(0).textContent;
+    threadId2 = `submission-${changeId2}`;
     
     // Send correspondence to first submission
-    await t.navigateTo(`${userVariables.siteurl_single}/correspondence/?thread=${threadId1}`);
+    await t.navigateTo(`${t.ctx.correspondencePageUrl}?thread=${threadId1}`);
     await t
-        .typeText(cs.correspondenceTextarea, message1)
+        .click(cs.replyButton)
+        .typeText(cs.replyTextarea, message1)
         .click(cs.submitButton)
         .wait(2000);
     
     // Send correspondence to second submission
-    await t.navigateTo(`${userVariables.siteurl_single}/correspondence/?thread=${threadId2}`);
+    await t.navigateTo(`${t.ctx.correspondencePageUrl}?thread=${threadId2}`);
     await t
-        .typeText(cs.correspondenceTextarea, message2)
+        .click(cs.replyButton)
+        .typeText(cs.replyTextarea, message2)
         .click(cs.submitButton)
         .wait(2000);
     
     // Verify messages appear only on their respective pages
-    await t.navigateTo(`${userVariables.siteurl_single}/correspondence/?thread=${threadId1}`);
+    await t.navigateTo(`${t.ctx.correspondencePageUrl}?thread=${threadId1}`);
     await t
-        .expect(Selector('.correspondence-message').withText(message1).exists).ok('Message 1 should appear on thread 1')
-        .expect(Selector('.correspondence-message').withText(message2).exists).notOk('Message 2 should not appear on thread 1');
+        .expect(Selector('.bmltwf-correspondence-message').withText(message1).exists).ok('Message 1 should appear on thread 1')
+        .expect(Selector('.bmltwf-correspondence-message').withText(message2).exists).notOk('Message 2 should not appear on thread 1');
     
-    await t.navigateTo(`${userVariables.siteurl_single}/correspondence/?thread=${threadId2}`);
+    await t.navigateTo(`${t.ctx.correspondencePageUrl}?thread=${threadId2}`);
     await t
-        .expect(Selector('.correspondence-message').withText(message2).exists).ok('Message 2 should appear on thread 2')
-        .expect(Selector('.correspondence-message').withText(message1).exists).notOk('Message 1 should not appear on thread 2');
+        .expect(Selector('.bmltwf-correspondence-message').withText(message2).exists).ok('Message 2 should appear on thread 2')
+        .expect(Selector('.bmltwf-correspondence-message').withText(message1).exists).notOk('Message 1 should not appear on thread 2');
 });

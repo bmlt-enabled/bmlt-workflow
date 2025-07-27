@@ -16,11 +16,17 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 import { userVariables } from "../../.testcaferc";
+import { bmltwf_admin, restore_from_backup, myip, set_language_single, setupCorrespondenceFeature } from './helpers/helper';
 import { cs } from './models/correspondence';
 import { Selector } from 'testcafe';
 
 fixture`Correspondence_Public_Access`
-    .page`${userVariables.siteurl_single}`;
+    .page`${userVariables.siteurl_single}`
+    .beforeEach(async t => {
+        await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, myip(), "3001", "hidden");
+        await set_language_single(t, "en_EN");
+        await setupCorrespondenceFeature(t);
+    });
 
 test('Public_Correspondence_Page_Loads', async t => {
     // Navigate to correspondence page with thread parameter

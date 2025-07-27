@@ -514,19 +514,19 @@ jQuery(document).ready(function ($) {
     },
   ];
 
-  // Only add correspondence button if enabled
-  if (bmltwf_correspondence_enabled === true || bmltwf_correspondence_enabled === 'true') {
-    buttons.push({
-      name: 'correspondence',
-      text: __('Correspondence', 'bmlt-workflow'),
-      enabled: false,
-      action(e, dt) {
+  // Always add correspondence button, but disable if not enabled
+  buttons.push({
+    name: 'correspondence',
+    text: __('Correspondence', 'bmlt-workflow'),
+    enabled: false,
+    action(e, dt) {
+      if (bmltwf_correspondence_enabled === true || bmltwf_correspondence_enabled === 'true') {
         const { change_id } = dt.row('.selected').data();
         // Load correspondence data and open dialog
         loadCorrespondence(change_id);
-      },
-    });
-  }
+      }
+    },
+  });
 
   buttons.push(
     {
@@ -743,20 +743,20 @@ jQuery(document).ready(function ($) {
         $('#dt-submission').DataTable().button('reject:name').enable(!actioned);
         $('#dt-submission').DataTable().button('quickedit:name').enable(!cantquickedit);
         
-        // Only handle correspondence button if it exists
+        // Handle correspondence button - enable only if correspondence is enabled
         if (bmltwf_correspondence_enabled === true || bmltwf_correspondence_enabled === 'true') {
           $('#dt-submission').DataTable().button('correspondence:name').enable(true);
           // Check if this submission has correspondence and highlight the button if it does
           checkForCorrespondence(change_id);
+        } else {
+          $('#dt-submission').DataTable().button('correspondence:name').enable(false);
         }
       } else {
         $('#dt-submission').DataTable().button('approve:name').enable(false);
         $('#dt-submission').DataTable().button('reject:name').enable(false);
         $('#dt-submission').DataTable().button('quickedit:name').enable(false);
-        // Only handle correspondence button if it exists
-        if (bmltwf_correspondence_enabled === true || bmltwf_correspondence_enabled === 'true') {
-          $('#dt-submission').DataTable().button('correspondence:name').enable(false);
-        }
+        // Always disable correspondence button when no row is selected
+        $('#dt-submission').DataTable().button('correspondence:name').enable(false);
       }
     });
 

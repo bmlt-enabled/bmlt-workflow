@@ -266,6 +266,13 @@ hr.bmltwf-error-message
   font-weight: bold;
 }
 
+.dt-button.buttons-correspondence:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f0f0f0;
+  color: #999;
+}
+
 #bmltwf_submission_correspondence_dialog {
   max-height: 80vh;
   overflow-y: auto;

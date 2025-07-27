@@ -16,13 +16,17 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 import { userVariables } from "../../.testcaferc";
-import { bmltwf_admin } from './helpers/helper';
+import { bmltwf_admin, restore_from_backup, myip, set_language_single, setupCorrespondenceFeature } from './helpers/helper';
 import { cs } from './models/correspondence';
+import { Selector } from 'testcafe';
 
 fixture`Correspondence_Feature`
     .page`${userVariables.admin_submissions_page_single}`
     .beforeEach(async t => {
-        await bmltwf_admin(t);
+        await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, myip(), "3001", "hidden");
+        await set_language_single(t, "en_EN");
+        await setupCorrespondenceFeature(t);
+        await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
     });
 
 test('Correspondence_Button_Visibility', async t => {
