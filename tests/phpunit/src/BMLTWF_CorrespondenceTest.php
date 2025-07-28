@@ -21,12 +21,28 @@ namespace bmltwf\Tests;
 use bmltwf\BMLTWF_Database;
 use Brain\Monkey\Functions;
 use Mockery;
+use PHPUnit\Framework\TestCase;
+
+require_once('config_phpunit.php');
 
 /**
  * @covers bmltwf\BMLTWF_Database
  */
 class BMLTWF_CorrespondenceTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        \Brain\Monkey\setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        \Brain\Monkey\tearDown();
+        parent::tearDown();
+        Mockery::close();
+    }
+
     /**
      * @covers bmltwf\BMLTWF_Database::createCorrespondenceTable
      */
@@ -54,6 +70,7 @@ class BMLTWF_CorrespondenceTest extends TestCase
         $wpdb->num_rows = 1; // Mock table exists check
         $wpdb->shouldReceive('query')->andReturn(true);
         $wpdb->shouldReceive('get_charset_collate')->andReturn('utf8mb4_unicode_ci');
+        $wpdb->shouldReceive('get_var')->andReturn('table_exists'); // Mock table existence checks
         
         Functions\when('\update_option')->justReturn(true);
         Functions\when('\delete_option')->justReturn(true);

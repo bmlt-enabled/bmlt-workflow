@@ -19,20 +19,43 @@
 namespace bmltwf\Tests\REST\Handlers;
 
 use bmltwf\REST\Handlers\CorrespondenceHandler;
-use bmltwf\Tests\TestCase;
+use PHPUnit\Framework\TestCase;
 use Brain\Monkey\Functions;
 use Mockery;
+
+require_once('config_phpunit.php');
 
 /**
  * @covers bmltwf\REST\Handlers\CorrespondenceHandler
  */
 class CorrespondenceHandlerTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        \Brain\Monkey\setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        \Brain\Monkey\tearDown();
+        parent::tearDown();
+        Mockery::close();
+    }
+
     /**
      * @covers bmltwf\REST\Handlers\CorrespondenceHandler::__construct
      */
     public function test_constructor(): void
     {
+        Functions\when('get_option')->justReturn('test');
+        Functions\when('current_user_can')->justReturn(true);
+        $mockUser = Mockery::mock('WP_User');
+        $mockUser->shouldReceive('get')->andReturn('Test User');
+        $mockUser->display_name = 'Test User';
+        $mockUser->user_login = 'testuser';
+        Functions\when('wp_get_current_user')->justReturn($mockUser);
+        
         $handler = new CorrespondenceHandler();
         $this->assertInstanceOf(CorrespondenceHandler::class, $handler);
     }
@@ -42,13 +65,25 @@ class CorrespondenceHandlerTest extends TestCase
      */
     public function test_get_correspondence_handler_with_valid_change_id(): void
     {
+        Functions\when('get_option')->justReturn('test');
+        Functions\when('current_user_can')->justReturn(true);
+        $mockUser = Mockery::mock('WP_User');
+        $mockUser->shouldReceive('get')->andReturn('Test User');
+        $mockUser->display_name = 'Test User';
+        $mockUser->user_login = 'testuser';
+        Functions\when('wp_get_current_user')->justReturn($mockUser);
+        
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldReceive('prepare')->andReturnUsing(function($query, ...$args) {
+            return vsprintf(str_replace('%s', '\'%s\'', str_replace('%d', '%d', $query)), $args);
+        });
         
         $submission = (object)[
             'change_id' => 123,
             'submitter_email' => 'test@example.com',
-            'submitter_name' => 'Test User'
+            'submitter_name' => 'Test User',
+            'change_made' => 'Test change'
         ];
         
         $correspondence = [
@@ -91,17 +126,25 @@ class CorrespondenceHandlerTest extends TestCase
      */
     public function test_post_correspondence_handler(): void
     {
+        Functions\when('get_option')->justReturn('test');
+        Functions\when('current_user_can')->justReturn(true);
+        Functions\when('__')->returnArg();
+        
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldReceive('prepare')->andReturnUsing(function($query, ...$args) {
+            return vsprintf(str_replace('%s', '\'%s\'', str_replace('%d', '%d', $query)), $args);
+        });
+        $wpdb->shouldReceive('query')->andReturn(true);
         
         $submission = (object)[
             'change_id' => 123,
             'submitter_email' => 'test@example.com',
-            'submitter_name' => 'Test User'
+            'submitter_name' => 'Test User',
+            'change_made' => 'Test change'
         ];
         
         $wpdb->shouldReceive('get_row')
-            ->once()
             ->andReturn($submission);
             
         $wpdb->shouldReceive('insert')
@@ -124,7 +167,15 @@ class CorrespondenceHandlerTest extends TestCase
         
         Functions\when('wp_generate_uuid4')->justReturn('new-thread-id');
         Functions\when('current_time')->justReturn('2023-01-01 12:00:00');
-        Functions\when('wp_get_current_user')->justReturn((object)['display_name' => 'Admin']);
+        Functions\when('get_permalink')->justReturn('http://example.com/correspondence');
+        Functions\when('add_query_arg')->justReturn('http://example.com/correspondence?thread_id=new-thread-id');
+        Functions\when('get_bloginfo')->justReturn('Test Site');
+        Functions\when('wp_mail')->justReturn(true);
+        $mockUser = Mockery::mock('WP_User');
+        $mockUser->shouldReceive('get')->andReturn('Admin');
+        $mockUser->display_name = 'Admin';
+        $mockUser->user_login = 'admin';
+        Functions\when('wp_get_current_user')->justReturn($mockUser);
         
         $handler = new CorrespondenceHandler();
         $result = $handler->post_correspondence_handler($request);
