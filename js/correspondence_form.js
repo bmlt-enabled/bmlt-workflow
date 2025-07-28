@@ -78,11 +78,43 @@ jQuery(document).ready(function ($) {
     $('#bmltwf-correspondence-reply').data('change-id', changeId);
   }
 
+  // Show error message with retry option
+  function showError(message, canRetry = false) {
+    let errorHtml = `<div class="bmltwf-error-message">${message}</div>`;
+    if (canRetry) {
+      errorHtml += '<button id="bmltwf-retry-button" class="bmltwf-retry-btn">Try Again</button>';
+    }
+    $('#bmltwf-correspondence-error').html(errorHtml).show();
+    
+    if (canRetry) {
+      $('#bmltwf-retry-button').on('click', function() {
+        $('#bmltwf-correspondence-error').hide();
+        $('#bmltwf-correspondence-loading').show();
+        loadCorrespondence();
+      });
+    }
+  }
+
+  // Validate thread ID and email parameters
+  function validateParameters() {
+    if (!bmltwf_correspondence_data.thread_id) {
+      showError('Invalid correspondence link. Please check the URL.');
+      return false;
+    }
+    return true;
+  }
+
   // Load correspondence data
   function loadCorrespondence() {
+    if (!validateParameters()) {
+      $('#bmltwf-correspondence-loading').hide();
+      return;
+    }
+
     $.ajax({
       url: bmltwf_correspondence_data.rest_url,
       method: 'GET',
+      timeout: 10000, // 10 second timeout
       beforeSend(xhr) {
         xhr.setRequestHeader('X-WP-Nonce', bmltwf_correspondence_data.nonce);
       },
@@ -91,13 +123,29 @@ jQuery(document).ready(function ($) {
 
         if (response && response.correspondence && response.correspondence.length > 0) {
           displayCorrespondence(response);
+        } else if (response && response.correspondence && response.correspondence.length === 0) {
+          showError('No correspondence found for this submission.');
         } else {
-          $('#bmltwf-correspondence-error').text(bmltwf_correspondence_data.i18n.error).show();
+          showError('Unable to load correspondence. Please try again later.', true);
         }
       },
-      error() {
+      error(xhr, status, error) {
         $('#bmltwf-correspondence-loading').hide();
-        $('#bmltwf-correspondence-error').text(bmltwf_correspondence_data.i18n.error).show();
+        let errorMessage = 'Unable to load correspondence. ';
+        
+        if (status === 'timeout') {
+          errorMessage += 'The request timed out. Please check your connection and try again.';
+        } else if (xhr.status === 404) {
+          errorMessage += 'Correspondence not found. Please check the URL.';
+        } else if (xhr.status === 403) {
+          errorMessage += 'Access denied. You may not have permission to view this correspondence.';
+        } else if (xhr.status >= 500) {
+          errorMessage += 'Server error. Please try again later.';
+        } else {
+          errorMessage += 'Please check your connection and try again.';
+        }
+        
+        showError(errorMessage, status !== 'timeout' && xhr.status !== 404);
       },
     });
   }
@@ -119,14 +167,27 @@ jQuery(document).ready(function ($) {
   $('#bmltwf-send-reply').on('click', function () {
     const message = $('#bmltwf-reply-text').val().trim();
     if (!message) {
+      showReplyError('Please enter a message before sending.');
+      return;
+    }
+
+    if (message.length > 2000) {
+      showReplyError('Message is too long. Please keep it under 2000 characters.');
       return;
     }
 
     const changeId = $('#bmltwf-correspondence-reply').data('change-id');
+    const $sendButton = $(this);
+    const originalText = $sendButton.text();
+    
+    // Disable button and show loading state
+    $sendButton.prop('disabled', true).text('Sending...');
+    $('.bmltwf-reply-error').remove();
 
     $.ajax({
       url: `${bmltwf_correspondence_data.submission_rest_url + changeId}/correspondence`,
       method: 'POST',
+      timeout: 15000, // 15 second timeout
       beforeSend(xhr) {
         xhr.setRequestHeader('X-WP-Nonce', bmltwf_correspondence_data.nonce);
       },
@@ -155,12 +216,53 @@ jQuery(document).ready(function ($) {
           loadCorrespondence();
         }, 2000);
       },
-      error() {
-        alert(bmltwf_correspondence_data.i18n.reply_error);
+      error(xhr, status, error) {
+        let errorMessage = 'Failed to send reply. ';
+        
+        if (status === 'timeout') {
+          errorMessage += 'The request timed out. Please try again.';
+        } else if (xhr.status === 403) {
+          errorMessage += 'Access denied. You may not have permission to reply.';
+        } else if (xhr.status >= 500) {
+          errorMessage += 'Server error. Please try again later.';
+        } else {
+          errorMessage += 'Please check your connection and try again.';
+        }
+        
+        showReplyError(errorMessage);
       },
+      complete() {
+        // Re-enable button
+        $sendButton.prop('disabled', false).text(originalText);
+      }
     });
   });
+  
+  // Show reply-specific error
+  function showReplyError(message) {
+    $('.bmltwf-reply-error').remove();
+    const errorHtml = `<div class="bmltwf-reply-error">${message}</div>`;
+    $(errorHtml).insertBefore('#bmltwf-reply-form').fadeIn();
+  }
 
-  // Load correspondence on page load
-  loadCorrespondence();
+  // Load correspondence on page load with connection check
+  if (navigator.onLine === false) {
+    $('#bmltwf-correspondence-loading').hide();
+    showError('No internet connection. Please check your connection and try again.', true);
+  } else {
+    loadCorrespondence();
+  }
+  
+  // Handle online/offline events
+  $(window).on('online', function() {
+    if ($('#bmltwf-correspondence-error').is(':visible')) {
+      $('#bmltwf-correspondence-error').hide();
+      $('#bmltwf-correspondence-loading').show();
+      loadCorrespondence();
+    }
+  });
+  
+  $(window).on('offline', function() {
+    showError('Connection lost. Please check your internet connection.', true);
+  });
 });

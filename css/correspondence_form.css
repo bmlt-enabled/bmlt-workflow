@@ -103,3 +103,41 @@
     margin-bottom: 20px;
     display: none;
 }
+
+.bmltwf-error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    margin: 10px 0;
+}
+
+.bmltwf-reply-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 8px;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+.bmltwf-retry-btn {
+    background-color: #007cba;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.bmltwf-retry-btn:hover {
+    background-color: #005a87;
+}
+
+.bmltwf-retry-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}

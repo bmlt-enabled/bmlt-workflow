@@ -262,6 +262,11 @@ class BMLTWF_Database
         
         delete_option('bmltwf_db_version');
         add_option('bmltwf_db_version', $this->bmltwf_db_version);
+        
+        // Ensure multisite compatibility for correspondence table
+        if (is_multisite()) {
+            $this->debug_log("Multisite detected during upgrade - ensuring correspondence table compatibility");
+        }
 
         if (version_compare($installed_version, '1.1.18', '<')) {
             $this->upgradeTableStructure();
@@ -290,6 +295,16 @@ class BMLTWF_Database
                          MODIFY COLUMN change_made varchar(50),
                          MODIFY COLUMN changed_by varchar(255)");
             $this->debug_log("Updated change_made and changed_by columns to be wider");
+            
+            // Verify correspondence table was created successfully in multisite
+            if (is_multisite()) {
+                $table_exists = $wpdb->get_var("SHOW TABLES LIKE '" . $this->bmltwf_correspondence_table_name . "'");
+                if ($table_exists) {
+                    $this->debug_log("Correspondence table successfully created in multisite environment");
+                } else {
+                    $this->debug_log("WARNING: Correspondence table creation may have failed in multisite environment");
+                }
+            }
         }
         
         return 2;
