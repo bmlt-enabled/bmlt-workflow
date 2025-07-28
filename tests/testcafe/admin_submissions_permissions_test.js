@@ -80,7 +80,7 @@ test("Cant_Delete_Submissions_As_Trusted_Servant", async (t) => {
   await click_table_row_column(as.dt_submission, row, 0);
 
   // delete
-  var g = as.dt_submission_wrapper.find("button").nth(3);
+  var g = as.dt_submission_wrapper.find("button").nth(4);
   await t.expect(g.hasAttribute("disabled")).ok();
   
 });
@@ -113,7 +113,7 @@ test("Can_Delete_Submissions_As_Admin", async (t) => {
   await click_table_row_column(as.dt_submission, row, 0);
 
   // delete
-  var g = as.dt_submission_wrapper.find("button").nth(3);
+  var g = as.dt_submission_wrapper.find("button").nth(4);
   // await t.debug();
   await t.expect(g.hasAttribute("disabled")).notOk();
   
@@ -146,7 +146,7 @@ test("Can_Delete_Submissions_As_Trusted_Servant", async (t) => {
   await click_table_row_column(as.dt_submission, row, 0);
 
   // delete
-  var g = as.dt_submission_wrapper.find("button").nth(3);
+  var g = as.dt_submission_wrapper.find("button").nth(4);
   await t.expect(g.hasAttribute("disabled")).notOk();
 
 });

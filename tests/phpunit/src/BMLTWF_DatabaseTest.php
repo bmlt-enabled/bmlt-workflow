@@ -66,6 +66,8 @@ Line: $errorLine
         }
 
         Brain\Monkey\setUp();
+        
+        Functions\when('\is_multisite')->justReturn(false);
 
     }
 

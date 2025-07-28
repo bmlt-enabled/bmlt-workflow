@@ -209,7 +209,7 @@ test("Submission_Buttons_Active_correctly", async (t) => {
   g = as.dt_submission_wrapper.find("button").nth(1);
   await t.expect(g.hasAttribute("disabled")).notOk();
   // quickedit
-  g = as.dt_submission_wrapper.find("button").nth(2);
+  g = as.dt_submission_wrapper.find("button").nth(3);
   await t.expect(g.hasAttribute("disabled")).notOk();
 
   // change meeting = row 1
@@ -222,7 +222,7 @@ test("Submission_Buttons_Active_correctly", async (t) => {
   g = as.dt_submission_wrapper.find("button").nth(1);
   await t.expect(g.hasAttribute("disabled")).notOk();
   // quickedit
-  g = as.dt_submission_wrapper.find("button").nth(2);
+  g = as.dt_submission_wrapper.find("button").nth(3);
   await t.expect(g.hasAttribute("disabled")).notOk();
 
   // close meeting = row 0
@@ -267,7 +267,7 @@ test("Submission_Buttons_Active_correctly", async (t) => {
   g = as.dt_submission_wrapper.find("button").nth(1);
   await t.expect(g.hasAttribute("disabled")).ok();
   // quickedit
-  g = as.dt_submission_wrapper.find("button").nth(2);
+  g = as.dt_submission_wrapper.find("button").nth(3);
   await t.expect(g.hasAttribute("disabled")).ok();
 });
 
@@ -279,7 +279,7 @@ await t.useRole(bmltwf_admin);
     var row = 2;
     await click_table_row_column(as.dt_submission,row,0);
     // quickedit
-    await click_dt_button_by_index(as.dt_submission_wrapper,2);
+    await click_dt_button_by_index(as.dt_submission_wrapper,3);
 
     await t
     .expect(as.quickedit_dialog_parent.visible).eql(true)
@@ -350,7 +350,7 @@ test('Quickedit_Change_Meeting', async t => {
     var row = 1;
     await click_table_row_column(as.dt_submission,row,0);
     // quickedit
-    await click_dt_button_by_index(as.dt_submission_wrapper,2);
+    await click_dt_button_by_index(as.dt_submission_wrapper,3);
 
     await t
     .expect(as.quickedit_dialog_parent.visible).eql(true)
@@ -409,7 +409,7 @@ test('Quickedit_States_Dropdowns', async t => {
   var row = 1;
   await click_table_row_column(as.dt_submission,row,0);
   // quickedit
-  await click_dt_button_by_index(as.dt_submission_wrapper,2);
+  await click_dt_button_by_index(as.dt_submission_wrapper,3);
   await t
   .expect(as.quickedit_dialog_parent.visible).eql(true)
   .expect(as.quickedit_location_sub_province.hasClass("bmltwf-changed")).notOk()
@@ -436,7 +436,7 @@ test('Quickedit_Saves_No_Changes_Correctly', async t => {
     var row = 2;
     await click_table_row_column(as.dt_submission,row,0);
     // quickedit
-    await click_dt_button_by_index(as.dt_submission_wrapper,2);
+    await click_dt_button_by_index(as.dt_submission_wrapper,3);
 
     await t
     .expect(as.quickedit_dialog_parent.visible).eql(true)
@@ -461,7 +461,7 @@ test('Quickedit_Hides_Virtual_Meeting_Publish', async t => {
   var row = 1;
   await click_table_row_column(as.dt_submission,row,0);
   // quickedit
-  await click_dt_button_by_index(as.dt_submission_wrapper,2);
+  await click_dt_button_by_index(as.dt_submission_wrapper,3);
 
   await t
   .expect(as.quickedit_dialog_parent.visible).eql(true)
@@ -486,7 +486,7 @@ test('Quickedit_Saves_Changes_Correctly', async t => {
     var row = 2;
     await click_table_row_column(as.dt_submission,row,0);
     // quickedit
-    await click_dt_button_by_index(as.dt_submission_wrapper,2);
+    await click_dt_button_by_index(as.dt_submission_wrapper,3);
 
     await t
     .expect(as.quickedit_dialog_parent.visible).eql(true)
@@ -511,7 +511,7 @@ test("Approve_New_Meeting_Geocoding", async (t) => {
   await click_table_row_column(as.dt_submission, row, 0);
 
   // quickedit
-  await click_dt_button_by_index(as.dt_submission_wrapper,2);
+  await click_dt_button_by_index(as.dt_submission_wrapper,3);
   // geocode div should be visible
   await t.expect(as.optional_auto_geocode_enabled.visible).eql(true)
 
@@ -529,7 +529,7 @@ test('Quickedit_JSON_Format_Validation', async t => {
   // Select a meeting and open quickedit
   const row = 2; // new meeting
   await click_table_row_column(as.dt_submission, row, 0);
-  await click_dt_button_by_index(as.dt_submission_wrapper, 2);
+  await click_dt_button_by_index(as.dt_submission_wrapper, 3);
   
   // Make some changes to ensure fields are marked as changed
   await t

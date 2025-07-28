@@ -45,7 +45,7 @@ fixture`geocoding_tests_fixture`
 
   });
 
-test("Bmlt3x_Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) => {
+test("Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) => {
   var meeting = {
     location_text: "the church",
     location_street: "105 avoca street",
@@ -173,7 +173,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) 
 
 });
 
-test("Bmlt3x_Submit_Change_Meeting_And_Approve_With_Geocoding_Disabled", async (t) => {
+test("Submit_Change_Meeting_And_Approve_With_Geocoding_Disabled", async (t) => {
   //console.log("hi1");
   await t.navigateTo(userVariables.formpage);
 
@@ -240,7 +240,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_With_Geocoding_Disabled", async (
 
 });
 
-test("Bmlt3x_Approve_New_Meeting_No_Geocoding", async (t) => {
+test("Approve_New_Meeting_No_Geocoding", async (t) => {
 
   // await t.eval(() => location.reload(true));
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);

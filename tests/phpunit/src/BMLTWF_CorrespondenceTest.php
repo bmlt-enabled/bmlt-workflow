@@ -75,6 +75,7 @@ class BMLTWF_CorrespondenceTest extends TestCase
         Functions\when('\update_option')->justReturn(true);
         Functions\when('\delete_option')->justReturn(true);
         Functions\when('\add_option')->justReturn(true);
+        Functions\when('\is_multisite')->justReturn(false);
         Functions\when('\get_option')->alias(function($option) {
             return $option === 'bmltwf_db_version' ? '1.1.24' : false;
         });

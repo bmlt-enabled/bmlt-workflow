@@ -837,6 +837,14 @@ if (!class_exists('bmltwf_plugin')) {
             );
 
             add_settings_field(
+                'bmltwf_correspondence_page',
+                __('Correspondence Page', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_correspondence_page_html'),
+                'bmltwf-settings',
+                'bmltwf-settings-section-id'
+            );
+
+            add_settings_field(
                 'bmltwf_geocoding',
                 __('Auto Geocoding Root Server Settings', 'bmlt-workflow'),
                 array(&$this, 'bmltwf_auto_geocoding_enabled_html'),
@@ -917,13 +925,6 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf-settings-section-id'
             );
             
-            add_settings_field(
-                'bmltwf_correspondence_page',
-                __('Correspondence Page', 'bmlt-workflow'),
-                array(&$this, 'bmltwf_correspondence_page_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
-            );
         }
 
         public function bmltwf_fso_feature_sanitize_callback($input)
