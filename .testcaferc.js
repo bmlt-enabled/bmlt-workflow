@@ -39,6 +39,7 @@ const password_multinetwork = 'admin';
 module.exports = {
   browsers: "chrome",
   userVariables: {
+    siteurl_single: siteurl_single,
     formpage: siteurl_single + '/index.php' + formpage,
     admin_logon_page_single: siteurl_single + admin_logon_page,
     admin_submissions_page_single: siteurl_single + admin_submissions_page,

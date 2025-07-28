@@ -152,6 +152,14 @@ class SubmissionsHandler
             } else {
                 $result[$key]['bmlt_meeting_data'] = $meeting_data;
             }
+            
+            // Get correspondence thread_id if it exists
+            $thread_sql = $wpdb->prepare(
+                'SELECT thread_id FROM ' . $this->BMLTWF_Database->bmltwf_correspondence_table_name . ' WHERE change_id = %d LIMIT 1',
+                $result[$key]['change_id']
+            );
+            $thread_id = $wpdb->get_var($thread_sql);
+            $result[$key]['thread_id'] = $thread_id;
         }
         return array(
             'data' => $result,

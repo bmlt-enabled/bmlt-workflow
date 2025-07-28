@@ -319,28 +319,59 @@ export async function setupCorrespondenceFeature(t) {
   const cookies = await t.getCookies();
   const cookieHeader = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
   
-  let pageId, pageSlug;
+  await t.navigateTo(userVariables.admin_settings_page_single);
+  const nonce = await Selector('#_wprestnonce').value;
+  
+  let pageId;
   try {
-    const existingPages = await t.request({
-      url: `${userVariables.wp_pages_single}?search=Correspondence&status=publish`,
+    // Search for existing published pages with correspondence shortcode
+    const allPages = await t.request({
+      url: `${userVariables.wp_pages_single}&status=publish&per_page=100`,
       method: 'GET',
       headers: {
         'Cookie': cookieHeader
       }
     });
-    if (existingPages.body && existingPages.body.length > 0) {
-      pageId = existingPages.body[0].id;
-      pageSlug = existingPages.body[0].slug;
+    let existingPage = null;
+    console.log('allPages.body type:', typeof allPages.body);
+    console.log('allPages.body content:', allPages.body);
+    
+    // Handle both array and object responses
+    let pages = [];
+    if (Array.isArray(allPages.body)) {
+      pages = allPages.body;
+    } else if (allPages.body && typeof allPages.body === 'object') {
+      // Check if it's an error response
+      if (allPages.body.code && allPages.body.message) {
+        console.log('API Error:', allPages.body.message);
+        pages = []; // No pages found due to error
+      } else if (allPages.body.data && Array.isArray(allPages.body.data)) {
+        pages = allPages.body.data;
+      } else {
+        // Convert object values to array if they look like page objects
+        pages = Object.values(allPages.body).filter(item => 
+          item && typeof item === 'object' && item.id && item.content
+        );
+      }
     }
-  } catch (error) {
-    console.log('Error searching for existing pages:', error);
-  }
-  
-  await t.navigateTo(userVariables.admin_settings_page_single);
-  const nonce = await Selector('#_wprestnonce').value;
-
-  if (!pageId) {
-    try {
+    
+    console.log('Found pages:', pages.length);
+    pages.forEach((page, index) => {
+      console.log(`Page ${index}: ID=${page.id}, Title=${page.title?.rendered}, Content=${page.content?.rendered}`);
+    });
+    
+    existingPage = pages.find(page => {
+      const hasCorrespondenceTitle = page.title?.rendered === 'Correspondence';
+      const hasShortcodeInRendered = page.content?.rendered?.includes('[bmltwf-correspondence-form]');
+      console.log(`Page ${page.id}: title=${page.title?.rendered}, hasCorrespondenceTitle=${hasCorrespondenceTitle}, hasShortcode=${hasShortcodeInRendered}`);
+      return hasCorrespondenceTitle || hasShortcodeInRendered;
+    });
+    
+    if (existingPage) {
+      pageId = existingPage.id;
+      console.log('Using existing correspondence page:', pageId);
+    } else {
+      // Create new page only if none exists
       const pageData = {
         title: 'Correspondence',
         content: '[bmltwf-correspondence-form]',
@@ -359,16 +390,17 @@ export async function setupCorrespondenceFeature(t) {
       });
 
       pageId = pageResponse.body?.id;
-      pageSlug = pageResponse.body?.slug || 'correspondence';
+      console.log('Created new correspondence page:', pageId);
       
       if (!pageId) {
         throw new Error(`Page creation failed. Status: ${pageResponse.status}`);
       }
-    } catch (error) {
-      throw new Error(`Failed to create correspondence page: ${error.message}`);
     }
+  } catch (error) {
+    throw new Error(`Failed to setup correspondence page: ${error.message}`);
   }
   
+  // Configure the correspondence feature with the page ID
   await t.request({
     url: userVariables.admin_correspondence_json_single,
     method: 'POST',
@@ -382,5 +414,5 @@ export async function setupCorrespondenceFeature(t) {
     }
   });
   
-  return `${userVariables.siteurl_single}/${pageSlug}`;
+  return `${userVariables.siteurl_single}/?page_id=${pageId}`;
 }
