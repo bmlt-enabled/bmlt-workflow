@@ -685,9 +685,29 @@ class BMLTWF_Database
         $results = ['success' => true, 'errors' => []];
         
         try {
+            // Check if tables already exist with new structure
+            $has_new_structure = $wpdb->get_var("SHOW COLUMNS FROM " . $this->bmltwf_service_bodies_table_name . " LIKE 'serviceBodyId'");
+            
+            if ($has_new_structure && version_compare($test_version, '1.1.18', '<')) {
+                // Tables already have new structure, but we're testing old version upgrade
+                // Recreate tables with old structure for proper testing
+                $this->createTables($wpdb->get_charset_collate(), $test_version);
+                
+                // Insert a test service body with old structure
+                $wpdb->insert(
+                    $this->bmltwf_service_bodies_table_name,
+                    [
+                        'service_body_bigint' => 1,
+                        'service_body_name' => 'Test Service Body',
+                        'show_on_form' => 1
+                    ]
+                );
+            }
+            
             // Insert test data with old venue_type field if testing venue type upgrade
             if (version_compare($test_version, '1.1.27', '<')) {
                 $test_data = json_encode(['venue_type' => 2, 'original_venue_type' => 1, 'name' => 'Test Meeting']);
+                $column_name = version_compare($test_version, '1.1.18', '<') ? 'service_body_bigint' : 'serviceBodyId';
                 $wpdb->insert(
                     $this->bmltwf_submissions_table_name,
                     [
@@ -696,7 +716,7 @@ class BMLTWF_Database
                         'submission_type' => 'reason_new',
                         'submitter_email' => 'test@example.com',
                         'changes_requested' => $test_data,
-                        'serviceBodyId' => 1
+                        $column_name => 1
                     ]
                 );
                 $test_change_id = $wpdb->insert_id;

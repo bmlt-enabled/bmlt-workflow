@@ -72,6 +72,10 @@ test('E2E_Admin_Initiates_Then_User_Responds', async t => {
     const separator = t.ctx.correspondencePageUrl.includes('?') ? '&' : '?';
     const fullUrl = `${t.ctx.correspondencePageUrl}${separator}thread=${threadId}`;
     await t.navigateTo(fullUrl);
+    
+    // Wait for correspondence to load and reply section to become visible
+    await t.expect(Selector('#bmltwf-correspondence-reply').visible).ok('Reply section should be visible', {timeout: 10000});
+    
     await t
         .click(cs.replyButton)
         .typeText(cs.replyTextarea, userResponse)
@@ -86,13 +90,22 @@ test('E2E_Admin_Initiates_Then_User_Responds', async t => {
 
 
 test('E2E_Full_Correspondence_Cycle', async t => {
-    const userMessage = 'Initial user inquiry';
-    const adminResponse = 'Admin response to inquiry';
+    const adminInitialMessage = 'Admin initial message';
+    const userMessage = 'User response to admin';
+    const adminResponse = 'Admin response to user';
     const userFollowup = 'User follow-up message';
     let threadId;
     
-    // Get submission data including thread_id from API
+    // Step 1: Admin initiates correspondence first to create thread_id
     await t.click(cs.firstRow);
+    await t
+        .click(cs.correspondenceButton)
+        .typeText(cs.correspondenceTextarea, adminInitialMessage)
+        .click(cs.sendButton)
+        .click(Selector('.ui-dialog-buttonset button').withText('Close'))
+        .wait(2000);
+    
+    // Get thread_id from API after correspondence is created
     const cookies = await t.getCookies();
     const cookieHeader = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
     const nonce = await Selector('#_wprestnonce').value;
@@ -110,23 +123,31 @@ test('E2E_Full_Correspondence_Cycle', async t => {
     const changeId = firstSubmission.change_id;
     threadId = firstSubmission.thread_id;
     
-    // Step 1: User submits initial correspondence
+    if (!threadId) {
+        throw new Error('Thread ID not found in API response after creating correspondence');
+    }
+    
+    // Step 2: User responds to admin's initial message
     if (!t.ctx.correspondencePageUrl || !changeId) {
         throw new Error(`Missing required values: correspondencePageUrl=${t.ctx.correspondencePageUrl}, changeId=${changeId}`);
     }
     const separator = t.ctx.correspondencePageUrl.includes('?') ? '&' : '?';
     await t.navigateTo(`${t.ctx.correspondencePageUrl}${separator}thread=${threadId}`);
+    
+    // Wait for correspondence to load and reply section to become visible
+    await t.expect(Selector('#bmltwf-correspondence-reply').visible).ok('Reply section should be visible', {timeout: 10000});
+    
     await t
         .click(cs.replyButton)
         .typeText(cs.replyTextarea, userMessage)
         .click(cs.submitButton)
         .wait(2000);
     
-    // Step 2: Verify admin sees correspondence_received status
+    // Step 3: Verify admin sees correspondence_received status
     await t.navigateTo(userVariables.admin_submissions_page_single);
     await t.expect(Selector('table#dt-submission').child("tbody").child(0).child(8).innerText).eql("Correspondence Received", {timeout: 10000});
     
-    // Step 3: Admin responds to correspondence
+    // Step 4: Admin responds to user's message
     await t
         .click(cs.firstRow)
         .click(cs.correspondenceButton)
@@ -135,34 +156,39 @@ test('E2E_Full_Correspondence_Cycle', async t => {
         .click(Selector('.ui-dialog-buttonset button').withText('Close'))
         .wait(2000);
     
-    // Step 4: Verify status changed to correspondence_sent
+    // Step 5: Verify status changed to correspondence_sent
     await t.expect(Selector('table#dt-submission').child("tbody").child(0).child(8).innerText).eql("Correspondence Sent", {timeout: 10000});
     
-    // Step 5: Verify both messages appear on public page
+    // Step 6: Verify all messages appear on public page
     if (!t.ctx.correspondencePageUrl || !changeId) {
         throw new Error(`Missing required values: correspondencePageUrl=${t.ctx.correspondencePageUrl}, changeId=${changeId}`);
     }
     const separator2 = t.ctx.correspondencePageUrl.includes('?') ? '&' : '?';
     await t.navigateTo(`${t.ctx.correspondencePageUrl}${separator2}thread=${threadId}`);
     await t
+        .expect(Selector('.bmltwf-correspondence-message').withText(adminInitialMessage).exists).ok('Admin initial message should appear on public page')
         .expect(Selector('.bmltwf-correspondence-message').withText(userMessage).exists).ok('User message should appear on public page')
         .expect(Selector('.bmltwf-correspondence-message').withText(adminResponse).exists).ok('Admin response should appear on public page');
     
-    // Step 6: User sends follow-up
+    // Step 7: User sends follow-up
+    // Wait for correspondence to load and reply section to become visible
+    await t.expect(Selector('#bmltwf-correspondence-reply').visible).ok('Reply section should be visible', {timeout: 10000});
+    
     await t
         .click(cs.replyButton)
         .typeText(cs.replyTextarea, userFollowup)
         .click(cs.submitButton)
         .wait(2000);
     
-    // Step 7: Verify admin sees correspondence_received status again
+    // Step 8: Verify admin sees correspondence_received status again
     await t.navigateTo(userVariables.admin_submissions_page_single);
     await t.expect(Selector('table#dt-submission').child("tbody").child(0).child(8).innerText).eql("Correspondence Received", {timeout: 10000});
     
-    // Step 8: Verify all three messages appear in admin correspondence history
+    // Step 9: Verify all four messages appear in admin correspondence history
     await t
         .click(cs.firstRow)
         .click(cs.correspondenceButton)
+        .expect(cs.correspondenceHistory.textContent).contains(adminInitialMessage)
         .expect(cs.correspondenceHistory.textContent).contains(userMessage)
         .expect(cs.correspondenceHistory.textContent).contains(adminResponse)
         .expect(cs.correspondenceHistory.textContent).contains(userFollowup);
@@ -219,6 +245,10 @@ test('E2E_Multiple_Submissions_Independent_Correspondence', async t => {
     // Step 4: User responds to first submission
     const separator1 = t.ctx.correspondencePageUrl.includes('?') ? '&' : '?';
     await t.navigateTo(`${t.ctx.correspondencePageUrl}${separator1}thread=${threadId1}`);
+    
+    // Wait for correspondence to load and reply section to become visible
+    await t.expect(Selector('#bmltwf-correspondence-reply').visible).ok('Reply section should be visible', {timeout: 10000});
+    
     await t
         .click(cs.replyButton)
         .typeText(cs.replyTextarea, userResponse1)
@@ -228,6 +258,10 @@ test('E2E_Multiple_Submissions_Independent_Correspondence', async t => {
     // Step 5: User responds to second submission
     const separator2 = t.ctx.correspondencePageUrl.includes('?') ? '&' : '?';
     await t.navigateTo(`${t.ctx.correspondencePageUrl}${separator2}thread=${threadId2}`);
+    
+    // Wait for correspondence to load and reply section to become visible
+    await t.expect(Selector('#bmltwf-correspondence-reply').visible).ok('Reply section should be visible', {timeout: 10000});
+    
     await t
         .click(cs.replyButton)
         .typeText(cs.replyTextarea, userResponse2)

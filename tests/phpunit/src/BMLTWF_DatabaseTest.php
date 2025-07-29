@@ -328,6 +328,11 @@ Line: $errorLine
         $wpdb->shouldReceive('get_row')
             ->with("SHOW COLUMNS FROM bmltwf_debug_log LIKE 'log_time'")
             ->andReturn((object)['Type' => 'datetime']); // Without microsecond precision
+            
+        // Mock column check for serviceBodyId in service bodies table
+        $wpdb->shouldReceive('get_var')
+            ->with("SHOW COLUMNS FROM bmltwf_service_bodies LIKE 'serviceBodyId'")
+            ->andReturn('serviceBodyId'); // Column exists
         
         Functions\when('\update_option')->justReturn(true);
         Functions\when('\delete_option')->justReturn(true);

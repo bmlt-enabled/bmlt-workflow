@@ -235,7 +235,7 @@ test("Submission_Buttons_Active_correctly", async (t) => {
   g = as.dt_submission_wrapper.find("button").nth(1);
   await t.expect(g.hasAttribute("disabled")).notOk();
   // quickedit
-  g = as.dt_submission_wrapper.find("button").nth(2);
+  g = as.dt_submission_wrapper.find("button").nth(3);
   await t.expect(g.hasAttribute("disabled")).ok();
 
   // reject a request then we check the buttons again
@@ -424,9 +424,12 @@ test('Quickedit_States_Dropdowns', async t => {
 
 });
 
-const submissionslogger = RequestLogger(/bmltwf\/v1\/submissions\/93/,
+const submissionslogger = RequestLogger(/bmltwf\/v1\/submissions\/93$/,
 {
   logRequestBody: true,
+  logRequestHeaders: true,
+  stringifyRequestBody: true,
+  method: 'PATCH'
 }
 );
 
@@ -442,14 +445,13 @@ test('Quickedit_Saves_No_Changes_Correctly', async t => {
     .expect(as.quickedit_dialog_parent.visible).eql(true)
     await t.click(as.quickedit_dialog_parent.find("button.ui-corner-all").nth(2))
     .wait(1000);
-
     var f = JSON.parse(submissionslogger.requests[0].request.body.toString());
     // console.log(f.changes_requested.name);
     await t.expect(f.changes_requested.name).eql("my test meeting");
 
 }).requestHooks(submissionslogger);
 
-const submissions2logger = RequestLogger(/bmltwf\/v1\/submissions\/94/,
+const submissions2logger = RequestLogger(/bmltwf\/v1\/submissions\/94$/,
 {
   logRequestBody: true,
 }
@@ -474,7 +476,7 @@ test('Quickedit_Hides_Virtual_Meeting_Publish', async t => {
 
 }).requestHooks(submissions2logger);
 
-const submissions1logger = RequestLogger(/bmltwf\/v1\/submissions\/93/,
+const submissions1logger = RequestLogger(/bmltwf\/v1\/submissions\/93$/,
 {
 logRequestBody: true,
 }
@@ -519,7 +521,7 @@ test("Approve_New_Meeting_Geocoding", async (t) => {
   await t.expect((as.quickedit_dialog_parent).find("button.ui-corner-all").nth(1).hasAttribute("disabled")).notOk();
 });
 
-const formatIdsLogger = RequestLogger(/bmltwf\/v1\/submissions\/93/,
+const formatIdsLogger = RequestLogger(/bmltwf\/v1\/submissions\/93$/,
 {
   logRequestBody: true,
 }

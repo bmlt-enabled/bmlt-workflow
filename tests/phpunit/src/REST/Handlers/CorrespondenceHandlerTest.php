@@ -170,7 +170,7 @@ class CorrespondenceHandlerTest extends TestCase
         Functions\when('get_permalink')->justReturn('http://example.com/correspondence');
         Functions\when('add_query_arg')->justReturn('http://example.com/correspondence?thread_id=new-thread-id');
         Functions\when('get_bloginfo')->justReturn('Test Site');
-        Functions\when('wp_mail')->justReturn(true);
+        Functions\expect('wp_mail')->once()->andReturn(true);
         $mockUser = Mockery::mock('WP_User');
         $mockUser->shouldReceive('get')->andReturn('Admin');
         $mockUser->display_name = 'Admin';
@@ -185,5 +185,7 @@ class CorrespondenceHandlerTest extends TestCase
         $this->assertArrayHasKey('thread_id', $result);
         $this->assertTrue($result['success']);
         $this->assertEquals('new-thread-id', $result['thread_id']);
+        
+        // Verify wp_mail was called (expectation is automatically verified by Brain\Monkey)
     }
 }
