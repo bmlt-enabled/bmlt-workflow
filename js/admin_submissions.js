@@ -154,28 +154,19 @@ jQuery(document).ready(function ($) {
       });
   }
 
-  function checkForCorrespondence(changeId) {
+  function checkForCorrespondence(rowData) {
     // Only check if correspondence is enabled
     if (bmltwf_correspondence_enabled !== true && bmltwf_correspondence_enabled !== 'true') {
       return;
     }
-    
-    jQuery.ajax({
-      url: `${bmltwf_admin_submissions_rest_url + changeId}/correspondence`,
-      type: 'GET',
-      dataType: 'json',
-      beforeSend(xhr) {
-        xhr.setRequestHeader('X-WP-Nonce', jQuery('#_wprestnonce').val());
-      },
-    })
-      .done(function (response) {
-        if (response.correspondence && response.correspondence.length > 0) {
-        // Highlight the correspondence button
-          jQuery('.dt-button.buttons-correspondence').addClass('has-correspondence');
-        } else {
-          jQuery('.dt-button.buttons-correspondence').removeClass('has-correspondence');
-        }
-      });
+
+    // Check if thread_id exists in the datatable data
+    if (rowData && rowData.thread_id) {
+      // Highlight the correspondence button
+      jQuery('.dt-button.buttons-correspondence').addClass('has-correspondence');
+    } else {
+      jQuery('.dt-button.buttons-correspondence').removeClass('has-correspondence');
+    }
   }
 
   let bmltwf_changedata = {};
@@ -690,7 +681,7 @@ jQuery(document).ready(function ($) {
               return __('Correspondence Received', 'bmlt-workflow');
             default:
               // Log the unexpected value for debugging
-              console.log('Unexpected status value:', data);
+              // console.log('Unexpected status value:', data);
               return data;
           }
         },
@@ -734,7 +725,6 @@ jQuery(document).ready(function ($) {
       if ($('#dt-submission').DataTable().row({ selected: true }).count()) {
         const { change_made } = $('#dt-submission').DataTable().row({ selected: true }).data();
         const { submission_type } = $('#dt-submission').DataTable().row({ selected: true }).data();
-        const { change_id } = $('#dt-submission').DataTable().row({ selected: true }).data();
         // Only consider approved/rejected as actioned for approval/rejection buttons
         // Correspondence status should not prevent approval/rejection
         actioned = change_made === 'approved' || change_made === 'rejected';
@@ -742,12 +732,13 @@ jQuery(document).ready(function ($) {
         $('#dt-submission').DataTable().button('approve:name').enable(!actioned);
         $('#dt-submission').DataTable().button('reject:name').enable(!actioned);
         $('#dt-submission').DataTable().button('quickedit:name').enable(!cantquickedit);
-        
+
         // Handle correspondence button - enable only if correspondence is enabled
         if (bmltwf_correspondence_enabled === true || bmltwf_correspondence_enabled === 'true') {
           $('#dt-submission').DataTable().button('correspondence:name').enable(true);
           // Check if this submission has correspondence and highlight the button if it does
-          checkForCorrespondence(change_id);
+          const rowData = $('#dt-submission').DataTable().row({ selected: true }).data();
+          checkForCorrespondence(rowData);
         } else {
           $('#dt-submission').DataTable().button('correspondence:name').enable(false);
         }
@@ -781,10 +772,10 @@ jQuery(document).ready(function ($) {
     const col_fso_other = 4;
 
     let table = '<div class="header">';
-    table += `<div class="cell-hdr h${col_personal_details}">${__('Personal Details', 'bmlt-workflow')}</div>`;
-    table += `<div class="cell-hdr h${col_meeting_details}">${__('Updated Meeting Details', 'bmlt-workflow')}</div>`;
-    table += `<div class="cell-hdr h${col_virtual_meeting_details}">${__('Updated Virtual Meeting Details', 'bmlt-workflow')}</div>`;
-    table += `<div class="cell-hdr h${col_fso_other}">${__('FSO Request and Other Info', 'bmlt-workflow')}</div>`;
+    table += `<div class="cell-hdr h${col_personal_details}"><b>${__('Personal Details', 'bmlt-workflow')}</b></div>`;
+    table += `<div class="cell-hdr h${col_meeting_details}"><b>${__('Updated Meeting Details', 'bmlt-workflow')}</b></div>`;
+    table += `<div class="cell-hdr h${col_virtual_meeting_details}"><b>${__('Updated Virtual Meeting Details', 'bmlt-workflow')}</b></div>`;
+    table += `<div class="cell-hdr h${col_fso_other}"><b>${__('FSO Request and Other Info', 'bmlt-workflow')}</b></div>`;
     table += '</div><div class="gridbody">';
 
     Object.keys(d).forEach((key) => {
@@ -1197,7 +1188,9 @@ jQuery(document).ready(function ($) {
               $('#dt-submission').DataTable().rows().every(function () {
                 if (this.data().change_id === changeId) {
                   this.select();
+                  return true;
                 }
+                return false;
               });
             }
           }, true); // true parameter forces a reload from the server
@@ -1248,13 +1241,15 @@ jQuery(document).ready(function ($) {
           $('#dt-submission').DataTable().ajax.reload(function () {
           // After datatable is reloaded, reload correspondence and highlight the button
             loadCorrespondence(changeId);
-            checkForCorrespondence(changeId);
 
-            // Re-select the row
+            // Re-select the row and check for correspondence
             $('#dt-submission').DataTable().rows().every(function () {
               if (this.data().change_id === changeId) {
                 this.select();
+                checkForCorrespondence(this.data());
+                return true;
               }
+              return false;
             });
           }, true); // true parameter forces a reload from the server
         })
@@ -1362,7 +1357,7 @@ jQuery(document).ready(function ($) {
   bmltwf_create_generic_modal('bmltwf_submission_approve_close_dialog', __('Approve Submission', 'bmlt-workflow'), 'auto', 'auto');
   bmltwf_create_generic_modal('bmltwf_submission_reject_dialog', __('Reject Submission', 'bmlt-workflow'), 'auto', 'auto');
   bmltwf_create_quickedit_modal('bmltwf_submission_quickedit_dialog', __('Submission QuickEdit', 'bmlt-workflow'), 'auto', 'auto');
-  
+
   // Only create correspondence modal if correspondence is enabled
   if (bmltwf_correspondence_enabled === true || bmltwf_correspondence_enabled === 'true') {
     bmltwf_create_correspondence_modal('bmltwf_submission_correspondence_dialog', __('Submission Correspondence', 'bmlt-workflow'), '600px', '800px');
