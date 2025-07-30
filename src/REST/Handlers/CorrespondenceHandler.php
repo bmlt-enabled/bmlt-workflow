@@ -165,6 +165,11 @@ class CorrespondenceHandler
             return $submission;
         }
 
+        // Check if submission is approved or rejected - correspondence not allowed
+        if (in_array($submission->change_made, ['approved', 'rejected'])) {
+            return new \WP_Error('rest_forbidden', __('Correspondence is not allowed for approved or rejected submissions', 'bmlt-workflow'), array('status' => 403));
+        }
+
         // If no thread_id provided, create a new one
         if (!$thread_id) {
             $thread_id = wp_generate_uuid4();
