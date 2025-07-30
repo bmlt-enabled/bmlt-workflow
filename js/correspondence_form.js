@@ -26,79 +26,34 @@ jQuery(document).ready(function ($) {
     return date.toLocaleString();
   }
 
-  // Display correspondence data
-  function displayCorrespondence(data) {
-    const { submission } = data;
-    const { correspondence } = data;
-    const changeId = submission.change_id;
-
-    // Display header information
-    let submissionTypeText = 'Meeting Update';
-    if (submission.submission_type === 'reason_new') {
-      submissionTypeText = 'New Meeting';
-    } else if (submission.submission_type === 'reason_close') {
-      submissionTypeText = 'Close Meeting';
-    }
-    // Get meeting name from changes_requested if available
-    let meetingName = '';
-    if (submission.changes_requested) {
-      try {
-        const changes = JSON.parse(submission.changes_requested);
-        meetingName = changes.name || changes.original_name || '';
-      } catch (e) {
-        // If parsing fails, leave meetingName empty
-      }
-    }
-    
-    let headerHtml = `<h2>${submissionTypeText} Correspondence</h2>`;
-    if (meetingName) {
-      headerHtml += `<p><strong>Meeting:</strong> ${meetingName}</p>`;
-    }
-    headerHtml += `<p><strong>Submission Date:</strong> ${formatDate(submission.submission_time)}</p>`;
-
-    $('#bmltwf-correspondence-header').html(headerHtml).show();
-
-    // Display messages
-    let messagesHtml = '';
-    correspondence.forEach(function (message) {
-      const isSubmitter = message.from_submitter === '1' || message.from_submitter === 1;
-      messagesHtml += `<div class="bmltwf-correspondence-message ${
-        isSubmitter ? 'bmltwf-submitter-message' : 'bmltwf-admin-message'}">`;
-      messagesHtml += `<div class="bmltwf-message-header">${
-        isSubmitter ? 'Submitter' : 'Admin'
-      }<span class="bmltwf-message-time">${formatDate(message.created_at)}</span></div>`;
-      messagesHtml += `<div class="bmltwf-message-content">${message.message}</div>`;
-      messagesHtml += '</div>';
-    });
-
-    $('#bmltwf-correspondence-messages').html(messagesHtml).show();
-    $('#bmltwf-correspondence-reply').show();
-
-    // Store change_id for reply
-    $('#bmltwf-correspondence-reply').data('change-id', changeId);
-  }
-
   // Show error message with retry option
   function showError(message, canRetry = false) {
     let errorHtml = `<div class="bmltwf-error-message">${message}</div>`;
     if (canRetry) {
-      errorHtml += '<button id="bmltwf-retry-button" class="bmltwf-retry-btn">Try Again</button>';
+      errorHtml += `<button id="bmltwf-retry-button" class="bmltwf-retry-btn">${__('Try Again', 'bmlt-workflow')}</button>`;
     }
     $('#bmltwf-correspondence-error').html(errorHtml).show();
-    
     if (canRetry) {
-      $('#bmltwf-retry-button').on('click', function() {
+      $('#bmltwf-retry-button').on('click', function () {
         $('#bmltwf-correspondence-error').hide();
         $('#bmltwf-correspondence-loading').show();
+        // eslint-disable-next-line no-use-before-define
         loadCorrespondence();
       });
     }
   }
 
+  // Show reply-specific error
+  function showReplyError(message) {
+    $('.bmltwf-reply-error').remove();
+    const errorHtml = `<div class="bmltwf-reply-error">${message}</div>`;
+    $(errorHtml).insertBefore('#bmltwf-reply-form').fadeIn();
+  }
+
   // Validate thread ID and email parameters
   function validateParameters() {
     if (!bmltwf_correspondence_data.thread_id) {
-      showError('Invalid correspondence link. Please check the URL.');
+      showError(__('Invalid correspondence link. Please check the URL.', 'bmlt-workflow'));
       return false;
     }
     return true;
@@ -122,32 +77,77 @@ jQuery(document).ready(function ($) {
         $('#bmltwf-correspondence-loading').hide();
 
         if (response && response.correspondence && response.correspondence.length > 0) {
+          // eslint-disable-next-line no-use-before-define
           displayCorrespondence(response);
         } else if (response && response.correspondence && response.correspondence.length === 0) {
-          showError('No correspondence found for this submission.');
+          showError(__('No correspondence found for this submission.', 'bmlt-workflow'));
         } else {
-          showError('Unable to load correspondence. Please try again later.', true);
+          showError(__('Unable to load correspondence. Please try again later.', 'bmlt-workflow'), true);
         }
       },
-      error(xhr, status, error) {
+      error(xhr, status) {
         $('#bmltwf-correspondence-loading').hide();
-        let errorMessage = 'Unable to load correspondence. ';
-        
+        let errorMessage = __('Unable to load correspondence. ', 'bmlt-workflow');
+
         if (status === 'timeout') {
-          errorMessage += 'The request timed out. Please check your connection and try again.';
+          errorMessage += __('The request timed out. Please check your connection and try again.', 'bmlt-workflow');
         } else if (xhr.status === 404) {
-          errorMessage += 'Correspondence not found. Please check the URL.';
+          errorMessage += __('Correspondence not found. Please check the URL.', 'bmlt-workflow');
         } else if (xhr.status === 403) {
-          errorMessage += 'Access denied. You may not have permission to view this correspondence.';
+          errorMessage += __('Access denied. You may not have permission to view this correspondence.', 'bmlt-workflow');
         } else if (xhr.status >= 500) {
-          errorMessage += 'Server error. Please try again later.';
+          errorMessage += __('Server error. Please try again later.', 'bmlt-workflow');
         } else {
-          errorMessage += 'Please check your connection and try again.';
+          errorMessage += __('Please check your connection and try again.', 'bmlt-workflow');
         }
-        
+
         showError(errorMessage, status !== 'timeout' && xhr.status !== 404);
       },
     });
+  }
+
+  // Display correspondence data
+  function displayCorrespondence(data) {
+    const { submission } = data;
+    const { correspondence } = data;
+    const changeId = submission.change_id;
+
+    // Display header information
+    let submissionTypeText = __('Meeting Update', 'bmlt-workflow');
+    if (submission.submission_type === 'reason_new') {
+      submissionTypeText = __('New Meeting', 'bmlt-workflow');
+    } else if (submission.submission_type === 'reason_close') {
+      submissionTypeText = __('Close Meeting', 'bmlt-workflow');
+    }
+    // Get meeting name from submission data
+    const meetingName = submission.meeting_name || '';
+
+    let headerHtml = `<h2>${submissionTypeText} ${__('Correspondence', 'bmlt-workflow')}</h2>`;
+    if (meetingName) {
+      headerHtml += `<p><strong>${__('Meeting:', 'bmlt-workflow')}</strong> ${meetingName}</p>`;
+    }
+    headerHtml += `<p><strong>${__('Submission Date:', 'bmlt-workflow')}</strong> ${formatDate(submission.submission_time)}</p>`;
+
+    $('#bmltwf-correspondence-header').html(headerHtml).show();
+
+    // Display messages
+    let messagesHtml = '';
+    correspondence.forEach(function (message) {
+      const isSubmitter = message.from_submitter === '1' || message.from_submitter === 1;
+      messagesHtml += `<div class="bmltwf-correspondence-message ${
+        isSubmitter ? 'bmltwf-submitter-message' : 'bmltwf-admin-message'}">`;
+      messagesHtml += `<div class="bmltwf-message-header">${
+        isSubmitter ? __('Submitter', 'bmlt-workflow') : __('Admin', 'bmlt-workflow')
+      }<span class="bmltwf-message-time">${formatDate(message.created_at)}</span></div>`;
+      messagesHtml += `<div class="bmltwf-message-content">${message.message}</div>`;
+      messagesHtml += '</div>';
+    });
+
+    $('#bmltwf-correspondence-messages').html(messagesHtml).show();
+    $('#bmltwf-correspondence-reply').show();
+
+    // Store change_id for reply
+    $('#bmltwf-correspondence-reply').data('change-id', changeId);
   }
 
   // Handle reply button click
@@ -167,21 +167,21 @@ jQuery(document).ready(function ($) {
   $('#bmltwf-send-reply').on('click', function () {
     const message = $('#bmltwf-reply-text').val().trim();
     if (!message) {
-      showReplyError('Please enter a message before sending.');
+      showReplyError(__('Please enter a message before sending.', 'bmlt-workflow'));
       return;
     }
 
     if (message.length > 2000) {
-      showReplyError('Message is too long. Please keep it under 2000 characters.');
+      showReplyError(__('Message is too long. Please keep it under 2000 characters.', 'bmlt-workflow'));
       return;
     }
 
     const changeId = $('#bmltwf-correspondence-reply').data('change-id');
     const $sendButton = $(this);
     const originalText = $sendButton.text();
-    
+
     // Disable button and show loading state
-    $sendButton.prop('disabled', true).text('Sending...');
+    $sendButton.prop('disabled', true).text(__('Sending...', 'bmlt-workflow'));
     $('.bmltwf-reply-error').remove();
 
     $.ajax({
@@ -196,7 +196,7 @@ jQuery(document).ready(function ($) {
         thread_id: bmltwf_correspondence_data.thread_id,
         from_submitter: 'true',
       },
-      success(response) {
+      success() {
         // Show success message
         const successHtml = `<div class="bmltwf-success-message">${
           bmltwf_correspondence_data.i18n.reply_sent
@@ -216,53 +216,46 @@ jQuery(document).ready(function ($) {
           loadCorrespondence();
         }, 2000);
       },
-      error(xhr, status, error) {
-        let errorMessage = 'Failed to send reply. ';
-        
+      error(xhr, status) {
+        let errorMessage = __('Failed to send reply. ', 'bmlt-workflow');
+
         if (status === 'timeout') {
-          errorMessage += 'The request timed out. Please try again.';
+          errorMessage += __('The request timed out. Please try again.', 'bmlt-workflow');
         } else if (xhr.status === 403) {
-          errorMessage += 'Access denied. You may not have permission to reply.';
+          errorMessage += __('Access denied. You may not have permission to reply.', 'bmlt-workflow');
         } else if (xhr.status >= 500) {
-          errorMessage += 'Server error. Please try again later.';
+          errorMessage += __('Server error. Please try again later.', 'bmlt-workflow');
         } else {
-          errorMessage += 'Please check your connection and try again.';
+          errorMessage += __('Please check your connection and try again.', 'bmlt-workflow');
         }
-        
+
         showReplyError(errorMessage);
       },
       complete() {
         // Re-enable button
         $sendButton.prop('disabled', false).text(originalText);
-      }
+      },
     });
   });
-  
-  // Show reply-specific error
-  function showReplyError(message) {
-    $('.bmltwf-reply-error').remove();
-    const errorHtml = `<div class="bmltwf-reply-error">${message}</div>`;
-    $(errorHtml).insertBefore('#bmltwf-reply-form').fadeIn();
-  }
 
   // Load correspondence on page load with connection check
   if (navigator.onLine === false) {
     $('#bmltwf-correspondence-loading').hide();
-    showError('No internet connection. Please check your connection and try again.', true);
+    showError(__('No internet connection. Please check your connection and try again.', 'bmlt-workflow'), true);
   } else {
     loadCorrespondence();
   }
-  
+
   // Handle online/offline events
-  $(window).on('online', function() {
+  $(window).on('online', function () {
     if ($('#bmltwf-correspondence-error').is(':visible')) {
       $('#bmltwf-correspondence-error').hide();
       $('#bmltwf-correspondence-loading').show();
       loadCorrespondence();
     }
   });
-  
-  $(window).on('offline', function() {
-    showError('Connection lost. Please check your internet connection.', true);
+
+  $(window).on('offline', function () {
+    showError(__('Connection lost. Please check your internet connection.', 'bmlt-workflow'), true);
   });
 });
