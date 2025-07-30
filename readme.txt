@@ -4,7 +4,7 @@ Requires at least: 5.2
 Tested up to: 6.8.2
 Requires PHP: 8.0
 License: GPLv2
-Stable tag: 1.1.27
+Stable tag: 1.1.28
 Contributors: nigelbmlt
 
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.

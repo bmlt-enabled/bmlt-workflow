@@ -33,7 +33,7 @@ import {
 
 import { userVariables } from "../../.testcaferc";
 
-fixture`bmlt3x_admin_submissions_permissions_fixture`
+fixture`admin_submissions_permissions_fixture`
 .beforeEach(async (t) => {
   await waitfor(userVariables.admin_logon_page_single);
   await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001","hidden");
@@ -80,7 +80,7 @@ test("Cant_Delete_Submissions_As_Trusted_Servant", async (t) => {
   await click_table_row_column(as.dt_submission, row, 0);
 
   // delete
-  var g = as.dt_submission_wrapper.find("button").nth(3);
+  var g = as.dt_submission_wrapper.find("button").nth(4);
   await t.expect(g.hasAttribute("disabled")).ok();
   
 });
@@ -113,7 +113,7 @@ test("Can_Delete_Submissions_As_Admin", async (t) => {
   await click_table_row_column(as.dt_submission, row, 0);
 
   // delete
-  var g = as.dt_submission_wrapper.find("button").nth(3);
+  var g = as.dt_submission_wrapper.find("button").nth(4);
   // await t.debug();
   await t.expect(g.hasAttribute("disabled")).notOk();
   
@@ -146,7 +146,7 @@ test("Can_Delete_Submissions_As_Trusted_Servant", async (t) => {
   await click_table_row_column(as.dt_submission, row, 0);
 
   // delete
-  var g = as.dt_submission_wrapper.find("button").nth(3);
+  var g = as.dt_submission_wrapper.find("button").nth(4);
   await t.expect(g.hasAttribute("disabled")).notOk();
 
 });

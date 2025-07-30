@@ -56,6 +56,98 @@ final class OptionsHandlerTest extends TestCase
         
         $this->assertInstanceOf(WP_Error::class, $result);
     }
+    
+    /**
+     * @covers bmltwf\REST\Handlers\OptionsHandler::post_bmltwf_restore_handler
+     */
+    public function test_restore_with_correspondence_data(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldReceive('insert')->times(4)->andReturn(1); // 3 main tables + correspondence
+        $wpdb->shouldReceive('query')->andReturn(true);
+        $wpdb->shouldReceive('get_col')->andReturn([]);
+        $wpdb->shouldReceive('get_charset_collate')->andReturn('');
+        
+        Functions\when('delete_option')->justReturn(true);
+        Functions\when('add_option')->justReturn(true);
+        Functions\when('\update_option')->justReturn(true);
+        Functions\when('get_current_user_id')->justReturn(1);
+        Functions\when('get_users')->justReturn([]);
+        Functions\when('wp_remote_request')->justReturn(['response' => ['code' => 200], 'body' => 'OK']);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+        Functions\when('wp_remote_retrieve_body')->justReturn('OK');
+        
+        $handler = new OptionsHandler();
+        
+        $request = Mockery::mock('WP_REST_Request');
+        $request->shouldReceive('get_json_params')->andReturn([
+            'options' => [
+                'bmltwf_db_version' => '1.1.28'
+            ],
+            'submissions' => [
+                (object)['change_id' => 1, 'submitter_name' => 'Test']
+            ],
+            'service_bodies' => [
+                (object)['serviceBodyId' => 1, 'service_body_name' => 'Test Body']
+            ],
+            'service_bodies_access' => [
+                (object)['serviceBodyId' => 1, 'wp_uid' => 1]
+            ],
+            'correspondence' => [
+                (object)['id' => 1, 'change_id' => 1, 'thread_id' => 'test-thread', 'message' => 'Test message']
+            ]
+        ]);
+        
+        $result = $handler->post_bmltwf_restore_handler($request);
+        
+        $this->assertInstanceOf(WP_REST_Response::class, $result);
+    }
+    
+    /**
+     * @covers bmltwf\REST\Handlers\OptionsHandler::post_bmltwf_restore_handler
+     */
+    public function test_restore_without_correspondence_data(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldReceive('insert')->times(3)->andReturn(1); // Only 3 main tables
+        $wpdb->shouldReceive('query')->andReturn(true);
+        $wpdb->shouldReceive('get_col')->andReturn([]);
+        $wpdb->shouldReceive('get_charset_collate')->andReturn('');
+        
+        Functions\when('delete_option')->justReturn(true);
+        Functions\when('add_option')->justReturn(true);
+        Functions\when('\update_option')->justReturn(true);
+        Functions\when('get_current_user_id')->justReturn(1);
+        Functions\when('get_users')->justReturn([]);
+        Functions\when('wp_remote_request')->justReturn(['response' => ['code' => 200], 'body' => 'OK']);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+        Functions\when('wp_remote_retrieve_body')->justReturn('OK');
+        
+        $handler = new OptionsHandler();
+        
+        $request = Mockery::mock('WP_REST_Request');
+        $request->shouldReceive('get_json_params')->andReturn([
+            'options' => [
+                'bmltwf_db_version' => '1.1.18' // Older version without correspondence
+            ],
+            'submissions' => [
+                (object)['change_id' => 1, 'submitter_name' => 'Test']
+            ],
+            'service_bodies' => [
+                (object)['serviceBodyId' => 1, 'service_body_name' => 'Test Body']
+            ],
+            'service_bodies_access' => [
+                (object)['serviceBodyId' => 1, 'wp_uid' => 1]
+            ]
+            // No correspondence data
+        ]);
+        
+        $result = $handler->post_bmltwf_restore_handler($request);
+        
+        $this->assertInstanceOf(WP_REST_Response::class, $result);
+    }
 
     /**
      * @covers bmltwf\REST\Handlers\OptionsHandler::post_bmltwf_backup_handler
@@ -67,6 +159,9 @@ final class OptionsHandlerTest extends TestCase
         $wpdb->shouldReceive('get_results')->times(3)->andReturn([
             (object)['id' => 1, 'name' => 'Test']
         ]);
+        
+        // Mock correspondence table check - table doesn't exist
+        $wpdb->shouldReceive('get_var')->with(Mockery::pattern('/SHOW TABLES LIKE/'))->andReturn(null);
         
         Functions\when('\wp_load_alloptions')->justReturn([
             'bmltwf_db_version' => '1.1.18',
@@ -87,6 +182,44 @@ final class OptionsHandlerTest extends TestCase
         $this->assertArrayHasKey('submissions', $backup);
         $this->assertArrayHasKey('service_bodies', $backup);
         $this->assertArrayHasKey('service_bodies_access', $backup);
+        $this->assertArrayNotHasKey('correspondence', $backup); // Table doesn't exist
+    }
+    
+    /**
+     * @covers bmltwf\REST\Handlers\OptionsHandler::post_bmltwf_backup_handler
+     */
+    public function test_backup_includes_correspondence_when_table_exists(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldReceive('get_results')->times(4)->andReturn([
+            (object)['id' => 1, 'name' => 'Test']
+        ]);
+        
+        // Mock correspondence table check - table exists
+        $wpdb->shouldReceive('get_var')->with(Mockery::pattern('/SHOW TABLES LIKE/'))->andReturn('wp_bmltwf_correspondence');
+        $wpdb->prefix = 'wp_';
+        
+        Functions\when('\wp_load_alloptions')->justReturn([
+            'bmltwf_db_version' => '1.1.28',
+            'other_option' => 'value'
+        ]);
+        
+        $handler = new OptionsHandler();
+        
+        $request = Mockery::mock('WP_REST_Request');
+        $result = $handler->post_bmltwf_backup_handler($request);
+        
+        $this->assertInstanceOf(WP_REST_Response::class, $result);
+        
+        $data = $result->get_data();
+        $backup = json_decode($data['backup'], true);
+        
+        $this->assertArrayHasKey('options', $backup);
+        $this->assertArrayHasKey('submissions', $backup);
+        $this->assertArrayHasKey('service_bodies', $backup);
+        $this->assertArrayHasKey('service_bodies_access', $backup);
+        $this->assertArrayHasKey('correspondence', $backup); // Table exists
     }
 
 

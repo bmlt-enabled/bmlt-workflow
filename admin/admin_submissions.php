@@ -227,6 +227,26 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <div id="icon-users" class="icon32"></div>
     <h2><?php echo __( "Meeting Submissions", 'bmlt-workflow' ); ?></h2>
     <hr class="bmltwf-error-message">
+    
+    <?php
+    // Show correspondence notice if not configured
+    $correspondence_page_id = get_option('bmltwf_correspondence_page');
+    $correspondence_enabled = false;
+    if (!empty($correspondence_page_id)) {
+        $page = get_post($correspondence_page_id);
+        if ($page && $page->post_status === 'publish' && has_shortcode($page->post_content, 'bmltwf-correspondence-form')) {
+            $correspondence_enabled = true;
+        }
+    }
+    
+    if (!$correspondence_enabled && current_user_can('manage_options')) {
+        $config_url = admin_url('admin.php?page=bmltwf-settings');
+        echo '<div class="notice notice-info is-dismissible">';
+        echo '<p><strong>' . __('New Feature Available: Correspondence', 'bmlt-workflow') . '</strong></p>';
+        echo '<p>' . __('You can now communicate directly with meeting submitters through the correspondence feature. To enable this feature, please configure a correspondence page in the', 'bmlt-workflow') . ' <a href="' . esc_url($config_url) . '">' . __('Configuration settings', 'bmlt-workflow') . '</a>.</p>';
+        echo '</div>';
+    }
+    ?>
 
     <div class="dt-container" style="display: none;">
         <table id="dt-submission" class="display" style="width:90%">
@@ -241,7 +261,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <th><?php echo __( "Change Time", 'bmlt-workflow' ); ?></th>
                     <th><?php echo __( "Changed By", 'bmlt-workflow' ); ?></th>
                     <th><?php echo __( "Submission Status", 'bmlt-workflow' ); ?></th>
-                    <th><?php echo __( "Change Made", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "More Info", 'bmlt-workflow' ); ?></th>
                 </tr>
             </thead>
             <tfoot>
@@ -255,7 +275,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <th><?php echo __( "Change Time", 'bmlt-workflow' ); ?></th>
                     <th><?php echo __( "Changed By", 'bmlt-workflow' ); ?></th>
                     <th><?php echo __( "Submission Status", 'bmlt-workflow' ); ?></th>
-                    <th><?php echo __( "Change Made", 'bmlt-workflow' ); ?></th>
+                    <th><?php echo __( "More Info", 'bmlt-workflow' ); ?></th>
                 </tr>
             </tfoot>
         </table>

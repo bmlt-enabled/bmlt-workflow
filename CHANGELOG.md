@@ -1,3 +1,6 @@
+## 1.1.28 (Jul 29, 2025)
+- Added correspondence feature!
+
 ## 1.1.27 (Jul 25, 2025)
 - Fixed database upgrade missing venue type field (thanks @California Steve !)
 

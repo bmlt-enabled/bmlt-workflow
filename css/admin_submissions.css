@@ -259,3 +259,72 @@ hr.bmltwf-error-message
 {
   border: none;
 }
+
+/* Correspondence styles */
+.dt-button.buttons-correspondence.has-correspondence {
+  background-color: #ffeb3b;
+  font-weight: bold;
+}
+
+.dt-button.buttons-correspondence:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #f0f0f0;
+  color: #999;
+}
+
+#bmltwf_submission_correspondence_dialog {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+#bmltwf-correspondence-messages {
+  margin-bottom: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+.bmltwf-correspondence-message {
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.bmltwf-admin {
+  background-color: #e9f7fe;
+  border-left: 4px solid #2271b1;
+}
+
+.bmltwf-submitter {
+  background-color: #f0f0f0;
+  border-left: 4px solid #646970;
+}
+
+.bmltwf-message-header {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.bmltwf-message-time {
+  font-size: 0.8em;
+  color: #666;
+  margin-left: 10px;
+  font-weight: normal;
+}
+
+.bmltwf-message-content {
+  white-space: pre-wrap;
+}
+
+#bmltwf-correspondence-message {
+  width: 100%;
+  min-height: 100px;
+  margin-bottom: 10px;
+}
+
+.bmltwf-correspondence-buttons {
+  text-align: right;
+}

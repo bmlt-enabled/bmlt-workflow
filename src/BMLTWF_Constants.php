@@ -48,7 +48,8 @@ trait BMLTWF_Constants
         'bmltwf_fso_feature',
         'bmltwf_trusted_servants_can_delete_submissions',
         'bmltwf_remove_virtual_meeting_details_on_venue_change',
-        'bmltwf_google_maps_key'
+        'bmltwf_google_maps_key',
+        'bmltwf_correspondence_page'
     );
 
     public $bmltwf_rest_namespace = 'bmltwf/v1';
@@ -56,5 +57,6 @@ trait BMLTWF_Constants
     public $bmltwf_service_bodies_rest_base = 'servicebodies';
     public $bmltwf_bmltserver_rest_base = 'bmltserver';
     public $bmltwf_options_rest_base = 'options';
+    public $bmltwf_correspondence_rest_base = 'correspondence';
 
 }

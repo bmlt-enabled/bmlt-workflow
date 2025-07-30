@@ -33,7 +33,7 @@ import { RequestLogger, Selector } from "testcafe";
 
 import { userVariables } from "../../.testcaferc";
 
-fixture`bmlt3x_admin_submissions_fixture`
+fixture`admin_submissions_fixture`
 .beforeEach(async (t) => {
 
   await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3001","hidden");
@@ -209,7 +209,7 @@ test("Submission_Buttons_Active_correctly", async (t) => {
   g = as.dt_submission_wrapper.find("button").nth(1);
   await t.expect(g.hasAttribute("disabled")).notOk();
   // quickedit
-  g = as.dt_submission_wrapper.find("button").nth(2);
+  g = as.dt_submission_wrapper.find("button").nth(3);
   await t.expect(g.hasAttribute("disabled")).notOk();
 
   // change meeting = row 1
@@ -222,7 +222,7 @@ test("Submission_Buttons_Active_correctly", async (t) => {
   g = as.dt_submission_wrapper.find("button").nth(1);
   await t.expect(g.hasAttribute("disabled")).notOk();
   // quickedit
-  g = as.dt_submission_wrapper.find("button").nth(2);
+  g = as.dt_submission_wrapper.find("button").nth(3);
   await t.expect(g.hasAttribute("disabled")).notOk();
 
   // close meeting = row 0
@@ -235,7 +235,7 @@ test("Submission_Buttons_Active_correctly", async (t) => {
   g = as.dt_submission_wrapper.find("button").nth(1);
   await t.expect(g.hasAttribute("disabled")).notOk();
   // quickedit
-  g = as.dt_submission_wrapper.find("button").nth(2);
+  g = as.dt_submission_wrapper.find("button").nth(3);
   await t.expect(g.hasAttribute("disabled")).ok();
 
   // reject a request then we check the buttons again
@@ -267,7 +267,7 @@ test("Submission_Buttons_Active_correctly", async (t) => {
   g = as.dt_submission_wrapper.find("button").nth(1);
   await t.expect(g.hasAttribute("disabled")).ok();
   // quickedit
-  g = as.dt_submission_wrapper.find("button").nth(2);
+  g = as.dt_submission_wrapper.find("button").nth(3);
   await t.expect(g.hasAttribute("disabled")).ok();
 });
 
@@ -279,7 +279,7 @@ await t.useRole(bmltwf_admin);
     var row = 2;
     await click_table_row_column(as.dt_submission,row,0);
     // quickedit
-    await click_dt_button_by_index(as.dt_submission_wrapper,2);
+    await click_dt_button_by_index(as.dt_submission_wrapper,3);
 
     await t
     .expect(as.quickedit_dialog_parent.visible).eql(true)
@@ -350,7 +350,7 @@ test('Quickedit_Change_Meeting', async t => {
     var row = 1;
     await click_table_row_column(as.dt_submission,row,0);
     // quickedit
-    await click_dt_button_by_index(as.dt_submission_wrapper,2);
+    await click_dt_button_by_index(as.dt_submission_wrapper,3);
 
     await t
     .expect(as.quickedit_dialog_parent.visible).eql(true)
@@ -409,7 +409,7 @@ test('Quickedit_States_Dropdowns', async t => {
   var row = 1;
   await click_table_row_column(as.dt_submission,row,0);
   // quickedit
-  await click_dt_button_by_index(as.dt_submission_wrapper,2);
+  await click_dt_button_by_index(as.dt_submission_wrapper,3);
   await t
   .expect(as.quickedit_dialog_parent.visible).eql(true)
   .expect(as.quickedit_location_sub_province.hasClass("bmltwf-changed")).notOk()
@@ -424,9 +424,12 @@ test('Quickedit_States_Dropdowns', async t => {
 
 });
 
-const submissionslogger = RequestLogger(/bmltwf\/v1\/submissions\/93/,
+const submissionslogger = RequestLogger(/bmltwf\/v1\/submissions\/93$/,
 {
   logRequestBody: true,
+  logRequestHeaders: true,
+  stringifyRequestBody: true,
+  method: 'PATCH'
 }
 );
 
@@ -436,20 +439,19 @@ test('Quickedit_Saves_No_Changes_Correctly', async t => {
     var row = 2;
     await click_table_row_column(as.dt_submission,row,0);
     // quickedit
-    await click_dt_button_by_index(as.dt_submission_wrapper,2);
+    await click_dt_button_by_index(as.dt_submission_wrapper,3);
 
     await t
     .expect(as.quickedit_dialog_parent.visible).eql(true)
     await t.click(as.quickedit_dialog_parent.find("button.ui-corner-all").nth(2))
     .wait(1000);
-
     var f = JSON.parse(submissionslogger.requests[0].request.body.toString());
     // console.log(f.changes_requested.name);
     await t.expect(f.changes_requested.name).eql("my test meeting");
 
 }).requestHooks(submissionslogger);
 
-const submissions2logger = RequestLogger(/bmltwf\/v1\/submissions\/94/,
+const submissions2logger = RequestLogger(/bmltwf\/v1\/submissions\/94$/,
 {
   logRequestBody: true,
 }
@@ -461,7 +463,7 @@ test('Quickedit_Hides_Virtual_Meeting_Publish', async t => {
   var row = 1;
   await click_table_row_column(as.dt_submission,row,0);
   // quickedit
-  await click_dt_button_by_index(as.dt_submission_wrapper,2);
+  await click_dt_button_by_index(as.dt_submission_wrapper,3);
 
   await t
   .expect(as.quickedit_dialog_parent.visible).eql(true)
@@ -474,7 +476,7 @@ test('Quickedit_Hides_Virtual_Meeting_Publish', async t => {
 
 }).requestHooks(submissions2logger);
 
-const submissions1logger = RequestLogger(/bmltwf\/v1\/submissions\/93/,
+const submissions1logger = RequestLogger(/bmltwf\/v1\/submissions\/93$/,
 {
 logRequestBody: true,
 }
@@ -486,7 +488,7 @@ test('Quickedit_Saves_Changes_Correctly', async t => {
     var row = 2;
     await click_table_row_column(as.dt_submission,row,0);
     // quickedit
-    await click_dt_button_by_index(as.dt_submission_wrapper,2);
+    await click_dt_button_by_index(as.dt_submission_wrapper,3);
 
     await t
     .expect(as.quickedit_dialog_parent.visible).eql(true)
@@ -511,7 +513,7 @@ test("Approve_New_Meeting_Geocoding", async (t) => {
   await click_table_row_column(as.dt_submission, row, 0);
 
   // quickedit
-  await click_dt_button_by_index(as.dt_submission_wrapper,2);
+  await click_dt_button_by_index(as.dt_submission_wrapper,3);
   // geocode div should be visible
   await t.expect(as.optional_auto_geocode_enabled.visible).eql(true)
 
@@ -519,7 +521,7 @@ test("Approve_New_Meeting_Geocoding", async (t) => {
   await t.expect((as.quickedit_dialog_parent).find("button.ui-corner-all").nth(1).hasAttribute("disabled")).notOk();
 });
 
-const formatIdsLogger = RequestLogger(/bmltwf\/v1\/submissions\/93/,
+const formatIdsLogger = RequestLogger(/bmltwf\/v1\/submissions\/93$/,
 {
   logRequestBody: true,
 }
@@ -529,7 +531,7 @@ test('Quickedit_JSON_Format_Validation', async t => {
   // Select a meeting and open quickedit
   const row = 2; // new meeting
   await click_table_row_column(as.dt_submission, row, 0);
-  await click_dt_button_by_index(as.dt_submission_wrapper, 2);
+  await click_dt_button_by_index(as.dt_submission_wrapper, 3);
   
   // Make some changes to ensure fields are marked as changed
   await t

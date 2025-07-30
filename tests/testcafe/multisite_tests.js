@@ -15,17 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { restore_from_backup, bmltwf_admin_multisingle, bmltwf_admin_multinetwork, waitfor, myip } from "./helpers/helper";
+import { restore_from_backup, bmltwf_admin_multisingle, bmltwf_admin_multinetwork, waitfor, myip, setupCorrespondenceFeature, click_table_row_column } from "./helpers/helper";
 import { wordpress_options } from "./models/wordpress_options";
 import { userVariables } from "../../.testcaferc";
 import { ao } from "./models/admin_options";
 import { t, Selector } from "testcafe";
 import { asb } from "./models/admin_service_bodies";
 
-fixture`bmlt3x_multisite_tests_fixture`.beforeEach(async (t) => {
+fixture`multisite_tests_fixture`.beforeEach(async (t) => {
   await waitfor(userVariables.admin_logon_page_multisingle);
   await restore_from_backup(bmltwf_admin_multisingle, userVariables.admin_settings_page_multisingle_plugin, userVariables.admin_restore_json_multisingle_plugin,myip(),"3001","hidden");
-  // await t.debug();
 });
 
 test("MultiSite_Single_Check_Options", async (t) => {
@@ -112,4 +111,91 @@ test("MultiSite_Network_Check_Plugin_Doesnt_Touch_Plugin2", async (t) => {
     .eql(true)
     .expect(Selector("#bmltwf_userlist_checkbox_id_1047").checked)
     .eql(true);
+});
+
+test("MultiSite_Single_Correspondence_Feature", async (t) => {
+  // Test correspondence feature works in multisite single site activation
+  const correspondencePageUrl = await setupCorrespondenceFeature(
+    t, 
+    bmltwf_admin_multisingle,
+    userVariables.admin_settings_page_multisingle_plugin,
+    userVariables.wp_pages_multisingle_plugin,
+    userVariables.admin_correspondence_json_multisingle_plugin,
+    userVariables.siteurl_multisingle_plugin
+  );
+  // Navigate to submissions page and verify correspondence button is enabled
+  await t
+    .navigateTo(userVariables.admin_submissions_page_multisingle_plugin)
+    .wait(2000);
+  await click_table_row_column(Selector('#dt-submission'), 0, 0);
+  await t
+    .wait(1000)
+    .expect(Selector('#dt-submission_wrapper > div.dt-buttons > button:nth-child(3)').hasClass('disabled'))
+    .notOk('Correspondence button should be enabled in multisite single site')
+    
+    // Verify correspondence page is accessible and contains correspondence form
+    .navigateTo(correspondencePageUrl)
+    .expect(Selector('.bmltwf-error').exists)
+    .ok('Correspondence page should show error message when no thread specified');
+});
+
+test("MultiSite_Network_Correspondence_Feature", async (t) => {
+  // Test correspondence feature works in multisite network activation
+  let correspondencePageUrl = await setupCorrespondenceFeature(
+    t,
+    bmltwf_admin_multinetwork,
+    userVariables.admin_settings_page_multinetwork_plugin,
+    userVariables.wp_pages_multinetwork_plugin,
+    userVariables.admin_correspondence_json_multinetwork_plugin,
+    userVariables.siteurl_multinetwork_plugin
+  );
+  
+  // Test on first site
+  await t
+    .navigateTo(userVariables.admin_submissions_page_multinetwork_plugin)
+    .wait(2000);
+  await click_table_row_column(Selector('#dt-submission'), 0, 0);
+  await t
+    .wait(1000)
+    .expect(Selector('#dt-submission_wrapper > div.dt-buttons > button:nth-child(3)').exists)
+    .ok('Correspondence button should exist in multisite network site 1')
+    .expect(Selector('#dt-submission_wrapper > div.dt-buttons > button:nth-child(3)').hasClass('disabled'))
+    .notOk('Correspondence button should be enabled in multisite network site 1')
+    
+    correspondencePageUrl = await setupCorrespondenceFeature(
+    t,
+    bmltwf_admin_multinetwork,
+    userVariables.admin_settings_page_multinetwork_plugin2,
+    userVariables.wp_pages_multinetwork_plugin2,
+    userVariables.admin_correspondence_json_multinetwork_plugin2,
+    userVariables.siteurl_multinetwork_plugin2
+  );
+
+    // Test on second site
+    await t.navigateTo(userVariables.admin_submissions_page_multinetwork_plugin2)
+    .wait(2000);
+    await click_table_row_column(Selector('#dt-submission'), 0, 0);
+    await t
+    .wait(1000)
+    .expect(Selector('#dt-submission_wrapper > div.dt-buttons > button:nth-child(3)').exists)
+    .ok('Correspondence button should exist in multisite network site 2')
+    .expect(Selector('#dt-submission_wrapper > div.dt-buttons > button:nth-child(3)').hasClass('disabled'))
+    .notOk('Correspondence button should be enabled in multisite network site 2');
+});
+
+test("MultiSite_Correspondence_Database_Tables", async (t) => {
+  // Test that correspondence database tables are created correctly in multisite
+  await t
+    .useRole(bmltwf_admin_multisingle)
+    .navigateTo(userVariables.admin_settings_page_multisingle_plugin)
+    .click(ao.backup_button)
+    .wait(3000);
+    
+  // If backup completes without error, database tables exist
+  const backupCompleted = await t.eval(() => {
+    const spinner = document.querySelector('#bmltwf-backup-spinner');
+    return spinner && spinner.style.display !== 'block';
+  });
+  
+  await t.expect(backupCompleted).ok('Backup should complete successfully, indicating database tables exist');
 });

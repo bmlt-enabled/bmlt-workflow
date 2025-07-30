@@ -16,6 +16,8 @@ const backuppath = "/index.php" + sitejsonurl + admin_backup_json_path;
 const admin_restore_json_path = "/index.php?rest_route=/bmltwf/v1/options/restore";
 const restorepath = "/index.php" + sitejsonurl + admin_restore_json_path;
 const admin_restore_json_path_multisite = "/wp-json/bmltwf/v1/options/restore"
+const admin_correspondence_json_path = "/index.php?rest_route=/bmltwf/v1/options/correspondence-page";
+const admin_correspondence_json_path_multisite = "/wp-json/bmltwf/v1/options/correspondence-page";
 const execSync = require("child_process").execSync;
 
 // web addresses
@@ -38,6 +40,7 @@ const password_multinetwork = 'admin';
 module.exports = {
   browsers: "chrome",
   userVariables: {
+    siteurl_single: siteurl_single,
     formpage: siteurl_single + '/index.php' + formpage,
     admin_logon_page_single: siteurl_single + admin_logon_page,
     admin_submissions_page_single: siteurl_single + admin_submissions_page,
@@ -53,6 +56,8 @@ module.exports = {
     submission_reviewer_nopriv_pass: password_nopriv_single,
     admin_backup_json: siteurl_single + admin_backup_json_path,
     admin_restore_json: siteurl_single + admin_restore_json_path,
+    wp_pages_single: siteurl_single + '/index.php?rest_route=/wp/v2/pages',
+    admin_correspondence_json_single: siteurl_single + admin_correspondence_json_path,
 
     // multisite
     formpage_multisingle: siteurl_multisingle + multisite_plugin + formpage2,
@@ -73,7 +78,10 @@ module.exports = {
     admin_password_multisingle: password_multisingle,
     admin_backup_json_multisingle: siteurl_multisingle + multisite_plugin + backuppath,
     admin_restore_json_multisingle_plugin: siteurl_multisingle + multisite_plugin + admin_restore_json_path_multisite,
-
+    admin_correspondence_json_multisingle_plugin:  siteurl_multisingle + multisite_plugin + admin_correspondence_json_path_multisite,
+    wp_pages_multisingle_plugin: siteurl_multisingle + multisite_plugin + '/index.php?rest_route=/wp/v2/pages',
+    siteurl_multisingle_plugin: siteurl_multisingle + multisite_plugin,
+    
     // multisite network install
     formpage_multinetwork: siteurl_multinetwork + formpage2,
     admin_logon_page_multinetwork: siteurl_multinetwork + admin_logon_page,
@@ -94,6 +102,12 @@ module.exports = {
     admin_backup_json_multinetwork: siteurl_multinetwork + multisite_plugin + backuppath,
     admin_restore_json_multinetwork_plugin: siteurl_multinetwork + multisite_plugin + admin_restore_json_path,
     admin_restore_json_multinetwork_plugin2: siteurl_multinetwork + multisite_plugin2 + admin_restore_json_path,
+    wp_pages_multinetwork_plugin: siteurl_multinetwork + multisite_plugin + '/index.php?rest_route=/wp/v2/pages',
+    wp_pages_multinetwork_plugin2: siteurl_multinetwork + multisite_plugin2 + '/index.php?rest_route=/wp/v2/pages',
+    admin_correspondence_json_multinetwork_plugin: siteurl_multinetwork + multisite_plugin + admin_correspondence_json_path_multisite,
+    admin_correspondence_json_multinetwork_plugin2: siteurl_multinetwork + multisite_plugin2 + admin_correspondence_json_path_multisite,
+    siteurl_multinetwork_plugin: siteurl_multinetwork + multisite_plugin,
+    siteurl_multinetwork_plugin2: siteurl_multinetwork + multisite_plugin2,
 
     // dbupgrade
     dbupgrade_bounce_sql: siteurl_dbupgrade + '/import-sql.php',

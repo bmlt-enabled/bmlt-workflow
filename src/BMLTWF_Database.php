@@ -21,11 +21,12 @@ namespace bmltwf;
 class BMLTWF_Database
 {
     use \bmltwf\BMLTWF_Debug;
-    public $bmltwf_db_version = '1.1.27';
+    public $bmltwf_db_version = '1.1.28';
     public $bmltwf_submissions_table_name;
     public $bmltwf_service_bodies_table_name;
     public $bmltwf_service_bodies_access_table_name;
     public $bmltwf_debug_log_table_name;
+    public $bmltwf_correspondence_table_name;
 
     public function __construct($stub = null)
     {
@@ -35,6 +36,7 @@ class BMLTWF_Database
         $this->bmltwf_service_bodies_table_name = $wpdb->prefix . 'bmltwf_service_bodies';
         $this->bmltwf_service_bodies_access_table_name = $wpdb->prefix . 'bmltwf_service_bodies_access';
         $this->bmltwf_debug_log_table_name = $wpdb->prefix . 'bmltwf_debug_log';
+        $this->bmltwf_correspondence_table_name = $wpdb->prefix . 'bmltwf_correspondence';
     }
 
     public function bmltwf_drop_tables()
@@ -47,7 +49,9 @@ class BMLTWF_Database
         $wpdb->query($sql);
         $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_service_bodies_table_name . ";";
         $wpdb->query($sql);
-        $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_debug_log_table_name . ";";
+        $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_debug_log_table_name . ";";        
+        $wpdb->query($sql);
+        $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_correspondence_table_name . ";";
         $wpdb->query($sql);
         $this->debug_log("tables dropped");
     }
@@ -109,6 +113,34 @@ class BMLTWF_Database
     }
 
     /**
+     * Create the correspondence table
+     * 
+     * @param string $charset_collate The charset collate string
+     */
+    public function createCorrespondenceTable($charset_collate)
+    {
+        global $wpdb;
+        
+        $sql = "CREATE TABLE IF NOT EXISTS " . $this->bmltwf_correspondence_table_name . " (
+            correspondence_id bigint(20) NOT NULL AUTO_INCREMENT,
+            change_id bigint(20) NOT NULL,
+            thread_id varchar(36) NOT NULL,
+            message text NOT NULL,
+            from_submitter tinyint(1) NOT NULL DEFAULT 0,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            created_by varchar(255) NOT NULL,
+            PRIMARY KEY (correspondence_id),
+            KEY idx_change_id (change_id),
+            KEY idx_thread_id (thread_id),
+            FOREIGN KEY (change_id) REFERENCES " . $this->bmltwf_submissions_table_name . "(change_id) ON DELETE CASCADE
+        ) $charset_collate;";
+        
+        $wpdb->query($sql);
+        
+        $this->debug_log("Correspondence table created");
+    }
+    
+    /**
      * Create the debug log table
      * 
      * @param string $charset_collate The charset collate string
@@ -145,6 +177,9 @@ class BMLTWF_Database
         
         // Always create the debug log table
         $this->createDebugLogTable($charset_collate);
+        
+        // Always create the correspondence table
+        $this->createCorrespondenceTable($charset_collate);
         
         if (version_compare($version, '1.1.18', '<')) {
             // Create tables for version 0.4.0 format
@@ -203,8 +238,8 @@ class BMLTWF_Database
                 change_id bigint(20) NOT NULL AUTO_INCREMENT,
                 submission_time datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
                 change_time datetime NULL DEFAULT NULL,
-                changed_by varchar(10),
-                change_made varchar(10),
+                changed_by varchar(255),
+                change_made varchar(50),
                 submitter_name tinytext NOT NULL,
                 submission_type tinytext NOT NULL,
                 submitter_email varchar(320) NOT NULL,
@@ -227,6 +262,11 @@ class BMLTWF_Database
         
         delete_option('bmltwf_db_version');
         add_option('bmltwf_db_version', $this->bmltwf_db_version);
+        
+        // Ensure multisite compatibility for correspondence table
+        if (is_multisite()) {
+            $this->debug_log("Multisite detected during upgrade - ensuring correspondence table compatibility");
+        }
 
         if (version_compare($installed_version, '1.1.18', '<')) {
             $this->upgradeTableStructure();
@@ -246,9 +286,30 @@ class BMLTWF_Database
         if (version_compare($installed_version, '1.1.27', '<')) {
             $this->upgradeVenueTypeFields();
         }
+
+        if (version_compare($installed_version, '1.1.28', '<')) {
+            $this->createCorrespondenceTable($wpdb->get_charset_collate());
+            
+            // Update the change_made column to be wider
+            $wpdb->query("ALTER TABLE " . $this->bmltwf_submissions_table_name . " 
+                         MODIFY COLUMN change_made varchar(50),
+                         MODIFY COLUMN changed_by varchar(255)");
+            $this->debug_log("Updated change_made and changed_by columns to be wider");
+            
+            // Verify correspondence table was created successfully in multisite
+            if (is_multisite()) {
+                $table_exists = $wpdb->get_var("SHOW TABLES LIKE '" . $this->bmltwf_correspondence_table_name . "'");
+                if ($table_exists) {
+                    $this->debug_log("Correspondence table successfully created in multisite environment");
+                } else {
+                    $this->debug_log("WARNING: Correspondence table creation may have failed in multisite environment");
+                }
+            }
+        }
         
         return 2;
     }
+    
     private function fixDateTimeColumns()
     {
         global $wpdb;
@@ -624,9 +685,29 @@ class BMLTWF_Database
         $results = ['success' => true, 'errors' => []];
         
         try {
+            // Check if tables already exist with new structure
+            $has_new_structure = $wpdb->get_var("SHOW COLUMNS FROM " . $this->bmltwf_service_bodies_table_name . " LIKE 'serviceBodyId'");
+            
+            if ($has_new_structure && version_compare($test_version, '1.1.18', '<')) {
+                // Tables already have new structure, but we're testing old version upgrade
+                // Recreate tables with old structure for proper testing
+                $this->createTables($wpdb->get_charset_collate(), $test_version);
+                
+                // Insert a test service body with old structure
+                $wpdb->insert(
+                    $this->bmltwf_service_bodies_table_name,
+                    [
+                        'service_body_bigint' => 1,
+                        'service_body_name' => 'Test Service Body',
+                        'show_on_form' => 1
+                    ]
+                );
+            }
+            
             // Insert test data with old venue_type field if testing venue type upgrade
             if (version_compare($test_version, '1.1.27', '<')) {
                 $test_data = json_encode(['venue_type' => 2, 'original_venue_type' => 1, 'name' => 'Test Meeting']);
+                $column_name = version_compare($test_version, '1.1.18', '<') ? 'service_body_bigint' : 'serviceBodyId';
                 $wpdb->insert(
                     $this->bmltwf_submissions_table_name,
                     [
@@ -635,7 +716,7 @@ class BMLTWF_Database
                         'submission_type' => 'reason_new',
                         'submitter_email' => 'test@example.com',
                         'changes_requested' => $test_data,
-                        'serviceBodyId' => 1
+                        $column_name => 1
                     ]
                 );
                 $test_change_id = $wpdb->insert_id;

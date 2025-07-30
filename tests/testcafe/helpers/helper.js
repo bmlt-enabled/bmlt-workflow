@@ -141,7 +141,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
         '<p>Attn: FSO.<br>\nPlease send a starter kit to the following meeting:\n</p>\n<hr><br>\n<table class="blueTable" style="border: 1px solid #1C6EA4;background-color: #EEEEEE;text-align: left;border-collapse: collapse;">\n    <thead style="background: #1C6EA4;border-bottom: 2px solid #444444;">\n        <tr>\n            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: none;">\n                <br>Field Name\n            </th>\n            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: 2px solid #D0E4F5;">\n                <br>Value\n            </th>\n        </tr>\n    </thead>\n    <tbody>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Group Name</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:name}</td>\n        </tr>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Requester First Name</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:first_name}</td>\n        </tr>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Requester Last Name</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:last_name}</td>\n        </tr>\n        <tr>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Starter Kit Postal Address</td>\n            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:starter_kit_postal_address}\n            </td>\n        </tr>\n    </tbody>\n</table>\n',
       bmltwf_fso_email_address: "example@example.com",
       bmltwf_fso_feature: "display",
-      bmltwf_db_version: CURRENT_DB_VERSION,
+      bmltwf_db_version: "1.1.27",
       bmltwf_bmlt_server_address: "http://" + host + ":" + port + "/main_server/",
       bmltwf_bmlt_username: "bmlt-workflow-bot",
       bmltwf_bmlt_test_status: "success",
@@ -311,4 +311,94 @@ export async function set_language_single(t, lang)
     await select_dropdown_by_value(Selector("#WPLANG"),lang);
   }
   await t.click(Selector("#submit"));
+}
+
+export async function setupCorrespondenceFeature(t, role = bmltwf_admin, settingsPage = userVariables.admin_settings_page_single, wpPagesUrl = userVariables.wp_pages_single, correspondenceJsonUrl = userVariables.admin_correspondence_json_single, siteUrl = userVariables.siteurl_single) {
+  await t.useRole(role);
+  
+  const cookies = await t.getCookies();
+  const cookieHeader = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
+  
+  await t.navigateTo(settingsPage);
+  const nonce = await Selector('#_wprestnonce').value;
+  
+  let pageId;
+  try {
+    // Search for existing published pages with correspondence shortcode
+    const allPages = await t.request({
+      url: `${wpPagesUrl}&status=publish&per_page=100`,
+      method: 'GET',
+      headers: {
+        'Cookie': cookieHeader
+      }
+    });
+    let existingPage = null;
+    // Handle both array and object responses
+    let pages = [];
+    if (Array.isArray(allPages.body)) {
+      pages = allPages.body;
+    } else if (allPages.body && typeof allPages.body === 'object') {
+      // Check if it's an error response
+      if (allPages.body.code && allPages.body.message) {
+        pages = []; // No pages found due to error
+      } else if (allPages.body.data && Array.isArray(allPages.body.data)) {
+        pages = allPages.body.data;
+      } else {
+        // Convert object values to array if they look like page objects
+        pages = Object.values(allPages.body).filter(item => 
+          item && typeof item === 'object' && item.id && item.content
+        );
+      }
+    }
+        
+    existingPage = pages.find(page => {
+      const hasCorrespondenceTitle = page.title?.rendered === 'Correspondence';
+      const hasShortcodeInRendered = page.content?.rendered?.includes('[bmltwf-correspondence-form]');
+      return hasCorrespondenceTitle || hasShortcodeInRendered;
+    });
+    if (existingPage) {
+      pageId = existingPage.id;
+    } else {
+      // Create new page only if none exists
+      const pageData = {
+        title: 'Correspondence',
+        content: '[bmltwf-correspondence-form]',
+        status: 'publish'
+      };
+      
+      const pageResponse = await t.request({
+        url: wpPagesUrl,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': cookieHeader,
+          'X-WP-Nonce': nonce,
+        },
+        body: pageData
+      });
+      pageId = pageResponse.body?.id;
+      
+      if (!pageId) {
+        throw new Error(`Page creation failed. Status: ${pageResponse.status}`);
+      }
+    }
+  } catch (error) {
+    throw new Error(`Failed to setup correspondence page: ${error.message}`);
+  }
+  
+  // Configure the correspondence feature with the page ID
+  await t.request({
+    url: correspondenceJsonUrl,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-WP-Nonce': nonce,
+      'Cookie': cookieHeader
+    },
+    body: {
+      page_id: pageId.toString()
+    }
+  });
+  
+  return `${siteUrl}/?page_id=${pageId}`;
 }

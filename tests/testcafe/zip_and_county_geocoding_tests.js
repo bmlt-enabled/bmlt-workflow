@@ -33,7 +33,7 @@ import {
 
 import { userVariables } from "../../.testcaferc.js";
 
-fixture`bmlt3x_zip_and_county_geocoding_tests_fixture`
+fixture`zip_and_county_geocoding_tests_fixture`
   .before(async (t) => {})
   .beforeEach(async (t) => {
 
@@ -43,7 +43,7 @@ fixture`bmlt3x_zip_and_county_geocoding_tests_fixture`
 
   });
 
-test("Bmlt3x_Pick_Up_Zip_And_County_Geocoding_Setting", async (t) => {
+test("Pick_Up_Zip_And_County_Geocoding_Setting", async (t) => {
 
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
   await t
@@ -52,7 +52,7 @@ test("Bmlt3x_Pick_Up_Zip_And_County_Geocoding_Setting", async (t) => {
 
 });
 
-test("Bmlt3x_Submit_New_Meeting_And_Check_Zip_And_County_Geolocation", async (t) => {
+test("Submit_New_Meeting_And_Check_Zip_And_County_Geolocation", async (t) => {
   // switch to admin page
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
   await check_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
@@ -68,7 +68,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Check_Zip_And_County_Geolocation", async (t)
   await click_table_row_column(as.dt_submission, row, 0);
   // quickedit
 
-  await click_dt_button_by_index(as.dt_submission_wrapper, 2);
+  await click_dt_button_by_index(as.dt_submission_wrapper, 3);
   await t.expect(as.quickedit_location_postal_code_1.withAttribute("disabled").exists).ok()
     .expect(as.quickedit_location_sub_province.withAttribute("disabled").exists).ok()
     // Click geolocate button
@@ -82,7 +82,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Check_Zip_And_County_Geolocation", async (t)
     .expect(as.quickedit_location_postal_code_1.value).eql('11201')
 });
 
-test("Bmlt3x_Check_Optional_County_Hidden_Even_When_Geolocation_On", async (t) => {
+test("Check_Optional_County_Hidden_Even_When_Geolocation_On", async (t) => {
   // switch to admin page
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
   await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
@@ -98,6 +98,6 @@ test("Bmlt3x_Check_Optional_County_Hidden_Even_When_Geolocation_On", async (t) =
   await click_table_row_column(as.dt_submission, row, 0);
   // quickedit
 
-  await click_dt_button_by_index(as.dt_submission_wrapper, 2);
+  await click_dt_button_by_index(as.dt_submission_wrapper, 3);
   await t.expect(as.optional_location_sub_province.visible).eql(false);
 });

@@ -35,9 +35,9 @@ class OptionsHandler
 
     public function __construct()
     {
-        // $this->debug_log("OptionsHandler: Creating new BMLTWF_Database");        
+        $this->initTableNames();
+        
         $this->BMLTWF_Database = new BMLTWF_Database();
-        // $this->debug_log("OptionsHandler: Creating new Integration");        
         $this->Integration = new Integration();
     }
 
@@ -47,7 +47,6 @@ class OptionsHandler
         
     
         $this->debug_log("restore handler called");
-        // $this->debug_log(($request));
 
         $params = $request->get_json_params();
         $this->debug_log("PARSING PARAMETERS");
@@ -111,6 +110,16 @@ class OptionsHandler
             $cnt += $rows;
         }
         $this->debug_log("submissions rows inserted :" . $cnt);
+
+        // correspondence table (if exists in backup)
+        if (isset($params['correspondence']) && !empty($params['correspondence'])) {
+            $cnt = 0;
+            foreach ($params['correspondence'] as $row => $value) {
+                $rows = $wpdb->insert($this->BMLTWF_Database->bmltwf_correspondence_table_name, $params['correspondence'][$row]);
+                $cnt += $rows;
+            }
+            $this->debug_log("correspondence rows inserted :" . $cnt);
+        }
 
         // Set auto increment to highest ID value + 1
         if (!empty($params['submissions'])) {
@@ -177,6 +186,13 @@ class OptionsHandler
         // get service bodies access
         $result = $wpdb->get_results("SELECT * from " . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name);
         $save['service_bodies_access'] = $result;
+        
+        // get correspondence (if table exists)
+        if ($wpdb->get_var("SHOW TABLES LIKE '{$this->BMLTWF_Database->bmltwf_correspondence_table_name}'") == $this->BMLTWF_Database->bmltwf_correspondence_table_name) {
+            $result = $wpdb->get_results("SELECT * from " . $this->BMLTWF_Database->bmltwf_correspondence_table_name);
+            $save['correspondence'] = $result;
+        }
+        
         $contents = json_encode($save, JSON_PRETTY_PRINT);
         $this->debug_log('backup file generated');
         $this->debug_log($contents);
@@ -251,5 +267,32 @@ class OptionsHandler
             'message' => __('Debug log download successful', 'bmlt-workflow'),
             'log_content' => base64_encode($log_content)
         ));
+    }
+    
+    public function post_bmltwf_correspondence_page_handler($request)
+    {
+        $this->debug_log("correspondence page handler called");
+        
+        $params = $request->get_json_params();
+        $page_id = $params['page_id'] ?? '';
+        
+        if (empty($page_id)) {
+            update_option('bmltwf_correspondence_page', '');
+            return $this->bmltwf_rest_success(__('Correspondence page cleared successfully', 'bmlt-workflow'));
+        }
+        
+        $page_id = intval($page_id);
+        if ($page_id <= 0) {
+            return $this->bmltwf_rest_error(__('Invalid page ID', 'bmlt-workflow'), 400);
+        }
+        
+        $page = get_post($page_id);
+        if (!$page || $page->post_type !== 'page' || $page->post_status !== 'publish') {
+            return $this->bmltwf_rest_error(__('Selected page does not exist or is not published', 'bmlt-workflow'), 400);
+        }
+        
+        update_option('bmltwf_correspondence_page', $page_id);
+        
+        return $this->bmltwf_rest_success(__('Correspondence page updated successfully', 'bmlt-workflow'));
     }
 }

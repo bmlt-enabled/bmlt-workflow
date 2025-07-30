@@ -1,51 +1,45 @@
 // Copyright (C) 2022 nigel.bmlt@gmail.com
-//
+// 
 // This file is part of bmlt-workflow.
-//
+// 
 // bmlt-workflow is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-//
+// 
 // bmlt-workflow is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-//
+// 
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
+import { Selector, Role } from "testcafe";
 
-import { Selector } from "testcafe";
-
-import {
-  restore_from_backup,
-  select_dropdown_by_text,
-  select_dropdown_by_value,
-  click_table_row_column,
-  click_dt_button_by_index,
-  click_dialog_button_by_index,
+import { 
+  click_table_row_column, 
+  click_dt_button_by_index, 
+  click_dialog_button_by_index, 
+  select_dropdown_by_text, 
+  select_dropdown_by_value, 
   waitfor,
-  myip,
-  bmltwf_admin,
-  set_language_single
-} from "./helpers/helper.js";
-
+  restore_from_backup,
+  bmltwf_admin_multisingle,
+  myip } from "./helpers/helper.js";
+  
 import { userVariables } from "../../.testcaferc";
 
-fixture`bmlt3x_geocoding_tests_fixture`
-  .before(async (t) => {})
+fixture`multisite_single_e2e_test_fixture`
+  // .page(userVariables.admin_submissions_page_single)
   .beforeEach(async (t) => {
-
-    // geocoding disabled on port 3002
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single,userVariables.admin_restore_json,myip(),"3002","hidden");
-    await set_language_single(t, "en_EN");
-
+    await waitfor(userVariables.admin_logon_page_multisingle);
+    await restore_from_backup(bmltwf_admin_multisingle, userVariables.admin_settings_page_multisingle_plugin, userVariables.admin_restore_json_multisingle_plugin,myip(),"3001","hidden");
   });
 
-test("Bmlt3x_Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) => {
+test("MultiSite_Single_Submit_New_Meeting_And_Approve", async (t) => {
   var meeting = {
     location_text: "the church",
     location_street: "105 avoca street",
@@ -54,10 +48,8 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) 
     location_province: "nsw",
     location_postal_code_1: "2032",
   };
-
-  await waitfor(userVariables.admin_logon_page_single);
-  await t.navigateTo(userVariables.formpage);
-
+  // console.log(userVariables.formpage_multisingle);
+  await t.navigateTo(userVariables.formpage_multisingle);
   await select_dropdown_by_value(uf.update_reason, "reason_new");
 
   // check our divs are visible
@@ -72,6 +64,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) 
     .eql(true)
     .expect(uf.additional_info_div.visible)
     .eql(true);
+
   // personal details
   await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "123-456-7890");
 
@@ -151,7 +144,7 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) 
     .match(/submission\ successful/);
 
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+  await t.useRole(bmltwf_admin_multisingle).navigateTo(userVariables.admin_submissions_page_multisingle_plugin);
 
   // new meeting = row 0
   var row = 0;
@@ -171,11 +164,12 @@ test("Bmlt3x_Submit_New_Meeting_And_Approve_With_Geocoding_Disabled", async (t) 
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
-});
+})
 
-test("Bmlt3x_Submit_Change_Meeting_And_Approve_With_Geocoding_Disabled", async (t) => {
-  //console.log("hi1");
-  await t.navigateTo(userVariables.formpage);
+test("Multisite_Single_Submit_Change_Meeting_And_Approve", async (t) => {
+  await t.navigateTo(userVariables.formpage_multisingle);
+  
+  // console.log(userVariables.formpage_multisingle);
 
   await select_dropdown_by_value(uf.update_reason, "reason_change");
 
@@ -184,9 +178,8 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_With_Geocoding_Disabled", async (
 
   // meeting selector
   await t.click("#select2-meeting-searcher-container");
-  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "right");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "chance");
   await t.pressKey("enter");
-
   // validate form is laid out correctly
   await t.expect(uf.personal_details.visible).eql(true).expect(uf.meeting_details.visible).eql(true).expect(uf.additional_info_div.visible).eql(true);
 
@@ -195,7 +188,7 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_With_Geocoding_Disabled", async (
     .typeText(uf.first_name, "first")
     .typeText(uf.last_name, "last")
     .typeText(uf.email_address, "test@test.com.zz")
-    .typeText(uf.contact_number, "12345")
+    .typeText(uf.contact_number, "123-456-7890")
     .typeText(uf.location_text, "location")
 
     .typeText(uf.name, "update", { replace: true })
@@ -212,13 +205,15 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_With_Geocoding_Disabled", async (
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   await t.typeText(uf.additional_info, "my additional info");
+
   await t
     .click(uf.submit)
     .expect(Selector("#bmltwf_response_message").innerText)
     .match(/submission\ successful/);
 
+    // await t.debug();
   // switch to admin page
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+  await t.useRole(bmltwf_admin_multisingle).navigateTo(userVariables.admin_submissions_page_multisingle_plugin);
 
   // new meeting = row 0
   var row = 0;
@@ -238,23 +233,4 @@ test("Bmlt3x_Submit_Change_Meeting_And_Approve_With_Geocoding_Disabled", async (
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
 
-});
-
-test("Bmlt3x_Approve_New_Meeting_No_Geocoding", async (t) => {
-
-  // await t.eval(() => location.reload(true));
-  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
-
-  // new meeting = row 2
-  var row = 2;
-  await click_table_row_column(as.dt_submission, row, 0);
-
-  // quickedit
-  await click_dt_button_by_index(as.dt_submission_wrapper, 2);
-  // geocode div should be invisible
-  await t.expect(as.optional_auto_geocode_enabled.visible).eql(false);
-
-  // // check the geocode button is disabled
-  var g = as.quickedit_dialog_parent.find("button.ui-corner-all").nth(1);
-  await t.expect(g.withAttribute("disabled").exists).ok();
-});
+})
