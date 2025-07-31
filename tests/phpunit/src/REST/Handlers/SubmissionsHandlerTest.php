@@ -334,6 +334,7 @@ Line: $errorLine
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
         /** @var Mockery::mock $wpdb test */
         // handle db insert of submission
         $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
@@ -444,6 +445,7 @@ Line: $errorLine
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
         /** @var Mockery::mock $wpdb test */
         // handle db insert of submission
         $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
@@ -503,6 +505,7 @@ Line: $errorLine
 
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
         /** @var Mockery::mock $wpdb test */
         // handle db insert of submission
         $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);

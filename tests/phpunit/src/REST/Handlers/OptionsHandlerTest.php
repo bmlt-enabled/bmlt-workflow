@@ -29,6 +29,7 @@ final class OptionsHandlerTest extends TestCase
         
         Functions\when('__')->returnArg();
         Functions\when('\get_option')->justReturn('test');
+        Functions\when('\is_multisite')->justReturn(false);
     }
 
     protected function tearDown(): void
@@ -64,9 +65,13 @@ final class OptionsHandlerTest extends TestCase
     {
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
+        $wpdb->num_rows = 1;
         $wpdb->shouldReceive('insert')->times(4)->andReturn(1); // 3 main tables + correspondence
         $wpdb->shouldReceive('query')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn([]);
+        $wpdb->shouldReceive('get_results')->andReturn([]);
+        $wpdb->shouldReceive('get_var')->andReturn(null);
         $wpdb->shouldReceive('get_charset_collate')->andReturn('');
         
         Functions\when('delete_option')->justReturn(true);
@@ -111,9 +116,13 @@ final class OptionsHandlerTest extends TestCase
     {
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
+        $wpdb->num_rows = 1;
         $wpdb->shouldReceive('insert')->times(3)->andReturn(1); // Only 3 main tables
         $wpdb->shouldReceive('query')->andReturn(true);
         $wpdb->shouldReceive('get_col')->andReturn([]);
+        $wpdb->shouldReceive('get_results')->andReturn([]);
+        $wpdb->shouldReceive('get_var')->andReturn(null);
         $wpdb->shouldReceive('get_charset_collate')->andReturn('');
         
         Functions\when('delete_option')->justReturn(true);
@@ -156,6 +165,7 @@ final class OptionsHandlerTest extends TestCase
     {
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
         $wpdb->shouldReceive('get_results')->times(3)->andReturn([
             (object)['id' => 1, 'name' => 'Test']
         ]);

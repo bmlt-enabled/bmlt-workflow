@@ -56,6 +56,10 @@ class CorrespondenceHandlerTest extends TestCase
         $mockUser->user_login = 'testuser';
         Functions\when('wp_get_current_user')->justReturn($mockUser);
         
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
+        
         $handler = new CorrespondenceHandler();
         $this->assertInstanceOf(CorrespondenceHandler::class, $handler);
     }
@@ -75,6 +79,7 @@ class CorrespondenceHandlerTest extends TestCase
         
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
         $wpdb->shouldReceive('prepare')->andReturnUsing(function($query, ...$args) {
             return vsprintf(str_replace('%s', '\'%s\'', str_replace('%d', '%d', $query)), $args);
         });
@@ -132,6 +137,7 @@ class CorrespondenceHandlerTest extends TestCase
         
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
         $wpdb->shouldReceive('prepare')->andReturnUsing(function($query, ...$args) {
             return vsprintf(str_replace('%s', '\'%s\'', str_replace('%d', '%d', $query)), $args);
         });
@@ -194,6 +200,110 @@ class CorrespondenceHandlerTest extends TestCase
         $this->assertTrue($result['success']);
         $this->assertEquals('new-thread-id', $result['thread_id']);
         
-        // Verify wp_mail was called (expectation is automatically verified by Brain\Monkey)
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\CorrespondenceHandler::post_correspondence_handler
+     */
+    public function test_post_correspondence_handler_from_submitter_sends_admin_notification(): void
+    {
+        Functions\when('get_option')->justReturn('test');
+        Functions\when('current_user_can')->justReturn(true);
+        Functions\when('__')->returnArg();
+        
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
+        $wpdb->shouldReceive('prepare')->andReturnUsing(function($query, ...$args) {
+            return vsprintf(str_replace('%s', '\'%s\'', str_replace('%d', '%d', $query)), $args);
+        });
+        $wpdb->shouldReceive('query')->andReturn(true);
+        
+        $submission = (object)[
+            'change_id' => 123,
+            'submitter_email' => 'test@example.com',
+            'submitter_name' => 'Test User',
+            'change_made' => 'Test change',
+            'serviceBodyId' => 456
+        ];
+        
+        $wpdb->shouldReceive('get_row')
+            ->andReturn($submission);
+            
+        $wpdb->shouldReceive('insert')
+            ->once()
+            ->andReturn(1);
+        
+        // Mock correspondence history - first message from user
+        $messages = [
+            (object)['from_submitter' => 1, 'created_at' => '2023-01-01 12:00:00']
+        ];
+        $wpdb->shouldReceive('get_results')
+            ->once()
+            ->andReturn($messages);
+        
+        // Mock admin emails lookup
+        $wpdb->shouldReceive('get_col')
+            ->once()
+            ->andReturn([1, 2]); // Two admin user IDs
+        
+        $request = Mockery::mock('WP_REST_Request');
+        $request->shouldReceive('get_param')
+            ->with('change_id')
+            ->andReturn(123);
+        $request->shouldReceive('get_param')
+            ->with('message')
+            ->andReturn('Test message from user');
+        $request->shouldReceive('get_param')
+            ->with('from_submitter')
+            ->andReturn('true');
+        $request->shouldReceive('get_param')
+            ->with('thread_id')
+            ->andReturn('existing-thread-id');
+        
+        // Mock existing thread check
+        $wpdb->shouldReceive('get_var')
+            ->once()
+            ->andReturn(1); // Thread exists
+        
+        Functions\when('current_time')->justReturn('2023-01-01 12:00:00');
+        Functions\when('get_site_url')->justReturn('http://example.com');
+        Functions\when('get_bloginfo')->justReturn('Test Site');
+        
+        // Mock user lookup for admin emails
+        $mockAdmin1 = Mockery::mock('WP_User');
+        $mockAdmin1->user_email = 'admin1@example.com';
+        $mockAdmin2 = Mockery::mock('WP_User');
+        $mockAdmin2->user_email = 'admin2@example.com';
+        
+        Functions\when('get_user_by')->alias(function($field, $value) use ($mockAdmin1, $mockAdmin2) {
+            if ($field === 'ID' && $value === 1) return $mockAdmin1;
+            if ($field === 'ID' && $value === 2) return $mockAdmin2;
+            return false;
+        });
+        
+        // Expect admin notification email to be sent
+        Functions\expect('wp_mail')
+            ->once()
+            ->with(
+                'admin1@example.com,admin2@example.com', // Should send to admin emails
+                Mockery::pattern('/New correspondence received/'), // Subject should contain this
+                Mockery::type('string'), // Message body
+                Mockery::type('array') // Headers
+            )
+            ->andReturn(true);
+        
+        $mockUser = Mockery::mock('WP_User');
+        $mockUser->shouldReceive('get')->andReturn('Test User');
+        $mockUser->display_name = 'Test User';
+        $mockUser->user_login = 'testuser';
+        Functions\when('wp_get_current_user')->justReturn($mockUser);
+        
+        $handler = new CorrespondenceHandler();
+        $result = $handler->post_correspondence_handler($request);
+        
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('success', $result);
+        $this->assertTrue($result['success']);
     }
 }

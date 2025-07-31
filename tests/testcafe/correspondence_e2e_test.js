@@ -16,8 +16,9 @@
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
 import { userVariables } from "../../.testcaferc";
-import { bmltwf_admin, restore_from_backup, myip, set_language_single, setupCorrespondenceFeature, get_table_row_col } from './helpers/helper';
+import { bmltwf_admin, restore_from_backup, myip, set_language_single, setupCorrespondenceFeature, get_table_row_col, click_dialog_button_by_index, click_dt_button_by_index } from './helpers/helper';
 import { cs } from './models/correspondence';
+import { as } from './models/admin_submissions';
 import { Selector } from 'testcafe';
 
 fixture`Correspondence_E2E_Workflow`
@@ -192,6 +193,68 @@ test('E2E_Full_Correspondence_Cycle', async t => {
         .expect(cs.correspondenceHistory.textContent).contains(userMessage)
         .expect(cs.correspondenceHistory.textContent).contains(adminResponse)
         .expect(cs.correspondenceHistory.textContent).contains(userFollowup);
+});
+
+test('E2E_Correspondence_Disabled_After_Approval', async t => {
+    const adminMessage = 'Admin message before approval';
+    
+    // Step 1: Admin initiates correspondence on modify meeting submission (row 1)
+    const secondRowCell = await get_table_row_col(as.dt_submission, 1, 0);
+    await t.click(secondRowCell);
+    await t
+        .click(cs.correspondenceButton)
+        .typeText(cs.correspondenceTextarea, adminMessage)
+        .click(cs.sendButton)
+        .click(Selector('.ui-dialog-buttonset button').withText('Close'))
+        .wait(2000);
+    
+    // Step 2: Verify correspondence button is enabled for pending submission
+    var g = as.dt_submission_wrapper.find("button").nth(2); // correspondence button
+    await t.expect(g.hasAttribute("disabled")).notOk('Correspondence button should be enabled for pending submission');
+
+    // Step 3: Approve the submission (row should still be selected)
+    await click_dt_button_by_index(as.dt_submission_wrapper, 0); // Approve button
+    await t.expect(as.approve_dialog_parent.visible).eql(true);
+    await t.typeText(as.approve_dialog_textarea, "I approve this request");
+    await click_dialog_button_by_index(as.approve_dialog_parent, 1);
+    await t.expect(as.approve_dialog_parent.visible).eql(false);
+    await t.wait(2000);
+    
+    // Step 4: Re-select row and verify correspondence button is disabled after approval
+    await t.click(secondRowCell);
+    g = as.dt_submission_wrapper.find("button").nth(2); // correspondence button
+    await t.expect(g.hasAttribute("disabled")).ok('Correspondence button should be disabled after approval');
+});
+
+test('E2E_Correspondence_Disabled_After_Rejection', async t => {
+    const adminMessage = 'Admin message before rejection';
+    
+    // Step 1: Admin initiates correspondence on new meeting submission (row 2)
+    const thirdRowCell = await get_table_row_col(as.dt_submission, 2, 0);
+    await t.click(thirdRowCell);
+    await t
+        .click(cs.correspondenceButton)
+        .typeText(cs.correspondenceTextarea, adminMessage)
+        .click(cs.sendButton)
+        .click(Selector('.ui-dialog-buttonset button').withText('Close'))
+        .wait(2000);
+    
+    // Step 2: Re-select row and verify correspondence button is enabled for pending submission
+    var g = as.dt_submission_wrapper.find("button").nth(2); // correspondence button
+    await t.expect(g.hasAttribute("disabled")).notOk('Correspondence button should be enabled for pending submission');
+    
+    // Step 3: Reject the submission (row should still be selected)
+    await click_dt_button_by_index(as.dt_submission_wrapper, 1); // Reject button
+    await t.expect(as.reject_dialog_parent.visible).eql(true);
+    await t.typeText(as.reject_dialog_textarea, "I reject this request");
+    await click_dialog_button_by_index(as.reject_dialog_parent, 1);
+    await t.expect(as.reject_dialog_parent.visible).eql(false);
+    await t.wait(2000);
+    
+    // Step 4: Re-select row and verify correspondence button is disabled after rejection
+    await t.click(thirdRowCell);
+    g = as.dt_submission_wrapper.find("button").nth(2); // correspondence button
+    await t.expect(g.hasAttribute("disabled")).ok('Correspondence button should be disabled after rejection');
 });
 
 test('E2E_Multiple_Submissions_Independent_Correspondence', async t => {

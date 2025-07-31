@@ -20,15 +20,15 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.28
+ * Version: 1.1.29
  * Requires at least: 5.2
- * Tested up to: 6.6.1
+ * Tested up to: 6.8.2
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.28');
+define('BMLTWF_PLUGIN_VERSION', '1.1.29');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -213,6 +213,9 @@ if (!class_exists('bmltwf_plugin')) {
 
             // add counties/states/provinces if they are populated
             $meeting_counties_and_sub_provinces = $this->bmlt_integration->getMeetingCounties();
+            if (is_wp_error($meeting_counties_and_sub_provinces)) {
+                wp_die("<h4>" . __('BMLTWF Plugin Error: Unable to retrieve meeting counties from BMLT server.', 'bmlt-workflow') . "</h4>");
+            }
             $script .= "var bmltwf_counties_and_sub_provinces = " . json_encode($meeting_counties_and_sub_provinces) . ";";
             if ($meeting_counties_and_sub_provinces) {
                 $script .= json_encode($meeting_counties_and_sub_provinces) . ";";
@@ -221,6 +224,9 @@ if (!class_exists('bmltwf_plugin')) {
             }
 
             $meeting_states_and_provinces = $this->bmlt_integration->getMeetingStates();
+            if (is_wp_error($meeting_states_and_provinces)) {
+                wp_die("<h4>" . __('BMLTWF Plugin Error: Unable to retrieve meeting states/provinces from BMLT server.', 'bmlt-workflow') . "</h4>");
+            }
             $script .= "var bmltwf_do_states_and_provinces = " . json_encode($meeting_states_and_provinces) . ";";
             if ($meeting_states_and_provinces) {
                 $script .=  json_encode($meeting_states_and_provinces) . ";";
@@ -229,6 +235,9 @@ if (!class_exists('bmltwf_plugin')) {
             }
 
             $formatarr = $this->bmlt_integration->getMeetingFormats();
+            if (is_wp_error($formatarr)) {
+                wp_die("<h4>" . __('BMLTWF Plugin Error: Unable to retrieve meeting formats from BMLT server.', 'bmlt-workflow') . "</h4>");
+            }
 
             // $this->debug_log("FORMATS");
             // $this->debug_log($formatarr);
@@ -1633,7 +1642,7 @@ if (!class_exists('bmltwf_plugin')) {
             
             echo '<div class="bmltwf_info_text">';
             echo '<br>';
-            echo __('Select the WordPress page that contains the correspondence form shortcode [bmltwf-correspondence-form]. This page URL will be used in email notifications to submitters when new correspondence is available.', 'bmlt-workflow');
+            echo __('Select the WordPress page that contains the correspondence form shortcode <code>[bmltwf-correspondence-form]</code>. This page URL will be used in email notifications to submitters when new correspondence is available.', 'bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
 

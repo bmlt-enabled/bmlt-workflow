@@ -198,6 +198,52 @@ test("Reject_Close_Meeting", async (t) => {
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Rejected");
 });
 
+test("Multi_Line_Delete_Buttons_And_Function", async (t) => {
+  // Select multiple rows (row 1 and row 2)
+  await click_table_row_column(as.dt_submission, 1, 0);
+  // Hold Shift and click second row for multi-selection
+  await t.click(as.dt_submission.child("tbody").child(2).child(0), { modifiers: {shift:true} });
+  
+  // Verify that multiple rows are selected
+  const selectedRows = as.dt_submission.find('tbody tr.selected');
+  await t.expect(selectedRows.count).eql(2);
+  
+  // When multiple rows selected, only delete button should be enabled
+  // approve button should be disabled
+  var g = as.dt_submission_wrapper.find("button").nth(0);
+  await t.expect(g.hasAttribute("disabled")).ok();
+  // reject button should be disabled
+  g = as.dt_submission_wrapper.find("button").nth(1);
+  await t.expect(g.hasAttribute("disabled")).ok();
+  // correspondence button should be disabled
+  g = as.dt_submission_wrapper.find("button").nth(2);
+  await t.expect(g.hasAttribute("disabled")).ok();
+  // quickedit button should be disabled
+  g = as.dt_submission_wrapper.find("button").nth(3);
+  await t.expect(g.hasAttribute("disabled")).ok();
+  // delete button should be enabled
+  g = as.dt_submission_wrapper.find("button").nth(4);
+  await t.expect(g.hasAttribute("disabled")).notOk();
+  
+  // Click delete button to open multi-delete dialog
+  await click_dt_button_by_index(as.dt_submission_wrapper, 4);
+  
+  // Multi-delete dialog should be visible
+  await t.expect(as.multi_delete_dialog_parent.visible).eql(true);
+  
+  // Dialog should show count of 2 submissions
+  await t.expect(as.multi_delete_count.innerText).contains("2");
+  
+  // Click OK to confirm deletion
+  await click_dialog_button_by_index(as.multi_delete_dialog_parent, 1);
+  
+  // Dialog should close
+  await t.expect(as.multi_delete_dialog_parent.visible).eql(false);
+  
+  // Wait for table to reload and verify submissions are deleted
+  await t.wait(2000);
+});
+
 test("Submission_Buttons_Active_correctly", async (t) => {
   // new meeting = row 2
   var row = 2;
