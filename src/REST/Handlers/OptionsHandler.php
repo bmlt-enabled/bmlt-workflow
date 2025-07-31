@@ -78,6 +78,14 @@ class OptionsHandler
                 $this->debug_log("added option: " . $option_name);
             }
         }
+        
+        // Ensure correspondence email templates are restored with defaults if missing
+        if (!get_option('bmltwf_correspondence_submitter_email_template')) {
+            add_option('bmltwf_correspondence_submitter_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_submitter_email_template.html'));
+        }
+        if (!get_option('bmltwf_correspondence_admin_email_template')) {
+            add_option('bmltwf_correspondence_admin_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_admin_email_template.html'));
+        }
 
         // Drop and recreate tables for the backup database version
         $this->BMLTWF_Database->bmltwf_drop_tables();

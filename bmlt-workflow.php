@@ -814,6 +814,30 @@ if (!class_exists('bmltwf_plugin')) {
                 )
             );
 
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_correspondence_submitter_email_template',
+                array(
+                    'type' => 'string',
+                    'description' => __('Email template for correspondence notifications to submitters', 'bmlt-workflow'),
+                    'sanitize_callback' => null,
+                    'show_in_rest' => false,
+                    'default' => file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_submitter_email_template.html')
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_correspondence_admin_email_template',
+                array(
+                    'type' => 'string',
+                    'description' => __('Email template for correspondence notifications to admins', 'bmlt-workflow'),
+                    'sanitize_callback' => null,
+                    'show_in_rest' => false,
+                    'default' => file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_admin_email_template.html')
+                )
+            );
+
             add_settings_section(
                 'bmltwf-settings-section-id',
                 '',
@@ -921,6 +945,14 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_submitter_email_template',
                 __('Email template used when sending a form submission notification', 'bmlt-workflow'),
                 array(&$this, 'bmltwf_submitter_email_template_html'),
+                'bmltwf-settings',
+                'bmltwf-settings-section-id'
+            );
+
+            add_settings_field(
+                'bmltwf_correspondence_email_templates',
+                __('Correspondence email templates', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_correspondence_email_templates_html'),
                 'bmltwf-settings',
                 'bmltwf-settings-section-id'
             );
@@ -1528,6 +1560,35 @@ if (!class_exists('bmltwf_plugin')) {
             add_role('bmltwf_trusted_servant', 'BMLT Workflow Trusted Servant');
         }
 
+        public function bmltwf_correspondence_email_templates_html()
+        {
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>';
+            echo __('These templates will be used when sending correspondence notifications.', 'bmlt-workflow');
+            echo '<br><br>';
+            echo '</div>';
+
+            // Submitter template
+            echo '<h4>' . __('Template for notifications to submitters', 'bmlt-workflow') . '</h4>';
+            $content = get_option('bmltwf_correspondence_submitter_email_template');
+            $editor_id = 'bmltwf_correspondence_submitter_email_template';
+            wp_editor($content, $editor_id, array('media_buttons' => false));
+            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . esc_attr($editor_id) . '_default">';
+            echo __('Copy default template to clipboard', 'bmlt-workflow');
+            echo '</button>';
+            echo '<br><br>';
+
+            // Admin template
+            echo '<h4>' . __('Template for notifications to admins', 'bmlt-workflow') . '</h4>';
+            $content = get_option('bmltwf_correspondence_admin_email_template');
+            $editor_id = 'bmltwf_correspondence_admin_email_template';
+            wp_editor($content, $editor_id, array('media_buttons' => false));
+            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . esc_attr($editor_id) . '_default">';
+            echo __('Copy default template to clipboard', 'bmlt-workflow');
+            echo '</button>';
+            echo '<br><br>';
+        }
+
         private function bmltwf_add_default_options()
         {
             // install all our default options (if they arent set already)
@@ -1547,6 +1608,8 @@ if (!class_exists('bmltwf_plugin')) {
             add_option('bmltwf_fso_email_address', 'example@example.com');
             add_option('bmltwf_fso_feature', 'display');
             add_option('bmltwf_correspondence_page', '');
+            add_option('bmltwf_correspondence_submitter_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_submitter_email_template.html'));
+            add_option('bmltwf_correspondence_admin_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_admin_email_template.html'));
         }
 
         public function bmltwf_add_capability($user_id)

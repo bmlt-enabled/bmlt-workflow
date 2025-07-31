@@ -241,10 +241,10 @@ class CorrespondenceHandler
 
         // If this is from admin, send email to submitter with link to view correspondence
         if (!$from_submitter) {
-            $this->send_correspondence_notification($submission, $thread_id);
+            $this->send_correspondence_notification($submission, $thread_id, $message);
         } else {
             // If this is from submitter, check if we need to notify admins
-            $this->check_and_send_admin_notification($submission, $thread_id, $change_id);
+            $this->check_and_send_admin_notification($submission, $thread_id, $change_id, $message);
         }
 
         return array(
@@ -261,7 +261,7 @@ class CorrespondenceHandler
      * @param string $thread_id
      * @return void
      */
-    private function send_correspondence_notification($submission, $thread_id)
+    private function send_correspondence_notification($submission, $thread_id, $last_message = '')
     {
         $submitter_email = $submission->submitter_email;
         $submitter_name = $submission->submitter_name;
@@ -285,20 +285,20 @@ class CorrespondenceHandler
         
         $subject = __('New correspondence about your meeting submission', 'bmlt-workflow');
         
-        $message = sprintf(
-            __('Hello %s,
-
-There is new correspondence regarding your meeting submission. 
-
-To view and respond to this correspondence, please visit:
-%s
-
-Thank you,
-%s', 'bmlt-workflow'),
-            $submitter_name,
-            $correspondence_url,
-            get_bloginfo('name')
+        // Get template and substitute fields
+        $template = get_option('bmltwf_correspondence_submitter_email_template');
+        $template_fields = array(
+            'submitter_name' => $submitter_name,
+            'correspondence_url' => $correspondence_url,
+            'site_name' => get_bloginfo('name'),
+            'last_correspondence' => $last_message
         );
+        
+        $message = $template;
+        foreach ($template_fields as $field => $value) {
+            $subfield = '{field:' . $field . '}';
+            $message = str_replace($subfield, $value, $message);
+        }
         
         $from_email = get_option('bmltwf_email_from_address', get_bloginfo('admin_email'));
         $from_name = get_bloginfo('name');
@@ -321,7 +321,7 @@ Thank you,
      * @param int $change_id
      * @return void
      */
-    private function check_and_send_admin_notification($submission, $thread_id, $change_id)
+    private function check_and_send_admin_notification($submission, $thread_id, $change_id, $last_message = '')
     {
         global $wpdb;
         
@@ -355,7 +355,7 @@ Thank you,
         }
         
         if ($should_notify) {
-            $this->send_admin_correspondence_notification($submission, $change_id);
+            $this->send_admin_correspondence_notification($submission, $change_id, $last_message);
         }
     }
 
@@ -366,7 +366,7 @@ Thank you,
      * @param int $change_id
      * @return void
      */
-    private function send_admin_correspondence_notification($submission, $change_id)
+    private function send_admin_correspondence_notification($submission, $change_id, $last_message = '')
     {
         // Get admin emails for this service body
         $to_address = $this->get_emails_by_servicebody_id($submission->serviceBodyId);
@@ -379,13 +379,21 @@ Thank you,
         
         $admin_url = get_site_url() . '/wp-admin/admin.php?page=bmltwf-submissions';
         
-        $message = sprintf(
-            __('New correspondence has been received for submission #%d from %s.\n\nTo view and respond to this correspondence, please visit:\n%s\n\nThank you,\n%s', 'bmlt-workflow'),
-            $change_id,
-            $submission->submitter_name,
-            $admin_url,
-            get_bloginfo('name')
+        // Get template and substitute fields
+        $template = get_option('bmltwf_correspondence_admin_email_template');
+        $template_fields = array(
+            'change_id' => $change_id,
+            'submitter_name' => $submission->submitter_name,
+            'admin_url' => $admin_url,
+            'site_name' => get_bloginfo('name'),
+            'last_correspondence' => $last_message
         );
+        
+        $message = $template;
+        foreach ($template_fields as $field => $value) {
+            $subfield = '{field:' . $field . '}';
+            $message = str_replace($subfield, $value, $message);
+        }
         
         $from_email = get_option('bmltwf_email_from_address', get_bloginfo('admin_email'));
         $from_name = get_bloginfo('name');

@@ -23,9 +23,13 @@ use bmltwf\BMLTWF_Debug;
 
 $bmltwf_submitter_email_template_default = file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html');
 $bmltwf_fso_email_template_default = file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html');
+$bmltwf_correspondence_submitter_email_template_default = file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_submitter_email_template.html');
+$bmltwf_correspondence_admin_email_template_default = file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_admin_email_template.html');
 
 echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_submitter_email_template_default">' . esc_textarea($bmltwf_submitter_email_template_default) . '</textarea></div>';
 echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_fso_email_template_default">' . esc_textarea($bmltwf_fso_email_template_default) . '</textarea></div>';
+echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_correspondence_submitter_email_template_default">' . esc_textarea($bmltwf_correspondence_submitter_email_template_default) . '</textarea></div>';
+echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_correspondence_admin_email_template_default">' . esc_textarea($bmltwf_correspondence_admin_email_template_default) . '</textarea></div>';
 echo '<div class="bmltwf_banner"></div>';
 
 wp_nonce_field('wp_rest', '_wprestnonce');

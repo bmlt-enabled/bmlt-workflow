@@ -306,4 +306,325 @@ class CorrespondenceHandlerTest extends TestCase
         $this->assertArrayHasKey('success', $result);
         $this->assertTrue($result['success']);
     }
+
+    /**
+     * @covers bmltwf\REST\Handlers\CorrespondenceHandler::post_correspondence_handler
+     * Test that submitter email template fields are correctly substituted
+     */
+    public function test_submitter_email_template_field_substitution(): void
+    {
+        Functions\when('current_user_can')->justReturn(true);
+        Functions\when('__')->returnArg();
+        
+        // Mock template with field placeholders
+        $template = 'Hello {field:submitter_name}, visit {field:correspondence_url} on {field:site_name}. Last message: {field:last_correspondence}';
+        Functions\when('get_option')->alias(function($option) use ($template) {
+            if ($option === 'bmltwf_correspondence_submitter_email_template') return $template;
+            if ($option === 'bmltwf_correspondence_page') return 123;
+            if ($option === 'bmltwf_email_from_address') return 'from@example.com';
+            return 'test';
+        });
+        
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
+        $wpdb->shouldReceive('prepare')->andReturnUsing(function($query, ...$args) {
+            return vsprintf(str_replace('%s', '\'%s\'', str_replace('%d', '%d', $query)), $args);
+        });
+        $wpdb->shouldReceive('query')->andReturn(true);
+        $wpdb->shouldReceive('insert')->andReturn(1);
+        
+        $submission = (object)[
+            'change_id' => 123,
+            'submitter_email' => 'user@example.com',
+            'submitter_name' => 'John Doe',
+            'change_made' => 'Test change'
+        ];
+        
+        $wpdb->shouldReceive('get_row')->andReturn($submission);
+        
+        $request = Mockery::mock('WP_REST_Request');
+        $request->shouldReceive('get_param')->with('change_id')->andReturn(123);
+        $request->shouldReceive('get_param')->with('message')->andReturn('Admin response message');
+        $request->shouldReceive('get_param')->with('from_submitter')->andReturn('false');
+        $request->shouldReceive('get_param')->with('thread_id')->andReturn(null);
+        
+        Functions\when('wp_generate_uuid4')->justReturn('test-thread-123');
+        Functions\when('current_time')->justReturn('2023-01-01 12:00:00');
+        Functions\when('get_permalink')->justReturn('http://example.com/correspondence');
+        Functions\when('add_query_arg')->justReturn('http://example.com/correspondence?thread=test-thread-123');
+        Functions\when('get_bloginfo')->alias(function($info) {
+            if ($info === 'name') return 'My Test Site';
+            if ($info === 'admin_email') return 'admin@example.com';
+            return 'test';
+        });
+        
+        // Capture the email content to verify field substitution
+        $capturedEmail = null;
+        Functions\expect('wp_mail')
+            ->once()
+            ->with(
+                'user@example.com',
+                Mockery::type('string'),
+                Mockery::capture($capturedEmail),
+                Mockery::type('array')
+            )
+            ->andReturn(true);
+        
+        $mockUser = Mockery::mock('WP_User');
+        $mockUser->shouldReceive('get')->andReturn('Admin User');
+        $mockUser->display_name = 'Admin User';
+        $mockUser->user_login = 'admin';
+        Functions\when('wp_get_current_user')->justReturn($mockUser);
+        
+        $handler = new CorrespondenceHandler();
+        $result = $handler->post_correspondence_handler($request);
+        
+        // Verify the email was sent with correct field substitutions
+        $expectedContent = 'Hello John Doe, visit http://example.com/correspondence?thread=test-thread-123 on My Test Site. Last message: Admin response message';
+        $this->assertEquals($expectedContent, $capturedEmail);
+        $this->assertTrue($result['success']);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\CorrespondenceHandler::post_correspondence_handler
+     * Test that admin email template fields are correctly substituted
+     */
+    public function test_admin_email_template_field_substitution(): void
+    {
+        Functions\when('current_user_can')->justReturn(true);
+        Functions\when('__')->returnArg();
+        
+        // Mock template with field placeholders
+        $template = 'Submission #{field:change_id} from {field:submitter_name} on {field:site_name}. Message: {field:last_correspondence}. View: {field:admin_url}';
+        Functions\when('get_option')->alias(function($option) use ($template) {
+            if ($option === 'bmltwf_correspondence_admin_email_template') return $template;
+            if ($option === 'bmltwf_email_from_address') return 'from@example.com';
+            return 'test';
+        });
+        
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
+        $wpdb->shouldReceive('prepare')->andReturnUsing(function($query, ...$args) {
+            return vsprintf(str_replace('%s', '\'%s\'', str_replace('%d', '%d', $query)), $args);
+        });
+        $wpdb->shouldReceive('query')->andReturn(true);
+        $wpdb->shouldReceive('insert')->andReturn(1);
+        $wpdb->shouldReceive('get_var')->andReturn(1);
+        
+        $submission = (object)[
+            'change_id' => 456,
+            'submitter_email' => 'user@example.com',
+            'submitter_name' => 'Jane Smith',
+            'change_made' => 'Test change',
+            'serviceBodyId' => 789
+        ];
+        
+        $wpdb->shouldReceive('get_row')->andReturn($submission);
+        
+        // Mock first message from user scenario
+        $messages = [
+            (object)['from_submitter' => 1, 'created_at' => '2023-01-01 12:00:00']
+        ];
+        $wpdb->shouldReceive('get_results')->andReturn($messages);
+        $wpdb->shouldReceive('get_col')->andReturn([1]);
+        
+        $request = Mockery::mock('WP_REST_Request');
+        $request->shouldReceive('get_param')->with('change_id')->andReturn(456);
+        $request->shouldReceive('get_param')->with('message')->andReturn('User inquiry message');
+        $request->shouldReceive('get_param')->with('from_submitter')->andReturn('true');
+        $request->shouldReceive('get_param')->with('thread_id')->andReturn('existing-thread');
+        
+        Functions\when('current_time')->justReturn('2023-01-01 12:00:00');
+        Functions\when('get_site_url')->justReturn('http://example.com');
+        Functions\when('get_bloginfo')->alias(function($info) {
+            if ($info === 'name') return 'Admin Test Site';
+            return 'test';
+        });
+        
+        $mockAdmin = Mockery::mock('WP_User');
+        $mockAdmin->user_email = 'admin@example.com';
+        Functions\when('get_user_by')->justReturn($mockAdmin);
+        
+        // Capture the email content to verify field substitution
+        $capturedEmail = null;
+        Functions\expect('wp_mail')
+            ->once()
+            ->with(
+                'admin@example.com',
+                Mockery::pattern('/New correspondence received - Submission ID #456/'),
+                Mockery::capture($capturedEmail),
+                Mockery::type('array')
+            )
+            ->andReturn(true);
+        
+        $mockUser = Mockery::mock('WP_User');
+        $mockUser->shouldReceive('get')->andReturn('Jane Smith');
+        $mockUser->display_name = 'Jane Smith';
+        $mockUser->user_login = 'janesmith';
+        Functions\when('wp_get_current_user')->justReturn($mockUser);
+        
+        $handler = new CorrespondenceHandler();
+        $result = $handler->post_correspondence_handler($request);
+        
+        // Verify the email was sent with correct field substitutions
+        $expectedContent = 'Submission #456 from Jane Smith on Admin Test Site. Message: User inquiry message. View: http://example.com/wp-admin/admin.php?page=bmltwf-submissions';
+        $this->assertEquals($expectedContent, $capturedEmail);
+        $this->assertTrue($result['success']);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\CorrespondenceHandler::post_correspondence_handler
+     * Test that emails are not sent when templates are empty or missing
+     */
+    public function test_no_email_sent_when_template_missing(): void
+    {
+        Functions\when('current_user_can')->justReturn(true);
+        Functions\when('__')->returnArg();
+        
+        // Mock empty template
+        Functions\when('get_option')->alias(function($option) {
+            if ($option === 'bmltwf_correspondence_submitter_email_template') return '';
+            if ($option === 'bmltwf_correspondence_page') return 123;
+            return 'test';
+        });
+        
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
+        $wpdb->shouldReceive('prepare')->andReturnUsing(function($query, ...$args) {
+            return vsprintf(str_replace('%s', '\'%s\'', str_replace('%d', '%d', $query)), $args);
+        });
+        $wpdb->shouldReceive('query')->andReturn(true);
+        $wpdb->shouldReceive('insert')->andReturn(1);
+        
+        $submission = (object)[
+            'change_id' => 123,
+            'submitter_email' => 'user@example.com',
+            'submitter_name' => 'Test User',
+            'change_made' => 'Test change'
+        ];
+        
+        $wpdb->shouldReceive('get_row')->andReturn($submission);
+        
+        $request = Mockery::mock('WP_REST_Request');
+        $request->shouldReceive('get_param')->with('change_id')->andReturn(123);
+        $request->shouldReceive('get_param')->with('message')->andReturn('Admin message');
+        $request->shouldReceive('get_param')->with('from_submitter')->andReturn('false');
+        $request->shouldReceive('get_param')->with('thread_id')->andReturn(null);
+        
+        Functions\when('wp_generate_uuid4')->justReturn('test-thread');
+        Functions\when('current_time')->justReturn('2023-01-01 12:00:00');
+        Functions\when('get_permalink')->justReturn('http://example.com/correspondence');
+        Functions\when('add_query_arg')->justReturn('http://example.com/correspondence?thread=test-thread');
+        Functions\when('get_bloginfo')->justReturn('Test Site');
+        
+        // Email should still be sent even with empty template (using empty content)
+        Functions\expect('wp_mail')
+            ->once()
+            ->with(
+                'user@example.com',
+                Mockery::type('string'),
+                '', // Empty template results in empty message
+                Mockery::type('array')
+            )
+            ->andReturn(true);
+        
+        $mockUser = Mockery::mock('WP_User');
+        $mockUser->shouldReceive('get')->andReturn('Admin');
+        $mockUser->display_name = 'Admin';
+        $mockUser->user_login = 'admin';
+        Functions\when('wp_get_current_user')->justReturn($mockUser);
+        
+        $handler = new CorrespondenceHandler();
+        $result = $handler->post_correspondence_handler($request);
+        
+        $this->assertTrue($result['success']);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\CorrespondenceHandler::post_correspondence_handler
+     * Test that email headers are correctly formatted
+     */
+    public function test_email_headers_format(): void
+    {
+        Functions\when('current_user_can')->justReturn(true);
+        Functions\when('__')->returnArg();
+        
+        Functions\when('get_option')->alias(function($option) {
+            if ($option === 'bmltwf_correspondence_submitter_email_template') return 'Test message';
+            if ($option === 'bmltwf_correspondence_page') return 123;
+            if ($option === 'bmltwf_email_from_address') return 'custom@example.com';
+            return 'test';
+        });
+        
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
+        $wpdb->shouldReceive('prepare')->andReturnUsing(function($query, ...$args) {
+            return vsprintf(str_replace('%s', '\'%s\'', str_replace('%d', '%d', $query)), $args);
+        });
+        $wpdb->shouldReceive('query')->andReturn(true);
+        $wpdb->shouldReceive('insert')->andReturn(1);
+        
+        $submission = (object)[
+            'change_id' => 123,
+            'submitter_email' => 'user@example.com',
+            'submitter_name' => 'Test User',
+            'change_made' => 'Test change'
+        ];
+        
+        $wpdb->shouldReceive('get_row')->andReturn($submission);
+        
+        $request = Mockery::mock('WP_REST_Request');
+        $request->shouldReceive('get_param')->with('change_id')->andReturn(123);
+        $request->shouldReceive('get_param')->with('message')->andReturn('Admin message');
+        $request->shouldReceive('get_param')->with('from_submitter')->andReturn('false');
+        $request->shouldReceive('get_param')->with('thread_id')->andReturn(null);
+        
+        Functions\when('wp_generate_uuid4')->justReturn('test-thread');
+        Functions\when('current_time')->justReturn('2023-01-01 12:00:00');
+        Functions\when('get_permalink')->justReturn('http://example.com/correspondence');
+        Functions\when('add_query_arg')->justReturn('http://example.com/correspondence?thread=test-thread');
+        Functions\when('get_bloginfo')->alias(function($info) {
+            if ($info === 'name') return 'My WordPress Site';
+            return 'test';
+        });
+        
+        // Capture headers to verify format
+        $capturedHeaders = null;
+        Functions\expect('wp_mail')
+            ->once()
+            ->with(
+                'user@example.com',
+                Mockery::type('string'),
+                Mockery::type('string'),
+                Mockery::capture($capturedHeaders)
+            )
+            ->andReturn(true);
+        
+        $mockUser = Mockery::mock('WP_User');
+        $mockUser->shouldReceive('get')->andReturn('Admin');
+        $mockUser->display_name = 'Admin';
+        $mockUser->user_login = 'admin';
+        Functions\when('wp_get_current_user')->justReturn($mockUser);
+        
+        $mockUser = Mockery::mock('WP_User');
+        $mockUser->shouldReceive('get')->andReturn('Admin');
+        $mockUser->display_name = 'Admin';
+        $mockUser->user_login = 'admin';
+        Functions\when('wp_get_current_user')->justReturn($mockUser);
+        
+        $handler = new CorrespondenceHandler();
+        $result = $handler->post_correspondence_handler($request);
+        
+        // Verify headers format
+        $expectedHeaders = [
+            'Content-Type: text/html; charset=UTF-8',
+            'From: My WordPress Site <custom@example.com>'
+        ];
+        $this->assertEquals($expectedHeaders, $capturedHeaders);
+        $this->assertTrue($result['success']);
+    }
 }
