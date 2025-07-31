@@ -558,7 +558,7 @@ jQuery(document).ready(function ($) {
   const datatable = $('#dt-submission').DataTable({
     dom: 'Bfrtip',
     select: {
-      style: 'multi',
+      style: 'os',
     },
     searching: true,
     order: [[5, 'desc']],
