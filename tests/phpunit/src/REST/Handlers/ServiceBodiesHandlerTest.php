@@ -131,10 +131,10 @@ Line: $errorLine
 
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('prepare')->andReturn("SELECT * from anything");
         $wpdb->shouldReceive('get_results')->andReturn($dblookup);
-        $wpdb->prefix = "";
 
         $Intstub = \Mockery::mock('Integration');
         /** @var Mockery::mock $Intstub test */
@@ -171,6 +171,7 @@ Line: $errorLine
         $sblookup = array();
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('get_results')->andReturn($sblookup)
             ->shouldReceive('get_col')->andreturn(array("1", "2"))
@@ -267,6 +268,7 @@ Line: $errorLine
         $sblookup = array();
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('get_results')->andReturn($sblookup)
             // say that we only have service body 1 in the db
@@ -310,6 +312,7 @@ Line: $errorLine
         $sblookup = array();
         global $wpdb;
         $wpdb =  Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('get_results')->andReturn($sblookup)
             // say that we only have service body 1 in the db

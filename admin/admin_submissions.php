@@ -52,6 +52,13 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     <p><?php echo __( "Are you sure you would like to delete this submission completely?", 'bmlt-workflow' ); ?></p>
 </div>
 
+<!-- Multi-Delete dialog -->
+<div id="bmltwf_submission_multi_delete_dialog" class="hidden" style="max-width:800px">
+    <p><?php echo __( "This change cannot be undone. Use this to remove entirely unwanted submissions from the list.", 'bmlt-workflow' ); ?></p>
+    <p id="bmltwf_multi_delete_count"></p>
+    <p><?php echo __( "Are you sure you would like to delete these submissions completely?", 'bmlt-workflow' ); ?></p>
+</div>
+
 <!-- Reject dialog -->
 <div id="bmltwf_submission_reject_dialog" class="hidden" style="max-width:800px">
     <label class='dialog_label' for="bmltwf_submission_reject_dialog_textarea">Rejection note:</label>

@@ -525,8 +525,11 @@ jQuery(document).ready(function ($) {
       text: __('QuickEdit', 'bmlt-workflow'),
       extend: 'selected',
       action(e, dt) {
-        const { change_id } = dt.row('.selected').data();
-        populate_and_open_quickedit(change_id);
+        const selectedCount = dt.rows({ selected: true }).count();
+        if (selectedCount === 1) {
+          const { change_id } = dt.row('.selected').data();
+          populate_and_open_quickedit(change_id);
+        }
       },
     },
     {
@@ -535,15 +538,28 @@ jQuery(document).ready(function ($) {
       enabled: bmltwf_datatables_delete_enabled,
       extend: 'selected',
       action(e, dt) {
-        const { change_id } = dt.row('.selected').data();
-        $('#bmltwf_submission_delete_dialog').data('change_id', change_id).dialog('open');
+        const selectedRows = dt.rows({ selected: true });
+        const selectedCount = selectedRows.count();
+
+        if (selectedCount > 1) {
+          // Multiple rows selected - show multi-delete dialog
+          const selectedIds = selectedRows.data().toArray().map((row) => row.change_id);
+          $('#bmltwf_multi_delete_count').text(`${__('You are about to delete', 'bmlt-workflow')} ${selectedCount} ${__('submissions', 'bmlt-workflow')}.`);
+          $('#bmltwf_submission_multi_delete_dialog').data('change_ids', selectedIds).dialog('open');
+        } else {
+          // Single row selected - show normal delete dialog
+          const { change_id } = dt.row('.selected').data();
+          $('#bmltwf_submission_delete_dialog').data('change_id', change_id).dialog('open');
+        }
       },
     },
   );
 
   const datatable = $('#dt-submission').DataTable({
     dom: 'Bfrtip',
-    select: true,
+    select: {
+      style: 'multi',
+    },
     searching: true,
     order: [[5, 'desc']],
     processing: true,
@@ -718,20 +734,27 @@ jQuery(document).ready(function ($) {
   $('#dt-submission')
     .DataTable()
     .on('select deselect', function () {
-      let actioned = true;
-      // handle optional delete
-      $('#dt-submission').DataTable().button('delete:name').enable(bmltwf_datatables_delete_enabled);
+      const selectedCount = $('#dt-submission').DataTable().rows({ selected: true }).count();
 
-      if ($('#dt-submission').DataTable().row({ selected: true }).count()) {
+      if (selectedCount > 1) {
+        // Multiple rows selected - only show delete button
+        $('#dt-submission').DataTable().button('approve:name').enable(false);
+        $('#dt-submission').DataTable().button('reject:name').enable(false);
+        $('#dt-submission').DataTable().button('quickedit:name').enable(false);
+        $('#dt-submission').DataTable().button('correspondence:name').enable(false);
+        $('#dt-submission').DataTable().button('delete:name').enable(bmltwf_datatables_delete_enabled);
+      } else if (selectedCount === 1) {
+        // Single row selected - normal behavior
         const { change_made } = $('#dt-submission').DataTable().row({ selected: true }).data();
         const { submission_type } = $('#dt-submission').DataTable().row({ selected: true }).data();
         // Only consider approved/rejected as actioned for approval/rejection buttons
         // Correspondence status should not prevent approval/rejection
-        actioned = change_made === 'approved' || change_made === 'rejected';
+        const actioned = change_made === 'approved' || change_made === 'rejected';
         const cantquickedit = change_made === 'approved' || change_made === 'rejected' || submission_type === 'reason_close';
         $('#dt-submission').DataTable().button('approve:name').enable(!actioned);
         $('#dt-submission').DataTable().button('reject:name').enable(!actioned);
         $('#dt-submission').DataTable().button('quickedit:name').enable(!cantquickedit);
+        $('#dt-submission').DataTable().button('delete:name').enable(bmltwf_datatables_delete_enabled);
 
         // Handle correspondence button - enable only if correspondence is enabled and submission is not approved/rejected
         if (bmltwf_correspondence_enabled === true || bmltwf_correspondence_enabled === 'true') {
@@ -744,11 +767,12 @@ jQuery(document).ready(function ($) {
           $('#dt-submission').DataTable().button('correspondence:name').enable(false);
         }
       } else {
+        // No rows selected - disable all buttons
         $('#dt-submission').DataTable().button('approve:name').enable(false);
         $('#dt-submission').DataTable().button('reject:name').enable(false);
         $('#dt-submission').DataTable().button('quickedit:name').enable(false);
-        // Always disable correspondence button when no row is selected
         $('#dt-submission').DataTable().button('correspondence:name').enable(false);
+        $('#dt-submission').DataTable().button('delete:name').enable(false);
       }
     });
 
@@ -991,7 +1015,12 @@ jQuery(document).ready(function ($) {
       buttons: {
         Ok() {
           const fn = window[`${this.id}_ok`];
-          if (typeof fn === 'function') fn($(this).data('change_id'));
+          if (typeof fn === 'function') {
+            // Handle both single change_id and multiple change_ids
+            const changeId = $(this).data('change_id');
+            const changeIds = $(this).data('change_ids');
+            fn(changeIds || changeId);
+          }
         },
         Cancel() {
           $(this).dialog('close');
@@ -1354,6 +1383,7 @@ jQuery(document).ready(function ($) {
   }
 
   bmltwf_create_generic_modal('bmltwf_submission_delete_dialog', __('Delete Submission', 'bmlt-workflow'), 'auto', 'auto');
+  bmltwf_create_generic_modal('bmltwf_submission_multi_delete_dialog', __('Delete Multiple Submissions', 'bmlt-workflow'), 'auto', 'auto');
   bmltwf_create_generic_modal('bmltwf_submission_approve_dialog', __('Approve Submission', 'bmlt-workflow'), 'auto', 'auto');
   bmltwf_create_generic_modal('bmltwf_submission_approve_close_dialog', __('Approve Submission', 'bmlt-workflow'), 'auto', 'auto');
   bmltwf_create_generic_modal('bmltwf_submission_reject_dialog', __('Reject Submission', 'bmlt-workflow'), 'auto', 'auto');
@@ -1385,5 +1415,46 @@ jQuery(document).ready(function ($) {
   bmltwf_submission_delete_dialog_ok = function (id) {
     bmltwf_clear_notices();
     generic_approve_handler(id, 'DELETE', '', 'bmltwf_submission_delete');
+  };
+
+  // eslint-disable-next-line no-undef
+  bmltwf_submission_multi_delete_dialog_ok = function (ids) {
+    bmltwf_clear_notices();
+
+    let completedRequests = 0;
+    const totalRequests = ids.length;
+    let hasErrors = false;
+
+    ids.forEach(function (id) {
+      $.ajax({
+        url: bmltwf_admin_submissions_rest_url + id,
+        type: 'DELETE',
+        dataType: 'json',
+        beforeSend(xhr) {
+          xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
+        },
+      })
+        .done(function () {
+          completedRequests += 1;
+          if (completedRequests === totalRequests) {
+            if (!hasErrors) {
+              bmltwf_notice_success({ message: `${__('Successfully deleted submissions', 'bmlt-workflow')}: ${totalRequests}` }, 'bmltwf-error-message');
+            }
+            $('#dt-submission').DataTable().ajax.reload();
+            $('#dt-submission').DataTable().rows().deselect();
+          }
+        })
+        .fail(function (xhr) {
+          hasErrors = true;
+          completedRequests += 1;
+          if (completedRequests === totalRequests) {
+            bmltwf_notice_error(xhr, 'bmltwf-error-message');
+            $('#dt-submission').DataTable().ajax.reload();
+            $('#dt-submission').DataTable().rows().deselect();
+          }
+        });
+    });
+
+    $('#bmltwf_submission_multi_delete_dialog').dialog('close');
   };
 });

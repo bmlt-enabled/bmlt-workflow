@@ -242,6 +242,9 @@ class CorrespondenceHandler
         // If this is from admin, send email to submitter with link to view correspondence
         if (!$from_submitter) {
             $this->send_correspondence_notification($submission, $thread_id);
+        } else {
+            // If this is from submitter, check if we need to notify admins
+            $this->check_and_send_admin_notification($submission, $thread_id, $change_id);
         }
 
         return array(
@@ -308,6 +311,115 @@ Thank you,
         wp_mail($submitter_email, $subject, $message, $headers);
         
         $this->debug_log("Correspondence notification email sent - to: {$submitter_email}, subject: {$subject}, url: {$correspondence_url}");
+    }
+
+    /**
+     * Check if admin notification should be sent for new user correspondence
+     *
+     * @param object $submission
+     * @param string $thread_id
+     * @param int $change_id
+     * @return void
+     */
+    private function check_and_send_admin_notification($submission, $thread_id, $change_id)
+    {
+        global $wpdb;
+        
+        // Get all messages in this thread ordered by creation time
+        $messages = $wpdb->get_results($wpdb->prepare(
+            "SELECT from_submitter, created_at FROM {$this->bmltwf_correspondence_table_name} 
+             WHERE thread_id = %s 
+             ORDER BY created_at ASC",
+            $thread_id
+        ));
+        
+        if (empty($messages)) {
+            return;
+        }
+        
+        // Check if this is the first message from user, or first message from user after admin response
+        $should_notify = false;
+        $last_message_from_admin = false;
+        
+        // If this is the only message (first message), notify admins
+        if (count($messages) === 1) {
+            $should_notify = true;
+        } else {
+            // Check if the previous message was from admin
+            $previous_messages = array_slice($messages, 0, -1); // All except the last (current) message
+            $last_previous_message = end($previous_messages);
+            
+            if ($last_previous_message && !$last_previous_message->from_submitter) {
+                $should_notify = true;
+            }
+        }
+        
+        if ($should_notify) {
+            $this->send_admin_correspondence_notification($submission, $change_id);
+        }
+    }
+
+    /**
+     * Send email notification to admins about new correspondence from user
+     *
+     * @param object $submission
+     * @param int $change_id
+     * @return void
+     */
+    private function send_admin_correspondence_notification($submission, $change_id)
+    {
+        // Get admin emails for this service body
+        $to_address = $this->get_emails_by_servicebody_id($submission->serviceBodyId);
+        
+        if (empty($to_address)) {
+            return;
+        }
+        
+        $subject = __('New correspondence received - Submission ID', 'bmlt-workflow') . ' #' . $change_id;
+        
+        $admin_url = get_site_url() . '/wp-admin/admin.php?page=bmltwf-submissions';
+        
+        $message = sprintf(
+            __('New correspondence has been received for submission #%d from %s.\n\nTo view and respond to this correspondence, please visit:\n%s\n\nThank you,\n%s', 'bmlt-workflow'),
+            $change_id,
+            $submission->submitter_name,
+            $admin_url,
+            get_bloginfo('name')
+        );
+        
+        $from_email = get_option('bmltwf_email_from_address', get_bloginfo('admin_email'));
+        $from_name = get_bloginfo('name');
+        
+        $headers = array(
+            'Content-Type: text/html; charset=UTF-8',
+            'From: ' . $from_name . ' <' . $from_email . '>'
+        );
+        
+        wp_mail($to_address, $subject, $message, $headers);
+        
+        $this->debug_log("Admin correspondence notification email sent - to: {$to_address}, subject: {$subject}");
+    }
+
+    /**
+     * Get emails by service body ID
+     *
+     * @param int $id
+     * @return string
+     */
+    private function get_emails_by_servicebody_id($id)
+    {
+        global $wpdb;
+
+        $emails = array();
+        $sql = $wpdb->prepare('SELECT wp_uid from ' . $this->bmltwf_service_bodies_access_table_name . ' where serviceBodyId="%d"', $id);
+        $result = $wpdb->get_col($sql);
+        foreach ($result as $key => $value) {
+            $user = get_user_by('ID', $value);
+            if ($user) {
+                $emails[] = $user->user_email;
+            }
+        }
+        return implode(',', $emails);
     }
 
 }

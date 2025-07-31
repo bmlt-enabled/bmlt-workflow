@@ -31,6 +31,9 @@ class Admin_Submissions {
         this.reject_dialog = Selector("#bmltwf_submission_reject_dialog");
         this.reject_dialog_parent = this.reject_dialog.parent();
         this.reject_dialog_textarea = Selector("#bmltwf_submission_reject_dialog_textarea");
+        this.multi_delete_dialog = Selector("#bmltwf_submission_multi_delete_dialog");
+        this.multi_delete_dialog_parent = this.multi_delete_dialog.parent();
+        this.multi_delete_count = Selector("#bmltwf_multi_delete_count");
         this.quickedit_dialog = Selector("#bmltwf_submission_quickedit_dialog");
         // quickedit fields
         this.quickedit_name = Selector("#quickedit_name");

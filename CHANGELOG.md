@@ -1,3 +1,8 @@
+## 1.1.29 (Jul 31, 2025)
+- Correspondence button is now correctly greyed out when a meeting is approved/rejected.
+- Notifies the admin when new correspondence is received (thanks @AdamH !)
+- #199 - Supports multi line deletion in the admin submissions page (thanks @tempsaint !)
+
 ## 1.1.28 (Jul 29, 2025)
 - Added correspondence feature!
 

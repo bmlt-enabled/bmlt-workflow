@@ -126,7 +126,7 @@ class ServiceBodiesHandler
             }
 
             // get the form display settings
-            $sqlresult = $wpdb->get_results('SELECT serviceBodyId,show_on_form FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name, ARRAY_A);
+            $sqlresult = $wpdb->get_results('SELECT serviceBodyId,show_on_form FROM ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name, \ARRAY_A);
 
             foreach ($sqlresult as $key => $value) {
                     $bool = $value['show_on_form'] ? (true) : (false);
@@ -138,7 +138,7 @@ class ServiceBodiesHandler
         } else {
             // simple list
             $sblist = array();
-            $result = $wpdb->get_results('SELECT * from ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' where show_on_form != "0"', ARRAY_A);
+            $result = $wpdb->get_results('SELECT * from ' . $this->BMLTWF_Database->bmltwf_service_bodies_table_name . ' where show_on_form != "0"', \ARRAY_A);
             $this->debug_log("RESULT");
             $this->debug_log($result);
             // create simple service area list (names of service areas that are enabled by admin with show_on_form)
