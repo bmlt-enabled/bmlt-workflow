@@ -201,9 +201,12 @@ test("Reject_Close_Meeting", async (t) => {
 test("Multi_Line_Delete_Buttons_And_Function", async (t) => {
   // Select multiple rows (row 1 and row 2)
   await click_table_row_column(as.dt_submission, 1, 0);
-  await t.pressKey('ctrl');
-  await click_table_row_column(as.dt_submission, 2, 0);
-  await t.pressKey('ctrl');
+  // Hold Shift and click second row for multi-selection
+  await t.click(as.dt_submission.child("tbody").child(2).child(0), { modifiers: {shift:true} });
+  
+  // Verify that multiple rows are selected
+  const selectedRows = as.dt_submission.find('tbody tr.selected');
+  await t.expect(selectedRows.count).eql(2);
   
   // When multiple rows selected, only delete button should be enabled
   // approve button should be disabled
