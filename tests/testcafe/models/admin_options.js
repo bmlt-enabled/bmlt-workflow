@@ -19,6 +19,11 @@ import { Selector } from 'testcafe';
 
 class Admin_Options {
     constructor () {
+        // Tab navigation
+        this.bmlt_config_tab = Selector('a[href*="tab=bmlt-config"]');
+        this.form_settings_tab = Selector('a[href*="tab=form-settings"]');
+        this.email_templates_tab = Selector('a[href*="tab=email-templates"]');
+        this.advanced_tab = Selector('a[href*="tab=advanced"]');
         this.backup_button = Selector("#bmltwf_backup");
         this.restore_button = Selector("#bmltwf_restore");
         this.bmltwf_file_selector = Selector("#bmltwf_file_selector");
@@ -56,8 +61,34 @@ class Admin_Options {
         this.bmltwf_auto_geocoding_settings_text = Selector("#bmltwf_auto_geocoding_settings_text");
         this.bmltwf_enable_debug = Selector("#bmltwf_enable_debug");
         this.download_debug_log_button = Selector("#download_debug_log_button");
+        this.bmltwf_admin_notification_email_template = Selector("#bmltwf_admin_notification_email_template");
+        this.bmltwf_admin_notification_email_template_iframe = Selector('#bmltwf_admin_notification_email_template_ifr');
+        this.bmltwf_submitter_email_template_iframe = Selector('#bmltwf_submitter_email_template_ifr');
         this.submit = Selector('#submit');
-        this.settings_updated = Selector("#setting-error-settings_updated");
+        this.settings_updated_message = Selector("#setting-error-settings_updated");
+    }
+
+    // Helper method to navigate to a specific tab
+    async navigateToTab(t, tabName) {
+        switch(tabName) {
+            case 'bmlt-config':
+                await t.click(this.bmlt_config_tab);
+                break;
+            case 'form-settings':
+                await t.click(this.form_settings_tab);
+                break;
+            case 'email-templates':
+                await t.click(this.email_templates_tab);
+                break;
+            case 'advanced':
+                await t.click(this.advanced_tab);
+                break;
+        }
+    }
+
+    // Helper method to wait for settings updated message
+    async settings_updated() {
+        return this.settings_updated_message;
     }
 }
 

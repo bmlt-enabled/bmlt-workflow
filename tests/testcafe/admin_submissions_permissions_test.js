@@ -61,15 +61,23 @@ test("Cant_Delete_Submissions_As_Trusted_Servant", async (t) => {
   // let us save successfully
   const testfso = randstr() + "@" + randstr() + ".com";
   const testfrom = randstr() + "@" + randstr() + ".com";
+  
+  // Navigate to form settings tab for FSO email
+  await ao.navigateToTab(t, 'form-settings');
   await t
     .typeText(ao.bmltwf_fso_email_address, testfso, { replace: true })
     .expect(ao.bmltwf_fso_email_address.value)
-    .eql(testfso)
+    .eql(testfso);
+  
+  // Navigate to email templates tab for from address
+  await ao.navigateToTab(t, 'email-templates');
+  await t
     .typeText(ao.bmltwf_email_from_address, testfrom, { replace: true })
     .expect(ao.bmltwf_email_from_address.value)
     .eql(testfrom);
 
-  // change option to False
+  // Navigate to advanced tab for delete submissions setting
+  await ao.navigateToTab(t, 'advanced');
   await select_dropdown_by_text(ao.bmltwf_trusted_servants_can_delete_submissions, "False");
   await t.click(ao.submit);
   await ao.settings_updated();
@@ -94,15 +102,23 @@ test("Can_Delete_Submissions_As_Admin", async (t) => {
   // let us save successfully
   const testfso = randstr() + "@" + randstr() + ".com";
   const testfrom = randstr() + "@" + randstr() + ".com";
+  
+  // Navigate to form settings tab for FSO email
+  await ao.navigateToTab(t, 'form-settings');
   await t
     .typeText(ao.bmltwf_fso_email_address, testfso, { replace: true })
     .expect(ao.bmltwf_fso_email_address.value)
-    .eql(testfso)
+    .eql(testfso);
+  
+  // Navigate to email templates tab for from address
+  await ao.navigateToTab(t, 'email-templates');
+  await t
     .typeText(ao.bmltwf_email_from_address, testfrom, { replace: true })
     .expect(ao.bmltwf_email_from_address.value)
     .eql(testfrom);
 
-  // change option to False
+  // Navigate to advanced tab for delete submissions setting
+  await ao.navigateToTab(t, 'advanced');
   await select_dropdown_by_text(ao.bmltwf_trusted_servants_can_delete_submissions, "False");
   await t.click(ao.submit);
   await ao.settings_updated();
@@ -127,15 +143,23 @@ test("Can_Delete_Submissions_As_Trusted_Servant", async (t) => {
   // let us save successfully
   const testfso = randstr() + "@" + randstr() + ".com";
   const testfrom = randstr() + "@" + randstr() + ".com";
+  
+  // Navigate to form settings tab for FSO email
+  await ao.navigateToTab(t, 'form-settings');
   await t
     .typeText(ao.bmltwf_fso_email_address, testfso, { replace: true })
     .expect(ao.bmltwf_fso_email_address.value)
-    .eql(testfso)
+    .eql(testfso);
+  
+  // Navigate to email templates tab for from address
+  await ao.navigateToTab(t, 'email-templates');
+  await t
     .typeText(ao.bmltwf_email_from_address, testfrom, { replace: true })
     .expect(ao.bmltwf_email_from_address.value)
     .eql(testfrom);
 
-  // change option to False
+  // Navigate to advanced tab for delete submissions setting
+  await ao.navigateToTab(t, 'advanced');
   await select_dropdown_by_text(ao.bmltwf_trusted_servants_can_delete_submissions, "True");
   await t.click(ao.submit);
   await ao.settings_updated();

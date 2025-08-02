@@ -16,20 +16,23 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-
 if ((!defined('ABSPATH')&&(!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
 use bmltwf\BMLTWF_Debug;
+
+$active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'bmlt-config';
 
 $bmltwf_submitter_email_template_default = file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html');
 $bmltwf_fso_email_template_default = file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html');
 $bmltwf_correspondence_submitter_email_template_default = file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_submitter_email_template.html');
 $bmltwf_correspondence_admin_email_template_default = file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_admin_email_template.html');
+$bmltwf_admin_notification_email_template_default = file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_admin_notification_email_template.html');
 
 echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_submitter_email_template_default">' . esc_textarea($bmltwf_submitter_email_template_default) . '</textarea></div>';
 echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_fso_email_template_default">' . esc_textarea($bmltwf_fso_email_template_default) . '</textarea></div>';
 echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_correspondence_submitter_email_template_default">' . esc_textarea($bmltwf_correspondence_submitter_email_template_default) . '</textarea></div>';
 echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_correspondence_admin_email_template_default">' . esc_textarea($bmltwf_correspondence_admin_email_template_default) . '</textarea></div>';
+echo '<div style="position:absolute; top:0; left:-500px;"><textarea rows="1" cols="2" id="bmltwf_admin_notification_email_template_default">' . esc_textarea($bmltwf_admin_notification_email_template_default) . '</textarea></div>';
 echo '<div class="bmltwf_banner"></div>';
 
 wp_nonce_field('wp_rest', '_wprestnonce');
@@ -46,11 +49,35 @@ echo __(' or chat to us on bmlt-enabled slack, <b>#wordpress-bmlt-workflow</b>!'
 echo '<br>';
 echo __('Plugin documentation can be found at','bmlt-workflow');
 echo ' <a href="https://github.com/bmlt-enabled/bmlt-workflow/wiki">GitHub Wiki</a></h4>';
+
+// Tab navigation
+echo '<h2 class="nav-tab-wrapper">';
+echo '<a href="?page=bmltwf-options&tab=bmlt-config" class="nav-tab ' . ($active_tab == 'bmlt-config' ? 'nav-tab-active' : '') . '">' . __('BMLT Configuration', 'bmlt-workflow') . '</a>';
+echo '<a href="?page=bmltwf-options&tab=form-settings" class="nav-tab ' . ($active_tab == 'form-settings' ? 'nav-tab-active' : '') . '">' . __('Form Settings', 'bmlt-workflow') . '</a>';
+echo '<a href="?page=bmltwf-options&tab=email-templates" class="nav-tab ' . ($active_tab == 'email-templates' ? 'nav-tab-active' : '') . '">' . __('Email Templates', 'bmlt-workflow') . '</a>';
+echo '<a href="?page=bmltwf-options&tab=advanced" class="nav-tab ' . ($active_tab == 'advanced' ? 'nav-tab-active' : '') . '">' . __('Advanced', 'bmlt-workflow') . '</a>';
+echo '</h2>';
+
 echo '<form id="bmltwf_options_form" method="post" action="options.php">';
 settings_errors();
-
 settings_fields('bmltwf-settings-group');
-do_settings_sections('bmltwf-settings');
+
+// Display all tab content but hide inactive tabs
+echo '<div id="bmlt-config-tab" class="tab-content" style="display: ' . ($active_tab == 'bmlt-config' ? 'block' : 'none') . '">';
+do_settings_sections('bmltwf-bmlt-config');
+echo '</div>';
+
+echo '<div id="form-settings-tab" class="tab-content" style="display: ' . ($active_tab == 'form-settings' ? 'block' : 'none') . '">';
+do_settings_sections('bmltwf-form-settings');
+echo '</div>';
+
+echo '<div id="email-templates-tab" class="tab-content" style="display: ' . ($active_tab == 'email-templates' ? 'block' : 'none') . '">';
+do_settings_sections('bmltwf-email-templates');
+echo '</div>';
+
+echo '<div id="advanced-tab" class="tab-content" style="display: ' . ($active_tab == 'advanced' ? 'block' : 'none') . '">';
+do_settings_sections('bmltwf-advanced');
+echo '</div>';
 
 submit_button();
 

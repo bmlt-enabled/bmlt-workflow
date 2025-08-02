@@ -1,3 +1,8 @@
+## 1.1.30 (Aug 2, 2025)
+- There's way too many options now for one page, so we now have tabs for them
+- #197 - Add Request Details to Email to Admin (thanks @tempsaint !) - We now support customising the notifications for correspondence and meeting submissions
+- Fixes broken search button in submissions page (thanks @tempsaint !)
+
 ## 1.1.29 (Jul 31, 2025)
 - Correspondence button is now correctly greyed out when a meeting is approved/rejected.
 - Notifies the admin when new correspondence is received (thanks @AdamH !)

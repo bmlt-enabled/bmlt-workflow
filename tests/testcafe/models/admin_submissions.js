@@ -21,6 +21,7 @@ class Admin_Submissions {
         // datatables
         this.dt_submission = Selector('#dt-submission');
         this.dt_submission_wrapper = Selector("#dt-submission_wrapper");
+        this.dt_submission_search_input = Selector('#dt-submission_filter input[type="search"]');
         // dialogs
         this.approve_dialog = Selector("#bmltwf_submission_approve_dialog");
         this.approve_dialog_parent = this.approve_dialog.parent();

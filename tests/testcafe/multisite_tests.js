@@ -47,7 +47,9 @@ test("MultiSite_Single_Check_Plugin_Config_Page", async (t) => {
   // check that our plugin config page shows only for sites that have the plugin enabled
   await t
     .useRole(bmltwf_admin_multisingle)
-    .navigateTo(userVariables.admin_settings_page_multisingle_plugin)
+    .navigateTo(userVariables.admin_settings_page_multisingle_plugin);
+  await ao.navigateToTab(t, 'email-templates');
+  await t
     // we should see the email from address field in a working plugin
     .expect(ao.bmltwf_email_from_address.exists)
     .eql(true)
@@ -75,11 +77,15 @@ test("MultiSite_Network_Check_Plugin_Config_Page", async (t) => {
   // check that our plugin config page shows for all sites in network enabled
   await t
     .useRole(bmltwf_admin_multinetwork)
-    .navigateTo(userVariables.admin_settings_page_multinetwork_plugin)
+    .navigateTo(userVariables.admin_settings_page_multinetwork_plugin);
+  await ao.navigateToTab(t, 'email-templates');
+  await t
     // we should see the email from address field in a working plugin
     .expect(ao.bmltwf_email_from_address.exists)
     .eql(true)
-    .navigateTo(userVariables.admin_settings_page_multinetwork_plugin2)
+    .navigateTo(userVariables.admin_settings_page_multinetwork_plugin2);
+  await ao.navigateToTab(t, 'email-templates');
+  await t
     // we should see the email from address field in a working plugin
     .expect(ao.bmltwf_email_from_address.exists)
     .eql(true);
@@ -187,7 +193,9 @@ test("MultiSite_Correspondence_Database_Tables", async (t) => {
   // Test that correspondence database tables are created correctly in multisite
   await t
     .useRole(bmltwf_admin_multisingle)
-    .navigateTo(userVariables.admin_settings_page_multisingle_plugin)
+    .navigateTo(userVariables.admin_settings_page_multisingle_plugin);
+  await ao.navigateToTab(t, 'advanced');
+  await t
     .click(ao.backup_button)
     .wait(3000);
     
