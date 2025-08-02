@@ -24,6 +24,7 @@ import {
   click_table_row_column, 
   click_dt_button_by_index, 
   click_dialog_button_by_index, 
+  get_table_row_col,
   bmltwf_admin, 
   set_language_single,
   myip
@@ -88,6 +89,7 @@ test("Approve_Close_Meeting_With_Unpublish", async (t) => {
 
   // set it to unpublish
   await t.navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'advanced');
   await select_dropdown_by_text(ao.bmltwf_delete_closed_meetings, "Unpublish");
   await t.click(ao.submit);
   await ao.settings_updated();
@@ -116,6 +118,7 @@ test("Approve_Close_Meeting_With_Delete", async (t) => {
 
   // set it to delete
   await t.navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'advanced');
   await select_dropdown_by_text(ao.bmltwf_delete_closed_meetings, "Delete");
   await t.click(ao.submit);
   await ao.settings_updated();
@@ -614,3 +617,44 @@ test('Quickedit_JSON_Format_Validation', async t => {
     // Check that startTime is in HH:MM format (no seconds)
     .expect(requestBody.changes_requested.startTime).match(/^\d{2}:\d{2}$/, 'startTime should be in HH:MM format');
 }).requestHooks(formatIdsLogger);
+test("DataTable_Search_Functionality", async (t) => {
+  // Wait for the datatable to load
+  await t.wait(2000);
+  
+  // Test search by submitter name
+  await t
+    .typeText(as.dt_submission_search_input, 'first l', { replace: true })
+    .wait(2000); // Wait for server-side search to complete
+  
+  // Verify that only matching results are shown
+  const tableRows = as.dt_submission.find('tbody tr');
+  await t.expect(tableRows.count).gte(1);
+  
+  // Check that the visible row contains the search term
+  await t.expect((await get_table_row_col(as.dt_submission, 0, 1)).innerText).contains('first l');
+  
+  // Clear search and test search by email
+  await t
+    .typeText(as.dt_submission_search_input, 'test@example.com', { replace: true })
+    .wait(2000);
+  
+  // Verify email search works
+  await t.expect((await get_table_row_col(as.dt_submission, 0, 2)).innerText).contains('test@example.com');
+  
+  // Test search by change ID
+  await t
+    .typeText(as.dt_submission_search_input, '94', { replace: true })
+    .wait(2000);
+  
+  // Verify change ID search works
+  await t.expect((await get_table_row_col(as.dt_submission, 0, 0)).innerText).contains('94');
+  
+  // Clear search to show all results
+  await t
+    .selectText(as.dt_submission_search_input)
+    .pressKey('delete')
+    .wait(2000);
+  
+  // Verify all results are shown again
+  await t.expect(tableRows.count).gte(3);
+});

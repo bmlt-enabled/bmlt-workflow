@@ -104,6 +104,7 @@ Line: $errorLine
         Functions\when('current_time')->justReturn('2022-03-23 09:22:44');
         Functions\when('wp_json_encode')->justReturn('{"contact_number":"12345","group_relationship":"Group Member","add_contact":"yes","serviceBodyId":2,"additional_info":"my additional info","name":"virtualmeeting randwick","day":2,"startTime":"20:30"}');
         Functions\when('get_site_url')->justReturn('http://127.0.0.1/wordpress');
+        Functions\when('get_bloginfo')->justReturn('Test Site');
         Functions\when('__')->returnArg();
         Functions\when('wp_is_json_media_type')->justReturn(true);
 
@@ -1800,7 +1801,120 @@ Line: $errorLine
         // print_r($changes_requested);
 
         $this->assertArrayNotHasKey('virtualna_published', $changes_requested);
-
     }
 
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     */
+    public function test_admin_notification_template_conversion(): void
+    {
+        $form_post = new class {
+            public function get_json_params()
+            {
+                return array(
+                    "update_reason" => "reason_new",
+                    "name" => "Test Meeting",
+                    "startTime" => "10:00:00",
+                    "duration" => "01:00:00",
+                    "location_text" => "test location",
+                    "location_street" => "test street",
+                    "location_municipality" => "test municipality",
+                    "location_province" => "test province",
+                    "day" => "1",
+                    "serviceBodyId" => "99",
+                    "formatIds" => ["1"],
+                    "first_name" => "John",
+                    "last_name" => "Doe",
+                    "venueType" => "1",
+                    "email_address" => "john@example.com",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                );
+            }
+        };
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'));
+        $wpdb->insert_id = 123;
+        $wpdb->shouldReceive('prepare')->andReturn(true);
+        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1"));
+
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->once()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "admin"));
+        
+        // Mock wp_mail to capture the email content
+        $captured_emails = [];
+        Functions\expect('wp_mail')->twice()->withArgs(function($to, $subject, $body, $headers) use (&$captured_emails) {
+            $captured_emails[] = array(
+                'to' => $to,
+                'subject' => $subject,
+                'body' => $body,
+                'headers' => $headers
+            );
+            return true;
+        })->andReturn(true);
+
+        // Mock get_option to return our template and other settings
+        Functions\when('get_option')->alias(function($option) {
+            switch($option) {
+                case 'bmltwf_admin_notification_email_template':
+                    return '<p>New submission: {field:change_id}</p><p>From: {field:submitter_name} ({field:submitter_email})</p><p>Type: {field:submission_type}</p><p>Service Body: {field:service_body_name}</p><p>Time: {field:submission_time}</p><p>Details: {field:submission}</p><p>Admin URL: {field:admin_url}</p><p>Site: {field:site_name}</p>';
+                case 'bmltwf_email_from_address':
+                    return 'test@example.com';
+                case 'bmltwf_submitter_email_template':
+                    return 'submitter template';
+                default:
+                    return 'success';
+            }
+        });
+
+        Functions\when('get_bloginfo')->alias(function($info) {
+            return $info === 'name' ? 'Test Site' : 'test';
+        });
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($this->meeting, $bmlt_input));
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+        
+        // Verify template fields were substituted correctly
+        $this->assertCount(2, $captured_emails, 'Should send 2 emails: admin notification and submitter confirmation');
+        
+        // Find the admin notification email (sent to admin user)
+        $admin_email = null;
+        foreach ($captured_emails as $email) {
+            if ($email['to'] === 'a@a.com') { // admin user email from mock
+                $admin_email = $email;
+                break;
+            }
+        }
+        
+        $this->assertNotNull($admin_email, 'Admin notification email should be sent');
+        $body = $admin_email['body'];
+        
+        $this->assertStringContainsString('New submission: 123', $body);
+        $this->assertStringContainsString('From: John Doe (john@example.com)', $body);
+        $this->assertStringContainsString('Type: New Meeting', $body);
+        $this->assertStringContainsString('Service Body: test', $body);
+        $this->assertStringContainsString('Time: 2022-03-23 09:22:44', $body);
+        $this->assertStringContainsString('Site: Test Site', $body);
+        $this->assertStringContainsString('Admin URL: http://127.0.0.1/wordpress/wp-admin/admin.php?page=bmltwf-submissions', $body);
+        
+        // Verify submission details format
+        $this->assertStringContainsString('<tr><td>Meeting Name:</td><td>Test Meeting</td></tr>', $body);
+        $this->assertStringContainsString('<tr><td>Start Time:</td><td>10:00</td></tr>', $body);
+        $this->assertStringContainsString('<tr><td>Duration:</td><td>01:00</td></tr>', $body);
+        $this->assertStringContainsString('<tr><td>Location:</td><td>test location</td></tr>', $body);
+        $this->assertStringContainsString('<tr><td>Street:</td><td>test street</td></tr>', $body);
+        $this->assertStringContainsString('<tr><td>Municipality:</td><td>test municipality</td></tr>', $body);
+        $this->assertStringContainsString('<tr><td>Province/State:</td><td>test province</td></tr>', $body);
+        $this->assertStringContainsString('<tr><td>Meeting Day:</td><td>Sunday</td></tr>', $body);
+        $this->assertStringContainsString('<tr><td>Meeting Formats:</td><td>(BL)-Bi-Lingual </td></tr>', $body);
+        $this->assertStringContainsString('<tr><td>Relationship to Group:</td><td>Group Member</td></tr>', $body);
+        $this->assertStringContainsString('<tr><td>Add email to meeting:</td><td>Yes</td></tr>', $body);
+    }
+    
 }

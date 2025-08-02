@@ -1,0 +1,54 @@
+<p>A new meeting submission has been received and requires your attention.</p>
+
+<hr><br>
+
+<table class="blueTable" style="border: 1px solid #1C6EA4;background-color: #EEEEEE;text-align: left;border-collapse: collapse;">
+    <thead style="background: #1C6EA4;border-bottom: 2px solid #444444;">
+        <tr>
+            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: none;">
+                Field Name
+            </th>
+            <th style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 14px;font-weight: bold;color: #FFFFFF;border-left: 2px solid #D0E4F5;">
+                Value
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Submission ID</td>
+            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:change_id}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Submitter Name</td>
+            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:submitter_name}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Submitter Email</td>
+            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:submitter_email}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Submission Type</td>
+            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:submission_type}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Service Body</td>
+            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:service_body_name}</td>
+        </tr>
+        <tr>
+            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">Submission Time</td>
+            <td style="border: 1px solid #AAAAAA;padding: 3px 2px;font-size: 13px;">{field:submission_time}</td>
+        </tr>
+    </tbody>
+</table>
+
+<br>
+<p><strong>All Submission Details:</strong></p>
+<table style="border: 1px solid #CCCCCC;background-color: #F9F9F9;text-align: left;border-collapse: collapse;">
+{field:submission}
+</table>
+
+<br>
+<p>Please review this submission in the admin panel: <a href="{field:admin_url}">{field:admin_url}</a></p>
+
+<p>Thank you,<br>
+{field:site_name}</p>

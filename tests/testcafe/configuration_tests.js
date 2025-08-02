@@ -36,8 +36,9 @@ fixture`configuration_test_fixture`
 
 test("Change_BMLT_To_Unsupported_Version", async (t) => {
 
-  await t.navigateTo(userVariables.admin_settings_page_single)
-    .click(ao.bmltwf_configure_bmlt_server)
+  await t.navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'bmlt-config');
+  await t.click(ao.bmltwf_configure_bmlt_server)
 
     // save should be disabled
     .expect(ao.bmltwf_bmlt_configuration_save.withAttribute("disabled").exists).ok()
@@ -54,8 +55,9 @@ test("Change_BMLT_To_Unsupported_Version", async (t) => {
 
 test("Change_BMLT_To_Invalid URL", async (t) => {
 
-  await t.navigateTo(userVariables.admin_settings_page_single)
-    .click(ao.bmltwf_configure_bmlt_server)
+  await t.navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'bmlt-config');
+  await t.click(ao.bmltwf_configure_bmlt_server)
 
     // save should be disabled
     .expect(ao.bmltwf_bmlt_configuration_save.withAttribute("disabled").exists).ok()
@@ -72,8 +74,9 @@ test("Change_BMLT_To_Invalid URL", async (t) => {
 
 test("Change_BMLT_To_Blank_Username", async (t) => {
 
-  await t.navigateTo(userVariables.admin_settings_page_single)
-    .click(ao.bmltwf_configure_bmlt_server)
+  await t.navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'bmlt-config');
+  await t.click(ao.bmltwf_configure_bmlt_server)
 
     // save should be disabled
     .expect(ao.bmltwf_bmlt_configuration_save.withAttribute("disabled").exists).ok()
@@ -92,8 +95,9 @@ test("Change_BMLT_To_Blank_Username", async (t) => {
 
 test("Change_BMLT_To_Blank_Password", async (t) => {
 
-  await t.navigateTo(userVariables.admin_settings_page_single)
-    .click(ao.bmltwf_configure_bmlt_server)
+  await t.navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'bmlt-config');
+  await t.click(ao.bmltwf_configure_bmlt_server)
 
     // save should be disabled
     .expect(ao.bmltwf_bmlt_configuration_save.withAttribute("disabled").exists).ok()
@@ -111,8 +115,9 @@ test("Change_BMLT_To_Blank_Password", async (t) => {
 
 test("Change_BMLT_To_Working_Version", async (t) => {
 
-  await t.navigateTo(userVariables.admin_settings_page_single)
-    .click(ao.bmltwf_configure_bmlt_server)
+  await t.navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'bmlt-config');
+  await t.click(ao.bmltwf_configure_bmlt_server)
 
     // save should be disabled
     .expect(ao.bmltwf_bmlt_configuration_save.withAttribute("disabled").exists).ok()

@@ -30,6 +30,23 @@ jQuery(document).ready(function ($) {
   // eslint-disable-next-line no-unused-vars
   const clip = new ClipboardJS('.clipboard-button');
 
+  // Handle tab switching
+  $('.nav-tab').on('click', function(e) {
+    e.preventDefault();
+    
+    // Remove active class from all tabs
+    $('.nav-tab').removeClass('nav-tab-active');
+    // Add active class to clicked tab
+    $(this).addClass('nav-tab-active');
+    
+    // Hide all tab content
+    $('.tab-content').hide();
+    
+    // Show the selected tab content
+    const tabName = $(this).attr('href').split('tab=')[1];
+    $(`#${tabName}-tab`).show();
+  });
+
   // form submit handler to massage form content before sending
 
   $('#bmltwf_options_form').submit(function () {

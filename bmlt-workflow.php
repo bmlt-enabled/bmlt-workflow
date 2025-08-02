@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.29
+ * Version: 1.1.30
  * Requires at least: 5.2
  * Tested up to: 6.8.2
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.29');
+define('BMLTWF_PLUGIN_VERSION', '1.1.30');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -331,7 +331,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             $this->debug_log($hook);
 
-            if (($hook != 'toplevel_page_bmltwf-settings') && ($hook != 'toplevel_page_bmltwf-submissions') && ($hook != 'bmlt-workflow_page_bmltwf-submissions') && ($hook != 'bmlt-workflow_page_bmltwf-service-bodies')) {
+            if (($hook != 'toplevel_page_bmltwf-settings') && ($hook != 'bmlt-workflow_page_bmltwf-options') && ($hook != 'toplevel_page_bmltwf-submissions') && ($hook != 'bmlt-workflow_page_bmltwf-submissions') && ($hook != 'bmlt-workflow_page_bmltwf-service-bodies')) {
                 return;
             }
 
@@ -340,6 +340,7 @@ if (!class_exists('bmltwf_plugin')) {
             switch ($hook) {
 
                 case ('toplevel_page_bmltwf-settings'):
+                case ('bmlt-workflow_page_bmltwf-options'):
                     // base css and scripts for this page
                     $this->prevent_cache_enqueue_style('bmltwf-admin-css', false, 'css/admin_options.css');
                     $this->prevent_cache_enqueue_script('bmltwf-admin-options-js', array('jquery', 'wp-i18n'), 'js/admin_options.js');
@@ -519,7 +520,7 @@ if (!class_exists('bmltwf_plugin')) {
                 __('Configuration', 'bmlt-workflow'),
                 __('Configuration', 'bmlt-workflow'),
                 'manage_options',
-                'bmltwf-settings',
+                'bmltwf-options',
                 array(&$this, 'display_bmltwf_admin_options_page'),
                 2
             );
@@ -546,6 +547,9 @@ if (!class_exists('bmltwf_plugin')) {
             if (!current_user_can('manage_options') && (current_user_can($this->bmltwf_capability_manage_submissions))) {
                 remove_menu_page('bmltwf-settings');
             }
+            
+            // Remove the duplicate submenu item that WordPress automatically creates
+            remove_submenu_page('bmltwf-settings', 'bmltwf-settings');
         }
 
         public function bmltwf_add_plugin_link($plugin_actions, $plugin_file)
@@ -814,132 +818,211 @@ if (!class_exists('bmltwf_plugin')) {
                 )
             );
 
-            add_settings_section(
-                'bmltwf-settings-section-id',
-                '',
-                '',
-                'bmltwf-settings'
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_correspondence_submitter_email_template',
+                array(
+                    'type' => 'string',
+                    'description' => __('Email template for correspondence notifications to submitters', 'bmlt-workflow'),
+                    'sanitize_callback' => null,
+                    'show_in_rest' => false,
+                    'default' => file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_submitter_email_template.html')
+                )
             );
 
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_correspondence_admin_email_template',
+                array(
+                    'type' => 'string',
+                    'description' => __('Email template for correspondence notifications to admins', 'bmlt-workflow'),
+                    'sanitize_callback' => null,
+                    'show_in_rest' => false,
+                    'default' => file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_admin_email_template.html')
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_admin_notification_email_template',
+                array(
+                    'type' => 'string',
+                    'description' => __('Email template for admin notifications of new submissions', 'bmlt-workflow'),
+                    'sanitize_callback' => null,
+                    'show_in_rest' => false,
+                    'default' => file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_admin_notification_email_template.html')
+                )
+            );
+
+            // Create separate sections for each tab
+            add_settings_section(
+                'bmltwf-bmlt-config-section',
+                '',
+                '',
+                'bmltwf-bmlt-config'
+            );
+            
+            add_settings_section(
+                'bmltwf-form-settings-section',
+                '',
+                '',
+                'bmltwf-form-settings'
+            );
+            
+            add_settings_section(
+                'bmltwf-email-templates-section',
+                '',
+                '',
+                'bmltwf-email-templates'
+            );
+            
+            add_settings_section(
+                'bmltwf-advanced-section',
+                '',
+                '',
+                'bmltwf-advanced'
+            );
+
+            // BMLT Configuration Tab
             add_settings_field(
                 'bmltwf_bmlt_server_address',
                 __('BMLT Root Server Configuration', 'bmlt-workflow'),
                 array(&$this, 'bmltwf_bmlt_server_address_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
-            );
-
-            add_settings_field(
-                'bmltwf_backup_restore',
-                __('Backup and Restore', 'bmlt-workflow'),
-                array(&$this, 'bmltwf_backup_restore_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
-            );
-
-            add_settings_field(
-                'bmltwf_shortcode',
-                __('Meeting Update Form Shortcode', 'bmlt-workflow'),
-                array(&$this, 'bmltwf_shortcode_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
-            );
-
-            add_settings_field(
-                'bmltwf_correspondence_page',
-                __('Correspondence Page', 'bmlt-workflow'),
-                array(&$this, 'bmltwf_correspondence_page_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
+                'bmltwf-bmlt-config',
+                'bmltwf-bmlt-config-section'
             );
 
             add_settings_field(
                 'bmltwf_geocoding',
                 __('Auto Geocoding Root Server Settings', 'bmlt-workflow'),
                 array(&$this, 'bmltwf_auto_geocoding_enabled_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
-            );
-
-            add_settings_field(
-                'bmltwf_email_from_address',
-                __('Email From Address', 'bmlt-workflow'),
-                array(&$this, 'bmltwf_email_from_address_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
+                'bmltwf-bmlt-config',
+                'bmltwf-bmlt-config-section'
             );
 
             add_settings_field(
                 'bmltwf_google_maps_key',
                 __('Google Maps Key', 'bmlt-workflow'),
                 array(&$this, 'bmltwf_google_maps_key_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
+                'bmltwf-bmlt-config',
+                'bmltwf-bmlt-config-section'
             );
 
+            // Form Settings Tab
             add_settings_field(
-                'bmltwf_delete_closed_meetings',
-                __('Default for close meeting submission', 'bmlt-workflow'),
-                array(&$this, 'bmltwf_delete_closed_meetings_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
-            );
-
-            add_settings_field(
-                'bmltwf_trusted_servants_can_delete_submissions',
-                __('Trusted servants can delete submissions', 'bmlt-workflow'),
-                array(&$this, 'bmltwf_trusted_servants_can_delete_submissions_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
-            );
-
-            add_settings_field(
-                'bmltwf_remove_virtual_meeting_details_on_venue_change',
-                __("Remove Virtual Meeting details when venue is changed to 'face to face'", 'bmlt-workflow'),
-                array(&$this, 'bmltwf_remove_virtual_meeting_details_on_venue_change_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
+                'bmltwf_shortcode',
+                __('Meeting Update Form Shortcode', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_shortcode_html'),
+                'bmltwf-form-settings',
+                'bmltwf-form-settings-section'
             );
 
             add_settings_field(
                 'bmltwf_optional_form_fields',
                 __('Optional form fields', 'bmlt-workflow'),
                 array(&$this, 'bmltwf_optional_form_fields_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
+                'bmltwf-form-settings',
+                'bmltwf-form-settings-section'
             );
 
             add_settings_field(
                 'bmltwf_fso_options',
                 __('Field Service Office configuration', 'bmlt-workflow'),
                 array(&$this, 'bmltwf_fso_options_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
+                'bmltwf-form-settings',
+                'bmltwf-form-settings-section'
+            );
+
+            add_settings_field(
+                'bmltwf_correspondence_page',
+                __('Correspondence Page', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_correspondence_page_html'),
+                'bmltwf-form-settings',
+                'bmltwf-form-settings-section'
+            );
+
+            // Email Templates Tab
+            add_settings_field(
+                'bmltwf_email_from_address',
+                __('Email From Address', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_email_from_address_html'),
+                'bmltwf-email-templates',
+                'bmltwf-email-templates-section'
             );
 
             add_settings_field(
                 'bmltwf_submitter_email_template',
                 __('Email template used when sending a form submission notification', 'bmlt-workflow'),
                 array(&$this, 'bmltwf_submitter_email_template_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
+                'bmltwf-email-templates',
+                'bmltwf-email-templates-section'
+            );
+
+            add_settings_field(
+                'bmltwf_correspondence_email_templates',
+                __('Correspondence email templates', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_correspondence_email_templates_html'),
+                'bmltwf-email-templates',
+                'bmltwf-email-templates-section'
+            );
+
+            add_settings_field(
+                'bmltwf_admin_notification_email_template',
+                __('Admin notification email template', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_admin_notification_email_template_html'),
+                'bmltwf-email-templates',
+                'bmltwf-email-templates-section'
+            );
+
+            // Advanced Settings Tab
+            add_settings_field(
+                'bmltwf_delete_closed_meetings',
+                __('Default for close meeting submission', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_delete_closed_meetings_html'),
+                'bmltwf-advanced',
+                'bmltwf-advanced-section'
+            );
+
+            add_settings_field(
+                'bmltwf_trusted_servants_can_delete_submissions',
+                __('Trusted servants can delete submissions', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_trusted_servants_can_delete_submissions_html'),
+                'bmltwf-advanced',
+                'bmltwf-advanced-section'
+            );
+
+            add_settings_field(
+                'bmltwf_remove_virtual_meeting_details_on_venue_change',
+                __("Remove Virtual Meeting details when venue is changed to 'face to face'", 'bmlt-workflow'),
+                array(&$this, 'bmltwf_remove_virtual_meeting_details_on_venue_change_html'),
+                'bmltwf-advanced',
+                'bmltwf-advanced-section'
+            );
+
+            add_settings_field(
+                'bmltwf_backup_restore',
+                __('Backup and Restore', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_backup_restore_html'),
+                'bmltwf-advanced',
+                'bmltwf-advanced-section'
             );
             
-            // Debug option at the very bottom
             add_settings_field(
                 'bmltwf_enable_debug',
                 __('Enable Debug Logging', 'bmlt-workflow'),
                 array(&$this, 'bmltwf_enable_debug_html'),
-                'bmltwf-settings',
-                'bmltwf-settings-section-id'
+                'bmltwf-advanced',
+                'bmltwf-advanced-section'
             );
             
         }
 
         public function bmltwf_fso_feature_sanitize_callback($input)
         {
-
             $output = get_option('bmltwf_fso_feature');
+            if (!isset($_POST['bmltwf_fso_feature'])) {
+                return $output;
+            }
             switch ($input) {
                 case 'hidden':
                 case 'display':
@@ -951,8 +1034,10 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_optional_postcode_sanitize_callback($input)
         {
-
             $output = get_option('bmltwf_optional_postcode');
+            if (!isset($_POST['bmltwf_optional_postcode'])) {
+                return $output;
+            }
             switch ($input) {
                 case 'hidden':
                 case 'displayrequired':
@@ -965,8 +1050,10 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_optional_location_nation_sanitize_callback($input)
         {
-
             $output = get_option('bmltwf_optional_location_nation');
+            if (!isset($_POST['bmltwf_optional_location_nation'])) {
+                return $output;
+            }
             switch ($input) {
                 case 'hidden':
                 case 'displayrequired':
@@ -980,6 +1067,9 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_optional_location_sub_province_sanitize_callback($input)
         {
             $output = get_option('bmltwf_optional_location_sub_province');
+            if (!isset($_POST['bmltwf_optional_location_sub_province'])) {
+                return $output;
+            }
             switch ($input) {
                 case 'hidden':
                 case 'displayrequired':
@@ -992,12 +1082,10 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_optional_location_province_sanitize_callback($input)
         {
-            global $new_allowed_options;
-            $this->debug_log("allowed options");
-            $this->debug_log($new_allowed_options);
-            $this->debug_log("allowed input");
-            $this->debug_log($input);
             $output = get_option('bmltwf_optional_location_province');
+            if (!isset($_POST['bmltwf_optional_location_province'])) {
+                return $output;
+            }
             switch ($input) {
                 case 'hidden':
                 case 'displayrequired':
@@ -1016,6 +1104,9 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_email_from_address_sanitize_callback($input)
         {
             $output = get_option('bmltwf_email_from_address');
+            if (!isset($_POST['bmltwf_email_from_address'])) {
+                return $output;
+            }
             $sanitized_email = sanitize_email($input);
             if (!is_email($sanitized_email)) {
                 add_settings_error('bmltwf_email_from_address', 'err', __('Invalid email from address.', 'bmlt-workflow'));
@@ -1027,7 +1118,9 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_google_maps_key_sanitize_callback($input)
         {
             $output = get_option('bmltwf_google_maps_key');
-
+            if (!isset($_POST['bmltwf_google_maps_key'])) {
+                return $output;
+            }
             if ((strlen($input) != 39) && ($input !== "")) {
                 add_settings_error('bmltwf_google_maps_key', 'err', __('Invalid google maps key.', 'bmlt-workflow'));
                 return $output;
@@ -1038,6 +1131,9 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_fso_email_address_sanitize_callback($input)
         {
             $output = get_option('bmltwf_fso_email_address');
+            if (!isset($_POST['bmltwf_fso_email_address'])) {
+                return $output;
+            }
             $sanitized_email = sanitize_email($input);
             if (!is_email($sanitized_email)) {
                 add_settings_error('bmltwf_fso_email_address', 'err', __('Invalid FSO email address.', 'bmlt-workflow'));
@@ -1063,7 +1159,9 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_required_meeting_formats_sanitize_callback($input)
         {
             $output = get_option('bmltwf_required_meeting_formats');
-
+            if (!isset($_POST['bmltwf_required_meeting_formats'])) {
+                return $output;
+            }
             switch ($input) {
                 case 'true':
                 case 'false':
@@ -1481,7 +1579,7 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function display_bmltwf_admin_options_page()
         {
-            include_once('admin/admin_options.php');
+            include_once('admin/admin_options_tabbed.php');
         }
 
         public function display_bmltwf_admin_submissions_page()
@@ -1528,6 +1626,53 @@ if (!class_exists('bmltwf_plugin')) {
             add_role('bmltwf_trusted_servant', 'BMLT Workflow Trusted Servant');
         }
 
+        public function bmltwf_correspondence_email_templates_html()
+        {
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>';
+            echo __('These templates will be used when sending correspondence notifications.', 'bmlt-workflow');
+            echo '<br><br>';
+            echo '</div>';
+
+            // Submitter template
+            echo '<h4>' . __('Template for notifications to submitters', 'bmlt-workflow') . '</h4>';
+            $content = get_option('bmltwf_correspondence_submitter_email_template');
+            $editor_id = 'bmltwf_correspondence_submitter_email_template';
+            wp_editor($content, $editor_id, array('media_buttons' => false));
+            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . esc_attr($editor_id) . '_default">';
+            echo __('Copy default template to clipboard', 'bmlt-workflow');
+            echo '</button>';
+            echo '<br><br>';
+
+            // Admin template
+            echo '<h4>' . __('Template for notifications to admins', 'bmlt-workflow') . '</h4>';
+            $content = get_option('bmltwf_correspondence_admin_email_template');
+            $editor_id = 'bmltwf_correspondence_admin_email_template';
+            wp_editor($content, $editor_id, array('media_buttons' => false));
+            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . esc_attr($editor_id) . '_default">';
+            echo __('Copy default template to clipboard', 'bmlt-workflow');
+            echo '</button>';
+            echo '<br><br>';
+        }
+
+        public function bmltwf_admin_notification_email_template_html()
+        {
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>';
+            echo __('This template will be used when notifying admins about new meeting submissions.', 'bmlt-workflow');
+            echo '<br><br>';
+            echo '</div>';
+
+            $content = get_option('bmltwf_admin_notification_email_template');
+            $editor_id = 'bmltwf_admin_notification_email_template';
+
+            wp_editor($content, $editor_id, array('media_buttons' => false));
+            echo '<button class="clipboard-button" type="button" data-clipboard-target="#' . esc_attr($editor_id) . '_default">';
+            echo __('Copy default template to clipboard', 'bmlt-workflow');
+            echo '</button>';
+            echo '<br><br>';
+        }
+
         private function bmltwf_add_default_options()
         {
             // install all our default options (if they arent set already)
@@ -1547,6 +1692,9 @@ if (!class_exists('bmltwf_plugin')) {
             add_option('bmltwf_fso_email_address', 'example@example.com');
             add_option('bmltwf_fso_feature', 'display');
             add_option('bmltwf_correspondence_page', '');
+            add_option('bmltwf_correspondence_submitter_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_submitter_email_template.html'));
+            add_option('bmltwf_correspondence_admin_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_admin_email_template.html'));
+            add_option('bmltwf_admin_notification_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_admin_notification_email_template.html'));
         }
 
         public function bmltwf_add_capability($user_id)

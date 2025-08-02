@@ -258,11 +258,15 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
   };
 
   await t.useRole(role).navigateTo(settings_page);
-  // await t.debug();
+  // Navigate to advanced tab to ensure nonce field is accessible
+  const { ao } = await import('../models/admin_options');
+  await ao.navigateToTab(t, 'advanced');
+  
   let my_cookies = await t.getCookies();
-// console.log(my_cookies);
   let cookieHeader = my_cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
 
+  // Wait for the nonce element to be available
+  await t.expect(Selector("#_wprestnonce").exists).ok();
   const nonce = await Selector("#_wprestnonce").value;
   const resp = await t.request(restore_json, {
     method: "POST",
@@ -320,6 +324,11 @@ export async function setupCorrespondenceFeature(t, role = bmltwf_admin, setting
   const cookieHeader = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
   
   await t.navigateTo(settingsPage);
+  // Navigate to form settings tab for correspondence page configuration
+  const { ao } = await import('../models/admin_options');
+  await ao.navigateToTab(t, 'form-settings');
+  // Wait for the nonce element to be available
+  await t.expect(Selector('#_wprestnonce').exists).ok();
   const nonce = await Selector('#_wprestnonce').value;
   
   let pageId;

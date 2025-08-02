@@ -46,6 +46,7 @@ fixture`zip_and_county_geocoding_tests_fixture`
 test("Pick_Up_Zip_And_County_Geocoding_Setting", async (t) => {
 
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'bmlt-config');
   await t
     .expect(ao.bmltwf_auto_geocoding_settings_text.innerText).contains("Zip codes will be automatically added from geocoding results on save")
     .expect(ao.bmltwf_auto_geocoding_settings_text.innerText).contains("County will be automatically added from geocoding results on save")
@@ -55,6 +56,7 @@ test("Pick_Up_Zip_And_County_Geocoding_Setting", async (t) => {
 test("Submit_New_Meeting_And_Check_Zip_And_County_Geolocation", async (t) => {
   // switch to admin page
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'form-settings');
   await check_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_sub_province_required_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);
@@ -85,6 +87,7 @@ test("Submit_New_Meeting_And_Check_Zip_And_County_Geolocation", async (t) => {
 test("Check_Optional_County_Hidden_Even_When_Geolocation_On", async (t) => {
   // switch to admin page
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'form-settings');
   await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_visible_checkbox);
   await uncheck_checkbox(t,ao.bmltwf_optional_location_sub_province_required_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_postcode_visible_checkbox);

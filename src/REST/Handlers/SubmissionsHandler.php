@@ -58,6 +58,7 @@ class SubmissionsHandler
         $last = intval($request->get_param('last') ?? 20);
         $total = intval($request->get_param('total') ?? 0);
         $filter = $request->get_param('filter') ?? 'all';
+        $search = $request->get_param('search') ?? '';
         
         // Calculate LIMIT and OFFSET
         $limit = $last - $first + 1;
@@ -85,46 +86,66 @@ class SubmissionsHandler
                 break;
         }
         
+        // Add search functionality
+        if (!empty($search)) {
+            $search_clause = ' (submitter_name LIKE %s OR submitter_email LIKE %s OR change_id LIKE %s) ';
+            $search_param = '%' . $wpdb->esc_like($search) . '%';
+            
+            if (empty($where_clause)) {
+                $where_clause = ' WHERE ' . $search_clause;
+            } else {
+                $where_clause .= ' AND ' . $search_clause;
+            }
+            $where_params = array_merge($where_params, [$search_param, $search_param, $search_param]);
+        }
+        
         // only show submissions we have access to
         $this_user = wp_get_current_user();
         $current_uid = $this_user->get('ID');
         if(current_user_can('manage_options'))
         {
             $sql = 'SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . $where_clause . ' ORDER BY change_id DESC LIMIT %d OFFSET %d';
-            $sql = $wpdb->prepare($sql, $limit, $offset);
+            $sql = $wpdb->prepare($sql, array_merge($where_params, [$limit, $offset]));
         }
         else
         {
             $access_where = ' WHERE a.wp_uid = %d ';
-            $where_params[] = $current_uid;
+            $access_params = [$current_uid];
             
             if (!empty($where_clause)) {
-                $access_where = str_replace('WHERE', 'AND', $where_clause);
+                $access_where .= str_replace('WHERE', 'AND', $where_clause);
+                $access_params = array_merge($access_params, $where_params);
             }
             
             $sql = 'SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . 
                   $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId' . 
                   $access_where . ' ORDER BY s.change_id DESC LIMIT %d OFFSET %d';
-            $sql = $wpdb->prepare($sql, $current_uid, $limit, $offset);
+            $sql = $wpdb->prepare($sql, array_merge($access_params, [$limit, $offset]));
         }
         
         // Count total records with the same filter
         if(current_user_can('manage_options'))
         {
             $total_sql = 'SELECT COUNT(*) FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . $where_clause;
-            $total_sql = $wpdb->prepare($total_sql);
+            if (!empty($where_params)) {
+                $total_sql = $wpdb->prepare($total_sql, $where_params);
+            } else {
+                $total_sql = $wpdb->prepare($total_sql);
+            }
         }
         else
         {
             $access_where = ' WHERE a.wp_uid = %d ';
+            $access_params = [$current_uid];
             if (!empty($where_clause)) {
-                $access_where = str_replace('WHERE', 'AND', $where_clause);
+                $access_where .= str_replace('WHERE', 'AND', $where_clause);
+                $access_params = array_merge($access_params, $where_params);
             }
             
             $total_sql = 'SELECT COUNT(*) FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' s inner join ' . 
                         $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' a on s.serviceBodyId = a.serviceBodyId' . 
                         $access_where;
-            $total_sql = $wpdb->prepare($total_sql, $current_uid);
+            $total_sql = $wpdb->prepare($total_sql, $access_params);
         }
         $total_count = $wpdb->get_var($total_sql);
 
@@ -1403,7 +1424,27 @@ class SubmissionsHandler
 
         $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['serviceBodyId']);
         $subject = '[bmlt-workflow] ' . $submission_type . ' '.__('request received','bmlt-workflow').' - ' . $sblist[$sanitised_fields['serviceBodyId']]['name'] . ' - '.__('Change ID','bmlt_workflow').' #' . $insert_id;
-        $body = __('Log in to','bmlt-workflow').' <a href="' . get_site_url() . '/wp-admin/admin.php?page=bmltwf-submissions">'.__('BMLTWF Submissions Page','bmlt-workflow').'</a> to review.';
+        
+        // Use admin notification template
+        $template = get_option('bmltwf_admin_notification_email_template');
+        $template_fields = array(
+            'change_id' => $insert_id,
+            'submitter_name' => $submitter_name,
+            'submitter_email' => $submitter_email,
+            'submission_type' => $submission_type,
+            'service_body_name' => $sblist[$sanitised_fields['serviceBodyId']]['name'],
+            'submission_time' => current_time('mysql', true),
+            'submission' => $this->submission_format($submission),
+            'admin_url' => get_site_url() . '/wp-admin/admin.php?page=bmltwf-submissions',
+            'site_name' => get_bloginfo('name')
+        );
+        
+        $body = $template;
+        foreach ($template_fields as $field => $value) {
+            $subfield = '{field:' . $field . '}';
+            $body = str_replace($subfield, $value, $body);
+        }
+        
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
         $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));
         wp_mail($to_address, $subject, $body, $headers);
@@ -1506,7 +1547,6 @@ class SubmissionsHandler
                     $friendlyname = __('Meeting Formats','bmlt-workflow');
                     // convert the meeting formats to human readable
                     $friendlydata = "";
-                    // $strarr = explode(',', $value);
                     foreach ($value as $key) {
                         $friendlydata .= "(" . $this->formats[$key]["key_string"] . ")-" . $this->formats[$key]["name_string"] . " ";
                     }

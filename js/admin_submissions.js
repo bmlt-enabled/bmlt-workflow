@@ -576,6 +576,7 @@ jQuery(document).ready(function ($) {
           first: d.start,
           last: d.start + d.length - 1,
           total: d.recordsTotal || 0,
+          search: d.search.value,
         };
       },
       dataSrc(json) {

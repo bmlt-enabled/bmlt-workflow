@@ -76,7 +76,7 @@ const logger = RequestLogger(/backup/,
 );
 
 test("Backup", async (t) => {
-  
+  await ao.navigateToTab(t, 'advanced');
   await t.click(ao.backup_button);
   const b_elem = Selector("#bmltwf_backup_filename");
   const state = await b_elem();
@@ -99,7 +99,7 @@ test("Backup", async (t) => {
 
 
 test("Restore", async (t) => {
-
+  await ao.navigateToTab(t, 'advanced');
   const fs = require('fs');
 
   const restoretest = String.raw`
@@ -204,13 +204,23 @@ test("Restore", async (t) => {
 test("Options_Save", async (t) => {
   const testfso = randstr() + "@" + randstr() + ".com";
   const testfrom = randstr() + "@" + randstr() + ".com";
+  
+  // Navigate to form settings tab for FSO email
+  await ao.navigateToTab(t, 'form-settings');
   await t
     .typeText(ao.bmltwf_fso_email_address, testfso, { replace: true })
     .expect(ao.bmltwf_fso_email_address.value)
-    .eql(testfso)
+    .eql(testfso);
+  
+  // Navigate to email templates tab for from address
+  await ao.navigateToTab(t, 'email-templates');
+  await t
     .typeText(ao.bmltwf_email_from_address, testfrom, { replace: true })
     .expect(ao.bmltwf_email_from_address.value)
     .eql(testfrom);
+  
+  // Navigate to form settings tab for optional fields
+  await ao.navigateToTab(t, 'form-settings');
   await check_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_nation_required_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
@@ -220,10 +230,19 @@ test("Options_Save", async (t) => {
   // await select_dropdown_by_text(ao.bmltwf_optional_location_nation, "Display + Required Field");
   // await select_dropdown_by_text(ao.bmltwf_optional_location_province, "Display + Required Field");
   // await select_dropdown_by_text(ao.bmltwf_optional_location_sub_province, "Display Only");
+  // Navigate to advanced tab for delete closed meetings
+  await ao.navigateToTab(t, 'advanced');
   await select_dropdown_by_text(ao.bmltwf_delete_closed_meetings, "Delete");
   await t.click(ao.submit);
   await ao.settings_updated();
-  await t.expect(ao.bmltwf_fso_email_address.value).eql(testfso).expect(ao.bmltwf_email_from_address.value).eql(testfrom);
+  
+  // Navigate to form settings tab to check FSO email
+  await ao.navigateToTab(t, 'form-settings');
+  await t.expect(ao.bmltwf_fso_email_address.value).eql(testfso);
+  
+  // Navigate to email templates tab to check from address
+  await ao.navigateToTab(t, 'email-templates');
+  await t.expect(ao.bmltwf_email_from_address.value).eql(testfrom);
 
 });
 
@@ -231,6 +250,7 @@ test("Check_Optional_Fields", async (t) => {
   // test optional fields with 'display and required' option
 
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'form-settings');
   await check_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_nation_required_checkbox);
   await check_checkbox(t,ao.bmltwf_optional_location_province_visible_checkbox);
@@ -246,7 +266,11 @@ test("Check_Optional_Fields", async (t) => {
   await t
     .typeText(ao.bmltwf_fso_email_address, testfso, { replace: true })
     .expect(ao.bmltwf_fso_email_address.value)
-    .eql(testfso)
+    .eql(testfso);
+  
+  // Navigate to email templates tab for from address
+  await ao.navigateToTab(t, 'email-templates');
+  await t
     .typeText(ao.bmltwf_email_from_address, testfrom, { replace: true })
     .expect(ao.bmltwf_email_from_address.value)
     .eql(testfrom);
@@ -256,6 +280,8 @@ test("Check_Optional_Fields", async (t) => {
   const testsubprovincedisplay= randstr();
   const testpostcodedisplay = randstr();
 
+  // Navigate back to form settings tab for display name fields
+  await ao.navigateToTab(t, 'form-settings');
   await t.typeText(ao.bmltwf_optional_location_nation_displayname, testnationdisplay, { replace: true })
   .typeText(ao.bmltwf_optional_location_province_displayname, testprovincedisplay, { replace: true })
   .typeText(ao.bmltwf_optional_location_sub_province_displayname, testsubprovincedisplay, { replace: true })
@@ -291,7 +317,7 @@ test("Check_Optional_Fields", async (t) => {
     .useRole(bmltwf_admin)
     .navigateTo(userVariables.admin_settings_page_single);
 
-  
+  await ao.navigateToTab(t, 'form-settings');
   await select_dropdown_by_text(ao.bmltwf_fso_feature, "Disabled");
 
   await uncheck_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
@@ -315,6 +341,7 @@ test("Check_Optional_Fields", async (t) => {
     .useRole(bmltwf_admin)
     .navigateTo(userVariables.admin_settings_page_single);
 
+  await ao.navigateToTab(t, 'form-settings');
   await select_dropdown_by_text(ao.bmltwf_fso_feature, "Enabled");
   
   await check_checkbox(t,ao.bmltwf_optional_location_nation_visible_checkbox);
@@ -353,6 +380,7 @@ test("Check_Custom_Google_Maps_Key", async (t) => {
   // check we can put in a google maps key and use it
 
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'bmlt-config');
   await select_dropdown_by_text(ao.bmltwf_google_maps_key_select, "Custom Google Maps Key");
   await t.expect(ao.bmltwf_google_maps_key.visible).eql(true)
   .typeText(ao.bmltwf_google_maps_key, 'AIXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', { replace: true })
@@ -371,6 +399,7 @@ test("Check_BMLT_Google_Maps_Key", async (t) => {
   // check we can put in a google maps key and use it
 
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'bmlt-config');
   await select_dropdown_by_text(ao.bmltwf_google_maps_key_select, "Google Maps Key from BMLT");
   await t.expect(ao.bmltwf_google_maps_key.visible).eql(false)
   await t.click(ao.submit);
@@ -387,6 +416,7 @@ test("Check_BMLT_Google_Maps_Key", async (t) => {
 test("Debug_Logging_And_Download", async (t) => {
   // Test enabling debug logging and downloading the log file
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'advanced');
   
   // Enable debug logging
   await select_dropdown_by_text(ao.bmltwf_enable_debug, "True");
@@ -403,11 +433,15 @@ test("Debug_Logging_And_Download", async (t) => {
   // Generate some debug logs by performing an action
   await t.navigateTo(userVariables.admin_submissions_page_single);
   await t.navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'advanced');
   
   // Try to download the debug log
   const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD format
   const expectedFilename = `bmlt-workflow-debug-${today}.txt`;
   const downloadPath = getFileDownloadPath(expectedFilename);
+  
+  // Navigate back to advanced tab to access download button
+  await ao.navigateToTab(t, 'advanced');
   
   // Click the download button
   await t.click(ao.download_debug_log_button);
@@ -438,6 +472,7 @@ test("Debug_Logging_Multiple_Enable_Disable_Cycles", async (t) => {
   // Test 3 cycles of enable/disable
   for (let cycle = 1; cycle <= 3; cycle++) {
     // Enable debug logging
+    await ao.navigateToTab(t, 'advanced');
     await select_dropdown_by_text(ao.bmltwf_enable_debug, "True");
     await t.click(ao.submit);
     await ao.settings_updated();
@@ -453,12 +488,16 @@ test("Debug_Logging_Multiple_Enable_Disable_Cycles", async (t) => {
     await t.navigateTo(userVariables.admin_submissions_page_single);
     await t.wait(500); // Allow time for debug logs to be generated
     await t.navigateTo(userVariables.admin_settings_page_single);
+    await ao.navigateToTab(t, 'advanced');
     await t.wait(500);
     
     // Try to download the debug log
     const today = new Date().toISOString().split('T')[0];
     const expectedFilename = `bmlt-workflow-debug-${today}.txt`;
     const downloadPath = getFileDownloadPath(expectedFilename);
+    
+    // Navigate back to advanced tab to access download button
+    await ao.navigateToTab(t, 'advanced');
     
     // Click the download button
     await t.click(ao.download_debug_log_button);
@@ -483,4 +522,91 @@ test("Debug_Logging_Multiple_Enable_Disable_Cycles", async (t) => {
     // Wait between cycles
     await t.wait(1000);
   }
+});
+test("Admin_Notification_Email_Template_Field_Exists", async (t) => {
+  // Test that the admin notification email template field exists in the email templates tab
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'email-templates');
+  
+  // Check that the admin notification email template field exists
+  await t
+    .expect(ao.bmltwf_admin_notification_email_template.exists)
+    .ok("Admin notification email template field should exist");
+});
+
+test("Edit_And_Save_Admin_Notification_Template", async (t) => {
+  // Test editing and saving the admin notification email template
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'email-templates');
+  
+  const testTemplate = 'Test admin notification: {field:change_id} From: {field:submitter_name}';
+  
+  // Scroll to the iframe and wait for it to be visible
+  await t
+    .switchToIframe(ao.bmltwf_admin_notification_email_template_iframe)
+    .click('#tinymce')
+    .typeText('#tinymce', testTemplate, { replace: true })
+    .switchToMainWindow()
+    .click(ao.submit);
+  
+  await ao.settings_updated();
+  
+  // Verify the template was saved by checking it's still there after page reload
+  await t.navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'email-templates');
+  
+  await t
+    .scrollIntoView(ao.bmltwf_admin_notification_email_template_iframe)
+    .wait(1000)
+    .switchToIframe(ao.bmltwf_admin_notification_email_template_iframe)
+    .expect(Selector('#tinymce').innerText)
+    .contains('Test admin notification')
+    .switchToMainWindow();
+});
+
+test("Edit_And_Save_Submitter_Email_Template", async (t) => {
+  // Test editing and saving the submitter email template
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'email-templates');
+  
+  const testTemplate = 'Test submitter notification: {field:submission}';
+  
+  // Scroll to the iframe and wait for it to be visible
+  await t
+    .switchToIframe(ao.bmltwf_submitter_email_template_iframe)
+    .scrollIntoView('#tinymce')
+    .click('#tinymce')
+    .typeText('#tinymce', testTemplate, { replace: true })
+    .switchToMainWindow()
+    .click(ao.submit);
+  
+  await ao.settings_updated();
+  
+  // Verify the template was saved
+  await t.navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'email-templates');
+  
+  await t
+    .scrollIntoView(ao.bmltwf_submitter_email_template_iframe)
+    .wait(1000)
+    .switchToIframe(ao.bmltwf_submitter_email_template_iframe)
+    .expect(Selector('#tinymce').innerText)
+    .contains('Test submitter notification')
+    .switchToMainWindow();
+});
+
+test("Copy_Default_Template_To_Clipboard", async (t) => {
+  // Test the copy default template to clipboard functionality
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'email-templates');
+  
+  // Find and click the copy default template button for admin notification
+  const copyButton = Selector('button[data-clipboard-target="#bmltwf_admin_notification_email_template_default"]');
+  
+  await t
+    .expect(copyButton.exists)
+    .ok("Copy default template button should exist")
+    .click(copyButton);
+  
+  // Note: We can't easily test clipboard content in TestCafe, but we can verify the button exists and is clickable
 });
