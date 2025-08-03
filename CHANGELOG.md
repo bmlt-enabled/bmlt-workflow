@@ -1,3 +1,9 @@
+## 1.1.31 (Aug 3, 2025)
+- Fixes display name handling of email addresses (thanks @Redguy1959 !)
+- Adds customisation of the Subject lines in outgoing emails (thanks @tempsaint !)
+- Fixes a rendering bug in the submission page when postcodes are changed
+- Adds HTML sanitisation for outgoing messages
+
 ## 1.1.30 (Aug 2, 2025)
 - There's way too many options now for one page, so we now have tabs for them
 - #197 - Add Request Details to Email to Admin (thanks @tempsaint !) - We now support customising the notifications for correspondence and meeting submissions

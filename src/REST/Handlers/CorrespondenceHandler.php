@@ -283,11 +283,14 @@ class CorrespondenceHandler
         
         $correspondence_url = add_query_arg('thread', $thread_id, $correspondence_page_url);
         
-        $subject = __('New correspondence about your meeting submission', 'bmlt-workflow');
+        // Get custom subject template or use default
+        $subject_template = get_option('bmltwf_correspondence_submitter_email_subject');
+        $subject = $subject_template ? $subject_template : __('New correspondence about your meeting submission', 'bmlt-workflow');
         
         // Get template and substitute fields
         $template = get_option('bmltwf_correspondence_submitter_email_template');
         $template_fields = array(
+            'change_id' => $submission->change_id,
             'submitter_name' => $submitter_name,
             'correspondence_url' => $correspondence_url,
             'site_name' => get_bloginfo('name'),
@@ -298,6 +301,7 @@ class CorrespondenceHandler
         foreach ($template_fields as $field => $value) {
             $subfield = '{field:' . $field . '}';
             $message = str_replace($subfield, $value, $message);
+            $subject = str_replace($subfield, $value, $subject);
         }
         
         $from_email = get_option('bmltwf_email_from_address', get_bloginfo('admin_email'));
@@ -375,7 +379,9 @@ class CorrespondenceHandler
             return;
         }
         
-        $subject = __('New correspondence received - Submission ID', 'bmlt-workflow') . ' #' . $change_id;
+        // Get custom subject template or use default
+        $subject_template = get_option('bmltwf_correspondence_admin_email_subject');
+        $subject = $subject_template ? $subject_template : (__('New correspondence received - Submission ID', 'bmlt-workflow') . ' #' . $change_id);
         
         $admin_url = get_site_url() . '/wp-admin/admin.php?page=bmltwf-submissions';
         
@@ -393,6 +399,7 @@ class CorrespondenceHandler
         foreach ($template_fields as $field => $value) {
             $subfield = '{field:' . $field . '}';
             $message = str_replace($subfield, $value, $message);
+            $subject = str_replace($subfield, $value, $subject);
         }
         
         $from_email = get_option('bmltwf_email_from_address', get_bloginfo('admin_email'));

@@ -610,3 +610,84 @@ test("Copy_Default_Template_To_Clipboard", async (t) => {
   
   // Note: We can't easily test clipboard content in TestCafe, but we can verify the button exists and is clickable
 });
+
+test("Email_Address_Format_Validation", async (t) => {
+  // Test that both standard and display name format email addresses work
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  
+  // Test email from address field in email-templates tab
+  await ao.navigateToTab(t, 'email-templates');
+  
+  // Test standard email format
+  const standardEmail = "test@example.com";
+  await t
+    .typeText(ao.bmltwf_email_from_address, standardEmail, { replace: true })
+    .click(ao.submit);
+  await ao.settings_updated();
+  
+  // Navigate back to email-templates tab to check value
+  await ao.navigateToTab(t, 'email-templates');
+  await t.expect(ao.bmltwf_email_from_address.value).eql(standardEmail);
+  
+  // Test display name format
+  const displayNameEmail = "Test User <test@example.com>";
+  await t
+    .typeText(ao.bmltwf_email_from_address, displayNameEmail, { replace: true })
+    .click(ao.submit);
+  await ao.settings_updated();
+  
+  // Navigate back to email-templates tab to check value
+  await ao.navigateToTab(t, 'email-templates');
+  await t.expect(ao.bmltwf_email_from_address.value).eql(displayNameEmail);
+  
+  // Test invalid email format - should show error and revert to previous value
+  const invalidEmail = "invalid-email-format";
+  await t
+    .typeText(ao.bmltwf_email_from_address, invalidEmail, { replace: true })
+    .click(ao.submit);
+  
+  // Check for error message
+  await t.expect(Selector('.settings-error').exists).ok("Error message should appear for invalid email");
+  
+  // Navigate back to email-templates tab to check value reverted
+  await ao.navigateToTab(t, 'email-templates');
+  await t.expect(ao.bmltwf_email_from_address.value).eql(displayNameEmail);
+  
+  // Test FSO email field with same validation
+  await ao.navigateToTab(t, 'form-settings');
+  
+  // Test standard email format for FSO
+  const fsoStandardEmail = "fso@example.com";
+  await t
+    .typeText(ao.bmltwf_fso_email_address, fsoStandardEmail, { replace: true })
+    .click(ao.submit);
+  await ao.settings_updated();
+  
+  // Navigate back to form-settings tab to check value
+  await ao.navigateToTab(t, 'form-settings');
+  await t.expect(ao.bmltwf_fso_email_address.value).eql(fsoStandardEmail);
+  
+  // Test display name format for FSO
+  const fsoDisplayNameEmail = "FSO Admin <fso@example.com>";
+  await t
+    .typeText(ao.bmltwf_fso_email_address, fsoDisplayNameEmail, { replace: true })
+    .click(ao.submit);
+  await ao.settings_updated();
+  
+  // Navigate back to form-settings tab to check value
+  await ao.navigateToTab(t, 'form-settings');
+  await t.expect(ao.bmltwf_fso_email_address.value).eql(fsoDisplayNameEmail);
+  
+  // Test invalid FSO email format
+  const invalidFsoEmail = "not-an-email";
+  await t
+    .typeText(ao.bmltwf_fso_email_address, invalidFsoEmail, { replace: true })
+    .click(ao.submit);
+  
+  // Check for error message
+  await t.expect(Selector('.settings-error').exists).ok("Error message should appear for invalid FSO email");
+  
+  // Navigate back to form-settings tab to check value reverted
+  await ao.navigateToTab(t, 'form-settings');
+  await t.expect(ao.bmltwf_fso_email_address.value).eql(fsoDisplayNameEmail);
+});

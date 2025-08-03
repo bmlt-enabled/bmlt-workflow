@@ -784,6 +784,18 @@ if (!class_exists('bmltwf_plugin')) {
 
             register_setting(
                 'bmltwf-settings-group',
+                'bmltwf_submitter_email_subject',
+                array(
+                    'type' => 'string',
+                    'description' => __('Email subject for submitter notifications', 'bmlt-workflow'),
+                    'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => __('NA Meeting Change Request Acknowledgement - Submission ID {field:change_id}', 'bmlt-workflow')
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
                 'bmltwf_fso_feature',
                 array(
                     'type' => 'string',
@@ -803,6 +815,18 @@ if (!class_exists('bmltwf_plugin')) {
                     'sanitize_callback' => null,
                     'show_in_rest' => false,
                     'default' => file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html')
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_fso_email_subject',
+                array(
+                    'type' => 'string',
+                    'description' => __('Email subject for FSO notifications', 'bmlt-workflow'),
+                    'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => __('Starter Kit Request', 'bmlt-workflow')
                 )
             );
 
@@ -832,6 +856,18 @@ if (!class_exists('bmltwf_plugin')) {
 
             register_setting(
                 'bmltwf-settings-group',
+                'bmltwf_correspondence_submitter_email_subject',
+                array(
+                    'type' => 'string',
+                    'description' => __('Email subject for correspondence notifications to submitters', 'bmlt-workflow'),
+                    'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => __('New correspondence about your meeting submission', 'bmlt-workflow')
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
                 'bmltwf_correspondence_admin_email_template',
                 array(
                     'type' => 'string',
@@ -844,6 +880,18 @@ if (!class_exists('bmltwf_plugin')) {
 
             register_setting(
                 'bmltwf-settings-group',
+                'bmltwf_correspondence_admin_email_subject',
+                array(
+                    'type' => 'string',
+                    'description' => __('Email subject for correspondence notifications to admins', 'bmlt-workflow'),
+                    'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => __('New correspondence received - Submission ID {field:change_id}', 'bmlt-workflow')
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
                 'bmltwf_admin_notification_email_template',
                 array(
                     'type' => 'string',
@@ -851,6 +899,18 @@ if (!class_exists('bmltwf_plugin')) {
                     'sanitize_callback' => null,
                     'show_in_rest' => false,
                     'default' => file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_admin_notification_email_template.html')
+                )
+            );
+
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_admin_notification_email_subject',
+                array(
+                    'type' => 'string',
+                    'description' => __('Email subject for admin notifications of new submissions', 'bmlt-workflow'),
+                    'sanitize_callback' => array(&$this, 'bmltwf_textstring_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => __('[bmlt-workflow] {field:submission_type} request received - {field:service_body_name} - Change ID #{field:change_id}', 'bmlt-workflow')
                 )
             );
 
@@ -959,9 +1019,17 @@ if (!class_exists('bmltwf_plugin')) {
             );
 
             add_settings_field(
-                'bmltwf_correspondence_email_templates',
-                __('Correspondence email templates', 'bmlt-workflow'),
-                array(&$this, 'bmltwf_correspondence_email_templates_html'),
+                'bmltwf_correspondence_submitter_email_template',
+                __('Correspondence email template for submitters', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_correspondence_submitter_email_template_html'),
+                'bmltwf-email-templates',
+                'bmltwf-email-templates-section'
+            );
+
+            add_settings_field(
+                'bmltwf_correspondence_admin_email_template',
+                __('Correspondence email template for admins', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_correspondence_admin_email_template_html'),
                 'bmltwf-email-templates',
                 'bmltwf-email-templates-section'
             );
@@ -1107,6 +1175,21 @@ if (!class_exists('bmltwf_plugin')) {
             if (!isset($_POST['bmltwf_email_from_address'])) {
                 return $output;
             }
+            
+            // Check if input is in "Display Name <email@example.com>" format
+            if (preg_match('/^(.+)\s*<(.+)>$/', $input, $matches)) {
+                $display_name = trim($matches[1]);
+                $email = trim($matches[2]);
+                
+                if (!is_email($email)) {
+                    add_settings_error('bmltwf_email_from_address', 'err', __('Invalid email from address.', 'bmlt-workflow'));
+                    return $output;
+                }
+                
+                return sanitize_text_field($display_name) . ' <' . sanitize_email($email) . '>';
+            }
+            
+            // Handle plain email format
             $sanitized_email = sanitize_email($input);
             if (!is_email($sanitized_email)) {
                 add_settings_error('bmltwf_email_from_address', 'err', __('Invalid email from address.', 'bmlt-workflow'));
@@ -1134,6 +1217,21 @@ if (!class_exists('bmltwf_plugin')) {
             if (!isset($_POST['bmltwf_fso_email_address'])) {
                 return $output;
             }
+            
+            // Check if input is in "Display Name <email@example.com>" format
+            if (preg_match('/^(.+)\s*<(.+)>$/', $input, $matches)) {
+                $display_name = trim($matches[1]);
+                $email = trim($matches[2]);
+                
+                if (!is_email($email)) {
+                    add_settings_error('bmltwf_fso_email_address', 'err', __('Invalid FSO email address.', 'bmlt-workflow'));
+                    return $output;
+                }
+                
+                return sanitize_text_field($display_name) . ' <' . sanitize_email($email) . '>';
+            }
+            
+            // Handle plain email format
             $sanitized_email = sanitize_email($input);
             if (!is_email($sanitized_email)) {
                 add_settings_error('bmltwf_fso_email_address', 'err', __('Invalid FSO email address.', 'bmlt-workflow'));
@@ -1546,6 +1644,11 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br><br>';
             echo '</div>';
 
+            $subject = get_option('bmltwf_fso_email_subject');
+            echo '<label for="bmltwf_fso_email_subject"><b>' . __('Email Subject:', 'bmlt-workflow') . '</b></label><input id="bmltwf_fso_email_subject" type="text" size="80" name="bmltwf_fso_email_subject" value="' . esc_attr($subject) . '"/>';
+            echo '<br><br>';
+
+            echo '<label for="bmltwf_fso_email_template"><b>' . __('Email Body:', 'bmlt-workflow') . '</b></label><br>';
             $content = get_option('bmltwf_fso_email_template');
             $editor_id = 'bmltwf_fso_email_template';
 
@@ -1566,6 +1669,11 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br><br>';
             echo '</div>';
 
+            $subject = get_option('bmltwf_submitter_email_subject');
+            echo '<br><label for="bmltwf_submitter_email_subject"><b>' . __('Email Subject:', 'bmlt-workflow') . '</b></label><input id="bmltwf_submitter_email_subject" type="text" size="80" name="bmltwf_submitter_email_subject" value="' . esc_attr($subject) . '"/>';
+            echo '<br><br>';
+
+            echo '<label for="bmltwf_submitter_email_template"><b>' . __('Email Body:', 'bmlt-workflow') . '</b></label><br>';
             $content = get_option('bmltwf_submitter_email_template');
             $editor_id = 'bmltwf_submitter_email_template';
 
@@ -1626,16 +1734,19 @@ if (!class_exists('bmltwf_plugin')) {
             add_role('bmltwf_trusted_servant', 'BMLT Workflow Trusted Servant');
         }
 
-        public function bmltwf_correspondence_email_templates_html()
+        public function bmltwf_correspondence_submitter_email_template_html()
         {
             echo '<div class="bmltwf_info_text">';
             echo '<br>';
-            echo __('These templates will be used when sending correspondence notifications.', 'bmlt-workflow');
+            echo __('This template will be used when sending correspondence notifications to submitters.', 'bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
 
-            // Submitter template
-            echo '<h4>' . __('Template for notifications to submitters', 'bmlt-workflow') . '</h4>';
+            $subject = get_option('bmltwf_correspondence_submitter_email_subject');
+            echo '<br><label for="bmltwf_correspondence_submitter_email_subject"><b>' . __('Email Subject:', 'bmlt-workflow') . '</b></label><input id="bmltwf_correspondence_submitter_email_subject" type="text" size="80" name="bmltwf_correspondence_submitter_email_subject" value="' . esc_attr($subject) . '"/>';
+            echo '<br><br>';
+            
+            echo '<label for="bmltwf_correspondence_submitter_email_template"><b>' . __('Email Body:', 'bmlt-workflow') . '</b></label><br>';
             $content = get_option('bmltwf_correspondence_submitter_email_template');
             $editor_id = 'bmltwf_correspondence_submitter_email_template';
             wp_editor($content, $editor_id, array('media_buttons' => false));
@@ -1643,9 +1754,21 @@ if (!class_exists('bmltwf_plugin')) {
             echo __('Copy default template to clipboard', 'bmlt-workflow');
             echo '</button>';
             echo '<br><br>';
+        }
 
-            // Admin template
-            echo '<h4>' . __('Template for notifications to admins', 'bmlt-workflow') . '</h4>';
+        public function bmltwf_correspondence_admin_email_template_html()
+        {
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>';
+            echo __('This template will be used when sending correspondence notifications to admins.', 'bmlt-workflow');
+            echo '<br><br>';
+            echo '</div>';
+
+            $subject = get_option('bmltwf_correspondence_admin_email_subject');
+            echo '<br><label for="bmltwf_correspondence_admin_email_subject"><b>' . __('Email Subject:', 'bmlt-workflow') . '</b></label><input id="bmltwf_correspondence_admin_email_subject" type="text" size="80" name="bmltwf_correspondence_admin_email_subject" value="' . esc_attr($subject) . '"/>';
+            echo '<br><br>';
+            
+            echo '<label for="bmltwf_correspondence_admin_email_template"><b>' . __('Email Body:', 'bmlt-workflow') . '</b></label><br>';
             $content = get_option('bmltwf_correspondence_admin_email_template');
             $editor_id = 'bmltwf_correspondence_admin_email_template';
             wp_editor($content, $editor_id, array('media_buttons' => false));
@@ -1663,6 +1786,11 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br><br>';
             echo '</div>';
 
+            $subject = get_option('bmltwf_admin_notification_email_subject');
+            echo '<br><label for="bmltwf_admin_notification_email_subject"><b>' . __('Email Subject:', 'bmlt-workflow') . '</b></label><input id="bmltwf_admin_notification_email_subject" type="text" size="80" name="bmltwf_admin_notification_email_subject" value="' . esc_attr($subject) . '"/>';
+            echo '<br><br>';
+
+            echo '<label for="bmltwf_admin_notification_email_template"><b>' . __('Email Body:', 'bmlt-workflow') . '</b></label><br>';
             $content = get_option('bmltwf_admin_notification_email_template');
             $editor_id = 'bmltwf_admin_notification_email_template';
 
@@ -1688,13 +1816,18 @@ if (!class_exists('bmltwf_plugin')) {
             add_option('bmltwf_optional_postcode_displayname', __('Postcode', 'bmlt-workflow'));
             add_option('bmltwf_required_meeting_formats', 'true');
             add_option('bmltwf_submitter_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_submitter_email_template.html'));
+            add_option('bmltwf_submitter_email_subject', __('NA Meeting Change Request Acknowledgement - Submission ID {field:change_id}', 'bmlt-workflow'));
             add_option('bmltwf_fso_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_fso_email_template.html'));
+            add_option('bmltwf_fso_email_subject', __('Starter Kit Request', 'bmlt-workflow'));
             add_option('bmltwf_fso_email_address', 'example@example.com');
             add_option('bmltwf_fso_feature', 'display');
             add_option('bmltwf_correspondence_page', '');
             add_option('bmltwf_correspondence_submitter_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_submitter_email_template.html'));
+            add_option('bmltwf_correspondence_submitter_email_subject', __('New correspondence about your meeting submission', 'bmlt-workflow'));
             add_option('bmltwf_correspondence_admin_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_correspondence_admin_email_template.html'));
+            add_option('bmltwf_correspondence_admin_email_subject', __('New correspondence received - Submission ID {field:change_id}', 'bmlt-workflow'));
             add_option('bmltwf_admin_notification_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_admin_notification_email_template.html'));
+            add_option('bmltwf_admin_notification_email_subject', __('[bmlt-workflow] {field:submission_type} request received - {field:service_body_name} - Change ID #{field:change_id}', 'bmlt-workflow'));
         }
 
         public function bmltwf_add_capability($user_id)

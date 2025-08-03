@@ -23,7 +23,7 @@
 /* global bmltwf_default_closed_meetings, bmltwf_bmlt_formats, bmltwf_datatables_delete_enabled, bmltwf_admin_submissions_rest_url, bmltwf_admin_bmltwf_service_bodies */
 /* global bmltwf_correspondence_enabled */
 /* global bmltwf_optional_location_province_displayname, bmltwf_optional_location_sub_province_displayname, bmltwf_optional_location_nation_displayname */
-/* global bmltwf_bmltserver_geolocate_rest_url, bmltwf_optional_postcode, bmltwf_zip_auto_geocoding, bmltwf_county_auto_geocoding */
+/* global bmltwf_bmltserver_geolocate_rest_url, bmltwf_optional_postcode, bmltwf_optional_location_postal_code_1_displayname, bmltwf_zip_auto_geocoding, bmltwf_county_auto_geocoding */
 
 const { __ } = wp.i18n;
 
@@ -919,7 +919,7 @@ jQuery(document).ready(function ($) {
           table += column(col_meeting_details, bmltwf_optional_location_nation_displayname, c[key]);
           break;
         case 'location_postal_code_1':
-          table += column(col_meeting_details, bmltwf_optional_postcode, c[key]);
+          table += column(col_meeting_details, bmltwf_optional_location_postal_code_1_displayname, c[key]);
           break;
         case 'group_relationship':
           table += column(col_personal_details, __('Relationship to Group', 'bmlt-workflow'), c[key]);

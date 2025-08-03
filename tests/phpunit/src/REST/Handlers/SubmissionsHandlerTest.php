@@ -107,6 +107,8 @@ Line: $errorLine
         Functions\when('get_bloginfo')->justReturn('Test Site');
         Functions\when('__')->returnArg();
         Functions\when('wp_is_json_media_type')->justReturn(true);
+        Functions\when('esc_html')->returnArg();
+        Functions\when('wp_kses_post')->returnArg();
 
         $this->meeting = ' { "id": "3563", "worldId": "", "serviceBodyId": "3", "day": 2, "venueType": 1, "startTime": "19:00", "duration": "01:15", "time_zone": "", "formats": "BT", "lang_enum": "en", "longitude": "0", "latitude": "0", "distance_in_km": "", "distance_in_miles": "", "email_contact": "", "name": "Test Monday Night Meeting", "location_text": "Glebe Town Hall", "location_info": "", "location_street": "160 Johns Road", "location_city_subsection": "", "location_neighborhood": "", "location_municipality": "Glebe", "location_sub_province": "", "location_province": "NSW", "location_postal_code_1": "NSW", "location_nation": "", "comments": "", "train_lines": "", "bus_lines": "", "contact_phone_2": "", "contact_email_2": "", "contact_name_2": "", "contact_phone_1": "", "contact_email_1": "", "contact_name_1": "", "zone": "", "phone_meeting_number": "", "virtual_meeting_link": "", "virtual_meeting_additional_info": "", "published": "1", "root_server_uri": "http:", "formatIds": [3] } ';
     }
@@ -1916,5 +1918,257 @@ Line: $errorLine
         $this->assertStringContainsString('<tr><td>Relationship to Group:</td><td>Group Member</td></tr>', $body);
         $this->assertStringContainsString('<tr><td>Add email to meeting:</td><td>Yes</td></tr>', $body);
     }
-    
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * Test that custom subject lines work for approval emails
+     */
+    public function test_approve_submission_custom_subject_line(): void
+    {
+        $test_submission_id = '14';
+        $body = '';
+        $request = $this->generate_approve_request($test_submission_id, $body);
+
+        $row = array(
+            'change_id' => $test_submission_id,
+            'submission_time' => '2022-03-23 09:25:53',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
+            'change_made' => 'NULL',
+            'submitter_name' => 'test submitter',
+            'submission_type' => 'reason_change',
+            'submitter_email' => 'a@a.com',
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            'changes_requested' => '{"name":"Ashfield change name","day":5,"formatIds":[1,4,8,14,54,55],"group_relationship":"Group Member","additional_info":"pls approve","original_name":"Ashfield"}',
+        );
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        $wpdb->shouldReceive([
+            'prepare' => 'nothing',
+            'get_row' => $row,
+            'get_results' => 'nothing'
+        ]);
+
+        // Mock custom subject template
+        Functions\when('get_option')->alias(function($option) {
+            if ($option === 'bmltwf_submitter_email_subject') return 'Approved: {field:name} - ID {field:change_id}';
+            return 'success';
+        });
+
+        $retrieve_single_response = $this->meeting;
+        $bmlt_input = '';
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3->shouldReceive('updateMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
+
+        $post_change_response = '[{"id":"3563"}]';
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
+        Functions\when('wp_get_current_user')->justReturn($user);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_body')->justReturn($post_change_response);
+        Functions\when('current_user_can')->justReturn('false');
+
+        // Capture subject to verify custom subject line
+        $capturedSubject = null;
+        Functions\expect('wp_mail')
+            ->once()
+            ->with(
+                'a@a.com',
+                Mockery::capture($capturedSubject),
+                Mockery::type('string'),
+                Mockery::type('array')
+            )
+            ->andReturn(true);
+
+        $response = $handlers->approve_submission_handler($request);
+        
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+        // Verify custom subject line with field substitution
+        $this->assertEquals('Approved: Ashfield change name - ID 14', $capturedSubject);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * Test that custom subject lines work for admin notification emails
+     */
+    public function test_admin_notification_custom_subject_line(): void
+    {
+        $form_post = new class {
+            public function get_json_params()
+            {
+                return array(
+                    "update_reason" => "reason_new",
+                    "name" => "Test Meeting",
+                    "startTime" => "10:00:00",
+                    "duration" => "01:00:00",
+                    "location_text" => "test location",
+                    "location_street" => "test street",
+                    "location_municipality" => "test municipality",
+                    "location_province" => "test province",
+                    "day" => "1",
+                    "serviceBodyId" => "99",
+                    "formatIds" => ["1"],
+                    "starter_kit_required" => "no",
+                    "first_name" => "John",
+                    "last_name" => "Doe",
+                    "venueType" => "1",
+                    "email_address" => "john@example.com",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                );
+            }
+        };
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'));
+        $wpdb->insert_id = 123;
+        $wpdb->shouldReceive('prepare')->andReturn(true);
+        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1"));
+
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->once()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "admin"));
+        
+        // Mock custom admin subject template
+        Functions\when('get_option')->alias(function($option) {
+            switch($option) {
+                case 'bmltwf_admin_notification_email_subject':
+                    return 'New Submission: {field:submitter_name} - {field:name}';
+                case 'bmltwf_admin_notification_email_template':
+                    return 'Admin template';
+                case 'bmltwf_submitter_email_template':
+                    return 'Submitter template';
+                default:
+                    return 'success';
+            }
+        });
+
+        // Capture emails to verify custom subject line
+        $captured_emails = [];
+        Functions\expect('wp_mail')->twice()->withArgs(function($to, $subject, $body, $headers) use (&$captured_emails) {
+            $captured_emails[] = array(
+                'to' => $to,
+                'subject' => $subject,
+                'body' => $body,
+                'headers' => $headers
+            );
+            return true;
+        })->andReturn(true);
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($this->meeting, $bmlt_input));
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+        
+        // Find the admin notification email
+        $admin_email = null;
+        foreach ($captured_emails as $email) {
+            if ($email['to'] === 'a@a.com') {
+                $admin_email = $email;
+                break;
+            }
+        }
+        
+        $this->assertNotNull($admin_email, 'Admin notification email should be sent');
+        // Verify custom admin subject line with field substitution
+        $this->assertEquals('New Submission: John Doe - Test Meeting', $admin_email['subject']);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * Test that custom subject lines work for FSO emails
+     */
+    public function test_fso_email_custom_subject_line(): void
+    {
+        $test_submission_id = '14';
+        $body = '';
+        $request = $this->generate_approve_request($test_submission_id, $body);
+
+        $row = array(
+            'change_id' => $test_submission_id,
+            'submission_time' => '2022-03-23 09:25:53',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
+            'change_made' => 'NULL',
+            'submitter_name' => 'test submitter',
+            'submission_type' => 'reason_new',
+            'submitter_email' => 'a@a.com',
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            'changes_requested' => '{"name":"New Meeting","day":5,"formatIds":[1,4,8,14,54,55],"group_relationship":"Group Member","additional_info":"pls approve","starter_kit_required":"yes","starter_kit_postal_address":"123 Main St"}',
+        );
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        $wpdb->shouldReceive([
+            'prepare' => 'nothing',
+            'get_row' => $row,
+            'get_results' => 'nothing'
+        ]);
+
+        $retrieve_single_response = $this->meeting;
+        $bmlt_input = '';
+        $stub_bmltv3 = $this->stub_bmltv3($retrieve_single_response, $bmlt_input);
+        $stub_bmltv3->shouldReceive('createMeeting')->andreturn(true);
+        $handlers = new SubmissionsHandler($stub_bmltv3);
+
+        $post_change_response = '[{"id":"3563"}]';
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
+        Functions\when('wp_get_current_user')->justReturn($user);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_body')->justReturn($post_change_response);
+        Functions\when('current_user_can')->justReturn('false');
+
+        // Mock custom FSO subject template and settings
+        Functions\when('get_option')->alias(function ($value) {
+            if ($value === 'bmltwf_fso_email_address') {
+                return "fso@fso.com";
+            } elseif ($value === 'bmltwf_fso_feature') {
+                return 'display';
+            } elseif ($value === 'bmltwf_fso_email_subject') {
+                return 'Starter Kit Request: {field:name} - {field:submitter_name}';
+            } else {
+                return 'success';
+            }
+        });
+
+        // Capture emails to verify custom FSO subject line
+        $captured_emails = [];
+        Functions\expect('wp_mail')->twice()->withArgs(function($to, $subject, $body, $headers) use (&$captured_emails) {
+            $captured_emails[] = array(
+                'to' => $to,
+                'subject' => $subject,
+                'body' => $body,
+                'headers' => $headers
+            );
+            return true;
+        })->andReturn(true);
+
+        $response = $handlers->approve_submission_handler($request);
+        
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+        
+        // Find the FSO email
+        $fso_email = null;
+        foreach ($captured_emails as $email) {
+            if ($email['to'] === 'fso@fso.com') {
+                $fso_email = $email;
+                break;
+            }
+        }
+        
+        $this->assertNotNull($fso_email, 'FSO email should be sent');
+        // Verify custom FSO subject line with field substitution
+        $this->assertEquals('Starter Kit Request: New Meeting - test submitter', $fso_email['subject']);
+    }
+
+
 }

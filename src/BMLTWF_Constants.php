@@ -31,6 +31,7 @@ trait BMLTWF_Constants
         'bmltwf_bmlt_password',
         'bmltwf_bmlt_test_status',
         'bmltwf_submitter_email_template',
+        'bmltwf_submitter_email_subject',
         'bmltwf_required_meeting_formats',
         'bmltwf_optional_location_sub_province',
         'bmltwf_optional_location_sub_province_displayname',
@@ -43,6 +44,7 @@ trait BMLTWF_Constants
         'bmltwf_delete_closed_meetings',
         'bmltwf_email_from_address',
         'bmltwf_fso_email_template',
+        'bmltwf_fso_email_subject',
         'bmltwf_fso_email_address',
         'bmltwf_submitter_email_template',
         'bmltwf_fso_feature',
@@ -51,7 +53,11 @@ trait BMLTWF_Constants
         'bmltwf_google_maps_key',
         'bmltwf_correspondence_page',
         'bmltwf_correspondence_submitter_email_template',
-        'bmltwf_correspondence_admin_email_template'
+        'bmltwf_correspondence_submitter_email_subject',
+        'bmltwf_correspondence_admin_email_template',
+        'bmltwf_correspondence_admin_email_subject',
+        'bmltwf_admin_notification_email_template',
+        'bmltwf_admin_notification_email_subject'
     );
 
     public $bmltwf_rest_namespace = 'bmltwf/v1';
