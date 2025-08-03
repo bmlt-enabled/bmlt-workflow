@@ -3,6 +3,7 @@
 - Adds customisation of the Subject lines in outgoing emails (thanks @tempsaint !)
 - Fixes a rendering bug in the submission page when postcodes are changed
 - Adds HTML sanitisation for outgoing messages
+- Fixes a rendering bug in outgoing admin notifications
 
 ## 1.1.30 (Aug 2, 2025)
 - There's way too many options now for one page, so we now have tabs for them

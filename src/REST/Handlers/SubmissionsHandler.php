@@ -1550,9 +1550,7 @@ class SubmissionsHandler
                 case "other_reason":
                     $table .= '<tr><td>'.__('Other Reason','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
-                case "contact_number":
-                    $table .= '<tr><td>'.__('Contact number (confidential)','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
-                    break;
+
                 case "add_contact":
                     $result = ($value === 'yes' ? 'Yes' : 'No');
                     $table .= '<tr><td>'.__('Add email to meeting','bmlt-workflow').':</td><td>' . esc_html($result) . '</td></tr>';

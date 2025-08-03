@@ -333,6 +333,7 @@ class CorrespondenceHandlerTest extends TestCase
         $template = 'Submission #{field:change_id} from {field:submitter_name} on {field:site_name}. Message: {field:last_correspondence}. View: {field:admin_url}';
         Functions\when('get_option')->alias(function($option) use ($template) {
             if ($option === 'bmltwf_correspondence_admin_email_template') return $template;
+            if ($option === 'bmltwf_correspondence_admin_email_subject') return 'New correspondence received - Submission ID {field:change_id}';
             if ($option === 'bmltwf_email_from_address') return 'from@example.com';
             return 'test';
         });
@@ -381,13 +382,14 @@ class CorrespondenceHandlerTest extends TestCase
         $mockAdmin->user_email = 'admin@example.com';
         Functions\when('get_user_by')->justReturn($mockAdmin);
         
-        // Capture the email content to verify field substitution
+        // Capture the email content and subject to verify field substitution
         $capturedEmail = null;
+        $capturedSubject = null;
         Functions\expect('wp_mail')
             ->once()
             ->with(
                 'admin@example.com',
-                Mockery::type('string'),
+                Mockery::capture($capturedSubject),
                 Mockery::capture($capturedEmail),
                 Mockery::type('array')
             )
@@ -404,7 +406,9 @@ class CorrespondenceHandlerTest extends TestCase
         
         // Verify the email was sent with correct field substitutions
         $expectedContent = 'Submission #456 from Jane Smith on Admin Test Site. Message: User inquiry message. View: http://example.com/wp-admin/admin.php?page=bmltwf-submissions';
+        $expectedSubject = 'New correspondence received - Submission ID 456';
         $this->assertEquals($expectedContent, $capturedEmail);
+        $this->assertEquals($expectedSubject, $capturedSubject);
         $this->assertTrue($result['success']);
     }
 
@@ -488,6 +492,7 @@ class CorrespondenceHandlerTest extends TestCase
         
         Functions\when('get_option')->alias(function($option) {
             if ($option === 'bmltwf_correspondence_submitter_email_template') return 'Test message';
+            if ($option === 'bmltwf_correspondence_submitter_email_subject') return 'New correspondence about your meeting submission';
             if ($option === 'bmltwf_correspondence_page') return 123;
             if ($option === 'bmltwf_email_from_address') return 'custom@example.com';
             return 'test';
@@ -526,13 +531,14 @@ class CorrespondenceHandlerTest extends TestCase
             return 'test';
         });
         
-        // Capture headers to verify format
+        // Capture headers and subject to verify format
         $capturedHeaders = null;
+        $capturedSubject = null;
         Functions\expect('wp_mail')
             ->once()
             ->with(
                 'user@example.com',
-                Mockery::type('string'),
+                Mockery::capture($capturedSubject),
                 Mockery::type('string'),
                 Mockery::capture($capturedHeaders)
             )
@@ -553,12 +559,14 @@ class CorrespondenceHandlerTest extends TestCase
         $handler = new CorrespondenceHandler();
         $result = $handler->post_correspondence_handler($request);
         
-        // Verify headers format
+        // Verify headers format and default subject
         $expectedHeaders = [
             'Content-Type: text/html; charset=UTF-8',
             'From: My WordPress Site <custom@example.com>'
         ];
+        $expectedSubject = 'New correspondence about your meeting submission';
         $this->assertEquals($expectedHeaders, $capturedHeaders);
+        $this->assertEquals($expectedSubject, $capturedSubject);
         $this->assertTrue($result['success']);
     }
 
