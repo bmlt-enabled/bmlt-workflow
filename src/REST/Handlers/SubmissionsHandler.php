@@ -745,7 +745,22 @@ class SubmissionsHandler
         //
 
         $to_address = $submitter_email;
-        $subject = __('NA Meeting Change Request Approval - Submission ID','bmlt-workflow')." " . $request['change_id'];
+        // Get custom subject template or use default
+        $subject_template = get_option('bmltwf_submitter_email_subject');
+        $subject = $subject_template ? $subject_template : (__('NA Meeting Change Request Approval - Submission ID','bmlt-workflow')." " . $request['change_id']);
+        
+        // Get template and substitute fields
+        $template_fields = array(
+            'change_id' => $request['change_id'],
+            'name' => $change['name'] ?? '',
+            'submitter_name' => $submitter_name
+        );
+        
+        foreach ($template_fields as $field => $value) {
+            $subfield = '{field:' . $field . '}';
+            $subject = str_replace($subfield, $value, $subject);
+        }
+        
         $body = __('Your meeting change has been approved - change ID','bmlt-workflow')." (" . $request['change_id'] . ")";
         if (!empty($message)) {
             $body .= '<br><br>'.__('Message from trusted servant','bmlt-workflow').':<br><br>' . $message;
@@ -773,7 +788,10 @@ class SubmissionsHandler
                     $this->debug_log("We're sending a starter kit");
                     $template = get_option('bmltwf_fso_email_template');
                     if (!empty($template)) {
-                        $subject = __('Starter Kit Request','bmlt-workflow');
+                        // Get custom subject template or use default
+                        $subject_template = get_option('bmltwf_fso_email_subject');
+                        $subject = $subject_template ? $subject_template : __('Starter Kit Request','bmlt-workflow');
+                        
                         $to_address = get_option('bmltwf_fso_email_address');
                         $fso_subfields = array('contact_number','submitter_name', 'name', 'starter_kit_postal_address');
 
@@ -785,6 +803,7 @@ class SubmissionsHandler
                                 $subwith = '(blank)';
                             }
                             $template = str_replace($subfield, $subwith, $template);
+                            $subject = str_replace($subfield, $subwith, $subject);
                         }
                         $body = $template;
                         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
@@ -1423,7 +1442,10 @@ class SubmissionsHandler
         $this->debug_log($sblist);
 
         $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['serviceBodyId']);
-        $subject = '[bmlt-workflow] ' . $submission_type . ' '.__('request received','bmlt-workflow').' - ' . $sblist[$sanitised_fields['serviceBodyId']]['name'] . ' - '.__('Change ID','bmlt_workflow').' #' . $insert_id;
+        
+        // Get custom subject template or use default
+        $subject_template = get_option('bmltwf_admin_notification_email_subject');
+        $subject = $subject_template ? $subject_template : ('[bmlt-workflow] ' . $submission_type . ' '.__('request received','bmlt-workflow').' - ' . $sblist[$sanitised_fields['serviceBodyId']]['name'] . ' - '.__('Change ID','bmlt_workflow').' #' . $insert_id);
         
         // Use admin notification template
         $template = get_option('bmltwf_admin_notification_email_template');
@@ -1436,13 +1458,15 @@ class SubmissionsHandler
             'submission_time' => current_time('mysql', true),
             'submission' => $this->submission_format($submission),
             'admin_url' => get_site_url() . '/wp-admin/admin.php?page=bmltwf-submissions',
-            'site_name' => get_bloginfo('name')
+            'site_name' => get_bloginfo('name'),
+            'name' => $submission['name'] ?? ''
         );
         
         $body = $template;
         foreach ($template_fields as $field => $value) {
             $subfield = '{field:' . $field . '}';
             $body = str_replace($subfield, $value, $body);
+            $subject = str_replace($subfield, $value, $subject);
         }
         
         $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
@@ -1481,66 +1505,64 @@ class SubmissionsHandler
             if (!is_string($value) || (is_string($value) && !empty($value))) {
             switch ($key) {
                 case "name":
-                    $table .= '<tr><td>'.__('Meeting Name','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Meeting Name','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "startTime":
-                    $table .= '<tr><td>'.__('Start Time','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Start Time','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "duration":
-                    $table .= '<tr><td>'.__('Duration','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Duration','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "location_text":
-                    $table .= '<tr><td>'.__('Location','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Location','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "location_street":
-                    $table .= '<tr><td>'.__('Street','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Street','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "location_info":
-                    $table .= '<tr><td>'.__('Location Info','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Location Info','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "location_municipality":
-                    $table .= '<tr><td>'.__('Municipality','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Municipality','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "location_province":
-                    $table .= '<tr><td>'.__('Province/State','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Province/State','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "location_sub_province":
-                    $table .= '<tr><td>'.__('SubProvince','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('SubProvince','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "location_nation":
-                    $table .= '<tr><td>'.__('Nation','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Nation','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "location_postal_code_1":
-                    $table .= '<tr><td>'.__('PostCode','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('PostCode','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "group_relationship":
-                    $table .= '<tr><td>'.__('Relationship to Group','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Relationship to Group','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "day":
                     $weekdays = [__('Error'), __('Sunday','bmlt-workflow'), __('Monday','bmlt-workflow'), __('Tuesday','bmlt-workflow'), __('Wednesday','bmlt-workflow'), __('Thursday','bmlt-workflow'), __('Friday','bmlt-workflow'), __('Saturday','bmlt-workflow')];
                     $table .= '<tr><td>'.__('Meeting Day','bmlt-workflow').':</td><td>' . $weekdays[$value] . '</td></tr>';
                     break;
                 case "additional_info":
-                    $table .= '<tr><td>'.__('Additional Info','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Additional Info','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "other_reason":
-                    $table .= '<tr><td>'.__('Other Reason','bmlt-workflow').':</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Other Reason','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
-                case "contact_number":
-                    $table .= "<tr><td>'.__('Contact number (confidential)','bmlt-workflow').':</td><td>" . $value . '</td></tr>';
-                    break;
+
                 case "add_contact":
                     $result = ($value === 'yes' ? 'Yes' : 'No');
-                    $table .= '<tr><td>'.__('Add email to meeting','bmlt-workflow').':</td><td>' . $result . '</td></tr>';
+                    $table .= '<tr><td>'.__('Add email to meeting','bmlt-workflow').':</td><td>' . esc_html($result) . '</td></tr>';
                     break;
                 case "virtual_meeting_additional_info":
-                    $table .= '<tr><td>'.__('Virtual Meeting Additional Info','bmlt-workflow').'</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Virtual Meeting Additional Info','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "phone_meeting_number":
-                    $table .= '<tr><td>'.__('Virtual Meeting Phone Details','bmlt-workflow').'</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Virtual Meeting Phone Details','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "virtual_meeting_link":
-                    $table .= '<tr><td>'.__('Virtual Meeting Link','bmlt-workflow').'</td><td>' . $value . '</td></tr>';
+                    $table .= '<tr><td>'.__('Virtual Meeting Link','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
 
                 case "formatIds":
@@ -1550,7 +1572,7 @@ class SubmissionsHandler
                     foreach ($value as $key) {
                         $friendlydata .= "(" . $this->formats[$key]["key_string"] . ")-" . $this->formats[$key]["name_string"] . " ";
                     }
-                    $table .= '<tr><td>'.__('Meeting Formats','bmlt-workflow').':</td><td>' . $friendlydata . '</td></tr>';
+                    $table .= '<tr><td>'.__('Meeting Formats','bmlt-workflow').':</td><td>' . esc_html($friendlydata) . '</td></tr>';
                     break;
             }
         }
