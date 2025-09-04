@@ -19,6 +19,7 @@
 namespace bmltwf\REST\Handlers;
 
 use bmltwf\BMLT\Integration;
+use bmltwf\BMLTWF_Email;
 
 class CorrespondenceHandler
 {
@@ -26,11 +27,13 @@ class CorrespondenceHandler
     use \bmltwf\REST\HandlerCore;
     
     protected $bmlt_integration;
+    protected $email;
 
     public function __construct($stub = null)
     {
         $this->initTableNames();
         $this->bmlt_integration = new Integration();
+        $this->email = new BMLTWF_Email();
     }
 
     /**
@@ -283,38 +286,28 @@ class CorrespondenceHandler
         
         $correspondence_url = add_query_arg('thread', $thread_id, $correspondence_page_url);
         
-        // Get custom subject template or use default
-        $subject_template = get_option('bmltwf_correspondence_submitter_email_subject');
-        $subject = $subject_template ? $subject_template : __('New correspondence about your meeting submission', 'bmlt-workflow');
+        // Get meeting data for email templates
+        $meeting_data = null;
+        if (!empty($submission->id)) {
+            $meeting_data = $this->bmlt_integration->getMeeting($submission->id);
+            if (is_wp_error($meeting_data)) {
+                $meeting_data = null;
+            }
+        }
         
-        // Get template and substitute fields
-        $template = get_option('bmltwf_correspondence_submitter_email_template');
-        $template_fields = array(
+        $context = array(
             'change_id' => $submission->change_id,
-            'submitter_name' => $submitter_name,
+            'submitter_name' => $submitter_name
+        );
+        
+        $additional = array(
             'correspondence_url' => $correspondence_url,
-            'site_name' => get_bloginfo('name'),
             'last_correspondence' => $last_message
         );
         
-        $message = $template;
-        foreach ($template_fields as $field => $value) {
-            $subfield = '{field:' . $field . '}';
-            $message = str_replace($subfield, $value, $message);
-            $subject = str_replace($subfield, $value, $subject);
-        }
+        $this->email->send_correspondence_submitter_notification($submitter_email, $context, $additional, $meeting_data);
         
-        $from_email = get_option('bmltwf_email_from_address', get_bloginfo('admin_email'));
-        $from_name = get_bloginfo('name');
-        
-        $headers = array(
-            'Content-Type: text/html; charset=UTF-8',
-            'From: ' . $from_name . ' <' . $from_email . '>'
-        );
-        
-        wp_mail($submitter_email, $subject, $message, $headers);
-        
-        $this->debug_log("Correspondence notification email sent - to: {$submitter_email}, subject: {$subject}, url: {$correspondence_url}");
+        $this->debug_log("Correspondence notification email sent - to: {$submitter_email}, url: {$correspondence_url}");
     }
 
     /**
@@ -379,40 +372,27 @@ class CorrespondenceHandler
             return;
         }
         
-        // Get custom subject template or use default
-        $subject_template = get_option('bmltwf_correspondence_admin_email_subject');
-        $subject = $subject_template ? $subject_template : (__('New correspondence received - Submission ID', 'bmlt-workflow') . ' #' . $change_id);
+        // Get meeting data for email templates
+        $meeting_data = null;
+        if (!empty($submission->id)) {
+            $meeting_data = $this->bmlt_integration->getMeeting($submission->id);
+            if (is_wp_error($meeting_data)) {
+                $meeting_data = null;
+            }
+        }
         
-        $admin_url = get_site_url() . '/wp-admin/admin.php?page=bmltwf-submissions';
-        
-        // Get template and substitute fields
-        $template = get_option('bmltwf_correspondence_admin_email_template');
-        $template_fields = array(
+        $context = array(
             'change_id' => $change_id,
-            'submitter_name' => $submission->submitter_name,
-            'admin_url' => $admin_url,
-            'site_name' => get_bloginfo('name'),
+            'submitter_name' => $submission->submitter_name
+        );
+        
+        $additional = array(
             'last_correspondence' => $last_message
         );
         
-        $message = $template;
-        foreach ($template_fields as $field => $value) {
-            $subfield = '{field:' . $field . '}';
-            $message = str_replace($subfield, $value, $message);
-            $subject = str_replace($subfield, $value, $subject);
-        }
+        $this->email->send_correspondence_admin_notification($to_address, $context, $additional, $meeting_data);
         
-        $from_email = get_option('bmltwf_email_from_address', get_bloginfo('admin_email'));
-        $from_name = get_bloginfo('name');
-        
-        $headers = array(
-            'Content-Type: text/html; charset=UTF-8',
-            'From: ' . $from_name . ' <' . $from_email . '>'
-        );
-        
-        wp_mail($to_address, $subject, $message, $headers);
-        
-        $this->debug_log("Admin correspondence notification email sent - to: {$to_address}, subject: {$subject}");
+        $this->debug_log("Admin correspondence notification email sent - to: {$to_address}");
     }
 
     /**
