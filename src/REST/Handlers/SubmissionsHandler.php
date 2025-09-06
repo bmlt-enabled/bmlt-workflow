@@ -22,6 +22,7 @@ namespace bmltwf\REST\Handlers;
 
 use bmltwf\BMLT\Integration;
 use bmltwf\BMLTWF_Database;
+use bmltwf\BMLTWF_Email;
 
 
 class SubmissionsHandler
@@ -32,6 +33,7 @@ class SubmissionsHandler
     protected $formats;
     protected $BMLTWF_Database;
     protected $bmlt_integration;
+    protected $email;
 
     public function __construct($intstub = null)
     {
@@ -46,6 +48,7 @@ class SubmissionsHandler
         
         // $this->debug_log("SubmissionsHandler: Creating new BMLTWF_Database");        
         $this->BMLTWF_Database = new BMLTWF_Database();
+        $this->email = new BMLTWF_Email();
     
     }
 
@@ -150,7 +153,7 @@ class SubmissionsHandler
         $total_count = $wpdb->get_var($total_sql);
 
         // $this->debug_log($sql);
-        $result = $wpdb->get_results($sql, ARRAY_A);
+        $result = $wpdb->get_results($sql, \ARRAY_A);
         if ($wpdb->last_error) {
             return new \WP_Error('bmltwf', 'Database error: ' . $wpdb->last_error);
         }
@@ -213,7 +216,7 @@ class SubmissionsHandler
         global $wpdb;
 
         $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where change_id="%d" limit 1', $request['change_id']);
-        $result = $wpdb->get_results($sql, ARRAY_A);
+        $result = $wpdb->get_results($sql, \ARRAY_A);
 
         return $result;
     }
@@ -272,7 +275,7 @@ class SubmissionsHandler
             $request['change_id']
         );
 
-        $result = $wpdb->get_results($sql, ARRAY_A);
+        $result = $wpdb->get_results($sql, \ARRAY_A);
 
         //
         // send action email
@@ -406,7 +409,7 @@ class SubmissionsHandler
         );
         // $this->debug_log(($sql));
 
-        $result = $wpdb->get_results($sql, ARRAY_A);
+        $result = $wpdb->get_results($sql, \ARRAY_A);
 
         return $this->bmltwf_rest_success(__('Updated submission id','bmlt-workflow').' ' . $change_id);
     }
@@ -595,6 +598,8 @@ class SubmissionsHandler
                 if (is_wp_error($bmlt_meeting)) {
                     return $this->bmltwf_rest_error(__('Error retrieving meeting details','bmlt-workflow'), 422);
                 }
+                // Store meeting data for email templates
+                $meeting_data_for_email = $bmlt_meeting;
 
                 $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
 
@@ -734,7 +739,7 @@ class SubmissionsHandler
         );
         $this->debug_log("SQL");
         $this->debug_log($sql);
-        $result = $wpdb->get_results($sql, ARRAY_A);
+        $result = $wpdb->get_results($sql, \ARRAY_A);
         $this->debug_log("RESULT");
         $this->debug_log($result);
 
@@ -743,33 +748,24 @@ class SubmissionsHandler
         //
         // send action email
         //
-
-        $to_address = $submitter_email;
-        // Get custom subject template or use default
-        $subject_template = get_option('bmltwf_submitter_email_subject');
-        $subject = $subject_template ? $subject_template : (__('NA Meeting Change Request Approval - Submission ID','bmlt-workflow')." " . $request['change_id']);
-        
-        // Get template and substitute fields
-        $template_fields = array(
+        $context = array(
             'change_id' => $request['change_id'],
             'name' => $change['name'] ?? '',
             'submitter_name' => $submitter_name
         );
         
-        foreach ($template_fields as $field => $value) {
-            $subfield = '{field:' . $field . '}';
-            $subject = str_replace($subfield, $value, $subject);
+        // Use meeting data from earlier getMeeting call if available, otherwise get it for email templates
+        $meeting_data_for_approval = null;
+        if (isset($meeting_data_for_email)) {
+            $meeting_data_for_approval = $meeting_data_for_email;
+        } elseif (!empty($result['id'])) {
+            $meeting_data_for_approval = $this->bmlt_integration->getMeeting($result['id']);
+            if (is_wp_error($meeting_data_for_approval)) {
+                $meeting_data_for_approval = null;
+            }
         }
         
-        $body = __('Your meeting change has been approved - change ID','bmlt-workflow')." (" . $request['change_id'] . ")";
-        if (!empty($message)) {
-            $body .= '<br><br>'.__('Message from trusted servant','bmlt-workflow').':<br><br>' . $message;
-        }
-
-        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-        $this->debug_log("Approval email");
-        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));
-        wp_mail($to_address, $subject, $body, $headers);
+        $this->email->send_approval_email($submitter_email, $context, array('action_message' => $message), $meeting_data_for_approval);
 
         // only do FSO features if option is enabled
         if (get_option('bmltwf_fso_feature') === 'display') {
@@ -780,39 +776,22 @@ class SubmissionsHandler
             if ($submission_type == "reason_new") {
                 $this->debug_log($change);
                 if ($starter_kit_required) {
-                    $template_fields=array('starter_kit_postal_address'=>$starter_kit_postal_address,
-                    'submitter_name' => $submitter_name,
-                    'name' => $change['name'],
-                    'contact_number' => $starter_kit_contact_number);
+                    $fso_context = array(
+                        'submitter_name' => $submitter_name,
+                        'name' => $change['name']
+                    );
+                    
+                    $fso_additional = array(
+                        'starter_kit_postal_address' => $starter_kit_postal_address,
+                        'contact_number' => $starter_kit_contact_number
+                    );
 
                     $this->debug_log("We're sending a starter kit");
-                    $template = get_option('bmltwf_fso_email_template');
-                    if (!empty($template)) {
-                        // Get custom subject template or use default
-                        $subject_template = get_option('bmltwf_fso_email_subject');
-                        $subject = $subject_template ? $subject_template : __('Starter Kit Request','bmlt-workflow');
-                        
-                        $to_address = get_option('bmltwf_fso_email_address');
-                        $fso_subfields = array('contact_number','submitter_name', 'name', 'starter_kit_postal_address');
-
-                        foreach ($fso_subfields as $field) {
-                            $subfield = '{field:' . $field . '}';
-                            if (!empty($template_fields[$field])) {
-                                $subwith = $template_fields[$field];
-                            } else {
-                                $subwith = '(blank)';
-                            }
-                            $template = str_replace($subfield, $subwith, $template);
-                            $subject = str_replace($subfield, $subwith, $subject);
-                        }
-                        $body = $template;
-                        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-                        $this->debug_log("FSO email");
-                        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));
-
-                        wp_mail($to_address, $subject, $body, $headers);
+                    $to_address = get_option('bmltwf_fso_email_address');
+                    if (!empty($to_address)) {
+                        $this->email->send_fso_email($to_address, $fso_context, $fso_additional, $meeting_data_for_approval);
                     } else {
-                        $this->debug_log("FSO email is empty");
+                        $this->debug_log("FSO email address not configured");
                     }
                 }
             }
@@ -1443,55 +1422,31 @@ class SubmissionsHandler
 
         $to_address = $this->get_emails_by_servicebody_id($sanitised_fields['serviceBodyId']);
         
-        // Get custom subject template or use default
-        $subject_template = get_option('bmltwf_admin_notification_email_subject');
-        $subject = $subject_template ? $subject_template : ('[bmlt-workflow] ' . $submission_type . ' '.__('request received','bmlt-workflow').' - ' . $sblist[$sanitised_fields['serviceBodyId']]['name'] . ' - '.__('Change ID','bmlt_workflow').' #' . $insert_id);
+        // Get meeting data if we have a meeting ID for email templates
+        $meeting_data = null;
+        if (!empty($sanitised_fields['id'])) {
+            $meeting_data = $this->bmlt_integration->getMeeting($sanitised_fields['id']);
+            if (is_wp_error($meeting_data)) {
+                $meeting_data = null;
+            }
+        }
         
-        // Use admin notification template
-        $template = get_option('bmltwf_admin_notification_email_template');
-        $template_fields = array(
+        $context = array(
             'change_id' => $insert_id,
             'submitter_name' => $submitter_name,
             'submitter_email' => $submitter_email,
             'submission_type' => $submission_type,
             'service_body_name' => $sblist[$sanitised_fields['serviceBodyId']]['name'],
             'submission_time' => current_time('mysql', true),
-            'submission' => $this->submission_format($submission),
-            'admin_url' => get_site_url() . '/wp-admin/admin.php?page=bmltwf-submissions',
-            'site_name' => get_bloginfo('name'),
             'name' => $submission['name'] ?? ''
         );
         
-        $body = $template;
-        foreach ($template_fields as $field => $value) {
-            $subfield = '{field:' . $field . '}';
-            $body = str_replace($subfield, $value, $body);
-            $subject = str_replace($subfield, $value, $subject);
-        }
-        
-        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));
-        wp_mail($to_address, $subject, $body, $headers);
+        $this->email->send_admin_notification($to_address, $context, array('submission' => $this->submission_format($submission)), $meeting_data);
 
         /*
         * Send acknowledgement email to the submitter
         */
-
-
-        $to_address = $submitter_email;
-        $subject = __('NA Meeting Change Request Acknowledgement - Submission ID','bmlt-workflow').' ' . $insert_id;
-
-        $template = get_option('bmltwf_submitter_email_template');
-
-        $subfield = '{field:submission}';
-        $subwith = $this->submission_format($submission);
-        $template = str_replace($subfield, $subwith, $template);
-
-        $body = $template;
-
-        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body . " headers:" . print_r($headers, true));
-        wp_mail($to_address, $subject, $body, $headers);
+        $this->email->send_submitter_acknowledgement($submitter_email, $context, array('submission' => $this->submission_format($submission)), $meeting_data);
 
         return $this->bmltwf_rest_success($message);
     }
@@ -1541,7 +1496,7 @@ class SubmissionsHandler
                     $table .= '<tr><td>'.__('Relationship to Group','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
                 case "day":
-                    $weekdays = [__('Error'), __('Sunday','bmlt-workflow'), __('Monday','bmlt-workflow'), __('Tuesday','bmlt-workflow'), __('Wednesday','bmlt-workflow'), __('Thursday','bmlt-workflow'), __('Friday','bmlt-workflow'), __('Saturday','bmlt-workflow')];
+                    $weekdays = [__('Sunday','bmlt-workflow'), __('Monday','bmlt-workflow'), __('Tuesday','bmlt-workflow'), __('Wednesday','bmlt-workflow'), __('Thursday','bmlt-workflow'), __('Friday','bmlt-workflow'), __('Saturday','bmlt-workflow')];
                     $table .= '<tr><td>'.__('Meeting Day','bmlt-workflow').':</td><td>' . $weekdays[$value] . '</td></tr>';
                     break;
                 case "additional_info":

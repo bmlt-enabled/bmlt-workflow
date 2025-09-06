@@ -40,6 +40,10 @@ class CorrespondenceHandlerTest extends TestCase
         Functions\when('sanitize_text_field')->returnArg();
         Functions\when('sanitize_email')->returnArg();
         Functions\when('sanitize_textarea_field')->returnArg();
+        Functions\when('get_bloginfo')->alias(function($show) {
+            return $show === 'name' ? 'Test Site' : 'admin@test.com';
+        });
+        Functions\when('get_site_url')->justReturn('https://test.com');
     }
 
     protected function tearDown(): void
