@@ -104,7 +104,7 @@ class BMLTWF_Email
         $this->debug_log("Sending email - to: {$to_address}, subject: {$subject}");
         $this->debug_log("Email body -  {$body}");
         
-        return wp_mail($to_address, $subject, $body, $headers);
+        return \wp_mail($to_address, $subject, $body, $headers);
     }
 
     /**

@@ -153,7 +153,7 @@ class SubmissionsHandler
         $total_count = $wpdb->get_var($total_sql);
 
         // $this->debug_log($sql);
-        $result = $wpdb->get_results($sql, ARRAY_A);
+        $result = $wpdb->get_results($sql, \ARRAY_A);
         if ($wpdb->last_error) {
             return new \WP_Error('bmltwf', 'Database error: ' . $wpdb->last_error);
         }
@@ -216,7 +216,7 @@ class SubmissionsHandler
         global $wpdb;
 
         $sql = $wpdb->prepare('SELECT * FROM ' . $this->BMLTWF_Database->bmltwf_submissions_table_name . ' where change_id="%d" limit 1', $request['change_id']);
-        $result = $wpdb->get_results($sql, ARRAY_A);
+        $result = $wpdb->get_results($sql, \ARRAY_A);
 
         return $result;
     }
@@ -275,7 +275,7 @@ class SubmissionsHandler
             $request['change_id']
         );
 
-        $result = $wpdb->get_results($sql, ARRAY_A);
+        $result = $wpdb->get_results($sql, \ARRAY_A);
 
         //
         // send action email
@@ -409,7 +409,7 @@ class SubmissionsHandler
         );
         // $this->debug_log(($sql));
 
-        $result = $wpdb->get_results($sql, ARRAY_A);
+        $result = $wpdb->get_results($sql, \ARRAY_A);
 
         return $this->bmltwf_rest_success(__('Updated submission id','bmlt-workflow').' ' . $change_id);
     }
@@ -739,7 +739,7 @@ class SubmissionsHandler
         );
         $this->debug_log("SQL");
         $this->debug_log($sql);
-        $result = $wpdb->get_results($sql, ARRAY_A);
+        $result = $wpdb->get_results($sql, \ARRAY_A);
         $this->debug_log("RESULT");
         $this->debug_log($result);
 

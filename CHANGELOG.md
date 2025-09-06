@@ -1,3 +1,7 @@
+## 1.1.32 (Sep 6, 2025)
+- Fixes incorrect day being reported in outbound emails (thanks Elsa!)
+- Adds consistent customisation of email fields across all templates (thanks @AdamH !)
+
 ## 1.1.31 (Aug 3, 2025)
 - Fixes display name handling of email addresses (thanks @Redguy1959 !)
 - Adds customisation of the Subject lines in outgoing emails (thanks @tempsaint !)

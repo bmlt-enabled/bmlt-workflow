@@ -109,7 +109,7 @@ Line: $errorLine
         Functions\when('wp_is_json_media_type')->justReturn(true);
         Functions\when('esc_html')->returnArg();
         Functions\when('wp_kses_post')->returnArg();
-
+        
         $this->meeting = ' { "id": "3563", "worldId": "", "serviceBodyId": "3", "day": 2, "venueType": 1, "startTime": "19:00", "duration": "01:15", "time_zone": "", "formats": "BT", "lang_enum": "en", "longitude": "0", "latitude": "0", "distance_in_km": "", "distance_in_miles": "", "email_contact": "", "name": "Test Monday Night Meeting", "location_text": "Glebe Town Hall", "location_info": "", "location_street": "160 Johns Road", "location_city_subsection": "", "location_neighborhood": "", "location_municipality": "Glebe", "location_sub_province": "", "location_province": "NSW", "location_postal_code_1": "NSW", "location_nation": "", "comments": "", "train_lines": "", "bus_lines": "", "contact_phone_2": "", "contact_email_2": "", "contact_name_2": "", "contact_phone_1": "", "contact_email_1": "", "contact_name_1": "", "zone": "", "phone_meeting_number": "", "virtual_meeting_link": "", "virtual_meeting_additional_info": "", "published": "1", "root_server_uri": "http:", "formatIds": [3] } ';
     }
 
@@ -1913,7 +1913,7 @@ Line: $errorLine
         $this->assertStringContainsString('<tr><td>Street:</td><td>test street</td></tr>', $body);
         $this->assertStringContainsString('<tr><td>Municipality:</td><td>test municipality</td></tr>', $body);
         $this->assertStringContainsString('<tr><td>Province/State:</td><td>test province</td></tr>', $body);
-        $this->assertStringContainsString('<tr><td>Meeting Day:</td><td>Sunday</td></tr>', $body);
+        $this->assertStringContainsString('<tr><td>Meeting Day:</td><td>Monday</td></tr>', $body);
         $this->assertStringContainsString('<tr><td>Meeting Formats:</td><td>(BL)-Bi-Lingual </td></tr>', $body);
         $this->assertStringContainsString('<tr><td>Relationship to Group:</td><td>Group Member</td></tr>', $body);
         $this->assertStringContainsString('<tr><td>Add email to meeting:</td><td>Yes</td></tr>', $body);
@@ -1954,7 +1954,7 @@ Line: $errorLine
 
         // Mock custom subject template
         Functions\when('get_option')->alias(function($option) {
-            if ($option === 'bmltwf_submitter_email_subject') return 'Approved: {field:name} - ID {field:change_id}';
+            if ($option === 'bmltwf_approval_email_subject') return 'Approved: {field:name} - ID {field:change_id}';
             return 'success';
         });
 

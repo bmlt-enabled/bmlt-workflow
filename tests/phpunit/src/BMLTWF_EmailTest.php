@@ -4,57 +4,7 @@ namespace bmltwf\Tests {
     use PHPUnit\Framework\TestCase;
     use Mockery;
     use bmltwf\BMLTWF_Email;
-
-    // Mock WordPress functions in global namespace
-    if (!function_exists('get_bloginfo')) {
-        function get_bloginfo($show) {
-            return $show === 'name' ? 'Test Site' : 'admin@test.com';
-        }
-    }
-
-    if (!function_exists('get_site_url')) {
-        function get_site_url() {
-            return 'https://test.com';
-        }
-    }
-
-    if (!function_exists('get_option')) {
-        function get_option($option, $default = false) {
-            $options = [
-                'bmltwf_email_from_address' => 'from@test.com',
-                'bmltwf_admin_notification_email_subject' => 'Admin: {field:submission_type} - {field:change_id}',
-                'bmltwf_admin_notification_email_template' => 'New submission: {field:submission}',
-                'bmltwf_submitter_email_subject' => 'Acknowledgement: {field:change_id}',
-                'bmltwf_submitter_email_template' => 'Thank you {field:submitter_name}',
-                'bmltwf_approval_email_subject' => 'Approved: {field:change_id}',
-                'bmltwf_approval_email_template' => 'Your request has been approved',
-                'bmltwf_fso_email_subject' => 'FSO Request: {field:name}',
-                'bmltwf_fso_email_template' => 'Starter kit for {field:name}',
-                'bmltwf_correspondence_submitter_email_subject' => 'New message: {field:change_id}',
-                'bmltwf_correspondence_submitter_email_template' => 'You have a new message',
-                'bmltwf_correspondence_admin_email_subject' => 'Admin message: {field:change_id}',
-                'bmltwf_correspondence_admin_email_template' => 'New correspondence received'
-            ];
-            return $options[$option] ?? $default;
-        }
-    }
-
-    if (!function_exists('__')) {
-        function __($text, $domain = '') {
-            return $text;
-        }
-    }
-
-    if (!function_exists('wp_mail')) {
-        function wp_mail($to, $subject, $message, $headers = '') {
-            global $wp_mail_calls;
-            if (!is_array($wp_mail_calls)) {
-                $wp_mail_calls = [];
-            }
-            $wp_mail_calls[] = compact('to', 'subject', 'message', 'headers');
-            return true;
-        }
-    }
+    use Brain\Monkey\Functions;
 
     class BMLTWF_EmailTest extends TestCase
     {
@@ -64,17 +14,59 @@ namespace bmltwf\Tests {
         protected function setUp(): void
         {
             parent::setUp();
+            \Brain\Monkey\setUp();
             
             $this->wp_mail_calls = [];
-            global $wp_mail_calls;
+            
+            // Mock WordPress functions
+            Functions\when('get_bloginfo')->alias(function($show) {
+                return $show === 'name' ? 'Test Site' : 'admin@test.com';
+            });
+            Functions\when('get_site_url')->justReturn('https://test.com');
+            Functions\when('get_option')->alias(function($option, $default = false) {
+                $options = [
+                    'bmltwf_email_from_address' => 'from@test.com',
+                    'bmltwf_admin_notification_email_subject' => 'Admin: {field:submission_type} - {field:change_id}',
+                    'bmltwf_admin_notification_email_template' => 'New submission: {field:submission}',
+                    'bmltwf_submitter_email_subject' => 'Acknowledgement: {field:change_id}',
+                    'bmltwf_submitter_email_template' => 'Thank you {field:submitter_name}',
+                    'bmltwf_approval_email_subject' => 'Approved: {field:change_id}',
+                    'bmltwf_approval_email_template' => 'Your request has been approved',
+                    'bmltwf_fso_email_subject' => 'FSO Request: {field:name}',
+                    'bmltwf_fso_email_template' => 'Starter kit for {field:name}',
+                    'bmltwf_correspondence_submitter_email_subject' => 'New message: {field:change_id}',
+                    'bmltwf_correspondence_submitter_email_template' => 'You have a new message',
+                    'bmltwf_correspondence_admin_email_subject' => 'Admin message: {field:change_id}',
+                    'bmltwf_correspondence_admin_email_template' => 'New correspondence received'
+                ];
+                return $options[$option] ?? $default;
+            });
+            Functions\when('__')->returnArg();
+            
+            // Use closure to capture wp_mail calls
             $wp_mail_calls = &$this->wp_mail_calls;
+            Functions\when('\wp_mail')->alias(function($to, $subject, $message, $headers = '') use (&$wp_mail_calls) {
+                $wp_mail_calls[] = compact('to', 'subject', 'message', 'headers');
+                return true;
+            });
+            
+            // Mock debug functionality
+            Functions\when('error_log')->justReturn(true);
+            if (!defined('BMLTWF_DEBUG')) {
+                define('BMLTWF_DEBUG', false);
+            }
+            global $wpdb, $bmltwf_debug_enabled;
+            $wpdb = \Mockery::mock('wpdb');
+            $wpdb->shouldReceive('get_var')->andReturn(null);
+            $bmltwf_debug_enabled = false;
             
             $this->email = new BMLTWF_Email();
         }
 
         protected function tearDown(): void
         {
-            Mockery::close();
+            \Brain\Monkey\tearDown();
+            \Mockery::close();
             parent::tearDown();
         }
 
@@ -208,44 +200,6 @@ namespace bmltwf\Tests {
                 $this->assertNotEmpty($call['subject']);
                 $this->assertNotEmpty($call['message']);
             }
-        }
-    }
-}
-
-namespace bmltwf {
-    // Mock WordPress functions in bmltwf namespace
-    if (!function_exists('bmltwf\get_bloginfo')) {
-        function get_bloginfo($show) {
-            return \bmltwf\Tests\get_bloginfo($show);
-        }
-    }
-    
-    if (!function_exists('bmltwf\get_site_url')) {
-        function get_site_url() {
-            return \bmltwf\Tests\get_site_url();
-        }
-    }
-    
-    if (!function_exists('bmltwf\get_option')) {
-        function get_option($option, $default = false) {
-            return \bmltwf\Tests\get_option($option, $default);
-        }
-    }
-    
-    if (!function_exists('bmltwf\__')) {
-        function __($text, $domain = '') {
-            return \bmltwf\Tests\__($text, $domain);
-        }
-    }
-    
-    if (!function_exists('bmltwf\wp_mail')) {
-        function wp_mail($to, $subject, $message, $headers = '') {
-            global $wp_mail_calls;
-            if (!is_array($wp_mail_calls)) {
-                $wp_mail_calls = [];
-            }
-            $wp_mail_calls[] = compact('to', 'subject', 'message', 'headers');
-            return true;
         }
     }
 }
