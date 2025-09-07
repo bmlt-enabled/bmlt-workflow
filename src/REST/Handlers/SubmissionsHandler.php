@@ -655,11 +655,11 @@ class SubmissionsHandler
                         }
                     }
                 }
-                $bmlt_venueType = $bmlt_meeting['venueType'];
+                $bmlt_venueType = intval($bmlt_meeting['venueType'] ?? 0);
                 // $this->debug_log("bmlt_meeting[venueType]=");
                 // $this->debug_log($bmlt_venueType);
 
-                $change_venueType = $change['venueType'] ?? '0';
+                $change_venueType = intval($change['venueType'] ?? 0);
                 // $this->debug_log("change[venueType]=");
                 // $this->debug_log($change_venueType);
 

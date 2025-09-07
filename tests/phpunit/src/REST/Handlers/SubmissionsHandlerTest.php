@@ -2170,5 +2170,82 @@ Line: $errorLine
         $this->assertEquals('Starter Kit Request: New Meeting - test submitter', $fso_email['subject']);
     }
 
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     * Test that virtual meeting fields are cleared when changing from virtual to face-to-face
+     */
+    public function test_virtual_fields_cleared_when_changing_to_face_to_face(): void
+    {
+        $test_submission_id = '15';
+        $body = '';
+        $request = $this->generate_approve_request($test_submission_id, $body);
+
+        $row = array(
+            'change_id' => $test_submission_id,
+            'submission_time' => '2022-03-23 09:25:53',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
+            'change_made' => 'NULL',
+            'submitter_name' => 'test submitter',
+            'submission_type' => 'reason_change',
+            'submitter_email' => 'a@a.com',
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            'changes_requested' => '{"venueType":1}',
+        );
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "";
+        $wpdb->shouldReceive([
+            'prepare' => 'nothing',
+            'get_row' => $row,
+            'get_results' => 'nothing'
+        ]);
+
+        $virtual_meeting = '{
+            "id": "3563",
+            "venueType": "2",
+            "virtual_meeting_link": "https://zoom.us/j/123456789",
+            "virtual_meeting_additional_info": "Meeting ID: 123456789",
+            "phone_meeting_number": "555-1234",
+            "name": "Test Virtual Meeting"
+        }';
+
+        Functions\when('get_option')->alias(function($option) {
+            if ($option === 'bmltwf_remove_virtual_meeting_details_on_venue_change') {
+                return 'true';
+            }
+            return 'success';
+        });
+
+        $bmlt_input = '';
+        $stub_bmltv3 = $this->stub_bmltv3($virtual_meeting, $bmlt_input);
+        
+        $captured_update_data = null;
+        $stub_bmltv3->shouldReceive('updateMeeting')
+            ->with(Mockery::capture($captured_update_data))
+            ->andReturn(true);
+            
+        $handlers = new SubmissionsHandler($stub_bmltv3);
+
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
+        Functions\when('wp_get_current_user')->justReturn($user);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('current_user_can')->justReturn('false');
+        Functions\when('wp_mail')->justReturn('true');
+
+        $response = $handlers->approve_submission_handler($request);
+        
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+        
+        $this->assertNotNull($captured_update_data);
+        $this->assertEquals(1, $captured_update_data['venueType']);
+        $this->assertEquals('', $captured_update_data['virtual_meeting_additional_info']);
+        $this->assertEquals('', $captured_update_data['phone_meeting_number']);
+        $this->assertEquals('', $captured_update_data['virtual_meeting_link']);
+    }
+
 
 }
