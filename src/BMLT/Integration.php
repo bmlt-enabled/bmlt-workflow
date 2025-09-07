@@ -364,7 +364,8 @@ class Integration
             'phone_meeting_number',
             'published',
             'latitude',
-            'longitude'
+            'longitude',
+            'comments'
         ];
         
         $body = json_decode(\wp_remote_retrieve_body($response),true);

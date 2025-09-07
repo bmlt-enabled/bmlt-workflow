@@ -527,7 +527,8 @@ class SubmissionsHandler
             "published",
             "virtualna_published",
             "latitude",
-            "longitude"
+            "longitude",
+            "comments"
         );
 
         foreach ($change as $key => $value) {
@@ -994,7 +995,8 @@ class SubmissionsHandler
             "phone_meeting_number" => array("text", false),
             "virtual_meeting_link" => array("url", false),
             "published" => array("boolnum", $reason_change_bool),
-            "virtualna_published" => array("boolnum", ($reason_change_bool||$reason_new_bool) && $virtual_meeting_bool)
+            "virtualna_published" => array("boolnum", ($reason_change_bool||$reason_new_bool) && $virtual_meeting_bool),
+            "comments" => array("textarea", false)
         );
 
         $sanitised_fields = array();
@@ -1175,7 +1177,8 @@ class SubmissionsHandler
                     "starter_kit_required",
                     "starter_kit_postal_address",
                     "virtualna_published",
-                    "venueType"
+                    "venueType",
+                    "comments"
                 );
 
                 // new meeting - add all fields to the changes requested
@@ -1215,6 +1218,7 @@ class SubmissionsHandler
                     "virtual_meeting_link",
                     "venueType",
                     "published",
+                    "comments",
                 );
 
                 $allowed_fields_extra = array(
@@ -1518,6 +1522,9 @@ class SubmissionsHandler
                     break;
                 case "virtual_meeting_link":
                     $table .= '<tr><td>'.__('Virtual Meeting Link','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
+                    break;
+                case "comments":
+                    $table .= '<tr><td>'.__('Meeting Comments','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
 
                 case "formatIds":

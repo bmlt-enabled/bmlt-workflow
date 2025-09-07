@@ -86,7 +86,7 @@ jQuery(document).ready(function ($) {
     enable_field('virtual_meeting_additional_info');
     enable_field('phone_meeting_number');
     enable_field('virtual_meeting_link');
-    enable_field('');
+    enable_field('comments');
   }
 
   function disable_edits() {
@@ -108,6 +108,7 @@ jQuery(document).ready(function ($) {
     disable_field('virtual_meeting_additional_info');
     disable_field('phone_meeting_number');
     disable_field('virtual_meeting_link');
+    disable_field('comments');
     disable_field('venueType');
   }
 
@@ -136,6 +137,7 @@ jQuery(document).ready(function ($) {
     clear_field('virtual_meeting_additional_info');
     clear_field('phone_meeting_number');
     clear_field('virtual_meeting_link');
+    clear_field('comments');
     // placeholder for these select elements
     $('#group_relationship').val('');
     $('#venueType').val('');
@@ -411,6 +413,7 @@ jQuery(document).ready(function ($) {
         'phone_meeting_number',
         'virtual_meeting_link',
         'venueType',
+        'comments',
       ];
 
       // populate form fields from bmlt if they exist

@@ -1032,3 +1032,16 @@ test("Failure_Invalid_Virtual_Meeting_Details", async (t) => {
     .match(/submission\ successful/);
 
 });
+
+test("Validate_Meeting_Comments_Field", async (t) => {
+  await t.navigateTo(userVariables.formpage);
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+
+  // Search for '2nd chance group' meeting
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "2n");
+  await t.pressKey("enter");
+
+  // Validate that the comments field contains 'testmeetingcomment'
+  await t.expect(uf.comments.value).eql("testmeetingcomment");
+});

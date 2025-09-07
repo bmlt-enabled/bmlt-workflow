@@ -72,6 +72,7 @@ class Meeting_Update_Form {
         this.optional_location_nation = Selector('#optional_location_nation');
         this.serviceBodyId = Selector('#serviceBodyId');
         this.additional_info_div = Selector('#additional_info_div');
+        this.comments = Selector('#comments');
         this.additional_info = Selector('#additional_info');
         this.starter_pack = Selector('#starter_pack');
         this.starter_kit_required = Selector('#starter_kit_required');
