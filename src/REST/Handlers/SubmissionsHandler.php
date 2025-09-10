@@ -331,7 +331,8 @@ class SubmissionsHandler
             "published",
             "virtualna_published",
             "latitude",
-            "longitude"
+            "longitude",
+            "comments"
         );
 
         foreach ($quickedit_change as $key => $value) {

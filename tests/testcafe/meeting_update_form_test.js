@@ -1045,3 +1045,34 @@ test("Validate_Meeting_Comments_Field", async (t) => {
   // Validate that the comments field contains 'testmeetingcomment'
   await t.expect(uf.comments.value).eql("testmeetingcomment");
 });
+
+test("Preserve_Meeting_Data_When_Changing_Update_Reason", async (t) => {
+  await t.navigateTo(userVariables.formpage);
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+
+  // Select a meeting
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "lifeline");
+  await t.pressKey("enter");
+
+  // Store meeting data values
+  const meetingName = await uf.name.value;
+  const meetingTime = await uf.startTime.value;
+  const meetingLocation = await uf.location_text.value;
+
+  // Change update reason to close
+  await select_dropdown_by_value(uf.update_reason, "reason_close");
+
+  // Verify meeting data is preserved
+  await t.expect(uf.name.value).eql(meetingName)
+    .expect(uf.startTime.value).eql(meetingTime)
+    .expect(uf.location_text.value).eql(meetingLocation);
+
+  // Change back to change reason
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+
+  // Verify data is still preserved
+  await t.expect(uf.name.value).eql(meetingName)
+    .expect(uf.startTime.value).eql(meetingTime)
+    .expect(uf.location_text.value).eql(meetingLocation);
+});

@@ -1,3 +1,7 @@
+## 1.1.33 ()
+- Doesn't clear form when changing the change type (thanks @Redguy1959 !)
+- Allows editing of the comments field (thanks @GarrettWeinberg !)
+
 ## 1.1.32 (Sep 6, 2025)
 - Fixes incorrect day being reported in outbound emails (thanks Elsa!)
 - Adds consistent customisation of email fields across all templates (thanks @AdamH !)

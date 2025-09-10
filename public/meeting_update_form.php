@@ -299,7 +299,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <fieldset>
                         <legend><?php echo __( 'Additional Information', 'bmlt-workflow' ); ?></legend>
                         <label for="comments"><?php echo __( 'Meeting Comments (Publically displayed)', 'bmlt-workflow' ); ?></label>
-                        <textarea class="meeting-input" name="comments" id="comments" maxlength="512" rows="3" cols="50" placeholder="<?php echo __( 'Any notes about this meeting. These notes will be displayed during a meeting search.', 'bmlt-workflow' ); ?>"></textarea>
+                        <textarea class="meeting-input" name="comments" id="comments" maxlength="512" rows="3" cols="50" placeholder="<?php echo __( 'Any extra notes about this meeting. These notes will be displayed during a meeting search.', 'bmlt-workflow' ); ?>"></textarea>
                         <label for="additional_info"><?php echo __( 'Any Other Comments', 'bmlt-workflow' ); ?></label>
                         <textarea name="additional_info" id="additional_info" maxlength="512" rows="5" cols="50" placeholder="<?php echo __( 'Provide any more detail that may help us action your meeting change request', 'bmlt-workflow' ); ?>"></textarea>
                         <div id="starter_pack">
