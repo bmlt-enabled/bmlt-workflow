@@ -86,7 +86,7 @@ jQuery(document).ready(function ($) {
     enable_field('virtual_meeting_additional_info');
     enable_field('phone_meeting_number');
     enable_field('virtual_meeting_link');
-    enable_field('');
+    enable_field('comments');
   }
 
   function disable_edits() {
@@ -108,6 +108,7 @@ jQuery(document).ready(function ($) {
     disable_field('virtual_meeting_additional_info');
     disable_field('phone_meeting_number');
     disable_field('virtual_meeting_link');
+    disable_field('comments');
     disable_field('venueType');
   }
 
@@ -136,6 +137,7 @@ jQuery(document).ready(function ($) {
     clear_field('virtual_meeting_additional_info');
     clear_field('phone_meeting_number');
     clear_field('virtual_meeting_link');
+    clear_field('comments');
     // placeholder for these select elements
     $('#group_relationship').val('');
     $('#venueType').val('');
@@ -411,6 +413,7 @@ jQuery(document).ready(function ($) {
         'phone_meeting_number',
         'virtual_meeting_link',
         'venueType',
+        'comments',
       ];
 
       // populate form fields from bmlt if they exist
@@ -651,8 +654,8 @@ jQuery(document).ready(function ($) {
     enable_edits();
     // enable items as required
     const reason = $(this).val();
+    const meetingSelected = $('#id').val() !== '';
 
-    clear_form();
     switch (reason) {
       case 'reason_new':
         $('#meeting_content').show();
@@ -672,7 +675,17 @@ jQuery(document).ready(function ($) {
         break;
       case 'reason_change':
         // hide this until they've selected a meeting
-        $('#meeting_content').hide();
+        if (!meetingSelected) {
+          $('#meeting_content').hide();
+        } else {
+          $('#meeting_content').show();
+          $('#publish_div').show();
+          disable_field('serviceBodyId');
+          enable_highlighting();
+          $('#instructions').html(
+            __("We've retrieved the details below from our system. Please make any changes and then submit your update. <br>Any changes you make to the content are highlighted and will be submitted for approval.", 'bmlt-workflow'),
+          );
+        }
         $('#personal_details').show();
         $('#meeting_details').show();
         $('#additional_info_div').show();
@@ -682,8 +695,14 @@ jQuery(document).ready(function ($) {
 
         break;
       case 'reason_close':
-        // hide this until they've selected a meeting
-        $('#meeting_content').hide();
+        // show meeting content if meeting is already selected
+        if (meetingSelected) {
+          $('#meeting_content').show();
+          disable_edits();
+          $('#instructions').html(`${__("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box.<br><br><b>Note: If you are submitting a temporary meeting closure, please instead use 'Change existing meeting' and use the 'temporarily closed in person meeting' dropdown menu.", 'bmlt-workflow')}</b>`);
+        } else {
+          $('#meeting_content').hide();
+        }
         $('#personal_details').show();
         $('#meeting_details').show();
         $('#additional_info_div').show();

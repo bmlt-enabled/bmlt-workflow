@@ -433,6 +433,7 @@ jQuery(document).ready(function ($) {
       // won't have a geolocation for a new meeting
       $('#quickedit_gmaps').hide();
       add_highlighted_changes_to_quickedit(bmltwf_changedata[change_id].changes_requested);
+      $('#quickedit_comments').show();
     }
 
     // Hide the publish to virtual na option if this isn't a virtual meeting
@@ -958,6 +959,9 @@ jQuery(document).ready(function ($) {
           break;
         case 'virtual_meeting_link':
           table += column(col_virtual_meeting_details, __('Virtual Meeting Link', 'bmlt-workflow'), c[key]);
+          break;
+        case 'comments':
+          table += column(col_fso_other, __('Meeting Comments', 'bmlt-workflow'), c[key]);
           break;
 
         case 'formatIds': {

@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.32
+ * Version: 1.1.33
  * Requires at least: 5.2
  * Tested up to: 6.8.2
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.32');
+define('BMLTWF_PLUGIN_VERSION', '1.1.33');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -557,7 +557,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             $new_actions = array();
             if (basename(plugin_dir_path(__FILE__)) . '/bmlt-workflow.php' === $plugin_file) {
-                $new_actions['cl_settings'] = sprintf('<a href="%s">Settings</a>', esc_url(admin_url('admin.php?page=bmltwf-settings')));
+                $new_actions['cl_settings'] = sprintf('<a href="%s">Settings</a>', esc_url(admin_url('admin.php?page=bmltwf-options')));
             }
 
             return array_merge($new_actions, $plugin_actions);

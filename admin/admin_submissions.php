@@ -165,9 +165,9 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <div class="grow-wrap">
                     <textarea class="dialog_textarea quickedit-input" id="quickedit_additional_info" name="quickedit_additional_info" onInput="this.parentNode.dataset.replicatedValue = this.value" disabled></textarea>
                 </div>
-                <label for="quickedit_comments"><?php echo __( "Meeting Comments (From BMLT)", 'bmlt-workflow' ); ?></label>
+                <label for="quickedit_comments"><?php echo __( "Meeting Comments (Publically displayed)", 'bmlt-workflow' ); ?></label>
                 <div class="grow-wrap">
-                    <textarea class="dialog_textarea quickedit-input" id="quickedit_comments" name="quickedit_comments" onInput="this.parentNode.dataset.replicatedValue = this.value" disabled></textarea>
+                    <textarea class="dialog_textarea quickedit-input" id="quickedit_comments" name="quickedit_comments" onInput="this.parentNode.dataset.replicatedValue = this.value"></textarea>
                 </div>
             </div>
         <div class="form-grid-col2">

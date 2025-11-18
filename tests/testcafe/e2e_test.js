@@ -139,6 +139,7 @@ test("Submit_New_Meeting_And_Approve", async (t) => {
 
   await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
+  await t.typeText(uf.comments, "test meeting notes");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
   await t
@@ -172,6 +173,11 @@ test("Submit_New_Meeting_And_Approve", async (t) => {
   var column = 8;
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
+
+  // Verify comments field appears in submission details
+  await click_table_row_column(as.dt_submission, row, 9); // Click expand button
+  await t.expect(Selector('.gridbody').withText('Meeting Comments').exists).ok('Comments field should appear in submission details');
+  await t.expect(Selector('.gridbody').withText('test meeting notes').exists).ok('Comments content should be displayed');
 
 });
 
@@ -213,6 +219,7 @@ test("Submit_Change_Meeting_And_Approve", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   await t.typeText(uf.additional_info, "my additional info");
+  await t.typeText(uf.comments, "updated meeting notes");
   await t
     .click(uf.submit)
     .expect(Selector("#bmltwf_response_message").innerText)
@@ -239,6 +246,11 @@ test("Submit_Change_Meeting_And_Approve", async (t) => {
   var column = 8;
   await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
   .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
+
+  // Verify comments field appears in submission details
+  await click_table_row_column(as.dt_submission, row, 9); // Click expand button
+  await t.expect(Selector('.gridbody').withText('Meeting Comments').exists).ok('Comments field should appear in submission details');
+  await t.expect(Selector('.gridbody').withText('updated meeting notes').exists).ok('Comments content should be displayed');
 
 });
 
@@ -420,3 +432,148 @@ test("Submit_Change_Meeting_With_Unpublish_And_Approve", async (t) => {
 //     await click_table_row_column(as.dt_submission, 0, 9);
   
 // });
+
+test("Submit_New_Meeting_With_Comments_Field", async (t) => {
+  await t.navigateTo(userVariables.formpage);
+
+  await select_dropdown_by_value(uf.update_reason, "reason_new");
+
+  // Fill required fields
+  await t.typeText(uf.first_name, "test")
+    .typeText(uf.last_name, "user")
+    .typeText(uf.email_address, "test@example.com")
+    .typeText(uf.name, "Test Meeting with Comments")
+    .typeText(uf.startTime, "19:00")
+    .typeText(uf.location_text, "Test Location")
+    .typeText(uf.location_street, "123 Test St")
+    .typeText(uf.location_municipality, "Test City")
+    .typeText(uf.location_province, "Test State")
+    .typeText(uf.location_postal_code_1, "12345")
+    .typeText(uf.comments, "These are test meeting notes for validation");
+
+  await select_dropdown_by_text(uf.day, "Wednesday");
+  await select_dropdown_by_value(uf.duration_hours, "01");
+  await select_dropdown_by_value(uf.duration_minutes, "30");
+  await select_dropdown_by_value(uf.venueType, "1");
+  await t.click(uf.format_list_clickable).pressKey("b e g enter");
+  await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
+  await select_dropdown_by_value(uf.group_relationship, "Group Member");
+  await select_dropdown_by_text(uf.add_contact, "No");
+  await select_dropdown_by_value(uf.starter_kit_required, "no");
+
+  await t.click(uf.submit)
+    .expect(uf.success_page_header.innerText)
+    .match(/submission\ successful/);
+
+  // Verify in admin submissions
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+  
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 9); // Click expand
+  await t.expect(Selector('.gridbody').withText('Meeting Comments').exists).ok('Comments field should appear');
+  await t.expect(Selector('.gridbody').withText('These are test meeting notes for validation').exists).ok('Comments content should be displayed');
+});
+
+test("Submit_Change_Meeting_With_Comments_Field", async (t) => {
+  await t.navigateTo(userVariables.formpage);
+
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+
+  // Select existing meeting
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "matter");
+  await t.pressKey("enter");
+
+  // Fill required fields
+  await t.typeText(uf.first_name, "change")
+    .typeText(uf.last_name, "user")
+    .typeText(uf.email_address, "change@example.com")
+    .typeText(uf.comments, "Updated meeting notes for change request");
+
+  await select_dropdown_by_value(uf.group_relationship, "Group Member");
+  await select_dropdown_by_text(uf.add_contact, "No");
+
+  await t.click(uf.submit)
+    .expect(Selector("#bmltwf_response_message").innerText)
+    .match(/submission\ successful/);
+
+  // Verify in admin submissions
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+  
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 9); // Click expand
+  await t.expect(Selector('.gridbody').withText('Meeting Comments').exists).ok('Comments field should appear');
+  await t.expect(Selector('.gridbody').withText('Updated meeting notes for change request').exists).ok('Comments content should be displayed');
+});
+
+test("Submit_New_Meeting_With_Empty_Comments_Field", async (t) => {
+  await t.navigateTo(userVariables.formpage);
+
+  await select_dropdown_by_value(uf.update_reason, "reason_new");
+
+  // Fill required fields but leave comments empty
+  await t.typeText(uf.first_name, "empty")
+    .typeText(uf.last_name, "comments")
+    .typeText(uf.email_address, "empty@example.com")
+    .typeText(uf.name, "Meeting Without Comments")
+    .typeText(uf.startTime, "20:00")
+    .typeText(uf.location_text, "Empty Location")
+    .typeText(uf.location_street, "456 Empty St")
+    .typeText(uf.location_municipality, "Empty City")
+    .typeText(uf.location_province, "Empty State")
+    .typeText(uf.location_postal_code_1, "54321");
+    // Explicitly do NOT fill comments field
+
+  await select_dropdown_by_text(uf.day, "Friday");
+  await select_dropdown_by_value(uf.duration_hours, "01");
+  await select_dropdown_by_value(uf.duration_minutes, "00");
+  await select_dropdown_by_value(uf.venueType, "1");
+  await t.click(uf.format_list_clickable).pressKey("b e g enter");
+  await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
+  await select_dropdown_by_value(uf.group_relationship, "Group Member");
+  await select_dropdown_by_text(uf.add_contact, "No");
+  await select_dropdown_by_value(uf.starter_kit_required, "no");
+
+  await t.click(uf.submit)
+    .expect(uf.success_page_header.innerText)
+    .match(/submission\ successful/);
+
+  // Verify in admin submissions that empty comments don't appear
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+  
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 9); // Click expand
+  await t.expect(Selector('.gridbody').withText('Meeting Comments').exists).notOk('Empty comments field should not appear in submission details');
+});
+
+test("Submit_Change_Meeting_With_Empty_Comments_Field", async (t) => {
+  await t.navigateTo(userVariables.formpage);
+
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+
+  // Select existing meeting
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "matter");
+  await t.pressKey("enter");
+
+  // Fill required fields but leave comments empty
+  await t.typeText(uf.first_name, "empty")
+    .typeText(uf.last_name, "change")
+    .typeText(uf.email_address, "emptychange@example.com")
+    .typeText(uf.location_text, "Updated Location"); // Change something to make form valid
+    // Explicitly do NOT fill comments field
+
+  await select_dropdown_by_value(uf.group_relationship, "Group Member");
+  await select_dropdown_by_text(uf.add_contact, "No");
+
+  await t.click(uf.submit)
+    .expect(Selector("#bmltwf_response_message").innerText)
+    .match(/submission\ successful/);
+
+  // Verify in admin submissions that empty comments don't appear
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+  
+  var row = 0;
+  await click_table_row_column(as.dt_submission, row, 9); // Click expand
+  await t.expect(Selector('.gridbody').withText('Meeting Comments').exists).notOk('Empty comments field should not appear in submission details');
+});

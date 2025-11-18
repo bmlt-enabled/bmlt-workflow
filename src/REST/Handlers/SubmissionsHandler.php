@@ -280,20 +280,12 @@ class SubmissionsHandler
         //
         // send action email
         //
-
-        $from_address = get_option('bmltwf_email_from_address');
-        $to_address = $submitter_email;
-        $subject = __('NA Meeting Change Request Rejection - Submission ID','bmlt-workflow')." " . $request['id'];
-        $body = __('Your meeting change has been rejected - change ID','bmlt-workflow')." (" . $request['id'] . ")";
-
-        if (!empty($message)) {
-            $body .= '<br><br>'.__('Message from trusted servant','bmlt-workflow').':<br><br>' . $message;
-        }
-
-        $headers = array('Content-Type: text/html; charset=UTF-8', 'From: ' . $from_address);
-        $this->debug_log("Rejection email");
-        $this->debug_log("to:" . $to_address . " subject:" . $subject . " body:" . $body);
-        wp_mail($to_address, $subject, $body, $headers);
+        $context = array(
+            'change_id' => $change_id,
+            'submitter_name' => $result['submitter_name'] ?? ''
+        );
+        
+        $this->email->send_rejection_email($submitter_email, $context, array('action_message' => $message));
 
         return $this->bmltwf_rest_success(__('Rejected submission id','bmlt-workflow').' ' . $change_id);
     }
@@ -331,7 +323,8 @@ class SubmissionsHandler
             "published",
             "virtualna_published",
             "latitude",
-            "longitude"
+            "longitude",
+            "comments"
         );
 
         foreach ($quickedit_change as $key => $value) {
@@ -527,7 +520,8 @@ class SubmissionsHandler
             "published",
             "virtualna_published",
             "latitude",
-            "longitude"
+            "longitude",
+            "comments"
         );
 
         foreach ($change as $key => $value) {
@@ -655,11 +649,11 @@ class SubmissionsHandler
                         }
                     }
                 }
-                $bmlt_venueType = $bmlt_meeting['venueType'];
+                $bmlt_venueType = intval($bmlt_meeting['venueType'] ?? 0);
                 // $this->debug_log("bmlt_meeting[venueType]=");
                 // $this->debug_log($bmlt_venueType);
 
-                $change_venueType = $change['venueType'] ?? '0';
+                $change_venueType = intval($change['venueType'] ?? 0);
                 // $this->debug_log("change[venueType]=");
                 // $this->debug_log($change_venueType);
 
@@ -882,6 +876,9 @@ class SubmissionsHandler
     {
         if ($this->formats === null) {
             $this->formats = $this->bmlt_integration->getMeetingFormats();
+            if (is_wp_error($this->formats) || !is_array($this->formats)) {
+                $this->formats = array();
+            }
         }
     }
 
@@ -994,7 +991,8 @@ class SubmissionsHandler
             "phone_meeting_number" => array("text", false),
             "virtual_meeting_link" => array("url", false),
             "published" => array("boolnum", $reason_change_bool),
-            "virtualna_published" => array("boolnum", ($reason_change_bool||$reason_new_bool) && $virtual_meeting_bool)
+            "virtualna_published" => array("boolnum", ($reason_change_bool||$reason_new_bool) && $virtual_meeting_bool),
+            "comments" => array("textarea", false)
         );
 
         $sanitised_fields = array();
@@ -1175,7 +1173,8 @@ class SubmissionsHandler
                     "starter_kit_required",
                     "starter_kit_postal_address",
                     "virtualna_published",
-                    "venueType"
+                    "venueType",
+                    "comments"
                 );
 
                 // new meeting - add all fields to the changes requested
@@ -1215,6 +1214,7 @@ class SubmissionsHandler
                     "virtual_meeting_link",
                     "venueType",
                     "published",
+                    "comments",
                 );
 
                 $allowed_fields_extra = array(
@@ -1436,12 +1436,17 @@ class SubmissionsHandler
             'submitter_name' => $submitter_name,
             'submitter_email' => $submitter_email,
             'submission_type' => $submission_type,
-            'service_body_name' => $sblist[$sanitised_fields['serviceBodyId']]['name'],
+            'service_body_name' => $sblist[$sanitised_fields['serviceBodyId']]['name'] ?? 'Unknown Service Body',
             'submission_time' => current_time('mysql', true),
             'name' => $submission['name'] ?? ''
         );
         
-        $this->email->send_admin_notification($to_address, $context, array('submission' => $this->submission_format($submission)), $meeting_data);
+        // Only send admin notification if we have recipients
+        if (!empty($to_address)) {
+            $this->email->send_admin_notification($to_address, $context, array('submission' => $this->submission_format($submission)), $meeting_data);
+        } else {
+            $this->debug_log("Admin notification not sent - no trusted servants configured for service body ID: " . $sanitised_fields['serviceBodyId']);
+        }
 
         /*
         * Send acknowledgement email to the submitter
@@ -1497,7 +1502,8 @@ class SubmissionsHandler
                     break;
                 case "day":
                     $weekdays = [__('Sunday','bmlt-workflow'), __('Monday','bmlt-workflow'), __('Tuesday','bmlt-workflow'), __('Wednesday','bmlt-workflow'), __('Thursday','bmlt-workflow'), __('Friday','bmlt-workflow'), __('Saturday','bmlt-workflow')];
-                    $table .= '<tr><td>'.__('Meeting Day','bmlt-workflow').':</td><td>' . $weekdays[$value] . '</td></tr>';
+                    $day_value = is_numeric($value) && $value >= 0 && $value <= 6 ? $weekdays[intval($value)] : $value;
+                    $table .= '<tr><td>'.__('Meeting Day','bmlt-workflow').':</td><td>' . $day_value . '</td></tr>';
                     break;
                 case "additional_info":
                     $table .= '<tr><td>'.__('Additional Info','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
@@ -1519,13 +1525,22 @@ class SubmissionsHandler
                 case "virtual_meeting_link":
                     $table .= '<tr><td>'.__('Virtual Meeting Link','bmlt-workflow').':</td><td>' . esc_html($value) . '</td></tr>';
                     break;
+                case "comments":
+                    // Allow HTML in comments field but sanitize it for safety
+                    $sanitized_value = wp_kses($value, array('strong' => array(), 'em' => array(), 'br' => array(), 'p' => array()));
+                    $table .= '<tr><td>'.__('Meeting Comments','bmlt-workflow').':</td><td>' . $sanitized_value . '</td></tr>';
+                    break;
 
                 case "formatIds":
                     $friendlyname = __('Meeting Formats','bmlt-workflow');
                     // convert the meeting formats to human readable
                     $friendlydata = "";
-                    foreach ($value as $key) {
-                        $friendlydata .= "(" . $this->formats[$key]["key_string"] . ")-" . $this->formats[$key]["name_string"] . " ";
+                    if (is_array($value)) {
+                        foreach ($value as $key) {
+                            if (isset($this->formats[$key])) {
+                                $friendlydata .= "(" . $this->formats[$key]["key_string"] . ")-" . $this->formats[$key]["name_string"] . " ";
+                            }
+                        }
                     }
                     $table .= '<tr><td>'.__('Meeting Formats','bmlt-workflow').':</td><td>' . esc_html($friendlydata) . '</td></tr>';
                     break;

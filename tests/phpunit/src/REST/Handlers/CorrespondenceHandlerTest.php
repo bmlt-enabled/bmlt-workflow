@@ -64,6 +64,7 @@ class CorrespondenceHandlerTest extends TestCase
         $mockUser->shouldReceive('get')->andReturn('Test User');
         $mockUser->display_name = 'Test User';
         $mockUser->user_login = 'testuser';
+        $mockUser->ID = 1;
         Functions\when('wp_get_current_user')->justReturn($mockUser);
         
         global $wpdb;
@@ -85,6 +86,7 @@ class CorrespondenceHandlerTest extends TestCase
         $mockUser->shouldReceive('get')->andReturn('Test User');
         $mockUser->display_name = 'Test User';
         $mockUser->user_login = 'testuser';
+        $mockUser->ID = 1;
         Functions\when('wp_get_current_user')->justReturn($mockUser);
         
         global $wpdb;
@@ -166,6 +168,12 @@ class CorrespondenceHandlerTest extends TestCase
         $wpdb->shouldReceive('insert')
             ->once()
             ->andReturn(1);
+        $wpdb->shouldReceive('get_var')
+            ->once()
+            ->andReturn(null); // No existing thread
+        $wpdb->shouldReceive('get_results')
+            ->once()
+            ->andReturn([]); // No previous messages
         
         $request = Mockery::mock('WP_REST_Request');
         $request->shouldReceive('get_param')
@@ -199,6 +207,7 @@ class CorrespondenceHandlerTest extends TestCase
         $mockUser->shouldReceive('get')->andReturn('Admin');
         $mockUser->display_name = 'Admin';
         $mockUser->user_login = 'admin';
+        $mockUser->ID = 1;
         Functions\when('wp_get_current_user')->justReturn($mockUser);
         
         $handler = new CorrespondenceHandler();
@@ -254,7 +263,7 @@ class CorrespondenceHandlerTest extends TestCase
             (object)['from_submitter' => 1, 'created_at' => '2023-01-01 12:00:00']
         ];
         $wpdb->shouldReceive('get_results')
-            ->once()
+            ->twice() // Called once for history check and once for admin notification check
             ->andReturn($messages);
         
         // Mock admin emails lookup
@@ -278,7 +287,7 @@ class CorrespondenceHandlerTest extends TestCase
         
         // Mock existing thread check
         $wpdb->shouldReceive('get_var')
-            ->once()
+            ->twice() // Called once for thread check, once for status update
             ->andReturn(1); // Thread exists
         
         Functions\when('current_time')->justReturn('2023-01-01 12:00:00');
@@ -312,6 +321,7 @@ class CorrespondenceHandlerTest extends TestCase
         $mockUser->shouldReceive('get')->andReturn('Test User');
         $mockUser->display_name = 'Test User';
         $mockUser->user_login = 'testuser';
+        $mockUser->ID = 2;
         Functions\when('wp_get_current_user')->justReturn($mockUser);
         
         $handler = new CorrespondenceHandler();
@@ -403,6 +413,7 @@ class CorrespondenceHandlerTest extends TestCase
         $mockUser->shouldReceive('get')->andReturn('Jane Smith');
         $mockUser->display_name = 'Jane Smith';
         $mockUser->user_login = 'janesmith';
+        $mockUser->ID = 2;
         Functions\when('wp_get_current_user')->justReturn($mockUser);
         
         $handler = new CorrespondenceHandler();
@@ -440,6 +451,12 @@ class CorrespondenceHandlerTest extends TestCase
         });
         $wpdb->shouldReceive('query')->andReturn(true);
         $wpdb->shouldReceive('insert')->andReturn(1);
+        $wpdb->shouldReceive('get_var')
+            ->once()
+            ->andReturn(null); // No existing thread
+        $wpdb->shouldReceive('get_results')
+            ->once()
+            ->andReturn([]); // No previous messages
         
         $submission = (object)[
             'change_id' => 123,
@@ -477,6 +494,7 @@ class CorrespondenceHandlerTest extends TestCase
         $mockUser->shouldReceive('get')->andReturn('Admin');
         $mockUser->display_name = 'Admin';
         $mockUser->user_login = 'admin';
+        $mockUser->ID = 1;
         Functions\when('wp_get_current_user')->justReturn($mockUser);
         
         $handler = new CorrespondenceHandler();
@@ -510,6 +528,12 @@ class CorrespondenceHandlerTest extends TestCase
         });
         $wpdb->shouldReceive('query')->andReturn(true);
         $wpdb->shouldReceive('insert')->andReturn(1);
+        $wpdb->shouldReceive('get_var')
+            ->once()
+            ->andReturn(null); // No existing thread
+        $wpdb->shouldReceive('get_results')
+            ->once()
+            ->andReturn([]); // No previous messages
         
         $submission = (object)[
             'change_id' => 123,
@@ -552,12 +576,7 @@ class CorrespondenceHandlerTest extends TestCase
         $mockUser->shouldReceive('get')->andReturn('Admin');
         $mockUser->display_name = 'Admin';
         $mockUser->user_login = 'admin';
-        Functions\when('wp_get_current_user')->justReturn($mockUser);
-        
-        $mockUser = Mockery::mock('WP_User');
-        $mockUser->shouldReceive('get')->andReturn('Admin');
-        $mockUser->display_name = 'Admin';
-        $mockUser->user_login = 'admin';
+        $mockUser->ID = 1;
         Functions\when('wp_get_current_user')->justReturn($mockUser);
         
         $handler = new CorrespondenceHandler();
@@ -600,6 +619,12 @@ class CorrespondenceHandlerTest extends TestCase
         });
         $wpdb->shouldReceive('query')->andReturn(true);
         $wpdb->shouldReceive('insert')->andReturn(1);
+        $wpdb->shouldReceive('get_var')
+            ->once()
+            ->andReturn(null); // No existing thread
+        $wpdb->shouldReceive('get_results')
+            ->once()
+            ->andReturn([]); // No previous messages
         
         $submission = (object)[
             'change_id' => 456,
@@ -638,6 +663,7 @@ class CorrespondenceHandlerTest extends TestCase
         $mockUser->shouldReceive('get')->andReturn('Admin');
         $mockUser->display_name = 'Admin';
         $mockUser->user_login = 'admin';
+        $mockUser->ID = 1;
         Functions\when('wp_get_current_user')->justReturn($mockUser);
         
         $handler = new CorrespondenceHandler();
@@ -722,6 +748,7 @@ class CorrespondenceHandlerTest extends TestCase
         $mockUser->shouldReceive('get')->andReturn('Jane Smith');
         $mockUser->display_name = 'Jane Smith';
         $mockUser->user_login = 'janesmith';
+        $mockUser->ID = 2;
         Functions\when('wp_get_current_user')->justReturn($mockUser);
         
         $handler = new CorrespondenceHandler();
