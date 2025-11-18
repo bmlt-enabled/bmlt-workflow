@@ -176,6 +176,33 @@ class BMLTWF_Email
     }
 
     /**
+     * Send rejection email
+     *
+     * @param string $to_address
+     * @param array $context Context data
+     * @param array $additional_fields Additional template fields
+     * @return bool
+     */
+    public function send_rejection_email($to_address, $context, $additional_fields = array(), $meeting_data = null)
+    {
+        $template_fields = array_merge($this->build_common_fields($context, $meeting_data), $additional_fields);
+        
+        $subject_template = get_option('bmltwf_rejection_email_subject');
+        $body_template = get_option('bmltwf_rejection_email_template');
+        $default_subject = __('NA Meeting Change Request Rejection - Submission ID','bmlt-workflow') . ' ' . $template_fields['change_id'];
+        
+        // If no custom template, use default body with action message
+        if (empty($body_template)) {
+            $body_template = __('Your meeting change has been rejected - change ID','bmlt-workflow') . ' ({field:change_id})';
+            if (!empty($template_fields['action_message'])) {
+                $body_template .= '<br><br>' . __('Message from trusted servant','bmlt-workflow') . ':<br><br>{field:action_message}';
+            }
+        }
+        
+        return $this->send_templated_email($to_address, $subject_template, $body_template, $template_fields, $default_subject);
+    }
+
+    /**
      * Send FSO email
      *
      * @param string $to_address

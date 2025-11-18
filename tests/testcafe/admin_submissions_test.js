@@ -555,6 +555,33 @@ test('Quickedit_Saves_Changes_Correctly', async t => {
 
 }).requestHooks(submissions1logger);
 
+const commentsLogger = RequestLogger(/bmltwf\/v1\/submissions\/93$/,
+{
+  logRequestBody: true,
+}
+);
+
+test('Quickedit_Comments_Field_Editable', async t => {
+  // new meeting = row 2
+  var row = 2;
+  await click_table_row_column(as.dt_submission, row, 0);
+  // quickedit
+  await click_dt_button_by_index(as.dt_submission_wrapper, 3);
+
+  await t
+    .expect(as.quickedit_dialog_parent.visible).eql(true)
+    .expect(as.quickedit_comments.visible).eql(true)
+    .expect(as.quickedit_comments.value).eql('Test meeting comments for new meeting')
+    .expect(as.quickedit_comments.hasAttribute('disabled')).notOk()
+    .typeText(as.quickedit_comments, 'Updated comments via quickedit', {replace: true})
+    .click(as.quickedit_dialog_parent.find("button.ui-corner-all").nth(2))
+    .wait(1000);
+
+  var f = JSON.parse(commentsLogger.requests[0].request.body.toString());
+  await t.expect(f.changes_requested.comments).eql('Updated comments via quickedit');
+
+}).requestHooks(commentsLogger);
+
 test("Approve_New_Meeting_Geocoding", async (t) => {
 
   // new meeting = row 2

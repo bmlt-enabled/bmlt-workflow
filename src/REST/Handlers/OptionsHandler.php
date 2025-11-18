@@ -216,8 +216,23 @@ class OptionsHandler
         
         $this->debug_log("debug log handler called");
         
-        // Log the download action
+        // Log the download action with plugin version and options
         $this->debug_log("Debug log file downloaded by user ID: " . get_current_user_id());
+        
+        // Add plugin version and configuration info to debug log
+        $this->debug_log("Plugin Version: " . BMLTWF_PLUGIN_VERSION);
+        $this->debug_log("PHP Version: " . phpversion());
+        $this->debug_log("BMLT Server Version: " . get_option('bmltwf_bmlt_server_version', 'Unknown'));
+        
+        // Get all bmltwf options except password
+        $optarr = \wp_load_alloptions();
+        $config_info = array();
+        foreach ($optarr as $key => $value) {
+            if (in_array($key, $this->bmltwf_options) && $key !== 'bmltwf_bmlt_password') {
+                $config_info[$key] = $value;
+            }
+        }
+        $this->debug_log("Plugin Configuration: " . print_r($config_info, true));
         
         // Check if debug mode is enabled
         if (!defined('BMLTWF_DEBUG') || !BMLTWF_DEBUG) {

@@ -46,6 +46,7 @@ class Admin_Submissions {
         this.quickedit_phone_meeting_number = Selector("#quickedit_phone_meeting_number");
         this.quickedit_virtual_meeting_link = Selector("#quickedit_virtual_meeting_link");
         this.quickedit_additional_info = Selector("#quickedit_additional_info");
+        this.quickedit_comments = Selector("#quickedit_comments");
         this.quickedit_venueType = Selector("#quickedit_venueType");
         this.quickedit_day = Selector("#quickedit_day");
         this.quickedit_location_text = Selector("#quickedit_location_text");

@@ -723,7 +723,6 @@ EOD;
         // Verify unpermitted fields are removed
         $this->assertArrayNotHasKey('contact_phone_1', $meeting);
         $this->assertArrayNotHasKey('contact_email_1', $meeting);
-        $this->assertArrayNotHasKey('comments', $meeting);
         $this->assertArrayNotHasKey('some_other_field', $meeting);
     }
 

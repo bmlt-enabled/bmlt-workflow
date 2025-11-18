@@ -64,6 +64,10 @@ class ServiceBodiesHandler
             {
                 return $sblist;
             }
+            if(empty($sblist))
+            {
+                return $this->bmltwf_rest_error(__('No service bodies found. The BMLT user account may not have access to any service bodies.','bmlt-workflow'), 422);
+            }
             $this->debug_log("retrieved sblist ");
             $this->debug_log($sblist);
 
