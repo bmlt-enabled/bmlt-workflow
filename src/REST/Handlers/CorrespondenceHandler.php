@@ -176,6 +176,7 @@ class CorrespondenceHandler
         // If no thread_id provided, create a new one
         if (!$thread_id) {
             $thread_id = wp_generate_uuid4();
+            $this->debug_log("Generated new thread_id: " . $thread_id);
         } else {
             // Verify thread_id belongs to this submission
             $existing_thread = $wpdb->get_var($wpdb->prepare(
@@ -185,26 +186,71 @@ class CorrespondenceHandler
                 $change_id
             ));
 
+            $this->debug_log("Existing thread check for thread_id {$thread_id}: " . $existing_thread);
+            
             if (!$existing_thread) {
                 return new \WP_Error('rest_invalid_param', __('Invalid thread_id for this submission', 'bmlt-workflow'), array('status' => 400));
             }
         }
+        
+        // Validate data before insert
+        if (empty($change_id) || !is_numeric($change_id)) {
+            $this->debug_log("Invalid change_id: " . $change_id);
+            return new \WP_Error('rest_invalid_param', __('Invalid change_id', 'bmlt-workflow'), array('status' => 400));
+        }
+        
+        if (empty($thread_id) || strlen($thread_id) > 36) {
+            $this->debug_log("Invalid thread_id: " . $thread_id . " (length: " . strlen($thread_id) . ")");
+            return new \WP_Error('rest_invalid_param', __('Invalid thread_id', 'bmlt-workflow'), array('status' => 400));
+        }
+        
+        if (empty($message) || strlen($message) > 65535) {
+            $this->debug_log("Invalid message length: " . strlen($message));
+            return new \WP_Error('rest_invalid_param', __('Message is empty or too long', 'bmlt-workflow'), array('status' => 400));
+        }
 
+        // Prepare data for insert with debug logging
+        $current_user = wp_get_current_user();
+        $created_by = $from_submitter ? $submission->submitter_name : $current_user->display_name;
+        $created_at = current_time('mysql');
+        
+        $insert_data = array(
+            'change_id' => $change_id,
+            'thread_id' => $thread_id,
+            'message' => $message,
+            'from_submitter' => $from_submitter ? 1 : 0,
+            'created_at' => $created_at,
+            'created_by' => $created_by
+        );
+        
+        $this->debug_log("Attempting to insert correspondence with data: " . json_encode($insert_data));
+        $this->debug_log("Table name: " . $this->bmltwf_correspondence_table_name);
+        $this->debug_log("Current user ID: " . $current_user->ID . ", display_name: " . $current_user->display_name);
+        $this->debug_log("Submission data: " . json_encode($submission));
+        
+        // Check if table exists
+        $table_exists = $wpdb->get_var("SHOW TABLES LIKE '" . $this->bmltwf_correspondence_table_name . "'");
+        $this->debug_log("Table exists check: " . ($table_exists ? 'YES' : 'NO'));
+        
+        // Check table structure
+        $table_structure = $wpdb->get_results("DESCRIBE " . $this->bmltwf_correspondence_table_name);
+        $this->debug_log("Table structure: " . json_encode($table_structure));
+        
         // Insert the new correspondence
         $result = $wpdb->insert(
             $this->bmltwf_correspondence_table_name,
-            array(
-                'change_id' => $change_id,
-                'thread_id' => $thread_id,
-                'message' => $message,
-                'from_submitter' => $from_submitter ? 1 : 0,
-                'created_at' => current_time('mysql'),
-                'created_by' => $from_submitter ? $submission->submitter_name : wp_get_current_user()->display_name
-            )
+            $insert_data
         );
 
+        $this->debug_log("Insert result: " . ($result ? 'SUCCESS' : 'FAILED'));
+        $this->debug_log("wpdb->last_error: " . $wpdb->last_error);
+        $this->debug_log("wpdb->last_query: " . $wpdb->last_query);
+        $this->debug_log("wpdb->insert_id: " . $wpdb->insert_id);
+        
         if (!$result) {
-            return new \WP_Error('rest_error', __('Failed to add correspondence', 'bmlt-workflow'), array('status' => 500));
+            $error_msg = 'Failed to add correspondence. Error: ' . $wpdb->last_error;
+            $this->debug_log($error_msg);
+            return new \WP_Error('rest_error', __($error_msg, 'bmlt-workflow'), array('status' => 500));
         }
         
         // Update the submission status based on who sent the correspondence

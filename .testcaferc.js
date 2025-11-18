@@ -38,7 +38,7 @@ const username_multinetwork ='admin';
 const password_multinetwork = 'admin';
 
 module.exports = {
-  browsers: "chrome",
+  browsers: "chrome --disable-web-security --disable-features=VizDisplayCompositor",
   userVariables: {
     siteurl_single: siteurl_single,
     formpage: siteurl_single + '/index.php' + formpage,

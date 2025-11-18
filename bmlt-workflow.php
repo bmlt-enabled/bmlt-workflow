@@ -557,7 +557,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             $new_actions = array();
             if (basename(plugin_dir_path(__FILE__)) . '/bmlt-workflow.php' === $plugin_file) {
-                $new_actions['cl_settings'] = sprintf('<a href="%s">Settings</a>', esc_url(admin_url('admin.php?page=bmltwf-settings')));
+                $new_actions['cl_settings'] = sprintf('<a href="%s">Settings</a>', esc_url(admin_url('admin.php?page=bmltwf-options')));
             }
 
             return array_merge($new_actions, $plugin_actions);

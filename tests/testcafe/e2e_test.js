@@ -139,6 +139,7 @@ test("Submit_New_Meeting_And_Approve", async (t) => {
 
   await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
   await t.typeText(uf.additional_info, "my additional info");
+  await t.typeText(uf.comments, "test meeting notes");
 
   await select_dropdown_by_value(uf.starter_kit_required, "yes");
   await t
@@ -218,6 +219,7 @@ test("Submit_Change_Meeting_And_Approve", async (t) => {
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
   await t.typeText(uf.additional_info, "my additional info");
+  await t.typeText(uf.comments, "updated meeting notes");
   await t
     .click(uf.submit)
     .expect(Selector("#bmltwf_response_message").innerText)
@@ -557,7 +559,8 @@ test("Submit_Change_Meeting_With_Empty_Comments_Field", async (t) => {
   // Fill required fields but leave comments empty
   await t.typeText(uf.first_name, "empty")
     .typeText(uf.last_name, "change")
-    .typeText(uf.email_address, "emptychange@example.com");
+    .typeText(uf.email_address, "emptychange@example.com")
+    .typeText(uf.location_text, "Updated Location"); // Change something to make form valid
     // Explicitly do NOT fill comments field
 
   await select_dropdown_by_value(uf.group_relationship, "Group Member");

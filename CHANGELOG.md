@@ -1,6 +1,7 @@
 ## 1.1.33 (Sep 17, 2025)
 - Doesn't clear form when changing the change type (thanks @Redguy1959 !)
 - Allows editing of the comments field (thanks @GarrettWeinberg !)
+- Fixes settings link in plugin page (thanks @tempsaint !)
 
 ## 1.1.32 (Sep 6, 2025)
 - Fixes incorrect day being reported in outbound emails (thanks Elsa!)
