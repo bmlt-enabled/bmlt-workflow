@@ -1,18 +1,18 @@
 <?php
 // Copyright (C) 2022 nigel.bmlt@gmail.com
-// 
+//
 // This file is part of bmlt-workflow.
-// 
+//
 // bmlt-workflow is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // bmlt-workflow is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -24,7 +24,7 @@ class Integration
 {
 
     use \bmltwf\BMLTWF_Debug;
-    
+
     /**
      * Wrapper for wp_remote_request that logs both request and response
      *
@@ -41,10 +41,10 @@ class Integration
         if ($body) {
             $this->debug_log("REQUEST BODY: " . $body);
         }
-        
+
         // Make the request
         $response = \wp_remote_request($url, $args);
-        
+
         // Log the response
         if (is_wp_error($response)) {
             $this->debug_log("RESPONSE ERROR: " . $response->get_error_message());
@@ -53,21 +53,21 @@ class Integration
             $response_body = \wp_remote_retrieve_body($response);
             $this->debug_log("RESPONSE CODE: " . $response_code);
             $this->debug_log("RESPONSE BODY: " . $response_body);
-            
+
             // Log error responses with their body
             if ($response_code >= 400) {
                 $this->debug_log("ERROR RESPONSE ($response_code): " . $response_body);
-                
+
                 // Use the new debug_http_error function for 500 errors
                 if ($response_code >= 500) {
                     $this->debug_http_error($response);
                 }
             }
         }
-        
+
         return $response;
     }
-    
+
     /**
      * Wrapper for wp_remote_get that logs both request and response
      *
@@ -80,7 +80,7 @@ class Integration
         $args['method'] = 'GET';
         return $this->bmltwf_wp_remote_request($url, $args);
     }
-    
+
     /**
      * Wrapper for wp_remote_post that logs both request and response
      *
@@ -230,7 +230,7 @@ class Integration
     {
         // Validate meeting data
         $filtered_change = $this->validateMeetingData($change);
-        
+
         // Workaround for timeZone required
         $filtered_change["timeZone"] = null;
 
@@ -238,10 +238,10 @@ class Integration
         if (is_wp_error($filtered_change)) {
             return $filtered_change;
         }
-        
+
         $this->debug_log("updateMeeting change");
         $this->debug_log($filtered_change);
-        
+
         if (array_key_exists('formatIds', $filtered_change)) {
             $filtered_change['formatIds'] = $this->removeLocations($filtered_change['formatIds']);
         }
@@ -263,7 +263,7 @@ class Integration
         $url = get_option('bmltwf_bmlt_server_address') . 'api/v1/meetings/' . $filtered_change['id'];
 
         $this->debug_bmlt_payload($url, 'PATCH', $filtered_change);
-        
+
         $response = $this->bmltwf_wp_remote_request($url, array(
             'method' => 'PATCH',
             'headers' => array(
@@ -367,7 +367,7 @@ class Integration
             'longitude',
             'comments'
         ];
-        
+
         $body = json_decode(\wp_remote_retrieve_body($response),true);
         if ($body === null) {
             return new \WP_Error('bmltwf', 'Invalid JSON response from BMLT server');
@@ -570,7 +570,7 @@ class Integration
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
-        // $this->debug_log(\wp_remote_retrieve_body($response));  
+        // $this->debug_log(\wp_remote_retrieve_body($response));
         $arr = json_decode(\wp_remote_retrieve_body($response), true);
         if ($arr === null || !isset($arr[0])) {
             return new \WP_Error('bmltwf', __('Invalid server info response', 'bmlt-workflow'));
@@ -609,7 +609,7 @@ class Integration
      * getGmapsKey
      *
      * workaround for client/server side maps key issues
-     * 
+     *
      * @return \WP_Error|string
      */
     public function getGmapsKey()
@@ -641,9 +641,9 @@ class Integration
         $this->debug_log("*** ADMIN URL " . $url);
 
         $response = $this->getv2($url, $this->cookies);
-
-        preg_match('/"google_api_key":"(.*?)",/', \wp_remote_retrieve_body($response), $matches);
-        $this->debug_log("bmlt gmaps response - ".$response);
+		$body = \wp_remote_retrieve_body($response);
+        preg_match('/"google_api_key":"(.*?)",/', $body, $matches);
+        $this->debug_log("bmlt gmaps response - ".$body);
         $this->debug_log("retrieved gmaps key");
         $gmaps_key = isset($matches[1]) ? $matches[1] : '';
 
@@ -655,7 +655,7 @@ class Integration
 
     /**
      * Get the schema for meeting data validation
-     * 
+     *
      * @return array Schema with field names and their expected types
      */
     private function getMeetingSchema()
@@ -701,10 +701,10 @@ class Integration
             'id' => 'integer'
         ];
     }
-    
+
     /**
      * Validate meeting data against schema
-     * 
+     *
      * @param array $meeting Meeting data to validate
      * @return array|\WP_Error Filtered meeting data or error
      */
@@ -713,12 +713,12 @@ class Integration
         $allowed_keys = $this->getMeetingSchema();
         $filtered_meeting = [];
         $errors = [];
-        
+
         foreach ($meeting as $key => $value) {
             if (array_key_exists($key, $allowed_keys)) {
                 $expected_type = $allowed_keys[$key];
                 $valid = false;
-                
+
                 switch ($expected_type) {
                     case 'integer':
                         $valid = is_int($value) || (is_string($value) && ctype_digit($value));
@@ -750,7 +750,7 @@ class Integration
                     default:
                         $valid = true; // Unknown type, accept as is
                 }
-                
+
                 if ($valid) {
                     $filtered_meeting[$key] = $value;
                 } else {
@@ -758,26 +758,26 @@ class Integration
                 }
             }
         }
-        
+
         if (!empty($errors)) {
             $this->debug_log("Type validation errors:");
             $this->debug_log($errors);
             return new \WP_Error('bmltwf', __('Invalid meeting data format', 'bmlt-workflow'), $errors);
         }
-        
+
         return $filtered_meeting;
     }
-    
+
     function createMeeting($meeting)
     {
         // Validate meeting data
         $filtered_meeting = $this->validateMeetingData($meeting);
-        
+
         // If validation returned an error, return it
         if (is_wp_error($filtered_meeting)) {
             return $filtered_meeting;
         }
-        
+
         $this->debug_log("createMeeting change");
         $this->debug_log($filtered_meeting);
 
@@ -788,7 +788,7 @@ class Integration
             $this->debug_log("formatIds missing or not an array");
             return new \WP_Error('bmltwf', __('formatIds is required and must be an array', 'bmlt-workflow'));
         }
-        
+
         // Workaround for timeZone required
         $filtered_meeting["timeZone"] = null;
 
@@ -872,7 +872,7 @@ class Integration
         if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
             return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
-        // $this->debug_log(\wp_remote_retrieve_body($response));  
+        // $this->debug_log(\wp_remote_retrieve_body($response));
         $arr = json_decode(\wp_remote_retrieve_body($response), true);
         if ($arr === null || !isset($arr[0])) {
             return new \WP_Error('bmltwf', __('Invalid server info response', 'bmlt-workflow'));
@@ -993,7 +993,7 @@ class Integration
             $this->debug_log("inside authenticateRootServer v3 auth");
             $url = get_option('bmltwf_bmlt_server_address') . "api/v1/auth/token";
             $response = \wp_remote_post($url, array('body' => http_build_query($postargs)));
-            
+
             if (is_wp_error($response)) {
                 return $response;
             }
