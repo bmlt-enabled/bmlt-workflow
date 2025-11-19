@@ -642,12 +642,19 @@ class Integration
 
         $response = $this->getv2($url, $this->cookies);
 		$body = \wp_remote_retrieve_body($response);
-        preg_match('/"google_api_key":"(.*?)",/', $body, $matches);
-        $this->debug_log("bmlt gmaps response - ".$body);
-        $this->debug_log("retrieved gmaps key");
-        $gmaps_key = isset($matches[1]) ? $matches[1] : '';
-
-        \update_option('bmltwf_bmlt_google_maps_key', $gmaps_key);
+	    $this->debug_log("bmlt gmaps response - ".$body);
+	    preg_match('/"google_api_key":"(.*?)",/', $body, $matches);
+	    $gmaps_key = isset($matches[1]) ? $matches[1] : '';
+		if ($gmaps_key == '') {
+			preg_match('/googleApiKey: *\'(.*?)\',/', $body, $matches);
+			$gmaps_key = isset($matches[1]) ? $matches[1] : '';
+		}
+		if ($gmaps_key != '') {
+			$this->debug_log("retrieved gmaps key: '" . $gmaps_key . "'");
+			\update_option('bmltwf_bmlt_google_maps_key', $gmaps_key);
+		} else {
+			$this->debug_log("failed to retrieve gmaps key");
+		}
 
         return $gmaps_key;
     }
