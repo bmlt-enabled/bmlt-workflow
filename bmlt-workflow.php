@@ -1,18 +1,18 @@
 <?php
 // Copyright (C) 2022 nigel.bmlt@gmail.com
-// 
+//
 // This file is part of bmlt-workflow.
-// 
+//
 // bmlt-workflow is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // bmlt-workflow is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.33
+ * Version: 1.1.34
  * Requires at least: 5.2
  * Tested up to: 6.8.2
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.33');
+define('BMLTWF_PLUGIN_VERSION', '1.1.34');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -70,19 +70,19 @@ if (!class_exists('bmltwf_plugin')) {
             // Set global debug flag to avoid repeated database calls
             global $bmltwf_debug_enabled;
             $bmltwf_debug_enabled = (get_option('bmltwf_enable_debug', 'false') === 'true');
-            
+
             // Initialize debug file if debug is enabled
             if ($bmltwf_debug_enabled) {
                 $this->debug_log("BMLT Workflow plugin initialized");
             }
-            
+
             // $this->debug_log("bmlt-workflow: Creating new Integration");
             $this->bmlt_integration = new Integration();
             // $this->debug_log("bmlt-workflow: Creating new Controller");
             $this->BMLTWF_Rest_Controller = new Controller();
             // $this->debug_log("bmlt-workflow: Creating new BMLTWF_Database");
             $this->BMLTWF_Database = new BMLTWF_Database();
-            
+
             // Check database version and upgrade if needed
             $this->check_database_version();
 
@@ -109,7 +109,7 @@ if (!class_exists('bmltwf_plugin')) {
         {
             $installed_version = get_option('bmltwf_db_version');
             $current_version = $this->BMLTWF_Database->bmltwf_db_version;
-            
+
             if ($installed_version === false || version_compare($installed_version, $current_version, '<')) {
                 $this->debug_log("Database upgrade needed from {$installed_version} to {$current_version}");
                 $result = $this->BMLTWF_Database->bmltwf_db_upgrade($current_version, false);
@@ -122,22 +122,22 @@ if (!class_exists('bmltwf_plugin')) {
                 }
             }
         }
-        
+
         public function bmltwf_load_textdomain()
         {
             $domain = 'bmlt-workflow';
             $locale = get_locale();
             $mofile = dirname(plugin_basename(__FILE__)) . '/lang/' . $domain . '-' . $locale . '.mo';
             $path = plugin_dir_path(__FILE__) . 'lang/' . $domain . '-' . $locale . '.mo';
-            
+
             // Debug output
             error_log("BMLTWF Debug - Locale: " . $locale);
             error_log("BMLTWF Debug - MO file path: " . $path);
             error_log("BMLTWF Debug - MO file exists: " . (file_exists($path) ? 'YES' : 'NO'));
-            
+
             $result = load_plugin_textdomain($domain, false, dirname(plugin_basename(__FILE__)) . '/lang');
             error_log("BMLTWF Debug - load_plugin_textdomain result: " . ($result ? 'SUCCESS' : 'FAILED'));
-            
+
             // Test translation
             $test = __('New Meeting', $domain);
             error_log("BMLTWF Debug - Translation test: " . $test);
@@ -149,13 +149,13 @@ if (!class_exists('bmltwf_plugin')) {
             wp_enqueue_script('wp-i18n');
             $this->prevent_cache_enqueue_script('bmltwf-correspondence-form-js', array('jquery', 'wp-i18n'), 'js/correspondence_form.js');
             $this->prevent_cache_enqueue_style('bmltwf-correspondence-form-css', false, 'css/correspondence_form.css');
-            
+
             // Set up translations
             wp_set_script_translations('bmltwf-correspondence-form-js', 'bmlt-workflow', plugin_dir_path(__FILE__) . 'lang/');
-            
+
             // Get thread ID from URL parameter
             $thread_id = isset($_GET['thread']) ? sanitize_text_field($_GET['thread']) : '';
-            
+
             // Localize script with REST API URL and thread ID
             wp_localize_script('bmltwf-correspondence-form-js', 'bmltwf_correspondence_data', array(
                 'rest_url' => esc_url_raw(rest_url($this->bmltwf_rest_namespace . '/correspondence/thread/' . $thread_id)),
@@ -173,7 +173,7 @@ if (!class_exists('bmltwf_plugin')) {
                     'reply_error' => __('Error sending reply. Please try again.', 'bmlt-workflow'),
                 )
             ));
-            
+
             include_once('public/correspondence_form.php');
             return bmltwf_correspondence_form_shortcode($atts);
         }
@@ -443,7 +443,7 @@ if (!class_exists('bmltwf_plugin')) {
                     } else {
                         $script .= 'var bmltwf_gmaps_key = "' . $key . '";';
                     }
-                    
+
                     $script .= 'var bmltwf_auto_geocoding_enabled = ' . json_encode($this->bmlt_integration->isAutoGeocodingEnabled('auto')) . ';';
 
                     // can current user use the delete button?
@@ -454,7 +454,7 @@ if (!class_exists('bmltwf_plugin')) {
                         $show_delete = "true";
                     }
                     $script .= 'var bmltwf_datatables_delete_enabled = ' . $show_delete . ';';
-                    
+
                     // correspondence page configuration
                     $correspondence_page_id = get_option('bmltwf_correspondence_page');
                     $correspondence_enabled = 'false';
@@ -547,7 +547,7 @@ if (!class_exists('bmltwf_plugin')) {
             if (!current_user_can('manage_options') && (current_user_can($this->bmltwf_capability_manage_submissions))) {
                 remove_menu_page('bmltwf-settings');
             }
-            
+
             // Remove the duplicate submenu item that WordPress automatically creates
             remove_submenu_page('bmltwf-settings', 'bmltwf-settings');
         }
@@ -637,7 +637,7 @@ if (!class_exists('bmltwf_plugin')) {
                     'default' => 'false'
                 )
             );
-            
+
             register_setting(
                 'bmltwf-settings-group',
                 'bmltwf_enable_debug',
@@ -921,21 +921,21 @@ if (!class_exists('bmltwf_plugin')) {
                 '',
                 'bmltwf-bmlt-config'
             );
-            
+
             add_settings_section(
                 'bmltwf-form-settings-section',
                 '',
                 '',
                 'bmltwf-form-settings'
             );
-            
+
             add_settings_section(
                 'bmltwf-email-templates-section',
                 '',
                 '',
                 'bmltwf-email-templates'
             );
-            
+
             add_settings_section(
                 'bmltwf-advanced-section',
                 '',
@@ -1074,7 +1074,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf-advanced',
                 'bmltwf-advanced-section'
             );
-            
+
             add_settings_field(
                 'bmltwf_enable_debug',
                 __('Enable Debug Logging', 'bmlt-workflow'),
@@ -1082,7 +1082,7 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf-advanced',
                 'bmltwf-advanced-section'
             );
-            
+
         }
 
         public function bmltwf_fso_feature_sanitize_callback($input)
@@ -1175,20 +1175,20 @@ if (!class_exists('bmltwf_plugin')) {
             if (!isset($_POST['bmltwf_email_from_address'])) {
                 return $output;
             }
-            
+
             // Check if input is in "Display Name <email@example.com>" format
             if (preg_match('/^(.+)\s*<(.+)>$/', $input, $matches)) {
                 $display_name = trim($matches[1]);
                 $email = trim($matches[2]);
-                
+
                 if (!is_email($email)) {
                     add_settings_error('bmltwf_email_from_address', 'err', __('Invalid email from address.', 'bmlt-workflow'));
                     return $output;
                 }
-                
+
                 return sanitize_text_field($display_name) . ' <' . sanitize_email($email) . '>';
             }
-            
+
             // Handle plain email format
             $sanitized_email = sanitize_email($input);
             if (!is_email($sanitized_email)) {
@@ -1217,20 +1217,20 @@ if (!class_exists('bmltwf_plugin')) {
             if (!isset($_POST['bmltwf_fso_email_address'])) {
                 return $output;
             }
-            
+
             // Check if input is in "Display Name <email@example.com>" format
             if (preg_match('/^(.+)\s*<(.+)>$/', $input, $matches)) {
                 $display_name = trim($matches[1]);
                 $email = trim($matches[2]);
-                
+
                 if (!is_email($email)) {
                     add_settings_error('bmltwf_fso_email_address', 'err', __('Invalid FSO email address.', 'bmlt-workflow'));
                     return $output;
                 }
-                
+
                 return sanitize_text_field($display_name) . ' <' . sanitize_email($email) . '>';
             }
-            
+
             // Handle plain email format
             $sanitized_email = sanitize_email($input);
             if (!is_email($sanitized_email)) {
@@ -1414,9 +1414,9 @@ if (!class_exists('bmltwf_plugin')) {
             echo __('Google Maps Key from BMLT', 'bmlt-workflow');
             echo '</option><option name="your_own_key" value="your_own_key" ' . $your_own_key . '>';
             echo __('Custom Google Maps Key', 'bmlt-workflow');
-            echo '</option>';
+            echo '</option></select>';
+	        echo '<input id="bmltwf_google_maps_key" type="text" size="39" name="bmltwf_google_maps_key" value="' . esc_attr($google_maps_key) . '"/>';
             echo '<br><br>';
-            echo '<input id="bmltwf_google_maps_key" type="text" size="39" name="bmltwf_google_maps_key" value="' . esc_attr($google_maps_key) . '"/>';
         }
 
         public function bmltwf_email_from_address_html()
@@ -1745,7 +1745,7 @@ if (!class_exists('bmltwf_plugin')) {
             $subject = get_option('bmltwf_correspondence_submitter_email_subject');
             echo '<br><label for="bmltwf_correspondence_submitter_email_subject"><b>' . __('Email Subject:', 'bmlt-workflow') . '</b></label><input id="bmltwf_correspondence_submitter_email_subject" type="text" size="80" name="bmltwf_correspondence_submitter_email_subject" value="' . esc_attr($subject) . '"/>';
             echo '<br><br>';
-            
+
             echo '<label for="bmltwf_correspondence_submitter_email_template"><b>' . __('Email Body:', 'bmlt-workflow') . '</b></label><br>';
             $content = get_option('bmltwf_correspondence_submitter_email_template');
             $editor_id = 'bmltwf_correspondence_submitter_email_template';
@@ -1767,7 +1767,7 @@ if (!class_exists('bmltwf_plugin')) {
             $subject = get_option('bmltwf_correspondence_admin_email_subject');
             echo '<br><label for="bmltwf_correspondence_admin_email_subject"><b>' . __('Email Subject:', 'bmlt-workflow') . '</b></label><input id="bmltwf_correspondence_admin_email_subject" type="text" size="80" name="bmltwf_correspondence_admin_email_subject" value="' . esc_attr($subject) . '"/>';
             echo '<br><br>';
-            
+
             echo '<label for="bmltwf_correspondence_admin_email_template"><b>' . __('Email Body:', 'bmlt-workflow') . '</b></label><br>';
             $content = get_option('bmltwf_correspondence_admin_email_template');
             $editor_id = 'bmltwf_correspondence_admin_email_template';
@@ -1860,23 +1860,23 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_correspondence_page_sanitize_callback($input)
         {
             $output = get_option('bmltwf_correspondence_page');
-            
+
             if (empty($input)) {
                 return '';
             }
-            
+
             $page_id = intval($input);
             if ($page_id <= 0) {
                 add_settings_error('bmltwf_correspondence_page', 'err', __('Invalid correspondence page selection.', 'bmlt-workflow'));
                 return $output;
             }
-            
+
             $page = get_post($page_id);
             if (!$page || $page->post_type !== 'page' || $page->post_status !== 'publish') {
                 add_settings_error('bmltwf_correspondence_page', 'err', __('Selected page does not exist or is not published.', 'bmlt-workflow'));
                 return $output;
             }
-            
+
             return $page_id;
         }
 
@@ -1907,7 +1907,7 @@ if (!class_exists('bmltwf_plugin')) {
             echo __('False', 'bmlt-workflow');
             echo '" value="false" ' . $debug_disabled . '>' . __('False', 'bmlt-workflow') . '</option></select>';
             echo '<br><br>';
-            
+
             // Add download button if debug is enabled
             if ($selection === 'true') {
                 $today = date('Y-m-d');
@@ -1920,7 +1920,7 @@ if (!class_exists('bmltwf_plugin')) {
         public function bmltwf_correspondence_page_html()
         {
             $selected_page = get_option('bmltwf_correspondence_page');
-            
+
             echo '<div class="bmltwf_info_text">';
             echo '<br>';
             echo __('Select the WordPress page that contains the correspondence form shortcode <code>[bmltwf-correspondence-form]</code>. This page URL will be used in email notifications to submitters when new correspondence is available.', 'bmlt-workflow');
@@ -1931,19 +1931,19 @@ if (!class_exists('bmltwf_plugin')) {
             echo __('Correspondence Page', 'bmlt-workflow');
             echo ':</b></label><select id="bmltwf_correspondence_page" name="bmltwf_correspondence_page">';
             echo '<option value="">' . __('Select a page...', 'bmlt-workflow') . '</option>';
-            
+
             $pages = get_pages(array(
                 'post_status' => 'publish',
                 'sort_column' => 'post_title'
             ));
-            
+
             $shortcode_pages = array();
             foreach ($pages as $page) {
                 if (has_shortcode($page->post_content, 'bmltwf-correspondence-form')) {
                     $shortcode_pages[] = $page;
                 }
             }
-            
+
             if (empty($shortcode_pages)) {
                 echo '<option value="" disabled>' . __('No pages found with [bmltwf-correspondence-form] shortcode', 'bmlt-workflow') . '</option>';
             } else {
@@ -1954,12 +1954,12 @@ if (!class_exists('bmltwf_plugin')) {
                     echo '</option>';
                 }
             }
-            
+
             echo '</select>';
             echo '<br><br>';
         }
     }
-    
+
     load_plugin_textdomain('bmlt-workflow', false, dirname(plugin_basename(__FILE__)) . '/lang');
     $start_plugin = new bmltwf_plugin();
 }

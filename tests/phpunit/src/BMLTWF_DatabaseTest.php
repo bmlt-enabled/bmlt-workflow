@@ -91,6 +91,11 @@ Line: $errorLine
         $wpdb->shouldReceive('query');
         $wpdb->num_rows = 1;
         $wpdb->prefix = "";
+        
+        // Mock correspondence table check (now always runs)
+        $wpdb->shouldReceive('get_var')
+            ->with("SHOW TABLES LIKE 'bmltwf_correspondence'")
+            ->andReturn('bmltwf_correspondence'); // Table exists
 
         $BMLTWF_Database = new BMLTWF_Database();
         
@@ -333,6 +338,11 @@ Line: $errorLine
         $wpdb->shouldReceive('get_var')
             ->with("SHOW COLUMNS FROM bmltwf_service_bodies LIKE 'serviceBodyId'")
             ->andReturn('serviceBodyId'); // Column exists
+            
+        // Mock correspondence table check for ensureCorrespondenceTableExists
+        $wpdb->shouldReceive('get_var')
+            ->with("SHOW TABLES LIKE 'bmltwf_correspondence'")
+            ->andReturn('bmltwf_correspondence'); // Table exists
         
         Functions\when('\update_option')->justReturn(true);
         Functions\when('\delete_option')->justReturn(true);
@@ -490,5 +500,228 @@ Line: $errorLine
         }
         
         $this->assertTrue($debugTableCreated, 'Debug table creation query not found');
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::createTables
+     */
+    public function test_correspondence_table_creation_with_foreign_key(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "test_";
+        
+        $capturedQueries = [];
+        $wpdb->shouldReceive('query')->andReturnUsing(function($query) use (&$capturedQueries) {
+            $capturedQueries[] = $query;
+            return true;
+        });
+        
+        $database = new BMLTWF_Database();
+        $database->createTables('utf8mb4_unicode_ci', '1.1.28');
+        
+        // Verify correspondence table is created after submissions table
+        $submissionsTableIndex = -1;
+        $correspondenceTableIndex = -1;
+        
+        foreach ($capturedQueries as $index => $query) {
+            if (strpos($query, 'CREATE TABLE test_bmltwf_submissions') !== false) {
+                $submissionsTableIndex = $index;
+            }
+            if (strpos($query, 'CREATE TABLE IF NOT EXISTS test_bmltwf_correspondence') !== false) {
+                $correspondenceTableIndex = $index;
+                
+                // Verify the table has foreign key constraint
+                $this->assertStringContainsString('FOREIGN KEY (change_id) REFERENCES', $query);
+                $this->assertStringContainsString('correspondence_id', $query);
+                $this->assertStringContainsString('thread_id', $query);
+                $this->assertStringContainsString('message', $query);
+                $this->assertStringContainsString('from_submitter', $query);
+            }
+        }
+        
+        $this->assertGreaterThan(-1, $submissionsTableIndex, 'Submissions table creation not found');
+        $this->assertGreaterThan(-1, $correspondenceTableIndex, 'Correspondence table creation not found');
+        $this->assertGreaterThan($submissionsTableIndex, $correspondenceTableIndex, 
+            'Correspondence table should be created after submissions table');
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::bmltwf_db_upgrade
+     */
+    public function test_missing_correspondence_table_created_during_upgrade(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "test_";
+        $wpdb->num_rows = 3; // All main tables exist
+        
+        $capturedQueries = [];
+        $wpdb->shouldReceive('query')->andReturnUsing(function($query) use (&$capturedQueries) {
+            $capturedQueries[] = $query;
+            return true;
+        });
+        
+        $wpdb->shouldReceive('get_charset_collate')->andReturn('utf8mb4_unicode_ci');
+        
+        // Mock correspondence table doesn't exist, but submissions table does
+        $wpdb->shouldReceive('get_var')
+            ->with("SHOW TABLES LIKE 'test_bmltwf_correspondence'")
+            ->andReturn(null); // Table doesn't exist
+            
+        $wpdb->shouldReceive('get_var')
+            ->with("SHOW TABLES LIKE 'test_bmltwf_submissions'")
+            ->andReturn('test_bmltwf_submissions'); // Submissions table exists
+        
+        Functions\when('\get_option')->justReturn('1.1.27'); // Version that triggers upgrade
+        Functions\when('\delete_option')->justReturn(true);
+        Functions\when('\add_option')->justReturn(true);
+        Functions\when('\is_multisite')->justReturn(false);
+        
+        $database = new BMLTWF_Database();
+        $result = $database->bmltwf_db_upgrade('1.1.28', false);
+        
+        // Should perform upgrade (return 2)
+        $this->assertEquals(2, $result, 'Expected upgrade to be performed');
+        
+        // Verify correspondence table creation was attempted
+        $correspondenceTableCreated = false;
+        $foreignKeyAdded = false;
+        
+        foreach ($capturedQueries as $query) {
+            if (strpos($query, 'CREATE TABLE IF NOT EXISTS test_bmltwf_correspondence') !== false) {
+                $correspondenceTableCreated = true;
+            }
+            if (strpos($query, 'ADD CONSTRAINT fk_correspondence_change_id') !== false) {
+                $foreignKeyAdded = true;
+            }
+        }
+        
+        $this->assertTrue($correspondenceTableCreated, 'Correspondence table creation not found in queries: ' . implode('; ', $capturedQueries));
+        $this->assertTrue($foreignKeyAdded, 'Foreign key constraint addition not found in queries: ' . implode('; ', $capturedQueries));
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::bmltwf_db_upgrade
+     * Scenario B: Existing Installation with DB 1.1.28 (Working) - correspondence table exists
+     */
+    public function test_existing_installation_with_correspondence_table_working(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "test_";
+        $wpdb->num_rows = 3; // All main tables exist
+        
+        // Mock query calls for checkTablesExist()
+        $wpdb->shouldReceive('query')->andReturn(true);
+        
+        // Mock correspondence table exists
+        $wpdb->shouldReceive('get_var')
+            ->with("SHOW TABLES LIKE 'test_bmltwf_correspondence'")
+            ->andReturn('test_bmltwf_correspondence'); // Table exists
+        
+        Functions\when('\get_option')->justReturn('1.1.28'); // Current DB version
+        
+        $database = new BMLTWF_Database();
+        $result = $database->bmltwf_db_upgrade('1.1.28', false);
+        
+        // Should return 0 (no upgrade needed)
+        $this->assertEquals(0, $result, 'Expected no upgrade to be performed');
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::bmltwf_db_upgrade
+     * Scenario C: Existing Installation with DB 1.1.28 (Broken) - correspondence table missing
+     */
+    public function test_existing_installation_missing_correspondence_table_fixed(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "test_";
+        $wpdb->num_rows = 3; // All main tables exist
+        
+        $capturedQueries = [];
+        $wpdb->shouldReceive('query')->andReturnUsing(function($query) use (&$capturedQueries) {
+            $capturedQueries[] = $query;
+            return true;
+        });
+        
+        $wpdb->shouldReceive('get_charset_collate')->andReturn('utf8mb4_unicode_ci');
+        
+        // Mock correspondence table doesn't exist, but submissions table does
+        $wpdb->shouldReceive('get_var')
+            ->with("SHOW TABLES LIKE 'test_bmltwf_correspondence'")
+            ->andReturn(null); // Table doesn't exist
+            
+        $wpdb->shouldReceive('get_var')
+            ->with("SHOW TABLES LIKE 'test_bmltwf_submissions'")
+            ->andReturn('test_bmltwf_submissions'); // Submissions table exists
+        
+        Functions\when('\get_option')->justReturn('1.1.28'); // Current DB version (no schema upgrade needed)
+        
+        $database = new BMLTWF_Database();
+        $result = $database->bmltwf_db_upgrade('1.1.28', false);
+        
+        // Should return 0 (no schema upgrade, but table fixed)
+        $this->assertEquals(0, $result, 'Expected no schema upgrade but table should be fixed');
+        
+        // Verify correspondence table creation was attempted
+        $correspondenceTableCreated = false;
+        $foreignKeyAdded = false;
+        
+        foreach ($capturedQueries as $query) {
+            if (strpos($query, 'CREATE TABLE IF NOT EXISTS test_bmltwf_correspondence') !== false) {
+                $correspondenceTableCreated = true;
+            }
+            if (strpos($query, 'ADD CONSTRAINT fk_correspondence_change_id') !== false) {
+                $foreignKeyAdded = true;
+            }
+        }
+        
+        $this->assertTrue($correspondenceTableCreated, 'Correspondence table creation should have been attempted');
+        $this->assertTrue($foreignKeyAdded, 'Foreign key constraint should have been added');
+    }
+
+    /**
+     * @covers bmltwf\BMLTWF_Database::bmltwf_db_upgrade
+     * Scenario A: Fresh Installation
+     */
+    public function test_fresh_installation_creates_all_tables(): void
+    {
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = "test_";
+        $wpdb->num_rows = 0; // No tables exist
+        
+        $capturedQueries = [];
+        $wpdb->shouldReceive('query')->andReturnUsing(function($query) use (&$capturedQueries) {
+            $capturedQueries[] = $query;
+            return true;
+        });
+        
+        $wpdb->shouldReceive('get_charset_collate')->andReturn('utf8mb4_unicode_ci');
+        
+        Functions\when('\get_option')->justReturn(false); // No DB version exists
+        Functions\when('\delete_option')->justReturn(true);
+        Functions\when('\add_option')->justReturn(true);
+        
+        $database = new BMLTWF_Database();
+        $result = $database->bmltwf_db_upgrade('1.1.28', false);
+        
+        // Should return 1 (fresh install performed)
+        $this->assertEquals(1, $result, 'Expected fresh install to be performed');
+        
+        // Verify correspondence table with FK was created
+        $correspondenceTableWithFKCreated = false;
+        
+        foreach ($capturedQueries as $query) {
+            if (strpos($query, 'CREATE TABLE IF NOT EXISTS test_bmltwf_correspondence') !== false &&
+                strpos($query, 'FOREIGN KEY (change_id) REFERENCES') !== false) {
+                $correspondenceTableWithFKCreated = true;
+                break;
+            }
+        }
+        
+        $this->assertTrue($correspondenceTableWithFKCreated, 'Correspondence table with FK should be created during fresh install');
     }
 }

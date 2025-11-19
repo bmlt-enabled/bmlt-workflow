@@ -1,3 +1,7 @@
+## 1.1.34 (Nov 19, 2025)
+- #211 - Fixes missing correspondence table creation (thanks @brotskydotcom !)
+- PR #214 - Fixes missing closing HTML tag (thanks @brotskydotcom !)
+
 ## 1.1.33 (Sep 17, 2025)
 - Doesn't clear form when changing the change type (thanks @Redguy1959 !)
 - Allows editing of the comments field (thanks @GarrettWeinberg !)
