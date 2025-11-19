@@ -74,7 +74,9 @@ class BMLTWF_Database
         }
 
         if (version_compare($desired_version, $installed_version, 'eq')) {
-            $this->debug_log("doing nothing - installed db version " . $installed_version . " is same as desired version " . $desired_version);
+            $this->debug_log("same db version " . $installed_version . " - checking for missing tables");
+            // Always ensure correspondence table exists, even if versions match
+            $this->ensureCorrespondenceTableExists();
             return 0;
         }
 
@@ -113,11 +115,38 @@ class BMLTWF_Database
     }
 
     /**
-     * Create the correspondence table
+     * Create the correspondence table without foreign key (for upgrades)
      * 
      * @param string $charset_collate The charset collate string
      */
     public function createCorrespondenceTable($charset_collate)
+    {
+        global $wpdb;
+        
+        $sql = "CREATE TABLE IF NOT EXISTS " . $this->bmltwf_correspondence_table_name . " (
+            correspondence_id bigint(20) NOT NULL AUTO_INCREMENT,
+            change_id bigint(20) NOT NULL,
+            thread_id varchar(36) NOT NULL,
+            message text NOT NULL,
+            from_submitter tinyint(1) NOT NULL DEFAULT 0,
+            created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
+            created_by varchar(255) NOT NULL,
+            PRIMARY KEY (correspondence_id),
+            KEY idx_change_id (change_id),
+            KEY idx_thread_id (thread_id)
+        ) $charset_collate;";
+        
+        $wpdb->query($sql);
+        
+        $this->debug_log("Correspondence table created");
+    }
+    
+    /**
+     * Create the correspondence table with foreign key (for fresh installs)
+     * 
+     * @param string $charset_collate The charset collate string
+     */
+    private function createCorrespondenceTableWithFK($charset_collate)
     {
         global $wpdb;
         
@@ -137,7 +166,7 @@ class BMLTWF_Database
         
         $wpdb->query($sql);
         
-        $this->debug_log("Correspondence table created");
+        $this->debug_log("Correspondence table created with foreign key");
     }
     
     /**
@@ -177,9 +206,6 @@ class BMLTWF_Database
         
         // Always create the debug log table
         $this->createDebugLogTable($charset_collate);
-        
-        // Always create the correspondence table
-        $this->createCorrespondenceTable($charset_collate);
         
         if (version_compare($version, '1.1.18', '<')) {
             // Create tables for version 0.4.0 format
@@ -253,6 +279,9 @@ class BMLTWF_Database
             $wpdb->query($sql);
         }
         
+        // Create correspondence table after submissions table exists
+        $this->createCorrespondenceTableWithFK($charset_collate);
+        
         $this->debug_log("tables created for version " . $version);
     }
 
@@ -306,6 +335,9 @@ class BMLTWF_Database
                 }
             }
         }
+        
+        // Always check if correspondence table exists and create if missing (handles failed previous installations)
+        $this->ensureCorrespondenceTableExists();
         
         return 2;
     }
@@ -673,6 +705,30 @@ class BMLTWF_Database
         }
         
         return $errors;
+    }
+    
+    /**
+     * Ensure correspondence table exists, create if missing
+     */
+    private function ensureCorrespondenceTableExists()
+    {
+        global $wpdb;
+        
+        $table_exists = $wpdb->get_var("SHOW TABLES LIKE '" . $this->bmltwf_correspondence_table_name . "'");
+        
+        if (!$table_exists) {
+            $this->debug_log("Correspondence table missing, creating it now");
+            $this->createCorrespondenceTable($wpdb->get_charset_collate());
+            
+            // Add foreign key constraint if submissions table exists
+            $submissions_exists = $wpdb->get_var("SHOW TABLES LIKE '" . $this->bmltwf_submissions_table_name . "'");
+            if ($submissions_exists) {
+                $wpdb->query("ALTER TABLE " . $this->bmltwf_correspondence_table_name . " 
+                             ADD CONSTRAINT fk_correspondence_change_id 
+                             FOREIGN KEY (change_id) REFERENCES " . $this->bmltwf_submissions_table_name . "(change_id) ON DELETE CASCADE");
+                $this->debug_log("Added foreign key constraint to correspondence table");
+            }
+        }
     }
     
     /**
