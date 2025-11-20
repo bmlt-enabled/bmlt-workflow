@@ -105,6 +105,31 @@ namespace bmltwf\Tests {
             $this->assertContains('From: Test Site <from@test.com>', $call['headers']);
         }
 
+        public function testSendTemplatedEmailWithDisplayNameFormat()
+        {
+            // Mock get_option to return display name format like the user's configuration
+            Functions\when('get_option')->alias(function($option, $default = false) {
+                if ($option === 'bmltwf_email_from_address') {
+                    return 'NANJ BMLT Workflow <meetinglist@nanj.org>';
+                }
+                return 'admin@test.com';
+            });
+
+            $to = 'test@example.com';
+            $subject_template = 'Test Subject';
+            $body_template = 'Test Body';
+            $fields = [];
+
+            $result = $this->email->send_templated_email($to, $subject_template, $body_template, $fields);
+
+            $this->assertTrue($result);
+            $this->assertCount(1, $this->wp_mail_calls);
+            
+            $call = $this->wp_mail_calls[0];
+            // Should use the from_address as-is when it already contains display name format
+            $this->assertContains('From: NANJ BMLT Workflow <meetinglist@nanj.org>', $call['headers']);
+        }
+
         public function testSendAdminNotification()
         {
             $context = [
