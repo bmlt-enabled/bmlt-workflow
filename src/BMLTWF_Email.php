@@ -94,11 +94,18 @@ class BMLTWF_Email
         $body = $this->substitute_template_fields($body_template, $template_fields);
         
         $from_address = get_option('bmltwf_email_from_address', get_bloginfo('admin_email'));
-        $from_name = get_bloginfo('name');
+        
+        // Check if from_address already contains display name format
+        if (preg_match('/^(.+)\s*<(.+)>$/', $from_address, $matches)) {
+            $from_header = $from_address; // Use as-is if already formatted
+        } else {
+            $from_name = get_bloginfo('name');
+            $from_header = $from_name . ' <' . $from_address . '>';
+        }
         
         $headers = array(
             'Content-Type: text/html; charset=UTF-8',
-            'From: ' . $from_name . ' <' . $from_address . '>'
+            'From: ' . $from_header
         );
         
         $this->debug_log("Sending email - to: {$to_address}, subject: {$subject}");

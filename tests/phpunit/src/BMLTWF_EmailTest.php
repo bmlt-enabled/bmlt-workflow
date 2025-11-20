@@ -105,6 +105,51 @@ namespace bmltwf\Tests {
             $this->assertContains('From: Test Site <from@test.com>', $call['headers']);
         }
 
+        public function testFromAddressPlainEmail()
+        {
+            Functions\when('get_option')->alias(function($option, $default = false) {
+                if ($option === 'bmltwf_email_from_address') {
+                    return 'from@test.com';
+                }
+                return 'admin@test.com';
+            });
+
+            $result = $this->email->send_templated_email('test@example.com', 'Subject', 'Body', []);
+
+            $this->assertTrue($result);
+            $this->assertContains('From: Test Site <from@test.com>', $this->wp_mail_calls[0]['headers']);
+        }
+
+        public function testFromAddressWithDisplayName()
+        {
+            Functions\when('get_option')->alias(function($option, $default = false) {
+                if ($option === 'bmltwf_email_from_address') {
+                    return 'NANJ BMLT Workflow <meetinglist@nanj.org>';
+                }
+                return 'admin@test.com';
+            });
+
+            $result = $this->email->send_templated_email('test@example.com', 'Subject', 'Body', []);
+
+            $this->assertTrue($result);
+            $this->assertContains('From: NANJ BMLT Workflow <meetinglist@nanj.org>', $this->wp_mail_calls[0]['headers']);
+        }
+
+        public function testFromAddressWithSpaces()
+        {
+            Functions\when('get_option')->alias(function($option, $default = false) {
+                if ($option === 'bmltwf_email_from_address') {
+                    return 'Test Admin <admin@example.com>';
+                }
+                return 'admin@test.com';
+            });
+
+            $result = $this->email->send_templated_email('test@example.com', 'Subject', 'Body', []);
+
+            $this->assertTrue($result);
+            $this->assertContains('From: Test Admin <admin@example.com>', $this->wp_mail_calls[0]['headers']);
+        }
+
         public function testSendAdminNotification()
         {
             $context = [

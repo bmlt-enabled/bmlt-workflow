@@ -1,3 +1,6 @@
+## 1.1.35 (Nov 21, 2025)
+- #212 - Fixes incorrect generation of From addresses (thanks @Redguy1959 !)
+
 ## 1.1.34 (Nov 19, 2025)
 - #211 - Fixes missing correspondence table creation (thanks @brotskydotcom !)
 - PR #214 - Fixes missing closing HTML tag (thanks @brotskydotcom !)
