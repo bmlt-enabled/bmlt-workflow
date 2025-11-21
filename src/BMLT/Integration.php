@@ -113,11 +113,10 @@ class Integration
         }
 
         if (empty($root_server_version)) {
-            $version = \get_option('bmltwf_bmlt_server_version', false);
-            if (!$version) {
-                \update_option("bmltwf_bmlt_server_version", $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address')));
+            $server_address = \get_option('bmltwf_bmlt_server_address');
+            if ($server_address && $server_address !== 'true' && filter_var($server_address, FILTER_VALIDATE_URL)) {
+                $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version($server_address);
             }
-            $this->bmlt_root_server_version = $version;
         } else {
             $this->bmlt_root_server_version = $root_server_version;
         }
@@ -144,9 +143,11 @@ class Integration
 
     public function update_root_server_version()
     {
-        $new_version = $this->bmltwf_get_remote_server_version(\get_option('bmltwf_bmlt_server_address'));
+        $server_address = \get_option('bmltwf_bmlt_server_address');
+        // Clear the cache to force a fresh fetch
+        \delete_transient('bmltwf_server_info_' . md5($server_address));
+        $new_version = $this->bmltwf_get_remote_server_version($server_address);
         $this->bmlt_root_server_version = $new_version;
-        \update_option("bmltwf_bmlt_server_version", $new_version);
     }
 
     private function bmltwf_integration_error_with_data($message, $code, array $data)
@@ -167,32 +168,51 @@ class Integration
         }
     }
 
+    /**
+     * Get cached server info from BMLT
+     *
+     * @param string $server Server URL
+     * @return array|false Server info array or false on failure
+     */
+    private function bmltwf_get_server_info_cached($server)
+    {
+        $cache_key = 'bmltwf_server_info_' . md5($server);
+        $cached = \get_transient($cache_key);
+        
+        if ($cached !== false) {
+            return $cached;
+        }
+        
+        $url = $server . "client_interface/json/?switcher=GetServerInfo";
+        $headers = array("Accept: */*");
+        $resp = $this->bmltwf_wp_remote_get($url, array('headers' => $headers));
+        
+        if (is_wp_error($resp) || \wp_remote_retrieve_response_code($resp) != 200) {
+            return false;
+        }
+        
+        $data = json_decode(\wp_remote_retrieve_body($resp), true);
+        if ($data === null || !isset($data[0])) {
+            return false;
+        }
+        
+        // Cache for 1 hour (3600 seconds)
+        \set_transient($cache_key, $data[0], 3600);
+        
+        return $data[0];
+    }
+
     public function bmltwf_get_remote_server_version($server)
     {
-        $url = $server . "client_interface/serverInfo.xml";
-        // $this->debug_log("url = " . $url);
-        $headers = array(
-            "Accept: */*",
-        );
-
-        $resp = $this->bmltwf_wp_remote_get($url, array('headers' => $headers));
-
-        if (is_wp_error($resp) || wp_remote_retrieve_response_code($resp) != 200) {
+        $server_info = $this->bmltwf_get_server_info_cached($server);
+        
+        if ($server_info === false || !isset($server_info['version'])) {
             return false;
         }
-
-        libxml_use_internal_errors(true);
-        $xml = simplexml_load_string(\wp_remote_retrieve_body($resp));
-        if ($xml === false) {
-            return false;
-        } else {
-            if (!($xml->serverVersion->readableString instanceof \SimpleXMLElement)) {
-                return false;
-            }
-            $version = $xml->serverVersion->readableString->__toString();
-            $this->debug_log("version returns = " . $version);
-            return $version;
-        }
+        
+        $version = $server_info['version'];
+        $this->debug_log("version returns = " . $version);
+        return $version;
     }
 
     public function testServerAndAuth($username, $password, $server)
@@ -549,12 +569,7 @@ class Integration
 
     public function is_valid_bmlt_server($server)
     {
-        $response = $this->bmltwf_wp_remote_get($server . 'client_interface/json/?switcher=GetServerInfo');
-
-        if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
-            return false;
-        }
-        return true;
+        return $this->bmltwf_get_server_info_cached($server) !== false;
     }
 
     /**
@@ -564,19 +579,14 @@ class Integration
      */
     public function getMeetingStates()
     {
-        // $response = $this->postUnauthenticatedRootServerRequest('client_interface/json/?switcher=GetServerInfo', array());
-        $response = $this->bmltwf_wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
-
-        if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
+        $server_info = $this->bmltwf_get_server_info_cached(\get_option('bmltwf_bmlt_server_address'));
+        
+        if ($server_info === false) {
             return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
-        // $this->debug_log(\wp_remote_retrieve_body($response));  
-        $arr = json_decode(\wp_remote_retrieve_body($response), true);
-        if ($arr === null || !isset($arr[0])) {
-            return new \WP_Error('bmltwf', __('Invalid server info response', 'bmlt-workflow'));
-        }
-        if (!empty($arr[0]['meeting_states_and_provinces'])) {
-            $states = explode(',', $arr[0]['meeting_states_and_provinces']);
+        
+        if (!empty($server_info['meeting_states_and_provinces'])) {
+            $states = explode(',', $server_info['meeting_states_and_provinces']);
             return $states;
         }
         return false;
@@ -589,17 +599,14 @@ class Integration
      */
     public function getMeetingCounties()
     {
-        $response = $this->bmltwf_wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
-
-        if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
+        $server_info = $this->bmltwf_get_server_info_cached(\get_option('bmltwf_bmlt_server_address'));
+        
+        if ($server_info === false) {
             return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
-        $arr = json_decode(\wp_remote_retrieve_body($response), true);
-        if ($arr === null || !isset($arr[0])) {
-            return new \WP_Error('bmltwf', __('Invalid server info response', 'bmlt-workflow'));
-        }
-        if (!empty($arr[0]['meeting_counties_and_sub_provinces'])) {
-            $counties = explode(',', $arr[0]['meeting_counties_and_sub_provinces']);
+        
+        if (!empty($server_info['meeting_counties_and_sub_provinces'])) {
+            $counties = explode(',', $server_info['meeting_counties_and_sub_provinces']);
             return $counties;
         }
         return false;
@@ -643,7 +650,6 @@ class Integration
         $response = $this->getv2($url, $this->cookies);
 
         preg_match('/"google_api_key":"(.*?)",/', \wp_remote_retrieve_body($response), $matches);
-        $this->debug_log("bmlt gmaps response - ".$response);
         $this->debug_log("retrieved gmaps key");
         $gmaps_key = isset($matches[1]) ? $matches[1] : '';
 
@@ -829,7 +835,6 @@ class Integration
     }
     function isAutoGeocodingEnabled($geocoding_type)
     {
-
         $this->debug_log("auto geocoding " . $geocoding_type);
 
         if ((empty($geocoding_type) || ($geocoding_type !== 'auto') && ($geocoding_type !== 'county') && ($geocoding_type !== 'zip'))) {
@@ -837,16 +842,13 @@ class Integration
             return false;
         }
 
-        $response = $this->bmltwf_wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
-        if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
+        $server_info = $this->bmltwf_get_server_info_cached(\get_option('bmltwf_bmlt_server_address'));
+        
+        if ($server_info === false) {
             return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
-        $arr = json_decode(\wp_remote_retrieve_body($response), true);
-        if ($arr === null || !isset($arr[0])) {
-            return new \WP_Error('bmltwf', __('Invalid server info response', 'bmlt-workflow'));
-        }
+        
         $search = '';
-
         switch ($geocoding_type) {
             case 'auto':
                 $search = 'auto_geocoding_enabled';
@@ -859,27 +861,22 @@ class Integration
                 break;
         }
 
-        if (!empty($arr[0][$search])) {
-            return $arr[0][$search];
+        if (!empty($server_info[$search])) {
+            return $server_info[$search];
         }
         return false;
     }
 
     public function getDefaultLatLong()
     {
-        $response = $this->bmltwf_wp_remote_get(\get_option('bmltwf_bmlt_server_address') . 'client_interface/json/?switcher=GetServerInfo');
-
-        if (is_wp_error($response) || (\wp_remote_retrieve_response_code($response) != 200)) {
+        $server_info = $this->bmltwf_get_server_info_cached(\get_option('bmltwf_bmlt_server_address'));
+        
+        if ($server_info === false) {
             return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
-        // $this->debug_log(\wp_remote_retrieve_body($response));  
-        $arr = json_decode(\wp_remote_retrieve_body($response), true);
-        if ($arr === null || !isset($arr[0])) {
-            return new \WP_Error('bmltwf', __('Invalid server info response', 'bmlt-workflow'));
-        }
-        if ((!empty($arr[0]['centerLongitude'])) && (!empty($arr[0]['centerLatitude']))) {
-
-            return array('longitude' => $arr[0]['centerLongitude'], 'latitude' => $arr[0]['centerLatitude']);
+        
+        if ((!empty($server_info['centerLongitude'])) && (!empty($server_info['centerLatitude']))) {
+            return array('longitude' => $server_info['centerLongitude'], 'latitude' => $server_info['centerLatitude']);
         }
         return false;
     }
