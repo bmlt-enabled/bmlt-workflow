@@ -584,13 +584,9 @@ class Integration
         if ($server_info === false) {
             return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
-        // $this->debug_log(\wp_remote_retrieve_body($response));
-        $arr = json_decode(\wp_remote_retrieve_body($response), true);
-        if ($arr === null || !isset($arr[0])) {
-            return new \WP_Error('bmltwf', __('Invalid server info response', 'bmlt-workflow'));
-        }
-        if (!empty($arr[0]['meeting_states_and_provinces'])) {
-            $states = explode(',', $arr[0]['meeting_states_and_provinces']);
+        
+        if (!empty($server_info['meeting_states_and_provinces'])) {
+            $states = explode(',', $server_info['meeting_states_and_provinces']);
             return $states;
         }
         return false;
@@ -886,14 +882,9 @@ class Integration
         if ($server_info === false) {
             return new \WP_Error('bmltwf', __('BMLT Configuration Error - Unable to retrieve server info', 'bmlt-workflow'));
         }
-        // $this->debug_log(\wp_remote_retrieve_body($response));
-        $arr = json_decode(\wp_remote_retrieve_body($response), true);
-        if ($arr === null || !isset($arr[0])) {
-            return new \WP_Error('bmltwf', __('Invalid server info response', 'bmlt-workflow'));
-        }
-        if ((!empty($arr[0]['centerLongitude'])) && (!empty($arr[0]['centerLatitude']))) {
-
-            return array('longitude' => $arr[0]['centerLongitude'], 'latitude' => $arr[0]['centerLatitude']);
+        
+        if ((!empty($server_info['centerLongitude'])) && (!empty($server_info['centerLatitude']))) {
+            return array('longitude' => $server_info['centerLongitude'], 'latitude' => $server_info['centerLatitude']);
         }
         return false;
     }

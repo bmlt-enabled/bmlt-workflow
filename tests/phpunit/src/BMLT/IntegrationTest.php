@@ -84,6 +84,9 @@ Line: $errorLine
         Functions\when('\get_locale')->justReturn('en_EN');
         Functions\when('\unserialize')->returnArg();
         Functions\when('\add_query_arg')->returnArg();
+        Functions\when('\get_transient')->justReturn(false);
+        Functions\when('\set_transient')->justReturn(true);
+        Functions\when('\delete_transient')->justReturn(true);
         Functions\when('\get_option')->alias(function($value) {
             if($value === 'bmltwf_bmlt_password')
             {
@@ -924,6 +927,110 @@ EOD;
     }
 
 	/**
+	 * @covers bmltwf\BMLT\Integration::bmltwf_get_server_info_cached
+	 */
+	public function test_server_info_uses_transient_cache(): void
+	{
+		$server = 'https://example.com/';
+		$serverInfo = ['version' => '3.0.0', 'meeting_states_and_provinces' => 'MA,ME'];
+		$callCount = 0;
+
+		Functions\when('\get_transient')->alias(function($key) use (&$callCount, $serverInfo) {
+			if ($callCount === 0) {
+				return false; // First call: no cache
+			}
+			return $serverInfo; // Subsequent calls: return cached data
+		});
+
+		Functions\when('\set_transient')->alias(function($key, $value, $expiration) use (&$callCount) {
+			$callCount++;
+			return true;
+		});
+
+		Functions\when('\wp_remote_retrieve_body')->justReturn(json_encode([$serverInfo]));
+		Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+
+		$integration = new Integration(true, "3.0.0", 'token', time()+2000);
+		
+		// First call should fetch from server and set transient
+		$reflection = new ReflectionClass($integration);
+		$method = $reflection->getMethod('bmltwf_get_server_info_cached');
+		$method->setAccessible(true);
+		
+		$result1 = $method->invoke($integration, $server);
+		$this->assertEquals($serverInfo, $result1);
+		$this->assertEquals(1, $callCount, 'set_transient should be called once');
+
+		// Second call should use cached data
+		$result2 = $method->invoke($integration, $server);
+		$this->assertEquals($serverInfo, $result2);
+		$this->assertEquals(1, $callCount, 'set_transient should still be called only once');
+	}
+
+	/**
+	 * @covers bmltwf\BMLT\Integration::update_root_server_version
+	 */
+	public function test_update_root_server_version_clears_cache(): void
+	{
+		$server = 'https://example.com/';
+		$deleteCalled = false;
+
+		Functions\when('\get_option')->alias(function($key) use ($server) {
+			if ($key === 'bmltwf_bmlt_server_address') {
+				return $server;
+			}
+			return 'true';
+		});
+
+		Functions\when('\delete_transient')->alias(function($key) use (&$deleteCalled, $server) {
+			$expectedKey = 'bmltwf_server_info_' . md5($server);
+			if ($key === $expectedKey) {
+				$deleteCalled = true;
+			}
+			return true;
+		});
+
+		Functions\when('\get_transient')->justReturn(false);
+		Functions\when('\set_transient')->justReturn(true);
+		Functions\when('\wp_remote_retrieve_body')->justReturn(json_encode([['version' => '3.1.0']]));
+		Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+
+		$integration = new Integration(true, "3.0.0", 'token', time()+2000);
+		$integration->update_root_server_version();
+
+		$this->assertTrue($deleteCalled, 'delete_transient should be called');
+	}
+
+	/**
+	 * @covers bmltwf\BMLT\Integration::bmltwf_get_server_info_cached
+	 */
+	public function test_server_info_cache_expires_correctly(): void
+	{
+		$server = 'https://example.com/';
+		$serverInfo = ['version' => '3.0.0'];
+		$transientExpiration = null;
+
+		Functions\when('\get_transient')->justReturn(false);
+		Functions\when('\set_transient')->alias(function($key, $value, $expiration) use (&$transientExpiration) {
+			$transientExpiration = $expiration;
+			return true;
+		});
+
+		Functions\when('\wp_remote_retrieve_body')->justReturn(json_encode([$serverInfo]));
+		Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+
+		$integration = new Integration(true, "3.0.0", 'token', time()+2000);
+		
+		$reflection = new ReflectionClass($integration);
+		$method = $reflection->getMethod('bmltwf_get_server_info_cached');
+		$method->setAccessible(true);
+		
+		$method->invoke($integration, $server);
+		
+		$this->assertEquals(3600, $transientExpiration, 'Cache should expire after 1 hour (3600 seconds)');
+	}
+
+	/**
 	 * covers bmltwf\BMLT\Integration::getGmapApiKey
 	 */
 	public function test_getGmapsKey() {
@@ -958,5 +1065,42 @@ EOD;
 		$integration = new Integration(true, "4.0.0", 'token', time()+2000);
 		$result = $integration->getGmapsKey();
 		$this->assertEquals('test-api-key', $result);
+	}
+
+	/**
+	 * @covers bmltwf\BMLT\Integration::getMeetingStates
+	 * @covers bmltwf\BMLT\Integration::bmltwf_get_server_info_cached
+	 */
+	public function test_getMeetingStates_uses_cached_server_info(): void
+	{
+		$serverInfo = ['meeting_states_and_provinces' => 'CA,NY,TX'];
+		$fetchCount = 0;
+
+		Functions\when('\get_transient')->alias(function($key) use ($serverInfo, &$fetchCount) {
+			if ($fetchCount === 0) {
+				return false;
+			}
+			return $serverInfo;
+		});
+
+		Functions\when('\set_transient')->alias(function() use (&$fetchCount) {
+			$fetchCount++;
+			return true;
+		});
+
+		Functions\when('\wp_remote_retrieve_body')->justReturn(json_encode([$serverInfo]));
+		Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+
+		$integration = new Integration(true, "3.0.0", 'token', time()+2000);
+		
+		// First call
+		$result1 = $integration->getMeetingStates();
+		$this->assertEquals(['CA', 'NY', 'TX'], $result1);
+		$this->assertEquals(1, $fetchCount, 'Should fetch from server once');
+
+		// Second call should use cache
+		$result2 = $integration->getMeetingStates();
+		$this->assertEquals(['CA', 'NY', 'TX'], $result2);
+		$this->assertEquals(1, $fetchCount, 'Should not fetch from server again');
 	}
 }
