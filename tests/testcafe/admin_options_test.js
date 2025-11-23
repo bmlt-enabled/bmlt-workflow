@@ -691,3 +691,30 @@ test("Email_Address_Format_Validation", async (t) => {
   await ao.navigateToTab(t, 'form-settings');
   await t.expect(ao.bmltwf_fso_email_address.value).eql(fsoDisplayNameEmail);
 });
+
+test("Meeting_Sort_Order_Option", async (t) => {
+  // Test changing meeting sort order option
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'form-settings');
+  
+  // Check default value is alphabetical
+  await t.expect(ao.bmltwf_meeting_sort_order.value).eql('alphabetical');
+  
+  // Change to day sort order
+  await select_dropdown_by_text(ao.bmltwf_meeting_sort_order, "Day of week (then by time)");
+  await t.click(ao.submit);
+  await ao.settings_updated();
+  
+  // Verify the setting was saved
+  await ao.navigateToTab(t, 'form-settings');
+  await t.expect(ao.bmltwf_meeting_sort_order.value).eql('day');
+  
+  // Change back to alphabetical
+  await select_dropdown_by_text(ao.bmltwf_meeting_sort_order, "Alphabetical (by meeting name)");
+  await t.click(ao.submit);
+  await ao.settings_updated();
+  
+  // Verify the setting was saved
+  await ao.navigateToTab(t, 'form-settings');
+  await t.expect(ao.bmltwf_meeting_sort_order.value).eql('alphabetical');
+});

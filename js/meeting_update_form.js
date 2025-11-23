@@ -512,6 +512,19 @@ jQuery(document).ready(function ($) {
     })
       .done(function (response) {
         const mdata = JSON.parse(response.message);
+        
+        // Sort meetings based on configured sort order
+        if (bmltwf_meeting_sort_order === 'day') {
+          mdata.sort((a, b) => {
+            if (a.day !== b.day) {
+              return a.day - b.day;
+            }
+            return a.startTime.localeCompare(b.startTime);
+          });
+        } else {
+          mdata.sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+        }
+        
         create_meeting_searcher(mdata);
         if (id) {
           const jump_to = mdata.findIndex((el) => el.id === parseInt(id, 10));

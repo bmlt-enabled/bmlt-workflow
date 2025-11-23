@@ -57,7 +57,8 @@ trait BMLTWF_Constants
         'bmltwf_correspondence_admin_email_template',
         'bmltwf_correspondence_admin_email_subject',
         'bmltwf_admin_notification_email_template',
-        'bmltwf_admin_notification_email_subject'
+        'bmltwf_admin_notification_email_subject',
+        'bmltwf_meeting_sort_order'
     );
 
     public $bmltwf_rest_namespace = 'bmltwf/v1';

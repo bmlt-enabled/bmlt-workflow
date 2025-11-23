@@ -97,6 +97,12 @@ class BMLTServerHandler
             return $result;
         }
 
+        // Clear transient cache if testing a different server to ensure fresh validation
+        $current_server = \get_option('bmltwf_bmlt_server_address');
+        if ($current_server !== $server) {
+            \delete_transient('bmltwf_server_info_' . md5($server));
+        }
+
         if (!$this->bmlt_integration->is_valid_bmlt_server($server))
         {
             $message=__('Provided server does not appear to be a BMLT Root Server','bmlt-workflow');
@@ -139,7 +145,6 @@ class BMLTServerHandler
             $result->add_data($data);
             return $result;
         } 
-        
         
         $data["bmltwf_bmlt_server_status"] = "true";
         $data["bmltwf_bmlt_login_status"] = "true";

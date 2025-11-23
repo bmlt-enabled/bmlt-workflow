@@ -16,7 +16,7 @@
       "responses": [
         {
           "uuid": "3d9a377b-d397-4116-914d-8d15bd872697",
-          "body": "[\n  {\n    \"version\": \"3.0.2\",\n    \"versionInt\": \"3000000\",\n    \"langs\": \"de,dk,en,es,fa,fr,it,pl,pt,ru,sv\",\n    \"nativeLang\": \"en\",\n    \"centerLongitude\": \"-79.793701171875\",\n    \"centerLatitude\": \"36.065752051707\",\n    \"centerZoom\": \"10\",\n    \"defaultDuration\": \"1:00:00\",\n    \"regionBias\": \"us\",\n    \"charSet\": \"UTF-8\",\n    \"distanceUnits\": \"mi\",\n    \"semanticAdmin\": \"1\",\n    \"emailEnabled\": \"0\",\n    \"emailIncludesServiceBodies\": \"0\",\n    \"changesPerMeeting\": \"5\",\n    \"meeting_states_and_provinces\": \"\",\n    \"meeting_counties_and_sub_provinces\": \"\",\n    \"available_keys\": \"id_bigint,worldid_mixed,serviceBodyId,day,venueType,startTime,duration,time_zone,formats,lang_enum,longitude,latitude,name,location_text,location_info,location_street,location_city_subsection,location_neighborhood,location_municipality,location_sub_province,location_province,location_postal_code_1,location_nation,comments,zone,train_lines,bus_lines,phone_meeting_number,virtual_meeting_link,virtual_meeting_additional_info,root_server_uri,formatIds\",\n    \"google_api_key\": \"AIzaSyBx8meis-W3EPvQvko4yr5Mi0hosUZXWcI\",\n    \"dbVersion\": \"2019_12_14_000001_create_personal_access_tokens_table\",\n    \"dbPrefix\": \"na\",\n    \"meeting_time_zones_enabled\": \"0\",\n    \"phpVersion\": \"8.0.25\",\n    \"auto_geocoding_enabled\": true,\n    \"commit\": \"dev\",\n    \"default_closed_status\": true\n  }\n]",
+          "body": "[\n  {\n    \"version\": \"2.0.1\",\n    \"versionInt\": \"3000000\",\n    \"langs\": \"de,dk,en,es,fa,fr,it,pl,pt,ru,sv\",\n    \"nativeLang\": \"en\",\n    \"centerLongitude\": \"-79.793701171875\",\n    \"centerLatitude\": \"36.065752051707\",\n    \"centerZoom\": \"10\",\n    \"defaultDuration\": \"1:00:00\",\n    \"regionBias\": \"us\",\n    \"charSet\": \"UTF-8\",\n    \"distanceUnits\": \"mi\",\n    \"semanticAdmin\": \"1\",\n    \"emailEnabled\": \"0\",\n    \"emailIncludesServiceBodies\": \"0\",\n    \"changesPerMeeting\": \"5\",\n    \"meeting_states_and_provinces\": \"\",\n    \"meeting_counties_and_sub_provinces\": \"\",\n    \"available_keys\": \"id_bigint,worldid_mixed,serviceBodyId,day,venueType,startTime,duration,time_zone,formats,lang_enum,longitude,latitude,name,location_text,location_info,location_street,location_city_subsection,location_neighborhood,location_municipality,location_sub_province,location_province,location_postal_code_1,location_nation,comments,zone,train_lines,bus_lines,phone_meeting_number,virtual_meeting_link,virtual_meeting_additional_info,root_server_uri,formatIds\",\n    \"google_api_key\": \"AIzaSyBx8meis-W3EPvQvko4yr5Mi0hosUZXWcI\",\n    \"dbVersion\": \"2019_12_14_000001_create_personal_access_tokens_table\",\n    \"dbPrefix\": \"na\",\n    \"meeting_time_zones_enabled\": \"0\",\n    \"phpVersion\": \"8.0.25\",\n    \"auto_geocoding_enabled\": true,\n    \"commit\": \"dev\",\n    \"default_closed_status\": true\n  }\n]",
           "latency": 0,
           "statusCode": 200,
           "label": "serverinfo",
@@ -241,12 +241,60 @@
       "type": "http",
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "3218fad8-a98b-4f06-89cb-12d814539228",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "main_server/api/v1/auth/token",
+      "responses": [
+        {
+          "uuid": "e731213c-7659-45bf-846f-8baec0bac291",
+          "body": "{\n  \"access_token\": \"2|tR6PIqa8tiBJWMu4zyb3qw4eECuERjLd7xeLKgBu\",\n  \"expires_at\": 1667342171,\n  \"token_type\": \"bearer\",\n  \"user_id\": 1\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "text/html; charset=utf-8"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "type": "http",
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
     {
       "type": "route",
       "uuid": "50b14503-7ad4-41dc-94f1-5a73c17431ac"
+    },
+    {
+      "type": "route",
+      "uuid": "3218fad8-a98b-4f06-89cb-12d814539228"
     }
   ],
   "proxyMode": false,
