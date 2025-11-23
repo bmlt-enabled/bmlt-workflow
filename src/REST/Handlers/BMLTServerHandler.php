@@ -48,8 +48,16 @@ class BMLTServerHandler
         $this->debug_log('get test results returning');
         $this->debug_log(get_option("bmltwf_bmlt_test_status", "failure"));
 
+        // Pass nocache parameter through to $_GET for cache bypass
+        if ($request->get_param('nocache')) {
+            $_GET['nocache'] = '1';
+        }
+
+        $server_address = \get_option('bmltwf_bmlt_server_address');
+        $version = $this->bmlt_integration->bmltwf_get_remote_server_version($server_address);
+
         $response = array("bmltwf_bmlt_test_status" => get_option("bmltwf_bmlt_test_status", "failure"),
-    "bmltwf_bmlt_server_version" => $this->bmlt_integration->bmlt_root_server_version);
+    "bmltwf_bmlt_server_version" => $version);
 
         return $this->bmltwf_rest_success($response);
     }

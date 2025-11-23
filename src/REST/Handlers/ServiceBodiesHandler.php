@@ -128,7 +128,7 @@ class ServiceBodiesHandler
                 $this->debug_log("SQL query: " . $sql);
                 $result = $wpdb->get_col($sql, 0);
                 $this->debug_log("SQL result: " . print_r($result, true));
-                $sblist[$key]['membership'] = implode(',', $result);
+                $sblist[$key]['membership'] = array_map('intval', $result);
                 
                 // Debug log users for this service body
                 foreach ($result as $wp_uid) {

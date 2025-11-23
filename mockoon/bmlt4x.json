@@ -16,10 +16,10 @@
       "responses": [
         {
           "uuid": "5f6708ea-b755-475f-8237-e97fa990ddd7",
-          "body": "[{\"version\":\"4.0.3\",\"versionInt\":\"4000003\",\"langs\":\"de,dk,en,es,fa,fr,it,pl,pt,ru,sv\",\"nativeLang\":\"en\",\"centerLongitude\":\"-79.793701171875\",\"centerLatitude\":\"36.065752051707\",\"centerZoom\":\"10\",\"defaultDuration\":\"01:00:00\",\"regionBias\":\"us\",\"charSet\":\"UTF-8\",\"distanceUnits\":\"mi\",\"emailEnabled\":\"0\",\"emailIncludesServiceBodies\":\"0\",\"changesPerMeeting\":\"5\",\"meeting_states_and_provinces\":\"\",\"meeting_counties_and_sub_provinces\":\"\",\"available_keys\":\"id_bigint,worldid_mixed,service_body_bigint,weekday_tinyint,venue_type,start_time,duration_time,time_zone,formats,lang_enum,longitude,latitude,meeting_name,location_text,location_info,location_street,location_city_subsection,location_neighborhood,location_municipality,location_sub_province,location_province,location_postal_code_1,location_nation,comments,zone,train_lines,bus_lines,phone_meeting_number,virtual_meeting_link,virtual_meeting_additional_info,root_server_uri,format_shared_id_list\",\"google_api_key\":\"testkey\",\"dbVersion\":\"2025_11_11_174719_trim_user_whitespace\",\"dbPrefix\":\"na\",\"phpVersion\":\"8.2.29\",\"auto_geocoding_enabled\":true,\"county_auto_geocoding_enabled\":false,\"zip_auto_geocoding_enabled\":false,\"commit\":\"dev\",\"default_closed_status\":true,\"aggregator_mode_enabled\":false}]",
+          "body": "[{\"version\":\"4.0.369\",\"versionInt\":\"4000003\",\"langs\":\"de,dk,en,es,fa,fr,it,pl,pt,ru,sv\",\"nativeLang\":\"en\",\"centerLongitude\":\"-79.793701171875\",\"centerLatitude\":\"36.065752051707\",\"centerZoom\":\"10\",\"defaultDuration\":\"01:00:00\",\"regionBias\":\"us\",\"charSet\":\"UTF-8\",\"distanceUnits\":\"mi\",\"emailEnabled\":\"0\",\"emailIncludesServiceBodies\":\"0\",\"changesPerMeeting\":\"5\",\"meeting_states_and_provinces\":\"\",\"meeting_counties_and_sub_provinces\":\"\",\"available_keys\":\"id_bigint,worldid_mixed,service_body_bigint,weekday_tinyint,venue_type,start_time,duration_time,time_zone,formats,lang_enum,longitude,latitude,meeting_name,location_text,location_info,location_street,location_city_subsection,location_neighborhood,location_municipality,location_sub_province,location_province,location_postal_code_1,location_nation,comments,zone,train_lines,bus_lines,phone_meeting_number,virtual_meeting_link,virtual_meeting_additional_info,root_server_uri,format_shared_id_list\",\"google_api_key\":\"testkey\",\"dbVersion\":\"2025_11_11_174719_trim_user_whitespace\",\"dbPrefix\":\"na\",\"phpVersion\":\"8.2.29\",\"auto_geocoding_enabled\":true,\"county_auto_geocoding_enabled\":false,\"zip_auto_geocoding_enabled\":false,\"commit\":\"dev\",\"default_closed_status\":true,\"aggregator_mode_enabled\":false}]",
           "latency": 0,
           "statusCode": 200,
-          "label": "serverinfo even",
+          "label": "serverinfo 0369",
           "headers": [
             {
               "key": "content-security-policy",
@@ -49,7 +49,7 @@
             {
               "target": "request_number",
               "modifier": "",
-              "value": ".*[0|2|4|6|8]$",
+              "value": ".*[0|3|6|9]$",
               "invert": false,
               "operator": "regex"
             }
@@ -62,11 +62,11 @@
           "callbacks": []
         },
         {
-          "uuid": "0a229d14-882a-42c5-9603-b24c87205e53",
-          "body": "[{\"version\":\"4.0.2\",\"versionInt\":\"4000003\",\"langs\":\"de,dk,en,es,fa,fr,it,pl,pt,ru,sv\",\"nativeLang\":\"en\",\"centerLongitude\":\"-79.793701171875\",\"centerLatitude\":\"36.065752051707\",\"centerZoom\":\"10\",\"defaultDuration\":\"01:00:00\",\"regionBias\":\"us\",\"charSet\":\"UTF-8\",\"distanceUnits\":\"mi\",\"emailEnabled\":\"0\",\"emailIncludesServiceBodies\":\"0\",\"changesPerMeeting\":\"5\",\"meeting_states_and_provinces\":\"\",\"meeting_counties_and_sub_provinces\":\"\",\"available_keys\":\"id_bigint,worldid_mixed,service_body_bigint,weekday_tinyint,venue_type,start_time,duration_time,time_zone,formats,lang_enum,longitude,latitude,meeting_name,location_text,location_info,location_street,location_city_subsection,location_neighborhood,location_municipality,location_sub_province,location_province,location_postal_code_1,location_nation,comments,zone,train_lines,bus_lines,phone_meeting_number,virtual_meeting_link,virtual_meeting_additional_info,root_server_uri,format_shared_id_list\",\"google_api_key\":\"testkey\",\"dbVersion\":\"2025_11_11_174719_trim_user_whitespace\",\"dbPrefix\":\"na\",\"phpVersion\":\"8.2.29\",\"auto_geocoding_enabled\":true,\"county_auto_geocoding_enabled\":false,\"zip_auto_geocoding_enabled\":false,\"commit\":\"dev\",\"default_closed_status\":true,\"aggregator_mode_enabled\":false}]",
+          "uuid": "c9654673-4c48-47d7-8c32-89beb7e4f32a",
+          "body": "[{\"version\":\"4.0.147\",\"versionInt\":\"4000003\",\"langs\":\"de,dk,en,es,fa,fr,it,pl,pt,ru,sv\",\"nativeLang\":\"en\",\"centerLongitude\":\"-79.793701171875\",\"centerLatitude\":\"36.065752051707\",\"centerZoom\":\"10\",\"defaultDuration\":\"01:00:00\",\"regionBias\":\"us\",\"charSet\":\"UTF-8\",\"distanceUnits\":\"mi\",\"emailEnabled\":\"0\",\"emailIncludesServiceBodies\":\"0\",\"changesPerMeeting\":\"5\",\"meeting_states_and_provinces\":\"\",\"meeting_counties_and_sub_provinces\":\"\",\"available_keys\":\"id_bigint,worldid_mixed,service_body_bigint,weekday_tinyint,venue_type,start_time,duration_time,time_zone,formats,lang_enum,longitude,latitude,meeting_name,location_text,location_info,location_street,location_city_subsection,location_neighborhood,location_municipality,location_sub_province,location_province,location_postal_code_1,location_nation,comments,zone,train_lines,bus_lines,phone_meeting_number,virtual_meeting_link,virtual_meeting_additional_info,root_server_uri,format_shared_id_list\",\"google_api_key\":\"testkey\",\"dbVersion\":\"2025_11_11_174719_trim_user_whitespace\",\"dbPrefix\":\"na\",\"phpVersion\":\"8.2.29\",\"auto_geocoding_enabled\":true,\"county_auto_geocoding_enabled\":false,\"zip_auto_geocoding_enabled\":false,\"commit\":\"dev\",\"default_closed_status\":true,\"aggregator_mode_enabled\":false}]",
           "latency": 0,
           "statusCode": 200,
-          "label": "serverinfo odd",
+          "label": "serverinfo 147",
           "headers": [
             {
               "key": "content-security-policy",
@@ -96,7 +96,54 @@
             {
               "target": "request_number",
               "modifier": "",
-              "value": ".*[1|3|5|7|9]$",
+              "value": ".*[1|4|7]$",
+              "invert": false,
+              "operator": "regex"
+            }
+          ],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "0a229d14-882a-42c5-9603-b24c87205e53",
+          "body": "[{\"version\":\"4.0.259\",\"versionInt\":\"4000003\",\"langs\":\"de,dk,en,es,fa,fr,it,pl,pt,ru,sv\",\"nativeLang\":\"en\",\"centerLongitude\":\"-79.793701171875\",\"centerLatitude\":\"36.065752051707\",\"centerZoom\":\"10\",\"defaultDuration\":\"01:00:00\",\"regionBias\":\"us\",\"charSet\":\"UTF-8\",\"distanceUnits\":\"mi\",\"emailEnabled\":\"0\",\"emailIncludesServiceBodies\":\"0\",\"changesPerMeeting\":\"5\",\"meeting_states_and_provinces\":\"\",\"meeting_counties_and_sub_provinces\":\"\",\"available_keys\":\"id_bigint,worldid_mixed,service_body_bigint,weekday_tinyint,venue_type,start_time,duration_time,time_zone,formats,lang_enum,longitude,latitude,meeting_name,location_text,location_info,location_street,location_city_subsection,location_neighborhood,location_municipality,location_sub_province,location_province,location_postal_code_1,location_nation,comments,zone,train_lines,bus_lines,phone_meeting_number,virtual_meeting_link,virtual_meeting_additional_info,root_server_uri,format_shared_id_list\",\"google_api_key\":\"testkey\",\"dbVersion\":\"2025_11_11_174719_trim_user_whitespace\",\"dbPrefix\":\"na\",\"phpVersion\":\"8.2.29\",\"auto_geocoding_enabled\":true,\"county_auto_geocoding_enabled\":false,\"zip_auto_geocoding_enabled\":false,\"commit\":\"dev\",\"default_closed_status\":true,\"aggregator_mode_enabled\":false}]",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "serverinfo 259",
+          "headers": [
+            {
+              "key": "content-security-policy",
+              "value": "default-src 'none'"
+            },
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "switcher",
+              "value": "GetServerInfo",
+              "invert": false,
+              "operator": "equals"
+            },
+            {
+              "target": "request_number",
+              "modifier": "",
+              "value": ".*[2|5|8]$",
               "invert": false,
               "operator": "regex"
             }

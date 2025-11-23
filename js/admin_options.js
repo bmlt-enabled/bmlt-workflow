@@ -201,9 +201,15 @@ jQuery(document).ready(function ($) {
 
   function get_test_status() {
     return new Promise((resolve) => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const ajaxData = {};
+      if (urlParams.has('nocache')) {
+        ajaxData.nocache = '1';
+      }
       $.ajax({
         url: bmltwf_admin_bmltserver_rest_url,
         type: 'GET',
+        data: ajaxData,
         dataType: 'json',
         contentType: 'application/json',
         beforeSend(xhr) {
