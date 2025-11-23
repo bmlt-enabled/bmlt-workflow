@@ -106,6 +106,7 @@ Line: $errorLine
 
         $Intstub = \Mockery::mock('Integration');
         $Intstub->bmlt_root_server_version = '3.0.0';
+        $Intstub->shouldReceive('bmltwf_get_remote_server_version')->andReturn('3.0.0');
 
         $rest = new BMLTServerHandler($Intstub);
 
@@ -132,6 +133,7 @@ Line: $errorLine
 
         $Intstub = \Mockery::mock('Integration');
         $Intstub->bmlt_root_server_version = '3.0.0';
+        $Intstub->shouldReceive('bmltwf_get_remote_server_version')->andReturn('3.0.0');
         $rest = new BMLTServerHandler($Intstub);
 
         $response = $rest->get_bmltserver_handler($request);

@@ -336,4 +336,44 @@ Line: $errorLine
 
         $this->assertInstanceOf(WP_REST_Response::class, $response);
     }
+
+    /**
+     * @covers bmltwf\REST\Handlers\ServiceBodiesHandler::get_service_bodies_handler
+     */
+    public function test_membership_returns_array_of_integers(): void
+    {
+        $request = new WP_REST_Request('GET', "http://3.25.141.92/flop/wp-json/bmltwf/v1/servicebodies");
+        $request->set_header('content-type', 'application/json');
+        $request->set_route("/bmltwf/v1/servicebodies");
+        $request->set_method('GET');
+        $request->set_param('detail', 'true');
+
+        Functions\when('\current_user_can')->justReturn(true);
+
+        $sblookup = array();
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
+        $wpdb->shouldReceive('get_results')->andReturn($sblookup)
+            ->shouldReceive('get_col')->andReturn(array("2"), array("3", "4", "34"))
+            ->shouldReceive('prepare')->andReturn('SELECT DISTINCT wp_uid from table')
+            ->shouldReceive('query')->andReturn(1);
+
+        $Intstub = \Mockery::mock('Integration');
+        $sblist = array(
+            '2' => array('name' => 'Boston Area', 'description' => 'Test description'),
+        );
+
+        $Intstub->shouldReceive('getServiceBodies')->andReturn($sblist);
+
+        $rest = new ServiceBodiesHandler($Intstub, null);
+        $response = $rest->get_service_bodies_handler($request);
+
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $data = $response->get_data();
+        
+        $this->assertIsArray($data['2']['membership']);
+        $this->assertContainsOnly('int', $data['2']['membership']);
+        $this->assertEquals([3, 4, 34], $data['2']['membership']);
+    }
 }

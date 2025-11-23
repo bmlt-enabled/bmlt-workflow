@@ -1,3 +1,6 @@
+## 1.1.37 (Nov 24, 2024)
+- Fixes additional users being displayed in service bodies access list (thanks @tempsaint !)
+
 ## 1.1.36 (Nov 23, 2025)
 - PR #217 - Fixes google maps key retrieval from BMLT 4.x (thanks @brotskydotcom !)
 - Uses WordPress transients for caching API responses to prevent excessive BMLT hits
