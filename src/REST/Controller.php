@@ -193,6 +193,12 @@ class Controller extends \WP_REST_Controller
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array($this, 'get_bmltserver'),
 				'permission_callback' => array($this, 'get_bmltserver_permissions_check'),
+				'args'     => [
+					'nocache' => [
+						'required' => false,
+						'type'     => 'string',
+					],
+				],
 			),
 		);
 

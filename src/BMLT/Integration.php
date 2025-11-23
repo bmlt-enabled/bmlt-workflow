@@ -177,10 +177,15 @@ class Integration
     private function bmltwf_get_server_info_cached($server)
     {
         $cache_key = 'bmltwf_server_info_' . md5($server);
-        $cached = \get_transient($cache_key);
         
-        if ($cached !== false) {
-            return $cached;
+        // Skip cache if nocache parameter is present
+        $use_cache = !isset($_GET['nocache']);
+        
+        if ($use_cache) {
+            $cached = \get_transient($cache_key);
+            if ($cached !== false) {
+                return $cached;
+            }
         }
         
         $url = $server . "client_interface/json/?switcher=GetServerInfo";
@@ -196,8 +201,10 @@ class Integration
             return false;
         }
         
-        // Cache for 1 hour (3600 seconds)
-        \set_transient($cache_key, $data[0], 3600);
+        // Cache for 1 hour (3600 seconds) if caching is enabled
+        if ($use_cache) {
+            \set_transient($cache_key, $data[0], 3600);
+        }
         
         return $data[0];
     }
