@@ -84,50 +84,6 @@
       "streamingInterval": 0
     },
     {
-      "uuid": "d5863a0f-aaf7-4265-8d09-c5d78f5c6af7",
-      "documentation": "",
-      "method": "get",
-      "endpoint": "main_server/client_interface/serverInfo.xml",
-      "responses": [
-        {
-          "uuid": "378ef90f-3ea9-4866-ae34-f696299e163c",
-          "body": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<bmltInfo>\n<serverVersion>\n<readableString>3.0.2</readableString>\n</serverVersion>\n</bmltInfo>",
-          "latency": 0,
-          "statusCode": 200,
-          "label": "",
-          "headers": [
-            {
-              "key": "content-security-policy",
-              "value": "default-src 'none'"
-            },
-            {
-              "key": "content-type",
-              "value": "application/xml"
-            },
-            {
-              "key": "x-content-type-options",
-              "value": "nosniff"
-            }
-          ],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": false,
-          "crudKey": "id",
-          "callbacks": []
-        }
-      ],
-      "responseMode": null,
-      "type": "http",
-      "streamingMode": null,
-      "streamingInterval": 0
-    },
-    {
       "uuid": "da0be094-949a-4ab2-8ac3-2ad86ba96007",
       "documentation": "",
       "method": "post",
@@ -537,10 +493,6 @@
     {
       "type": "route",
       "uuid": "281c6df9-7d59-4096-821e-11ae3aa639bb"
-    },
-    {
-      "type": "route",
-      "uuid": "d5863a0f-aaf7-4265-8d09-c5d78f5c6af7"
     },
     {
       "type": "route",

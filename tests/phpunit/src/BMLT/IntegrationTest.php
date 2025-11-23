@@ -1,18 +1,18 @@
 <?php
 // Copyright (C) 2022 nigel.bmlt@gmail.com
-// 
+//
 // This file is part of bmlt-workflow.
-// 
+//
 // bmlt-workflow is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // bmlt-workflow is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -84,6 +84,9 @@ Line: $errorLine
         Functions\when('\get_locale')->justReturn('en_EN');
         Functions\when('\unserialize')->returnArg();
         Functions\when('\add_query_arg')->returnArg();
+        Functions\when('\get_transient')->justReturn(false);
+        Functions\when('\set_transient')->justReturn(true);
+        Functions\when('\delete_transient')->justReturn(true);
         Functions\when('\get_option')->alias(function($value) {
             if($value === 'bmltwf_bmlt_password')
             {
@@ -224,7 +227,7 @@ Line: $errorLine
         $response = $integration->wp_locale_to_bmlt_locale();
         $this->assertEquals($response, "fr");
     }
-    
+
     /**
      * @covers bmltwf\BMLT\Integration::wp_locale_to_bmlt_locale
      */
@@ -338,7 +341,7 @@ Line: $errorLine
          $response = $integration->is_valid_bmlt_server("");
          $this->assertFalse(($response));
      }
- 
+
     /**
      * @covers bmltwf\BMLT\Integration::is_valid_bmlt_server
      **/
@@ -385,7 +388,7 @@ Line: $errorLine
      * @covers bmltwf\BMLT\Integration::getMeetingFormats
      * @covers bmltwf\BMLT\Integration::getMeetingFormatsv3
      **/
-    
+
     public function test_getMeetingFormatsv3(): void
     {
 
@@ -409,7 +412,7 @@ Line: $errorLine
      * @covers bmltwf\BMLT\Integration::deleteMeeting
      * @covers bmltwf\BMLT\Integration::deleteMeetingv3
      **/
-    
+
     public function test_deleteMeeting_against_v3_with_valid_meeting(): void
     {
         Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
@@ -423,7 +426,7 @@ Line: $errorLine
      * @covers bmltwf\BMLT\Integration::deleteMeeting
      * @covers bmltwf\BMLT\Integration::deleteMeetingv3
      **/
-    
+
     public function test_deleteMeeting_against_v3_with_invalid_meeting(): void
     {
         Functions\when('wp_remote_retrieve_response_code')->justReturn(404);
@@ -438,7 +441,7 @@ Line: $errorLine
      * @covers bmltwf\BMLT\Integration::updateMeeting
      * @covers bmltwf\BMLT\Integration::updateMeetingv3
      **/
-    
+
     public function test_changeMeeting_against_v3_with_valid_meeting(): void
     {
 
@@ -457,7 +460,7 @@ Line: $errorLine
      * @covers bmltwf\BMLT\Integration::updateMeeting
      * @covers bmltwf\BMLT\Integration::updateMeetingv3
      **/
-    
+
     public function test_updateMeeting_against_v3_with_invalid_meeting(): void
     {
 
@@ -477,7 +480,7 @@ Line: $errorLine
      * @covers bmltwf\BMLT\Integration::updateMeeting
      * @covers bmltwf\BMLT\Integration::updateMeetingv3
      **/
-    
+
     public function test_updateMeeting_against_v3_with_invalid_change(): void
     {
 
@@ -495,7 +498,7 @@ Line: $errorLine
      * @covers bmltwf\BMLT\Integration::getServiceBodies
      * @covers bmltwf\BMLT\Integration::getServiceBodiesv3
      **/
-    
+
     public function test_getServiceBodies_against_v3(): void
     {
         $servicebodies = <<<EOD
@@ -514,7 +517,7 @@ EOD;
     /**
      * @covers bmltwf\BMLT\Integration::createMeeting
      **/
-    
+
     public function test_createMeeting_against_v3_with_valid_meeting(): void
     {
         Functions\when('\wp_remote_post')->returnArg();
@@ -541,7 +544,7 @@ EOD;
         $response = $integration->createMeeting($meeting);
         $this->assertNotInstanceOf(WP_Error::class, $response);
     }
-    
+
     /**
      * @covers bmltwf\BMLT\Integration::createMeeting
      */
@@ -549,17 +552,17 @@ EOD;
     {
         // Capture the request body
         $capturedBody = null;
-        
+
         Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody) {
             if (isset($args['body'])) {
                 $capturedBody = $args['body'];
             }
             return ['response' => ['code' => 201]]; // Mock successful response
         });
-        
+
         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
-        
+
         $meeting = array(
             "name" => "Test Meeting",
             "startTime" => "11:01:00",
@@ -570,10 +573,10 @@ EOD;
             "venueType" => "3",
             "published" => "1"
         );
-        
+
         $integration = new Integration(true, "3.0.0", "token", time()+2000);
         $integration->createMeeting($meeting);
-        
+
         // Verify timeZone is null in the request body
         $this->assertNotNull($capturedBody, "Request body was not captured");
         $decodedBody = json_decode($capturedBody, true);
@@ -585,7 +588,7 @@ EOD;
     /**
      * @covers bmltwf\BMLT\Integration::createMeeting
      **/
-    
+
     public function test_createMeeting_against_v3_with_invalid_meeting(): void
     {
         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
@@ -615,7 +618,7 @@ EOD;
         $response = $integration->createMeeting($invalid_meeting);
         $this->assertInstanceOf(WP_Error::class, $response);
     }
-    
+
     /**
      * @covers bmltwf\BMLT\Integration::createMeeting
      * @covers bmltwf\BMLT\Integration::validateMeetingData
@@ -624,17 +627,17 @@ EOD;
     {
         // Capture the request body
         $capturedBody = null;
-        
+
         Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody) {
             if (isset($args['body'])) {
                 $capturedBody = $args['body'];
             }
             return ['response' => ['code' => 201]]; // Mock successful response
         });
-        
+
         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
-        
+
         // Meeting data with valid fields and invalid fields
         $meeting = array(
             "name" => "Test Meeting",
@@ -648,17 +651,17 @@ EOD;
             "invalid_field" => "This should be filtered out", // Invalid field
             "another_invalid" => ["this", "should", "be", "removed"] // Invalid field
         );
-        
+
         $integration = new Integration(true, "3.0.0", "token", time()+2000);
         $integration->createMeeting($meeting);
-        
+
         // Verify invalid fields are filtered out
         $this->assertNotNull($capturedBody, "Request body was not captured");
         $decodedBody = json_decode($capturedBody, true);
         $this->assertIsArray($decodedBody, "Request body is not valid JSON");
         $this->assertArrayNotHasKey('invalid_field', $decodedBody, "Invalid field was not filtered out");
         $this->assertArrayNotHasKey('another_invalid', $decodedBody, "Invalid field was not filtered out");
-        
+
         // Verify valid fields are present
         $this->assertArrayHasKey('name', $decodedBody);
         $this->assertArrayHasKey('startTime', $decodedBody);
@@ -734,10 +737,10 @@ EOD;
         Functions\when('wp_remote_retrieve_response_code')->justReturn(404);
         Functions\when('\wp_remote_retrieve_response_message')->justReturn('Not Found');
         Functions\when('\wp_remote_retrieve_body')->justReturn('');
-        
+
         $integration = new Integration(true, "3.0.0", "token", time() + 2000);
         $result = $integration->getMeeting(99999);
-        
+
         $this->assertInstanceOf(WP_Error::class, $result);
     }
 
@@ -748,14 +751,14 @@ EOD;
     {
         // Capture the request body
         $capturedBody = null;
-        
+
         Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody) {
             if (isset($args['body'])) {
                 $capturedBody = $args['body'];
             }
             return ['response' => ['code' => 204]]; // Mock successful response
         });
-        
+
         // Mock format data that would be returned by getMeetingFormats
         $mockFormats = [
             54 => ['key_string' => 'VM', 'name_string' => 'Virtual Meeting'],
@@ -764,10 +767,10 @@ EOD;
             1 => ['key_string' => 'B', 'name_string' => 'Beginners'],
             2 => ['key_string' => 'O', 'name_string' => 'Open']
         ];
-        
+
         Functions\when('\wp_remote_retrieve_body')->justReturn(json_encode($mockFormats));
         Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
-        
+
         // Meeting data with formats that should be filtered
         $meeting = array(
             "id" => 123,
@@ -776,18 +779,18 @@ EOD;
             "venueType" => "1",
             "published" => "1"
         );
-        
+
         $integration = Mockery::mock(Integration::class)->makePartial();
         $integration->shouldReceive('getMeetingFormats')->andReturn($mockFormats);
         $integration->shouldReceive('is_v3_token_valid')->andReturn(true);
-        
+
         $integration->updateMeeting($meeting);
-        
+
         // Verify the request body
         $this->assertNotNull($capturedBody, "Request body was not captured");
         $decodedBody = json_decode($capturedBody, true);
         $this->assertIsArray($decodedBody, "Request body is not valid JSON");
-        
+
         // Verify that formatIds were filtered correctly
         $this->assertArrayHasKey('formatIds', $decodedBody, "formatIds field is missing");
         $this->assertCount(2, $decodedBody['formatIds'], "Should only have 2 formats after filtering");
@@ -797,7 +800,7 @@ EOD;
         $this->assertNotContains(55, $decodedBody['formatIds'], "Format 55 (TC) should be removed");
         $this->assertNotContains(56, $decodedBody['formatIds'], "Format 56 (HY) should be removed");
     }
-    
+
     /**
      * @covers bmltwf\BMLT\Integration::updateMeeting
      */
@@ -805,17 +808,17 @@ EOD;
     {
         // Capture the request body
         $capturedBody = null;
-        
+
         Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody) {
             if (isset($args['body'])) {
                 $capturedBody = $args['body'];
             }
             return ['response' => ['code' => 204]]; // Mock successful response
         });
-        
+
         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
-        
+
         $meeting = array(
             "id" => 123,
             "name" => "Test Meeting Update",
@@ -827,10 +830,10 @@ EOD;
             "venueType" => "1",
             "published" => "1"
         );
-        
+
         $integration = new Integration(true, "3.0.0", "token", time()+2000);
         $integration->updateMeeting($meeting);
-        
+
         // Verify timeZone is null in the request body
         $this->assertNotNull($capturedBody, "Request body was not captured");
         $decodedBody = json_decode($capturedBody, true);
@@ -838,7 +841,7 @@ EOD;
         $this->assertArrayHasKey('timeZone', $decodedBody, "timeZone field is missing");
         $this->assertNull($decodedBody['timeZone'], "timeZone should be null");
     }
-    
+
     /**
      * @covers bmltwf\BMLT\Integration::updateMeeting
      * @covers bmltwf\BMLT\Integration::validateMeetingData
@@ -847,17 +850,17 @@ EOD;
     {
         // Capture the request body
         $capturedBody = null;
-        
+
         Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody) {
             if (isset($args['body'])) {
                 $capturedBody = $args['body'];
             }
             return ['response' => ['code' => 204]]; // Mock successful response
         });
-        
+
         Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
-        
+
         // Meeting data with valid fields and invalid fields
         $meeting = array(
             "id" => 123, // Required for update
@@ -873,10 +876,10 @@ EOD;
             "random_data" => array("foo" => "bar"), // Invalid field
             "non_schema_field" => true // Invalid field
         );
-        
+
         $integration = new Integration(true, "3.0.0", "token", time()+2000);
         $integration->updateMeeting($meeting);
-        
+
         // Verify invalid fields are filtered out
         $this->assertNotNull($capturedBody, "Request body was not captured");
         $decodedBody = json_decode($capturedBody, true);
@@ -884,7 +887,7 @@ EOD;
         $this->assertArrayNotHasKey('invalid_field', $decodedBody, "Invalid field was not filtered out");
         $this->assertArrayNotHasKey('random_data', $decodedBody, "Invalid field was not filtered out");
         $this->assertArrayNotHasKey('non_schema_field', $decodedBody, "Invalid field was not filtered out");
-        
+
         // Verify valid fields are present
         $this->assertArrayHasKey('id', $decodedBody);
         $this->assertArrayHasKey('name', $decodedBody);
@@ -899,11 +902,11 @@ EOD;
     {
         // Test expired token
         $integration = new Integration(true, "3.0.0", "token", time() - 1000);
-        
+
         $reflection = new ReflectionClass($integration);
         $method = $reflection->getMethod('is_v3_token_valid');
         $method->setAccessible(true);
-        
+
         $this->assertFalse($method->invoke($integration));
     }
 
@@ -916,11 +919,188 @@ EOD;
         Functions\when('\wp_remote_retrieve_response_message')->justReturn('Unauthorized');
         Functions\when('\wp_remote_post')->returnArg();
         Functions\when('\wp_remote_retrieve_body')->justReturn('');
-        
+
         $integration = new Integration(true, "3.0.0");
         $result = $integration->authenticateRootServer();
-        
+
         $this->assertInstanceOf(WP_Error::class, $result);
     }
 
+	/**
+	 * @covers bmltwf\BMLT\Integration::bmltwf_get_server_info_cached
+	 */
+	public function test_server_info_uses_transient_cache(): void
+	{
+		$server = 'https://example.com/';
+		$serverInfo = ['version' => '3.0.0', 'meeting_states_and_provinces' => 'MA,ME'];
+		$callCount = 0;
+
+		Functions\when('\get_transient')->alias(function($key) use (&$callCount, $serverInfo) {
+			if ($callCount === 0) {
+				return false; // First call: no cache
+			}
+			return $serverInfo; // Subsequent calls: return cached data
+		});
+
+		Functions\when('\set_transient')->alias(function($key, $value, $expiration) use (&$callCount) {
+			$callCount++;
+			return true;
+		});
+
+		Functions\when('\wp_remote_retrieve_body')->justReturn(json_encode([$serverInfo]));
+		Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+
+		$integration = new Integration(true, "3.0.0", 'token', time()+2000);
+		
+		// First call should fetch from server and set transient
+		$reflection = new ReflectionClass($integration);
+		$method = $reflection->getMethod('bmltwf_get_server_info_cached');
+		$method->setAccessible(true);
+		
+		$result1 = $method->invoke($integration, $server);
+		$this->assertEquals($serverInfo, $result1);
+		$this->assertEquals(1, $callCount, 'set_transient should be called once');
+
+		// Second call should use cached data
+		$result2 = $method->invoke($integration, $server);
+		$this->assertEquals($serverInfo, $result2);
+		$this->assertEquals(1, $callCount, 'set_transient should still be called only once');
+	}
+
+	/**
+	 * @covers bmltwf\BMLT\Integration::update_root_server_version
+	 */
+	public function test_update_root_server_version_clears_cache(): void
+	{
+		$server = 'https://example.com/';
+		$deleteCalled = false;
+
+		Functions\when('\get_option')->alias(function($key) use ($server) {
+			if ($key === 'bmltwf_bmlt_server_address') {
+				return $server;
+			}
+			return 'true';
+		});
+
+		Functions\when('\delete_transient')->alias(function($key) use (&$deleteCalled, $server) {
+			$expectedKey = 'bmltwf_server_info_' . md5($server);
+			if ($key === $expectedKey) {
+				$deleteCalled = true;
+			}
+			return true;
+		});
+
+		Functions\when('\get_transient')->justReturn(false);
+		Functions\when('\set_transient')->justReturn(true);
+		Functions\when('\wp_remote_retrieve_body')->justReturn(json_encode([['version' => '3.1.0']]));
+		Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+
+		$integration = new Integration(true, "3.0.0", 'token', time()+2000);
+		$integration->update_root_server_version();
+
+		$this->assertTrue($deleteCalled, 'delete_transient should be called');
+	}
+
+	/**
+	 * @covers bmltwf\BMLT\Integration::bmltwf_get_server_info_cached
+	 */
+	public function test_server_info_cache_expires_correctly(): void
+	{
+		$server = 'https://example.com/';
+		$serverInfo = ['version' => '3.0.0'];
+		$transientExpiration = null;
+
+		Functions\when('\get_transient')->justReturn(false);
+		Functions\when('\set_transient')->alias(function($key, $value, $expiration) use (&$transientExpiration) {
+			$transientExpiration = $expiration;
+			return true;
+		});
+
+		Functions\when('\wp_remote_retrieve_body')->justReturn(json_encode([$serverInfo]));
+		Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+
+		$integration = new Integration(true, "3.0.0", 'token', time()+2000);
+		
+		$reflection = new ReflectionClass($integration);
+		$method = $reflection->getMethod('bmltwf_get_server_info_cached');
+		$method->setAccessible(true);
+		
+		$method->invoke($integration, $server);
+		
+		$this->assertEquals(3600, $transientExpiration, 'Cache should expire after 1 hour (3600 seconds)');
+	}
+
+	/**
+	 * covers bmltwf\BMLT\Integration::getGmapApiKey
+	 */
+	public function test_getGmapsKey() {
+		$mock_body_v3 = '<html>...stuff...\n  "google_api_key":"test-api-key",\n...more stuff...\n</html>,';
+		$mock_body_v4 = '<html>...stuff...\n  googleApiKey: \'test-api-key\',\n...more stuff...\n</html>,';
+		$mock_body_bad = 'something unexpected';
+		Functions\when('\get_option')->alias(function($value, $default = false) {
+			if($value === 'bmltwf_bmlt_password') {
+				return(json_decode('{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}',true));
+			} elseif($value === 'bmltwf_google_maps_key' || $value === 'bmltwf_bmlt_google_maps_key') {
+				return '';
+			} elseif($value === 'bmltwf_bmlt_server_address') {
+				return 'https://example.com/';
+			}
+			return 'true';
+		});
+		Functions\when('\update_option')->justReturn(true);
+		Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+		Functions\when('\wp_remote_retrieve_cookies')->justReturn([]);
+
+		Functions\when('\wp_remote_retrieve_body')->justReturn($mock_body_bad);
+		$integration = new Integration(true, "3.0.0", 'token', time()+2000);
+		$result = $integration->getGmapsKey();
+		$this->assertEquals('', $result);
+
+		Functions\when('\wp_remote_retrieve_body')->justReturn($mock_body_v3);
+		$integration = new Integration(true, "3.0.0", 'token', time()+2000);
+		$result = $integration->getGmapsKey();
+		$this->assertEquals('test-api-key', $result);
+
+		Functions\when('\wp_remote_retrieve_body')->justReturn($mock_body_v4);
+		$integration = new Integration(true, "4.0.0", 'token', time()+2000);
+		$result = $integration->getGmapsKey();
+		$this->assertEquals('test-api-key', $result);
+	}
+
+	/**
+	 * @covers bmltwf\BMLT\Integration::getMeetingStates
+	 * @covers bmltwf\BMLT\Integration::bmltwf_get_server_info_cached
+	 */
+	public function test_getMeetingStates_uses_cached_server_info(): void
+	{
+		$serverInfo = ['meeting_states_and_provinces' => 'CA,NY,TX'];
+		$fetchCount = 0;
+
+		Functions\when('\get_transient')->alias(function($key) use ($serverInfo, &$fetchCount) {
+			if ($fetchCount === 0) {
+				return false;
+			}
+			return $serverInfo;
+		});
+
+		Functions\when('\set_transient')->alias(function() use (&$fetchCount) {
+			$fetchCount++;
+			return true;
+		});
+
+		Functions\when('\wp_remote_retrieve_body')->justReturn(json_encode([$serverInfo]));
+		Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+
+		$integration = new Integration(true, "3.0.0", 'token', time()+2000);
+		
+		// First call
+		$result1 = $integration->getMeetingStates();
+		$this->assertEquals(['CA', 'NY', 'TX'], $result1);
+		$this->assertEquals(1, $fetchCount, 'Should fetch from server once');
+
+		// Second call should use cache
+		$result2 = $integration->getMeetingStates();
+		$this->assertEquals(['CA', 'NY', 'TX'], $result2);
+		$this->assertEquals(1, $fetchCount, 'Should not fetch from server again');
+	}
 }

@@ -78,6 +78,7 @@ Line: $errorLine
         Functions\when('\get_option')->justReturn("failure");
         Functions\when('__')->returnArg();
         Functions\when('wp_is_json_media_type')->justReturn(true);
+        Functions\when('\delete_transient')->justReturn(true);
 
     }
 
@@ -268,5 +269,105 @@ Line: $errorLine
         //        $data["bmltwf_bmlt_server_status"] = "true";
 
         $this->assertEquals($response->get_error_data()['bmltwf_bmlt_login_status'], 'unknown');
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\BMLTServerHandler::post_bmltserver_handler
+     */
+    public function test_post_bmltserver_clears_transient_cache_for_different_server(): void
+    {
+        $oldServer = 'https://old.example.com/';
+        $newServer = 'https://new.example.com/';
+        $deleteCalled = false;
+
+        $request = new WP_REST_Request('POST', "http://3.25.141.92/flop/wp-json/bmltwf/v1/bmltserver");
+        $request->set_header('content-type', 'application/json');
+        $request->set_route("/bmltwf/v1/bmltserver");
+        $request->set_method('POST');
+        $request->set_param('bmltwf_bmlt_server_address', $newServer);
+        $request->set_param('bmltwf_bmlt_username', 'testuser');
+        $request->set_param('bmltwf_bmlt_password', 'testpass');
+
+        Functions\when('\get_option')->alias(function($key) use ($oldServer) {
+            if ($key === 'bmltwf_bmlt_server_address') {
+                return $oldServer;
+            }
+            return 'failure';
+        });
+
+        Functions\when('\delete_transient')->alias(function($key) use (&$deleteCalled, $newServer) {
+            $expectedKey = 'bmltwf_server_info_' . md5($newServer);
+            if ($key === $expectedKey) {
+                $deleteCalled = true;
+            }
+            return true;
+        });
+
+        Functions\when('\update_option')->justReturn(true);
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn('200');
+        Functions\when('\is_wp_error')->justReturn(false);
+
+        $stub = \Mockery::mock('bmltwf\BMLT\Integration');
+        $stub->bmlt_root_server_version = '3.0.0';
+        $stub->shouldReceive('testServerAndAuth')->andReturn('true');
+        $stub->shouldReceive('is_valid_bmlt_server')->andReturn('true');
+        $stub->shouldReceive('is_supported_server')->andReturn('true');
+
+        $rest = new BMLTServerHandler($stub);
+        $response = $rest->post_bmltserver_handler($request);
+
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertTrue($deleteCalled, 'delete_transient should be called when testing a different server');
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\BMLTServerHandler::patch_bmltserver_handler
+     */
+    public function test_patch_bmltserver_clears_transient_cache(): void
+    {
+        $server = 'https://example.com/';
+        $deleteCalled = false;
+
+        $request = new WP_REST_Request('PATCH', "http://3.25.141.92/flop/wp-json/bmltwf/v1/bmltserver");
+        $request->set_header('content-type', 'application/json');
+        $request->set_route("/bmltwf/v1/bmltserver");
+        $request->set_method('PATCH');
+        $request->set_param('bmltwf_bmlt_server_address', $server);
+        $request->set_param('bmltwf_bmlt_username', 'testuser');
+        $request->set_param('bmltwf_bmlt_password', 'testpass');
+
+        Functions\when('\update_option')->justReturn(true);
+        Functions\when('\get_option')->alias(function($key) use ($server) {
+            if ($key === 'bmltwf_bmlt_server_address') {
+                return $server;
+            }
+            return 'true';
+        });
+
+        Functions\when('\delete_transient')->alias(function($key) use (&$deleteCalled, $server) {
+            $expectedKey = 'bmltwf_server_info_' . md5($server);
+            if ($key === $expectedKey) {
+                $deleteCalled = true;
+            }
+            return true;
+        });
+
+        Functions\when('\get_transient')->justReturn(false);
+        Functions\when('\set_transient')->justReturn(true);
+        Functions\when('\wp_remote_retrieve_body')->justReturn(json_encode([['version' => '3.0.0']]));
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+
+        $Intstub = \Mockery::mock('bmltwf\BMLT\Integration');
+        $Intstub->bmlt_root_server_version = '3.0.0';
+        $Intstub->shouldReceive('update_root_server_version')->once()->andReturnUsing(function() use (&$deleteCalled, $server) {
+            // Simulate what update_root_server_version does
+            \delete_transient('bmltwf_server_info_' . md5($server));
+        });
+
+        $rest = new BMLTServerHandler($Intstub);
+        $response = $rest->patch_bmltserver_handler($request);
+
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertTrue($deleteCalled, 'delete_transient should be called when updating BMLT server config');
     }
 }

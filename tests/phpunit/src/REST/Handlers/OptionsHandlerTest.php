@@ -30,6 +30,9 @@ final class OptionsHandlerTest extends TestCase
         Functions\when('__')->returnArg();
         Functions\when('\get_option')->justReturn('test');
         Functions\when('\is_multisite')->justReturn(false);
+        Functions\when('\get_transient')->justReturn(false);
+        Functions\when('\set_transient')->justReturn(true);
+        Functions\when('\delete_transient')->justReturn(true);
     }
 
     protected function tearDown(): void
@@ -82,6 +85,8 @@ final class OptionsHandlerTest extends TestCase
         Functions\when('wp_remote_request')->justReturn(['response' => ['code' => 200], 'body' => 'OK']);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('wp_remote_retrieve_body')->justReturn('OK');
+        Functions\when('\get_transient')->justReturn(false);
+        Functions\when('\delete_transient')->justReturn(true);
         
         $handler = new OptionsHandler();
         
@@ -133,6 +138,8 @@ final class OptionsHandlerTest extends TestCase
         Functions\when('wp_remote_request')->justReturn(['response' => ['code' => 200], 'body' => 'OK']);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
         Functions\when('wp_remote_retrieve_body')->justReturn('OK');
+        Functions\when('\get_transient')->justReturn(false);
+        Functions\when('\delete_transient')->justReturn(true);
         
         $handler = new OptionsHandler();
         

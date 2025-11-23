@@ -62,6 +62,7 @@ class Admin_Options {
         this.bmltwf_enable_debug = Selector("#bmltwf_enable_debug");
         this.download_debug_log_button = Selector("#download_debug_log_button");
         this.bmltwf_admin_notification_email_template = Selector("#bmltwf_admin_notification_email_template");
+        this.bmltwf_meeting_sort_order = Selector("#bmltwf_meeting_sort_order");
         this.bmltwf_admin_notification_email_template_iframe = Selector('#bmltwf_admin_notification_email_template_ifr');
         this.bmltwf_submitter_email_template_iframe = Selector('#bmltwf_submitter_email_template_ifr');
         this.submit = Selector('#submit');

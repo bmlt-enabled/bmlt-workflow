@@ -1,3 +1,8 @@
+## 1.1.36 (Nov 23, 2025)
+- PR #217 - Fixes google maps key retrieval from BMLT 4.x (thanks @brotskydotcom !)
+- Uses WordPress transients for caching API responses to prevent excessive BMLT hits
+- Adds meeting sort order option, to allow for sorting by day/time or alphabetical (thanks @tempsaint !)
+
 ## 1.1.35 (Nov 21, 2025)
 - #212 - Fixes incorrect generation of From addresses (thanks @Redguy1959 !)
 

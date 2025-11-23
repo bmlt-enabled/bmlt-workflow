@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.35
+ * Version: 1.1.36
  * Requires at least: 5.2
  * Tested up to: 6.8.2
  * Author: @nigel-bmlt
@@ -28,7 +28,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.35');
+define('BMLTWF_PLUGIN_VERSION', '1.1.36');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -210,6 +210,7 @@ if (!class_exists('bmltwf_plugin')) {
             $script .= 'var bmltwf_optional_location_province = "' . get_option('bmltwf_optional_location_province') . '";';
             $script .= 'var bmltwf_optional_postcode = "' . get_option('bmltwf_optional_postcode') . '";';
             $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
+            $script .= 'var bmltwf_meeting_sort_order = "' . get_option('bmltwf_meeting_sort_order') . '";';
 
             // add counties/states/provinces if they are populated
             $meeting_counties_and_sub_provinces = $this->bmlt_integration->getMeetingCounties();
@@ -914,6 +915,18 @@ if (!class_exists('bmltwf_plugin')) {
                 )
             );
 
+            register_setting(
+                'bmltwf-settings-group',
+                'bmltwf_meeting_sort_order',
+                array(
+                    'type' => 'string',
+                    'description' => __('Meeting sort order in meeting update form', 'bmlt-workflow'),
+                    'sanitize_callback' => array(&$this, 'bmltwf_meeting_sort_order_sanitize_callback'),
+                    'show_in_rest' => false,
+                    'default' => 'alphabetical'
+                )
+            );
+
             // Create separate sections for each tab
             add_settings_section(
                 'bmltwf-bmlt-config-section',
@@ -997,6 +1010,14 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_correspondence_page',
                 __('Correspondence Page', 'bmlt-workflow'),
                 array(&$this, 'bmltwf_correspondence_page_html'),
+                'bmltwf-form-settings',
+                'bmltwf-form-settings-section'
+            );
+
+            add_settings_field(
+                'bmltwf_meeting_sort_order',
+                __('Meeting Sort Order', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_meeting_sort_order_html'),
                 'bmltwf-form-settings',
                 'bmltwf-form-settings-section'
             );
@@ -1828,6 +1849,7 @@ if (!class_exists('bmltwf_plugin')) {
             add_option('bmltwf_correspondence_admin_email_subject', __('New correspondence received - Submission ID {field:change_id}', 'bmlt-workflow'));
             add_option('bmltwf_admin_notification_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_admin_notification_email_template.html'));
             add_option('bmltwf_admin_notification_email_subject', __('[bmlt-workflow] {field:submission_type} request received - {field:service_body_name} - Change ID #{field:change_id}', 'bmlt-workflow'));
+            add_option('bmltwf_meeting_sort_order', 'alphabetical');
         }
 
         public function bmltwf_add_capability($user_id)
@@ -1878,6 +1900,19 @@ if (!class_exists('bmltwf_plugin')) {
             }
 
             return $page_id;
+        }
+
+        public function bmltwf_meeting_sort_order_sanitize_callback($input)
+        {
+            $output = get_option('bmltwf_meeting_sort_order');
+
+            switch ($input) {
+                case 'alphabetical':
+                case 'day':
+                    return $input;
+            }
+            add_settings_error('bmltwf_meeting_sort_order', 'err', __('Invalid meeting sort order setting.', 'bmlt-workflow'));
+            return $output;
         }
 
         public function bmltwf_enable_debug_html()
@@ -1956,6 +1991,31 @@ if (!class_exists('bmltwf_plugin')) {
             }
 
             echo '</select>';
+            echo '<br><br>';
+        }
+
+        public function bmltwf_meeting_sort_order_html()
+        {
+            $selection = get_option('bmltwf_meeting_sort_order');
+            $alphabetical = '';
+            $day = '';
+            if ($selection === 'day') {
+                $day = 'selected';
+            } else {
+                $alphabetical = 'selected';
+            }
+
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>';
+            echo __('Choose how meetings are sorted in the meeting update form dropdown.', 'bmlt-workflow');
+            echo '<br><br>';
+            echo '</div>';
+
+            echo '<br><label for="bmltwf_meeting_sort_order"><b>' . __('Sort meetings by', 'bmlt_workflow') . ':</b></label><select id="bmltwf_meeting_sort_order" name="bmltwf_meeting_sort_order"><option name="alphabetical" value="alphabetical" ' . $alphabetical . '>';
+            echo __('Alphabetical (by meeting name)', 'bmlt-workflow');
+            echo '</option><option name="day" value="day" ' . $day . '>';
+            echo __('Day of week (then by time)', 'bmlt-workflow');
+            echo '</option></select>';
             echo '<br><br>';
         }
     }

@@ -125,8 +125,17 @@ class ServiceBodiesHandler
                 $this->debug_log("getting memberships for " . $key);
 
                 $sql = $wpdb->prepare('SELECT DISTINCT wp_uid from ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' where serviceBodyId = "%d"', $key);
+                $this->debug_log("SQL query: " . $sql);
                 $result = $wpdb->get_col($sql, 0);
+                $this->debug_log("SQL result: " . print_r($result, true));
                 $sblist[$key]['membership'] = implode(',', $result);
+                
+                // Debug log users for this service body
+                foreach ($result as $wp_uid) {
+                    $user = get_userdata($wp_uid);
+                    $username = $user ? $user->user_login : 'unknown';
+                    $this->debug_log("Service Body {$key}: displaying user wp_uid={$wp_uid}, username={$username}");
+                }
             }
 
             // get the form display settings
@@ -184,8 +193,13 @@ class ServiceBodiesHandler
             }
             $members = $arr['membership'];
             foreach ($members as $member) {
+                $user = get_userdata($member);
+                $username = $user ? $user->user_login : 'unknown';
+                $this->debug_log("Service Body {$sb}: adding user wp_uid={$member}, username={$username}");
                 $sql = $wpdb->prepare('INSERT into ' . $this->BMLTWF_Database->bmltwf_service_bodies_access_table_name . ' SET wp_uid = "%d", serviceBodyId="%d"', $member, $sb);
-                $wpdb->query($sql);
+                $this->debug_log("SQL query: " . $sql);
+                $result = $wpdb->query($sql);
+                $this->debug_log("SQL result: " . ($result !== false ? $result : 'false'));
             }
             // update show/hide
             $show_on_form = $arr['show_on_form'];
