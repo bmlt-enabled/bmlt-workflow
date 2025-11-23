@@ -79,6 +79,7 @@ Line: $errorLine
         Functions\when('__')->returnArg();
         Functions\when('wp_is_json_media_type')->justReturn(true);
         Functions\when('\get_option')->justReturn("success");
+        Functions\when('\get_userdata')->justReturn((object)['user_login' => 'testuser']);
     }
 
     protected function tearDown(): void
@@ -175,8 +176,8 @@ Line: $errorLine
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('get_results')->andReturn($sblookup)
             ->shouldReceive('get_col')->andreturn(array("1", "2"))
-            ->shouldReceive('prepare')->andreturn(array("1", "2"))
-            ->shouldReceive('query')->andreturn(array("1", "2"));
+            ->shouldReceive('prepare')->andreturn('SELECT DISTINCT wp_uid from table where serviceBodyId = "1"')
+            ->shouldReceive('query')->andreturn(1);
 
         $Intstub = \Mockery::mock('Integration');
         /** @var Mockery::mock $Intstub test */
@@ -273,9 +274,9 @@ Line: $errorLine
         $wpdb->shouldReceive('get_results')->andReturn($sblookup)
             // say that we only have service body 1 in the db
             ->shouldReceive('get_col')->andreturn(array("1"))
-            ->shouldReceive('prepare')->andreturn(array("1", "2"))
+            ->shouldReceive('prepare')->andreturn('SELECT DISTINCT wp_uid from table where serviceBodyId = "1"')
             // we'll see query 2 times if we have to add sb 2 and 3 into to the db, then 3 more times for the description/name updates
-            ->shouldReceive('query')->times(5)->andreturn(array("1", "2"));
+            ->shouldReceive('query')->times(5)->andreturn(1);
 
         $Intstub = \Mockery::mock('Integration');
         /** @var Mockery::mock $Intstub test */
@@ -317,8 +318,8 @@ Line: $errorLine
         $wpdb->shouldReceive('get_results')->andReturn($sblookup)
             // say that we only have service body 1 in the db
             ->shouldReceive('get_col')->andreturn(array("1","2"))
-            ->shouldReceive('prepare')->andreturn(array("1","2"))
-            ->shouldReceive('query')->times(5)->andreturn(array("1", "2"));
+            ->shouldReceive('prepare')->andreturn('SELECT DISTINCT wp_uid from table where serviceBodyId = "1"')
+            ->shouldReceive('query')->times(5)->andreturn(1);
 
         $Intstub = \Mockery::mock('Integration');
         // service body 2 is deleted from bmlt
