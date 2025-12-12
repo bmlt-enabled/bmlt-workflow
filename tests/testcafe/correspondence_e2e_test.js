@@ -42,11 +42,10 @@ test('E2E_Admin_Initiates_Then_User_Responds', async t => {
         .click(cs.correspondenceButton)
         .typeText(cs.correspondenceTextarea, adminMessage)
         .click(cs.sendButton)
-        .click(Selector('.ui-dialog-buttonset button').withText('Close'))
-        .wait(2000);
+        .click(Selector('.ui-dialog-buttonset button').withText('Close'));
     
     // Step 2: Verify status changed to correspondence_sent
-    await t.expect(Selector('table#dt-submission').child("tbody").child(0).child(8).innerText).eql("Correspondence Sent", {timeout: 10000});
+    await t.expect(Selector('table#dt-submission').child("tbody").child(0).child(8).innerText).eql("Correspondence Sent");
     
     // Step 3: Get thread_id from submissions API after correspondence is created
     const cookies = await t.getCookies();
@@ -80,12 +79,11 @@ test('E2E_Admin_Initiates_Then_User_Responds', async t => {
     await t
         .click(cs.replyButton)
         .typeText(cs.replyTextarea, userResponse)
-        .click(cs.submitButton)
-        .wait(2000);
+        .click(cs.submitButton);
     
     // Step 5: Return to admin page and verify status shows correspondence_received
     await t.navigateTo(userVariables.admin_submissions_page_single);
-    await t.expect(Selector('table#dt-submission').child("tbody").child(0).child(8).innerText).eql("Correspondence Received", {timeout: 10000});
+    await t.expect(Selector('table#dt-submission').child("tbody").child(0).child(8).innerText).eql("Correspondence Received");
 });
 
 
@@ -103,8 +101,7 @@ test('E2E_Full_Correspondence_Cycle', async t => {
         .click(cs.correspondenceButton)
         .typeText(cs.correspondenceTextarea, adminInitialMessage)
         .click(cs.sendButton)
-        .click(Selector('.ui-dialog-buttonset button').withText('Close'))
-        .wait(2000);
+        .click(Selector('.ui-dialog-buttonset button').withText('Close'));
     
     // Get thread_id from API after correspondence is created
     const cookies = await t.getCookies();
@@ -141,12 +138,11 @@ test('E2E_Full_Correspondence_Cycle', async t => {
     await t
         .click(cs.replyButton)
         .typeText(cs.replyTextarea, userMessage)
-        .click(cs.submitButton)
-        .wait(2000);
+        .click(cs.submitButton);
     
     // Step 3: Verify admin sees correspondence_received status
     await t.navigateTo(userVariables.admin_submissions_page_single);
-    await t.expect(Selector('table#dt-submission').child("tbody").child(0).child(8).innerText).eql("Correspondence Received", {timeout: 10000});
+    await t.expect(Selector('table#dt-submission').child("tbody").child(0).child(8).innerText).eql("Correspondence Received");
     
     // Step 4: Admin responds to user's message
     await t
@@ -154,11 +150,10 @@ test('E2E_Full_Correspondence_Cycle', async t => {
         .click(cs.correspondenceButton)
         .typeText(cs.correspondenceTextarea, adminResponse)
         .click(cs.sendButton)
-        .click(Selector('.ui-dialog-buttonset button').withText('Close'))
-        .wait(2000);
+        .click(Selector('.ui-dialog-buttonset button').withText('Close'));
     
     // Step 5: Verify status changed to correspondence_sent
-    await t.expect(Selector('table#dt-submission').child("tbody").child(0).child(8).innerText).eql("Correspondence Sent", {timeout: 10000});
+    await t.expect(Selector('table#dt-submission').child("tbody").child(0).child(8).innerText).eql("Correspondence Sent");
     
     // Step 6: Verify all messages appear on public page
     if (!t.ctx.correspondencePageUrl || !changeId) {
@@ -178,12 +173,11 @@ test('E2E_Full_Correspondence_Cycle', async t => {
     await t
         .click(cs.replyButton)
         .typeText(cs.replyTextarea, userFollowup)
-        .click(cs.submitButton)
-        .wait(2000);
+        .click(cs.submitButton);
     
     // Step 8: Verify admin sees correspondence_received status again
     await t.navigateTo(userVariables.admin_submissions_page_single);
-    await t.expect(Selector('table#dt-submission').child("tbody").child(0).child(8).innerText).eql("Correspondence Received", {timeout: 10000});
+    await t.expect(Selector('table#dt-submission').child("tbody").child(0).child(8).innerText).eql("Correspondence Received");
     
     // Step 9: Verify all four messages appear in admin correspondence history
     await t
@@ -205,8 +199,7 @@ test('E2E_Correspondence_Disabled_After_Approval', async t => {
         .click(cs.correspondenceButton)
         .typeText(cs.correspondenceTextarea, adminMessage)
         .click(cs.sendButton)
-        .click(Selector('.ui-dialog-buttonset button').withText('Close'))
-        .wait(2000);
+        .click(Selector('.ui-dialog-buttonset button').withText('Close'));
     
     // Step 2: Verify correspondence button is enabled for pending submission
     var g = as.dt_submission_wrapper.find("button").nth(2); // correspondence button
@@ -218,7 +211,6 @@ test('E2E_Correspondence_Disabled_After_Approval', async t => {
     await t.typeText(as.approve_dialog_textarea, "I approve this request");
     await click_dialog_button_by_index(as.approve_dialog_parent, 1);
     await t.expect(as.approve_dialog_parent.visible).eql(false);
-    await t.wait(2000);
     
     // Step 4: Re-select row and verify correspondence button is disabled after approval
     await t.click(secondRowCell);
@@ -236,8 +228,7 @@ test('E2E_Correspondence_Disabled_After_Rejection', async t => {
         .click(cs.correspondenceButton)
         .typeText(cs.correspondenceTextarea, adminMessage)
         .click(cs.sendButton)
-        .click(Selector('.ui-dialog-buttonset button').withText('Close'))
-        .wait(2000);
+        .click(Selector('.ui-dialog-buttonset button').withText('Close'));
     
     // Step 2: Re-select row and verify correspondence button is enabled for pending submission
     var g = as.dt_submission_wrapper.find("button").nth(2); // correspondence button
@@ -249,7 +240,6 @@ test('E2E_Correspondence_Disabled_After_Rejection', async t => {
     await t.typeText(as.reject_dialog_textarea, "I reject this request");
     await click_dialog_button_by_index(as.reject_dialog_parent, 1);
     await t.expect(as.reject_dialog_parent.visible).eql(false);
-    await t.wait(2000);
     
     // Step 4: Re-select row and verify correspondence button is disabled after rejection
     await t.click(thirdRowCell);
@@ -269,8 +259,7 @@ test('E2E_Multiple_Submissions_Independent_Correspondence', async t => {
         .click(cs.correspondenceButton)
         .typeText(cs.correspondenceTextarea, adminMessage1)
         .click(cs.sendButton)
-        .click(Selector('.ui-dialog-buttonset button').withText('Close'))
-        .wait(2000);
+        .click(Selector('.ui-dialog-buttonset button').withText('Close'));
     
     // Step 2: Admin initiates correspondence for second submission
     const secondRowCell = await get_table_row_col(Selector('table#dt-submission'), 1, 0);
@@ -279,8 +268,7 @@ test('E2E_Multiple_Submissions_Independent_Correspondence', async t => {
         .click(cs.correspondenceButton)
         .typeText(cs.correspondenceTextarea, adminMessage2)
         .click(cs.sendButton)
-        .click(Selector('.ui-dialog-buttonset button').withText('Close'))
-        .wait(2000);
+        .click(Selector('.ui-dialog-buttonset button').withText('Close'));
     
     // Step 3: Get thread_ids from API after correspondence is created
     const cookies = await t.getCookies();
@@ -315,8 +303,7 @@ test('E2E_Multiple_Submissions_Independent_Correspondence', async t => {
     await t
         .click(cs.replyButton)
         .typeText(cs.replyTextarea, userResponse1)
-        .click(cs.submitButton)
-        .wait(2000);
+        .click(cs.submitButton);
     
     // Step 5: User responds to second submission
     const separator2 = t.ctx.correspondencePageUrl.includes('?') ? '&' : '?';
@@ -328,8 +315,7 @@ test('E2E_Multiple_Submissions_Independent_Correspondence', async t => {
     await t
         .click(cs.replyButton)
         .typeText(cs.replyTextarea, userResponse2)
-        .click(cs.submitButton)
-        .wait(2000);
+        .click(cs.submitButton);
     
     // Step 6: Verify messages appear only on their respective pages
     const separator3 = t.ctx.correspondencePageUrl.includes('?') ? '&' : '?';
@@ -343,4 +329,42 @@ test('E2E_Multiple_Submissions_Independent_Correspondence', async t => {
     await t
         .expect(Selector('.bmltwf-correspondence-message').withText(userResponse2).exists).ok('User response 2 should appear on thread 2')
         .expect(Selector('.bmltwf-correspondence-message').withText(userResponse1).exists).notOk('User response 1 should not appear on thread 2');
+});
+
+test('E2E_Correspondence_Filter_Validation', async t => {
+    const adminMessage = 'Admin message for filter test';
+    
+    // Step 1: Admin initiates correspondence on first submission
+    await t.click(cs.firstRow);
+    await t
+        .click(cs.correspondenceButton)
+        .typeText(cs.correspondenceTextarea, adminMessage)
+        .click(cs.sendButton)
+        .click(Selector('.ui-dialog-buttonset button').withText('Close'));
+    
+    // Step 2: Verify submission appears in "Pending" filter
+    await t
+        .click(Selector('#dt-submission-filters'))
+        .click(Selector('#dt-submission-filters option').withText('Pending'));
+    await t.expect(Selector('table#dt-submission tbody tr').count).gte(1, 'At least one submission should appear in Pending filter');
+    await t.expect(Selector('table#dt-submission tbody tr').nth(0).child(8).innerText).eql('Correspondence Sent');
+    
+    // Step 3: Verify submission appears in "Correspondence" filter
+    await t
+        .click(Selector('#dt-submission-filters'))
+        .click(Selector('#dt-submission-filters option').withText('Correspondence'));
+    await t.expect(Selector('table#dt-submission tbody tr').count).gte(1, 'At least one submission should appear in Correspondence filter');
+    await t.expect(Selector('table#dt-submission tbody tr').nth(0).child(8).innerText).eql('Correspondence Sent');
+    
+    // Step 4: Verify submission does NOT appear in "Approved" filter
+    await t
+        .click(Selector('#dt-submission-filters'))
+        .click(Selector('#dt-submission-filters option').withText('Approved'));
+    await t.expect(Selector('table#dt-submission tbody tr td').withText('Correspondence Sent').exists).notOk('Correspondence Sent should not appear in Approved filter');
+    
+    // Step 5: Verify submission does NOT appear in "Rejected" filter
+    await t
+        .click(Selector('#dt-submission-filters'))
+        .click(Selector('#dt-submission-filters option').withText('Rejected'));
+    await t.expect(Selector('table#dt-submission tbody tr td').withText('Correspondence Sent').exists).notOk('Correspondence Sent should not appear in Rejected filter');
 });
