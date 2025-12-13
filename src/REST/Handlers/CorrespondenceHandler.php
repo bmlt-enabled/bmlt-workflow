@@ -100,28 +100,39 @@ class CorrespondenceHandler
             return new \WP_Error('rest_not_found', __('Correspondence thread not found', 'bmlt-workflow'), array('status' => 404));
         }
         
-        // Check if submission has been approved/rejected/deleted
-        $status = $correspondence[0]->change_made;
-        if (in_array($status, ['approved', 'rejected', 'deleted'])) {
-            return new \WP_Error('rest_forbidden', __('This correspondence thread is no longer available', 'bmlt-workflow'), array('status' => 403));
-        }
-        
-        // Check if it's been 3 months since the last message
-        $last_message = end($correspondence);
-        $last_message_time = strtotime($last_message->created_at);
-        $three_months_ago = strtotime('-3 months');
-        
-        if ($last_message_time < $three_months_ago) {
-            return new \WP_Error('rest_forbidden', __('This correspondence thread has expired', 'bmlt-workflow'), array('status' => 403));
-        }
-
-        // Get the submission details
+        // Get submission details to check status and change_time
         $submission = $wpdb->get_row($wpdb->prepare(
-            "SELECT change_id, submission_type, submitter_name, submission_time, id 
+            "SELECT change_id, submission_type, submitter_name, submission_time, id, change_made, change_time 
              FROM {$this->bmltwf_submissions_table_name} 
              WHERE change_id = %d",
             $correspondence[0]->change_id
         ));
+        
+        // Check if submission has been approved/rejected and if 60-day grace period has expired
+        $status = $submission->change_made;
+        $is_closed = in_array($status, ['approved', 'rejected']);
+        $grace_period_expired = false;
+        
+        if ($is_closed && $submission->change_time) {
+            $change_time = strtotime($submission->change_time);
+            $sixty_days_ago = strtotime('-60 days');
+            $grace_period_expired = $change_time < $sixty_days_ago;
+        }
+        
+        if ($grace_period_expired) {
+            return new \WP_Error('rest_forbidden', __('This correspondence thread is no longer available', 'bmlt-workflow'), array('status' => 403));
+        }
+        
+        // Check if it's been 3 months since the last message (only for non-closed submissions)
+        if (!$is_closed) {
+            $last_message = end($correspondence);
+            $last_message_time = strtotime($last_message->created_at);
+            $three_months_ago = strtotime('-3 months');
+            
+            if ($last_message_time < $three_months_ago) {
+                return new \WP_Error('rest_forbidden', __('This correspondence thread has expired', 'bmlt-workflow'), array('status' => 403));
+            }
+        }
         
         // Get meeting name from BMLT if we have a meeting ID
         if (!empty($submission->id)) {
@@ -135,7 +146,8 @@ class CorrespondenceHandler
 
         return array(
             'submission' => $submission,
-            'correspondence' => $correspondence
+            'correspondence' => $correspondence,
+            'is_closed' => $is_closed
         );
     }
 
@@ -168,9 +180,9 @@ class CorrespondenceHandler
             return $submission;
         }
 
-        // Check if submission is approved or rejected - correspondence not allowed
+        // Check if submission is approved or rejected - new correspondence not allowed
         if (in_array($submission->change_made, ['approved', 'rejected'])) {
-            return new \WP_Error('rest_forbidden', __('Correspondence is not allowed for approved or rejected submissions', 'bmlt-workflow'), array('status' => 403));
+            return new \WP_Error('rest_forbidden', __('New correspondence is not allowed for approved or rejected submissions', 'bmlt-workflow'), array('status' => 403));
         }
 
         // If no thread_id provided, create a new one

@@ -368,3 +368,60 @@ test('E2E_Correspondence_Filter_Validation', async t => {
         .click(Selector('#dt-submission-filters option').withText('Rejected'));
     await t.expect(Selector('table#dt-submission tbody tr td').withText('Correspondence Sent').exists).notOk('Correspondence Sent should not appear in Rejected filter');
 });
+
+
+test('E2E_Correspondence_ReadOnly_After_Approval', async t => {
+    const adminMessage = 'Admin message before approval';
+    
+    // Step 1: Admin initiates correspondence
+    const secondRowCell = await get_table_row_col(as.dt_submission, 1, 0);
+    await t.click(secondRowCell);
+    await t
+        .click(cs.correspondenceButton)
+        .typeText(cs.correspondenceTextarea, adminMessage)
+        .click(cs.sendButton)
+        .click(Selector('.ui-dialog-buttonset button').withText('Close'));
+    
+    // Step 2: Get thread_id
+    const cookies = await t.getCookies();
+    const cookieHeader = cookies.map(cookie => `${cookie.name}=${cookie.value}`).join('; ');
+    const nonce = await Selector('#_wprestnonce').value;
+    
+    const submissionsResponse = await t.request({
+        url: `${userVariables.admin_submissions_page_single.replace('/wp-admin/admin.php?page=bmltwf-submissions', '')}/index.php?rest_route=/bmltwf/v1/submissions&first=0&last=1`,
+        method: 'GET',
+        headers: {
+            'Cookie': cookieHeader,
+            'X-WP-Nonce': nonce
+        }
+    });
+    
+    const submission = submissionsResponse.body.data.find(s => s.thread_id);
+    const threadId = submission.thread_id;
+    
+    // Step 3: Approve the submission
+    await click_dt_button_by_index(as.dt_submission_wrapper, 0);
+    await t.typeText(as.approve_dialog_textarea, "Approved");
+    await click_dialog_button_by_index(as.approve_dialog_parent, 1);
+    
+    // Step 4: Verify user can still view correspondence (read-only)
+    const separator = t.ctx.correspondencePageUrl.includes('?') ? '&' : '?';
+    await t.navigateTo(`${t.ctx.correspondencePageUrl}${separator}thread=${threadId}`);
+    await t.expect(Selector('.bmltwf-correspondence-message').withText(adminMessage).exists).ok('Should be able to view correspondence after approval');
+    await t.expect(Selector('.bmltwf-closed-notice').exists).ok('Should show closed notice');
+    await t.expect(Selector('#bmltwf-correspondence-reply').visible).notOk('Reply section should be hidden after approval');
+});
+
+
+
+test('E2E_Correspondence_Grace_Period_Expired', async t => {
+    // Use a separate fixture with pre-loaded expired data (approved >60 days ago)
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, myip(), "3001", "hidden", userVariables.admin_restore_json_expired);
+    
+    // Verify correspondence is no longer accessible after 60-day grace period
+    const separator = t.ctx.correspondencePageUrl.includes('?') ? '&' : '?';
+    await t.navigateTo(`${t.ctx.correspondencePageUrl}${separator}thread=expired-thread-id-12345`);
+    await t.expect(Selector('#bmltwf-correspondence-error').visible).ok('Should show error for expired correspondence');
+    await t.expect(Selector('#bmltwf-correspondence-messages').visible).notOk('Should not show correspondence messages after grace period expires');
+    await t.expect(Selector('#bmltwf-correspondence-error').innerText).contains('no longer available', 'Error should indicate correspondence is no longer available');
+});

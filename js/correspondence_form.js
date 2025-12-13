@@ -89,7 +89,10 @@ jQuery(document).ready(function ($) {
         $('#bmltwf-correspondence-loading').hide();
         let errorMessage = __('Unable to load correspondence. ', 'bmlt-workflow');
 
-        if (status === 'timeout') {
+        // Try to get the specific error message from the API response
+        if (xhr.responseJSON && xhr.responseJSON.message) {
+          errorMessage = xhr.responseJSON.message;
+        } else if (status === 'timeout') {
           errorMessage += __('The request timed out. Please check your connection and try again.', 'bmlt-workflow');
         } else if (xhr.status === 404) {
           errorMessage += __('Correspondence not found. Please check the URL.', 'bmlt-workflow');
@@ -110,6 +113,7 @@ jQuery(document).ready(function ($) {
   function displayCorrespondence(data) {
     const { submission } = data;
     const { correspondence } = data;
+    const { is_closed } = data;
     const changeId = submission.change_id;
 
     // Display header information
@@ -127,6 +131,9 @@ jQuery(document).ready(function ($) {
       headerHtml += `<p><strong>${__('Meeting:', 'bmlt-workflow')}</strong> ${meetingName}</p>`;
     }
     headerHtml += `<p><strong>${__('Submission Date:', 'bmlt-workflow')}</strong> ${formatDate(submission.submission_time)}</p>`;
+    if (is_closed) {
+      headerHtml += `<p class="bmltwf-closed-notice"><em>${__('This submission has been closed. You can view the correspondence history but cannot send new messages.', 'bmlt-workflow')}</em></p>`;
+    }
 
     $('#bmltwf-correspondence-header').html(headerHtml).show();
 
@@ -144,10 +151,12 @@ jQuery(document).ready(function ($) {
     });
 
     $('#bmltwf-correspondence-messages').html(messagesHtml).show();
-    $('#bmltwf-correspondence-reply').show();
-
-    // Store change_id for reply
-    $('#bmltwf-correspondence-reply').data('change-id', changeId);
+    
+    // Only show reply section if submission is not closed
+    if (!is_closed) {
+      $('#bmltwf-correspondence-reply').show();
+      $('#bmltwf-correspondence-reply').data('change-id', changeId);
+    }
   }
 
   // Handle reply button click
