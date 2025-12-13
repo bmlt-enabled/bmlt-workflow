@@ -557,10 +557,27 @@ class Controller extends \WP_REST_Controller
 	public function post_correspondence_permissions_check($request)
 	{
 		$this->debug_log("post_correspondence_permissions_check " . get_current_user_id());
-		if ((!current_user_can($this->bmltwf_capability_manage_submissions))&&(!current_user_can('manage_options'))) {
-			return new \WP_Error('rest_forbidden', __('Access denied: You cannot add correspondence.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+		
+		// Allow access for:
+		// 1. Anonymous users (will be validated via thread_id in handler)
+		// 2. Trusted servants with service body access
+		// 3. Any logged-in user with valid thread_id (validated in handler)
+		if (!is_user_logged_in()) {
+			return true;
 		}
-		return true;
+		
+		// For trusted servants with service body access, allow immediately
+		if (current_user_can($this->bmltwf_capability_manage_submissions) || current_user_can('manage_options')) {
+			return true;
+		}
+		
+		// For logged-in users without admin permissions, allow if they provide thread_id
+		// (will be validated in handler)
+		if ($request->get_param('thread_id')) {
+			return true;
+		}
+		
+		return new \WP_Error('rest_forbidden', __('Access denied: You cannot add correspondence.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
 	}
 
 	public function post_submissions_permissions_check($request)

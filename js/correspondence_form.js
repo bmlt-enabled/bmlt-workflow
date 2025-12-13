@@ -70,9 +70,6 @@ jQuery(document).ready(function ($) {
       url: bmltwf_correspondence_data.rest_url,
       method: 'GET',
       timeout: 10000, // 10 second timeout
-      beforeSend(xhr) {
-        xhr.setRequestHeader('X-WP-Nonce', bmltwf_correspondence_data.nonce);
-      },
       success(response) {
         $('#bmltwf-correspondence-loading').hide();
 
@@ -193,19 +190,17 @@ jQuery(document).ready(function ($) {
     $sendButton.prop('disabled', true).text(__('Sending...', 'bmlt-workflow'));
     $('.bmltwf-reply-error').remove();
 
-    $.ajax({
+    const ajaxOptions = {
       url: `${bmltwf_correspondence_data.submission_rest_url + changeId}/correspondence`,
       method: 'POST',
       timeout: 15000, // 15 second timeout
-      beforeSend(xhr) {
-        xhr.setRequestHeader('X-WP-Nonce', bmltwf_correspondence_data.nonce);
-      },
       data: {
         message,
         thread_id: bmltwf_correspondence_data.thread_id,
-        from_submitter: 'true',
       },
-      success() {
+    };
+    
+    $.ajax(ajaxOptions).done(function() {
         // Show success message
         const successHtml = `<div class="bmltwf-success-message">${
           bmltwf_correspondence_data.i18n.reply_sent
@@ -224,8 +219,7 @@ jQuery(document).ready(function ($) {
           });
           loadCorrespondence();
         }, 2000);
-      },
-      error(xhr, status) {
+    }).fail(function(xhr, status) {
         let errorMessage = __('Failed to send reply. ', 'bmlt-workflow');
 
         if (status === 'timeout') {
@@ -239,11 +233,9 @@ jQuery(document).ready(function ($) {
         }
 
         showReplyError(errorMessage);
-      },
-      complete() {
-        // Re-enable button
-        $sendButton.prop('disabled', false).text(originalText);
-      },
+    }).always(function() {
+      // Re-enable button
+      $sendButton.prop('disabled', false).text(originalText);
     });
   });
 

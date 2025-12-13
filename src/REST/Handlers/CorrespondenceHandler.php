@@ -163,7 +163,6 @@ class CorrespondenceHandler
 
         $change_id = $request->get_param('change_id');
         $message = $request->get_param('message');
-        $from_submitter = $request->get_param('from_submitter') === 'true';
         $thread_id = $request->get_param('thread_id');
 
         if (!$change_id) {
@@ -174,10 +173,36 @@ class CorrespondenceHandler
             return new \WP_Error('rest_invalid_param', __('Message cannot be empty', 'bmlt-workflow'), array('status' => 400));
         }
 
-        // Check if the submission exists and user has permission to access it
-        $submission = $this->get_submission_with_permission_check($change_id);
-        if (is_wp_error($submission)) {
-            return $submission;
+        // Determine if user is a trusted servant/admin with service body access, or a submitter
+        $current_user = wp_get_current_user();
+        $is_admin = $current_user->ID > 0 && (current_user_can('bmltwf_manage_submissions') || current_user_can('manage_options'));
+        $from_submitter = !$is_admin; // Anyone without trusted servant/admin permissions is treated as submitter
+        
+        // For submitters, validate via thread_id; for trusted servants/admins, check service body access
+        if ($from_submitter) {
+            // Validate that thread_id exists and belongs to this submission
+            if (!$thread_id) {
+                return new \WP_Error('rest_invalid_param', __('thread_id is required for submitter correspondence', 'bmlt-workflow'), array('status' => 400));
+            }
+            
+            $submission = $wpdb->get_row($wpdb->prepare(
+                "SELECT s.* FROM {$this->bmltwf_submissions_table_name} s
+                 INNER JOIN {$this->bmltwf_correspondence_table_name} c ON s.change_id = c.change_id
+                 WHERE s.change_id = %d AND c.thread_id = %s
+                 LIMIT 1",
+                $change_id,
+                $thread_id
+            ));
+            
+            if (!$submission) {
+                return new \WP_Error('rest_forbidden', __('Invalid thread_id or change_id', 'bmlt-workflow'), array('status' => 403));
+            }
+        } else {
+            // Trusted servant/admin posting - check service body access permissions
+            $submission = $this->get_submission_with_permission_check($change_id);
+            if (is_wp_error($submission)) {
+                return $submission;
+            }
         }
 
         // Check if submission is approved or rejected - new correspondence not allowed
@@ -222,7 +247,6 @@ class CorrespondenceHandler
         }
 
         // Prepare data for insert with debug logging
-        $current_user = wp_get_current_user();
         $created_by = $from_submitter ? $submission->submitter_name : $current_user->display_name;
         $created_at = current_time('mysql');
         
@@ -267,7 +291,6 @@ class CorrespondenceHandler
         
         // Update the submission status based on who sent the correspondence
         $status = $from_submitter ? 'correspondence_received' : 'correspondence_sent';
-        $current_user = wp_get_current_user();
         $username = $from_submitter ? $submission->submitter_name : $current_user->user_login;
         $current_time = current_time('mysql');
         

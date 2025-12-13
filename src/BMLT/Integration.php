@@ -218,7 +218,6 @@ class Integration
         }
         
         $version = $server_info['version'];
-        $this->debug_log("version returns = " . $version);
         return $version;
     }
 
