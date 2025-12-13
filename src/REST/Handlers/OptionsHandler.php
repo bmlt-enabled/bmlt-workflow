@@ -45,13 +45,16 @@ class OptionsHandler
     {
         global $wpdb;
         
-    
         $this->debug_log("restore handler called");
 
         $params = $request->get_json_params();
-        $this->debug_log("PARSING PARAMETERS");
-        $this->debug_log("Raw body: " . $request->get_body());
-        $this->debug_log($params);
+        
+        if ($params === null) {
+            $params = json_decode($request->get_body(), true);
+            if ($params === null) {
+                return $this->bmltwf_rest_error(__('Invalid JSON in request body','bmlt-workflow'), 400);
+            }
+        }
 
         $options = $params['options']??0;
         if (!$options) {
@@ -121,26 +124,13 @@ class OptionsHandler
         $this->debug_log("submissions rows inserted :" . $cnt);
 
         // correspondence table (if exists in backup)
-        $this->debug_log("Checking for correspondence in params. Keys: " . implode(', ', array_keys($params)));
-        $this->debug_log("isset correspondence: " . (isset($params['correspondence']) ? 'true' : 'false'));
-        $this->debug_log("empty correspondence: " . (empty($params['correspondence']) ? 'true' : 'false'));
         if (isset($params['correspondence']) && !empty($params['correspondence'])) {
             $cnt = 0;
-            $this->debug_log("Attempting to restore correspondence table");
-            $this->debug_log("Correspondence data: " . print_r($params['correspondence'], true));
             foreach ($params['correspondence'] as $row => $value) {
-                $this->debug_log("Inserting correspondence row: " . print_r($params['correspondence'][$row], true));
                 $rows = $wpdb->insert($this->BMLTWF_Database->bmltwf_correspondence_table_name, $params['correspondence'][$row]);
-                if ($rows === false) {
-                    $this->debug_log("Failed to insert correspondence row. Error: " . $wpdb->last_error);
-                } else {
-                    $this->debug_log("Successfully inserted correspondence row. Rows affected: " . $rows);
-                }
                 $cnt += $rows;
             }
-            $this->debug_log("correspondence rows inserted total: " . $cnt);
-        } else {
-            $this->debug_log("No correspondence data found in backup or correspondence is empty");
+            $this->debug_log("correspondence rows inserted: " . $cnt);
         }
 
         // Set auto increment to highest ID value + 1

@@ -115,19 +115,11 @@ export async function waitfor(site) {
   execSync(userVariables.waitfor + " " + site);
 }
 
-export async function restore_from_backup(role, settings_page, restore_json, host, port, subprovince, custom_file = null) {
-  // console.log("settings page "+settings_page);
-  // console.log("restore_json "+restore_json);
-  
+export async function restore_from_backup(role, settings_page, restore_json, host, port, subprovince, custom_data = null) {
   let restorebody;
   
-  // Check if custom_file is provided
-  if (custom_file) {
-    // Read from file
-    const fs = require('fs');
-    const fileContent = fs.readFileSync(custom_file, 'utf8');
-    restorebody = JSON.parse(fileContent);
-    // Update host and port in options if they exist
+  if (custom_data) {
+    restorebody = custom_data;
     if (restorebody.options && restorebody.options.bmltwf_bmlt_server_address) {
       restorebody.options.bmltwf_bmlt_server_address = "http://" + host + ":" + port + "/main_server/";
     }
@@ -283,16 +275,11 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
   await t.expect(Selector("#_wprestnonce").exists).ok();
   const nonce = await Selector("#_wprestnonce").value;
   
-  console.log('Restore body keys:', Object.keys(restorebody));
-  console.log('Has correspondence:', 'correspondence' in restorebody);
-  if (restorebody.correspondence) {
-    console.log('Correspondence length:', restorebody.correspondence.length);
-  }
-  
-  const resp = await t.request(restore_json, {
+  const resp = await t.request({
+    url: restore_json,
     method: "POST",
     withCredentials: true, 
-    body: JSON.stringify(restorebody),
+    body: restorebody,
     headers: {
       "Content-Type": "application/json",
       "X-WP-Nonce": nonce,

@@ -86,7 +86,7 @@ class CorrespondenceHandler
             return new \WP_Error('rest_invalid_param', __('Invalid thread_id parameter', 'bmlt-workflow'), array('status' => 400));
         }
 
-        // Get correspondence for this thread
+        // Get correspondence and submission by thread_id
         $correspondence = $wpdb->get_results($wpdb->prepare(
             "SELECT c.*, s.submitter_name, s.change_made 
              FROM {$this->bmltwf_correspondence_table_name} c

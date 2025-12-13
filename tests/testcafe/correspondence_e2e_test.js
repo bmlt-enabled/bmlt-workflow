@@ -415,8 +415,57 @@ test('E2E_Correspondence_ReadOnly_After_Approval', async t => {
 
 
 test('E2E_Correspondence_Grace_Period_Expired', async t => {
-    // Use a separate fixture with pre-loaded expired data (approved >60 days ago)
-    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, myip(), "3001", "hidden", userVariables.admin_restore_json_expired);
+    // Use expired data as object (approved >60 days ago)
+    const expiredData = {
+        options: {
+            bmltwf_email_from_address: "example@example.com",
+            bmltwf_delete_closed_meetings: "unpublish",
+            bmltwf_optional_location_nation: "hidden",
+            bmltwf_optional_location_nation_displayname: "Nation",
+            bmltwf_optional_location_sub_province: "hidden",
+            bmltwf_optional_location_sub_province_displayname: "Sub Province",
+            bmltwf_optional_location_province: "display",
+            bmltwf_optional_location_province_displayname: "Province",
+            bmltwf_optional_postcode: "display",
+            bmltwf_optional_postcode_displayname: "Postcode",
+            bmltwf_required_meeting_formats: "true",
+            bmltwf_db_version: "1.1.18"
+        },
+        submissions: [{
+            change_id: 100,
+            submission_time: "2022-01-01 12:00:00",
+            change_time: "2022-01-02 12:00:00",
+            changed_by: "admin",
+            change_made: "approved",
+            submitter_name: "Test User",
+            submission_type: "reason_new",
+            submitter_email: "test@test.com",
+            id: "0",
+            serviceBodyId: "2",
+            changes_requested: JSON.stringify({name: "Expired Meeting", startTime: "10:00", duration: "01:00", location_text: "Test Location", location_street: "123 Test St", location_municipality: "Test City", location_province: "NSW", location_postal_code_1: 2000, day: "1", serviceBodyId: 2, formatIds: ["1", "2"]}),
+            action_message: "Approved"
+        }],
+        correspondence: [{
+            change_id: 100,
+            thread_id: "expired-thread-id-12345",
+            message: "This is an expired correspondence message",
+            from_submitter: 0,
+            created_at: "2022-01-01 13:00:00",
+            created_by: "Admin"
+        }],
+        service_bodies: [{
+            serviceBodyId: "2",
+            service_body_name: "a-level1",
+            service_body_description: "",
+            show_on_form: "1"
+        }],
+        service_bodies_access: [{
+            serviceBodyId: "2",
+            wp_uid: "1"
+        }]
+    };
+    
+    await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, myip(), "3001", "hidden", expiredData);
     
     // Verify correspondence is no longer accessible after 60-day grace period
     const separator = t.ctx.correspondencePageUrl.includes('?') ? '&' : '?';

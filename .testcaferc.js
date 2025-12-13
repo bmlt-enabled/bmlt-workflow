@@ -16,7 +16,6 @@ const backuppath = "/index.php" + sitejsonurl + admin_backup_json_path;
 const admin_restore_json_path = "/index.php?rest_route=/bmltwf/v1/options/restore";
 const restorepath = "/index.php" + sitejsonurl + admin_restore_json_path;
 const admin_restore_json_path_multisite = "/wp-json/bmltwf/v1/options/restore"
-const admin_restore_json_expired = "tests/testcafe/uploads/correspondence_expired.json";
 const admin_correspondence_json_path = "/index.php?rest_route=/bmltwf/v1/options/correspondence-page";
 const admin_correspondence_json_path_multisite = "/wp-json/bmltwf/v1/options/correspondence-page";
 const execSync = require("child_process").execSync;
@@ -57,7 +56,6 @@ module.exports = {
     submission_reviewer_nopriv_pass: password_nopriv_single,
     admin_backup_json: siteurl_single + admin_backup_json_path,
     admin_restore_json: siteurl_single + admin_restore_json_path,
-    admin_restore_json_expired: admin_restore_json_expired,
     wp_pages_single: siteurl_single + '/index.php?rest_route=/wp/v2/pages',
     admin_correspondence_json_single: siteurl_single + admin_correspondence_json_path,
 
