@@ -115,12 +115,17 @@ export async function waitfor(site) {
   execSync(userVariables.waitfor + " " + site);
 }
 
-export async function restore_from_backup(role, settings_page, restore_json, host, port, subprovince) {
-  // console.log("settings page "+settings_page);
-  // console.log("restore_json "+restore_json);
+export async function restore_from_backup(role, settings_page, restore_json, host, port, subprovince, custom_data = null) {
+  let restorebody;
   
-  // pre fill the submissions
-  const restorebody = {
+  if (custom_data) {
+    restorebody = custom_data;
+    if (restorebody.options && restorebody.options.bmltwf_bmlt_server_address) {
+      restorebody.options.bmltwf_bmlt_server_address = "http://" + host + ":" + port + "/main_server/";
+    }
+  } else {
+    // Use hardcoded default
+    restorebody = {
     options: {
       bmltwf_email_from_address: "example@example.com",
       bmltwf_delete_closed_meetings: "unpublish",
@@ -256,6 +261,7 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
       },
     ],
   };
+  }
 
   await t.useRole(role).navigateTo(settings_page);
   // Navigate to advanced tab to ensure nonce field is accessible
@@ -268,7 +274,9 @@ export async function restore_from_backup(role, settings_page, restore_json, hos
   // Wait for the nonce element to be available
   await t.expect(Selector("#_wprestnonce").exists).ok();
   const nonce = await Selector("#_wprestnonce").value;
-  const resp = await t.request(restore_json, {
+  
+  const resp = await t.request({
+    url: restore_json,
     method: "POST",
     withCredentials: true, 
     body: restorebody,

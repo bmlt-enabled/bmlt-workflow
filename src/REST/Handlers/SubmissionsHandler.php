@@ -73,7 +73,7 @@ class SubmissionsHandler
         
         switch ($filter) {
             case 'pending':
-                $where_clause = ' WHERE change_made IS NULL ';
+                $where_clause = ' WHERE (change_made IS NULL OR change_made = "updated" OR change_made = "correspondence_sent" OR change_made = "correspondence_received") ';
                 break;
             case 'approved':
                 $where_clause = ' WHERE change_made = "approved" ';

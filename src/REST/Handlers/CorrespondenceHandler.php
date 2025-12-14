@@ -86,7 +86,7 @@ class CorrespondenceHandler
             return new \WP_Error('rest_invalid_param', __('Invalid thread_id parameter', 'bmlt-workflow'), array('status' => 400));
         }
 
-        // Get correspondence for this thread
+        // Get correspondence and submission by thread_id
         $correspondence = $wpdb->get_results($wpdb->prepare(
             "SELECT c.*, s.submitter_name, s.change_made 
              FROM {$this->bmltwf_correspondence_table_name} c
@@ -100,28 +100,39 @@ class CorrespondenceHandler
             return new \WP_Error('rest_not_found', __('Correspondence thread not found', 'bmlt-workflow'), array('status' => 404));
         }
         
-        // Check if submission has been approved/rejected/deleted
-        $status = $correspondence[0]->change_made;
-        if (in_array($status, ['approved', 'rejected', 'deleted'])) {
-            return new \WP_Error('rest_forbidden', __('This correspondence thread is no longer available', 'bmlt-workflow'), array('status' => 403));
-        }
-        
-        // Check if it's been 3 months since the last message
-        $last_message = end($correspondence);
-        $last_message_time = strtotime($last_message->created_at);
-        $three_months_ago = strtotime('-3 months');
-        
-        if ($last_message_time < $three_months_ago) {
-            return new \WP_Error('rest_forbidden', __('This correspondence thread has expired', 'bmlt-workflow'), array('status' => 403));
-        }
-
-        // Get the submission details
+        // Get submission details to check status and change_time
         $submission = $wpdb->get_row($wpdb->prepare(
-            "SELECT change_id, submission_type, submitter_name, submission_time, id 
+            "SELECT change_id, submission_type, submitter_name, submission_time, id, change_made, change_time 
              FROM {$this->bmltwf_submissions_table_name} 
              WHERE change_id = %d",
             $correspondence[0]->change_id
         ));
+        
+        // Check if submission has been approved/rejected and if 60-day grace period has expired
+        $status = $submission->change_made;
+        $is_closed = in_array($status, ['approved', 'rejected']);
+        $grace_period_expired = false;
+        
+        if ($is_closed && $submission->change_time) {
+            $change_time = strtotime($submission->change_time);
+            $sixty_days_ago = strtotime('-60 days');
+            $grace_period_expired = $change_time < $sixty_days_ago;
+        }
+        
+        if ($grace_period_expired) {
+            return new \WP_Error('rest_forbidden', __('This correspondence thread is no longer available', 'bmlt-workflow'), array('status' => 403));
+        }
+        
+        // Check if it's been 3 months since the last message (only for non-closed submissions)
+        if (!$is_closed) {
+            $last_message = end($correspondence);
+            $last_message_time = strtotime($last_message->created_at);
+            $three_months_ago = strtotime('-3 months');
+            
+            if ($last_message_time < $three_months_ago) {
+                return new \WP_Error('rest_forbidden', __('This correspondence thread has expired', 'bmlt-workflow'), array('status' => 403));
+            }
+        }
         
         // Get meeting name from BMLT if we have a meeting ID
         if (!empty($submission->id)) {
@@ -135,7 +146,8 @@ class CorrespondenceHandler
 
         return array(
             'submission' => $submission,
-            'correspondence' => $correspondence
+            'correspondence' => $correspondence,
+            'is_closed' => $is_closed
         );
     }
 
@@ -151,7 +163,6 @@ class CorrespondenceHandler
 
         $change_id = $request->get_param('change_id');
         $message = $request->get_param('message');
-        $from_submitter = $request->get_param('from_submitter') === 'true';
         $thread_id = $request->get_param('thread_id');
 
         if (!$change_id) {
@@ -162,15 +173,41 @@ class CorrespondenceHandler
             return new \WP_Error('rest_invalid_param', __('Message cannot be empty', 'bmlt-workflow'), array('status' => 400));
         }
 
-        // Check if the submission exists and user has permission to access it
-        $submission = $this->get_submission_with_permission_check($change_id);
-        if (is_wp_error($submission)) {
-            return $submission;
+        // Determine if user is a trusted servant/admin with service body access, or a submitter
+        $current_user = wp_get_current_user();
+        $is_admin = $current_user->ID > 0 && (current_user_can('bmltwf_manage_submissions') || current_user_can('manage_options'));
+        $from_submitter = !$is_admin; // Anyone without trusted servant/admin permissions is treated as submitter
+        
+        // For submitters, validate via thread_id; for trusted servants/admins, check service body access
+        if ($from_submitter) {
+            // Validate that thread_id exists and belongs to this submission
+            if (!$thread_id) {
+                return new \WP_Error('rest_invalid_param', __('thread_id is required for submitter correspondence', 'bmlt-workflow'), array('status' => 400));
+            }
+            
+            $submission = $wpdb->get_row($wpdb->prepare(
+                "SELECT s.* FROM {$this->bmltwf_submissions_table_name} s
+                 INNER JOIN {$this->bmltwf_correspondence_table_name} c ON s.change_id = c.change_id
+                 WHERE s.change_id = %d AND c.thread_id = %s
+                 LIMIT 1",
+                $change_id,
+                $thread_id
+            ));
+            
+            if (!$submission) {
+                return new \WP_Error('rest_forbidden', __('Invalid thread_id or change_id', 'bmlt-workflow'), array('status' => 403));
+            }
+        } else {
+            // Trusted servant/admin posting - check service body access permissions
+            $submission = $this->get_submission_with_permission_check($change_id);
+            if (is_wp_error($submission)) {
+                return $submission;
+            }
         }
 
-        // Check if submission is approved or rejected - correspondence not allowed
+        // Check if submission is approved or rejected - new correspondence not allowed
         if (in_array($submission->change_made, ['approved', 'rejected'])) {
-            return new \WP_Error('rest_forbidden', __('Correspondence is not allowed for approved or rejected submissions', 'bmlt-workflow'), array('status' => 403));
+            return new \WP_Error('rest_forbidden', __('New correspondence is not allowed for approved or rejected submissions', 'bmlt-workflow'), array('status' => 403));
         }
 
         // If no thread_id provided, create a new one
@@ -210,7 +247,6 @@ class CorrespondenceHandler
         }
 
         // Prepare data for insert with debug logging
-        $current_user = wp_get_current_user();
         $created_by = $from_submitter ? $submission->submitter_name : $current_user->display_name;
         $created_at = current_time('mysql');
         
@@ -255,7 +291,6 @@ class CorrespondenceHandler
         
         // Update the submission status based on who sent the correspondence
         $status = $from_submitter ? 'correspondence_received' : 'correspondence_sent';
-        $current_user = wp_get_current_user();
         $username = $from_submitter ? $submission->submitter_name : $current_user->user_login;
         $current_time = current_time('mysql');
         

@@ -45,12 +45,16 @@ class OptionsHandler
     {
         global $wpdb;
         
-    
         $this->debug_log("restore handler called");
 
         $params = $request->get_json_params();
-        $this->debug_log("PARSING PARAMETERS");
-        $this->debug_log($params);
+        
+        if ($params === null) {
+            $params = json_decode($request->get_body(), true);
+            if ($params === null) {
+                return $this->bmltwf_rest_error(__('Invalid JSON in request body','bmlt-workflow'), 400);
+            }
+        }
 
         $options = $params['options']??0;
         if (!$options) {
@@ -126,7 +130,7 @@ class OptionsHandler
                 $rows = $wpdb->insert($this->BMLTWF_Database->bmltwf_correspondence_table_name, $params['correspondence'][$row]);
                 $cnt += $rows;
             }
-            $this->debug_log("correspondence rows inserted :" . $cnt);
+            $this->debug_log("correspondence rows inserted: " . $cnt);
         }
 
         // Set auto increment to highest ID value + 1

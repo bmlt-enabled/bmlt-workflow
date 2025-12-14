@@ -758,10 +758,9 @@ jQuery(document).ready(function ($) {
         $('#dt-submission').DataTable().button('quickedit:name').enable(!cantquickedit);
         $('#dt-submission').DataTable().button('delete:name').enable(bmltwf_datatables_delete_enabled);
 
-        // Handle correspondence button - enable only if correspondence is enabled and submission is not approved/rejected
+        // Handle correspondence button - enable only if correspondence is enabled
         if (bmltwf_correspondence_enabled === true || bmltwf_correspondence_enabled === 'true') {
-          const canCorrespond = !actioned; // Same logic as approve/reject buttons
-          $('#dt-submission').DataTable().button('correspondence:name').enable(canCorrespond);
+          $('#dt-submission').DataTable().button('correspondence:name').enable(true);
           // Check if this submission has correspondence and highlight the button if it does
           const rowData = $('#dt-submission').DataTable().row({ selected: true }).data();
           checkForCorrespondence(rowData);

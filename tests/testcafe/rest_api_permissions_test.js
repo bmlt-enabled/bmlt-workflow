@@ -251,7 +251,7 @@ test(`${rejectEndpoint} should require authentication for POST but returns 404 f
 });
 
 // Test correspondence endpoints
-test(`${correspondenceEndpoint} should require authentication for GET and POST`, async t => {
+test(`${correspondenceEndpoint} should require authentication for GET but allow POST with thread_id`, async t => {
     // Test GET access (should be denied with 401 or 403)
     const getResponse = await t.request({
         url: siteurl_single + correspondenceEndpoint,
@@ -261,15 +261,26 @@ test(`${correspondenceEndpoint} should require authentication for GET and POST`,
     // Check that the GET response is a 401 or 403 error
     await t.expect(getResponse.status === 401 || getResponse.status === 403).ok(`Expected 401 or 403 for GET, got ${getResponse.status}`);
     
-    // Test POST access (should be denied with 401 or 403)
-    const postResponse = await t.request({
+    // Test POST access without thread_id (should be denied with 401 or 403)
+    const postResponseNoThread = await t.request({
         url: siteurl_single + correspondenceEndpoint,
         method: 'POST',
         body: { message: 'test message' }
     });
     
-    // Check that the POST response is a 401 or 403 error
-    await t.expect(postResponse.status === 401 || postResponse.status === 403).ok(`Expected 401 or 403 for POST, got ${postResponse.status}`);
+    // Check that the POST response without thread_id is a 401 or 403 error
+    await t.expect(postResponseNoThread.status === 401 || postResponseNoThread.status === 403).ok(`Expected 401 or 403 for POST without thread_id, got ${postResponseNoThread.status}`);
+    
+    // Test POST access with thread_id (should be allowed but may return 400/403 for invalid thread)
+    const postResponseWithThread = await t.request({
+        url: siteurl_single + correspondenceEndpoint,
+        method: 'POST',
+        body: { message: 'test message', thread_id: 'test-thread-id' }
+    });
+    
+    // Check that the POST response with thread_id is NOT a 401 (authentication error)
+    // It may be 400 (bad request) or 403 (invalid thread), but not 401
+    await t.expect(postResponseWithThread.status).notEql(401, `POST with thread_id should not return 401, got ${postResponseWithThread.status}`);
 });
 
 // Test correspondence page endpoint

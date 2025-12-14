@@ -118,6 +118,7 @@ Line: $errorLine
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('query');
         $wpdb->shouldReceive('get_charset_collate');
+        $wpdb->shouldReceive('get_var')->andReturn(0); // Mock index check
         $wpdb->num_rows = 0;
         $wpdb->prefix = "";
 
@@ -145,16 +146,17 @@ Line: $errorLine
         $wpdb->shouldReceive('query');
         $wpdb->shouldReceive('get_charset_collate');
         
-        // More specific mocking for get_var calls
+        // Mock all get_var calls with a flexible matcher
         $wpdb->shouldReceive('get_var')
-            ->with(Mockery::on(function($query) {
-                return strpos($query, 'SHOW TABLES LIKE') !== false;
-            }))
-            ->andReturn(1); // Tables exist
-            
-        $wpdb->shouldReceive('get_var')
-            ->with("SHOW TABLES LIKE 'bmltwf_debug_log'")
-            ->andReturn('bmltwf_debug_log'); // Debug log table exists
+            ->andReturnUsing(function($query) {
+                if (strpos($query, 'SHOW TABLES LIKE') !== false) {
+                    return 'bmltwf_debug_log'; // Table exists
+                }
+                if (strpos($query, 'INFORMATION_SCHEMA.STATISTICS') !== false) {
+                    return 0; // Index doesn't exist
+                }
+                return 1;
+            });
             
         $wpdb->shouldReceive('get_row')
             ->with("SHOW COLUMNS FROM bmltwf_debug_log LIKE 'log_time'")
@@ -186,6 +188,7 @@ Line: $errorLine
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('query');
         $wpdb->shouldReceive('get_charset_collate');
+        $wpdb->shouldReceive('get_var')->andReturn(0); // Mock index check
         $wpdb->num_rows = 1;
         $wpdb->prefix = "";
 
@@ -213,6 +216,7 @@ Line: $errorLine
         /** @var Mockery::mock $wpdb test */
         $wpdb->shouldReceive('query');
         $wpdb->shouldReceive('get_charset_collate');
+        $wpdb->shouldReceive('get_var')->andReturn(0); // Mock index check
         $wpdb->num_rows = 1;
         $wpdb->prefix = "";
 
@@ -234,6 +238,7 @@ Line: $errorLine
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
         $wpdb->shouldReceive('query')->atLeast()->once();
+        $wpdb->shouldReceive('get_var')->andReturn(0); // Mock index check
         $wpdb->prefix = "";
 
         $database = new BMLTWF_Database();
@@ -250,6 +255,7 @@ Line: $errorLine
         global $wpdb;
         $wpdb = Mockery::mock('wpdb');
         $wpdb->shouldReceive('query')->atLeast()->once();
+        $wpdb->shouldReceive('get_var')->andReturn(0); // Mock index check
         $wpdb->prefix = "";
 
         $database = new BMLTWF_Database();
@@ -324,25 +330,34 @@ Line: $errorLine
             ->with("SELECT MAX(change_id) FROM bmltwf_submissions")
             ->andReturn(10); // Max ID
             
-        // Mock debug log table check
+        // Mock all get_var calls with flexible matching
         $wpdb->shouldReceive('get_var')
-            ->with("SHOW TABLES LIKE 'bmltwf_debug_log'")
-            ->andReturn('bmltwf_debug_log'); // Table exists
+            ->andReturnUsing(function($query) {
+                if (strpos($query, 'INFORMATION_SCHEMA.STATISTICS') !== false) {
+                    return 0; // Index doesn't exist
+                }
+                if (strpos($query, 'SHOW TABLES LIKE') !== false) {
+                    return 'table_exists'; // Tables exist
+                }
+                if (strpos($query, 'SHOW COLUMNS FROM') !== false) {
+                    return 'serviceBodyId'; // Column exists
+                }
+                if (strpos($query, 'COUNT(*)') !== false) {
+                    return 0; // No orphaned records
+                }
+                if (strpos($query, 'AUTO_INCREMENT') !== false) {
+                    return 20; // Auto increment value
+                }
+                if (strpos($query, 'MAX(change_id)') !== false) {
+                    return 10; // Max ID
+                }
+                return 0;
+            });
             
         // Mock column check for debug log table
         $wpdb->shouldReceive('get_row')
             ->with("SHOW COLUMNS FROM bmltwf_debug_log LIKE 'log_time'")
             ->andReturn((object)['Type' => 'datetime']); // Without microsecond precision
-            
-        // Mock column check for serviceBodyId in service bodies table
-        $wpdb->shouldReceive('get_var')
-            ->with("SHOW COLUMNS FROM bmltwf_service_bodies LIKE 'serviceBodyId'")
-            ->andReturn('serviceBodyId'); // Column exists
-            
-        // Mock correspondence table check for ensureCorrespondenceTableExists
-        $wpdb->shouldReceive('get_var')
-            ->with("SHOW TABLES LIKE 'bmltwf_correspondence'")
-            ->andReturn('bmltwf_correspondence'); // Table exists
         
         Functions\when('\update_option')->justReturn(true);
         Functions\when('\delete_option')->justReturn(true);
@@ -476,10 +491,14 @@ Line: $errorLine
             return true;
         });
         
-        // Mock the debug log table check
+        // Mock all get_var calls
         $wpdb->shouldReceive('get_var')
-            ->with("SHOW TABLES LIKE 'test_bmltwf_debug_log'")
-            ->andReturn(null); // Table doesn't exist yet
+            ->andReturnUsing(function($query) {
+                if (strpos($query, 'INFORMATION_SCHEMA.STATISTICS') !== false) {
+                    return 0; // Index doesn't exist
+                }
+                return null; // Table doesn't exist
+            });
         
         $database = new BMLTWF_Database();
         $database->createTables('utf8mb4_unicode_ci', '1.1.18');
@@ -516,6 +535,7 @@ Line: $errorLine
             $capturedQueries[] = $query;
             return true;
         });
+        $wpdb->shouldReceive('get_var')->andReturn(0); // Mock index check
         
         $database = new BMLTWF_Database();
         $database->createTables('utf8mb4_unicode_ci', '1.1.28');
@@ -700,6 +720,7 @@ Line: $errorLine
         });
         
         $wpdb->shouldReceive('get_charset_collate')->andReturn('utf8mb4_unicode_ci');
+        $wpdb->shouldReceive('get_var')->andReturn(0); // Mock index check
         
         Functions\when('\get_option')->justReturn(false); // No DB version exists
         Functions\when('\delete_option')->justReturn(true);

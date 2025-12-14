@@ -70,9 +70,6 @@ jQuery(document).ready(function ($) {
       url: bmltwf_correspondence_data.rest_url,
       method: 'GET',
       timeout: 10000, // 10 second timeout
-      beforeSend(xhr) {
-        xhr.setRequestHeader('X-WP-Nonce', bmltwf_correspondence_data.nonce);
-      },
       success(response) {
         $('#bmltwf-correspondence-loading').hide();
 
@@ -89,7 +86,10 @@ jQuery(document).ready(function ($) {
         $('#bmltwf-correspondence-loading').hide();
         let errorMessage = __('Unable to load correspondence. ', 'bmlt-workflow');
 
-        if (status === 'timeout') {
+        // Try to get the specific error message from the API response
+        if (xhr.responseJSON && xhr.responseJSON.message) {
+          errorMessage = xhr.responseJSON.message;
+        } else if (status === 'timeout') {
           errorMessage += __('The request timed out. Please check your connection and try again.', 'bmlt-workflow');
         } else if (xhr.status === 404) {
           errorMessage += __('Correspondence not found. Please check the URL.', 'bmlt-workflow');
@@ -110,6 +110,7 @@ jQuery(document).ready(function ($) {
   function displayCorrespondence(data) {
     const { submission } = data;
     const { correspondence } = data;
+    const { is_closed } = data;
     const changeId = submission.change_id;
 
     // Display header information
@@ -127,6 +128,9 @@ jQuery(document).ready(function ($) {
       headerHtml += `<p><strong>${__('Meeting:', 'bmlt-workflow')}</strong> ${meetingName}</p>`;
     }
     headerHtml += `<p><strong>${__('Submission Date:', 'bmlt-workflow')}</strong> ${formatDate(submission.submission_time)}</p>`;
+    if (is_closed) {
+      headerHtml += `<p class="bmltwf-closed-notice"><em>${__('This submission has been closed. You can view the correspondence history but cannot send new messages.', 'bmlt-workflow')}</em></p>`;
+    }
 
     $('#bmltwf-correspondence-header').html(headerHtml).show();
 
@@ -144,10 +148,12 @@ jQuery(document).ready(function ($) {
     });
 
     $('#bmltwf-correspondence-messages').html(messagesHtml).show();
-    $('#bmltwf-correspondence-reply').show();
-
-    // Store change_id for reply
-    $('#bmltwf-correspondence-reply').data('change-id', changeId);
+    
+    // Only show reply section if submission is not closed
+    if (!is_closed) {
+      $('#bmltwf-correspondence-reply').show();
+      $('#bmltwf-correspondence-reply').data('change-id', changeId);
+    }
   }
 
   // Handle reply button click
@@ -184,19 +190,17 @@ jQuery(document).ready(function ($) {
     $sendButton.prop('disabled', true).text(__('Sending...', 'bmlt-workflow'));
     $('.bmltwf-reply-error').remove();
 
-    $.ajax({
+    const ajaxOptions = {
       url: `${bmltwf_correspondence_data.submission_rest_url + changeId}/correspondence`,
       method: 'POST',
       timeout: 15000, // 15 second timeout
-      beforeSend(xhr) {
-        xhr.setRequestHeader('X-WP-Nonce', bmltwf_correspondence_data.nonce);
-      },
       data: {
         message,
         thread_id: bmltwf_correspondence_data.thread_id,
-        from_submitter: 'true',
       },
-      success() {
+    };
+    
+    $.ajax(ajaxOptions).done(function() {
         // Show success message
         const successHtml = `<div class="bmltwf-success-message">${
           bmltwf_correspondence_data.i18n.reply_sent
@@ -215,8 +219,7 @@ jQuery(document).ready(function ($) {
           });
           loadCorrespondence();
         }, 2000);
-      },
-      error(xhr, status) {
+    }).fail(function(xhr, status) {
         let errorMessage = __('Failed to send reply. ', 'bmlt-workflow');
 
         if (status === 'timeout') {
@@ -230,11 +233,9 @@ jQuery(document).ready(function ($) {
         }
 
         showReplyError(errorMessage);
-      },
-      complete() {
-        // Re-enable button
-        $sendButton.prop('disabled', false).text(originalText);
-      },
+    }).always(function() {
+      // Re-enable button
+      $sendButton.prop('disabled', false).text(originalText);
     });
   });
 

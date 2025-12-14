@@ -43,6 +43,8 @@ class BMLTWF_Database
     {
         global $wpdb;
 
+        $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_correspondence_table_name . ";";
+        $wpdb->query($sql);
         $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_service_bodies_access_table_name . ";";
         $wpdb->query($sql);
         $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_submissions_table_name . ";";
@@ -50,8 +52,6 @@ class BMLTWF_Database
         $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_service_bodies_table_name . ";";
         $wpdb->query($sql);
         $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_debug_log_table_name . ";";        
-        $wpdb->query($sql);
-        $sql = "DROP TABLE IF EXISTS " . $this->bmltwf_correspondence_table_name . ";";
         $wpdb->query($sql);
         $this->debug_log("tables dropped");
     }
@@ -188,8 +188,17 @@ class BMLTWF_Database
         
         $wpdb->query($sql);
         
-        // Create index on log_time for faster cleanup
-        $wpdb->query("CREATE INDEX idx_log_time ON " . $this->bmltwf_debug_log_table_name . "(log_time);");
+        // Create index on log_time for faster cleanup (only if it doesn't exist)
+        $index_exists = $wpdb->get_var(
+            "SELECT COUNT(*) FROM INFORMATION_SCHEMA.STATISTICS 
+             WHERE TABLE_SCHEMA = DATABASE() 
+             AND TABLE_NAME = '" . $this->bmltwf_debug_log_table_name . "' 
+             AND INDEX_NAME = 'idx_log_time'"
+        );
+        
+        if (!$index_exists) {
+            $wpdb->query("CREATE INDEX idx_log_time ON " . $this->bmltwf_debug_log_table_name . "(log_time);");
+        }
         
         $this->debug_log("Debug log table created");
     }
