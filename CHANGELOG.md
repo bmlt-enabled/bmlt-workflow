@@ -1,9 +1,9 @@
-## 1.1.38 (Dec 14, 2024)
+## 1.1.38 (Dec 14, 2025)
 - #218 Fixes Submission Updated in QuickEdit No Longer Display in Pending Filter (thanks @tempsaint !)
 - #220 Fixes Correspondence Feature Doesn't Allow the Submitter to See the Messages After Submission is Processed (thanks @tempsaint !)
 - #219 Fixes Correspondence wouldn't allow the submitter to reply (thanks @tempsaint !)
 
-## 1.1.37 (Nov 24, 2024)
+## 1.1.37 (Nov 24, 2025)
 - Fixes additional users being displayed in service bodies access list (thanks @tempsaint !)
 
 ## 1.1.36 (Nov 23, 2025)
