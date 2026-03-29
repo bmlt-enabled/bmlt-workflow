@@ -431,6 +431,24 @@ class SubmissionsHandler
         $latlng['longitude'] = $location['results'][0]['geometry']['location']['lng'];
         $this->debug_log("GMAPS location lookup returns = " .  $latlng['latitude']  . " " . $latlng['longitude']);
 
+        $address_components = $location['results'][0]['address_components'] ?? [];
+        if ($this->bmlt_integration->isAutoGeocodingEnabled('zip')) {
+            foreach ($address_components as $component) {
+                if (in_array('postal_code', $component['types'])) {
+                    $latlng['location_postal_code_1'] = $component['short_name'];
+                    break;
+                }
+            }
+        }
+        if ($this->bmlt_integration->isAutoGeocodingEnabled('county')) {
+            foreach ($address_components as $component) {
+                if (in_array('administrative_area_level_2', $component['types'])) {
+                    $latlng['location_sub_province'] = $component['short_name'];
+                    break;
+                }
+            }
+        }
+
         return $latlng;
     }
 
@@ -551,6 +569,12 @@ class SubmissionsHandler
                         }
                         $change['latitude'] = $latlng['latitude'];
                         $change['longitude'] = $latlng['longitude'];
+                        if (isset($latlng['location_postal_code_1'])) {
+                            $change['location_postal_code_1'] = $latlng['location_postal_code_1'];
+                        }
+                        if (isset($latlng['location_sub_province'])) {
+                            $change['location_sub_province'] = $latlng['location_sub_province'];
+                        }
                     } else {
                         $latlng = $this->bmlt_integration->getDefaultLatLong();
                         $change['latitude'] = $latlng['latitude'];
@@ -615,6 +639,12 @@ class SubmissionsHandler
                         // add the new geo to the original change
                         $change['latitude'] = $latlng['latitude'];
                         $change['longitude'] = $latlng['longitude'];
+                        if (isset($latlng['location_postal_code_1'])) {
+                            $change['location_postal_code_1'] = $latlng['location_postal_code_1'];
+                        }
+                        if (isset($latlng['location_sub_province'])) {
+                            $change['location_sub_province'] = $latlng['location_sub_province'];
+                        }
                     } else {
 
                         $latexists = false;

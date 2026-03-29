@@ -736,6 +736,12 @@ class Integration
 
         foreach ($meeting as $key => $value) {
             if (array_key_exists($key, $allowed_keys)) {
+                // null is valid for any optional field - pass through without type checking
+                if ($value === null) {
+                    $filtered_meeting[$key] = $value;
+                    continue;
+                }
+
                 $expected_type = $allowed_keys[$key];
                 $valid = false;
 
