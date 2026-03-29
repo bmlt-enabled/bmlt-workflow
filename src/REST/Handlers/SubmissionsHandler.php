@@ -621,16 +621,18 @@ class SubmissionsHandler
 
                 $locfields = array("location_street", "location_municipality", "location_province", "location_postal_code_1", "location_sub_province", "location_nation");
 
+                $location_changed = false;
                 foreach ($locfields as $field) {
                     if (!empty($change[$field])) {
                         $bmlt_meeting[$field] = $change[$field];
+                        $location_changed = true;
                     }
                 }
 
-                if ((!array_key_exists('latitude',$change))&&(!array_key_exists('longitude',$change)))
+                if ($location_changed && (!array_key_exists('latitude',$change))&&(!array_key_exists('longitude',$change)))
                 {
                     if ($this->bmlt_integration->isAutoGeocodingEnabled('auto')) {
-                        $this->debug_log("auto geocoding enabled, performing geolocate");
+                        $this->debug_log("auto geocoding enabled and location changed, performing geolocate");
                         $latlng = $this->do_geolocate($bmlt_meeting);
                         if (is_wp_error($latlng)) {
                             return $latlng;
@@ -646,33 +648,12 @@ class SubmissionsHandler
                             $change['location_sub_province'] = $latlng['location_sub_province'];
                         }
                     } else {
+                        // auto geocoding disabled and location changed - only update lat/long if meeting has none
+                        $latexists = (array_key_exists('latitude',$bmlt_meeting)) && $bmlt_meeting['latitude'] != 0;
+                        $longexists = (array_key_exists('longitude',$bmlt_meeting)) && $bmlt_meeting['longitude'] != 0;
 
-                        $latexists = false;
-                        $longexists = false;
-
-                        if ((array_key_exists('latitude',$bmlt_meeting)) && $bmlt_meeting['latitude'] != 0)
-                        {
-                            $this->debug_log("latitude found");
-                            $latexists = true;
-                        }
-                        else
-                        {
-                            $this->debug_log("latitude not found");
-                        }
-                        if ((array_key_exists('longitude',$bmlt_meeting)) && $bmlt_meeting['longitude'] != 0)
-                        {
-                            $this->debug_log("longitude found");
-                            $longexists = true;
-                        }
-                        else
-                        {
-                            $this->debug_log("longitude not found");
-                        }
-
-                        // update this only if we have no meeting lat/long already set
                         if (!$latexists && !$longexists) {
                             $this->debug_log("blank lat/long - updating to defaults");
-        
                             $latlng = $this->bmlt_integration->getDefaultLatLong();
                             $change['latitude'] = $latlng['latitude'];
                             $change['longitude'] = $latlng['longitude'];
