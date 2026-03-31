@@ -24,12 +24,12 @@ jobs:
       - name: PHP Unit Test
         run: vendor/bin/phpunit
 
-#      - uses: act10ns/slack@v1
-#        with:
-#          status: ${{ job.status }}
-#          steps: ${{ toJson(steps) }}
-#          channel: '#wordpress-bmlt-workflow'
-#        if: failure()
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#wordpress-bmlt-workflow'
+        if: failure()
 
   package:
     runs-on: ubuntu-24.04
@@ -85,9 +85,9 @@ jobs:
           chmod +x deploy-wordpress.sh
           ./deploy-wordpress.sh
 
-#      - uses: act10ns/slack@v1
-#        with:
-#          status: ${{ job.status }}
-#          steps: ${{ toJson(steps) }}
-#          channel: '#wordpress-bmlt-workflow'
-#        if: failure()
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#wordpress-bmlt-workflow'
+        if: failure()
