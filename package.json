@@ -3,6 +3,7 @@
     "testcafe": "*"
   },
   "devDependencies": {
+    "baseline-browser-mapping": "^2.10.16",
     "eslint": "^8.35.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.27.5"
