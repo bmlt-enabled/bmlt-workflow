@@ -2247,5 +2247,230 @@ Line: $errorLine
         $this->assertEquals('', $captured_update_data['virtual_meeting_link']);
     }
 
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     */
+    public function test_approve_new_meeting_geocoding_populates_zip_and_county_from_address_components(): void
+    {
+        $test_submission_id = '14';
+        $request = $this->generate_approve_request($test_submission_id, '');
+
+        $row = array(
+            'change_id' => $test_submission_id,
+            'submission_time' => '2022-03-23 09:25:53',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
+            'change_made' => 'NULL',
+            'submitter_name' => 'test submitter',
+            'submission_type' => 'reason_new',
+            'submitter_email' => 'a@a.com',
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            // No latitude/longitude — triggers geocoding
+            'changes_requested' => '{"name":"New Meeting","location_street":"123 Main St","location_municipality":"Springfield","day":3,"startTime":"19:00:00","duration":"01:00:00","serviceBodyId":"4","formatIds":[1]}',
+        );
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldReceive([
+            'prepare' => 'nothing',
+            'get_row' => $row,
+            'get_results' => 'nothing'
+        ]);
+        $wpdb->prefix = "";
+
+        Functions\when('\get_option')->justReturn("success");
+
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "lang": "en", "id": "1", "world_id": "BEG" }]';
+        $bmlt = \Mockery::mock('Integration');
+        $bmlt->shouldReceive('getMeeting')->andReturn(json_decode($this->meeting, true));
+        $bmlt->shouldReceive('getMeetingFormats')->andReturn(json_decode($formats, true));
+        $bmlt->shouldReceive('getServiceBodies')->andReturn(array("1" => array("name" => "test"), "3" => array("name" => "test"), "4" => array("name" => "test")));
+        $bmlt->shouldReceive('isAutoGeocodingEnabled')->andReturn(true);
+        $bmlt->shouldReceive('geolocateAddress')->andReturn([
+            'results' => [
+                [
+                    'geometry' => ['location' => ['lat' => 40.7127753, 'lng' => -74.0059728]],
+                    'address_components' => [
+                        ['long_name' => '10007', 'short_name' => '10007', 'types' => ['postal_code']],
+                        ['long_name' => 'New York County', 'short_name' => 'New York County', 'types' => ['administrative_area_level_2', 'political']],
+                    ]
+                ]
+            ]
+        ]);
+
+        $captured_meeting = null;
+        $bmlt->shouldReceive('createMeeting')
+            ->with(Mockery::capture($captured_meeting))
+            ->andReturn(true);
+
+        Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
+
+        $handlers = new SubmissionsHandler($bmlt);
+
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
+        Functions\when('\wp_get_current_user')->justReturn($user);
+        Functions\when('\is_wp_error')->justReturn(false);
+        Functions\when('\wp_mail')->justReturn('true');
+        Functions\when('\current_user_can')->justReturn('false');
+        Functions\when('\wp_is_json_media_type')->justReturn('true');
+
+        $response = $handlers->approve_submission_handler($request);
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+
+        $this->assertNotNull($captured_meeting, "createMeeting was not called");
+        $this->assertArrayHasKey('latitude', $captured_meeting, "latitude should be set from geocoding");
+        $this->assertArrayHasKey('longitude', $captured_meeting, "longitude should be set from geocoding");
+        $this->assertArrayHasKey('location_postal_code_1', $captured_meeting, "zip should be populated from geocoding address_components");
+        $this->assertEquals('10007', $captured_meeting['location_postal_code_1']);
+        $this->assertArrayHasKey('location_sub_province', $captured_meeting, "county should be populated from geocoding address_components");
+        $this->assertEquals('New York County', $captured_meeting['location_sub_province']);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     */
+    public function test_approve_change_meeting_does_not_add_geocoords_when_no_location_changed(): void
+    {
+        $test_submission_id = '14';
+        $request = $this->generate_approve_request($test_submission_id, '');
+
+        // No location fields in changes_requested
+        $row = array(
+            'change_id' => $test_submission_id,
+            'submission_time' => '2022-03-23 09:25:53',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
+            'change_made' => 'NULL',
+            'submitter_name' => 'test submitter',
+            'submission_type' => 'reason_change',
+            'submitter_email' => 'a@a.com',
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            'changes_requested' => '{"name":"Updated Name Only","day":5,"formatIds":[1,4]}',
+        );
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldReceive([
+            'prepare' => 'nothing',
+            'get_row' => $row,
+            'get_results' => 'nothing'
+        ]);
+        $wpdb->prefix = "";
+
+        Functions\when('\get_option')->justReturn("success");
+
+        $bmlt_input = '';
+        $stub_bmltv3 = $this->stub_bmltv3($this->meeting, $bmlt_input);
+
+        $captured_change = null;
+        $stub_bmltv3->shouldReceive('updateMeeting')
+            ->with(Mockery::capture($captured_change))
+            ->andReturn(true);
+
+        $handlers = new SubmissionsHandler($stub_bmltv3);
+
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
+        Functions\when('\wp_get_current_user')->justReturn($user);
+        Functions\when('\is_wp_error')->justReturn(false);
+        Functions\when('\wp_mail')->justReturn('true');
+        Functions\when('\current_user_can')->justReturn('false');
+        Functions\when('\wp_is_json_media_type')->justReturn('true');
+
+        $response = $handlers->approve_submission_handler($request);
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+
+        $this->assertNotNull($captured_change, "updateMeeting was not called");
+        // With no location fields changed, geocoding should not be triggered and lat/lng should not be added
+        $this->assertArrayNotHasKey('latitude', $captured_change, "latitude should not be added when no location fields changed");
+        $this->assertArrayNotHasKey('longitude', $captured_change, "longitude should not be added when no location fields changed");
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::approve_submission_handler
+     */
+    public function test_approve_change_meeting_geocodes_and_populates_zip_county_when_location_changed(): void
+    {
+        $test_submission_id = '14';
+        $request = $this->generate_approve_request($test_submission_id, '');
+
+        // location_street is changed — triggers geocoding
+        $row = array(
+            'change_id' => $test_submission_id,
+            'submission_time' => '2022-03-23 09:25:53',
+            'change_time' => '0000-00-00 00:00:00',
+            'changed_by' => 'NULL',
+            'change_made' => 'NULL',
+            'submitter_name' => 'test submitter',
+            'submission_type' => 'reason_change',
+            'submitter_email' => 'a@a.com',
+            'id' => 3563,
+            'serviceBodyId' => '4',
+            'changes_requested' => '{"name":"Updated Meeting","location_street":"456 New Street","day":5,"formatIds":[1]}',
+        );
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldReceive([
+            'prepare' => 'nothing',
+            'get_row' => $row,
+            'get_results' => 'nothing'
+        ]);
+        $wpdb->prefix = "";
+
+        Functions\when('\get_option')->justReturn("success");
+
+        $formats = '[ { "@attributes": { "sequence_index": "0" }, "key_string": "B", "name_string": "Beginners", "lang": "en", "id": "1", "world_id": "BEG" }]';
+        $bmlt = \Mockery::mock('Integration');
+        $bmlt->shouldReceive('getMeeting')->andReturn(json_decode($this->meeting, true));
+        $bmlt->shouldReceive('getMeetingFormats')->andReturn(json_decode($formats, true));
+        $bmlt->shouldReceive('getServiceBodies')->andReturn(array("1" => array("name" => "test"), "3" => array("name" => "test"), "4" => array("name" => "test")));
+        $bmlt->shouldReceive('isAutoGeocodingEnabled')->andReturn(true);
+        $bmlt->shouldReceive('geolocateAddress')->andReturn([
+            'results' => [
+                [
+                    'geometry' => ['location' => ['lat' => 37.7749, 'lng' => -122.4194]],
+                    'address_components' => [
+                        ['long_name' => '94102', 'short_name' => '94102', 'types' => ['postal_code']],
+                        ['long_name' => 'San Francisco County', 'short_name' => 'San Francisco County', 'types' => ['administrative_area_level_2', 'political']],
+                    ]
+                ]
+            ]
+        ]);
+
+        $captured_change = null;
+        $bmlt->shouldReceive('updateMeeting')
+            ->with(Mockery::capture($captured_change))
+            ->andReturn(true);
+
+        Functions\when('\wp_remote_retrieve_cookies')->justReturn(array("0" => "1"));
+
+        $handlers = new SubmissionsHandler($bmlt);
+
+        $user = new SubmissionsHandlerTest_my_wp_user(1, 'username');
+        Functions\when('\wp_get_current_user')->justReturn($user);
+        Functions\when('\is_wp_error')->justReturn(false);
+        Functions\when('\wp_mail')->justReturn('true');
+        Functions\when('\current_user_can')->justReturn('false');
+        Functions\when('\wp_is_json_media_type')->justReturn('true');
+
+        $response = $handlers->approve_submission_handler($request);
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+
+        $this->assertNotNull($captured_change, "updateMeeting was not called");
+        $this->assertArrayHasKey('latitude', $captured_change, "latitude should be added from geocoding when location changed");
+        $this->assertArrayHasKey('longitude', $captured_change, "longitude should be added from geocoding when location changed");
+        $this->assertEquals(37.7749, $captured_change['latitude']);
+        $this->assertEquals(-122.4194, $captured_change['longitude']);
+        $this->assertArrayHasKey('location_postal_code_1', $captured_change, "zip should be populated from geocoding address_components");
+        $this->assertEquals('94102', $captured_change['location_postal_code_1']);
+        $this->assertArrayHasKey('location_sub_province', $captured_change, "county should be populated from geocoding address_components");
+        $this->assertEquals('San Francisco County', $captured_change['location_sub_province']);
+    }
+
 
 }
