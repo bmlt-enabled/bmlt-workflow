@@ -1103,4 +1103,50 @@ EOD;
 		$this->assertEquals(['CA', 'NY', 'TX'], $result2);
 		$this->assertEquals(1, $fetchCount, 'Should not fetch from server again');
 	}
+
+    /**
+     * @covers bmltwf\BMLT\Integration::validateMeetingData
+     * @covers bmltwf\BMLT\Integration::updateMeeting
+     */
+    public function test_validateMeetingData_passes_null_optional_fields_without_type_error(): void
+    {
+        $capturedBody = null;
+
+        Functions\when('\wp_remote_request')->alias(function ($url, $args) use (&$capturedBody) {
+            if (isset($args['body'])) {
+                $capturedBody = $args['body'];
+            }
+            return ['response' => ['code' => 204]];
+        });
+
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(204);
+
+        $meeting = array(
+            "id" => 123,
+            "name" => "Test Meeting",
+            "location_street" => null,
+            "location_sub_province" => null,
+            "comments" => null,
+            "day" => "2",
+            "serviceBodyId" => "1050",
+            "formatIds" => [7],
+            "venueType" => "1",
+            "published" => "1",
+        );
+
+        $integration = new Integration(true, "3.0.0", "token", time() + 2000);
+        $result = $integration->updateMeeting($meeting);
+
+        $this->assertNotInstanceOf(WP_Error::class, $result, "updateMeeting should not return WP_Error for null optional fields");
+        $this->assertNotNull($capturedBody, "Request body was not captured");
+        $decodedBody = json_decode($capturedBody, true);
+        $this->assertIsArray($decodedBody);
+        $this->assertArrayHasKey('location_street', $decodedBody, "null location_street should be included in request");
+        $this->assertNull($decodedBody['location_street'], "location_street should remain null");
+        $this->assertArrayHasKey('comments', $decodedBody, "null comments should be included in request");
+        $this->assertNull($decodedBody['comments'], "comments should remain null");
+        $this->assertArrayHasKey('location_sub_province', $decodedBody, "null location_sub_province should be included in request");
+        $this->assertNull($decodedBody['location_sub_province'], "location_sub_province should remain null");
+    }
 }

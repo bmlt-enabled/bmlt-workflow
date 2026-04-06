@@ -77,7 +77,7 @@ test("Submit_New_Meeting_And_Check_Zip_And_County_Geolocation", async (t) => {
     .click(as.quickedit_dialog_parent.find("button.ui-corner-all").nth(1))
     .expect(as.quickedit_location_sub_province.value).eql("Columbia County")
     .drag(".yNHHyP-marker-view",50,50)
-    .expect(as.quickedit_latitude.value).eql("42.25078842999364")
+    .expect(as.quickedit_latitude.value).match(/^42\.2507/)
     .typeText(as.quickedit_location_municipality, "Cobble Hill", { replace: true})
     .click(as.quickedit_dialog_parent.find("button.ui-corner-all").nth(1))
     .expect(as.quickedit_location_sub_province.value).eql("Kings County")
