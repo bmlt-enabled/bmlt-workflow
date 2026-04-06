@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Selector } from 'testcafe';
+import testcafe from 'testcafe'; const { Selector } = testcafe;
 
 class Meeting_Update_Form {
     constructor () {

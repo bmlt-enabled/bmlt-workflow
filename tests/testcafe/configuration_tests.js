@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { ao } from "./models/admin_options";
+import { ao } from "./models/admin_options.js";
 
 import { 
   waitfor,
@@ -25,7 +25,7 @@ import {
   set_language_single,
    } from "./helpers/helper.js";
   
-import { userVariables } from "../../.testcaferc";
+import { userVariables } from "../../.testcaferc.cjs";
 
 fixture`configuration_test_fixture`
   .beforeEach(async (t) => {

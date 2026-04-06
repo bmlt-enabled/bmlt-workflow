@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { as } from "./models/admin_submissions";
-import { uf } from "./models/meeting_update_form";
-import { Selector, Role } from "testcafe";
+import { as } from "./models/admin_submissions.js";
+import { uf } from "./models/meeting_update_form.js";
+import testcafe from "testcafe"; const { Selector, Role } = testcafe;
 
 import {  
   restore_from_backup,
@@ -32,7 +32,7 @@ import {
   myip
    } from "./helpers/helper.js";
   
-import { userVariables } from "../../.testcaferc";
+import { userVariables } from "../../.testcaferc.cjs";
 
 fixture`e2e_test_fixture`
   .before(async (t) => {
@@ -171,8 +171,8 @@ test("Submit_New_Meeting_And_Approve", async (t) => {
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
-  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 30000 })
+  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 30000});
 
   // Verify comments field appears in submission details
   await click_table_row_column(as.dt_submission, row, 9); // Click expand button
@@ -244,8 +244,8 @@ test("Submit_Change_Meeting_And_Approve", async (t) => {
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
-  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 30000 })
+  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 30000});
 
   // Verify comments field appears in submission details
   await click_table_row_column(as.dt_submission, row, 9); // Click expand button
@@ -318,8 +318,8 @@ test("Submit_Change_Meeting_With_Unpublish_And_Approve", async (t) => {
   await t.expect(as.approve_dialog_parent.visible).eql(false);
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
-  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 30000 })
+  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 30000});
 
 });
 

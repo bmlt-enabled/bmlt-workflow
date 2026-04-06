@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { Selector } from "testcafe";
+import testcafe from "testcafe"; const { Selector } = testcafe;
 import { bmltwf_admin, restore_from_backup, myip } from "./helpers/helper.js";
-import { userVariables } from "../../.testcaferc";
+import { userVariables } from "../../.testcaferc.cjs";
 
 fixture`uninstall_test_fixture`
   .beforeEach(async (t) => {

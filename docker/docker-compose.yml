@@ -7,28 +7,52 @@ networks:
 
 services:
 
+  bmltmock:
+    image: mockoon/cli:latest
+    volumes:
+      - ../mockoon:/data:ro
+    command:
+      - "--data"
+      - "/data/${MOCKOON_FILE:-bmlt3x.json}"
+      - "/data/bmlt3x-geocode_off.json"
+      - "/data/bmlt3x-states_on.json"
+      - "/data/bmlt unsupported.json"
+      - "--port"
+      - "3001"
+      - "3002"
+      - "3003"
+      - "3004"
+
   wordpress-db:
     build:
       context: .
       dockerfile: Dockerfile-wordpress-db
-    restart: always
     tmpfs: /var/lib/mysql
     platform: linux/x86_64
+    # disable TLS — wp-cli + mysql client both refuse the self-signed cert
+    # mysql:5.7 generates by default, and we don't need encryption inside the test net
+    command: ["--skip-ssl"]
     environment:
       MYSQL_ROOT_PASSWORD: somewordpress
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
       MYSQL_PASSWORD: wordpress
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -psomewordpress --silent"]
+      interval: 3s
+      timeout: 5s
+      retries: 40
+      start_period: 10s
 
   wordpress-php8-singlesite:
     build:
       context: .
       dockerfile: Dockerfile-wp-php8.3
     depends_on:
-      - wordpress-db
+      wordpress-db:
+        condition: service_healthy
     ports:
       - 80:80
-    restart: always
     command: /usr/local/bin/wp-install.sh
     tmpfs: 
       - /var/www/html
@@ -54,11 +78,11 @@ services:
       context: .
       dockerfile: Dockerfile-wpmultisite-php8.3
     depends_on:
-      - wordpress-db
+      wordpress-db:
+        condition: service_healthy
     ports:
       - 81:81
     command: /usr/local/bin/wp-multisite-install.sh
-    restart: always
     tmpfs: 
       - /var/www/html
       - /var/log
@@ -85,9 +109,9 @@ services:
       context: .
       dockerfile: Dockerfile-wpmultisite-php8.3
     depends_on:
-      - wordpress-db
+      wordpress-db:
+        condition: service_healthy
     command: /usr/local/bin/wp-multisite-install.sh
-    restart: always
     ports:
       - 82:82
     tmpfs: 
@@ -115,10 +139,10 @@ services:
       context: .
       dockerfile: Dockerfile-wp-php8.3
     depends_on:
-      - wordpress-db
+      wordpress-db:
+        condition: service_healthy
     ports:
       - 83:83
-    restart: always
     command: bash -c "/usr/local/bin/wp-install-dbupgrade.sh"
     tmpfs: 
       - /var/www/html

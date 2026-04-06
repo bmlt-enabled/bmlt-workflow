@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { as } from "./models/admin_submissions";
-import { uf } from "./models/meeting_update_form";
+import { as } from "./models/admin_submissions.js";
+import { uf } from "./models/meeting_update_form.js";
 
-import { Selector } from "testcafe";
+import testcafe from "testcafe"; const { Selector } = testcafe;
 
 import {
   restore_from_backup,
@@ -33,7 +33,7 @@ import {
   set_language_single
 } from "./helpers/helper.js";
 
-import { userVariables } from "../../.testcaferc";
+import { userVariables } from "../../.testcaferc.cjs";
 
 fixture`geocoding_tests_fixture`
   .before(async (t) => {})

@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { as } from "./models/admin_submissions";
-import { ao } from "./models/admin_options";
+import { as } from "./models/admin_submissions.js";
+import { ao } from "./models/admin_options.js";
 
 import {
   randstr,
@@ -31,7 +31,7 @@ import {
   myip
  } from "./helpers/helper.js";
 
-import { userVariables } from "../../.testcaferc";
+import { userVariables } from "../../.testcaferc.cjs";
 
 fixture`admin_submissions_permissions_fixture`
 .beforeEach(async (t) => {

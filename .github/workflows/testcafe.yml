@@ -1,0 +1,127 @@
+name: testcafe
+
+on:
+  push:
+    branches: [ci-browser-testing]
+#  pull_request:
+#    branches: [main]
+#  push:
+#    branches: [main]
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: bmlt3x-core
+            mock: bmlt3x.json
+            services: wordpress-php8-singlesite
+            wait_hosts: wordpress-php8-singlesite:80
+            tests: >-
+              tests/testcafe/e2e_test.js
+              tests/testcafe/admin_submissions_test.js
+              tests/testcafe/admin_options_test.js
+              tests/testcafe/configuration_tests.js
+              tests/testcafe/meeting_update_form_test.js
+              tests/testcafe/correspondence_e2e_test.js
+              tests/testcafe/rest_api_permissions_test.js
+              tests/testcafe/admin_submissions_permissions_test.js
+              tests/testcafe/language_tests.js
+              tests/testcafe/uninstall_test.js
+          - name: bmlt4x
+            mock: bmlt4x.json
+            services: wordpress-php8-singlesite
+            wait_hosts: wordpress-php8-singlesite:80
+            tests: tests/testcafe/e2e_test.js
+          - name: geocode-off
+            mock: bmlt3x-geocode_off.json
+            services: wordpress-php8-singlesite
+            wait_hosts: wordpress-php8-singlesite:80
+            tests: tests/testcafe/geocoding_tests.js
+          - name: states-on
+            mock: bmlt3x-states_on.json
+            services: wordpress-php8-singlesite
+            wait_hosts: wordpress-php8-singlesite:80
+            tests: tests/testcafe/meeting_update_form_states_test.js
+          - name: zip-county-geocode
+            mock: bmlt3x-zipandcountygeocode.json
+            services: wordpress-php8-singlesite
+            wait_hosts: wordpress-php8-singlesite:80
+            tests: tests/testcafe/zip_and_county_geocoding_tests.js
+          - name: dbupgrade
+            mock: bmlt3x-dbupgrade.json
+            services: wordpress-php8-dbupgrade
+            wait_hosts: wordpress-php8-dbupgrade:83
+            tests: tests/testcafe/e2e_test_dbupgrade.js
+          - name: multisite
+            mock: bmlt3x.json
+            services: wordpress-php8-multisitesingle wordpress-php8-multinetwork
+            wait_hosts: wordpress-php8-multisitesingle:81 wordpress-php8-multinetwork:82
+            tests: >-
+              tests/testcafe/multisite_tests.js
+              tests/testcafe/multisite_single_e2e_test.js
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Create docker network
+        run: docker network create testnet
+
+      - name: Map WP hostnames to localhost
+        run: |
+          echo "127.0.0.1 wordpress-php8-singlesite wordpress-php8-multisitesingle wordpress-php8-multinetwork wordpress-php8-dbupgrade" | sudo tee -a /etc/hosts
+
+      - name: Bring up stack (mockoon + WordPress sites)
+        working-directory: docker
+        env:
+          BMLT: bmltmock
+          BMLT_PORT: '3001'
+          MOCKOON_FILE: ${{ matrix.mock }}
+        run: |
+          docker compose up --build --detach bmltmock ${{ matrix.services }}
+
+          # Wait for each WP vhost in parallel. 000 = no listener, 403 = apache up
+          # but install hasn't fixed the Listen port yet. Anything else means ready.
+          wait_for_host() {
+            host="$1"
+            for i in $(seq 1 150); do
+              code=$(curl -s -o /dev/null -w "%{http_code}" "http://$host/" || true)
+              if [ "$code" != "000" ] && [ "$code" != "403" ]; then
+                echo "  $host ready ($code) after $((i*2))s"
+                return 0
+              fi
+              sleep 2
+            done
+            echo "::error::$host never became ready (last=$code)"
+            return 1
+          }
+
+          rc=0
+          for host in ${{ matrix.wait_hosts }}; do wait_for_host "$host" & done
+          for p in $(jobs -p); do wait "$p" || rc=1; done
+          [ "$rc" -eq 0 ] || { docker compose ps -a; docker compose logs --tail=120; exit 1; }
+
+      - name: Install npm deps (incl. TestCafe)
+        run: npm install
+
+      - name: Run TestCafe
+        env:
+          BMLT: bmltmock
+        run: ./node_modules/.bin/testcafe chrome:headless ${{ matrix.tests }} --skip-js-errors --screenshots path=artifacts,takeOnFails=true
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: testcafe-${{ matrix.name }}
+          path: artifacts
+
+      - name: Tear down
+        if: always()
+        working-directory: docker
+        run: docker compose down -v || true

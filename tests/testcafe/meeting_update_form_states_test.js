@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { uf } from "./models/meeting_update_form";
-import { ao } from "./models/admin_options";
+import { uf } from "./models/meeting_update_form.js";
+import { ao } from "./models/admin_options.js";
 
-import { Role, Selector } from "testcafe";
+import testcafe from "testcafe"; const { Role, Selector } = testcafe;
 
 import { 
   waitfor,
@@ -29,7 +29,7 @@ import {
   set_language_single
   } from "./helpers/helper.js";
 
-import { userVariables } from "../../.testcaferc";
+import { userVariables } from "../../.testcaferc.cjs";
 
 fixture`meeting_update_form_states_test_fixture`
 .beforeEach(async (t) => {

@@ -15,12 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { ao } from "./models/admin_options";
-import { as } from "./models/admin_submissions";
-import { uf } from "./models/meeting_update_form";
+import { ao } from "./models/admin_options.js";
+import { as } from "./models/admin_submissions.js";
+import { uf } from "./models/meeting_update_form.js";
 
-import { userVariables } from "../../.testcaferc";
-import { t, Selector, Role, RequestLogger } from "testcafe";
+import { userVariables } from "../../.testcaferc.cjs";
+import testcafe from "testcafe"; const { t, Selector, Role, RequestLogger } = testcafe;
 
 import { 
   randstr,
@@ -33,7 +33,7 @@ import {
   select_dropdown_by_value, 
   check_checkbox,
   uncheck_checkbox, 
-  waitfor} from "./helpers/helper";
+  waitfor} from "./helpers/helper.js";
   
 // Import the current database version
 import { CURRENT_DB_VERSION } from "./helpers/db_version.js";

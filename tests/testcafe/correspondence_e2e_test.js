@@ -15,11 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { userVariables } from "../../.testcaferc";
-import { bmltwf_admin, restore_from_backup, myip, set_language_single, setupCorrespondenceFeature, get_table_row_col, click_dialog_button_by_index, click_dt_button_by_index } from './helpers/helper';
-import { cs } from './models/correspondence';
-import { as } from './models/admin_submissions';
-import { Selector, Role } from 'testcafe';
+import { userVariables } from "../../.testcaferc.cjs";
+import { bmltwf_admin, restore_from_backup, myip, set_language_single, setupCorrespondenceFeature, get_table_row_col, click_dialog_button_by_index, click_dt_button_by_index } from './helpers/helper.js';
+import { cs } from './models/correspondence.js';
+import { as } from './models/admin_submissions.js';
+import testcafe from 'testcafe'; const { Selector, Role } = testcafe;
 
 fixture`Correspondence_E2E_Workflow`
     .beforeEach(async t => {

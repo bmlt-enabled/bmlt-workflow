@@ -15,12 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { restore_from_backup, bmltwf_admin_multisingle, bmltwf_admin_multinetwork, waitfor, myip, setupCorrespondenceFeature, click_table_row_column } from "./helpers/helper";
-import { wordpress_options } from "./models/wordpress_options";
-import { userVariables } from "../../.testcaferc";
-import { ao } from "./models/admin_options";
-import { t, Selector } from "testcafe";
-import { asb } from "./models/admin_service_bodies";
+import { restore_from_backup, bmltwf_admin_multisingle, bmltwf_admin_multinetwork, waitfor, myip, setupCorrespondenceFeature, click_table_row_column } from "./helpers/helper.js";
+import { wordpress_options } from "./models/wordpress_options.js";
+import { userVariables } from "../../.testcaferc.cjs";
+import { ao } from "./models/admin_options.js";
+import testcafe from "testcafe"; const { t, Selector } = testcafe;
+import { asb } from "./models/admin_service_bodies.js";
 
 fixture`multisite_tests_fixture`.beforeEach(async (t) => {
   await waitfor(userVariables.admin_logon_page_multisingle);

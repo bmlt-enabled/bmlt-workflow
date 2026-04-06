@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { userVariables } from "../../.testcaferc";
-import { bmltwf_admin } from './helpers/helper';
-import { Selector } from 'testcafe';
+import { userVariables } from "../../.testcaferc.cjs";
+import { bmltwf_admin } from './helpers/helper.js';
+import testcafe from 'testcafe'; const { Selector } = testcafe;
 
 // Define the base URL and REST paths
 const siteurl_single = userVariables.siteurl_single;

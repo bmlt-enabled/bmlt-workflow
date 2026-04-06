@@ -1,4 +1,4 @@
-import { Selector } from 'testcafe';
+import testcafe from 'testcafe'; const { Selector } = testcafe;
 
 export const cs = {
     // Admin page selectors

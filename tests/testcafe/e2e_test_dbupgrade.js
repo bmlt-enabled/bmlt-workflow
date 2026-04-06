@@ -17,7 +17,7 @@
 
 import { as } from "./models/admin_submissions.js";
 import { uf } from "./models/meeting_update_form.js";
-import { Selector, Role } from "testcafe";
+import testcafe from "testcafe"; const { Selector, Role } = testcafe;
 
 import {  
   click_table_row_column, 
@@ -32,7 +32,7 @@ import {
 // Import the current database version
 import { CURRENT_DB_VERSION } from "./helpers/db_version.js";
   
-import { userVariables } from "../../.testcaferc.js";
+import { userVariables } from "../../.testcaferc.cjs";
 
 fixture`DbUpgrade`
   .before(async (t) => {

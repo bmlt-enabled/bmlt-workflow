@@ -18,7 +18,7 @@
 import { as } from "./models/admin_submissions.js";
 import { uf } from "./models/meeting_update_form.js";
 import { ao } from "./models/admin_options.js";
-import { Selector } from "testcafe";
+import testcafe from "testcafe"; const { Selector } = testcafe;
 
 import {
   restore_from_backup,
@@ -31,7 +31,7 @@ import {
   set_language_single
 } from "./helpers/helper.js";
 
-import { userVariables } from "../../.testcaferc.js";
+import { userVariables } from "../../.testcaferc.cjs";
 
 fixture`zip_and_county_geocoding_tests_fixture`
   .before(async (t) => {})

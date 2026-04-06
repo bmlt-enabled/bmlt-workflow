@@ -15,12 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { t, Role, Selector } from "testcafe";
-import { wordpress_login } from "../models/wordpress_login";
-import { userVariables } from "../../../.testcaferc";
+import testcafe from "testcafe"; const { t, Role, Selector } = testcafe;
+import { wordpress_login } from "../models/wordpress_login.js";
+import { userVariables } from "../../../.testcaferc.cjs";
 import { CURRENT_DB_VERSION } from "./db_version.js";
 
-const execSync = require("child_process").execSync;
+import { execSync } from "child_process";
 
 export function randstr() {
   return Math.random()
@@ -107,6 +107,9 @@ export async function click_dialog_button_by_index(element, index) {
 }
 
 export function myip(){
+  if (process.env.BMLT) {
+    return process.env.BMLT;
+  }
   return execSync("ipconfig getifaddr en0").toString().trim();
 }
 

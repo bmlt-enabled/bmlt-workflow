@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { as } from "./models/admin_submissions";
-import { uf } from "./models/meeting_update_form";
-import { Selector, Role } from "testcafe";
+import { as } from "./models/admin_submissions.js";
+import { uf } from "./models/meeting_update_form.js";
+import testcafe from "testcafe"; const { Selector, Role } = testcafe;
 
 import { 
   click_table_row_column, 
@@ -30,7 +30,7 @@ import {
   bmltwf_admin_multisingle,
   myip } from "./helpers/helper.js";
   
-import { userVariables } from "../../.testcaferc";
+import { userVariables } from "../../.testcaferc.cjs";
 
 fixture`multisite_single_e2e_test_fixture`
   // .page(userVariables.admin_submissions_page_single)

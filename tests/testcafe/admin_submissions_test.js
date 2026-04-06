@@ -15,8 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with bmlt-workflow.  If not, see <http://www.gnu.org/licenses/>.
 
-import { as } from "./models/admin_submissions";
-import { ao } from "./models/admin_options";
+import { as } from "./models/admin_submissions.js";
+import { ao } from "./models/admin_options.js";
 
 import {
   restore_from_backup, 
@@ -30,9 +30,9 @@ import {
   myip
    } from "./helpers/helper.js";
 
-import { RequestLogger, Selector } from "testcafe";
+import testcafe from "testcafe"; const { RequestLogger, Selector } = testcafe;
 
-import { userVariables } from "../../.testcaferc";
+import { userVariables } from "../../.testcaferc.cjs";
 
 fixture`admin_submissions_fixture`
 .beforeEach(async (t) => {
@@ -60,8 +60,8 @@ test("Approve_New_Meeting", async (t) => {
   // await t.debug();
 
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
-  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 30000 })
+  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 30000});
 });
 
 test("Approve_Modify_Meeting", async (t) => {
@@ -81,8 +81,8 @@ test("Approve_Modify_Meeting", async (t) => {
 
   // const s = Selector("#dt-submission tr:nth-child(1) td:nth-child(9)");
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
-  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 30000 })
+  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 30000});
 });
 
 test("Approve_Close_Meeting_With_Unpublish", async (t) => {
@@ -110,8 +110,8 @@ test("Approve_Close_Meeting_With_Unpublish", async (t) => {
   await t.expect(as.approve_close_dialog_parent.visible).eql(false);
   var column = 8;
   // await t.debug();
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
-  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 30000 })
+  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 30000});
 });
 
 test("Approve_Close_Meeting_With_Delete", async (t) => {
@@ -139,8 +139,8 @@ test("Approve_Close_Meeting_With_Delete", async (t) => {
   // dialog closes after ok button
   await t.expect(as.approve_close_dialog_parent.visible).eql(false);
   var column = 8;
-  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 10000 })
-  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 10000});
+  await t.expect(as.dt_submission.child("tbody").child(row).child(column).innerText).notContains('None', { timeout: 30000 })
+  .expect(as.dt_submission.child("tbody").child(row).child(column).innerText).eql("Approved", {timeout: 30000});
 });
 
 test("Reject_New_Meeting", async (t) => {
