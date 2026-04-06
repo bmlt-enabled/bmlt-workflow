@@ -1,3 +1,6 @@
+## 1.1.41 (Apr 7, 2026)
+- Ignore me I'm not used to collaborating (thanks @pjaudiomv !)
+
 ## 1.1.40 (Apr 7, 2026)
 - #221 Fixes Submission Info Isn't Following BMLT Server Auto-Calculations (thanks @pjaudiomv and @tempsaint !)
 - #223 Fixes Invalid Data Format (thanks @pjaudiomv and @tempsaint !)

@@ -33,7 +33,7 @@ import {
 
 import { userVariables } from "../../.testcaferc";
 
-fixture`meeting_update_form_fixture`
+fixture`meeting_update_form_test_fixture`
 .beforeEach(async (t) => {
 
   await waitfor(userVariables.admin_logon_page_single);
