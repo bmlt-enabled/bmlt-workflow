@@ -1,3 +1,8 @@
+## 1.1.40 (Apr 7, 2026)
+- #221 Fixes Submission Info Isn't Following BMLT Server Auto-Calculations (thanks @pjaudiomv and @tempsaint !)
+- #223 Fixes Invalid Data Format (thanks @pjaudiomv and @tempsaint !)
+- #165 Fixes Automatically perform geolocation check when saving Quick Edits (thanks @pjaudiomv and @tempsaint !)
+
 ## 1.1.38 (Dec 14, 2025)
 - #218 Fixes Submission Updated in QuickEdit No Longer Display in Pending Filter (thanks @tempsaint !)
 - #220 Fixes Correspondence Feature Doesn't Allow the Submitter to See the Messages After Submission is Processed (thanks @tempsaint !)
