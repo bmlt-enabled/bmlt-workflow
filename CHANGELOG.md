@@ -2,6 +2,8 @@
 - #228 Fixes "Any Other Comments" not being marked as required when permanently closing a meeting (thanks @tempsaint !)
 - Fixes required-field markers not appearing on the sub province, province and postcode fields in submission Quick Edit
 - Clarifies the virtual meeting validation rules (no behavior change)
+- #227 Fixes virtual meeting fields wrongly showing and being required when changing a standard face to face meeting on older BMLT servers (thanks @tempsaint !)
+- Fixes the "Temporarily Virtual" venue type not being converted correctly on submit
 
 ## 1.1.41 (Apr 7, 2026)
 - Ignore me I'm not used to collaborating (thanks @pjaudiomv !)

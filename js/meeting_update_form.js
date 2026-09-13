@@ -182,7 +182,10 @@ jQuery(document).ready(function ($) {
     const str = `${$('#duration_hours').val()}:${$('#duration_minutes').val()}:00`;
     put_field('duration', str);
 
-    if ($('#venueType') === 4) {
+    // "Temporarily Virtual" (venueType 4) is a form-only pseudo-type; BMLT only knows
+    // 1/2/3. Convert it to an in-person meeting flagged temporarilyVirtual before submit.
+    // (venueType comes from the select as a string, so coerce before comparing.)
+    if (Number($('#venueType').val()) === 4) {
       put_field('venueType', 1);
       put_field('temporarilyVirtual', 'true');
     }
@@ -419,7 +422,8 @@ jQuery(document).ready(function ($) {
       // populate form fields from bmlt if they exist
       fields.forEach(function (item) {
         // Skip virtualna_published for non-virtual meetings
-        if (item === 'virtualna_published' && mdata[id].venueType === 1) {
+        // (older BMLT servers return venueType as a string, so coerce before comparing)
+        if (item === 'virtualna_published' && Number(mdata[id].venueType) === 1) {
           return;
         }
         if (item in mdata[id]) {
@@ -452,8 +456,11 @@ jQuery(document).ready(function ($) {
       const { venueType } = mdata[id];
       // doesn't handle if they have both selected in BMLT
       // virtual_meeting_options
+      // Older BMLT servers (before the pdo_mysql numeric cast fix) return venueType as a
+      // string ("1"), so coerce before comparing - otherwise a standard face to face
+      // meeting wrongly shows and requires the virtual meeting fields.
       $('#venueType').val(venueType);
-      if (venueType === 1) {
+      if (Number(venueType) === 1) {
         $('#virtual_meeting_options').hide();
       } else {
         $('#virtual_meeting_options').show();
@@ -527,7 +534,8 @@ jQuery(document).ready(function ($) {
         
         create_meeting_searcher(mdata);
         if (id) {
-          const jump_to = mdata.findIndex((el) => el.id === parseInt(id, 10));
+          // el.id may be a string from BMLT, so coerce both sides before comparing
+          const jump_to = mdata.findIndex((el) => Number(el.id) === parseInt(id, 10));
           $('#update_reason').val('reason_change').trigger('change');
           $('#meeting-searcher').val(jump_to).trigger('change').trigger({
             type: 'select2:select',
