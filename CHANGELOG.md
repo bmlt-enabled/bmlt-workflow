@@ -4,6 +4,7 @@
 - Clarifies the virtual meeting validation rules (no behavior change)
 - #227 Fixes virtual meeting fields wrongly showing and being required when changing a standard face to face meeting on older BMLT servers (thanks @tempsaint !)
 - Fixes the "Temporarily Virtual" venue type not being converted correctly on submit
+- #226 Makes the Location (venue name) field optional on the meeting form (thanks @nigel-bmlt !)
 
 ## 1.1.41 (Apr 7, 2026)
 - Ignore me I'm not used to collaborating (thanks @pjaudiomv !)
