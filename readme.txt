@@ -1,11 +1,11 @@
 === BMLT-Workflow ===
 Tags: bmlt,workflow
 Requires at least: 5.2
-Tested up to: 6.8.2
+Tested up to: 7.1
 Requires PHP: 8.0
 License: GPLv2
-Stable tag: 1.1.41
-Contributors: nigelbmlt
+Stable tag: 1.1.42
+Contributors: nigelbmlt, pjaudiomv
 
 This plugin was developed for NA Australian Region to support automation of meeting adds/changes/deletes.
 It is designed to reduce the current complex and heavy manual processing of forms by both the form submitter and the service body trusted servants.

@@ -849,6 +849,40 @@ test("Success_Close_Meeting_And_Submit", async (t) => {
     .match(/submission\ successful/);
 });
 
+test("Close_Meeting_Marks_Additional_Info_Required", async (t) => {
+  await t.navigateTo(userVariables.formpage);
+
+  const required_marker = uf.additional_info_label.find(".bmltwf-required-field");
+
+  // reason_new should not mark "Any Other Comments" as required
+  await select_dropdown_by_value(uf.update_reason, "reason_new");
+  await t
+    .expect(uf.update_reason.value).eql("reason_new")
+    .expect(uf.additional_info.hasAttribute("required")).notOk()
+    .expect(required_marker.exists).notOk();
+
+  // reason_close should mark it required, both the attribute and the visible marker
+  await select_dropdown_by_value(uf.update_reason, "reason_close");
+  await t
+    .expect(uf.update_reason.value).eql("reason_close")
+    .expect(uf.additional_info.hasAttribute("required")).ok()
+    .expect(required_marker.exists).ok()
+    .expect(required_marker.count).eql(1);
+
+  // switching away should clear both the requirement and the marker
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+  await t
+    .expect(uf.update_reason.value).eql("reason_change")
+    .expect(uf.additional_info.hasAttribute("required")).notOk()
+    .expect(required_marker.exists).notOk();
+
+  // switching back should not produce duplicate markers
+  await select_dropdown_by_value(uf.update_reason, "reason_close");
+  await t
+    .expect(required_marker.exists).ok()
+    .expect(required_marker.count).eql(1);
+});
+
 test("Change_Meeting_Details_Check_Highlighting", async (t) => {
 
   await t.navigateTo(userVariables.formpage);
