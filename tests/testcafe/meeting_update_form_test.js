@@ -1067,6 +1067,33 @@ test("Failure_Invalid_Virtual_Meeting_Details", async (t) => {
 
 });
 
+test("Success_Virtual_Meeting_Link_And_Info_Without_Phone", async (t) => {
+  // A virtual meeting is valid with both link and additional info, even with no phone number.
+  await t.navigateTo(userVariables.formpage);
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+  await t.expect(uf.update_reason.value).eql("reason_change");
+
+  // meeting selector
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "right");
+  await t.pressKey("enter");
+
+  // personal details
+  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "123-456-7890");
+  await select_dropdown_by_value(uf.group_relationship, "Group Member");
+
+  await select_dropdown_by_value(uf.venueType, "2");
+  await t
+    .expect(uf.venueType.value)
+    .eql("2")
+    // link + info, no phone -> should submit successfully
+    .typeText(uf.virtual_meeting_link, "https://us02web.zoom.us/j/83037287669?pwd=OWRRQU52ZC91TUpEUUExUU40eTh2dz09")
+    .typeText(uf.virtual_meeting_additional_info, "Zoom ID 83037287669 Passcode: testing")
+    .click(uf.submit)
+    .expect(uf.success_page_header.innerText)
+    .match(/submission\ successful/);
+});
+
 test("Validate_Meeting_Comments_Field", async (t) => {
   await t.navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_change");

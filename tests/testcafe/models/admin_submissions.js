@@ -59,6 +59,10 @@ class Admin_Submissions {
         this.quickedit_location_province_select = Selector("select#quickedit_location_province");
         this.quickedit_location_postal_code_1 = Selector("#quickedit_location_postal_code_1");
         this.quickedit_location_nation = Selector("#quickedit_location_nation");
+        this.quickedit_location_nation_label = Selector("#quickedit_location_nation_label");
+        this.quickedit_location_sub_province_label = Selector("#quickedit_location_sub_province_label");
+        this.quickedit_location_province_label = Selector("#quickedit_location_province_label");
+        this.quickedit_location_postal_code_1_label = Selector("#quickedit_location_postal_code_1_label");
         this.quickedit_latitude = Selector("#quickedit_latitude");
         this.quickedit_longitude = Selector("#quickedit_longitude");
         this.quickedit_virtualna_published = Selector("#quickedit_virtualna_published");

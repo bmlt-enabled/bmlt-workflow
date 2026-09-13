@@ -200,7 +200,7 @@ jQuery(document).ready(function ($) {
       break;
     case 'displayrequired':
       $('#optional_location_nation').show();
-      $('#location_nation_label').append('<span class="bmltwf-required-field"> *</span>');
+      $('#quickedit_location_nation_label').append('<span class="bmltwf-required-field"> *</span>');
       break;
     default:
       break;
@@ -216,7 +216,7 @@ jQuery(document).ready(function ($) {
       break;
     case 'displayrequired':
       $('#optional_location_sub_province').show();
-      $('#location_sub_province_label').append('<span class="bmltwf-required-field"> *</span>');
+      $('#quickedit_location_sub_province_label').append('<span class="bmltwf-required-field"> *</span>');
       break;
     default:
       break;
@@ -232,7 +232,7 @@ jQuery(document).ready(function ($) {
       break;
     case 'displayrequired':
       $('#optional_location_province').show();
-      $('#location_province_label').append('<span class="bmltwf-required-field"> *</span>');
+      $('#quickedit_location_province_label').append('<span class="bmltwf-required-field"> *</span>');
       break;
     default:
       break;
@@ -248,7 +248,7 @@ jQuery(document).ready(function ($) {
       break;
     case 'displayrequired':
       $('#optional_postcode').show();
-      $('#location_province_label').append('<span class="bmltwf-required-field"> *</span>');
+      $('#quickedit_location_postal_code_1_label').append('<span class="bmltwf-required-field"> *</span>');
       break;
     default:
       break;

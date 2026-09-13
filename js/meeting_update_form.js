@@ -584,14 +584,22 @@ jQuery(document).ready(function ($) {
       }
     },
     rules: {
+      // A virtual meeting needs at least a phone number, OR both a link and additional info.
+      // These are functions so jquery-validate re-evaluates them dynamically as the user types.
       virtual_meeting_link: {
-        required: (is_virtual_meeting_additional_info_empty || is_virtual_meeting_link_empty) && is_phone_meeting_number_empty,
+        required() {
+          return (is_virtual_meeting_additional_info_empty() || is_virtual_meeting_link_empty()) && is_phone_meeting_number_empty();
+        },
       },
       virtual_meeting_additional_info: {
-        required: (is_virtual_meeting_link_empty || is_virtual_meeting_additional_info_empty) && is_phone_meeting_number_empty,
+        required() {
+          return (is_virtual_meeting_link_empty() || is_virtual_meeting_additional_info_empty()) && is_phone_meeting_number_empty();
+        },
       },
       phone_meeting_number: {
-        required: is_virtual_meeting_additional_info_empty && is_virtual_meeting_link_empty,
+        required() {
+          return is_virtual_meeting_additional_info_empty() && is_virtual_meeting_link_empty();
+        },
       },
     },
     messages: {
