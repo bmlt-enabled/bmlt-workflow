@@ -977,8 +977,9 @@ class SubmissionsHandler
             "startTime" => array("time", $reason_new_bool),
             "duration" => array("time", $reason_new_bool),
             "venueType" => array("venue", $reason_new_bool | $reason_change_bool),
-            // location text and street only required if its not a virtual meeting #75
-            "location_text" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
+            // venue name (location_text) is always optional #226
+            "location_text" => array("text", false),
+            // street only required if its not a virtual meeting #75
             "location_street" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
             "location_info" => array("text", false),
             "location_municipality" => array("text", $reason_new_bool),

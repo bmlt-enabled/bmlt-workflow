@@ -473,6 +473,64 @@ Line: $errorLine
 
     /**
      * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     * #226 - the venue name (location_text) is optional, so a new in-person meeting
+     * submitted without it must still succeed.
+     */
+    public function test_can_create_new_without_location_text(): void
+    {
+        $form_post = new class {
+            public function get_json_params()
+            {
+                return array(
+                    "update_reason" => "reason_new",
+                    "name" => "testing name change",
+                    "id" => "3277",
+                    "startTime" => "10:00:00",
+                    "duration" => "01:00:00",
+                    // location_text deliberately omitted (#226)
+                    "location_street" => "test street",
+                    "location_municipality" => "test municipality",
+                    "location_province" => "test province",
+                    "location_postal_code_1" => "12345",
+                    "day" => "1",
+                    "serviceBodyId" => "99",
+                    "formatIds" => ["1"],
+                    "starter_kit_required" => "no",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "venueType" => "1",
+                    "email_address" => "joe@joe.com",
+                    "submit" => "Submit Form",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+
+                );
+            }
+        };
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->prefix = 'wp_';
+        /** @var Mockery::mock $wpdb test */
+        $wpdb->shouldReceive('insert')->andReturn(array('0' => '1'))->set('insert_id', 10);
+        $wpdb->shouldReceive('prepare')->andReturn(true);
+        $wpdb->shouldReceive('get_col')->andReturn(array("0" => "1", "1" => "2"));
+        Functions\expect('get_user_by')->with(Mockery::any(), Mockery::any())->twice()->andReturn(new SubmissionsHandlerTest_my_wp_user(2, "test test"));
+        Functions\when('wp_mail')->justReturn('true');
+        Functions\when('\get_option')->justReturn("success");
+
+        $retrieve_single_response = $this->meeting;
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($retrieve_single_response, $bmlt_input));
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
+        $this->debug_log(($response));
+        $this->assertInstanceOf(WP_REST_Response::class, $response);
+        $this->assertEquals(200, $response->get_status());
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
      */
     public function test_can_create_new_with_alpha_postcode(): void
     {

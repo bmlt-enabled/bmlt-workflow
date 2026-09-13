@@ -163,8 +163,8 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                             </select>
                         </div>
                         <div id="location_fields">
-                            <label for="location_text"><?php echo __( 'Location (eg: a building name)', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
-                            <input class="meeting-input" type="text" name="location_text" size="50" id="location_text" required>
+                            <label for="location_text"><?php echo __( 'Location (eg: a building name)', 'bmlt-workflow' ); ?></label>
+                            <input class="meeting-input" type="text" name="location_text" size="50" id="location_text">
                             <label for="location_street"><?php echo __( 'Street Address', 'bmlt-workflow' ); ?><span class="bmltwf-required-field"> *</span></label>
                             <input class="meeting-input" type="text" name="location_street" size="50" id="location_street" required>
                             <label for="location_info"><?php echo __( 'Extra Location Info (eg: Near the park)', 'bmlt-workflow' ); ?></label>
