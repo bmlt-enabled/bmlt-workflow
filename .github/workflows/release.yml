@@ -11,7 +11,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Check out code 🛒
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Setup PHP 🐫
         uses: shivammathur/setup-php@v2
@@ -24,7 +24,7 @@ jobs:
       - name: PHP Unit Test
         run: vendor/bin/phpunit
 
-      - uses: act10ns/slack@v1
+      - uses: act10ns/slack@v2
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
@@ -44,7 +44,7 @@ jobs:
       MAINFILE: bmlt-workflow.php
     steps:
       - name: Check out code 🛒
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup PHP 🐫
         uses: shivammathur/setup-php@v2
@@ -85,7 +85,7 @@ jobs:
           chmod +x deploy-wordpress.sh
           ./deploy-wordpress.sh
 
-      - uses: act10ns/slack@v1
+      - uses: act10ns/slack@2
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}

@@ -1,3 +1,6 @@
+## 1.1.42 (Sep 13, 2026)
+- #228 Fixes "Any Other Comments" not being marked as required when permanently closing a meeting (thanks @tempsaint !)
+
 ## 1.1.41 (Apr 7, 2026)
 - Ignore me I'm not used to collaborating (thanks @pjaudiomv !)
 

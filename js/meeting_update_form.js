@@ -663,6 +663,8 @@ jQuery(document).ready(function ($) {
     $('#meeting_content').hide();
     $('#other_reason').prop('required', false);
     $('#additional_info').prop('required', false);
+    // clear any required marker on the additional info label (added for reason_close)
+    $('#additional_info_label .bmltwf-required-field').remove();
     disable_and_clear_highlighting();
     enable_edits();
     // enable items as required
@@ -723,6 +725,7 @@ jQuery(document).ready(function ($) {
         // close meeting has a search bar
         $('#meeting_selector').show();
         $('#additional_info').prop('required', true);
+        $('#additional_info_label').append('<span class="bmltwf-required-field"> *</span>');
         break;
       default:
         break;

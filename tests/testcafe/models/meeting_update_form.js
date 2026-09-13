@@ -74,6 +74,7 @@ class Meeting_Update_Form {
         this.additional_info_div = Selector('#additional_info_div');
         this.comments = Selector('#comments');
         this.additional_info = Selector('#additional_info');
+        this.additional_info_label = Selector('#additional_info_label');
         this.starter_pack = Selector('#starter_pack');
         this.starter_kit_required = Selector('#starter_kit_required');
         this.starter_kit_postal_address_div = Selector('#starter_kit_postal_address_div');

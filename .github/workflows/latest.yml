@@ -10,7 +10,7 @@ jobs:
     env:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
         id: code-checkout
 
       - name: Validate composer.json and composer.lock
@@ -19,7 +19,7 @@ jobs:
 
       - name: Cache Composer packages
         id: composer-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: vendor
           key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
@@ -28,19 +28,19 @@ jobs:
       - name: Install dependencies
         if: steps.composer-cache.outputs.cache-hit != 'true'
         id: install-dependencies
-        uses: php-actions/composer@v5
+        uses: php-actions/composer@v6
         with:
           php_version: 8.0
           args: --prefer-dist --no-progress --no-suggest
 
       - name: PHP Unit Test
         id: php-unit-test
-        uses: php-actions/phpunit@v3
+        uses: php-actions/phpunit@v4
         with:
           php_version: 8.0.27
           version: 9.5.21
 
-      - uses: act10ns/slack@v1
+      - uses: act10ns/slack@v2
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
@@ -56,7 +56,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     #    needs: [ tests ] # tmp let job run if tests fail
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@7
         id: code-checkout
 
       - name: Build package
@@ -72,7 +72,7 @@ jobs:
           mv ${ARTIFACT_FILENAME} artifacts/
 
       - name: configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/github-actions/gh-ci-s3-artifact
           role-session-name: gh-actions-bmlt-workflow
@@ -84,13 +84,13 @@ jobs:
 
       - name: Publish Release to Latest WP 🎉
         id: publish_latest
-        uses: bmlt-enabled/wordpress-releases-github-action@v1.3
+        uses: bmlt-enabled/wordpress-releases-github-action@v2
         with:
           file: artifacts/${{ env.ARTIFACT_FILENAME }}
           s3_key: bmlt-workflow
           aws_account_id: ${{ secrets.AWS_ACCOUNT_ID }}
 
-      - uses: act10ns/slack@v1
+      - uses: act10ns/slack@v2
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
