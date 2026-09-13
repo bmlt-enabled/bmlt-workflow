@@ -685,3 +685,27 @@ test("DataTable_Search_Functionality", async (t) => {
   // Verify all results are shown again
   await t.expect(tableRows.count).gte(3);
 });
+// Regression guard for the Quick Edit "required" markers. The optional location
+// field labels are quickedit-prefixed (e.g. #quickedit_location_sub_province_label);
+// admin_submissions.js previously appended the "*" marker to the non-prefixed ids,
+// so the required marker never rendered when a field was set to "displayrequired".
+fixture`admin_submissions_required_markers_fixture`
+.beforeEach(async (t) => {
+  // sub_province set to "displayrequired" via the restore helper's subprovince arg
+  await restore_from_backup(bmltwf_admin, userVariables.admin_settings_page_single, userVariables.admin_restore_json, myip(), "3001", "displayrequired");
+  await set_language_single(t, "en_EN");
+  await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_submissions_page_single);
+});
+
+test("Quickedit_Displayrequired_Field_Shows_Required_Marker", async (t) => {
+  // open quick edit on the new meeting row
+  var row = 2;
+  await click_table_row_column(as.dt_submission, row, 0);
+  await click_dt_button_by_index(as.dt_submission_wrapper, 3);
+  await t.expect(as.quickedit_dialog_parent.visible).eql(true);
+
+  // the required marker must render on the correct (quickedit-prefixed) label
+  await t
+    .expect(as.quickedit_location_sub_province_label.find(".bmltwf-required-field").exists).ok()
+    .expect(as.quickedit_location_sub_province_label.find(".bmltwf-required-field").count).eql(1);
+});

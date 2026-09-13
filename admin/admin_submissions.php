@@ -211,7 +211,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                 <input class="quickedit-input" type="text" name="quickedit_location_postal_code_1" id="quickedit_location_postal_code_1" required>
             </div>
             <div id="optional_location_nation">
-                <label id="location_nation_label" for="quickedit_location_nation"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname')) ?></label>
+                <label id="quickedit_location_nation_label" for="quickedit_location_nation"><?php echo sanitize_text_field(get_option('bmltwf_optional_location_nation_displayname')) ?></label>
                 <input class="quickedit-input" type="text" name="quickedit_location_nation" size="50" id="quickedit_location_nation">
             </div>
         </div>
