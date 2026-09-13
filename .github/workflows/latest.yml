@@ -56,7 +56,7 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     #    needs: [ tests ] # tmp let job run if tests fail
     steps:
-      - uses: actions/checkout@7
+      - uses: actions/checkout@v7
         id: code-checkout
 
       - name: Build package
