@@ -20,15 +20,17 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.42
+ * Version: 1.1.43
  * Requires at least: 5.2
  * Tested up to: 6.8.2
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
+ * Text Domain: bmlt-workflow
+ * Domain Path: /lang
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.42');
+define('BMLTWF_PLUGIN_VERSION', '1.1.43');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -90,6 +92,7 @@ if (!class_exists('bmltwf_plugin')) {
             $this->bmltwf_add_default_options();
 
             // actions, shortcodes, menus and filters
+            add_action('init', array(&$this, 'bmltwf_load_textdomain'));
             add_action('wp_enqueue_scripts', array(&$this, 'bmltwf_enqueue_form_deps'));
             add_action('admin_menu', array(&$this, 'bmltwf_menu_pages'));
             add_action('admin_enqueue_scripts', array(&$this, 'bmltwf_admin_scripts'));
@@ -125,22 +128,9 @@ if (!class_exists('bmltwf_plugin')) {
 
         public function bmltwf_load_textdomain()
         {
-            $domain = 'bmlt-workflow';
-            $locale = get_locale();
-            $mofile = dirname(plugin_basename(__FILE__)) . '/lang/' . $domain . '-' . $locale . '.mo';
-            $path = plugin_dir_path(__FILE__) . 'lang/' . $domain . '-' . $locale . '.mo';
-
-            // Debug output
-            error_log("BMLTWF Debug - Locale: " . $locale);
-            error_log("BMLTWF Debug - MO file path: " . $path);
-            error_log("BMLTWF Debug - MO file exists: " . (file_exists($path) ? 'YES' : 'NO'));
-
-            $result = load_plugin_textdomain($domain, false, dirname(plugin_basename(__FILE__)) . '/lang');
-            error_log("BMLTWF Debug - load_plugin_textdomain result: " . ($result ? 'SUCCESS' : 'FAILED'));
-
-            // Test translation
-            $test = __('New Meeting', $domain);
-            error_log("BMLTWF Debug - Translation test: " . $test);
+            // Must run on 'init' (or later) to avoid "translation triggered too early" notices.
+            $result = load_plugin_textdomain('bmlt-workflow', false, dirname(plugin_basename(__FILE__)) . '/lang');
+            $this->debug_log('bmlt-workflow textdomain load for locale ' . get_locale() . ': ' . ($result ? 'loaded' : 'no locale file (normal for en_US)'));
         }
 
         public function bmltwf_correspondence_form($atts = [], $content = null, $tag = '')
@@ -1472,7 +1462,7 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br><br>';
             echo '</div>';
 
-            echo '<br><label for="bmltwf_delete_closed_meetings"><b>' . __('Close meeting default', 'bmlt_workflow') . ':</b></label><select id="bmltwf_delete_closed_meetings" name="bmltwf_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>';
+            echo '<br><label for="bmltwf_delete_closed_meetings"><b>' . __('Close meeting default', 'bmlt-workflow') . ':</b></label><select id="bmltwf_delete_closed_meetings" name="bmltwf_delete_closed_meetings"><option name="unpublish" value="unpublish" ' . $unpublish . '>';
             echo __('Unpublish', 'bmlt-workflow');
             echo '</option><option name="delete" value="delete" ' . $delete . '>';
             echo __('Delete', 'bmlt-workflow');
@@ -2011,7 +2001,7 @@ if (!class_exists('bmltwf_plugin')) {
             echo '<br><br>';
             echo '</div>';
 
-            echo '<br><label for="bmltwf_meeting_sort_order"><b>' . __('Sort meetings by', 'bmlt_workflow') . ':</b></label><select id="bmltwf_meeting_sort_order" name="bmltwf_meeting_sort_order"><option name="alphabetical" value="alphabetical" ' . $alphabetical . '>';
+            echo '<br><label for="bmltwf_meeting_sort_order"><b>' . __('Sort meetings by', 'bmlt-workflow') . ':</b></label><select id="bmltwf_meeting_sort_order" name="bmltwf_meeting_sort_order"><option name="alphabetical" value="alphabetical" ' . $alphabetical . '>';
             echo __('Alphabetical (by meeting name)', 'bmlt-workflow');
             echo '</option><option name="day" value="day" ' . $day . '>';
             echo __('Day of week (then by time)', 'bmlt-workflow');
@@ -2020,6 +2010,5 @@ if (!class_exists('bmltwf_plugin')) {
         }
     }
 
-    load_plugin_textdomain('bmlt-workflow', false, dirname(plugin_basename(__FILE__)) . '/lang');
     $start_plugin = new bmltwf_plugin();
 }

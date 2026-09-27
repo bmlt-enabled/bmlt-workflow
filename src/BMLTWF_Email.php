@@ -131,7 +131,7 @@ class BMLTWF_Email
         $submission_type = $template_fields['submission_type'] ?? 'Submission';
         $service_body_name = $template_fields['service_body_name'] ?? 'Service Body';
         $change_id = $template_fields['change_id'] ?? 'Unknown';
-        $default_subject = '[bmlt-workflow] ' . $submission_type . ' ' . __('request received','bmlt-workflow') . ' - ' . $service_body_name . ' - ' . __('Change ID','bmlt_workflow') . ' #' . $change_id;
+        $default_subject = '[bmlt-workflow] ' . $submission_type . ' ' . __('request received','bmlt-workflow') . ' - ' . $service_body_name . ' - ' . __('Change ID','bmlt-workflow') . ' #' . $change_id;
         
         return $this->send_templated_email($to_address, $subject_template, $body_template, $template_fields, $default_subject);
     }
