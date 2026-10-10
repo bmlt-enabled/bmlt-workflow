@@ -339,17 +339,11 @@ jQuery(document).ready(function ($) {
     // create friendly meeting details for meeting searcher
     for (let i = 0, { length } = mdata; i < length; i += 1) {
       let str = `${mdata[i].name} [ ${weekdays[mdata[i].day]}, ${mdata[i].startTime} ]`;
-      let city = '';
-      if (mdata[i].location_municipality !== '') {
-        city = `${mdata[i].location_municipality}, `;
+      const locationParts = [mdata[i].location_municipality, mdata[i].location_province]
+        .filter((part) => part !== null && part !== undefined && String(part).trim() !== '');
+      if (locationParts.length > 0) {
+        str += ` [ ${locationParts.join(', ')} ]`;
       }
-      if (mdata[i].location_province !== '') {
-        city += mdata[i].location_province;
-      }
-      if (city !== '') {
-        city = `[ ${city} ]`;
-      }
-      str += city;
       mtext[i] = { text: str, id: i };
     }
 

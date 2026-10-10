@@ -1218,3 +1218,49 @@ test("Preserve_Meeting_Data_When_Changing_Update_Reason", async (t) => {
     .expect(uf.startTime.value).eql(meetingTime)
     .expect(uf.location_text.value).eql(meetingLocation);
 });
+
+// The BMLT admin API (api/v1/meetings) returns null (not "") for empty location
+// fields, so the meeting searcher used to render "[ null, null ]" in its labels.
+// These fixtures ("Zebra Crossing Group" with both location fields null, and
+// "Xylophone Group" with only a municipality) live in mockoon/bmlt3x.json.
+test("Meeting_Searcher_Null_Location_Both_Empty", async (t) => {
+  await t.navigateTo(userVariables.formpage);
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+  await t.expect(uf.update_reason.value).eql("reason_change");
+
+  // open the meeting searcher and filter to our fixture meeting
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "Zebra Crossing");
+
+  const option = Selector("#select2-meeting-searcher-results")
+    .find("li.select2-results__option")
+    .withText("Zebra Crossing Group");
+
+  await t.expect(option.exists).ok();
+  const label = (await option.innerText).trim();
+
+  // both location fields are null, so no location bracket is shown at all
+  await t.expect(label).eql("Zebra Crossing Group [ Wednesday, 19:00 ]");
+  await t.expect(label.toLowerCase()).notContains("null");
+});
+
+test("Meeting_Searcher_Null_Location_Partial", async (t) => {
+  await t.navigateTo(userVariables.formpage);
+  await select_dropdown_by_value(uf.update_reason, "reason_change");
+  await t.expect(uf.update_reason.value).eql("reason_change");
+
+  // open the meeting searcher and filter to our fixture meeting
+  await t.click("#select2-meeting-searcher-container");
+  await t.typeText(Selector('[aria-controls="select2-meeting-searcher-results"]'), "Xylophone");
+
+  const option = Selector("#select2-meeting-searcher-results")
+    .find("li.select2-results__option")
+    .withText("Xylophone Group");
+
+  await t.expect(option.exists).ok();
+  const label = (await option.innerText).trim();
+
+  // only the municipality is set, so only it is shown (no "null", no trailing comma)
+  await t.expect(label).eql("Xylophone Group [ Wednesday, 20:00 ] [ Brisbane ]");
+  await t.expect(label.toLowerCase()).notContains("null");
+});
