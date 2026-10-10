@@ -107,6 +107,12 @@ export async function click_dialog_button_by_index(element, index) {
 }
 
 export function myip(){
+  // Allow overriding the host the WordPress container uses to reach the mock
+  // BMLT server (e.g. "host.docker.internal" on Docker Desktop when the macOS
+  // firewall blocks the LAN IP). Defaults to the en0 address.
+  if (process.env.BMLTWF_BMLT_HOST) {
+    return process.env.BMLTWF_BMLT_HOST.trim();
+  }
   return execSync("ipconfig getifaddr en0").toString().trim();
 }
 

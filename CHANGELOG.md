@@ -1,3 +1,6 @@
+## 1.1.44 (UNRELEASED)
+- Fixes the meeting searcher on the update form showing the literal text "null" (e.g. `[ null, null ]`) when a meeting had empty location fields.
+
 ## 1.1.43 (Sep 27, 2026)
 - Fixes the `bmlt-workflow` textdomain being loaded too early (moved to the `init` hook), which triggered a "translation triggered too early" notice on every request under WordPress 6.7+
 - Removes leftover `error_log()` debug output from textdomain loading
