@@ -22,7 +22,6 @@
  * Description: Workflows for BMLT meeting management!
  * Version: 1.1.44
  * Requires at least: 5.2
- * Tested up to: 6.8.2
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
  * Text Domain: bmlt-workflow
