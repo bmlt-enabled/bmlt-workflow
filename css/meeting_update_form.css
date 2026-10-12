@@ -244,6 +244,7 @@ select.update-form-select {
 
 select.update-form-select {
   width: auto;
+  max-width: 100%;
 }
 
 div#meeting_content.form-grid select {
