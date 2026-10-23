@@ -247,7 +247,7 @@ wp_nonce_field('wp_rest', '_wprestnonce');
     }
     
     if (!$correspondence_enabled && current_user_can('manage_options')) {
-        $config_url = admin_url('admin.php?page=bmltwf-settings');
+        $config_url = admin_url('admin.php?page=bmltwf-options');
         echo '<div class="notice notice-info is-dismissible">';
         echo '<p><strong>' . __('New Feature Available: Correspondence', 'bmlt-workflow') . '</strong></p>';
         echo '<p>' . __('You can now communicate directly with meeting submitters through the correspondence feature. To enable this feature, please configure a correspondence page in the', 'bmlt-workflow') . ' <a href="' . esc_url($config_url) . '">' . __('Configuration settings', 'bmlt-workflow') . '</a>.</p>';

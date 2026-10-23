@@ -1,3 +1,6 @@
+## 1.1.45 (UNRELEASED)
+- Fixes the "Configuration settings" link in the correspondence feature notice pointing to a non-existent page (`bmltwf-settings` instead of `bmltwf-options`)
+
 ## 1.1.44 (October 12, 2026)
 - Fixes the meeting searcher on the update form showing the literal text "null" (e.g. `[ null, null ]`) when a meeting had empty location fields.
 - Fix meeting update form dropdown overflowing on mobile.
