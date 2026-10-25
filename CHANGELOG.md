@@ -1,4 +1,6 @@
-## 1.1.45 (UNRELEASED)
+## 1.2.0 (October 25, 2026)
+- Adds the **BMLT Geo Service** as an optional geocoding method (geocoding and timezone lookups via the cached service at `https://geo.aws.bmlt.app`) as an alternative to calling Google Maps directly
+- Sends a valid IANA `timeZone` on meeting add/change — resolved from the new Default Timezone option, a per-meeting timezone picker on the review screen, or a geo lookup — and now requires one to publish (as the BMLT Server admin UI does; this plugin is the only other Admin API write client)
 - Fixes the "Configuration settings" link in the correspondence feature notice pointing to a non-existent page (`bmltwf-settings` instead of `bmltwf-options`)
 
 ## 1.1.44 (October 12, 2026)

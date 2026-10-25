@@ -1,5 +1,17 @@
 # Contributing to BMLT Workflow
 
+## Local dev environment
+
+To run the plugin in a browser (WordPress + MySQL + a mock BMLT server in Docker), see
+**[docker/README.md](docker/README.md)** for a copy-paste quickstart. TL;DR:
+
+```bash
+docker network create testnet                                        # once
+echo "127.0.0.1 wordpress-php8-singlesite" | sudo tee -a /etc/hosts   # once
+cd docker && export BMLT=host.docker.internal BMLT_PORT=3001 && docker compose up --detach
+# then: http://wordpress-php8-singlesite/wp-admin  (admin / admin)
+```
+
 ## Testing
 
 All tests are located in the `tests/` directory.

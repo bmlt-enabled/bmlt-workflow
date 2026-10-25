@@ -20,8 +20,10 @@
 /* global wp, jQuery, ClipboardJS */
 /* global bmltwf_clear_notices, bmltwf_turn_on_spinner, bmltwf_turn_off_spinner, bmltwf_notice_success, bmltwf_notice_error */
 /* global bmltwf_admin_restore_rest_url, bmltwf_admin_backup_rest_url, bmltwf_admin_bmltserver_rest_url, bmltwf_fso_feature */
-/* global bmltwf_bmlt_server_address, bmltwf_google_maps_key_select, bmltwf_admin_bmltwf_service_bodies_rest_url */
+/* global bmltwf_bmlt_server_address, bmltwf_admin_bmltwf_service_bodies_rest_url */
 /* global bmltwf_admin_debuglog_rest_url, bmltwf_admin_correspondence_page_rest_url */
+/* global bmltwf_admin_geoservice_rest_url */
+/* global bmltwf_admin_geocoding_rest_url, bmltwf_admin_geocoding_test_rest_url */
 
 const { __ } = wp.i18n;
 
@@ -89,18 +91,78 @@ jQuery(document).ready(function ($) {
     }
   });
 
-  // show/hide our google maps key input box
-  $('#bmltwf_google_maps_key_select').on('change', function () {
-    if (this.value === 'bmlt_key') {
-      $('#bmltwf_google_maps_key').hide();
-      $('#bmltwf_google_maps_key').val('');
-    } else {
-      $('#bmltwf_google_maps_key').show();
+  // ---- Consolidated geocoding source control (auto-saves; no "Save Changes") ----
+
+  function update_geocoding_visibility() {
+    const source = $('#bmltwf_geocoding_source').val();
+    $('#bmltwf_geocoding_google_custom').toggle(source === 'google_custom');
+    $('#bmltwf_geo_service_config').toggle(source === 'geo_service');
+    // clear the last test result when the selection changes
+    $('#bmltwf_geocoding_test_yes, #bmltwf_geocoding_test_no').hide();
+  }
+
+  function save_geocoding(extra) {
+    const data = { source: $('#bmltwf_geocoding_source').val(), ...(extra || {}) };
+    return $.ajax({
+      url: bmltwf_admin_geocoding_rest_url,
+      method: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      data: JSON.stringify(data),
+      processData: false,
+      beforeSend(xhr) {
+        bmltwf_clear_notices();
+        xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
+      },
+    })
+      .done(function (response) {
+        bmltwf_notice_success(response, 'bmltwf-error-message');
+      })
+      .fail(function (xhr) {
+        bmltwf_notice_error(xhr, 'bmltwf-error-message');
+      });
+  }
+
+  // the dropdown auto-saves on change
+  $('#bmltwf_geocoding_source').on('change', function () {
+    update_geocoding_visibility();
+    const extra = {};
+    if ($(this).val() === 'google_custom') {
+      extra.bmltwf_google_maps_key = $('#bmltwf_google_maps_key').val();
     }
+    save_geocoding(extra);
   });
 
-  $('#bmltwf_google_maps_key_select').val(bmltwf_google_maps_key_select);
-  $('#bmltwf_google_maps_key_select').trigger('change');
+  // the custom Google key auto-saves on change
+  $('#bmltwf_google_maps_key').on('change', function () {
+    save_geocoding({ bmltwf_google_maps_key: $(this).val() });
+  });
+
+  // Test Configuration: live geocode through whatever source is saved
+  $('#bmltwf_geocoding_test').on('click', function () {
+    $('#bmltwf_geocoding_test_yes, #bmltwf_geocoding_test_no').hide();
+    $.ajax({
+      url: bmltwf_admin_geocoding_test_rest_url,
+      method: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
+      processData: false,
+      beforeSend(xhr) {
+        bmltwf_clear_notices();
+        xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
+      },
+    })
+      .done(function (response) {
+        $('#bmltwf_geocoding_test_yes').show();
+        bmltwf_notice_success(response, 'bmltwf-error-message');
+      })
+      .fail(function (xhr) {
+        $('#bmltwf_geocoding_test_no').show();
+        bmltwf_notice_error(xhr, 'bmltwf-error-message');
+      });
+  });
+
+  update_geocoding_visibility();
 
   $('#bmltwf_fso_feature').on('change', function () {
     if (this.value === 'hidden') {
@@ -568,6 +630,32 @@ jQuery(document).ready(function ($) {
   $('#bmltwf_bmlt_password').on('change', function () {
     enable_save_button(false);
     hide_bmlt_validation();
+  });
+
+  // the geo service API key auto-saves inline (encrypted) on change, like the custom Google key
+  $('#bmltwf_geo_service_key').on('change', function () {
+    const key = $(this).val();
+    if (key === '') {
+      return;
+    }
+    $('#bmltwf_geocoding_test_yes, #bmltwf_geocoding_test_no').hide();
+    $.ajax({
+      url: bmltwf_admin_geoservice_rest_url,
+      type: 'PATCH',
+      dataType: 'json',
+      contentType: 'application/json',
+      data: JSON.stringify({ bmltwf_geo_service_key: key }),
+      beforeSend(xhr) {
+        bmltwf_clear_notices();
+        xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
+      },
+    })
+      .done(function (response) {
+        bmltwf_notice_success(response, 'bmltwf-error-message');
+      })
+      .fail(function (xhr) {
+        bmltwf_notice_error(xhr, 'bmltwf-error-message');
+      });
   });
 
   // Handle correspondence page selection

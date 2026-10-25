@@ -24,6 +24,7 @@ class Integration
 {
 
     use \bmltwf\BMLTWF_Debug;
+    use \bmltwf\BMLTWF_Secrets;
 
     /**
      * Wrapper for wp_remote_request that logs both request and response
@@ -257,13 +258,25 @@ class Integration
         // Validate meeting data
         $filtered_change = $this->validateMeetingData($change);
 
-        // Workaround for timeZone required
-        $filtered_change["timeZone"] = null;
-
         // If validation returned an error, return it
         if (is_wp_error($filtered_change)) {
             return $filtered_change;
         }
+
+        // Resolve a valid IANA timezone (never publish null). For an update, if nothing
+        // resolves we preserve the meeting's existing timezone before blocking, so an
+        // unrelated change (e.g. unpublish) of a meeting that already has one still works.
+        $time_zone = $this->resolveTimeZone($filtered_change);
+        if (is_wp_error($time_zone) && !empty($filtered_change['id'])) {
+            $existing = $this->getMeeting($filtered_change['id']);
+            if (!is_wp_error($existing) && !empty($existing['timeZone']) && in_array($existing['timeZone'], timezone_identifiers_list(), true)) {
+                $time_zone = $existing['timeZone'];
+            }
+        }
+        if (is_wp_error($time_zone)) {
+            return $time_zone;
+        }
+        $filtered_change["timeZone"] = $time_zone;
 
         $this->debug_log("updateMeeting change");
         $this->debug_log($filtered_change);
@@ -815,8 +828,12 @@ class Integration
             return new \WP_Error('bmltwf', __('formatIds is required and must be an array', 'bmlt-workflow'));
         }
 
-        // Workaround for timeZone required
-        $filtered_meeting["timeZone"] = null;
+        // Resolve a valid IANA timezone (never publish null); block the push otherwise
+        $time_zone = $this->resolveTimeZone($filtered_meeting);
+        if (is_wp_error($time_zone)) {
+            return $time_zone;
+        }
+        $filtered_meeting["timeZone"] = $time_zone;
 
         $this->debug_log("formatsIds before");
         $this->debug_log($filtered_meeting['formatIds']);
@@ -901,26 +918,66 @@ class Integration
         return false;
     }
 
+    // The geo service URL. It is hardcoded to the hosted instance; it can be overridden
+    // for dev/testing via a BMLTWF_GEO_SERVICE_URL constant (in wp-config.php) or the
+    // bmltwf_geo_service_url option (e.g. to point at a local Mockoon server).
+    public function geoServiceBaseUrl()
+    {
+        if (defined('BMLTWF_GEO_SERVICE_URL') && BMLTWF_GEO_SERVICE_URL) {
+            return rtrim(BMLTWF_GEO_SERVICE_URL, '/');
+        }
+        $url = get_option('bmltwf_geo_service_url', '');
+        if (empty($url)) {
+            $url = 'https://geo.aws.bmlt.app';
+        }
+        return rtrim($url, '/');
+    }
+
     public function geolocateAddress($address)
     {
-        $key = $this->getGmapsKey();
-        if (\is_wp_error($key)) {
-            return $this->bmltwf_integration_error(__('Server error geolocating address: Could not retrieve google maps key.', 'bmlt-workflow'), 500);
+        if (get_option('bmltwf_geocoding_method') === 'geo_service') {
+            // route geocoding through our own cached geo service. The geo service
+            // returns the Google Geocoding response shape verbatim, so all the
+            // downstream parsing below is identical to the direct Google path.
+            $key = $this->decodeGeoServiceKey();
+            if (\is_wp_error($key)) {
+                return $this->bmltwf_integration_error(__('Server error geolocating address: Could not retrieve geo service API key.', 'bmlt-workflow'), 500);
+            }
+
+            $url = $this->geoServiceBaseUrl() . '/api/geocode?application=bmlt-workflow'
+                . '&search=' . urlencode($address)
+                . '&referrer=' . urlencode(home_url())
+                . '&language=en';
+
+            $this->debug_log("*** GEO SERVICE URL");
+            $this->debug_log($url);
+
+            $resp = $this->bmltwf_wp_remote_get($url, array(
+                'headers' => array(
+                    'Accept' => 'application/json',
+                    'Authorization' => 'Bearer ' . $key,
+                ),
+            ));
+        } else {
+            $key = $this->getGmapsKey();
+            if (\is_wp_error($key)) {
+                return $this->bmltwf_integration_error(__('Server error geolocating address: Could not retrieve google maps key.', 'bmlt-workflow'), 500);
+            }
+
+            $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($address) . "&key=" . $key;
+
+            $this->debug_log("*** GMAPS URL");
+            $this->debug_log($url);
+
+            $headers = array(
+                "Accept: */*",
+            );
+
+            $resp = $this->bmltwf_wp_remote_get($url, array('headers' => $headers));
         }
 
-        $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($address) . "&key=" . $key;
-
-        $this->debug_log("*** GMAPS URL");
-        $this->debug_log($url);
-
-        $headers = array(
-            "Accept: */*",
-        );
-
-        $resp = $this->bmltwf_wp_remote_get($url, array('headers' => $headers));
-
         if ((!is_array($resp)) ||  is_wp_error($resp)) {
-            return $this->bmltwf_integration_error(__('Server error geolocating address: Could not perform google maps lookup', 'bmlt-workflow'), 500);
+            return $this->bmltwf_integration_error(__('Server error geolocating address: Could not perform maps lookup', 'bmlt-workflow'), 500);
         }
 
         $body = \wp_remote_retrieve_body($resp);
@@ -947,20 +1004,98 @@ class Integration
         }
     }
 
-    private function secrets_decrypt($password, $data)
+    // Looks up the IANA timezone for a lat/lng via the geo service /api/timezone
+    // endpoint. Only meaningful when the geo service is configured (the direct
+    // Google geocoding path does not return a timezone). Returns the IANA
+    // timeZoneId string, or a WP_Error on failure.
+    public function lookupTimezone($latitude, $longitude)
     {
-        // $this->debug_log($data);
-        $config = array_map('base64_decode', $data['config']);
-        $encrypted = base64_decode($data['encrypted']);
+        if (!is_numeric($latitude) || !is_numeric($longitude)) {
+            return new \WP_Error('bmltwf', __('Invalid coordinates for timezone lookup.', 'bmlt-workflow'));
+        }
 
-        $key = hash_hkdf('sha256', $password, $config['size'], 'context');
+        $key = $this->decodeGeoServiceKey();
+        if (\is_wp_error($key)) {
+            return $key;
+        }
 
-        return sodium_crypto_aead_chacha20poly1305_ietf_decrypt(
-            $encrypted,
-            $config['nonce'], // Associated Data
-            $config['nonce'],
-            $key
-        );
+        $url = $this->geoServiceBaseUrl() . '/api/timezone?location=' . urlencode($latitude . ',' . $longitude);
+
+        $this->debug_log("*** GEO SERVICE TIMEZONE URL");
+        $this->debug_log($url);
+
+        $resp = $this->bmltwf_wp_remote_get($url, array(
+            'headers' => array(
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . $key,
+            ),
+        ));
+
+        if ((!is_array($resp)) || is_wp_error($resp)) {
+            return new \WP_Error('bmltwf', __('Could not perform timezone lookup.', 'bmlt-workflow'));
+        }
+
+        $body = \wp_remote_retrieve_body($resp);
+        $tz = json_decode($body, true);
+
+        if (empty($tz) || empty($tz['timeZoneId'])) {
+            return new \WP_Error('bmltwf', __('No timezone returned from timezone lookup.', 'bmlt-workflow'));
+        }
+
+        return $tz['timeZoneId'];
+    }
+
+    // Performs a sample geocode against a geo service URL + key to validate the
+    // configuration. Returns the HTTP status code, or a WP_Error on transport failure.
+    public function testGeoService($url, $key)
+    {
+        $test_url = rtrim($url, '/') . '/api/geocode?application=bmlt-workflow'
+            . '&search=' . urlencode('New York, NY')
+            . '&referrer=' . urlencode(home_url())
+            . '&language=en';
+
+        $resp = $this->bmltwf_wp_remote_get($test_url, array(
+            'headers' => array(
+                'Accept' => 'application/json',
+                'Authorization' => 'Bearer ' . $key,
+            ),
+        ));
+
+        if ((!is_array($resp)) || is_wp_error($resp)) {
+            return new \WP_Error('bmltwf', __('Could not contact the geo service.', 'bmlt-workflow'));
+        }
+
+        return \wp_remote_retrieve_response_code($resp);
+    }
+
+    // Resolves the IANA timezone to send to BMLT for a meeting push. A null/invalid
+    // timezone is never published - if none can be resolved this blocks the push with a
+    // WP_Error so the user must configure a default or pick one. Resolution order:
+    //   1. the site-wide default timezone option, when set, OR
+    //   2. an explicit (IANA-validated) timeZone on the payload (the per-meeting picker), OR
+    //   3. a geo service timezone lookup from the meeting's coordinates, when the geo
+    //      service is the configured geocoding method and lat/lng are present, OR
+    //   4. a WP_Error (never a null/non-IANA timezone).
+    private function resolveTimeZone($meeting)
+    {
+        $default = get_option('bmltwf_default_timezone', '');
+        if (!empty($default) && in_array($default, timezone_identifiers_list(), true)) {
+            return $default;
+        }
+
+        if (!empty($meeting['timeZone']) && in_array($meeting['timeZone'], timezone_identifiers_list(), true)) {
+            return $meeting['timeZone'];
+        }
+
+        if (get_option('bmltwf_geocoding_method') === 'geo_service'
+            && !empty($meeting['latitude']) && !empty($meeting['longitude'])) {
+            $tz = $this->lookupTimezone($meeting['latitude'], $meeting['longitude']);
+            if (!is_wp_error($tz) && !empty($tz) && in_array($tz, timezone_identifiers_list(), true)) {
+                return $tz;
+            }
+        }
+
+        return new \WP_Error('bmltwf', __('A timezone is required but none could be resolved. Please configure a default timezone, or select one for this meeting in the review screen.', 'bmlt-workflow'));
     }
 
     public function is_v3_token_valid()
@@ -981,15 +1116,29 @@ class Integration
             return new \WP_Error('bmltwf', __('Error unpacking password.', 'bmlt-workflow'));
         }
 
-        if (defined('BMLTWF_RUNNING_UNDER_PHPUNIT')) {
-            $nonce_salt = BMLTWF_PHPUNIT_NONCE_SALT;
-        } else {
-            $nonce_salt = NONCE_SALT;
-        }
+        $nonce_salt = $this->secrets_nonce_salt();
 
         $decrypted = $this->secrets_decrypt($nonce_salt, $encrypted);
         if ($decrypted === false) {
             return new \WP_Error('bmltwf', __('Error decrypting password.', 'bmlt-workflow'));
+        }
+        return $decrypted;
+    }
+
+    // decrypts the stored geo service API key (mirrors decodeBMLTPassword)
+    public function decodeGeoServiceKey()
+    {
+        $encrypted = get_option('bmltwf_geo_service_key');
+
+        if (empty($encrypted) || !is_array($encrypted)) {
+            return new \WP_Error('bmltwf', __('No geo service API key configured.', 'bmlt-workflow'));
+        }
+
+        $nonce_salt = $this->secrets_nonce_salt();
+
+        $decrypted = $this->secrets_decrypt($nonce_salt, $encrypted);
+        if ($decrypted === false) {
+            return new \WP_Error('bmltwf', __('Error decrypting geo service API key.', 'bmlt-workflow'));
         }
         return $decrypted;
     }

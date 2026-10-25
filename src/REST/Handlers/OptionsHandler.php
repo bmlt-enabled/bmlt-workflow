@@ -71,7 +71,7 @@ class OptionsHandler
             $this->debug_log("deleted option: " . $option_name);
             // check if we have an option in our restore that matches the options array
             if (array_key_exists($option_name, $params['options'])) {
-                if($option_name === 'bmltwf_bmlt_password')
+                if($option_name === 'bmltwf_bmlt_password' || $option_name === 'bmltwf_geo_service_key')
                 {
                     if(is_serialized($params['options'][$option_name]))
                     {
@@ -232,7 +232,7 @@ class OptionsHandler
         $optarr = \wp_load_alloptions();
         $config_info = array();
         foreach ($optarr as $key => $value) {
-            if (in_array($key, $this->bmltwf_options) && $key !== 'bmltwf_bmlt_password') {
+            if (in_array($key, $this->bmltwf_options) && $key !== 'bmltwf_bmlt_password' && $key !== 'bmltwf_geo_service_key') {
                 $config_info[$key] = $value;
             }
         }
@@ -319,7 +319,66 @@ class OptionsHandler
         }
         
         update_option('bmltwf_correspondence_page', $page_id);
-        
+
         return $this->bmltwf_rest_success(__('Correspondence page updated successfully', 'bmlt-workflow'));
+    }
+
+    // Auto-saves the consolidated geocoding source selection (and the custom Google key)
+    // so the user never needs the main "Save Changes" button. The dropdown has three
+    // values that map onto the stored options:
+    //   google_bmlt   -> method=google,      google_maps_key=''      (scraped BMLT key)
+    //   google_custom -> method=google,      google_maps_key=<key>   (dedicated key)
+    //   geo_service   -> method=geo_service                          (geo service)
+    public function post_bmltwf_geocoding_handler($request)
+    {
+        $params = $request->get_json_params();
+        $source = $params['source'] ?? '';
+
+        switch ($source) {
+            case 'google_bmlt':
+                update_option('bmltwf_geocoding_method', 'google');
+                update_option('bmltwf_google_maps_key', '');
+                // drop the cached scraped key so it is refreshed from the root server
+                update_option('bmltwf_bmlt_google_maps_key', '');
+                return $this->bmltwf_rest_success(__('Geocoding updated: Google Maps key from BMLT', 'bmlt-workflow'));
+
+            case 'google_custom':
+                $key = $params['bmltwf_google_maps_key'] ?? '';
+                if ($key !== '' && strlen($key) != 39) {
+                    return $this->bmltwf_rest_error(__('Invalid Google Maps key.', 'bmlt-workflow'), 422);
+                }
+                update_option('bmltwf_geocoding_method', 'google');
+                update_option('bmltwf_google_maps_key', sanitize_text_field($key));
+                return $this->bmltwf_rest_success(__('Geocoding updated: custom Google Maps key', 'bmlt-workflow'));
+
+            case 'geo_service':
+                update_option('bmltwf_geocoding_method', 'geo_service');
+                return $this->bmltwf_rest_success(__('Geocoding updated: BMLT Geo Service', 'bmlt-workflow'));
+
+            default:
+                return $this->bmltwf_rest_error(__('Invalid geocoding source', 'bmlt-workflow'), 422);
+        }
+    }
+
+    // Live "Test Configuration" for whatever geocoding source is currently saved. Does a
+    // sample geocode through the configured method (real Google for the Google options,
+    // the configured URL for the geo service) and reports success/failure.
+    public function post_bmltwf_geocoding_test_handler($request)
+    {
+        $result = $this->Integration->geolocateAddress('New York, NY');
+
+        if (is_wp_error($result)) {
+            // reflect a failed geo service test in its status indicator
+            if (get_option('bmltwf_geocoding_method') === 'geo_service') {
+                update_option('bmltwf_geo_service_test_status', '');
+            }
+            return $this->bmltwf_rest_error(__('Geocoding test failed', 'bmlt-workflow') . ': ' . $result->get_error_message(), 422);
+        }
+
+        if (get_option('bmltwf_geocoding_method') === 'geo_service') {
+            update_option('bmltwf_geo_service_test_status', 'success');
+        }
+
+        return $this->bmltwf_rest_success(__('Geocoding test succeeded', 'bmlt-workflow'));
     }
 }

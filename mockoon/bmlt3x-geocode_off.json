@@ -662,6 +662,194 @@
       "responseMode": null,
       "streamingMode": null,
       "streamingInterval": 0
+    },
+    {
+      "uuid": "3d524d04-c1e1-4359-8c56-f96d27b4bdd4",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/geocode",
+      "responses": [
+        {
+          "uuid": "49487df7-a198-4b3c-a5e6-3b63a8f71c58",
+          "body": "{\n  \"status\": \"OK\",\n  \"type\": \"live\",\n  \"results\": [\n    {\n      \"formatted_address\": \"105 Avoca St, Randwick NSW 2031, Australia\",\n      \"address_components\": [\n        {\n          \"long_name\": \"105\",\n          \"short_name\": \"105\",\n          \"types\": [\n            \"street_number\"\n          ]\n        },\n        {\n          \"long_name\": \"Avoca Street\",\n          \"short_name\": \"Avoca St\",\n          \"types\": [\n            \"route\"\n          ]\n        },\n        {\n          \"long_name\": \"Randwick\",\n          \"short_name\": \"Randwick\",\n          \"types\": [\n            \"locality\",\n            \"political\"\n          ]\n        },\n        {\n          \"long_name\": \"Randwick City Council\",\n          \"short_name\": \"Randwick City Council\",\n          \"types\": [\n            \"administrative_area_level_2\",\n            \"political\"\n          ]\n        },\n        {\n          \"long_name\": \"New South Wales\",\n          \"short_name\": \"NSW\",\n          \"types\": [\n            \"administrative_area_level_1\",\n            \"political\"\n          ]\n        },\n        {\n          \"long_name\": \"Australia\",\n          \"short_name\": \"AU\",\n          \"types\": [\n            \"country\",\n            \"political\"\n          ]\n        },\n        {\n          \"long_name\": \"2031\",\n          \"short_name\": \"2031\",\n          \"types\": [\n            \"postal_code\"\n          ]\n        }\n      ],\n      \"geometry\": {\n        \"location\": {\n          \"lat\": -33.9172983,\n          \"lng\": 151.2412753\n        },\n        \"location_type\": \"ROOFTOP\",\n        \"viewport\": {\n          \"northeast\": {\n            \"lat\": -33.9159493,\n            \"lng\": 151.2426243\n          },\n          \"southwest\": {\n            \"lat\": -33.9186473,\n            \"lng\": 151.2399263\n          }\n        }\n      },\n      \"place_id\": \"mock_place_id\"\n    }\n  ],\n  \"request\": {\n    \"search\": \"mock\",\n    \"application\": \"bmlt-workflow\",\n    \"language\": \"en\",\n    \"referrer\": null,\n    \"region\": null\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "type": "http",
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "7a54b414-c9d6-456f-a003-2d569a5c99fe",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "api/timezone",
+      "responses": [
+        {
+          "uuid": "e37de511-11c3-4e5c-98a1-774257e456b0",
+          "body": "{\n  \"dstOffset\": 3600,\n  \"rawOffset\": 36000,\n  \"timeZoneId\": \"Australia/Sydney\",\n  \"timeZoneName\": \"Australian Eastern Daylight Time\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "x-content-type-options",
+              "value": "nosniff"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "type": "http",
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "12a0bca9-3294-4e23-9461-91bf292009a0",
+      "documentation": "catch-all so any meeting id resolves",
+      "method": "get",
+      "endpoint": "main_server/api/v1/meetings/:meetingId",
+      "responses": [
+        {
+          "uuid": "7bb170f9-79f9-42e3-8434-d3683123b67f",
+          "body": "{\"id\":{{urlParam 'meetingId'}},\"serviceBodyId\":1009,\"formatIds\":[3,17,36],\"venueType\":1,\"temporarilyVirtual\":false,\"day\":2,\"startTime\":\"18:30\",\"duration\":\"01:30\",\"timeZone\":null,\"latitude\":42.2516169,\"longitude\":-73.7890075,\"published\":true,\"email\":null,\"worldId\":null,\"name\":\"Mock Meeting {{urlParam 'meetingId'}}\",\"location_text\":null,\"location_info\":null,\"location_street\":\"360 Warren Street\",\"location_city_subsection\":null,\"location_neighborhood\":null,\"location_municipality\":\"Hudson\",\"location_sub_province\":\"Columbia\",\"location_province\":\"NY\",\"location_postal_code_1\":null,\"location_nation\":\"US\",\"comments\":null,\"zone\":null,\"train_lines\":null,\"bus_lines\":null,\"contact_phone_2\":null,\"contact_email_2\":null,\"contact_name_2\":null,\"contact_phone_1\":null,\"contact_email_1\":null,\"contact_name_1\":null,\"phone_meeting_number\":null,\"virtual_meeting_link\":null,\"virtual_meeting_additional_info\":null}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "type": "http",
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "0904eb8c-9ff8-40fe-b026-75d342c62427",
+      "documentation": "catch-all so any meeting id resolves",
+      "method": "patch",
+      "endpoint": "main_server/api/v1/meetings/:meetingId",
+      "responses": [
+        {
+          "uuid": "6b7f7850-cdfb-426f-96dd-24c21f561c32",
+          "body": "",
+          "latency": 0,
+          "statusCode": 204,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "type": "http",
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "79dfe6b5-7a26-4e45-ab61-f45418057b9a",
+      "documentation": "catch-all so any meeting id resolves",
+      "method": "delete",
+      "endpoint": "main_server/api/v1/meetings/:meetingId",
+      "responses": [
+        {
+          "uuid": "9ef8e354-afd2-49a5-b606-0e59e166a6c8",
+          "body": "",
+          "latency": 0,
+          "statusCode": 204,
+          "label": "",
+          "headers": [
+            {
+              "key": "content-type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null,
+      "type": "http",
+      "streamingMode": null,
+      "streamingInterval": 0
     }
   ],
   "rootChildren": [
@@ -716,6 +904,26 @@
     {
       "type": "route",
       "uuid": "2d939539-d177-4276-bb7f-38755fe9da82"
+    },
+    {
+      "type": "route",
+      "uuid": "3d524d04-c1e1-4359-8c56-f96d27b4bdd4"
+    },
+    {
+      "type": "route",
+      "uuid": "7a54b414-c9d6-456f-a003-2d569a5c99fe"
+    },
+    {
+      "type": "route",
+      "uuid": "12a0bca9-3294-4e23-9461-91bf292009a0"
+    },
+    {
+      "type": "route",
+      "uuid": "0904eb8c-9ff8-40fe-b026-75d342c62427"
+    },
+    {
+      "type": "route",
+      "uuid": "79dfe6b5-7a26-4e45-ab61-f45418057b9a"
     }
   ],
   "proxyMode": false,

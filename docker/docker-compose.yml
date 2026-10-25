@@ -11,6 +11,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-wordpress-db
+    # Disable server-side SSL: the newer MariaDB client (and wp-cli) now verify
+    # the server cert by default and reject MySQL 5.7's self-signed cert. Plaintext
+    # is fine for this disposable local/test DB.
+    command: --skip-ssl
     restart: always
     tmpfs: /var/lib/mysql
     platform: linux/x86_64

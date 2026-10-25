@@ -21,6 +21,7 @@ namespace bmltwf\REST;
 
 
 use bmltwf\REST\Handlers\BMLTServerHandler;
+use bmltwf\REST\Handlers\GeoServiceHandler;
 use bmltwf\REST\Handlers\ServiceBodiesHandler;
 use bmltwf\REST\Handlers\SubmissionsHandler;
 use bmltwf\REST\Handlers\OptionsHandler;
@@ -33,6 +34,7 @@ class Controller extends \WP_REST_Controller
 	use \bmltwf\BMLTWF_Constants;
 	
 	protected $BMLTServerHandler;
+	protected $GeoServiceHandler;
 	protected $ServiceBodiesHandler;
 	protected $SubmissionsHandler;
 	protected $OptionsHandler;
@@ -44,6 +46,7 @@ class Controller extends \WP_REST_Controller
 		{
 			// $this->debug_log("Controller: Creating new BMLTServerHandler");
 			$this->BMLTServerHandler = new BMLTServerHandler();
+			$this->GeoServiceHandler = new GeoServiceHandler();
 			// $this->debug_log("Controller: Creating new ServiceBodiesHandler");
 			$this->ServiceBodiesHandler = new ServiceBodiesHandler();
 			// $this->debug_log("Controller: Creating new SubmissionsHandler");
@@ -247,7 +250,29 @@ class Controller extends \WP_REST_Controller
 				'permission_callback' => array($this, 'get_bmltserver_meetings_permissions_check'),
 			),
 		);
-		
+
+		// POST geoservice (test)
+		register_rest_route(
+			$this->bmltwf_rest_namespace,
+			'/' . $this->bmltwf_geoservice_rest_base,
+			array(
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => array($this, 'post_geoservice'),
+				'permission_callback' => array($this, 'post_geoservice_permissions_check'),
+			),
+		);
+
+		// PATCH geoservice (persist)
+		register_rest_route(
+			$this->bmltwf_rest_namespace,
+			'/' . $this->bmltwf_geoservice_rest_base,
+			array(
+				'methods'             => \WP_REST_Server::EDITABLE,
+				'callback'            => array($this, 'patch_geoservice'),
+				'permission_callback' => array($this, 'patch_geoservice_permissions_check'),
+			),
+		);
+
 		// POST options/backup
 		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_options_rest_base . '/backup', array(
 			'methods'             => \WP_REST_Server::CREATABLE,
@@ -269,6 +294,20 @@ class Controller extends \WP_REST_Controller
 			'permission_callback' => array($this, 'post_bmltwf_debug_permissions_check'),
 		));
 		
+		// POST options/geocoding (auto-save the consolidated geocoding source + custom key)
+		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_options_rest_base . '/geocoding', array(
+			'methods'             => \WP_REST_Server::CREATABLE,
+			'callback'            => array($this, 'post_bmltwf_geocoding'),
+			'permission_callback' => array($this, 'patch_geoservice_permissions_check'),
+		));
+
+		// POST options/geocoding-test (live test of the current geocoding configuration)
+		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_options_rest_base . '/geocoding-test', array(
+			'methods'             => \WP_REST_Server::CREATABLE,
+			'callback'            => array($this, 'post_bmltwf_geocoding_test'),
+			'permission_callback' => array($this, 'patch_geoservice_permissions_check'),
+		));
+
 		// POST options/correspondence-page
 		register_rest_route($this->bmltwf_rest_namespace, '/' . $this->bmltwf_options_rest_base . '/correspondence-page', array(
 			'methods'             => \WP_REST_Server::CREATABLE,
@@ -505,6 +544,24 @@ class Controller extends \WP_REST_Controller
 		return true;
 	}
 
+	public function post_geoservice_permissions_check($request)
+	{
+		$this->debug_log("post_geoservice " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot test the geo service configuration.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
+	public function patch_geoservice_permissions_check($request)
+	{
+		$this->debug_log("patch_geoservice " . get_current_user_id());
+		if (!current_user_can('manage_options')) {
+			return new \WP_Error('rest_forbidden', __('Access denied: You cannot update the geo service configuration.','bmlt-workflow'), array('status' => $this->authorization_status_code()));
+		}
+		return true;
+	}
+
 	public function post_bmltwf_backup_permissions_check($request)
 	{
 
@@ -679,6 +736,18 @@ class Controller extends \WP_REST_Controller
 		return rest_ensure_response($result);
 	}
 
+	public function post_geoservice($request)
+	{
+		$result = $this->GeoServiceHandler->post_geoservice_handler($request);
+		return rest_ensure_response($result);
+	}
+
+	public function patch_geoservice($request)
+	{
+		$result = $this->GeoServiceHandler->patch_geoservice_handler($request);
+		return rest_ensure_response($result);
+	}
+
 	public function post_bmltwf_backup($request)
 	{
 		$result = $this->OptionsHandler->post_bmltwf_backup_handler($request);
@@ -700,6 +769,18 @@ class Controller extends \WP_REST_Controller
 	public function post_bmltwf_correspondence_page($request)
 	{
 		$result = $this->OptionsHandler->post_bmltwf_correspondence_page_handler($request);
+		return rest_ensure_response($result);
+	}
+
+	public function post_bmltwf_geocoding($request)
+	{
+		$result = $this->OptionsHandler->post_bmltwf_geocoding_handler($request);
+		return rest_ensure_response($result);
+	}
+
+	public function post_bmltwf_geocoding_test($request)
+	{
+		$result = $this->OptionsHandler->post_bmltwf_geocoding_test_handler($request);
 		return rest_ensure_response($result);
 	}
 	

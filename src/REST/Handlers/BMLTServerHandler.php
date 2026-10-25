@@ -26,6 +26,7 @@ class BMLTServerHandler
 {
 
     use \bmltwf\BMLTWF_Debug;
+    use \bmltwf\BMLTWF_Secrets;
     use \bmltwf\REST\HandlerCore;
 
     protected $bmlt_integration;
@@ -173,14 +174,7 @@ class BMLTServerHandler
 
         $this->debug_log("encrypting BMLT password");
 
-        if(defined('BMLTWF_RUNNING_UNDER_PHPUNIT'))
-        {
-            $nonce_salt = BMLTWF_PHPUNIT_NONCE_SALT;
-        }
-        else
-        {
-            $nonce_salt = NONCE_SALT;
-        }
+        $nonce_salt = $this->secrets_nonce_salt();
 
         $encrypted = $this->secrets_encrypt($nonce_salt, $password);
 
@@ -207,33 +201,6 @@ class BMLTServerHandler
         return $this->bmltwf_rest_success($data);
     }
 
-    private function secrets_encrypt($password, $secret)
-    {
-
-        $config = [
-            'size'      => SODIUM_CRYPTO_AEAD_CHACHA20POLY1305_IETF_KEYBYTES,
-            'salt'      => random_bytes(SODIUM_CRYPTO_PWHASH_SALTBYTES),
-            'limit_ops' => SODIUM_CRYPTO_PWHASH_OPSLIMIT_SENSITIVE,
-            'limit_mem' => SODIUM_CRYPTO_PWHASH_MEMLIMIT_SENSITIVE,
-            'alg'       => SODIUM_CRYPTO_PWHASH_ALG_ARGON2ID13,
-            'nonce'     => random_bytes(SODIUM_CRYPTO_AEAD_CHACHA20POLY1305_IETF_NPUBBYTES),
-        ];
-
-        $key = hash_hkdf('sha256', $password, $config['size'], 'context');
-
-        $encrypted = sodium_crypto_aead_chacha20poly1305_ietf_encrypt(
-            $secret,
-            $config['nonce'], // Associated Data
-            $config['nonce'],
-            $key
-        );
-
-        return [
-            'config' => array_map('base64_encode', $config),
-            'encrypted' => base64_encode($encrypted),
-        ];
-    }
-
     public function get_bmltserver_geolocate_handler($request)
     {
 
@@ -252,10 +219,19 @@ class BMLTServerHandler
             return $this->bmltwf_rest_error(__('Invalid geolocation response','bmlt-workflow'), 422);
         }
 
-        $this->debug_log("GMAPS location lookup returns = " . $location['latitude'] . " " . $location['longitude']);
+        $lat = $location['results'][0]['geometry']['location']['lat'];
+        $lng = $location['results'][0]['geometry']['location']['lng'];
+        $this->debug_log("geolocate lookup returns = " . $lat . " " . $lng);
 
-        // $change['latitude'] = $location['latitude'];
-        // $change['longitude'] = $location['longitude'];
+        // when the geo service is configured it can also return a timezone, used to
+        // pre-fill the per-meeting timezone picker in the submission review screen
+        if (get_option('bmltwf_geocoding_method') === 'geo_service') {
+            $time_zone = $this->bmlt_integration->lookupTimezone($lat, $lng);
+            if (!is_wp_error($time_zone) && !empty($time_zone)) {
+                $location['time_zone'] = $time_zone;
+            }
+        }
+
         $location['message'] = 'Geolocation successful';
         return $location;
 

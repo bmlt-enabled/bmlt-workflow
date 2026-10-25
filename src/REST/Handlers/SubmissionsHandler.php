@@ -324,6 +324,7 @@ class SubmissionsHandler
             "virtualna_published",
             "latitude",
             "longitude",
+            "timeZone",
             "comments"
         );
 
@@ -539,6 +540,7 @@ class SubmissionsHandler
             "virtualna_published",
             "latitude",
             "longitude",
+            "timeZone",
             "comments"
         );
 

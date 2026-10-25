@@ -377,15 +377,15 @@ const gmapslogger = RequestLogger(/https:\/\/maps.googleapis.com\/maps\/api\/js\
 );
 
 test("Check_Custom_Google_Maps_Key", async (t) => {
-  // check we can put in a google maps key and use it
+  // check we can put in a google maps key and use it (the consolidated dropdown auto-saves)
 
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
   await ao.navigateToTab(t, 'bmlt-config');
-  await select_dropdown_by_text(ao.bmltwf_google_maps_key_select, "Custom Google Maps Key");
+  await select_dropdown_by_text(ao.bmltwf_geocoding_source, "Custom Google Maps Key");
   await t.expect(ao.bmltwf_google_maps_key.visible).eql(true)
   .typeText(ao.bmltwf_google_maps_key, 'AIXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX', { replace: true })
-  .click(ao.submit);
-  await ao.settings_updated();
+  .pressKey('tab') // blur to fire the change/auto-save
+  .wait(1000);
 
   await t.navigateTo(userVariables.admin_submissions_page_single)
   .wait(1000);
@@ -396,14 +396,13 @@ test("Check_Custom_Google_Maps_Key", async (t) => {
 }).requestHooks(gmapslogger);
 
 test("Check_BMLT_Google_Maps_Key", async (t) => {
-  // check we can put in a google maps key and use it
+  // check we can put in a google maps key and use it (the consolidated dropdown auto-saves)
 
   await t.useRole(bmltwf_admin).navigateTo(userVariables.admin_settings_page_single);
   await ao.navigateToTab(t, 'bmlt-config');
-  await select_dropdown_by_text(ao.bmltwf_google_maps_key_select, "Google Maps Key from BMLT");
+  await select_dropdown_by_text(ao.bmltwf_geocoding_source, "Google Maps Key from BMLT");
   await t.expect(ao.bmltwf_google_maps_key.visible).eql(false)
-  await t.click(ao.submit);
-  await ao.settings_updated();
+  .wait(1000);
 
   await t.navigateTo(userVariables.admin_submissions_page_single)
   .wait(1000);

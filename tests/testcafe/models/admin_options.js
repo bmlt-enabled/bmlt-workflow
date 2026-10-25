@@ -56,8 +56,9 @@ class Admin_Options {
         this.bmltwf_delete_closed_meetings = Selector("#bmltwf_delete_closed_meetings");
         this.bmltwf_email_from_address = Selector("#bmltwf_email_from_address");
         this.bmltwf_trusted_servants_can_delete_submissions = Selector("#bmltwf_trusted_servants_can_delete_submissions");
-        this.bmltwf_google_maps_key_select = Selector("#bmltwf_google_maps_key_select");
+        this.bmltwf_geocoding_source = Selector("#bmltwf_geocoding_source");
         this.bmltwf_google_maps_key = Selector("#bmltwf_google_maps_key");
+        this.bmltwf_geocoding_test = Selector("#bmltwf_geocoding_test");
         this.bmltwf_auto_geocoding_settings_text = Selector("#bmltwf_auto_geocoding_settings_text");
         this.bmltwf_enable_debug = Selector("#bmltwf_enable_debug");
         this.download_debug_log_button = Selector("#download_debug_log_button");

@@ -51,6 +51,11 @@ trait BMLTWF_Constants
         'bmltwf_trusted_servants_can_delete_submissions',
         'bmltwf_remove_virtual_meeting_details_on_venue_change',
         'bmltwf_google_maps_key',
+        'bmltwf_geocoding_method',
+        'bmltwf_geo_service_url',
+        'bmltwf_geo_service_key',
+        'bmltwf_geo_service_test_status',
+        'bmltwf_default_timezone',
         'bmltwf_correspondence_page',
         'bmltwf_correspondence_submitter_email_template',
         'bmltwf_correspondence_submitter_email_subject',
@@ -65,6 +70,7 @@ trait BMLTWF_Constants
     public $bmltwf_submissions_rest_base = 'submissions';
     public $bmltwf_service_bodies_rest_base = 'servicebodies';
     public $bmltwf_bmltserver_rest_base = 'bmltserver';
+    public $bmltwf_geoservice_rest_base = 'geoservice';
     public $bmltwf_options_rest_base = 'options';
     public $bmltwf_correspondence_rest_base = 'correspondence';
 

@@ -92,6 +92,14 @@ Line: $errorLine
             {
                 return(json_decode('{"config":{"size":"MzI=","salt":"\/5ObzNuYZ\/Y5aoYTsr0sZw==","limit_ops":"OA==","limit_mem":"NTM2ODcwOTEy","alg":"Mg==","nonce":"VukDVzDkAaex\/jfB"},"encrypted":"fertj+qRqQrs9tC+Cc32GrXGImHMfiLyAW7sV6Xojw=="}',true));
             }
+            else if($value === 'bmltwf_default_timezone')
+            {
+                return('America/New_York');
+            }
+            else if($value === 'bmltwf_geocoding_method')
+            {
+                return('google');
+            }
             else
             {
                 return("true");
@@ -547,8 +555,9 @@ EOD;
 
     /**
      * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::resolveTimeZone
      */
-    public function test_createMeeting_adds_timezone_null(): void
+    public function test_createMeeting_adds_default_timezone(): void
     {
         // Capture the request body
         $capturedBody = null;
@@ -577,12 +586,12 @@ EOD;
         $integration = new Integration(true, "3.0.0", "token", time()+2000);
         $integration->createMeeting($meeting);
 
-        // Verify timeZone is null in the request body
+        // Verify timeZone is resolved from the site-wide default (IANA, never null)
         $this->assertNotNull($capturedBody, "Request body was not captured");
         $decodedBody = json_decode($capturedBody, true);
         $this->assertIsArray($decodedBody, "Request body is not valid JSON");
         $this->assertArrayHasKey('timeZone', $decodedBody, "timeZone field is missing");
-        $this->assertNull($decodedBody['timeZone'], "timeZone should be null");
+        $this->assertEquals('America/New_York', $decodedBody['timeZone'], "timeZone should be the default");
     }
 
     /**
@@ -803,8 +812,9 @@ EOD;
 
     /**
      * @covers bmltwf\BMLT\Integration::updateMeeting
+     * @covers bmltwf\BMLT\Integration::resolveTimeZone
      */
-    public function test_updateMeeting_adds_timezone_null(): void
+    public function test_updateMeeting_adds_default_timezone(): void
     {
         // Capture the request body
         $capturedBody = null;
@@ -834,12 +844,244 @@ EOD;
         $integration = new Integration(true, "3.0.0", "token", time()+2000);
         $integration->updateMeeting($meeting);
 
-        // Verify timeZone is null in the request body
+        // Verify timeZone is resolved from the site-wide default (IANA, never null)
         $this->assertNotNull($capturedBody, "Request body was not captured");
         $decodedBody = json_decode($capturedBody, true);
         $this->assertIsArray($decodedBody, "Request body is not valid JSON");
         $this->assertArrayHasKey('timeZone', $decodedBody, "timeZone field is missing");
-        $this->assertNull($decodedBody['timeZone'], "timeZone should be null");
+        $this->assertEquals('America/New_York', $decodedBody['timeZone'], "timeZone should be the default");
+    }
+
+    // builds a valid encrypted geo service key blob using the phpunit nonce salt
+    private function make_encrypted_geo_key($plaintext)
+    {
+        $config = [
+            'size'      => SODIUM_CRYPTO_AEAD_CHACHA20POLY1305_IETF_KEYBYTES,
+            'salt'      => random_bytes(SODIUM_CRYPTO_PWHASH_SALTBYTES),
+            'limit_ops' => SODIUM_CRYPTO_PWHASH_OPSLIMIT_SENSITIVE,
+            'limit_mem' => SODIUM_CRYPTO_PWHASH_MEMLIMIT_SENSITIVE,
+            'alg'       => SODIUM_CRYPTO_PWHASH_ALG_ARGON2ID13,
+            'nonce'     => random_bytes(SODIUM_CRYPTO_AEAD_CHACHA20POLY1305_IETF_NPUBBYTES),
+        ];
+        $key = hash_hkdf('sha256', BMLTWF_PHPUNIT_NONCE_SALT, $config['size'], 'context');
+        $encrypted = sodium_crypto_aead_chacha20poly1305_ietf_encrypt($plaintext, $config['nonce'], $config['nonce'], $key);
+        return ['config' => array_map('base64_encode', $config), 'encrypted' => base64_encode($encrypted)];
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::geolocateAddress
+     * @covers bmltwf\BMLT\Integration::geoServiceBaseUrl
+     * @covers bmltwf\BMLT\Integration::decodeGeoServiceKey
+     */
+    public function test_geolocateAddress_uses_geo_service(): void
+    {
+        $encrypted_key = $this->make_encrypted_geo_key('geo_testkey');
+
+        Functions\when('\get_option')->alias(function($value) use ($encrypted_key) {
+            if ($value === 'bmltwf_geocoding_method') { return 'geo_service'; }
+            if ($value === 'bmltwf_geo_service_url') { return 'https://geo.aws.bmlt.app'; }
+            if ($value === 'bmltwf_geo_service_key') { return $encrypted_key; }
+            return 'true';
+        });
+        Functions\when('\home_url')->justReturn('https://example.com');
+
+        $captured_url = null;
+        Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$captured_url) {
+            $captured_url = $url;
+            return ['body' => 'x'];
+        });
+        Functions\when('\wp_remote_retrieve_body')->justReturn('{"status":"OK","type":"live","results":[{"geometry":{"location":{"lat":40.7127753,"lng":-74.0059728}},"address_components":[]}]}');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $result = $integration->geolocateAddress('New York, NY');
+
+        $this->assertNotInstanceOf(WP_Error::class, $result);
+        $this->assertStringContainsString('geo.aws.bmlt.app/api/geocode', $captured_url);
+        $this->assertStringContainsString('application=bmlt-workflow', $captured_url);
+        $this->assertEquals(40.7127753, $result['results'][0]['geometry']['location']['lat']);
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::lookupTimezone
+     */
+    public function test_lookupTimezone_returns_iana(): void
+    {
+        $encrypted_key = $this->make_encrypted_geo_key('geo_testkey');
+
+        Functions\when('\get_option')->alias(function($value) use ($encrypted_key) {
+            if ($value === 'bmltwf_geo_service_url') { return 'https://geo.aws.bmlt.app'; }
+            if ($value === 'bmltwf_geo_service_key') { return $encrypted_key; }
+            return 'true';
+        });
+
+        $captured_url = null;
+        Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$captured_url) {
+            $captured_url = $url;
+            return ['body' => 'x'];
+        });
+        Functions\when('\wp_remote_retrieve_body')->justReturn('{"dstOffset":3600,"rawOffset":-18000,"timeZoneId":"America/New_York","timeZoneName":"Eastern Daylight Time"}');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $result = $integration->lookupTimezone(40.7127753, -74.0059728);
+
+        $this->assertEquals('America/New_York', $result);
+        $this->assertStringContainsString('/api/timezone?location=', $captured_url);
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::resolveTimeZone
+     */
+    public function test_createMeeting_requires_timezone(): void
+    {
+        // no global default and no timezone resolvable -> block the push (never publish null)
+        Functions\when('\get_option')->alias(function($value) {
+            if ($value === 'bmltwf_default_timezone') { return ''; }
+            if ($value === 'bmltwf_geocoding_method') { return 'google'; }
+            return 'true';
+        });
+
+        $meeting = array(
+            "name" => "No TZ Meeting",
+            "startTime" => "11:01:00",
+            "duration" => "01:00:00",
+            "day" => "1",
+            "serviceBodyId" => "1050",
+            "formatIds" => [7],
+            "venueType" => "3",
+            "published" => "1"
+        );
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $result = $integration->createMeeting($meeting);
+
+        $this->assertInstanceOf(WP_Error::class, $result);
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::resolveTimeZone
+     */
+    public function test_createMeeting_rejects_non_iana_timezone(): void
+    {
+        // a non-IANA value (e.g. a bare UTC offset) must never be forwarded -> block
+        Functions\when('\get_option')->alias(function($value) {
+            if ($value === 'bmltwf_default_timezone') { return ''; }
+            if ($value === 'bmltwf_geocoding_method') { return 'google'; }
+            return 'true';
+        });
+
+        $meeting = array(
+            "name" => "Bad TZ Meeting",
+            "startTime" => "11:01:00",
+            "duration" => "01:00:00",
+            "day" => "1",
+            "serviceBodyId" => "1050",
+            "formatIds" => [7],
+            "venueType" => "3",
+            "published" => "1",
+            "timeZone" => "UTC+10"
+        );
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $result = $integration->createMeeting($meeting);
+
+        $this->assertInstanceOf(WP_Error::class, $result);
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::resolveTimeZone
+     */
+    public function test_createMeeting_resolves_timezone_from_geo_service(): void
+    {
+        // no global default, but the geo service + coordinates resolve a valid IANA timezone
+        $encrypted_key = $this->make_encrypted_geo_key('geo_testkey');
+        $formats = $this->formats;
+        $capturedBody = null;
+        // URL-aware mock: the timezone lookup, the formats fetch and the POST each read a body
+        Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody, $formats) {
+            if (strpos($url, '/api/timezone') !== false) {
+                return ['body' => '{"timeZoneId":"America/New_York"}'];
+            }
+            if (isset($args['body'])) { $capturedBody = $args['body']; } // the meeting POST
+            return ['body' => $formats];
+        });
+        Functions\when('\wp_remote_retrieve_body')->alias(function($resp) {
+            return (is_array($resp) && isset($resp['body'])) ? $resp['body'] : '';
+        });
+        Functions\when('\home_url')->justReturn('https://example.com');
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
+        Functions\when('\get_option')->alias(function($value) use ($encrypted_key) {
+            if ($value === 'bmltwf_default_timezone') { return ''; }
+            if ($value === 'bmltwf_geocoding_method') { return 'geo_service'; }
+            if ($value === 'bmltwf_geo_service_url') { return 'https://geo.aws.bmlt.app'; }
+            if ($value === 'bmltwf_geo_service_key') { return $encrypted_key; }
+            return 'true';
+        });
+
+        $meeting = array(
+            "name" => "Geo TZ Meeting",
+            "startTime" => "11:01:00",
+            "duration" => "01:00:00",
+            "day" => "1",
+            "serviceBodyId" => "1050",
+            "formatIds" => [7],
+            "venueType" => "3",
+            "published" => "1",
+            "latitude" => "40.7127",
+            "longitude" => "-74.0059"
+        );
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $result = $integration->createMeeting($meeting);
+
+        $this->assertNotInstanceOf(WP_Error::class, $result);
+        $decodedBody = json_decode($capturedBody, true);
+        $this->assertEquals('America/New_York', $decodedBody['timeZone'], "timezone should be resolved from the geo service");
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::resolveTimeZone
+     */
+    public function test_createMeeting_accepts_explicit_iana_timezone(): void
+    {
+        // no global default, but an explicit valid IANA timezone on the payload is used
+        Functions\when('\get_option')->alias(function($value) {
+            if ($value === 'bmltwf_default_timezone') { return ''; }
+            if ($value === 'bmltwf_geocoding_method') { return 'google'; }
+            return 'true';
+        });
+
+        $capturedBody = null;
+        Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody) {
+            if (isset($args['body'])) { $capturedBody = $args['body']; }
+            return ['response' => ['code' => 201]];
+        });
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
+
+        $meeting = array(
+            "name" => "Explicit TZ Meeting",
+            "startTime" => "11:01:00",
+            "duration" => "01:00:00",
+            "day" => "1",
+            "serviceBodyId" => "1050",
+            "formatIds" => [7],
+            "venueType" => "3",
+            "published" => "1",
+            "timeZone" => "Australia/Sydney"
+        );
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $response = $integration->createMeeting($meeting);
+
+        $this->assertNotInstanceOf(WP_Error::class, $response);
+        $decodedBody = json_decode($capturedBody, true);
+        $this->assertEquals('Australia/Sydney', $decodedBody['timeZone']);
     }
 
     /**

@@ -20,7 +20,16 @@ do
     sleep 1
 done
 
-wp db create
+# Wait for the database to accept connections, then create the site DB directly.
+# wp-cli's `wp db create` shells out to a mysql client that now requires TLS, but
+# the MySQL 5.7 test DB runs with --skip-ssl, so the client cannot negotiate. We
+# create the database with the client's SSL explicitly disabled instead.
+until mariadb -h "$WORDPRESS_DB_HOST" -u "$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" --skip-ssl -e "SELECT 1" >/dev/null 2>&1
+do
+    echo "waiting for database..."
+    sleep 2
+done
+mariadb -h "$WORDPRESS_DB_HOST" -u "$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" --skip-ssl -e "CREATE DATABASE IF NOT EXISTS \`$WORDPRESS_DB_NAME\`;"
 wp core install --url=$URL --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com --path=/var/www/html
 wp language core install fr_FR
 

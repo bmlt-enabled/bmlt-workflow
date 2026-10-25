@@ -226,6 +226,20 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     <input class="quickedit-input" type="number" name="quickedit_longitude" id="quickedit_longitude" disabled>
                 </fieldset>
             </div>
+            <?php if (get_option('bmltwf_default_timezone', '') === '') : ?>
+            <div id="optional_timezone"><br>
+                <fieldset>
+                    <legend><?php echo __( "Meeting Timezone (required)", 'bmlt-workflow' ); ?></legend>
+                    <label for="quickedit_timeZone"><?php echo __( "Timezone", 'bmlt-workflow' ); ?></label>
+                    <select class="quickedit-input" name="quickedit_timeZone" id="quickedit_timeZone">
+                        <option value=""><?php echo __( "Select a timezone", 'bmlt-workflow' ); ?></option>
+                        <?php foreach (timezone_identifiers_list() as $bmltwf_tz) {
+                            echo '<option value="' . esc_attr($bmltwf_tz) . '">' . esc_html($bmltwf_tz) . '</option>';
+                        } ?>
+                    </select>
+                </fieldset>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

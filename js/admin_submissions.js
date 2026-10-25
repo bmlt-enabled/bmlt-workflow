@@ -1104,6 +1104,12 @@ jQuery(document).ready(function ($) {
 
         $('#quickedit_latitude').val(lat);
         $('#quickedit_longitude').val(long);
+
+        // geo service can return an IANA timezone for the resolved location - pre-fill the picker
+        if (response.time_zone && $('#quickedit_timeZone').length) {
+          $('#quickedit_timeZone').val(response.time_zone).addClass('bmltwf-changed');
+        }
+
         update_gmaps(lat, long);
         bmltwf_notice_success(response, 'bmltwf-quickedit-error-message');
       })

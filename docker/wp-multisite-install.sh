@@ -33,7 +33,16 @@ EOF
 
 sed -i -e "s/RewriteBase \/placeholder\//RewriteBase \/$WORDPRESS_HOST\//" $sitelocalpath/.htaccess
 
-wp db create
+# Wait for the database to accept connections, then create the site DB directly.
+# wp-cli's `wp db create` shells out to a mysql client that now requires TLS, but
+# the MySQL 5.7 test DB runs with --skip-ssl, so the client cannot negotiate. We
+# create the database with the client's SSL explicitly disabled instead.
+until mariadb -h "$WORDPRESS_DB_HOST" -u "$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" --skip-ssl -e "SELECT 1" >/dev/null 2>&1
+do
+    echo "waiting for database..."
+    sleep 2
+done
+mariadb -h "$WORDPRESS_DB_HOST" -u "$WORDPRESS_DB_USER" -p"$WORDPRESS_DB_PASSWORD" --skip-ssl -e "CREATE DATABASE IF NOT EXISTS \`$WORDPRESS_DB_NAME\`;"
 wp core multisite-install --path=$sitelocalpath --base=/$WORDPRESS_HOST/ --url=$siteurl --title="hi" --admin_user=admin --admin_password=admin --admin_email=a@a.com
 
 mkdir $sitelocalpath/wp-content/plugins/bmlt-workflow
@@ -57,11 +66,11 @@ else
 fi
 
 # hack for multisite
-mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_blogs set domain="'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'" where domain="'${WORDPRESS_HOST}${WORDPRESS_PORT}'";'
-mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/plugin" where option_name="siteurl";'
-mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/plugin" where option_name="home";'
-mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/'${p2slug}'" where option_name="siteurl";'
-mysql --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/'${p2slug}'" where option_name="home";'
+mysql --skip-ssl --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_blogs set domain="'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'" where domain="'${WORDPRESS_HOST}${WORDPRESS_PORT}'";'
+mysql --skip-ssl --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/plugin" where option_name="siteurl";'
+mysql --skip-ssl --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_2_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/plugin" where option_name="home";'
+mysql --skip-ssl --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/'${p2slug}'" where option_name="siteurl";'
+mysql --skip-ssl --host=$WORDPRESS_DB_HOST -u $WORDPRESS_DB_USER -D $WORDPRESS_DB_NAME --password=$WORDPRESS_DB_PASSWORD -e 'update wp_3_options set option_value="http://'${WORDPRESS_HOST}':'${WORDPRESS_PORT}'/'${WORDPRESS_HOST}'/'${p2slug}'" where option_name="home";'
 
 # activate plugin
 wp plugin activate --url=$pluginsite --path=$sitelocalpath "bmlt-workflow"

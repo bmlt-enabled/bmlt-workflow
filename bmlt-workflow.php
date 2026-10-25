@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.1.45
+ * Version: 1.2.0
  * Requires at least: 5.2
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
@@ -29,7 +29,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.1.45');
+define('BMLTWF_PLUGIN_VERSION', '1.2.0');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -96,6 +96,8 @@ if (!class_exists('bmltwf_plugin')) {
             add_action('admin_menu', array(&$this, 'bmltwf_menu_pages'));
             add_action('admin_enqueue_scripts', array(&$this, 'bmltwf_admin_scripts'));
             add_action('admin_init',  array(&$this, 'bmltwf_register_setting'));
+            add_action('admin_init',  array(&$this, 'bmltwf_maybe_dismiss_timezone_notice'));
+            add_action('admin_notices', array(&$this, 'bmltwf_default_timezone_admin_notice'));
             add_action('rest_api_init', array(&$this, 'bmltwf_rest_controller'));
             add_shortcode('bmltwf-meeting-update-form', array(&$this, 'bmltwf_meeting_update_form'));
             add_shortcode('bmltwf-correspondence-form', array(&$this, 'bmltwf_correspondence_form'));
@@ -343,20 +345,15 @@ if (!class_exists('bmltwf_plugin')) {
 
                     // inline scripts
                     $script  = 'var bmltwf_admin_bmltserver_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/bmltserver') . '; ';
+                    $script .= 'var bmltwf_admin_geoservice_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/geoservice') . '; ';
+                    $script .= 'var bmltwf_admin_geocoding_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/geocoding') . '; ';
+                    $script .= 'var bmltwf_admin_geocoding_test_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/geocoding-test') . '; ';
                     $script .= 'var bmltwf_admin_backup_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/backup') . '; ';
                     $script .= 'var bmltwf_admin_restore_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/restore') . '; ';
                     $script .= 'var bmltwf_admin_debuglog_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/debug') . '; ';
                     $script .= 'var bmltwf_admin_correspondence_page_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/options/correspondence-page') . '; ';
                     $script .= 'var bmltwf_admin_bmltwf_service_bodies_rest_url = ' . json_encode(get_rest_url() . $this->bmltwf_rest_namespace . '/servicebodies') . '; ';
                     $script .= 'var bmltwf_fso_feature = "' . get_option('bmltwf_fso_feature') . '";';
-
-                    $script .= 'var bmltwf_google_maps_key_select = ';
-                    $google_maps_key = get_option('bmltwf_google_maps_key', '');
-                    if ($google_maps_key === '') {
-                        $script .= '"bmlt_key";';
-                    } else {
-                        $script .= '"your_own_key";';
-                    }
 
                     wp_add_inline_script('bmltwf-admin-options-js', $script, 'before');
                     wp_set_script_translations('bmltwf-admin-options-js', 'bmlt-workflow', plugin_dir_path(__FILE__) . 'lang/');
@@ -435,6 +432,9 @@ if (!class_exists('bmltwf_plugin')) {
                     }
 
                     $script .= 'var bmltwf_auto_geocoding_enabled = ' . json_encode($this->bmlt_integration->isAutoGeocodingEnabled('auto')) . ';';
+
+                    // timezone handling: whether a site-wide default is set (hides the per-meeting picker)
+                    $script .= 'var bmltwf_default_timezone = ' . json_encode(get_option('bmltwf_default_timezone', '')) . ';';
 
                     // can current user use the delete button?
                     $show_delete = "false";
@@ -558,6 +558,57 @@ if (!class_exists('bmltwf_plugin')) {
             $this->BMLTWF_Rest_Controller->register_routes();
         }
 
+        // One-time heads-up: meeting approvals now require a timezone. Shown only to
+        // admins while no site-wide Default Timezone is configured, and dismissible.
+        public function bmltwf_default_timezone_admin_notice()
+        {
+            if (!current_user_can('manage_options')) {
+                return;
+            }
+            // nothing to nag about once a default is set, or once dismissed
+            if (get_option('bmltwf_default_timezone', '') !== '') {
+                return;
+            }
+            if (get_option('bmltwf_default_timezone_notice_dismissed')) {
+                return;
+            }
+
+            $settings_url = admin_url('admin.php?page=bmltwf-options&tab=form-settings');
+            $dismiss_url = wp_nonce_url(add_query_arg('bmltwf_dismiss_timezone_notice', '1'), 'bmltwf_dismiss_timezone_notice');
+
+            echo '<div class="notice notice-warning">';
+            echo '<p><strong>' . esc_html__('BMLT Workflow: set a Default Timezone', 'bmlt-workflow') . '</strong></p>';
+            echo '<p>';
+            printf(
+                /* translators: %1$s is the settings page URL, %2$s is the dismiss URL */
+                wp_kses(
+                    __('Meeting approvals now require a valid timezone. Set a site-wide <a href="%1$s">Default Timezone</a> (or pick one per meeting on the submission review screen) so approvals are not blocked. <a href="%2$s">Dismiss this notice</a>.', 'bmlt-workflow'),
+                    array('a' => array('href' => array()))
+                ),
+                esc_url($settings_url),
+                esc_url($dismiss_url)
+            );
+            echo '</p>';
+            echo '</div>';
+        }
+
+        // Persists dismissal of the default-timezone notice so it does not show again.
+        public function bmltwf_maybe_dismiss_timezone_notice()
+        {
+            if (!isset($_GET['bmltwf_dismiss_timezone_notice'])) {
+                return;
+            }
+            if (!current_user_can('manage_options')) {
+                return;
+            }
+            if (!isset($_GET['_wpnonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'bmltwf_dismiss_timezone_notice')) {
+                return;
+            }
+            update_option('bmltwf_default_timezone_notice_dismissed', '1');
+            wp_safe_redirect(remove_query_arg(array('bmltwf_dismiss_timezone_notice', '_wpnonce')));
+            exit;
+        }
+
         public function bmltwf_register_setting()
         {
 
@@ -579,13 +630,20 @@ if (!class_exists('bmltwf_plugin')) {
                 )
             );
 
+            // NOTE: bmltwf_google_maps_key, bmltwf_geocoding_method, bmltwf_geo_service_url, bmltwf_geo_service_key
+            // and bmltwf_geo_service_test_status are intentionally NOT registered as
+            // Settings-API options. Like the BMLT Root Server credentials, they are
+            // managed entirely via AJAX (the method select auto-saves on change; the URL,
+            // key and test status are saved by the Geo Service dialog). Registering them
+            // here would make the main "Save Changes" button overwrite them with null.
+
             register_setting(
                 'bmltwf-settings-group',
-                'bmltwf_google_maps_key',
+                'bmltwf_default_timezone',
                 array(
                     'type' => 'string',
-                    'description' => __('Google maps key', 'bmlt-workflow'),
-                    'sanitize_callback' => array(&$this, 'bmltwf_google_maps_key_sanitize_callback'),
+                    'description' => __('Default meeting timezone', 'bmlt-workflow'),
+                    'sanitize_callback' => array(&$this, 'bmltwf_default_timezone_sanitize_callback'),
                     'show_in_rest' => false,
                     'default' => ''
                 )
@@ -963,9 +1021,9 @@ if (!class_exists('bmltwf_plugin')) {
             );
 
             add_settings_field(
-                'bmltwf_google_maps_key',
-                __('Google Maps Key', 'bmlt-workflow'),
-                array(&$this, 'bmltwf_google_maps_key_html'),
+                'bmltwf_geocoding_source',
+                __('Geocoding', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_geocoding_source_html'),
                 'bmltwf-bmlt-config',
                 'bmltwf-bmlt-config-section'
             );
@@ -1007,6 +1065,14 @@ if (!class_exists('bmltwf_plugin')) {
                 'bmltwf_meeting_sort_order',
                 __('Meeting Sort Order', 'bmlt-workflow'),
                 array(&$this, 'bmltwf_meeting_sort_order_html'),
+                'bmltwf-form-settings',
+                'bmltwf-form-settings-section'
+            );
+
+            add_settings_field(
+                'bmltwf_default_timezone',
+                __('Default Meeting Timezone', 'bmlt-workflow'),
+                array(&$this, 'bmltwf_default_timezone_html'),
                 'bmltwf-form-settings',
                 'bmltwf-form-settings-section'
             );
@@ -1208,17 +1274,33 @@ if (!class_exists('bmltwf_plugin')) {
             return $sanitized_email;
         }
 
-        public function bmltwf_google_maps_key_sanitize_callback($input)
+        public function bmltwf_default_timezone_sanitize_callback($input)
         {
-            $output = get_option('bmltwf_google_maps_key');
-            if (!isset($_POST['bmltwf_google_maps_key'])) {
-                return $output;
+            $output = get_option('bmltwf_default_timezone');
+
+            if (empty($input)) {
+                return '';
             }
-            if ((strlen($input) != 39) && ($input !== "")) {
-                add_settings_error('bmltwf_google_maps_key', 'err', __('Invalid google maps key.', 'bmlt-workflow'));
+            if (!in_array($input, timezone_identifiers_list(), true)) {
+                add_settings_error('bmltwf_default_timezone', 'err', __('Invalid timezone. Please choose a valid IANA timezone.', 'bmlt-workflow'));
                 return $output;
             }
             return $input;
+        }
+
+        // renders <option> tags for an IANA timezone picker (no non-IANA manual offsets)
+        private function bmltwf_timezone_select_options($selected, $include_blank = false, $blank_label = '')
+        {
+            $html = '';
+            if ($include_blank) {
+                $sel = ($selected === '' || $selected === false) ? ' selected' : '';
+                $html .= '<option value=""' . $sel . '>' . esc_html($blank_label) . '</option>';
+            }
+            foreach (timezone_identifiers_list() as $tz) {
+                $sel = ($tz === $selected) ? ' selected' : '';
+                $html .= '<option value="' . esc_attr($tz) . '"' . $sel . '>' . esc_html($tz) . '</option>';
+            }
+            return $html;
         }
 
         public function bmltwf_fso_email_address_sanitize_callback($input)
@@ -1402,30 +1484,90 @@ if (!class_exists('bmltwf_plugin')) {
             echo '</div>';
         }
 
-        public function bmltwf_google_maps_key_html()
+        public function bmltwf_geocoding_source_html()
         {
+            // Derive the single dropdown value from the stored options:
+            //   geo_service                    -> BMLT Geo Service
+            //   google + empty google key      -> Google Maps Key from BMLT
+            //   google + custom google key     -> Custom Google Maps Key
+            $method = get_option('bmltwf_geocoding_method', 'google');
+            $google_maps_key = get_option('bmltwf_google_maps_key', '');
+            if ($method === 'geo_service') {
+                $source = 'geo_service';
+            } elseif ($google_maps_key !== '') {
+                $source = 'google_custom';
+            } else {
+                $source = 'google_bmlt';
+            }
 
-            $google_maps_key = get_option('bmltwf_google_maps_key');
-            $bmlt_key = '';
-            $your_own_key = '';
+            $sel = function ($v) use ($source) {
+                return ($v === $source) ? 'selected' : '';
+            };
+
             echo '<div class="bmltwf_info_text">';
             echo '<br>';
-            echo __('This plugin will try and use the google maps key from your BMLT Root Server for geolocation and displaying the map view.', 'bmlt-workflow');
-            echo '<br>';
-            echo __('You can also provide a dedicated google maps key below and this will be used in preference to the BMLT Root Server key.', 'bmlt-workflow');
+            echo __('Choose how meeting addresses are geocoded.', 'bmlt-workflow');
+            echo '<ul style="list-style: disc; margin-left: 20px;">';
+            echo '<li>' . __('<b>Google Maps Key from BMLT</b> &ndash; geocode with the Google key scraped from your BMLT Root Server.', 'bmlt-workflow') . '</li>';
+            echo '<li>' . __('<b>Custom Google Maps Key</b> &ndash; geocode with a dedicated Google key you provide (also used for the map view).', 'bmlt-workflow') . '</li>';
+            echo '<li>' . __('<b>BMLT Geo Service</b> &ndash; route geocoding and timezone lookups through a shared cached geo service.', 'bmlt-workflow') . '</li>';
+            echo '</ul>';
+            echo __('Changes here save automatically.', 'bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
-            if ($google_maps_key === '') {
-                $bmlt_key = 'selected';
-            } else {
-                $your_own_key = 'selected';
-            }
-            echo '<br><label for="bmltwf_google_maps_key_select"></label><select id="bmltwf_google_maps_key_select" name="bmltwf_google_maps_key_select"><option name="bmlt_key" value="bmlt_key" ' . $bmlt_key . '>';
-            echo __('Google Maps Key from BMLT', 'bmlt-workflow');
-            echo '</option><option name="your_own_key" value="your_own_key" ' . $your_own_key . '>';
-            echo __('Custom Google Maps Key', 'bmlt-workflow');
-            echo '</option></select>';
-	        echo '<input id="bmltwf_google_maps_key" type="text" size="39" name="bmltwf_google_maps_key" value="' . esc_attr($google_maps_key) . '"/>';
+
+            echo '<br><label for="bmltwf_geocoding_source"><b>' . __('Geocoding Source', 'bmlt-workflow') . ':</b></label> ';
+            echo '<select id="bmltwf_geocoding_source" name="bmltwf_geocoding_source">';
+            echo '<option value="google_bmlt" ' . $sel('google_bmlt') . '>' . __('Google Maps Key from BMLT', 'bmlt-workflow') . '</option>';
+            echo '<option value="google_custom" ' . $sel('google_custom') . '>' . __('Custom Google Maps Key', 'bmlt-workflow') . '</option>';
+            echo '<option value="geo_service" ' . $sel('geo_service') . '>' . __('BMLT Geo Service', 'bmlt-workflow') . '</option>';
+            echo '</select>';
+            echo '<br><br>';
+
+            // Custom Google Maps key input (shown only for the custom option)
+            echo '<div id="bmltwf_geocoding_google_custom" style="display:none;">';
+            echo '<label for="bmltwf_google_maps_key"><b>' . __('Google Maps Key', 'bmlt-workflow') . ':</b></label> ';
+            echo '<input id="bmltwf_google_maps_key" type="text" size="39" value="' . esc_attr($google_maps_key) . '"/>';
+            echo '<br><br>';
+            echo '</div>';
+
+            // Geo service API key (shown only for the geo service option) - inline, like the custom Google key
+            $geo_key_saved = !empty(get_option('bmltwf_geo_service_key'));
+            echo '<div id="bmltwf_geo_service_config" style="display:none;">';
+            echo '<label for="bmltwf_geo_service_key"><b>' . __('Geo Service API Key', 'bmlt-workflow') . ':</b></label> ';
+            echo '<input id="bmltwf_geo_service_key" type="password" size="39" autocomplete="new-password" placeholder="' . ($geo_key_saved ? esc_attr__('key saved — enter a new key to change', 'bmlt-workflow') : '') . '"/>';
+            echo '<br>';
+            echo '<span class="bmltwf_info_text">';
+            echo sprintf(
+                /* translators: %s is the geo service registration URL */
+                __('Register for an account and generate an API key at %s', 'bmlt-workflow'),
+                '<a href="' . esc_url('https://geo.aws.bmlt.app/') . '" target="_blank" rel="noopener noreferrer">https://geo.aws.bmlt.app/</a>'
+            );
+            echo '</span>';
+            echo '<br><br>';
+            echo '</div>';
+
+            // Shared Test Configuration button + result (used for all sources)
+            echo '<button type="button" id="bmltwf_geocoding_test">' . __('Test Configuration', 'bmlt-workflow') . '</button>';
+            echo ' <span id="bmltwf_geocoding_test_yes" style="display:none;"><span class="dashicons dashicons-yes-alt" style="color: cornflowerblue;"></span>' . __('Geocoding test succeeded.', 'bmlt-workflow') . '</span>';
+            echo '<span id="bmltwf_geocoding_test_no" style="display:none;"><span class="dashicons dashicons-no" style="color: red;"></span>' . __('Geocoding test failed.', 'bmlt-workflow') . '</span>';
+            echo '<br><br>';
+        }
+
+        public function bmltwf_default_timezone_html()
+        {
+            $selected = get_option('bmltwf_default_timezone', '');
+            echo '<div class="bmltwf_info_text">';
+            echo '<br>';
+            echo __('BMLT requires a timezone for every meeting. If your region is entirely within a single timezone, set it here and it will be applied to all new and changed meetings automatically.', 'bmlt-workflow');
+            echo '<br><br>';
+            echo __('Leave this set to "Choose per meeting" to instead pick a timezone on each submission in the review screen.', 'bmlt-workflow');
+            echo '<br><br>';
+            echo '</div>';
+            echo '<br><label for="bmltwf_default_timezone"><b>' . __('Default Timezone', 'bmlt-workflow') . ':</b></label>';
+            echo '<select id="bmltwf_default_timezone" name="bmltwf_default_timezone">';
+            echo $this->bmltwf_timezone_select_options($selected, true, __('Choose per meeting', 'bmlt-workflow'));
+            echo '</select>';
             echo '<br><br>';
         }
 
@@ -1839,6 +1981,10 @@ if (!class_exists('bmltwf_plugin')) {
             add_option('bmltwf_admin_notification_email_template', file_get_contents(BMLTWF_PLUGIN_DIR . 'templates/default_admin_notification_email_template.html'));
             add_option('bmltwf_admin_notification_email_subject', __('[bmlt-workflow] {field:submission_type} request received - {field:service_body_name} - Change ID #{field:change_id}', 'bmlt-workflow'));
             add_option('bmltwf_meeting_sort_order', 'alphabetical');
+            add_option('bmltwf_geocoding_method', 'google');
+            add_option('bmltwf_geo_service_url', 'https://geo.aws.bmlt.app');
+            add_option('bmltwf_geo_service_test_status', '');
+            add_option('bmltwf_default_timezone', '');
         }
 
         public function bmltwf_add_capability($user_id)
