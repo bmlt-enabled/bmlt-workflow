@@ -91,7 +91,6 @@ const venue_types = {
   1: __('Face to face', 'bmlt-workflow'),
   2: __('Virtual Meeting', 'bmlt-workflow'),
   3: __('Hybrid Meeting', 'bmlt-workflow'),
-  4: __('Temporarily Virtual', 'bmlt-workflow'),
 };
 
 /* eslint-enable no-unused-vars */
@@ -860,9 +859,10 @@ jQuery(document).ready(function ($) {
           break;
         }
         case 'venueType': {
-          const vtype = venue_types[c[key]];
+          // fall back gracefully for any unrecognised/legacy venue type (e.g. the removed "Temporarily Virtual" 4)
+          const vtype = venue_types[c[key]] || __('Unknown', 'bmlt-workflow');
           if ('original_venueType' in c) {
-            const ovtype = venue_types[c.original_venueType];
+            const ovtype = venue_types[c.original_venueType] || __('Unknown', 'bmlt-workflow');
             table += column(col_meeting_details, __('Venue Type', 'bmlt-workflow'), `${ovtype} → ${vtype}`);
           } else {
             table += column(col_meeting_details, __('Venue Type', 'bmlt-workflow'), vtype);
@@ -1087,7 +1087,7 @@ jQuery(document).ready(function ($) {
           // eslint-disable-next-line consistent-return
           $.each(response.results[0].address_components, function (i, v) {
             if (v.types.includes('postal_code')) {
-              $('#quickedit_location_postal_code_1').val(v.short_name);
+              $('#quickedit_location_postal_code_1').val(v.long_name);
               return false;
             }
           });
@@ -1096,7 +1096,8 @@ jQuery(document).ready(function ($) {
           // eslint-disable-next-line consistent-return
           $.each(response.results[0].address_components, function (i, v) {
             if (v.types.includes('administrative_area_level_2')) {
-              $('#quickedit_location_sub_province').val(v.short_name);
+              // strip the trailing " County" suffix, matching the server-side geocoder
+              $('#quickedit_location_sub_province').val(v.long_name.replace(/ County$/, ''));
               return false;
             }
           });

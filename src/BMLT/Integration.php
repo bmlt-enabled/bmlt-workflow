@@ -697,7 +697,6 @@ class Integration
             'serviceBodyId' => 'integer',
             'formatIds' => 'array',
             'venueType' => 'integer',
-            'temporarilyVirtual' => 'boolean',
             'day' => 'integer',
             'startTime' => 'string',
             'duration' => 'string',
@@ -823,9 +822,10 @@ class Integration
         $this->debug_log("json");
         $this->debug_log(json_encode($filtered_meeting));
 
+        // the server requires formatIds to be present but allows an empty array; default to [] when absent
         if (!isset($filtered_meeting['formatIds']) || !is_array($filtered_meeting['formatIds'])) {
-            $this->debug_log("formatIds missing or not an array");
-            return new \WP_Error('bmltwf', __('formatIds is required and must be an array', 'bmlt-workflow'));
+            $this->debug_log("formatIds missing or not an array - defaulting to empty array");
+            $filtered_meeting['formatIds'] = array();
         }
 
         // Resolve a valid IANA timezone (never publish null); block the push otherwise
@@ -935,6 +935,10 @@ class Integration
 
     public function geolocateAddress($address)
     {
+        // optional region bias (ccTLD) to steer ambiguous addresses/postcodes toward a country
+        $region_bias = strtolower(trim((string) get_option('bmltwf_geocoding_region_bias', '')));
+        $region_param = ($region_bias !== '') ? '&region=' . urlencode($region_bias) : '';
+
         if (get_option('bmltwf_geocoding_method') === 'geo_service') {
             // route geocoding through our own cached geo service. The geo service
             // returns the Google Geocoding response shape verbatim, so all the
@@ -947,7 +951,8 @@ class Integration
             $url = $this->geoServiceBaseUrl() . '/api/geocode?application=bmlt-workflow'
                 . '&search=' . urlencode($address)
                 . '&referrer=' . urlencode(home_url())
-                . '&language=en';
+                . '&language=' . urlencode($this->wp_locale_to_bmlt_locale())
+                . $region_param;
 
             $this->debug_log("*** GEO SERVICE URL");
             $this->debug_log($url);
@@ -964,7 +969,7 @@ class Integration
                 return $this->bmltwf_integration_error(__('Server error geolocating address: Could not retrieve google maps key.', 'bmlt-workflow'), 500);
             }
 
-            $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($address) . "&key=" . $key;
+            $url = "https://maps.googleapis.com/maps/api/geocode/json?address=" . urlencode($address) . "&language=" . urlencode($this->wp_locale_to_bmlt_locale()) . $region_param . "&key=" . $key;
 
             $this->debug_log("*** GMAPS URL");
             $this->debug_log($url);
@@ -1052,7 +1057,7 @@ class Integration
         $test_url = rtrim($url, '/') . '/api/geocode?application=bmlt-workflow'
             . '&search=' . urlencode('New York, NY')
             . '&referrer=' . urlencode(home_url())
-            . '&language=en';
+            . '&language=' . urlencode($this->wp_locale_to_bmlt_locale());
 
         $resp = $this->bmltwf_wp_remote_get($test_url, array(
             'headers' => array(

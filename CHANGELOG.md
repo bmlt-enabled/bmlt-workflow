@@ -1,3 +1,9 @@
+## 1.2.1 (October 28, 2026)
+- Aligns meeting submissions with the BMLT server's own validation so changes aren't silently dropped or rejected: requires a street address for hybrid meetings, checks the day is 0-6, enforces field lengths (name max 128, other fields max 512), accepts a virtual meeting with just a link, and no longer blocks a new meeting that has no formats.
+- Matches the BMLT server's geocoder: strips the trailing " County" from the county value (on approval and in admin Quick Edit), uses full postcode/county names, and geocodes in the site's language instead of always English
+- Adds an optional geocoding Region Bias setting (a two-letter code such as `au`) to steer ambiguous addresses and postcodes toward the right country, for both the Google and geo service methods
+- Removes the obsolete "Temporarily Virtual" venue type; meetings are now In Person, Virtual or Hybrid only.
+
 ## 1.2.0 (October 25, 2026)
 - Adds the **BMLT Geo Service** as an optional geocoding method (geocoding and timezone lookups via the cached service at `https://geo.aws.bmlt.app`) as an alternative to calling Google Maps directly
 - Sends a valid IANA `timeZone` on meeting add/change — resolved from the new Default Timezone option, a per-meeting timezone picker on the review screen, or a geo lookup — and now requires one to publish (as the BMLT Server admin UI does; this plugin is the only other Admin API write client)

@@ -922,6 +922,178 @@ Line: $errorLine
     }
 
     /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     */
+    public function test_cant_submit_pseudo_venue_type_four(): void
+    {
+        // venueType 4 ("Temporarily Virtual") was removed; BMLT only knows 1/2/3, so it must be rejected.
+        $form_post = new class {
+            public function get_json_params()
+            {
+                return array(
+                    "update_reason" => "reason_change",
+                    "id" => "3277",
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "venueType" => "4",
+                    "phone_meeting_number" => "+61 2 1234 5678",
+                    "email_address" => "joe@joe.com",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                    "published" => "1"
+                );
+            }
+        };
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldNotReceive('insert');
+        $wpdb->prefix = "";
+        Functions\expect('wp_mail')->never();
+        Functions\when('\get_option')->justReturn("success");
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($this->meeting, $bmlt_input));
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
+        $this->assertInstanceOf(WP_Error::class, $response);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     */
+    public function test_cant_create_with_name_over_128_chars(): void
+    {
+        // server enforces name max 128; reject before it reaches BMLT
+        $form_post = new class {
+            public function get_json_params()
+            {
+                return array(
+                    "update_reason" => "reason_new",
+                    "name" => str_repeat("a", 129),
+                    "startTime" => "10:00:00",
+                    "duration" => "01:00:00",
+                    "location_text" => "test location",
+                    "location_street" => "test street",
+                    "location_municipality" => "test municipality",
+                    "day" => "1",
+                    "serviceBodyId" => "99",
+                    "formatIds" => ["1"],
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "venueType" => "1",
+                    "email_address" => "joe@joe.com",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                );
+            }
+        };
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldNotReceive('insert');
+        $wpdb->prefix = "";
+        Functions\expect('wp_mail')->never();
+        Functions\when('\get_option')->justReturn("success");
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($this->meeting, $bmlt_input));
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
+        $this->assertInstanceOf(WP_Error::class, $response);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     */
+    public function test_cant_create_with_location_field_over_512_chars(): void
+    {
+        // server caps stock location fields at 512; reject before it reaches BMLT
+        $form_post = new class {
+            public function get_json_params()
+            {
+                return array(
+                    "update_reason" => "reason_new",
+                    "name" => "valid name",
+                    "startTime" => "10:00:00",
+                    "duration" => "01:00:00",
+                    "location_text" => "test location",
+                    "location_street" => str_repeat("a", 513),
+                    "location_municipality" => "test municipality",
+                    "day" => "1",
+                    "serviceBodyId" => "99",
+                    "formatIds" => ["1"],
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "venueType" => "1",
+                    "email_address" => "joe@joe.com",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                );
+            }
+        };
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldNotReceive('insert');
+        $wpdb->prefix = "";
+        Functions\expect('wp_mail')->never();
+        Functions\when('\get_option')->justReturn("success");
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($this->meeting, $bmlt_input));
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
+        $this->assertInstanceOf(WP_Error::class, $response);
+    }
+
+    /**
+     * @covers bmltwf\REST\Handlers\SubmissionsHandler::meeting_update_form_handler_rest
+     */
+    public function test_hybrid_new_meeting_requires_street(): void
+    {
+        // hybrid (venueType 3) requires a physical street address, matching the server
+        $form_post = new class {
+            public function get_json_params()
+            {
+                return array(
+                    "update_reason" => "reason_new",
+                    "name" => "hybrid meeting",
+                    "startTime" => "10:00:00",
+                    "duration" => "01:00:00",
+                    "location_text" => "test location",
+                    // no location_street
+                    "location_municipality" => "test municipality",
+                    "day" => "1",
+                    "serviceBodyId" => "99",
+                    "formatIds" => ["1"],
+                    "first_name" => "joe",
+                    "last_name" => "joe",
+                    "venueType" => "3",
+                    "phone_meeting_number" => "+61 2 1234 5678",
+                    "virtualna_published" => "0",
+                    "email_address" => "joe@joe.com",
+                    "group_relationship" => "Group Member",
+                    "add_contact" => "yes",
+                );
+            }
+        };
+
+        global $wpdb;
+        $wpdb = Mockery::mock('wpdb');
+        $wpdb->shouldNotReceive('insert');
+        $wpdb->prefix = "";
+        Functions\expect('wp_mail')->never();
+        Functions\when('\get_option')->justReturn("success");
+
+        $bmlt_input = '';
+        $handlers = new SubmissionsHandler($this->stub_bmltv3($this->meeting, $bmlt_input));
+        $response = $handlers->meeting_update_form_handler_rest($form_post);
+
+        $this->assertInstanceOf(WP_Error::class, $response);
+    }
+
+    /**
      * @covers bmltwf\REST\Handlers\SubmissionsHandler::worldid_publish_to_virtualna
      */
     public function test_worldid_publish_to_virtualna(): void
@@ -2383,7 +2555,8 @@ Line: $errorLine
         $this->assertArrayHasKey('location_postal_code_1', $captured_meeting, "zip should be populated from geocoding address_components");
         $this->assertEquals('10007', $captured_meeting['location_postal_code_1']);
         $this->assertArrayHasKey('location_sub_province', $captured_meeting, "county should be populated from geocoding address_components");
-        $this->assertEquals('New York County', $captured_meeting['location_sub_province']);
+        // the trailing " County" suffix is stripped to match the BMLT server's geocoder
+        $this->assertEquals('New York', $captured_meeting['location_sub_province']);
     }
 
     /**
@@ -2527,7 +2700,8 @@ Line: $errorLine
         $this->assertArrayHasKey('location_postal_code_1', $captured_change, "zip should be populated from geocoding address_components");
         $this->assertEquals('94102', $captured_change['location_postal_code_1']);
         $this->assertArrayHasKey('location_sub_province', $captured_change, "county should be populated from geocoding address_components");
-        $this->assertEquals('San Francisco County', $captured_change['location_sub_province']);
+        // the trailing " County" suffix is stripped to match the BMLT server's geocoder
+        $this->assertEquals('San Francisco', $captured_change['location_sub_province']);
     }
 
 

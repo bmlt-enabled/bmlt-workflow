@@ -18,7 +18,7 @@
 import { uf } from "./models/meeting_update_form";
 import { ao } from "./models/admin_options";
 
-import { Role, Selector, RequestLogger } from "testcafe";
+import { Role, Selector } from "testcafe";
 
 import { 
    
@@ -541,7 +541,7 @@ test("Success_New_Virtual_Meeting_And_Submit", async (t) => {
     .match(/submission\ successful/);
 });
 
-test("Success_New_Tempclosure_Meeting_And_Submit", async (t) => {
+test("Success_New_Hybrid_Meeting_And_Submit", async (t) => {
 
   await t.navigateTo(userVariables.formpage);
 
@@ -571,11 +571,11 @@ test("Success_New_Tempclosure_Meeting_And_Submit", async (t) => {
   await select_dropdown_by_value(uf.group_relationship, "Group Member");
   await t.expect(uf.group_relationship.value).eql("Group Member");
 
-  // virtual meeting settings
-  await select_dropdown_by_value(uf.venueType, "4");
+  // hybrid meeting: shows both virtual settings and location fields
+  await select_dropdown_by_value(uf.venueType, "3");
   await t
     .expect(uf.venueType.value)
-    .eql("4")
+    .eql("3")
     .expect(uf.virtual_meeting_link.visible)
     .eql(true)
     .expect(uf.phone_meeting_number.visible)
@@ -1117,63 +1117,16 @@ test("Change_FaceToFace_Meeting_Hides_Virtual_Options", async (t) => {
     .expect(uf.virtual_meeting_options.visible).eql(false);
 });
 
-const tempvirtual_logger = RequestLogger(/bmltwf\/v1\/submissions$/, {
-  logRequestBody: true,
-  stringifyRequestBody: true,
-});
-
-test("Temporarily_Virtual_Meeting_Converts_VenueType_On_Submit", async (t) => {
-  // "Temporarily Virtual" (venueType 4) is a form-only pseudo-type; BMLT only knows 1/2/3.
-  // On submit it must be converted to venueType 1 with temporarilyVirtual true. The
-  // conversion previously never ran (it compared a jQuery object to a number).
+test("Venue_Type_Dropdown_Only_Offers_In_Person_Virtual_Hybrid", async (t) => {
+  // the removed "Temporarily Virtual" pseudo-type (value 4) must not be offered; only 1/2/3 exist
   await t.navigateTo(userVariables.formpage);
   await select_dropdown_by_value(uf.update_reason, "reason_new");
-
-  // personal details
-  await t.typeText(uf.first_name, "first").typeText(uf.last_name, "last").typeText(uf.email_address, "test@test.com.zz").typeText(uf.contact_number, "123-456-7890");
-  await select_dropdown_by_text(uf.add_contact, "Yes");
-  await select_dropdown_by_value(uf.group_relationship, "Group Member");
-
-  // temporarily virtual venue type - shows both location and virtual fields
-  await select_dropdown_by_value(uf.venueType, "4");
   await t
-    .expect(uf.venueType.value).eql("4")
-    .expect(uf.virtual_meeting_link.visible).eql(true)
-    .expect(uf.location_text.visible).eql(true);
-
-  // a phone number satisfies the virtual meeting requirement
-  await t.typeText(uf.phone_meeting_number, "+61 1800 253430 code #8303782669");
-
-  // meeting settings
-  await t.typeText(uf.name, "my test meeting");
-  await select_dropdown_by_text(uf.day, "Monday");
-  await t.typeText(uf.startTime, "10:40");
-  await select_dropdown_by_value(uf.duration_hours, "04");
-  await select_dropdown_by_value(uf.duration_minutes, "30");
-  await t.click(uf.format_list_clickable).pressKey("b e g enter").click(uf.format_list_clickable).pressKey("l i n enter");
-
-  // location fields (shown for temporarily virtual)
-  await t
-    .typeText(uf.location_text, "my location")
-    .typeText(uf.location_street, "110 Avoca Street")
-    .typeText(uf.location_info, "info")
-    .typeText(uf.location_municipality, "Randwick")
-    .typeText(uf.location_province, "NSW")
-    .typeText(uf.location_postal_code_1, "2031");
-
-  await select_dropdown_by_text(uf.serviceBodyId, "Mid-Hudson Area Service");
-  await t.typeText(uf.additional_info, "my additional info");
-  await select_dropdown_by_value(uf.starter_kit_required, "no");
-
-  await t
-    .click(uf.submit)
-    .expect(uf.success_page_header.innerText)
-    .match(/submission\ successful/);
-
-  // the submitted payload must convert venueType 4 -> 1 and set temporarilyVirtual true
-  await t.expect(tempvirtual_logger.contains((r) =>
-    r.request.body.includes('"venueType":"1"') && r.request.body.includes('"temporarilyVirtual":"true"'))).ok();
-}).requestHooks(tempvirtual_logger);
+    .expect(uf.venueType.find("option").withAttribute("value", "1").exists).ok()
+    .expect(uf.venueType.find("option").withAttribute("value", "2").exists).ok()
+    .expect(uf.venueType.find("option").withAttribute("value", "3").exists).ok()
+    .expect(uf.venueType.find("option").withAttribute("value", "4").exists).notOk();
+});
 
 test("Validate_Meeting_Comments_Field", async (t) => {
   await t.navigateTo(userVariables.formpage);

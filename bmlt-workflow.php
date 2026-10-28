@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.2.0
+ * Version: 1.2.1
  * Requires at least: 5.2
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
@@ -29,7 +29,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.2.0');
+define('BMLTWF_PLUGIN_VERSION', '1.2.1');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -1546,6 +1546,16 @@ if (!class_exists('bmltwf_plugin')) {
             echo '</span>';
             echo '<br><br>';
             echo '</div>';
+
+            // Region bias (applies to all sources): biases ambiguous geocodes toward a country
+            $region_bias = get_option('bmltwf_geocoding_region_bias', '');
+            echo '<label for="bmltwf_geocoding_region_bias"><b>' . __('Region Bias', 'bmlt-workflow') . ':</b></label> ';
+            echo '<input id="bmltwf_geocoding_region_bias" type="text" size="4" maxlength="2" value="' . esc_attr($region_bias) . '" placeholder="' . esc_attr__('e.g. au', 'bmlt-workflow') . '"/>';
+            echo '<br>';
+            echo '<span class="bmltwf_info_text">';
+            echo __('Optional two-letter region code (e.g. <b>au</b>, <b>us</b>, <b>gb</b>) used to bias ambiguous addresses and bare postcodes toward the right country. Leave blank for no bias.', 'bmlt-workflow');
+            echo '</span>';
+            echo '<br><br>';
 
             // Shared Test Configuration button + result (used for all sources)
             echo '<button type="button" id="bmltwf_geocoding_test">' . __('Test Configuration', 'bmlt-workflow') . '</button>';

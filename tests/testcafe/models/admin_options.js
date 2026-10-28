@@ -59,6 +59,7 @@ class Admin_Options {
         this.bmltwf_geocoding_source = Selector("#bmltwf_geocoding_source");
         this.bmltwf_google_maps_key = Selector("#bmltwf_google_maps_key");
         this.bmltwf_geocoding_test = Selector("#bmltwf_geocoding_test");
+        this.bmltwf_geocoding_region_bias = Selector("#bmltwf_geocoding_region_bias");
         this.bmltwf_auto_geocoding_settings_text = Selector("#bmltwf_auto_geocoding_settings_text");
         this.bmltwf_enable_debug = Selector("#bmltwf_enable_debug");
         this.download_debug_log_button = Selector("#download_debug_log_button");

@@ -139,13 +139,12 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                         ?>
                         </select>
                         <input type="hidden" name="formatIds" id="formatIds">
-                        <label for="venueType"><?php echo __( 'Is this a virtual, hybrid or temporarily virtual in person meeting?', 'bmlt-workflow' ); ?></label>
+                        <label for="venueType"><?php echo __( 'Is this a virtual or hybrid meeting?', 'bmlt-workflow' ); ?></label>
                         <select class="meeting-input" name="venueType" id="venueType" required>
                             <option value="" disabled selected hidden><?php echo __( 'Select one', 'bmlt-workflow' ); ?></option>
                             <option value="1"><?php echo __( 'No - Standard Face to Face meeting', 'bmlt-workflow' ); ?></option>
                             <option value="2"><?php echo __( 'Yes - Virtual only', 'bmlt-workflow' ); ?></option>
                             <option value="3"><?php echo __( 'Yes - Hybrid (Virtual and Face to Face)', 'bmlt-workflow' ); ?></option>
-                            <option value="4"><?php echo __( 'Yes - Temporarily Virtual (venue closed but meeting is still running virtually)', 'bmlt-workflow' ); ?></option>
                         </select>
                         <div id="publish_div">
                             <div class="bmltwf_tooltip" tabindex="0">
@@ -261,7 +260,6 @@ wp_nonce_field('wp_rest', '_wprestnonce');
                     </div>
                 </fieldset>
             </div>
-            <input type="hidden" name="temporarilyVirtual" id="temporarilyVirtual" value="false">
 
             <!-- personal details -->
             <div id="personal_details" class="form-grid-col2-1">
