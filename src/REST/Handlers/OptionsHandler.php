@@ -334,6 +334,16 @@ class OptionsHandler
         $params = $request->get_json_params();
         $source = $params['source'] ?? '';
 
+        // Region bias applies to every source: a two-letter ccTLD (e.g. us, au, gb) that biases
+        // ambiguous geocodes (and bare postcodes) toward that country, or blank to disable it.
+        if (array_key_exists('bmltwf_geocoding_region_bias', $params)) {
+            $bias = strtolower(trim(sanitize_text_field($params['bmltwf_geocoding_region_bias'])));
+            if ($bias !== '' && !preg_match('/^[a-z]{2}$/', $bias)) {
+                return $this->bmltwf_rest_error(__('Region bias must be a two-letter region code (e.g. us, au, gb) or blank.', 'bmlt-workflow'), 422);
+            }
+            update_option('bmltwf_geocoding_region_bias', $bias);
+        }
+
         switch ($source) {
             case 'google_bmlt':
                 update_option('bmltwf_geocoding_method', 'google');

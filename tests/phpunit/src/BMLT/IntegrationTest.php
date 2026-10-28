@@ -677,6 +677,75 @@ EOD;
         $this->assertArrayHasKey('serviceBodyId', $decodedBody);
     }
 
+    /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     */
+    public function test_createMeeting_defaults_missing_formatIds_to_empty_array(): void
+    {
+        // The server requires formatIds to be present but allows an empty array. A new meeting
+        // with no formats selected must not be blocked client-side; it should send formatIds=[].
+        $capturedBody = null;
+        Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody) {
+            if (isset($args['body'])) {
+                $capturedBody = $args['body'];
+            }
+            return ['response' => ['code' => 201]];
+        });
+        Functions\when('\wp_remote_retrieve_body')->justReturn($this->formats);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
+
+        $meeting = array(
+            "name" => "No Formats Meeting",
+            "startTime" => "11:01:00",
+            "duration" => "01:00:00",
+            "day" => "1",
+            "serviceBodyId" => "1050",
+            // no formatIds key at all
+            "venueType" => "3",
+            "published" => "1"
+        );
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $response = $integration->createMeeting($meeting);
+
+        $this->assertNotInstanceOf(WP_Error::class, $response);
+        $this->assertNotNull($capturedBody, "Request body was not captured");
+        $decodedBody = json_decode($capturedBody, true);
+        $this->assertArrayHasKey('formatIds', $decodedBody, "formatIds should be sent even when none were selected");
+        $this->assertSame([], $decodedBody['formatIds'], "formatIds should default to an empty array");
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::geolocateAddress
+     */
+    public function test_geolocateAddress_includes_region_bias_when_set(): void
+    {
+        $encrypted_key = $this->make_encrypted_geo_key('geo_testkey');
+
+        Functions\when('\get_option')->alias(function($value) use ($encrypted_key) {
+            if ($value === 'bmltwf_geocoding_method') { return 'geo_service'; }
+            if ($value === 'bmltwf_geo_service_url') { return 'https://geo.aws.bmlt.app'; }
+            if ($value === 'bmltwf_geo_service_key') { return $encrypted_key; }
+            if ($value === 'bmltwf_geocoding_region_bias') { return 'au'; }
+            return 'true';
+        });
+        Functions\when('\home_url')->justReturn('https://example.com');
+
+        $captured_url = null;
+        Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$captured_url) {
+            $captured_url = $url;
+            return ['body' => 'x'];
+        });
+        Functions\when('\wp_remote_retrieve_body')->justReturn('{"status":"OK","type":"live","results":[{"geometry":{"location":{"lat":-33.8688,"lng":151.2093}},"address_components":[]}]}');
+        Functions\when('\wp_remote_retrieve_response_code')->justReturn(200);
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $result = $integration->geolocateAddress('2000');
+
+        $this->assertNotInstanceOf(WP_Error::class, $result);
+        $this->assertStringContainsString('&region=au', $captured_url);
+    }
+
 
     /**
      * @covers bmltwf\BMLT\Integration::getAllMeetings

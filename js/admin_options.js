@@ -138,9 +138,42 @@ jQuery(document).ready(function ($) {
     save_geocoding({ bmltwf_google_maps_key: $(this).val() });
   });
 
-  // Test Configuration: live geocode through whatever source is saved
-  $('#bmltwf_geocoding_test').on('click', function () {
-    $('#bmltwf_geocoding_test_yes, #bmltwf_geocoding_test_no').hide();
+  // region bias applies to all sources; auto-save on change (include the custom Google key
+  // when that source is selected so the save doesn't blank it out)
+  $('#bmltwf_geocoding_region_bias').on('change', function () {
+    const extra = { bmltwf_geocoding_region_bias: $(this).val() };
+    if ($('#bmltwf_geocoding_source').val() === 'google_custom') {
+      extra.bmltwf_google_maps_key = $('#bmltwf_google_maps_key').val();
+    }
+    save_geocoding(extra);
+  });
+
+  // persist whatever is currently on screen for the selected source, returning a promise
+  function persist_current_geocoding() {
+    const source = $('#bmltwf_geocoding_source').val();
+    if (source === 'google_custom') {
+      return save_geocoding({ bmltwf_google_maps_key: $('#bmltwf_google_maps_key').val() });
+    }
+    if (source === 'geo_service') {
+      const key = $('#bmltwf_geo_service_key').val();
+      if (key !== '') {
+        return $.ajax({
+          url: bmltwf_admin_geoservice_rest_url,
+          type: 'PATCH',
+          dataType: 'json',
+          contentType: 'application/json',
+          data: JSON.stringify({ bmltwf_geo_service_key: key }),
+          beforeSend(xhr) {
+            bmltwf_clear_notices();
+            xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
+          },
+        });
+      }
+    }
+    return save_geocoding({});
+  }
+
+  function run_geocoding_test() {
     $.ajax({
       url: bmltwf_admin_geocoding_test_rest_url,
       method: 'POST',
@@ -148,7 +181,6 @@ jQuery(document).ready(function ($) {
       dataType: 'json',
       processData: false,
       beforeSend(xhr) {
-        bmltwf_clear_notices();
         xhr.setRequestHeader('X-WP-Nonce', $('#_wprestnonce').val());
       },
     })
@@ -160,6 +192,13 @@ jQuery(document).ready(function ($) {
         $('#bmltwf_geocoding_test_no').show();
         bmltwf_notice_error(xhr, 'bmltwf-error-message');
       });
+  }
+
+  // Test Configuration: save the on-screen config first, then live geocode through it
+  $('#bmltwf_geocoding_test').on('click', function () {
+    $('#bmltwf_geocoding_test_yes, #bmltwf_geocoding_test_no').hide();
+    bmltwf_clear_notices();
+    persist_current_geocoding().always(run_geocoding_test);
   });
 
   update_geocoding_visibility();

@@ -55,6 +55,7 @@ trait BMLTWF_Constants
         'bmltwf_geo_service_url',
         'bmltwf_geo_service_key',
         'bmltwf_geo_service_test_status',
+        'bmltwf_geocoding_region_bias',
         'bmltwf_default_timezone',
         'bmltwf_correspondence_page',
         'bmltwf_correspondence_submitter_email_template',

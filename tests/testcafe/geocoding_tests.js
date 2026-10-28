@@ -17,6 +17,7 @@
 
 import { as } from "./models/admin_submissions";
 import { uf } from "./models/meeting_update_form";
+import { ao } from "./models/admin_options";
 
 import { Selector } from "testcafe";
 
@@ -257,4 +258,20 @@ test("Approve_New_Meeting_No_Geocoding", async (t) => {
   // // check the geocode button is disabled
   var g = as.quickedit_dialog_parent.find("button.ui-corner-all").nth(1);
   await t.expect(g.withAttribute("disabled").exists).ok();
+});
+test("Region_Bias_Setting_Saves_And_Persists", async (t) => {
+  // the Region Bias field (ccTLD) biases geocoding; it auto-saves on change and must persist
+  await t.navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'bmlt-config');
+  // starts empty after the backup restore
+  await t
+    .expect(ao.bmltwf_geocoding_region_bias.value).eql("")
+    .typeText(ao.bmltwf_geocoding_region_bias, "au", { replace: true })
+    // tab out to fire the change handler that auto-saves
+    .pressKey("tab")
+    .wait(1500);
+  // reload the settings page and confirm the value persisted
+  await t.navigateTo(userVariables.admin_settings_page_single);
+  await ao.navigateToTab(t, 'bmlt-config');
+  await t.expect(ao.bmltwf_geocoding_region_bias.value).eql("au");
 });

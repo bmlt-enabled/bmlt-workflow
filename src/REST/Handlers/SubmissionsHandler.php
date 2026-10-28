@@ -436,7 +436,7 @@ class SubmissionsHandler
         if ($this->bmlt_integration->isAutoGeocodingEnabled('zip')) {
             foreach ($address_components as $component) {
                 if (in_array('postal_code', $component['types'])) {
-                    $latlng['location_postal_code_1'] = $component['short_name'];
+                    $latlng['location_postal_code_1'] = $component['long_name'];
                     break;
                 }
             }
@@ -444,7 +444,9 @@ class SubmissionsHandler
         if ($this->bmlt_integration->isAutoGeocodingEnabled('county')) {
             foreach ($address_components as $component) {
                 if (in_array('administrative_area_level_2', $component['types'])) {
-                    $latlng['location_sub_province'] = $component['short_name'];
+                    // strip the trailing " County" suffix Google appends, matching the BMLT server's GeoApiGeocoder::stripCountySuffix()
+                    $county = $component['long_name'];
+                    $latlng['location_sub_province'] = preg_replace('/ County$/', '', $county) ?? $county;
                     break;
                 }
             }
@@ -589,8 +591,8 @@ class SubmissionsHandler
                 if(array_key_exists('virtualna_published', $change))
                 {
                     $this->debug_log("virtualna_published = ".$change['virtualna_published']);
-                    $change["worldid_mixed"] = $this->worldid_publish_to_virtualna(($change["virtualna_published"]=== 1)?true:false, "");
-                    $this->debug_log("new worldid = ".$change["worldid_mixed"]);
+                    $change["worldId"] = $this->worldid_publish_to_virtualna(($change["virtualna_published"]=== 1)?true:false, "");
+                    $this->debug_log("new worldid = ".$change["worldId"]);
                     unset($change["virtualna_published"]);
                 }
 
@@ -688,8 +690,8 @@ class SubmissionsHandler
                 if(array_key_exists('virtualna_published', $change) && array_key_exists('worldid_mixed',$bmlt_meeting))
                 {
                     $this->debug_log("virtualna_published = ".$change['virtualna_published']);
-                    $change["worldid_mixed"] = $this->worldid_publish_to_virtualna(($change["virtualna_published"]=== 1)?true:false, $bmlt_meeting['worldid_mixed']);
-                    $this->debug_log("new worldid = ".$change["worldid_mixed"]);
+                    $change["worldId"] = $this->worldid_publish_to_virtualna(($change["virtualna_published"]=== 1)?true:false, $bmlt_meeting['worldid_mixed']);
+                    $this->debug_log("new worldid = ".$change["worldId"]);
                     unset($change["virtualna_published"]);
                 }
 
@@ -931,6 +933,8 @@ class SubmissionsHandler
             $venueType = $data['venueType'] ?? '0';
             
             $virtual_meeting_bool = (intval($venueType) !== 1);
+            // in-person (1) and hybrid (3) both require a physical street address, matching the server's VenueTypeLocation rule
+            $physical_meeting_bool = (intval($venueType) === 1 || intval($venueType) === 3);
 
             $require_postcode = false;
             if (get_option('bmltwf_optional_postcode') === 'displayrequired') {
@@ -981,11 +985,11 @@ class SubmissionsHandler
             "venueType" => array("venue", $reason_new_bool | $reason_change_bool),
             // venue name (location_text) is always optional #226
             "location_text" => array("text", false),
-            // street only required if its not a virtual meeting #75
-            "location_street" => array("text", $reason_new_bool && (!$virtual_meeting_bool)),
+            // street required for in-person and hybrid meetings #75
+            "location_street" => array("text", $reason_new_bool && $physical_meeting_bool),
             "location_info" => array("text", false),
             "location_municipality" => array("text", $reason_new_bool),
-            "day" => array("number", $reason_new_bool),
+            "day" => array("day", $reason_new_bool),
             "serviceBodyId" => array("number", $reason_new_bool),
             "email_address" => array("email", true),
             "contact_number" => array("text", false),
@@ -1038,13 +1042,10 @@ class SubmissionsHandler
 
                 if($virtual_meeting_bool)
                 {
-                    // need to provide either phone number or both the link/additional info
-                    if(!$phone_meeting_number_provided)
+                    // need either a phone number or a meeting link, matching the server's VenueTypeLocation rule
+                    if(!$phone_meeting_number_provided && !$virtual_meeting_link_provided)
                     {
-                        if (!$virtual_meeting_link_provided || !$virtual_meeting_additional_info_provided)
-                        {
-                            return $this->bmltwf_rest_error(__('You must provide at least a phone number for a Virtual Meeting, or fill in both the Virtual Meeting link and Virtual Meeting additional information','bmlt-workflow').'.', 422);
-                        }
+                        return $this->bmltwf_rest_error(__('You must provide at least a phone number or a Virtual Meeting link for a Virtual Meeting','bmlt-workflow').'.', 422);
                     }
                 }
             }
@@ -1063,6 +1064,10 @@ class SubmissionsHandler
                 switch ($field_type) {
                     case ('text'):
                         $data[$field] = sanitize_text_field($data[$field]);
+                        // match the server's length limits: meeting name max 128, all other fields max 512
+                        if (strlen($data[$field]) > (($field === 'name') ? 128 : 512)) {
+                            return $this->invalid_form_field($field);
+                        }
                         break;
                     case ('intarray'):
                         if (!is_array($data[$field])) {
@@ -1098,7 +1103,8 @@ class SubmissionsHandler
                         break;
                     case ('venue'):
                         $data[$field] = intval($data[$field]);
-                        if(($data[$field])<1 || $data[$field]>4)
+                        // BMLT venue types: 1 in-person, 2 virtual, 3 hybrid
+                        if(($data[$field])<1 || $data[$field]>3)
                         {
                             return $this->invalid_form_field($field);
                         }
@@ -1111,6 +1117,10 @@ class SubmissionsHandler
                         break;
                     case ('url'):
                         $data[$field] = esc_url_raw($data[$field], array('http', 'https'));
+                        // server caps virtual_meeting_link at 512
+                        if (strlen($data[$field]) > 512) {
+                            return $this->invalid_form_field($field);
+                        }
                         break;
                     case ('email'):
                         $data[$field] = sanitize_email($data[$field]);

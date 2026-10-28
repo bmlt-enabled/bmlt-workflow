@@ -75,12 +75,15 @@ test("Submit_New_Meeting_And_Check_Zip_And_County_Geolocation", async (t) => {
     .expect(as.quickedit_location_sub_province.withAttribute("disabled").exists).ok()
     // Click geolocate button
     .click(as.quickedit_dialog_parent.find("button.ui-corner-all").nth(1))
-    .expect(as.quickedit_location_sub_province.value).eql("Columbia County")
-    .drag(".yNHHyP-marker-view",50,50)
-    .expect(as.quickedit_latitude.value).match(/^42\.2507/)
-    .typeText(as.quickedit_location_municipality, "Cobble Hill", { replace: true})
+    // trailing " County" suffix is stripped to match the BMLT server's geocoder
+    .expect(as.quickedit_location_sub_province.value).eql("Columbia")
+    // marker is a Google Maps AdvancedMarkerElement, rendered as <gmp-advanced-marker>
+    .drag("gmp-advanced-marker", 50, 50)
+    // the drag lands within the Hudson area; exact pixel→degree varies with map state
+    .expect(as.quickedit_latitude.value).match(/^42\.250/)
+    .typeText(as.quickedit_location_municipality, "Brooklyn", { replace: true})
     .click(as.quickedit_dialog_parent.find("button.ui-corner-all").nth(1))
-    .expect(as.quickedit_location_sub_province.value).eql("Kings County")
+    .expect(as.quickedit_location_sub_province.value).eql("Kings")
     .expect(as.quickedit_location_postal_code_1.value).eql('11201')
 });
 

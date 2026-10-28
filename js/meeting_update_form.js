@@ -182,14 +182,6 @@ jQuery(document).ready(function ($) {
     const str = `${$('#duration_hours').val()}:${$('#duration_minutes').val()}:00`;
     put_field('duration', str);
 
-    // "Temporarily Virtual" (venueType 4) is a form-only pseudo-type; BMLT only knows
-    // 1/2/3. Convert it to an in-person meeting flagged temporarilyVirtual before submit.
-    // (venueType comes from the select as a string, so coerce before comparing.)
-    if (Number($('#venueType').val()) === 4) {
-      put_field('venueType', 1);
-      put_field('temporarilyVirtual', 'true');
-    }
-
     const form_submit = $('#meeting_update_form').serializeObject();
     form_submit.formatIds = $('#display_formatIds').val();
 
@@ -490,7 +482,7 @@ jQuery(document).ready(function ($) {
           break;
         case 'reason_close':
           // display form instructions
-          $('#instructions').html(`${__("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box.<br><br><b>Note: If you are submitting a temporary meeting closure, please instead use 'Change existing meeting' and use the 'temporarily closed in person meeting' dropdown menu.", 'bmlt-workflow')}</b>`);
+          $('#instructions').html(`${__("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box.<br><br><b>Note: If you are submitting a temporary meeting closure, please instead use 'Change Existing Meeting' and set the meeting to unpublished so it is temporarily hidden from the public meeting list.", 'bmlt-workflow')}</b>`);
           $('#meeting_content').show();
           disable_edits();
           break;
@@ -653,9 +645,6 @@ jQuery(document).ready(function ($) {
         case '3':
           $('#location_fields').show();
           break;
-        case '4':
-          $('#location_fields').show();
-          break;
         default:
           break;
       }
@@ -724,7 +713,7 @@ jQuery(document).ready(function ($) {
         if (meetingSelected) {
           $('#meeting_content').show();
           disable_edits();
-          $('#instructions').html(`${__("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box.<br><br><b>Note: If you are submitting a temporary meeting closure, please instead use 'Change existing meeting' and use the 'temporarily closed in person meeting' dropdown menu.", 'bmlt-workflow')}</b>`);
+          $('#instructions').html(`${__("Verify you have selected the correct meeting, then add details to support the meeting close request in the Additional Information box.<br><br><b>Note: If you are submitting a temporary meeting closure, please instead use 'Change Existing Meeting' and set the meeting to unpublished so it is temporarily hidden from the public meeting list.", 'bmlt-workflow')}</b>`);
         } else {
           $('#meeting_content').hide();
         }
