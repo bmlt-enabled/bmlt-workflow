@@ -263,14 +263,27 @@ class Integration
             return $filtered_change;
         }
 
-        // Resolve a valid IANA timezone (never publish null). For an update, if nothing
-        // resolves we preserve the meeting's existing timezone before blocking, so an
-        // unrelated change (e.g. unpublish) of a meeting that already has one still works.
+        // Resolve a valid IANA timezone (never publish null). A change only carries
+        // changed fields, so when nothing resolves, retry with the existing meeting's
+        // coordinates (covers a meeting with coords but no timezone), then fall back to
+        // its existing timezone, before blocking.
         $time_zone = $this->resolveTimeZone($filtered_change);
         if (is_wp_error($time_zone) && !empty($filtered_change['id'])) {
             $existing = $this->getMeeting($filtered_change['id']);
-            if (!is_wp_error($existing) && !empty($existing['timeZone']) && in_array($existing['timeZone'], timezone_identifiers_list(), true)) {
-                $time_zone = $existing['timeZone'];
+            if (!is_wp_error($existing)) {
+                $probe = $filtered_change;
+                if (empty($probe['latitude']) && !empty($existing['latitude'])) {
+                    $probe['latitude'] = $existing['latitude'];
+                }
+                if (empty($probe['longitude']) && !empty($existing['longitude'])) {
+                    $probe['longitude'] = $existing['longitude'];
+                }
+                $retry = $this->resolveTimeZone($probe);
+                if (!is_wp_error($retry)) {
+                    $time_zone = $retry;
+                } elseif (!empty($existing['timeZone']) && in_array($existing['timeZone'], timezone_identifiers_list(), true)) {
+                    $time_zone = $existing['timeZone'];
+                }
             }
         }
         if (is_wp_error($time_zone)) {

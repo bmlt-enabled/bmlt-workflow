@@ -1,3 +1,6 @@
+## 1.2.3 (October 31, 2026)
+- Fixes approving a change to a meeting that has coordinates but no timezone; the timezone is now resolved from the meeting's existing coordinates via the geo service.
+
 ## 1.2.2 (October 30, 2026)
 - Geo service timezone lookup now takes precedence over the Default Timezone, which becomes a fallback, fixes multi-timezone regions being stamped with one default.
 - Hides the "set a Default Timezone" notice for Geo Service users, since their meetings are auto-detected.
