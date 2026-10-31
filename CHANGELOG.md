@@ -1,3 +1,7 @@
+## 1.2.2 (October 30, 2026)
+- Geo service timezone lookup now takes precedence over the Default Timezone, which becomes a fallback, fixes multi-timezone regions being stamped with one default.
+- Hides the "set a Default Timezone" notice for Geo Service users, since their meetings are auto-detected.
+
 ## 1.2.1 (October 28, 2026)
 - Aligns meeting submissions with the BMLT server's own validation so changes aren't silently dropped or rejected: requires a street address for hybrid meetings, checks the day is 0-6, enforces field lengths (name max 128, other fields max 512), accepts a virtual meeting with just a link, and no longer blocks a new meeting that has no formats.
 - Matches the BMLT server's geocoder: strips the trailing " County" from the county value (on approval and in admin Quick Edit), uses full postcode/county names, and geocodes in the site's language instead of always English

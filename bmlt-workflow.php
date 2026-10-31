@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.2.1
+ * Version: 1.2.2
  * Requires at least: 5.2
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
@@ -29,7 +29,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.2.1');
+define('BMLTWF_PLUGIN_VERSION', '1.2.2');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -570,6 +570,10 @@ if (!class_exists('bmltwf_plugin')) {
                 return;
             }
             if (get_option('bmltwf_default_timezone_notice_dismissed')) {
+                return;
+            }
+            // Geo Service users get per-meeting timezone auto-detection, so no default is needed.
+            if (get_option('bmltwf_geocoding_method') === 'geo_service') {
                 return;
             }
 
@@ -1569,9 +1573,9 @@ if (!class_exists('bmltwf_plugin')) {
             $selected = get_option('bmltwf_default_timezone', '');
             echo '<div class="bmltwf_info_text">';
             echo '<br>';
-            echo __('BMLT requires a timezone for every meeting. If your region is entirely within a single timezone, set it here and it will be applied to all new and changed meetings automatically.', 'bmlt-workflow');
+            echo __('BMLT requires a timezone for every meeting. This default is a fallback, used only when a meeting\'s timezone cannot be determined automatically. If you use the BMLT Geo Service, each meeting\'s timezone is auto-detected from its coordinates (overriding this default), so you only need a default for meetings with no coordinates. If you geocode with Google directly, there is no timezone lookup, so this default supplies the timezone for every meeting.', 'bmlt-workflow');
             echo '<br><br>';
-            echo __('Leave this set to "Choose per meeting" to instead pick a timezone on each submission in the review screen.', 'bmlt-workflow');
+            echo __('If your region spans more than one timezone, leave this set to "Choose per meeting" so each meeting resolves its own zone - auto-detected via the Geo Service, or picked on the submission review screen - rather than all being stamped with a single default.', 'bmlt-workflow');
             echo '<br><br>';
             echo '</div>';
             echo '<br><label for="bmltwf_default_timezone"><b>' . __('Default Timezone', 'bmlt-workflow') . ':</b></label>';

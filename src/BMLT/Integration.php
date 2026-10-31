@@ -1073,21 +1073,12 @@ class Integration
         return \wp_remote_retrieve_response_code($resp);
     }
 
-    // Resolves the IANA timezone to send to BMLT for a meeting push. A null/invalid
-    // timezone is never published - if none can be resolved this blocks the push with a
-    // WP_Error so the user must configure a default or pick one. Resolution order:
-    //   1. the site-wide default timezone option, when set, OR
-    //   2. an explicit (IANA-validated) timeZone on the payload (the per-meeting picker), OR
-    //   3. a geo service timezone lookup from the meeting's coordinates, when the geo
-    //      service is the configured geocoding method and lat/lng are present, OR
-    //   4. a WP_Error (never a null/non-IANA timezone).
+    // Resolves the IANA timezone for a meeting push, in order: an explicit per-meeting pick,
+    // then a geo service lookup from the coordinates, then the site-wide default as a fallback.
+    // The geo lookup wins over the default so multi-timezone regions resolve each meeting's
+    // own zone. Returns a WP_Error (never a null/non-IANA zone) when none resolve.
     private function resolveTimeZone($meeting)
     {
-        $default = get_option('bmltwf_default_timezone', '');
-        if (!empty($default) && in_array($default, timezone_identifiers_list(), true)) {
-            return $default;
-        }
-
         if (!empty($meeting['timeZone']) && in_array($meeting['timeZone'], timezone_identifiers_list(), true)) {
             return $meeting['timeZone'];
         }
@@ -1098,6 +1089,11 @@ class Integration
             if (!is_wp_error($tz) && !empty($tz) && in_array($tz, timezone_identifiers_list(), true)) {
                 return $tz;
             }
+        }
+
+        $default = get_option('bmltwf_default_timezone', '');
+        if (!empty($default) && in_array($default, timezone_identifiers_list(), true)) {
+            return $default;
         }
 
         return new \WP_Error('bmltwf', __('A timezone is required but none could be resolved. Please configure a default timezone, or select one for this meeting in the review screen.', 'bmlt-workflow'));

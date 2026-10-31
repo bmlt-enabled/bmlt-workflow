@@ -1116,6 +1116,108 @@ EOD;
      * @covers bmltwf\BMLT\Integration::createMeeting
      * @covers bmltwf\BMLT\Integration::resolveTimeZone
      */
+    public function test_createMeeting_geo_service_timezone_overrides_default(): void
+    {
+        // Geo lookup must win over a site-wide default (Riverton WA -> Perth, not the Sydney default).
+        $encrypted_key = $this->make_encrypted_geo_key('geo_testkey');
+        $formats = $this->formats;
+        $capturedBody = null;
+        Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody, $formats) {
+            if (strpos($url, '/api/timezone') !== false) {
+                return ['body' => '{"timeZoneId":"Australia/Perth"}'];
+            }
+            if (isset($args['body'])) { $capturedBody = $args['body']; }
+            return ['body' => $formats];
+        });
+        Functions\when('\wp_remote_retrieve_body')->alias(function($resp) {
+            return (is_array($resp) && isset($resp['body'])) ? $resp['body'] : '';
+        });
+        Functions\when('\home_url')->justReturn('https://example.com');
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
+        Functions\when('\get_option')->alias(function($value) use ($encrypted_key) {
+            if ($value === 'bmltwf_default_timezone') { return 'Australia/Sydney'; }
+            if ($value === 'bmltwf_geocoding_method') { return 'geo_service'; }
+            if ($value === 'bmltwf_geo_service_url') { return 'https://geo.aws.bmlt.app'; }
+            if ($value === 'bmltwf_geo_service_key') { return $encrypted_key; }
+            return 'true';
+        });
+
+        $meeting = array(
+            "name" => "Perth Meeting",
+            "startTime" => "11:11:00",
+            "duration" => "01:00:00",
+            "day" => "1",
+            "serviceBodyId" => "1050",
+            "formatIds" => [7],
+            "venueType" => "3",
+            "published" => "1",
+            "latitude" => "-32.0335798",
+            "longitude" => "115.8958213"
+        );
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $result = $integration->createMeeting($meeting);
+
+        $this->assertNotInstanceOf(WP_Error::class, $result);
+        $decodedBody = json_decode($capturedBody, true);
+        $this->assertEquals('Australia/Perth', $decodedBody['timeZone'], "geo service timezone must override the site-wide default");
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::resolveTimeZone
+     */
+    public function test_createMeeting_falls_back_to_default_when_geo_timezone_unavailable(): void
+    {
+        // When the geo lookup returns nothing usable, fall back to the site-wide default.
+        $encrypted_key = $this->make_encrypted_geo_key('geo_testkey');
+        $formats = $this->formats;
+        $capturedBody = null;
+        Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody, $formats) {
+            if (strpos($url, '/api/timezone') !== false) {
+                return ['body' => '{"status":"error"}']; // no timeZoneId -> lookup fails
+            }
+            if (isset($args['body'])) { $capturedBody = $args['body']; }
+            return ['body' => $formats];
+        });
+        Functions\when('\wp_remote_retrieve_body')->alias(function($resp) {
+            return (is_array($resp) && isset($resp['body'])) ? $resp['body'] : '';
+        });
+        Functions\when('\home_url')->justReturn('https://example.com');
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(201);
+        Functions\when('\get_option')->alias(function($value) use ($encrypted_key) {
+            if ($value === 'bmltwf_default_timezone') { return 'Australia/Sydney'; }
+            if ($value === 'bmltwf_geocoding_method') { return 'geo_service'; }
+            if ($value === 'bmltwf_geo_service_url') { return 'https://geo.aws.bmlt.app'; }
+            if ($value === 'bmltwf_geo_service_key') { return $encrypted_key; }
+            return 'true';
+        });
+
+        $meeting = array(
+            "name" => "Fallback Meeting",
+            "startTime" => "11:11:00",
+            "duration" => "01:00:00",
+            "day" => "1",
+            "serviceBodyId" => "1050",
+            "formatIds" => [7],
+            "venueType" => "3",
+            "published" => "1",
+            "latitude" => "-32.0335798",
+            "longitude" => "115.8958213"
+        );
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $result = $integration->createMeeting($meeting);
+
+        $this->assertNotInstanceOf(WP_Error::class, $result);
+        $decodedBody = json_decode($capturedBody, true);
+        $this->assertEquals('Australia/Sydney', $decodedBody['timeZone'], "must fall back to the default when no geo timezone is available");
+    }
+
+    /**
+     * @covers bmltwf\BMLT\Integration::createMeeting
+     * @covers bmltwf\BMLT\Integration::resolveTimeZone
+     */
     public function test_createMeeting_accepts_explicit_iana_timezone(): void
     {
         // no global default, but an explicit valid IANA timezone on the payload is used
