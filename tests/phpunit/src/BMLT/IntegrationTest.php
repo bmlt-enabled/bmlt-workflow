@@ -1256,6 +1256,74 @@ EOD;
     }
 
     /**
+     * A change that doesn't touch the location carries no lat/long, so with no site-wide
+     * default the first resolve fails. The resolver must then retry with the existing
+     * BMLT meeting's coordinates to derive a timezone via the geo service, even though
+     * the existing meeting itself has no timezone.
+     *
+     * @covers bmltwf\BMLT\Integration::updateMeeting
+     * @covers bmltwf\BMLT\Integration::resolveTimeZone
+     */
+    public function test_updateMeeting_resolves_timezone_from_existing_coordinates(): void
+    {
+        $encrypted_key = $this->make_encrypted_geo_key('geo_testkey');
+        $formats = $this->formats;
+        $capturedBody = null;
+
+        Functions\when('\wp_remote_request')->alias(function($url, $args) use (&$capturedBody, $formats) {
+            $method = isset($args['method']) ? $args['method'] : 'GET';
+            if (strpos($url, '/api/timezone') !== false) {
+                return ['body' => '{"timeZoneId":"Australia/Perth"}', 'code' => 200];
+            }
+            // getMeeting: existing meeting has coordinates but no timeZone
+            if (strpos($url, 'api/v1/meetings/') !== false && $method === 'GET') {
+                return ['body' => '{"id":123,"latitude":-32.0335798,"longitude":115.8958213}', 'code' => 200];
+            }
+            // the meeting PATCH
+            if ($method === 'PATCH') {
+                $capturedBody = $args['body'];
+                return ['body' => '', 'code' => 204];
+            }
+            return ['body' => $formats, 'code' => 200]; // formats fetch
+        });
+        Functions\when('\wp_remote_retrieve_body')->alias(function($resp) {
+            return (is_array($resp) && isset($resp['body'])) ? $resp['body'] : '';
+        });
+        Functions\when('\wp_remote_retrieve_response_code')->alias(function($resp) {
+            return (is_array($resp) && isset($resp['code'])) ? $resp['code'] : 200;
+        });
+        Functions\when('\home_url')->justReturn('https://example.com');
+        Functions\when('\get_option')->alias(function($value) use ($encrypted_key) {
+            if ($value === 'bmltwf_default_timezone') { return ''; } // no default -> force the geo fallback
+            if ($value === 'bmltwf_geocoding_method') { return 'geo_service'; }
+            if ($value === 'bmltwf_geo_service_url') { return 'https://geo.aws.bmlt.app'; }
+            if ($value === 'bmltwf_geo_service_key') { return $encrypted_key; }
+            return 'true';
+        });
+
+        // The change doesn't touch the location, so it carries no lat/long and no timeZone
+        $change = array(
+            "id" => 123,
+            "name" => "Existing Coords Meeting",
+            "startTime" => "14:00:00",
+            "duration" => "01:30:00",
+            "day" => "2",
+            "serviceBodyId" => "1050",
+            "formatIds" => [7],
+            "venueType" => "1",
+            "published" => "1"
+        );
+
+        $integration = new Integration(true, "3.0.0", "token", time()+2000);
+        $result = $integration->updateMeeting($change);
+
+        $this->assertNotInstanceOf(WP_Error::class, $result);
+        $this->assertNotNull($capturedBody, "Request body was not captured");
+        $decodedBody = json_decode($capturedBody, true);
+        $this->assertEquals('Australia/Perth', $decodedBody['timeZone'], "timezone should be resolved from the existing meeting's coordinates");
+    }
+
+    /**
      * @covers bmltwf\BMLT\Integration::updateMeeting
      * @covers bmltwf\BMLT\Integration::validateMeetingData
      */
