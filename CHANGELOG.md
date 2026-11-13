@@ -1,3 +1,7 @@
+## 1.2.4 (November 12, 2026)
+- #239 Fixes the whole site slowing to ~35-40s per page (and fatal errors on form pages) when the configured BMLT Root Server is slow or unreachable: server info lookups now use a short 5s timeout, failures are briefly cached so an unreachable server no longer triggers a blocking network call on every page load, REST request and 404, and the version lookup is no longer made during plugin bootstrap on every request.
+- The meeting update form now shows an inline error notice instead of a fatal `wp_die()` when the BMLT server can't be reached, so the rest of the page still renders.
+
 ## 1.2.3 (October 31, 2026)
 - Fixes approving a change to a meeting that has coordinates but no timezone; the timezone is now resolved from the meeting's existing coordinates via the geo service.
 

@@ -110,6 +110,7 @@ class BMLTServerHandler
         $current_server = \get_option('bmltwf_bmlt_server_address');
         if ($current_server !== $server) {
             \delete_transient('bmltwf_server_info_' . md5($server));
+            \delete_transient('bmltwf_server_info_fail_' . md5($server));
         }
 
         if (!$this->bmlt_integration->is_valid_bmlt_server($server))

@@ -20,7 +20,7 @@
  * Plugin Name: BMLT Workflow
  * Plugin URI: https://github.com/bmlt-enabled/bmlt-workflow
  * Description: Workflows for BMLT meeting management!
- * Version: 1.2.3
+ * Version: 1.2.4
  * Requires at least: 5.2
  * Author: @nigel-bmlt
  * Author URI: https://github.com/nigel-bmlt
@@ -29,7 +29,7 @@
  **/
 
 
-define('BMLTWF_PLUGIN_VERSION', '1.2.3');
+define('BMLTWF_PLUGIN_VERSION', '1.2.4');
 
 if ((!defined('ABSPATH') && (!defined('BMLTWF_RUNNING_UNDER_PHPUNIT')))) exit; // die if being called directly
 
@@ -169,12 +169,30 @@ if (!class_exists('bmltwf_plugin')) {
             return bmltwf_correspondence_form_shortcode($atts);
         }
 
+        /**
+         * Render a non-fatal error notice for a shortcode.
+         *
+         * Returned (not wp_die'd) so the surrounding page - theme, header,
+         * footer and any other content - still renders when the BMLT server is
+         * unreachable or misconfigured.
+         *
+         * @param string $message Human-readable error detail.
+         * @return string
+         */
+        private function bmltwf_form_error($message)
+        {
+            return '<div class="bmltwf-error-notice" style="padding:1em;border:1px solid #c00;background:#fff3f3;color:#900;">'
+                . '<strong>' . esc_html__('BMLT Workflow Plugin Error', 'bmlt-workflow') . ':</strong> '
+                . esc_html($message)
+                . '</div>';
+        }
+
         public function bmltwf_meeting_update_form($atts = [], $content = null, $tag = '')
         {
 
             $bmltwf_bmlt_test_status = get_option('bmltwf_bmlt_test_status', "failure");
             if ($bmltwf_bmlt_test_status != "success") {
-                wp_die("<h4>BMLTWF Plugin Error: BMLT Root Server not configured and tested.</h4>");
+                return $this->bmltwf_form_error(__('BMLT Root Server not configured and tested.', 'bmlt-workflow'));
             }
             // $this->debug_log(("inside shortcode setup"));
             // base css and js for this page
@@ -206,7 +224,7 @@ if (!class_exists('bmltwf_plugin')) {
             // add counties/states/provinces if they are populated
             $meeting_counties_and_sub_provinces = $this->bmlt_integration->getMeetingCounties();
             if (is_wp_error($meeting_counties_and_sub_provinces)) {
-                wp_die("<h4>" . __('BMLTWF Plugin Error: Unable to retrieve meeting counties from BMLT server.', 'bmlt-workflow') . "</h4>");
+                return $this->bmltwf_form_error(__('Unable to retrieve meeting counties from BMLT server.', 'bmlt-workflow'));
             }
             $script .= "var bmltwf_counties_and_sub_provinces = " . json_encode($meeting_counties_and_sub_provinces) . ";";
             if ($meeting_counties_and_sub_provinces) {
@@ -217,7 +235,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             $meeting_states_and_provinces = $this->bmlt_integration->getMeetingStates();
             if (is_wp_error($meeting_states_and_provinces)) {
-                wp_die("<h4>" . __('BMLTWF Plugin Error: Unable to retrieve meeting states/provinces from BMLT server.', 'bmlt-workflow') . "</h4>");
+                return $this->bmltwf_form_error(__('Unable to retrieve meeting states/provinces from BMLT server.', 'bmlt-workflow'));
             }
             $script .= "var bmltwf_do_states_and_provinces = " . json_encode($meeting_states_and_provinces) . ";";
             if ($meeting_states_and_provinces) {
@@ -228,7 +246,7 @@ if (!class_exists('bmltwf_plugin')) {
 
             $formatarr = $this->bmlt_integration->getMeetingFormats();
             if (is_wp_error($formatarr)) {
-                wp_die("<h4>" . __('BMLTWF Plugin Error: Unable to retrieve meeting formats from BMLT server.', 'bmlt-workflow') . "</h4>");
+                return $this->bmltwf_form_error(__('Unable to retrieve meeting formats from BMLT server.', 'bmlt-workflow'));
             }
 
             // $this->debug_log("FORMATS");
@@ -244,7 +262,7 @@ if (!class_exists('bmltwf_plugin')) {
             $response = rest_do_request($request);
             $result = rest_get_server()->response_to_data($response, true);
             if (count($result) == 0) {
-                wp_die("<h4>BMLT Workflow Plugin Error: Service bodies not configured.</h4>");
+                return $this->bmltwf_form_error(__('Service bodies not configured.', 'bmlt-workflow'));
             }
             $script .= 'var bmltwf_service_bodies = ' . json_encode($result) . '; ';
 

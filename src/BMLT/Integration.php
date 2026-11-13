@@ -113,14 +113,14 @@ class Integration
             $this->v3_access_token_expires_at = $token_expiry;
         }
 
-        if (empty($root_server_version)) {
-            $server_address = \get_option('bmltwf_bmlt_server_address');
-            if ($server_address && $server_address !== 'true' && filter_var($server_address, FILTER_VALIDATE_URL)) {
-                $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version($server_address);
-            }
-        } else {
+        if (!empty($root_server_version)) {
             $this->bmlt_root_server_version = $root_server_version;
         }
+        // Otherwise resolve the version lazily via getRootServerVersion(). This
+        // class is constructed during plugin bootstrap on every request, so
+        // fetching the version here used to make a blocking HTTP call to the
+        // BMLT server on every page load - taking the whole site down when that
+        // server was slow or unreachable.
     }
 
     private function bmltwf_integration_error($message, $code)
@@ -142,11 +142,28 @@ class Integration
         return $response;
     }
 
+    /**
+     * Lazily resolve and cache the BMLT root server version.
+     *
+     * @return string|false|null
+     */
+    public function getRootServerVersion()
+    {
+        if ($this->bmlt_root_server_version === null) {
+            $server_address = \get_option('bmltwf_bmlt_server_address');
+            if ($server_address && $server_address !== 'true' && filter_var($server_address, FILTER_VALIDATE_URL)) {
+                $this->bmlt_root_server_version = $this->bmltwf_get_remote_server_version($server_address);
+            }
+        }
+        return $this->bmlt_root_server_version;
+    }
+
     public function update_root_server_version()
     {
         $server_address = \get_option('bmltwf_bmlt_server_address');
-        // Clear the cache to force a fresh fetch
+        // Clear the cache (and any negative-cache marker) to force a fresh fetch
         \delete_transient('bmltwf_server_info_' . md5($server_address));
+        \delete_transient('bmltwf_server_info_fail_' . md5($server_address));
         $new_version = $this->bmltwf_get_remote_server_version($server_address);
         $this->bmlt_root_server_version = $new_version;
     }
@@ -177,36 +194,57 @@ class Integration
      */
     private function bmltwf_get_server_info_cached($server)
     {
+        if (empty($server)) {
+            return false;
+        }
+
         $cache_key = 'bmltwf_server_info_' . md5($server);
-        
+        $fail_key  = 'bmltwf_server_info_fail_' . md5($server);
+
         // Skip cache if nocache parameter is present
         $use_cache = !isset($_GET['nocache']);
-        
+
         if ($use_cache) {
             $cached = \get_transient($cache_key);
             if ($cached !== false) {
                 return $cached;
             }
+            // Negative cache: if we recently failed to reach the server, don't
+            // block this request on another (likely slow) network call. This
+            // prevents an unreachable/slow BMLT server from stalling every page
+            // load, REST request and 404.
+            if (\get_transient($fail_key) !== false) {
+                return false;
+            }
         }
-        
+
         $url = $server . "client_interface/json/?switcher=GetServerInfo";
         $headers = array("Accept: */*");
-        $resp = $this->bmltwf_wp_remote_get($url, array('headers' => $headers));
-        
+        // Use a short, explicit timeout so a slow server fails fast rather than
+        // hanging on WP's default timeout and stacking across multiple calls.
+        $resp = $this->bmltwf_wp_remote_get($url, array('headers' => $headers, 'timeout' => 5));
+
         if (is_wp_error($resp) || \wp_remote_retrieve_response_code($resp) != 200) {
+            if ($use_cache) {
+                \set_transient($fail_key, 1, 60);
+            }
             return false;
         }
-        
+
         $data = json_decode(\wp_remote_retrieve_body($resp), true);
         if ($data === null || !isset($data[0])) {
+            if ($use_cache) {
+                \set_transient($fail_key, 1, 60);
+            }
             return false;
         }
-        
+
         // Cache for 1 hour (3600 seconds) if caching is enabled
         if ($use_cache) {
+            \delete_transient($fail_key);
             \set_transient($cache_key, $data[0], 3600);
         }
-        
+
         return $data[0];
     }
 
